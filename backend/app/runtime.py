@@ -5,6 +5,7 @@ from app.agents.registry import AgentRegistry
 from app.agents.runner import AgentRunner
 from app.config import Settings, get_settings
 from app.providers.factory import build_provider
+from app.services.annotations import AnnotationService
 from app.services.decisions import DecisionService
 from app.services.index import IndexService
 from app.services.ingestion import IngestionService
@@ -52,6 +53,7 @@ class AppContext:
             self.search,
             self.provider,
         )
+        self.annotations = AnnotationService(self.vault, self.matters)
         self.agents = AgentRegistry(self.vault, self.settings.max_agent_steps)
         self.tools = ToolRegistry(self.vault, build_handlers())
         self.agent_context = ContextBuilder(self.vault, self.index, self.agents)
@@ -68,3 +70,4 @@ class AppContext:
             self,
         )
         self.scheduler.bind(self)
+        self.annotations.bind(self.runner)

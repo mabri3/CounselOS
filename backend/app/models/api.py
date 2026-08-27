@@ -97,6 +97,14 @@ class SettingsUpdate(BaseModel):
     values: dict[str, Any] = Field(default_factory=dict)
 
 
+class AnnotationCreate(BaseModel):
+    source_path: str
+    question: str = Field(min_length=1)
+    quote: str = ""
+    citation: str = ""
+    who: str = "Brian Harris"
+
+
 class ChatMessage(BaseModel):
     role: Literal["system", "user", "assistant", "tool"]
     content: str
