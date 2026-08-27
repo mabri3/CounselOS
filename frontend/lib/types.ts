@@ -184,11 +184,13 @@ export type Citation = {
 };
 
 export type ResearchNote = {
-  id: string;
+  annotation_id: string;
+  source_path: string;
+  citation: string;
   who: string;
-  when: string;
+  created_at: string;
   quote: string;
-  text: string;
+  question: string;
   answer: string;
   answered: boolean;
 };

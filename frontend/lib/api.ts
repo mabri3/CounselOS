@@ -6,6 +6,7 @@ import type {
   Decision,
   Matter,
   MatterDetail,
+  ResearchNote,
   ResearchResult,
   Schedule,
   SettingsPayload,
@@ -53,6 +54,27 @@ export async function moveMatter(matterId: string, stage: string, reason = ""): 
 export async function runResearch(matterId: string, question = ""): Promise<ResearchResult> {
   const query = question ? `?question=${encodeURIComponent(question)}` : "";
   return request(`/matters/${encodeURIComponent(matterId)}/research${query}`, { method: "POST" });
+}
+
+export async function getAnnotations(matterId: string): Promise<{ annotations: ResearchNote[] }> {
+  return request(`/matters/${encodeURIComponent(matterId)}/annotations`);
+}
+
+export async function createAnnotation(
+  matterId: string,
+  payload: Pick<ResearchNote, "source_path" | "citation" | "quote" | "question" | "who">,
+): Promise<ResearchNote> {
+  return request(`/matters/${encodeURIComponent(matterId)}/annotations`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function answerAnnotation(matterId: string, annotationId: string): Promise<ResearchNote> {
+  return request(
+    `/matters/${encodeURIComponent(matterId)}/annotations/${encodeURIComponent(annotationId)}/answer`,
+    { method: "POST" },
+  );
 }
 
 export async function uploadDocument(matterId: string, file: File): Promise<Record<string, unknown>> {
