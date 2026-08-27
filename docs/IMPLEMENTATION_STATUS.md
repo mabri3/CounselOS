@@ -19,6 +19,26 @@
 - Decision register and deterministic staleness audit.
 - In-process scheduler, inbox watcher, manual run, and chat-created schedules/agents.
 - Sample vault with six matters covering every stage.
+- Markdown-backed workspace settings with namespaced keys and provider attestation records.
+- Agent editing with real tool choices and agent-level Written-for audiences.
+- Persistent research annotations with provider-backed answers.
+- Matters stage, table, and twelve-week timeline views with shared filters.
+- The Written-for agent default follows `docs/AUDIENCE_SPEC.md`; the per-request override is not implemented.
+
+## UI redesign (Counsel OS design canvas)
+
+The whole interface was rebuilt against the `Counsel OS` design canvas. See
+`docs/DESIGN_LANGUAGE.md`. Nine surfaces, all wired to the existing API:
+
+- `/` Today — a ranked briefing derived from matters, decisions and schedules.
+- `/workspace` — intake bar, the six-stage board, quarter figures, agent activity.
+- `/matters` — counts that are also filters, stage spines, next action in the row.
+- `/matters/[id]` — question, agent recommendation, evidence, decision, copilot thread.
+- `/matters/[id]/research` — memo reading with citations and a source/notes rail.
+- `/decisions` — open recommendations above, the recorded register below.
+- `/agents` — the agent builder.
+- `/settings` — editable workspace settings and provider policy attestations.
+- `/automations` — schedules led by what each one did.
 
 ## Deliberately lightweight
 

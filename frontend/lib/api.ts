@@ -126,12 +126,7 @@ export function rawFileUrl(path: string): string {
   return `${API_BASE}/files/raw?path=${encodeURIComponent(path)}`;
 }
 
-/* ── Stubs ────────────────────────────────────────────────────────────────
- *
- * The redesign introduces three surfaces the backend cannot answer yet.
- * Each is stubbed here rather than faked in the UI, so the seam is obvious
- * and a later backend change has one place to land.
- */
+/* ── Settings and agent administration ───────────────────────────────── */
 
 export async function getSettings(): Promise<WorkspaceSettings> {
   const { values } = await request<SettingsPayload>("/settings");
