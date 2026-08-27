@@ -18,6 +18,9 @@ class AgentDefinition:
     allowed_tools: list[str]
     max_steps: int
     path: str
+    audience_id: str = ""
+    audience_prompt: str = ""
+    schedule_text: str = ""
 
 
 class AgentRegistry:
@@ -58,6 +61,36 @@ class AgentRegistry:
         self.vault.write_markdown(path, f"# {name}\n\n{instructions}\n", metadata)
         return {**metadata, "path": path}
 
+    def audiences(self) -> list[dict[str, Any]]:
+        path = "00_System/audiences.md"
+        if not self.vault.exists(path):
+            return []
+        audiences = self.vault.read_markdown(path)["metadata"].get("audiences", [])
+        return [dict(entry) for entry in audiences if isinstance(entry, dict)]
+
+    def update(self, agent_id: str, **fields: Any) -> dict[str, Any]:
+        definition = self.get(agent_id)
+        document = self.vault.read_markdown(definition.path)
+        metadata = document["metadata"]
+        editable = {
+            "name",
+            "description",
+            "allowed_tools",
+            "max_steps",
+            "audience_id",
+            "audience_prompt",
+            "schedule_text",
+        }
+        metadata.update({key: value for key, value in fields.items() if key in editable})
+
+        content = document["content"]
+        if "instructions" in fields:
+            name = str(metadata.get("name") or definition.name)
+            content = f"# {name}\n\n{fields['instructions']}\n"
+
+        self.vault.write_markdown(definition.path, content, metadata)
+        return self.get(agent_id).__dict__
+
     def global_standards(self) -> str:
         path = "00_System/Agents.md"
         return self.vault.read_text(path) if self.vault.exists(path) else ""
@@ -81,5 +114,8 @@ class AgentRegistry:
                 allowed_tools=[str(item) for item in metadata.get("allowed_tools", [])],
                 max_steps=int(metadata.get("max_steps", self.default_max_steps)),
                 path=self.vault.relative(path),
+                audience_id=str(metadata.get("audience_id") or ""),
+                audience_prompt=str(metadata.get("audience_prompt") or ""),
+                schedule_text=str(metadata.get("schedule_text") or ""),
             )
         return agents

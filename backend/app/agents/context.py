@@ -27,6 +27,8 @@ class ContextBuilder:
             self.agents.global_standards(),
             f"# Active agent: {agent.name}\n{agent.instructions}",
         ]
+        if agent.audience_prompt.strip():
+            parts.append(f"# Written for\n{agent.audience_prompt.strip()}")
         for filename in self.CORE_FILES:
             path = f"00_System/{filename}"
             if self.vault.exists(path):

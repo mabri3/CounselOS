@@ -1,7 +1,14 @@
 from __future__ import annotations
 
 
+def _empty_settings(app_context):
+    from app.services.settings import SettingsService
+
+    app_context.vault.resolve(SettingsService.PATH).unlink(missing_ok=True)
+
+
 def test_settings_merge_rather_than_replace(app_context):
+    _empty_settings(app_context)
     assert app_context.settings_store.read()["values"] == {}
     app_context.settings_store.write(
         {
@@ -20,12 +27,14 @@ def test_settings_merge_rather_than_replace(app_context):
 def test_settings_are_on_disk_not_in_memory(app_context):
     from app.services.settings import SettingsService
 
+    _empty_settings(app_context)
     app_context.settings_store.write({"general.organisation": "DemoCo Financial"})
     fresh = SettingsService(app_context.vault)
     assert fresh.read()["values"]["general.organisation"] == "DemoCo Financial"
 
 
 def test_training_attestation_is_stamped_once(app_context, monkeypatch):
+    _empty_settings(app_context)
     timestamps = iter(
         [
             "2026-08-26T08:40:00+00:00",
