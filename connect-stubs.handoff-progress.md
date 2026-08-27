@@ -3,7 +3,7 @@
 Update this file after EACH step. Never edit any line other than your own step's.
 
 - [x] Step 1: Settings service and endpoints — done
-- [ ] Step 2: Point the Settings page at the API — pending
+- [x] Step 2: Point the Settings page at the API — done
 - [ ] Step 3: "Written for" replaces Voice — pending
 - [ ] Step 4: Agent and tool endpoints — pending
 - [ ] Step 5: Point the Agents page at the API — pending

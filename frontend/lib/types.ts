@@ -112,7 +112,9 @@ export type AgentDefinition = {
   agent_id: string;
   name: string;
   description: string;
+  instructions: string;
   allowed_tools: string[];
+  max_steps: number;
   path: string;
 };
 
@@ -129,4 +131,77 @@ export type Schedule = {
   last_run_at?: string | null;
   next_run_at?: string | null;
   last_status: string;
+};
+
+/* ── Redesign additions (canvas 4a / 4b / 6a) ─────────────────────────── */
+
+export type SettingKind = "heading" | "toggle" | "select" | "text" | "radio";
+
+export type SettingRow = {
+  id: string;
+  config_key?: string;
+  kind: SettingKind;
+  label: string;
+  help?: string;
+  value?: string;
+  options?: string[];
+  on?: boolean;
+};
+
+export type SettingsSection = {
+  id: string;
+  label: string;
+  title: string;
+  sub: string;
+  rows: SettingRow[];
+};
+
+export type WorkspaceSettings = {
+  sections: SettingsSection[];
+};
+
+export type SettingsPayload = { values: Record<string, unknown> };
+
+export type AgentDetail = AgentDefinition & {
+  voice: string;
+  schedule_text: string;
+  schedule_reads_as: string;
+  state: string;
+  run_count: number;
+};
+
+export type ToolOption = { id: string; label: string };
+
+export type Citation = {
+  id: string;
+  n: string;
+  name: string;
+  kind: string;
+  quote: string;
+  note: string;
+};
+
+export type ResearchNote = {
+  id: string;
+  who: string;
+  when: string;
+  quote: string;
+  text: string;
+  answer: string;
+  answered: boolean;
+};
+
+/** A memo body block. `[n]` citation markers are left inline in the text. */
+export type MemoBlock =
+  | { kind: "p"; text: string }
+  | { kind: "h"; level: number; text: string }
+  | { kind: "list"; items: string[] }
+  | { kind: "quote"; text: string };
+
+export type ResearchMemo = {
+  path: string;
+  title: string;
+  byline: string;
+  blocks: MemoBlock[];
+  citations: Citation[];
 };
