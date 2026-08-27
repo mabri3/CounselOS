@@ -12,6 +12,7 @@ from app.services.matters import MatterService
 from app.services.research import ResearchService
 from app.services.scheduler import SchedulerService
 from app.services.search import SearchService
+from app.services.settings import SettingsService
 from app.services.vault import VaultService
 from app.services.workflow import WorkflowService
 from app.tools.handlers import build_handlers
@@ -24,6 +25,7 @@ class AppContext:
     def __init__(self, settings: Settings | None = None):
         self.settings = settings or get_settings()
         self.vault = VaultService(self.settings.resolved_vault_path)
+        self.settings_store = SettingsService(self.vault)
         self.index = IndexService(self.settings.cache_db_path, self.vault)
         self.workflow = WorkflowService(self.vault)
         self.index.rebuild()

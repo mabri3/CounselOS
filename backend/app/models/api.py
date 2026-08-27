@@ -82,6 +82,10 @@ class AgentCreate(BaseModel):
     max_steps: int = Field(default=6, ge=1, le=20)
 
 
+class SettingsUpdate(BaseModel):
+    values: dict[str, Any] = Field(default_factory=dict)
+
+
 class ChatMessage(BaseModel):
     role: Literal["system", "user", "assistant", "tool"]
     content: str

@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.routers import automations, chat, decisions, files, matters, system
+from app.routers import automations, chat, decisions, files, matters, settings as settings_router, system
 from app.runtime import AppContext
 
 
@@ -30,7 +30,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-for router in (system.router, matters.router, files.router, chat.router, decisions.router, automations.router):
+for router in (
+    system.router,
+    matters.router,
+    files.router,
+    chat.router,
+    decisions.router,
+    automations.router,
+    settings_router.router,
+):
     app.include_router(router, prefix="/api")
 
 
