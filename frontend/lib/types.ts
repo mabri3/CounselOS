@@ -116,6 +116,9 @@ export type AgentDefinition = {
   allowed_tools: string[];
   max_steps: number;
   path: string;
+  audience_id: string;
+  audience_prompt: string;
+  schedule_text: string;
 };
 
 export type Schedule = {
@@ -163,14 +166,13 @@ export type WorkspaceSettings = {
 export type SettingsPayload = { values: Record<string, unknown> };
 
 export type AgentDetail = AgentDefinition & {
-  voice: string;
-  schedule_text: string;
   schedule_reads_as: string;
   state: string;
-  run_count: number;
 };
 
-export type ToolOption = { id: string; label: string };
+export type Audience = { audience_id: string; label: string; prompt: string };
+
+export type ToolDefinition = { tool_id: string; description: string; path: string };
 
 export type Citation = {
   id: string;

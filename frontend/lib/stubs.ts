@@ -1,12 +1,10 @@
 /**
- * Stub data for surfaces the backend does not model yet.
+ * Presentation vocabulary and defaults that the backend does not model.
  *
- * Everything here is clearly separated from `lib/api.ts` so it is obvious what
- * is real. When the backend grows settings and per-agent editing, delete the
- * matching block and point `lib/api.ts` at the endpoint.
+ * Persisted settings, tools, audiences, and agent details come from `lib/api.ts`.
  */
 
-import type { AgentDefinition, AgentDetail, Schedule, SettingsSection, ToolOption } from "./types";
+import type { AgentDefinition, AgentDetail, Schedule, SettingsSection } from "./types";
 import { cadence, role } from "./design";
 
 export const DEFAULT_SETTINGS: SettingsSection[] = [
@@ -114,42 +112,23 @@ export const DEFAULT_SETTINGS: SettingsSection[] = [
   },
 ];
 
-/** The tool vocabulary the agent builder ticks. Ids match the backend registry. */
-export const TOOL_OPTIONS: ToolOption[] = [
-  { id: "read_matter", label: "Read matter records and source documents" },
-  { id: "search_vault", label: "Search the vault and past decisions" },
-  { id: "web_search", label: "Read public sources on the web" },
-  { id: "write_file", label: "Write and edit work product" },
-  { id: "create_work_item", label: "Open new matters and work items" },
-  { id: "move_matter", label: "Move a matter between stages" },
-  { id: "notify", label: "Message you in Slack" },
-];
-
-export const AGENT_VOICES = ["Plain and direct", "Formal", "Very terse"];
-
 /** These three hold for every agent, whatever the tool ticks say. */
 export const FIXED_AGENT_RULES = [
-  "It can recommend a decision. It can never record one.",
+  "It records a decision only when you explicitly instruct it to do so.",
   "It can draft a reply. It can never send one to a counterparty.",
   "Everything it writes is labelled as its work until you accept it.",
 ];
 
-/** STUB: derives the builder's extra fields from the real agent definition. */
 export function agentDetailFrom(definition: AgentDefinition, schedules: Schedule[]): AgentDetail {
   const mine = schedules.filter((schedule) => schedule.agent_id === definition.agent_id);
   const failing = mine.some((schedule) => schedule.last_status === "error" || schedule.last_status === "failed");
   const running = mine.some((schedule) => schedule.enabled === 1);
   return {
     ...definition,
-    voice: AGENT_VOICES[0],
-    schedule_text: mine.length
-      ? `Whenever I ask, and ${mine.map((schedule) => schedule.title.toLowerCase()).join(", ")}.`
-      : "Whenever I ask.",
     schedule_reads_as: mine.length
       ? `on request · ${mine.map((schedule) => cadence(schedule.interval_seconds)).join(" · ")}`
       : "on request",
     state: failing ? "Failing" : running ? "Working now" : "On request",
-    run_count: 0,
   };
 }
 

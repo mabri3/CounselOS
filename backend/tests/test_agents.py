@@ -118,3 +118,13 @@ def test_audiences_are_read_from_the_vault(app_context):
 def test_agent_update_rejects_unknown_agent(app_context):
     with pytest.raises(KeyError):
         app_context.agents.update("no-such-agent", name="X")
+
+
+def test_agent_update_does_not_duplicate_existing_title(app_context):
+    original = app_context.agents.get("counsel-copilot")
+    app_context.agents.update(
+        "counsel-copilot",
+        instructions=original.instructions,
+    )
+    reloaded = app_context.agents.get("counsel-copilot")
+    assert reloaded.instructions.count("# Counsel Copilot") == 1

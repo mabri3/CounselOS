@@ -1,6 +1,7 @@
 import type {
   AgentDefinition,
   AgentDetail,
+  Audience,
   ChatResponse,
   Decision,
   Matter,
@@ -9,6 +10,7 @@ import type {
   Schedule,
   SettingsPayload,
   Stage,
+  ToolDefinition,
   VaultDocument,
   WorkspaceSettings,
 } from "./types";
@@ -136,19 +138,34 @@ export async function saveSettings(settings: WorkspaceSettings): Promise<Setting
   return request("/settings", { method: "PUT", body: JSON.stringify({ values }) });
 }
 
-/**
- * STUB-BACKED: the agent list is real (`GET /api/automations`), but instructions,
- * voice and schedule text are not exposed per agent yet, so they are filled in
- * locally. Saving is a no-op until the backend grows `PUT /api/automations/agents/{id}`.
- */
 export async function getAgentDetail(agentId: string): Promise<AgentDetail> {
-  const { agents, schedules } = await getAutomations();
-  const definition = agents.find((agent) => agent.agent_id === agentId) ?? agents[0];
-  if (!definition) throw new Error("No agents are defined in the vault.");
+  const [definition, { schedules }] = await Promise.all([
+    request<AgentDefinition>(`/automations/agents/${encodeURIComponent(agentId)}`),
+    getAutomations(),
+  ]);
   return agentDetailFrom(definition, schedules);
 }
 
-/** STUB: no update endpoint. Resolves without writing. */
-export async function saveAgentDetail(_agent: AgentDetail): Promise<{ status: string }> {
-  return { status: "stub" };
+export async function saveAgentDetail(agent: AgentDetail): Promise<AgentDefinition> {
+  return request(`/automations/agents/${encodeURIComponent(agent.agent_id)}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      name: agent.name,
+      description: agent.description,
+      instructions: agent.instructions,
+      allowed_tools: agent.allowed_tools,
+      max_steps: agent.max_steps,
+      audience_id: agent.audience_id,
+      audience_prompt: agent.audience_prompt,
+      schedule_text: agent.schedule_text,
+    }),
+  });
+}
+
+export async function getTools(): Promise<{ tools: ToolDefinition[] }> {
+  return request("/automations/tools");
+}
+
+export async function getAudiences(): Promise<{ audiences: Audience[] }> {
+  return request("/automations/audiences");
 }

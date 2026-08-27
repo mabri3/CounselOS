@@ -86,7 +86,11 @@ class AgentRegistry:
         content = document["content"]
         if "instructions" in fields:
             name = str(metadata.get("name") or definition.name)
-            content = f"# {name}\n\n{fields['instructions']}\n"
+            instructions = str(fields["instructions"]).strip()
+            lines = instructions.splitlines()
+            if lines and lines[0].startswith("# "):
+                instructions = "\n".join(lines[1:]).lstrip()
+            content = f"# {name}\n\n{instructions}\n"
 
         self.vault.write_markdown(definition.path, content, metadata)
         return self.get(agent_id).__dict__
