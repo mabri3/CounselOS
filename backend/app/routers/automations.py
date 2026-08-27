@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.models.api import AgentCreate, ScheduleCreate
+from app.models.api import AgentCreate, AgentUpdate, ScheduleCreate
 from app.routers.dependencies import get_context
 from app.runtime import AppContext
 
@@ -31,3 +31,42 @@ async def run_schedule(schedule_id: str, context: AppContext = Depends(get_conte
 @router.post("/agents", status_code=201)
 def create_agent(payload: AgentCreate, context: AppContext = Depends(get_context)):
     return context.agents.create(**payload.model_dump())
+
+
+@router.get("/agents")
+def list_agents(context: AppContext = Depends(get_context)):
+    return {"agents": context.agents.list()}
+
+
+@router.get("/agents/{agent_id}")
+def get_agent(agent_id: str, context: AppContext = Depends(get_context)):
+    try:
+        return context.agents.get(agent_id).__dict__
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@router.put("/agents/{agent_id}")
+def update_agent(
+    agent_id: str,
+    payload: AgentUpdate,
+    context: AppContext = Depends(get_context),
+):
+    try:
+        return context.agents.update(
+            agent_id, **payload.model_dump(exclude_none=True)
+        )
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@router.get("/tools")
+def list_tools(context: AppContext = Depends(get_context)):
+    return {"tools": context.tools.list()}
+
+
+@router.get("/audiences")
+def list_audiences(context: AppContext = Depends(get_context)):
+    return {"audiences": context.agents.audiences()}

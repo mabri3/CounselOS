@@ -82,6 +82,17 @@ class AgentCreate(BaseModel):
     max_steps: int = Field(default=6, ge=1, le=20)
 
 
+class AgentUpdate(BaseModel):
+    name: str | None = None
+    description: str | None = None
+    instructions: str | None = None
+    allowed_tools: list[str] | None = None
+    max_steps: int | None = Field(default=None, ge=1, le=20)
+    audience_id: str | None = None
+    audience_prompt: str | None = None
+    schedule_text: str | None = None
+
+
 class SettingsUpdate(BaseModel):
     values: dict[str, Any] = Field(default_factory=dict)
 
