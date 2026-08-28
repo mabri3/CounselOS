@@ -1,9 +1,9 @@
 ---
 work_item_id: WI-MAT-DEMO-HARBOR-2
 matter_id: MAT-DEMO-HARBOR
-type: approval
-title: Record support-macro decision
-description: Capture the approved explanation standard.
+type: decision
+title: Set the account-hold notice and remedy policy
+description: Decide whether account holds require notice and a limited service credit.
 status: open
 priority: high
 owner: Brian Harris
@@ -12,6 +12,6 @@ required: true
 created_at: '2026-08-20T08:00:00+00:00'
 completed_at: null
 ---
-# Record support-macro decision
+# Set the account-hold notice and remedy policy
 
-Capture the approved explanation standard.
+Decide whether account holds require notice and a limited service credit.

@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Awaitable, Callable
 from typing import Any
 
-from app.models.api import WorkItemCreate
+from app.models.api import ChatRequest, WorkItemCreate
 from app.providers.base import LLMProvider
 from app.services.index import IndexService
 from app.services.matters import MatterService
@@ -28,34 +29,58 @@ class ResearchService:
         self.matters = matters
         self.search = search
         self.provider = provider
+        self._agent_runner: Callable[[ChatRequest], Awaitable[Any]] | None = None
 
-    async def run(self, matter_id: str, question: str = "") -> dict[str, Any]:
+    def bind_agent_runner(self, runner: Callable[[ChatRequest], Awaitable[Any]]) -> None:
+        """Bind the configured agent runner after the application container is built."""
+        self._agent_runner = runner
+
+    async def run(
+        self,
+        matter_id: str,
+        question: str = "",
+        *,
+        change_stage: bool = True,
+    ) -> dict[str, Any]:
         matter = self.index.get_matter(matter_id)
         if not matter:
             raise KeyError(f"Matter not found: {matter_id}")
-        if matter["status"] != "research":
+        if change_stage and matter["status"] != "research":
             self.matters.move_stage(matter_id, "research", reason="Research run started", actor="research-agent")
             matter = self.index.get_matter(matter_id) or matter
 
         request_path = f"{matter['path']}/request.md"
         request_text = self.vault.read_markdown(request_path)["content"] if self.vault.exists(request_path) else ""
         research_question = question.strip() or matter["title"]
-        search_result = await self.search.search(research_question, matter_path=matter["path"])
+        try:
+            search_result = await self.search.search(research_question, matter_path=matter["path"])
+        except Exception as exc:
+            search_result = {
+                "query": research_question,
+                "internal": [],
+                "external": [],
+                "warning": f"Research search failed: {exc}",
+            }
         prompt = self._prompt(matter, request_text, research_question, search_result)
-        reply = await self.provider.complete(
-            [
-                {
-                    "role": "system",
-                    "content": (
-                        "You are a first-pass product counsel research agent. Find the forest before the trees. "
-                        "Produce useful work even when facts or authorities are incomplete. Do not claim legal perfection. "
-                        "Separate what is supported by supplied sources from assumptions and open questions."
-                    ),
-                },
-                {"role": "user", "content": prompt},
-            ]
-        )
-        body = reply.content.strip() or self._fallback_packet(research_question, search_result)
+        analysis_warning: str | None = None
+        try:
+            if self._agent_runner is not None:
+                reply = await self._agent_runner(
+                    ChatRequest(message=prompt, matter_id=matter_id, agent_id="research-agent")
+                )
+                body = str(reply.reply).strip()
+            else:
+                reply = await self.provider.complete(
+                    [{"role": "user", "content": prompt}]
+                )
+                body = reply.content.strip()
+        except Exception as exc:
+            body = ""
+            analysis_warning = f"Research analysis failed: {exc}"
+        if not body:
+            body = self._fallback_packet(research_question, search_result)
+        if analysis_warning:
+            body = f"**Generated analysis warning.** {analysis_warning}\n\n{body}"
         packet_id = new_id("RES")
         path = f"{matter['path']}/research/{packet_id}.md"
         source_lines = self._source_lines(search_result)
@@ -79,21 +104,23 @@ class ResearchService:
                 "created_at": iso_now(),
                 "external_search_enabled": bool(search_result.get("external")),
                 "warning": search_result.get("warning"),
+                "analysis_warning": analysis_warning,
             },
         )
-        self.matters.complete_open_work_items(matter_id, item_type="research")
-        self.matters.create_work_item(
-            WorkItemCreate(
-                matter_id=matter_id,
-                title="Review the first-pass research packet",
-                description="Confirm the key facts, authorities, and viable paths before generating the response.",
-                item_type="counsel_review",
-                priority=matter.get("priority") or "normal",
-                owner=matter.get("legal_owner") or "",
-                required=True,
-            ),
-            rebuild=False,
-        )
+        if change_stage:
+            self.matters.complete_open_work_items(matter_id, item_type="research")
+            self.matters.create_work_item(
+                WorkItemCreate(
+                    matter_id=matter_id,
+                    title="Review the first-pass research packet",
+                    description="Confirm the key facts, authorities, and viable paths before generating the response.",
+                    item_type="counsel_review",
+                    priority=matter.get("priority") or "normal",
+                    owner=matter.get("legal_owner") or "",
+                    required=True,
+                ),
+                rebuild=False,
+            )
         self.matters.append_event(
             matter_id,
             "research_completed",
@@ -101,18 +128,24 @@ class ResearchService:
             rebuild=False,
         )
         self.index.rebuild()
-        self.matters.move_stage(
-            matter_id,
-            "explore",
-            reason="First-pass research packet is ready for counsel exploration",
-            actor="research-agent",
-        )
+        if change_stage:
+            self.matters.move_stage(
+                matter_id,
+                "explore",
+                reason="First-pass research packet is ready for counsel exploration",
+                actor="research-agent",
+            )
         return {
-            "summary": "First-pass research is complete and the matter moved to Explore.",
+            "summary": (
+                "First-pass research is complete and the matter moved to Explore."
+                if change_stage
+                else "First-pass research is complete. The matter stage did not change."
+            ),
             "path": path,
             "warning": search_result.get("warning"),
             "internal_sources": len(search_result.get("internal", [])),
             "external_sources": len(search_result.get("external", [])),
+            "analysis_warning": analysis_warning,
         }
 
     @staticmethod

@@ -16,7 +16,7 @@ stages:
     description: Produce the response, recommendation, checklist, or draft.
   - id: respond
     label: Respond
-    description: Review, decide, and deliver to the business.
+    description: Approve and deliver the work product.
   - id: closed
     label: Closed
     description: Preserve the record and monitor relevant decisions.
@@ -24,3 +24,5 @@ stages:
 # Product Counsel Workflow
 
 The board is an orchestration view, not a generic task tracker. A matter may be moved manually, by chat, or by an agent action.
+
+Work actions, approvals, durable decisions, and matter closure are separate. A durable decision records a material position for future reliance. It does not approve work product, prove delivery, or close the matter.

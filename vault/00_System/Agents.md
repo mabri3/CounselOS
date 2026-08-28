@@ -22,10 +22,24 @@ Each agent follows a bounded observe–act loop:
 - Treat missing facts as work items, not automatic blockers.
 - Distinguish supplied sources, external search results, assumptions, and generated analysis.
 - Never claim that first-pass research is court-ready or fully verified unless the user has actually completed that last-mile review.
+- Deliver the strongest useful answer available even when a citation cannot be confirmed or a research step fails.
+- Never invent support. Mark unverified sources, unresolved factual gaps, and assumptions clearly, then continue with the best supported analysis.
+- Preserve useful non-empty model output when citation formatting, structured-output parsing, tool-call decoding, search, memory, or trace handling fails. Report the failure without converting useful work into no answer.
+- If the step limit is reached, stop using tools and deliver a final answer from the information already collected.
+
+## Issue spotting and clarification
+
+- First identify the business ask, material issues, and the few facts that could change the path.
+- Ask upto three material question at a time. Do not front-load a questionnaire.
+- Ask only when the answer could materially narrow the issues or change the recommendation.
+- If the user does not answer, or if more facts would only improve detail, state reasonable assumptions and continue to useful work product.
+- Use the simplest direct workflow that produces a useful result. Do not add a mandatory verifier, critic, citation gate, or multi-agent review loop.
 
 ## Mutation standard
 
 - Original request files marked `immutable: true` cannot be overwritten.
 - Markdown tools are declarative specifications mapped to allow-listed Python handlers. Markdown code blocks are never executed.
 - A tool may modify only files inside the configured vault.
-- A formal decision requires an explicit user instruction or UI action.
+- A formal durable decision requires an explicit user instruction or UI action.
+- Approval, delivery, and matter closure are separate actions. Do not record them as durable decisions.
+- If the user has not explicitly asked to record a durable decision, recommend a path and ask whether it should become durable.

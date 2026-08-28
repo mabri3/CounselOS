@@ -12,6 +12,7 @@ export default function MatterPage() {
   const searchParams = useSearchParams();
   const matterId = params.matterId;
   const initialPath = searchParams.get("file");
+  const focusResearch = searchParams.get("focus") === "research";
   const [detail, setDetail] = useState<MatterDetail | null>(null);
   const [error, setError] = useState("");
 
@@ -22,13 +23,15 @@ export default function MatterPage() {
 
   useEffect(() => { void load(); }, [load]);
 
+  if (error) {
+    return <AppShell><main className="page"><p className="error">{error}</p></main></AppShell>;
+  }
+  if (!detail) {
+    return <AppShell><main className="page"><div className="loading">Orienting to the matter…</div></main></AppShell>;
+  }
   return (
     <AppShell>
-      <main className="page">
-        {error ? <div className="card empty-state error">{error}</div> : null}
-        {!detail && !error ? <div className="loading">Orienting to the matter…</div> : null}
-        {detail ? <MatterWorkspace detail={detail} initialPath={initialPath} onReload={load} /> : null}
-      </main>
+      <MatterWorkspace detail={detail} focusResearch={focusResearch} initialPath={initialPath} onReload={load} />
     </AppShell>
   );
 }

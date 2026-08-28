@@ -1,0 +1,127 @@
+"use client";
+
+import { useState } from "react";
+import { createDecision } from "@/lib/api";
+import { formatLongDay } from "@/lib/design";
+import type { MatterDetail } from "@/lib/types";
+
+/**
+ * Canvas 2b / 1h. The modal makes the explicit record action clear: the
+ * durable result is attributed, dated, and available to future answers.
+ */
+export default function RecordDecisionModal({
+  detail,
+  suggestion,
+  basis,
+  onClose,
+  onRecorded,
+}: {
+  detail: MatterDetail;
+  suggestion: string;
+  basis: string[];
+  onClose: () => void;
+  onRecorded: () => Promise<void>;
+}) {
+  const [chosenPath, setChosenPath] = useState(suggestion);
+  const [decider, setDecider] = useState(detail.legal_owner || "Brian Harris");
+  const [reviewAt, setReviewAt] = useState(defaultReview());
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  async function record() {
+    if (!chosenPath.trim()) { setError("Say what was decided."); return; }
+    setBusy(true);
+    setError("");
+    try {
+      await createDecision({
+        matter_id: detail.matter_id,
+        title: detail.title,
+        chosen_path: chosenPath.trim(),
+        rationale: detail.orientation.why_now,
+        decision_maker: decider,
+        risk_level: detail.risk_level,
+        next_review_at: reviewAt || null,
+        linked_paths: basis,
+      });
+      await onRecorded();
+      onClose();
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not record the decision.");
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="modal-scrim" onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}>
+      <div className="modal" role="dialog" aria-modal="true" aria-label="Record durable decision">
+        <div className="modal-head">
+          <h3>Record a durable decision</h3>
+          <p>Use this for a material position, recurring risk, future advice, or a condition that must be monitored.</p>
+        </div>
+
+        <div className="modal-body">
+          <div>
+            <div className="field-label">Decision</div>
+            <textarea
+              aria-label="Decision"
+              autoFocus
+              className="text-input prose"
+              onChange={(event) => setChosenPath(event.target.value)}
+              style={{ minHeight: 96 }}
+              value={chosenPath}
+            />
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+            <div>
+              <div className="field-label">Decided by</div>
+              <input aria-label="Decided by" className="text-input" onChange={(event) => setDecider(event.target.value)} value={decider} />
+            </div>
+            <div>
+              <div className="field-label">Revisit on</div>
+              <input aria-label="Revisit on" className="text-input" onChange={(event) => setReviewAt(event.target.value)} type="date" value={reviewAt} />
+              <div style={{ marginTop: 6, font: "400 13px var(--sans)", color: "var(--ink-5)" }}>
+                {reviewAt ? formatLongDay(reviewAt) : "No review date"}
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div className="field-label">What it rests on</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+              {basis.length === 0 ? (
+                <span className="faint small">Nothing linked yet.</span>
+              ) : null}
+              {basis.map((path) => (
+                <span className="basis-tag" key={path}>{path.split("/").at(-1)}</span>
+              ))}
+            </div>
+          </div>
+
+          {error ? <p className="error" style={{ margin: 0 }}>{error}</p> : null}
+        </div>
+
+        <div className="modal-foot">
+          <span style={{ font: "400 13.5px var(--sans)", color: "var(--ink-4)" }}>
+            Recorded against this matter and the decision register.
+          </span>
+          <div className="btn-row">
+            <button className="btn" disabled={busy} onClick={onClose}>Cancel</button>
+            <button className="btn primary" disabled={busy} onClick={() => void record()}>
+              {busy ? "Recording…" : "Record durable decision"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function defaultReview(): string {
+  const date = new Date();
+  date.setMonth(date.getMonth() + 3);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}

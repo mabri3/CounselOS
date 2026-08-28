@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import AppShell from "@/components/AppShell";
+import LinkifiedText from "@/components/LinkifiedText";
 import { answerAnnotation, createAnnotation, getAnnotations, getFile, getMatter } from "@/lib/api";
 import { parseMemo, splitCitations } from "@/lib/research";
 import type { FileNode, MatterDetail, ResearchMemo, ResearchNote } from "@/lib/types";
@@ -40,7 +41,7 @@ export default function ResearchPage() {
       ]);
       setDetail(matter);
       setNotes(annotations);
-      const path = requestedFile ?? newestResearchPath(matter.tree);
+      const path = safeResearchPath(requestedFile, matter.path) ?? newestResearchPath(matter.tree);
       if (!path) { setMemo(null); return; }
       setMemo(parseMemo(await getFile(path)));
     } catch (caught) {
@@ -118,7 +119,7 @@ export default function ResearchPage() {
                           onOpen={() => { setOpenSource(`s${run.citation}`); setRail("source"); }}
                         />
                       ) : (
-                        <span key={runIndex}>{run.text}</span>
+                        <span key={runIndex}><LinkifiedText text={run.text} /></span>
                       ),
                     );
 
@@ -180,10 +181,10 @@ export default function ResearchPage() {
                       <span style={{ font: "600 17px/1.3 var(--serif)", color: "var(--ink)" }}>{source.name}</span>
                     </div>
                     <div style={{ font: "400 13.5px var(--sans)", color: "var(--ink-4)", marginTop: 6, wordBreak: "break-word" }}>
-                      {source.kind}
+                      <LinkifiedText text={source.kind} />
                     </div>
-                    <div className="source-quote">{source.quote}</div>
-                    <p style={{ margin: "14px 0 0", font: "400 14.5px/1.6 var(--sans)", color: "var(--ink-3)" }}>{source.note}</p>
+                    <div className="source-quote"><LinkifiedText text={source.quote} /></div>
+                    <p style={{ margin: "14px 0 0", font: "400 14.5px/1.6 var(--sans)", color: "var(--ink-3)" }}><LinkifiedText text={source.note} /></p>
                     <div className="btn-row" style={{ marginTop: 18 }}>
                       <button
                         className="btn agent compact"
@@ -201,14 +202,14 @@ export default function ResearchPage() {
                   {notes.map((note) => (
                     <div className="note-card" key={note.annotation_id}>
                       <div className="note-quote">
-                        <div>{note.quote}</div>
+                        <div><LinkifiedText text={note.quote} /></div>
                         <div style={{ display: "flex", alignItems: "baseline", gap: 9, marginTop: 9 }}>
                           <span style={{ font: "600 13.5px var(--sans)", color: "var(--ink)" }}>{note.who}</span>
                           <span style={{ font: "400 13px var(--sans)", color: "var(--ink-5)" }}>
                             {new Date(note.created_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
                           </span>
                         </div>
-                        <div style={{ font: "400 15px/1.55 var(--sans)", color: "var(--ink)", marginTop: 4 }}>{note.question}</div>
+                        <div style={{ font: "400 15px/1.55 var(--sans)", color: "var(--ink)", marginTop: 4 }}><LinkifiedText text={note.question} /></div>
                       </div>
                       {note.answered ? (
                         <div className="note-answer">
@@ -216,7 +217,7 @@ export default function ResearchPage() {
                             <span className="agent-mark" />
                             Themis
                           </div>
-                          <div className="reading">{note.answer}</div>
+                          <div className="reading"><LinkifiedText text={note.answer} /></div>
                         </div>
                       ) : (
                         <div className="note-answer">
@@ -335,4 +336,10 @@ function newestResearchPath(tree: FileNode[]): string | null {
   const folder = tree.find((node) => node.type === "folder" && node.name === "research");
   const files = (folder?.children ?? []).filter((node) => node.type === "file" && node.extension === ".md");
   return files.length ? files[files.length - 1].path : null;
+}
+
+function safeResearchPath(requested: string | null, matterPath: string): string | null {
+  if (!requested || requested.includes("\\") || requested.split("/").includes("..")) return null;
+  if (!requested.startsWith(`${matterPath}/research/`) || !requested.endsWith(".md")) return null;
+  return requested.endsWith("/annotations.md") ? null : requested;
 }

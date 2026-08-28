@@ -1,6 +1,6 @@
 "use client";
 
-import { LinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
+import { AutoLinkNode, autoLinkUrlMatcher, LinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
 import { ListItemNode, ListNode, INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND } from "@lexical/list";
 import {
   $convertFromMarkdownString,
@@ -20,6 +20,8 @@ import {
 import { $setBlocksType } from "@lexical/selection";
 import { $createHeadingNode, $createQuoteNode, HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import { AutoLinkPlugin } from "@lexical/react/LexicalAutoLinkPlugin";
+import { ClickableLinkPlugin } from "@lexical/react/LexicalClickableLinkPlugin";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
@@ -49,24 +51,34 @@ const MARKDOWN_TRANSFORMERS: Transformer[] = [
   ITALIC_UNDERSCORE,
   LINK,
 ];
+const AUTO_LINK_MATCHERS = [autoLinkUrlMatcher];
 
 function ToolbarButton({
   label,
   title,
+  glyph,
   onClick,
 }: {
   label: string;
   title: string;
+  glyph?: "b" | "i" | "u";
   onClick: () => void;
 }) {
   return (
-    <button className="rich-toolbar-button" type="button" aria-label={title} title={title} onClick={onClick}>
+    <button
+      className={`rich-toolbar-button ${glyph ? `glyph ${glyph}` : ""}`}
+      type="button"
+      aria-label={title}
+      title={title}
+      onClick={onClick}
+    >
       {label}
     </button>
   );
 }
 
-function EditorToolbar() {
+/** Canvas 4c — a real editor bar: block style, marks, lists, and one agent action. */
+function EditorToolbar({ onAskAgent }: { onAskAgent?: () => void }) {
   const [editor] = useLexicalComposerContext();
 
   function formatText(format: TextFormatType) {
@@ -91,16 +103,30 @@ function EditorToolbar() {
 
   return (
     <div className="rich-toolbar" role="toolbar" aria-label="Document formatting">
-      <ToolbarButton label="Text" title="Paragraph" onClick={() => formatBlock("paragraph")} />
-      <ToolbarButton label="H2" title="Heading" onClick={() => formatBlock("heading")} />
+      <select
+        aria-label="Block style"
+        className="select-input"
+        onChange={(event) => { formatBlock(event.target.value as "paragraph" | "heading" | "quote"); }}
+        style={{ width: 132, padding: "5px 10px", fontSize: 14, borderRadius: 6 }}
+        value="paragraph"
+      >
+        <option value="paragraph">Body text</option>
+        <option value="heading">Heading</option>
+        <option value="quote">Quote</option>
+      </select>
       <span className="rich-toolbar-separator" />
-      <ToolbarButton label="B" title="Bold" onClick={() => formatText("bold")} />
-      <ToolbarButton label="I" title="Italic" onClick={() => formatText("italic")} />
-      <ToolbarButton label="Link" title="Add or remove link" onClick={addLink} />
+      <ToolbarButton glyph="b" label="B" title="Bold" onClick={() => formatText("bold")} />
+      <ToolbarButton glyph="i" label="I" title="Italic" onClick={() => formatText("italic")} />
+      <ToolbarButton glyph="u" label="U" title="Underline" onClick={() => formatText("underline")} />
       <span className="rich-toolbar-separator" />
+      <ToolbarButton label="List" title="Bullet list" onClick={() => editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined)} />
+      <ToolbarButton label="Numbered" title="Numbered list" onClick={() => editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined)} />
       <ToolbarButton label="Quote" title="Quote" onClick={() => formatBlock("quote")} />
-      <ToolbarButton label="Bullets" title="Bullet list" onClick={() => editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined)} />
-      <ToolbarButton label="1. List" title="Numbered list" onClick={() => editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined)} />
+      <ToolbarButton label="Link" title="Add or remove link" onClick={addLink} />
+      <span className="rich-toolbar-spacer" />
+      {onAskAgent ? (
+        <button className="btn agent tiny" type="button" onClick={onAskAgent}>Ask Themis to redraft</button>
+      ) : null}
     </div>
   );
 }
@@ -108,15 +134,17 @@ function EditorToolbar() {
 export default function MarkdownRichEditor({
   markdown,
   onChange,
+  onAskAgent,
   readOnly = false,
 }: {
   markdown: string;
   onChange?: (markdown: string) => void;
+  onAskAgent?: () => void;
   readOnly?: boolean;
 }) {
   const initialConfig = {
     namespace: "CounselOsMarkdownEditor",
-    nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, LinkNode],
+    nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, LinkNode, AutoLinkNode],
     theme: {
       heading: {
         h1: "rich-heading rich-heading-h1",
@@ -127,7 +155,7 @@ export default function MarkdownRichEditor({
       list: { listitem: "rich-list-item", nested: { listitem: "rich-list-item-nested" }, ol: "rich-list-ordered", ul: "rich-list-unordered" },
       paragraph: "rich-paragraph",
       quote: "rich-quote",
-      text: { bold: "rich-bold", italic: "rich-italic" },
+      text: { bold: "rich-bold", italic: "rich-italic", underline: "rich-underline" },
     },
     editorState: () => $convertFromMarkdownString(markdown, MARKDOWN_TRANSFORMERS),
     editable: !readOnly,
@@ -139,7 +167,7 @@ export default function MarkdownRichEditor({
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <div className="rich-editor-shell">
-        {readOnly ? null : <EditorToolbar />}
+        {readOnly ? null : <EditorToolbar onAskAgent={onAskAgent} />}
         <div className="rich-editor-surface">
           <RichTextPlugin
             contentEditable={<ContentEditable className="rich-content" />}
@@ -148,6 +176,8 @@ export default function MarkdownRichEditor({
           />
         </div>
       </div>
+      <AutoLinkPlugin matchers={AUTO_LINK_MATCHERS} />
+      <ClickableLinkPlugin />
       {readOnly ? null : (
         <>
           <HistoryPlugin />

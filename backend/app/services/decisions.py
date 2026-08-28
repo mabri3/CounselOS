@@ -61,6 +61,7 @@ class DecisionService:
             ),
             metadata,
         )
+        self.matters.note_durable_decision_recorded(request.matter_id)
         self.matters.append_event(
             request.matter_id,
             "decision_recorded",

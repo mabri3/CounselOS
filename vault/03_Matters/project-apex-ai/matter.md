@@ -13,6 +13,7 @@ description: Review launch of an optional voice-telemetry feature and its retent
   settings.
 matter_type: ai_governance
 status: explore
+durable_decision_needed: true
 priority: high
 risk_level: high
 target_date: '2026-09-05'

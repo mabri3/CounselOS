@@ -368,6 +368,8 @@ Research is a useful first pass. It is not represented as exhaustive or perfect.
 - Save the artifact to the matter when requested or when the user invokes a save action.
 - Keep recommendation records separate from decision records.
 - Move the matter only when instructed by the user or when a defined workflow automation does so.
+- Treat approval, delivery, and closure as separate explicit actions.
+- Close only after delivery or resolution is recorded and required work is complete.
 
 ### 7.8 Record a decision
 
@@ -447,8 +449,8 @@ The MVP is desktop-first. Below approximately 1100 pixels, panes may stack or be
 2. **Research** — Gather internal and external legal/business inputs.
 3. **Explore** — Evaluate issues, implications, options, and risk.
 4. **Generate** — Draft the requested work product.
-5. **Respond** — Review, decide, communicate, and capture follow-up.
-6. **Closed** — Archive completed or superseded work.
+5. **Respond** — Approve and deliver the work product, then capture follow-up.
+6. **Closed** — Archive work that was delivered or otherwise resolved.
 
 ### 9.2 Workflow configuration
 
@@ -461,6 +463,7 @@ Stages are declared in `vault/00_System/workflows/product-counsel.md`. The front
 - An agent may move a matter when its instructions explicitly authorize the transition.
 - Transitions are logged.
 - The MVP does not enforce a rigid state machine. Lawyers may move backward or skip stages.
+- Moving a card cannot bypass closure checks. Closure is a separate action on the matter.
 
 ### 9.4 Next-action derivation
 
@@ -470,8 +473,17 @@ The system should show the highest-priority open required work item. If none exi
 - Research: Run or review research.
 - Explore: Evaluate options and unresolved issues.
 - Generate: Create or revise the work product.
-- Respond: Make or communicate the decision.
+- Respond: Approve and deliver the work product.
 - Closed: No action required.
+
+### 9.5 Separate action and record concepts
+
+- A work action moves the matter forward.
+- An approval gives permission to use or send work product.
+- A durable decision records a material legal or business position for future reliance.
+- Matter closure records that delivery or resolution is complete and no required work remains.
+
+Recording a durable decision may satisfy the central judgment in a matter. It does not approve a response, record delivery, or close the matter.
 
 ---
 
@@ -514,6 +526,7 @@ vault/
 │       ├── research/
 │       ├── drafts/
 │       ├── documents/
+│       ├── conversations/
 │       └── events/
 └── 04_Inbox/
 ```
@@ -558,6 +571,10 @@ Required fields:
 - `immutable: true`
 
 Later changes are stored as events or additional request-version files; the original request is not overwritten.
+
+#### Matter conversation
+
+Matter chat transcripts are the intake session record when the intake agent is active. They are stored as read-only Markdown files under `conversations/` and preserve the exact user and assistant messages, stable message IDs, and timestamps. Derived facts link to the request or to a conversation message. A factual correction updates `facts.md`; it does not rewrite the transcript.
 
 #### Participant
 
@@ -688,7 +705,7 @@ Each decision is an individual Markdown file.
 
 #### Approval
 
-For the MVP, approval data may be included in a decision record. A separate approval record should be introduced when multiple approvers, parallel approvals, or approval-specific reporting becomes necessary.
+For the MVP, approval state may remain on the matter and its approval work item. It must not be stored as a durable decision unless the underlying material policy or risk choice independently meets the durable-decision standard. A separate approval record should be introduced when multiple approvers, parallel approvals, or approval-specific reporting becomes necessary.
 
 #### Matter event
 
@@ -1057,6 +1074,7 @@ A cloud or team product should replace the in-process scheduler with a durable j
 - `POST /api/matters`
 - `GET /api/matters/{matter_id}`
 - `PATCH /api/matters/{matter_id}/stage`
+- `POST /api/matters/{matter_id}/actions`
 - `POST /api/matters/{matter_id}/research`
 - `POST /api/matters/{matter_id}/upload`
 
@@ -1224,6 +1242,9 @@ This direction is plausible but not a committed architecture. The MVP should not
 - **FR-013:** The user shall be able to edit and save Markdown files unless marked immutable.
 - **FR-014:** The user shall be able to upload supported files to a matter folder.
 - **FR-015:** The system shall create editable extraction companions for PDF and DOCX files.
+- **FR-016:** The matter workspace shall show a stage-aware primary action.
+- **FR-017:** Approval, delivery, durable-decision recording, and closure shall persist as separate actions.
+- **FR-018:** Matter closure shall require completed delivery or resolution and no open required work.
 
 ### Chat and agents
 
@@ -1250,6 +1271,7 @@ This direction is plausible but not a committed architecture. The MVP should not
 - **FR-042:** The system shall audit review dates and linked internal source modification times.
 - **FR-043:** The system shall store and display the staleness reason.
 - **FR-044:** The assistant shall not silently convert a recommendation into a decision.
+- **FR-045:** Durable-decision recording shall appear only when a material choice is identified.
 
 ### Automations
 

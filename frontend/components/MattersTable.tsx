@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { dueWord, stageLabel } from "@/lib/design";
+import LinkifiedText from "@/components/LinkifiedText";
+import { dueWord, stageLabel, STAGES } from "@/lib/design";
 import type { Matter } from "@/lib/types";
 
 type SortKey = "stage" | "owner" | "due";
@@ -58,24 +59,25 @@ export default function MattersTable({ matters }: { matters: Matter[] }) {
       {sorted.map((matter) => {
         const due = dueWord(matter);
         return (
-          <Link
+          <div
             className="register-grid register-row"
-            href={`/matters/${encodeURIComponent(matter.matter_id)}`}
             key={matter.matter_id}
             style={{ gridTemplateColumns: columns }}
           >
             <span>
-              <span className="register-title" style={{ display: "block" }}>{matter.title}</span>
+              <Link className="register-title" href={`/matters/${encodeURIComponent(matter.matter_id)}`} style={{ display: "block" }}>
+                {matter.title}
+              </Link>
               <span className="register-cell" style={{ display: "block", marginTop: 2 }}>
                 {matter.matter_type.replaceAll("_", " ")}
               </span>
             </span>
-            <span className="register-cell">{stageLabel(matter.status)}</span>
-            <span className="register-cell">{matter.next_action || "No next action recorded."}</span>
+            <span className="register-cell" title={STAGES.find((stage) => stage.id === matter.status)?.sub}>{stageLabel(matter.status)}</span>
+            <span className="register-cell"><LinkifiedText text={matter.next_action || "No next action recorded."} /></span>
             <span className="register-cell">{matter.legal_owner || "Unassigned"}</span>
             <span className="register-cell" style={{ color: due.color }}>{due.text}</span>
-            <span className="register-cell">{matter.risk_level}</span>
-          </Link>
+            <span className="register-cell" title="The matter's recorded risk level.">{matter.risk_level}</span>
+          </div>
         );
       })}
     </div>

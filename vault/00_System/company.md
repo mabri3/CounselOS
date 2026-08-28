@@ -1,21 +1,43 @@
 ---
 record_type: company_profile
-company_name: DemoCo Financial
-last_updated: "2026-08-20"
+source_id: SRC-COMPANY
+version: f0f68dc9126c7548
+updated_at: '2026-08-28T06:50:11+00:00'
+profile:
+  summary: Demo company for matter-led browser verification.
+  business_model: Subscription software
+  products_services: Business software
+  jurisdictions: United States
+  regulatory_context: General commercial regulation
+  data_practices: Processes business contact data
+  risk_posture: Moderate
 ---
-# Company Profile: DemoCo Financial
+# Company profile
 
-## Business
+## Summary
 
-DemoCo provides business transaction accounts, debit cards, domestic ACH and wires, and payout tools for small online businesses. Products are delivered through regulated financial-institution and processor partners.
+Demo company for matter-led browser verification.
 
-## Product and data context
+## Business Model
 
-- U.S.-only launch footprint for the demo.
-- Collects business identity, beneficial-owner, transaction, device, and support data.
-- Uses third-party identity, fraud, banking, card, cloud, and analytics providers.
-- Product changes are commonly reviewed for consumer protection, privacy, payments, marketing, and partner obligations.
+Subscription software
 
-## Risk posture
+## Products Services
 
-The company is willing to launch with documented conditions when the remaining risk is understood, monitored, and owned. It prefers practical mitigations over indefinite delay.
+Business software
+
+## Jurisdictions
+
+United States
+
+## Regulatory Context
+
+General commercial regulation
+
+## Data Practices
+
+Processes business contact data
+
+## Risk Posture
+
+Moderate

@@ -1,36 +1,44 @@
 # Current Project State
 
-Last updated: 2026-08-26
+Last updated: 2026-08-27
 
 ## Active Goal
 
-Hold after the completed Markdown WYSIWYG checkpoint until the next user-approved Wave 5 task.
+Prepare the Issue-Spotting Intake to Decision-Ready Dossier checkpoint for execution. The plan is approved as product direction, but implementation has not started.
 
 ## Why This Goal Now
 
-The third pane now supports formatted drafting and raw Markdown with one shared Markdown value. The checkpoint is complete and verified, so no additional feature work should start without a new direction.
+Attorney interviews and code review support one next product loop: company context plus issue-spotting intake plus a concise, sourced dossier. The user approved this direction and asked for a build plan that avoids answer gates and broad orchestration.
 
 ## Work Queue
 
 ### Now
 
-- [ ] Select the next Wave 5 checkpoint with user direction before implementation.
+- [ ] Review and approve the execution order in `docs/BUILD_PLAN.md`.
 
 ### Next
 
-- [ ] Continue Wave 5 loading, empty, error, navigation, and artifact-open polish after the editor checkpoint.
-- [ ] Add token streaming only after the configured provider workflow is reliable.
+- [ ] Add one-question-at-a-time issue-spotting intake using the existing matter chat and intake agent.
+- [ ] Mark the intake conversation explicitly and link derived facts to its stable message IDs.
+- [ ] Preserve fact corrections by superseding prior facts without changing the intake transcript.
+- [ ] Generate `dossier.md` and show its executive summary and counsel action on the matter page.
+- [ ] Add Company setup in Settings, backed by `vault/00_System/company.md`.
+- [ ] Verify graceful best-effort dossier delivery when facts, citations, or research tools are incomplete.
 
 ### Later
 
+- External Slack, Jira, Asana, and email intake connectors after manual paste becomes a measured bottleneck.
+- Continuous legal-change monitoring after linked decision sources and manual rechecks prove useful.
+- Commercial legal-research integration after pilot source-verification needs are measured.
 - Native provider adapters after the OpenAI-compatible path is reliable.
 - Better retrieval and external legal research integrations after the local research flow is useful.
 - Selection-based rewrite and diff after the focused Markdown editor is validated.
 - Cloud tenancy, Tauri packaging, team collaboration, and permissions after the local workflow proves value.
+- Token streaming and general Wave 5 polish after the dossier loop works end to end.
 
 ### Blocked
 
-- Full repository change audit — the current path is not a Git working tree, so no Git status or diff is available.
+- None.
 
 ## Active Assumptions
 
@@ -56,6 +64,8 @@ The third pane now supports formatted drafting and raw Markdown with one shared 
 
 ## Recent Changes
 
+- Added the Issue-Spotting Intake to Decision-Ready Dossier checkpoint to `docs/BUILD_PLAN.md`.
+- Added repository and runtime agent rules for best-effort answers, source honesty, graceful degradation, and focused clarification.
 - Completed Wave 0 and the mock-mode MVP acceptance walk.
 - Made setup select Python 3.11 or newer and made direct `pytest` collection reliable.
 - Opened command-center research results directly in the matter editor.
@@ -66,15 +76,19 @@ The third pane now supports formatted drafting and raw Markdown with one shared 
 
 ## Open Questions
 
-- None for this checkpoint.
+- Confirm the planned execution order before implementation begins.
 
 ## Exit Conditions
 
-- [x] Editable Markdown opens as a formatted document in the third pane.
-- [x] Formatted and raw Markdown edits round-trip without a second storage format.
-- [x] Saving persists after reload, and immutable Markdown stays read-only.
-- [x] Backend tests, frontend typecheck, frontend build, and the focused browser walk pass.
+- [ ] Company context is editable in Settings and remains sourced from `vault/00_System/company.md`.
+- [ ] Intake issue-spots and asks one material question at a time without becoming a completeness gate.
+- [ ] The exact intake exchange remains available as a read-only matter conversation.
+- [ ] Derived facts show their source and corrections preserve the superseded fact.
+- [ ] A lawyer can stop intake early and still receive a useful, labeled `dossier.md`.
+- [ ] The matter page shows a concise dossier summary and the next decision or action for counsel.
+- [ ] Research or citation failure does not suppress usable work product or fabricate support.
+- [ ] Backend tests, frontend typecheck, frontend build, and the focused browser demo pass.
 
 ## Next Resume Action
 
-Wait for user direction, then select one bounded Wave 5 checkpoint from the remaining queue.
+After user approval, implement the active checkpoint in the order defined in `docs/BUILD_PLAN.md`, starting with the frozen-request issue-spotting probe.

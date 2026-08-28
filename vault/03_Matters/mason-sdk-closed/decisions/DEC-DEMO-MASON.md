@@ -15,9 +15,10 @@ decided_at: '2026-07-12T17:00:00+00:00'
 next_review_at: '2027-07-12T17:00:00+00:00'
 last_reviewed_at: '2026-07-12T17:00:00+00:00'
 risk_level: low
-review_status: fresh
-staleness_reason: No current review signal.
+review_status: review_recommended
+staleness_reason: 'Linked source changed after the decision: 00_System/company.md.'
 privilege: privileged_and_confidential
+audited_at: '2026-08-27T17:53:28+00:00'
 ---
 # Approve restricted analytics SDK configuration
 

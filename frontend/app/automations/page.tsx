@@ -4,8 +4,10 @@ import { useCallback, useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
 import AutomationPanel from "@/components/AutomationPanel";
 import { createSchedule, getAutomations, runSchedule } from "@/lib/api";
+import { scheduleIsFailing } from "@/lib/design";
 import type { AgentDefinition, Schedule } from "@/lib/types";
 
+/** Canvas 2d. */
 export default function AutomationsPage() {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [agents, setAgents] = useState<AgentDefinition[]>([]);
@@ -25,29 +27,39 @@ export default function AutomationsPage() {
 
   useEffect(() => { void load(); }, [load]);
 
+  const running = schedules.filter((schedule) => schedule.enabled === 1 && !scheduleIsFailing(schedule)).length;
+  const failing = schedules.filter(scheduleIsFailing).length;
+
   return (
     <AppShell>
-      <main className="page">
+      <main className="page narrow">
         <div className="page-header">
           <div>
-            <div className="eyebrow">Background assistance</div>
-            <h1>Agents & Automations</h1>
-            <p className="muted">Define the work in Markdown or natural language, inspect it, and run it on a visible schedule.</p>
+            <h1>Automations</h1>
+            <p>
+              {running} running.{" "}
+              {failing === 0 ? "Nothing needs reconnecting." : `${failing} need${failing === 1 ? "s" : ""} reconnecting.`}
+            </p>
           </div>
-          <span className="status-pill">{agents.length} hot-loaded agents</span>
         </div>
+
         {error ? <p className="error">{error}</p> : null}
-        <AutomationPanel
-          schedules={schedules}
-          agents={agents}
-          busySchedule={busySchedule}
-          onRun={async (scheduleId) => {
-            setBusySchedule(scheduleId);
-            try { await runSchedule(scheduleId); await load(); }
-            finally { setBusySchedule(null); }
-          }}
-          onCreate={async (payload) => { await createSchedule(payload); await load(); }}
-        />
+
+        <div style={{ marginTop: 22 }}>
+          <AutomationPanel
+            agents={agents}
+            busySchedule={busySchedule}
+            onCreate={async (payload) => { await createSchedule(payload); await load(); }}
+            onRun={async (scheduleId) => {
+              setBusySchedule(scheduleId);
+              setError("");
+              try { await runSchedule(scheduleId); await load(); }
+              catch (caught) { setError(caught instanceof Error ? caught.message : "Could not run the automation."); }
+              finally { setBusySchedule(null); }
+            }}
+            schedules={schedules}
+          />
+        </div>
       </main>
     </AppShell>
   );

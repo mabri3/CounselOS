@@ -1,5 +1,14 @@
 from __future__ import annotations
 
+from fastapi.testclient import TestClient
+
+
+def _client(app_context):
+    from app.main import app
+
+    app.state.context = app_context
+    return TestClient(app)
+
 
 def _empty_settings(app_context):
     from app.services.settings import SettingsService
@@ -65,3 +74,122 @@ def test_training_attestation_is_stamped_once(app_context, monkeypatch):
         {"data.provider_no_training_attested": False}
     )["values"]
     assert changed["data.provider_no_training_attested_at"] == "2026-08-26T08:43:00+00:00"
+
+
+def test_model_settings_catalog_and_runtime_switch(app_context, monkeypatch):
+    from app.providers.mock import MockProvider
+    from app.providers.openai_compatible import OpenAICompatibleProvider
+
+    app_context.settings = app_context.settings.model_copy(
+        update={
+            "llm_api_key": "test-key",
+            "llm_base_url": "https://models.example/v1",
+            "llm_model": "model-a",
+        }
+    )
+
+    async def available_models(_settings):
+        return [
+            {"id": "model-a", "label": "Model A", "efforts": ["default", "low"]},
+            {"id": "model-b", "label": "Model B", "efforts": ["default", "high"]},
+        ]
+
+    monkeypatch.setattr(OpenAICompatibleProvider, "available_models", available_models)
+    client = _client(app_context)
+    response = client.get("/api/settings")
+    assert response.status_code == 200
+    catalog = response.json()["model_catalog"]
+    assert [provider["id"] for provider in catalog["providers"]] == [
+        "mock",
+        "openai_compatible",
+    ]
+    assert [model["id"] for model in catalog["providers"][1]["models"]] == [
+        "model-a",
+        "model-b",
+    ]
+
+    saved = client.put(
+        "/api/settings",
+        json={
+            "values": {
+                "agents.provider": "openai_compatible",
+                "agents.reasoning_model": "model-b",
+                "agents.reasoning_effort": "high",
+            }
+        },
+    )
+    assert saved.status_code == 200
+    assert isinstance(app_context.provider, OpenAICompatibleProvider)
+    assert app_context.settings.llm_model == "model-b"
+    assert app_context.settings.llm_reasoning_effort == "high"
+    assert app_context.runner.provider is app_context.provider
+    assert app_context.research.provider is app_context.provider
+
+    offline = client.put(
+        "/api/settings",
+        json={
+            "values": {
+                "agents.provider": "mock",
+                "agents.reasoning_model": "mock",
+                "agents.reasoning_effort": "default",
+            }
+        },
+    )
+    assert offline.status_code == 200
+    assert isinstance(app_context.provider, MockProvider)
+    assert app_context.settings.llm_reasoning_effort is None
+
+
+def test_invalid_model_setting_does_not_change_runtime(app_context):
+    original_provider = app_context.provider
+    response = _client(app_context).put(
+        "/api/settings",
+        json={
+            "values": {
+                "agents.provider": "not-real",
+                "agents.reasoning_model": "made-up",
+                "agents.reasoning_effort": "extreme",
+            }
+        },
+    )
+    assert response.status_code == 422
+    assert app_context.provider is original_provider
+
+    unsupported_effort = _client(app_context).put(
+        "/api/settings",
+        json={
+            "values": {
+                "agents.provider": "mock",
+                "agents.reasoning_model": "mock",
+                "agents.reasoning_effort": "high",
+            }
+        },
+    )
+    assert unsupported_effort.status_code == 422
+    assert app_context.provider is original_provider
+
+
+def test_saved_model_settings_are_loaded_on_restart(app_context):
+    from app.providers.openai_compatible import OpenAICompatibleProvider
+    from app.runtime import AppContext
+
+    app_context.settings_store.write(
+        {
+            "agents.provider": "openai_compatible",
+            "agents.reasoning_model": "saved-model",
+            "agents.reasoning_effort": "max",
+        }
+    )
+    base_settings = app_context.settings.model_copy(
+        update={
+            "llm_provider": "mock",
+            "llm_api_key": "test-key",
+            "llm_model": "environment-model",
+        }
+    )
+
+    restarted = AppContext(base_settings)
+
+    assert isinstance(restarted.provider, OpenAICompatibleProvider)
+    assert restarted.settings.llm_model == "saved-model"
+    assert restarted.settings.llm_reasoning_effort == "max"

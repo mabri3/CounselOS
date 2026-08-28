@@ -20,7 +20,6 @@ class AgentDefinition:
     path: str
     audience_id: str = ""
     audience_prompt: str = ""
-    schedule_text: str = ""
 
 
 class AgentRegistry:
@@ -79,7 +78,6 @@ class AgentRegistry:
             "max_steps",
             "audience_id",
             "audience_prompt",
-            "schedule_text",
         }
         metadata.update({key: value for key, value in fields.items() if key in editable})
 
@@ -120,6 +118,5 @@ class AgentRegistry:
                 path=self.vault.relative(path),
                 audience_id=str(metadata.get("audience_id") or ""),
                 audience_prompt=str(metadata.get("audience_prompt") or ""),
-                schedule_text=str(metadata.get("schedule_text") or ""),
             )
         return agents

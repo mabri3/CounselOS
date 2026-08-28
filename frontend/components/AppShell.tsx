@@ -4,9 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const links = [
-  { href: "/", label: "Command Center" },
+  { href: "/", label: "Today" },
+  { href: "/workspace", label: "Workspace" },
+  { href: "/matters", label: "Matters" },
   { href: "/decisions", label: "Decisions" },
+  { href: "/agents", label: "Agents" },
   { href: "/automations", label: "Automations" },
+  { href: "/settings", label: "Settings" },
 ];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -15,8 +19,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     <div className="app-shell">
       <header className="topbar">
         <Link className="brand" href="/">
-          <span className="brand-mark">§</span>
-          <span>Counsel OS</span>
+          <span className="brand-mark" />
+          <span className="brand-name">Counsel OS</span>
         </Link>
         <nav className="nav">
           {links.map((link) => {
@@ -28,7 +32,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             );
           })}
         </nav>
-        <span className="status-pill">Local MVP · Markdown first</span>
+        <span className="topbar-spacer" />
+        <span className="avatar">BH</span>
       </header>
       {children}
     </div>

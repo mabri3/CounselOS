@@ -11,14 +11,13 @@ matter_id: MAT-DEMO-ORBIT
 title: 'Orbit: Bank-Transaction Data Expansion'
 description: Use transaction data for a new cash-flow eligibility signal.
 matter_type: product_launch
-status: research
+status: intake
 priority: normal
 risk_level: high
 target_date: '2026-09-20'
-next_action: Complete the research packet and identify the notice and reason-code
-  implications.
+next_action: Complete orientation and identify missing facts.
 created_at: '2026-08-21T10:00:00+00:00'
-updated_at: '2026-08-25T10:30:00+00:00'
+updated_at: '2026-08-27T15:49:54+00:00'
 ---
 # Orbit: Bank-Transaction Data Expansion
 

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import AppShell from "@/components/AppShell";
+import LinkifiedText from "@/components/LinkifiedText";
 import MattersTable from "@/components/MattersTable";
 import MattersTimeline from "@/components/MattersTimeline";
 import { getMatters, moveMatter } from "@/lib/api";
@@ -66,7 +67,14 @@ export default function MattersPage() {
     const matterId = dragId;
     setDragId(null);
     setOverGroup(null);
-    if (matterId) { await moveMatter(matterId, stage, "Moved on the matters list"); await load(); }
+    if (!matterId) return;
+    setError("");
+    try {
+      await moveMatter(matterId, stage, "Moved on the matters list");
+      await load();
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not move the matter.");
+    }
   }
 
   return (
@@ -79,9 +87,9 @@ export default function MattersPage() {
           </div>
           <div className="btn-row">
             <div className="segmented">
-              <button className={view === "stages" ? "active" : ""} onClick={() => setView("stages")} type="button">Stages</button>
-              <button className={view === "table" ? "active" : ""} onClick={() => setView("table")} type="button">Table</button>
-              <button className={view === "timeline" ? "active" : ""} onClick={() => setView("timeline")} type="button">Timeline</button>
+              <button className={view === "stages" ? "active" : ""} onClick={() => setView("stages")} title="Group matters by their current workflow stage." type="button">Stages</button>
+              <button className={view === "table" ? "active" : ""} onClick={() => setView("table")} title="Compare and sort matters in rows." type="button">Table</button>
+              <button className={view === "timeline" ? "active" : ""} onClick={() => setView("timeline")} title="See matters ordered by target date." type="button">Timeline</button>
             </div>
             <Link className="btn primary" href="/workspace">New matter</Link>
           </div>
@@ -126,15 +134,16 @@ export default function MattersPage() {
             const working = signals.some((signal) => signal.word === "Themis is working");
             const spine = needs > 0 ? role.attention : working ? role.agent : stage.id === "closed" ? "#d6d1c7" : role.healthy;
             const over = overGroup === stage.id;
+            const acceptsDrop = stage.id !== "closed";
 
             return (
               <section
                 className="stage-group"
                 key={stage.id}
                 style={{ background: over ? "#FAEDCB" : "transparent" }}
-                onDragOver={(event) => { event.preventDefault(); setOverGroup(stage.id); }}
+                onDragOver={(event) => { if (acceptsDrop) { event.preventDefault(); setOverGroup(stage.id); } }}
                 onDragLeave={() => setOverGroup((current) => (current === stage.id ? null : current))}
-                onDrop={(event) => { event.preventDefault(); void drop(stage.id); }}
+                onDrop={(event) => { event.preventDefault(); if (acceptsDrop) void drop(stage.id); }}
               >
                 <div className="stage-spine" style={{ background: spine }} />
                 <div className="stage-body">
@@ -187,7 +196,7 @@ export default function MattersPage() {
                               {signal.word}
                             </span>
                           ) : null}
-                          <span className="matter-row-next">{matter.next_action || "No next action recorded."}</span>
+                          <span className="matter-row-next"><LinkifiedText text={matter.next_action || "No next action recorded."} /></span>
                         </div>
                         <span className="matter-row-owner">{matter.legal_owner || "Unassigned"}</span>
                         <span className="matter-row-due" style={{ color: due.color }}>{due.text}</span>

@@ -1,0 +1,246 @@
+from __future__ import annotations
+
+import re
+from datetime import date
+from typing import Any
+
+from app.services.matters import MatterService
+from app.services.vault import VaultService
+from app.utils.ids import new_id
+from app.utils.time import iso_now
+
+
+_CONVERSATION_ID = re.compile(r"^CONV-\d{8}-[a-f0-9]{6}$")
+_DAY = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+class ChatHistoryService:
+    """Stores matter conversations and daily workspace chats as Markdown records."""
+
+    def __init__(self, vault: VaultService, matters: MatterService):
+        self.vault = vault
+        self.matters = matters
+
+    def list(self, matter_id: str) -> list[dict[str, Any]]:
+        directory = self.vault.resolve(self._matter_directory(matter_id))
+        if not directory.exists():
+            return []
+        conversations = [
+            self._summary(self.vault.read_markdown(self.vault.relative(path)))
+            for path in directory.glob("CONV-*.md")
+        ]
+        return sorted(conversations, key=lambda item: item["updated_at"], reverse=True)
+
+    def get(self, matter_id: str, conversation_id: str) -> dict[str, Any]:
+        document = self.vault.read_markdown(self._matter_path(matter_id, conversation_id))
+        metadata = document["metadata"]
+        if (
+            metadata.get("conversation_id") != conversation_id
+            or metadata.get("matter_id") != matter_id
+            or str(metadata.get("scope") or "matter") != "matter"
+        ):
+            raise KeyError(f"Conversation not found: {conversation_id}")
+        return {
+            **self._summary(document),
+            "path": document["path"],
+            "messages": list(metadata.get("messages") or []),
+        }
+
+    def append(
+        self,
+        matter_id: str,
+        conversation_id: str | None,
+        *,
+        role: str,
+        content: str,
+        trace: list[dict[str, Any]] | None = None,
+        cards: list[dict[str, Any]] | None = None,
+        attachments: list[dict[str, Any]] | None = None,
+        card_action: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        if role not in {"user", "assistant"}:
+            raise ValueError(f"Unsupported chat role: {role}")
+        now = iso_now()
+        if conversation_id:
+            conversation = self.get(matter_id, conversation_id)
+            messages = conversation["messages"]
+            created_at = conversation["created_at"]
+            title = conversation["title"]
+        else:
+            conversation_id = new_id("CONV")
+            messages = []
+            created_at = now
+            title = self._title(content)
+        messages.append(
+            {
+                "message_id": new_id("MSG"),
+                "role": role,
+                "content": content,
+                "created_at": now,
+                "trace": trace or [],
+                "cards": cards or [],
+                "attachments": attachments or [],
+                "card_action": card_action,
+            }
+        )
+        path = self._matter_path(matter_id, conversation_id)
+        self.vault.write_markdown(
+            path,
+            self._render(messages, heading="# Matter chat"),
+            {
+                "conversation_id": conversation_id,
+                "matter_id": matter_id,
+                "scope": "matter",
+                "record_type": "chat_transcript",
+                "title": title,
+                "created_at": created_at,
+                "updated_at": now,
+                "immutable": True,
+                "messages": messages,
+            },
+        )
+        return self.get(matter_id, conversation_id)
+
+    def list_daily(self) -> list[dict[str, Any]]:
+        directory = self.vault.resolve("00_System/conversations")
+        if not directory.exists():
+            return []
+        conversations = []
+        for path in directory.glob("????-??-??.md"):
+            try:
+                conversation = self.get_daily(path.stem)
+            except (KeyError, FileNotFoundError, ValueError):
+                continue
+            conversations.append({
+                key: conversation[key]
+                for key in ("day", "title", "created_at", "updated_at", "message_count")
+            })
+        return sorted(conversations, key=lambda item: item["day"], reverse=True)
+
+    def get_daily(self, day: str) -> dict[str, Any]:
+        day = self._valid_day(day)
+        document = self.vault.read_markdown(self._daily_path(day))
+        metadata = document["metadata"]
+        if metadata.get("scope") != "workspace_day" or metadata.get("day") != day:
+            raise KeyError(f"Daily conversation not found: {day}")
+        return {
+            **self._daily_summary(document),
+            "path": document["path"],
+            "messages": list(metadata.get("messages") or []),
+        }
+
+    def append_daily(
+        self,
+        day: str,
+        *,
+        role: str,
+        content: str,
+        trace: list[dict[str, Any]] | None = None,
+        cards: list[dict[str, Any]] | None = None,
+        attachments: list[dict[str, Any]] | None = None,
+        card_action: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        if role not in {"user", "assistant"}:
+            raise ValueError(f"Unsupported chat role: {role}")
+        day = self._valid_day(day)
+        now = iso_now()
+        try:
+            conversation = self.get_daily(day)
+            messages = conversation["messages"]
+            created_at = conversation["created_at"]
+        except FileNotFoundError:
+            messages = []
+            created_at = now
+        messages.append(
+            {
+                "message_id": new_id("MSG"),
+                "role": role,
+                "content": content,
+                "created_at": now,
+                "trace": trace or [],
+                "cards": cards or [],
+                "attachments": attachments or [],
+                "card_action": card_action,
+            }
+        )
+        path = self._daily_path(day)
+        self.vault.write_markdown(
+            path,
+            self._render(messages, heading=f"# Workspace chat — {day}"),
+            {
+                "scope": "workspace_day",
+                "record_type": "chat_transcript",
+                "day": day,
+                "title": day,
+                "created_at": created_at,
+                "updated_at": now,
+                "immutable": True,
+                "messages": messages,
+            },
+        )
+        return self.get_daily(day)
+
+    def _matter_path(self, matter_id: str, conversation_id: str) -> str:
+        if not _CONVERSATION_ID.fullmatch(conversation_id):
+            raise KeyError(f"Conversation not found: {conversation_id}")
+        return f"{self._matter_directory(matter_id)}/{conversation_id}.md"
+
+    def _matter_directory(self, matter_id: str) -> str:
+        return f"{self.matters.matter_path(matter_id)}/conversations"
+
+    @staticmethod
+    def _daily_path(day: str) -> str:
+        return f"00_System/conversations/{day}.md"
+
+    @staticmethod
+    def _valid_day(value: str) -> str:
+        if not _DAY.fullmatch(value):
+            raise ValueError("Day must use YYYY-MM-DD format.")
+        try:
+            return date.fromisoformat(value).isoformat()
+        except ValueError as exc:
+            raise ValueError("Day must be a real calendar date.") from exc
+
+    @staticmethod
+    def _summary(document: dict[str, Any]) -> dict[str, Any]:
+        metadata = document["metadata"]
+        messages = metadata.get("messages") or []
+        return {
+            "conversation_id": metadata.get("conversation_id", ""),
+            "title": metadata.get("title", "Chat"),
+            "created_at": metadata.get("created_at", ""),
+            "updated_at": metadata.get("updated_at", ""),
+            "message_count": len(messages),
+        }
+
+    @staticmethod
+    def _daily_summary(document: dict[str, Any]) -> dict[str, Any]:
+        metadata = document["metadata"]
+        messages = metadata.get("messages") or []
+        return {
+            "day": metadata.get("day", ""),
+            "title": metadata.get("title", metadata.get("day", "Daily chat")),
+            "created_at": metadata.get("created_at", ""),
+            "updated_at": metadata.get("updated_at", ""),
+            "message_count": len(messages),
+        }
+
+    @staticmethod
+    def _title(content: str) -> str:
+        title = " ".join(content.split()).strip()
+        return (title[:57] + "…") if len(title) > 58 else (title or "Chat")
+
+    @staticmethod
+    def _render(messages: list[dict[str, Any]], *, heading: str) -> str:
+        sections = [heading]
+        for message in messages:
+            speaker = "You" if message["role"] == "user" else "Themis"
+            sections.append(f"## {speaker} · {message['created_at']}\n\n{message['content']}")
+            trace = message.get("trace") or []
+            if trace:
+                actions = "\n".join(
+                    f"- {'✓' if item.get('status') == 'success' else '!'} {item.get('summary', '')}"
+                    for item in trace
+                )
+                sections[-1] += f"\n\n### Actions\n\n{actions}"
+        return "\n\n".join(sections) + "\n"

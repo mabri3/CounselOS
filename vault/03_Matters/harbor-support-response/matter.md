@@ -13,11 +13,14 @@ description: Respond to a product escalation involving an account hold and incon
   support messaging.
 matter_type: consumer_complaint
 status: respond
+durable_decision_needed: true
+response_approved_at: null
+response_sent_at: null
+closed_at: null
 priority: high
 risk_level: medium
 target_date: '2026-08-27'
-next_action: Approve the response, record the remediation decision, and send it to
-  Support.
+next_action: Approve the customer response.
 created_at: '2026-08-20T08:00:00+00:00'
 updated_at: '2026-08-25T19:00:00+00:00'
 ---

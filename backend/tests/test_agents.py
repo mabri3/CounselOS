@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import pytest
 
+from app.agents.runner import _explicit_decision_recording_requested
 from app.models.api import ChatRequest
+from app.providers.base import ProviderReply, ProviderToolCall
 
 
 @pytest.mark.asyncio
@@ -62,13 +64,105 @@ async def test_unknown_markdown_handler_never_executes(app_context):
     assert "unknown handler" in result.summary.lower()
 
 
+@pytest.mark.asyncio
+async def test_chat_cannot_record_decision_without_explicit_user_request(app_context):
+    class AutoRecordProvider:
+        def __init__(self):
+            self.calls = 0
+
+        async def complete(self, messages, tools=None):
+            self.calls += 1
+            if self.calls == 1:
+                return ProviderReply(
+                    tool_calls=[
+                        ProviderToolCall(
+                            id="automatic-decision",
+                            name="record_decision",
+                            arguments={
+                                "title": "Approved customer response",
+                                "chosen_path": "Send the response.",
+                            },
+                        )
+                    ]
+                )
+            return ProviderReply(content="The response is ready for your approval.")
+
+    before = len(app_context.decisions.list())
+    app_context.runner.provider = AutoRecordProvider()
+    response = await app_context.runner.run(
+        ChatRequest(
+            message="Approve the customer response.",
+            matter_id="MAT-DEMO-HARBOR",
+        )
+    )
+
+    assert len(app_context.decisions.list()) == before
+    assert any(
+        item.tool == "record_decision" and item.status == "error"
+        for item in response.trace
+    )
+
+
+@pytest.mark.asyncio
+async def test_chat_can_record_decision_after_explicit_user_request(app_context):
+    class RequestedRecordProvider:
+        def __init__(self):
+            self.calls = 0
+
+        async def complete(self, messages, tools=None):
+            self.calls += 1
+            if self.calls == 1:
+                return ProviderReply(
+                    tool_calls=[
+                        ProviderToolCall(
+                            id="requested-decision",
+                            name="record_decision",
+                            arguments={
+                                "title": "Account hold notice standard",
+                                "chosen_path": "Give notice before this type of account hold.",
+                            },
+                        )
+                    ]
+                )
+            return ProviderReply(content="The durable decision is recorded.")
+
+    before = len(app_context.decisions.list())
+    app_context.runner.provider = RequestedRecordProvider()
+    response = await app_context.runner.run(
+        ChatRequest(
+            message="Record this as a durable decision.",
+            matter_id="MAT-DEMO-HARBOR",
+        )
+    )
+
+    assert len(app_context.decisions.list()) == before + 1
+    assert any(
+        item.tool == "record_decision" and item.status == "success"
+        for item in response.trace
+    )
+
+
+@pytest.mark.parametrize(
+    ("message", "expected"),
+    [
+        ("Record this as a durable decision.", True),
+        ("Please save this policy as our durable position.", True),
+        ("Approve the response.", False),
+        ("Do not record this decision.", False),
+        ("Should this become a durable decision?", False),
+        ("Should I record this decision?", False),
+    ],
+)
+def test_decision_recording_intent_must_be_explicit(message, expected):
+    assert _explicit_decision_recording_requested(message) is expected
+
+
 def test_agent_update_persists_and_preserves_enabled(app_context):
     updated = app_context.agents.update(
         "research-agent",
         name="Themis",
         audience_id="executive",
         audience_prompt="The reader decides and does not practise law.",
-        schedule_text="Weekdays at 07:00.",
         allowed_tools=["read_file", "search_vault"],
         instructions="Answer with the citation first.",
     )
@@ -78,7 +172,7 @@ def test_agent_update_persists_and_preserves_enabled(app_context):
 
     reloaded = app_context.agents.get("research-agent")
     assert reloaded.name == "Themis"
-    assert reloaded.schedule_text == "Weekdays at 07:00."
+    assert "schedule_text" not in reloaded.__dict__
     assert "citation first" in reloaded.instructions
     assert any(a["agent_id"] == "research-agent" for a in app_context.agents.list())
 

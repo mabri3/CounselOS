@@ -1,7 +1,7 @@
 ---
 work_item_id: WI-MAT-DEMO-HARBOR-1
 matter_id: MAT-DEMO-HARBOR
-type: counsel_review
+type: approval
 title: Approve customer response
 description: Review the prepared response and remediation amount.
 status: open

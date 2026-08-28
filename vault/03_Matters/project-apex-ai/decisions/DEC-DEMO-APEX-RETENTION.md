@@ -16,9 +16,10 @@ decided_at: '2026-02-01T12:00:00+00:00'
 next_review_at: '2026-07-01T12:00:00+00:00'
 last_reviewed_at: '2026-02-01T12:00:00+00:00'
 risk_level: high
-review_status: review_recommended
-staleness_reason: Scheduled review date has passed.
+review_status: stale
+staleness_reason: Scheduled review date passed on 2026-07-01.
 privilege: privileged_and_confidential
+audited_at: '2026-08-27T17:53:28+00:00'
 ---
 # Pilot voice logging with a 30-day cap
 

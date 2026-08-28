@@ -18,6 +18,8 @@ def app_context(tmp_path: Path) -> AppContext:
         vault_path=str(vault),
         scheduler_enabled=False,
         llm_provider="mock",
+        llm_api_key=None,
+        llm_model=None,
         search_provider="disabled",
         decision_review_age_days=180,
     )

@@ -18,9 +18,11 @@ class Settings(BaseSettings):
     vault_path: str = Field("./vault", alias="VAULT_PATH")
 
     llm_provider: str = Field("mock", alias="LLM_PROVIDER")
+    llm_provider_label: str | None = Field(None, alias="LLM_PROVIDER_LABEL")
     llm_base_url: str = Field("https://api.openai.com/v1", alias="LLM_BASE_URL")
     llm_api_key: str | None = Field(None, alias="LLM_API_KEY")
     llm_model: str | None = Field(None, alias="LLM_MODEL")
+    llm_reasoning_effort: str | None = Field(None, alias="LLM_REASONING_EFFORT")
     llm_timeout_seconds: int = Field(120, alias="LLM_TIMEOUT_SECONDS")
     max_agent_steps: int = Field(6, alias="MAX_AGENT_STEPS")
 

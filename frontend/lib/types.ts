@@ -22,6 +22,10 @@ export type Matter = {
   risk_level: string;
   target_date?: string | null;
   next_action: string;
+  durable_decision_needed?: boolean;
+  response_approved_at?: string | null;
+  response_sent_at?: string | null;
+  closed_at?: string | null;
   updated_at: string;
   open_work_items?: number;
   required_work_items?: number;
@@ -58,9 +62,11 @@ export type Decision = {
 
 export type FileNode = {
   name: string;
+  label?: string;
   path: string;
   type: "folder" | "file";
   extension?: string;
+  record_type?: string;
   children?: FileNode[];
 };
 
@@ -101,11 +107,62 @@ export type ToolTrace = {
   summary: string;
 };
 
+export type ChatChoice = { value: string; label: string; suggested?: boolean };
+export type ChatCard =
+  | { type: "question"; question_id: string; text: string; reason?: string | null; selection_mode: "single" | "multiple" | "free_text"; choices: ChatChoice[]; progress_current?: number | null; progress_total?: number | null; allow_skip: boolean; allow_stop: boolean; conflict: boolean }
+  | { type: "matter_update"; action_id: string; summary: string; changed_sections: string[]; can_edit: boolean; can_undo: boolean }
+  | { type: "research_status"; run_id: string; state: "queued" | "running" | "completed" | "failed" | "interrupted"; total: number; completed: number; status: string; dossier_effect: string }
+  | { type: "work_product"; title: string; vault_path: string; state: "draft" | "final"; summary: string };
+
+export type AttachmentReference = { source_id: string; path: string; name: string; version?: string };
+export type CardAction = { card_id: string; action: "answer" | "skip" | "stop" | "edit" | "undo" | "apply" | "preview"; values?: string[] };
+
 export type ChatResponse = {
   reply: string;
+  conversation_id?: string | null;
   trace: ToolTrace[];
   changed_paths: string[];
   refresh: string[];
+  cards: ChatCard[];
+};
+
+export type ChatHistoryMessage = {
+  message_id: string;
+  role: "user" | "assistant";
+  content: string;
+  created_at: string;
+  trace: ToolTrace[];
+  cards?: ChatCard[];
+  attachments?: AttachmentReference[];
+};
+
+export type ResearchRun = { run_id: string; matter_id: string; state: "queued" | "running" | "completed" | "failed" | "interrupted"; total: number; completed: number; status: string; dossier_effect: string; useful_support: number; human_questions_left: number };
+export type CompanyProfile = { source_id: string; version: string; summary: string; business_model: string; products_services: string; jurisdictions: string; regulatory_context: string; data_practices: string; risk_posture: string };
+
+export type ChatConversationSummary = {
+  conversation_id: string;
+  title: string;
+  created_at: string;
+  updated_at: string;
+  message_count: number;
+};
+
+export type ChatConversation = ChatConversationSummary & {
+  path: string;
+  messages: ChatHistoryMessage[];
+};
+
+export type DailyConversationSummary = {
+  day: string;
+  title: string;
+  created_at: string;
+  updated_at: string;
+  message_count: number;
+};
+
+export type DailyConversation = DailyConversationSummary & {
+  path: string;
+  messages: ChatHistoryMessage[];
 };
 
 export type AgentDefinition = {
@@ -118,7 +175,6 @@ export type AgentDefinition = {
   path: string;
   audience_id: string;
   audience_prompt: string;
-  schedule_text: string;
 };
 
 export type Schedule = {
@@ -148,7 +204,25 @@ export type SettingRow = {
   help?: string;
   value?: string;
   options?: string[];
+  option_labels?: Record<string, string>;
   on?: boolean;
+};
+
+export type ModelCatalogModel = {
+  id: string;
+  label: string;
+  efforts: string[];
+};
+
+export type ModelCatalogProvider = {
+  id: string;
+  label: string;
+  models: ModelCatalogModel[];
+};
+
+export type ModelCatalog = {
+  providers: ModelCatalogProvider[];
+  warning?: string | null;
 };
 
 export type SettingsSection = {
@@ -161,12 +235,16 @@ export type SettingsSection = {
 
 export type WorkspaceSettings = {
   sections: SettingsSection[];
+  model_catalog: ModelCatalog;
 };
 
-export type SettingsPayload = { values: Record<string, unknown> };
+export type SettingsPayload = {
+  values: Record<string, unknown>;
+  model_catalog?: ModelCatalog;
+};
 
 export type AgentDetail = AgentDefinition & {
-  schedule_reads_as: string;
+  start_description: string;
   state: string;
 };
 

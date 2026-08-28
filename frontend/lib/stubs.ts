@@ -5,7 +5,7 @@
  */
 
 import type { AgentDefinition, AgentDetail, Schedule, SettingsSection } from "./types";
-import { cadence, role } from "./design";
+import { role } from "./design";
 
 export const DEFAULT_SETTINGS: SettingsSection[] = [
   {
@@ -51,9 +51,9 @@ export const DEFAULT_SETTINGS: SettingsSection[] = [
     sub: "Which models Themis uses, what it may spend, and what it may never do.",
     rows: [
       { id: "h-model", kind: "heading", label: "Model" },
-      { id: "provider", config_key: "agents.provider", kind: "select", label: "Provider", help: "Where reasoning runs. Changing this re-points every agent.", value: "Anthropic", options: ["Anthropic", "OpenAI-compatible", "Mock (offline)"] },
-      { id: "model", config_key: "agents.reasoning_model", kind: "select", label: "Reasoning model", help: "Used for research, drafting and the copilot.", value: "Claude Opus 5", options: ["Claude Opus 5", "Claude Sonnet 5", "Claude Haiku 4.5"] },
-      { id: "fast", config_key: "agents.fast_model", kind: "select", label: "Fast model", help: "Used for triage, matching and summaries.", value: "Claude Haiku 4.5", options: ["Claude Haiku 4.5", "Claude Sonnet 5"] },
+      { id: "provider", config_key: "agents.provider", kind: "select", label: "Provider", help: "Where reasoning runs. The list comes from the providers configured in the backend.", value: "mock", options: ["mock"] },
+      { id: "model", config_key: "agents.reasoning_model", kind: "select", label: "Model", help: "Used for research, drafting and the copilot. The list comes from the selected provider.", value: "mock", options: ["mock"] },
+      { id: "effort", config_key: "agents.reasoning_effort", kind: "select", label: "Reasoning effort", help: "Higher effort can improve difficult answers but can take more time. Default lets the provider decide.", value: "default", options: ["default"] },
       { id: "cite", config_key: "agents.require_factual_citations", kind: "toggle", label: "Require a citation for every factual claim", help: "Uncited claims are struck from generated work product.", on: true },
       { id: "h-limits", kind: "heading", label: "Limits" },
       { id: "steps", config_key: "agents.max_tool_calls", kind: "text", label: "Maximum tool calls per answer", help: "Themis stops and asks you when it hits this.", value: "12" },
@@ -116,24 +116,31 @@ export const DEFAULT_SETTINGS: SettingsSection[] = [
 export const FIXED_AGENT_RULES = [
   "It records a decision only when you explicitly instruct it to do so.",
   "It can draft a reply. It can never send one to a counterparty.",
-  "Everything it writes is labelled as its work until you accept it.",
+  "Everything it writes is labelled as agent-authored work.",
 ];
 
 export function agentDetailFrom(definition: AgentDefinition, schedules: Schedule[]): AgentDetail {
   const mine = schedules.filter((schedule) => schedule.agent_id === definition.agent_id);
   const failing = mine.some((schedule) => schedule.last_status === "error" || schedule.last_status === "failed");
-  const running = mine.some((schedule) => schedule.enabled === 1);
+  const automated = mine.some((schedule) => schedule.enabled === 1);
+  const starts: Record<string, string> = {
+    "counsel-copilot": "Starts when you send a message in Today or inside a matter.",
+    "intake-agent": "Used when new material enters Intake.",
+    "research-agent": "Starts when you run research or ask a research question in a matter.",
+    "decision-monitor": "Starts when you run a decision review.",
+  };
+  const automationNote = mine.length === 0
+    ? "No automation is assigned."
+    : `${mine.length === 1 ? "One automation is" : `${mine.length} automations are`} assigned. Manage timing in Automations.`;
   return {
     ...definition,
-    schedule_reads_as: mine.length
-      ? `on request · ${mine.map((schedule) => cadence(schedule.interval_seconds)).join(" · ")}`
-      : "on request",
-    state: failing ? "Failing" : running ? "Working now" : "On request",
+    start_description: `${starts[definition.agent_id] ?? "Starts when selected for work."} ${automationNote}`,
+    state: failing ? "Failing" : automated ? "Automated" : "On request",
   };
 }
 
 export function agentStateColor(state: string): string {
   if (state === "Failing") return role.failure;
-  if (state === "Working now") return role.agent;
+  if (state === "Automated") return role.agent;
   return role.healthy;
 }

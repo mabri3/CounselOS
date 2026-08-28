@@ -56,6 +56,10 @@ class MatterService:
             "jurisdiction_scope": request.jurisdiction_scope,
             "privilege": request.privilege,
             "next_action": "Orient to the request and identify the first missing facts.",
+            "durable_decision_needed": False,
+            "response_approved_at": None,
+            "response_sent_at": None,
+            "closed_at": None,
             "created_at": now,
             "updated_at": now,
         }
@@ -100,7 +104,10 @@ class MatterService:
             "# Recommendations\n\nNo recommendation has been drafted yet.\n",
             {"matter_id": matter_id, "record_type": "recommendations"},
         )
-        for directory in ("documents", "work-items", "research", "drafts", "decisions", "events"):
+        for directory in (
+            "documents", "work-items", "research", "drafts", "decisions", "events", "conversations",
+            "dossier-revisions", "work-product/draft", "work-product/final",
+        ):
             self.vault.resolve(base / directory).mkdir(parents=True, exist_ok=True)
         self.create_work_item(
             WorkItemCreate(
@@ -125,6 +132,10 @@ class MatterService:
     def get(self, matter_id: str) -> dict[str, Any]:
         matter = self._require_matter(matter_id)
         base = matter["path"]
+        matter_metadata = self.vault.read_markdown(f"{base}/matter.md")["metadata"]
+        tree = self.vault.list_tree(base)
+        self._label_conversations(tree)
+        self._label_internal_records(tree)
         work_items = self.index.list_work_items(matter_id)
         decisions = [item for item in self.index.list_decisions() if item["matter_id"] == matter_id]
         events = self._recent_events(base)
@@ -141,15 +152,21 @@ class MatterService:
         }
         return {
             **matter,
+            "durable_decision_needed": bool(matter_metadata.get("durable_decision_needed", False)),
+            "response_approved_at": matter_metadata.get("response_approved_at"),
+            "response_sent_at": matter_metadata.get("response_sent_at"),
+            "closed_at": matter_metadata.get("closed_at"),
             "orientation": orientation,
             "work_items": work_items,
             "decisions": decisions,
-            "tree": self.vault.list_tree(base),
+            "tree": tree,
             "events": events,
         }
     def move_stage(self, matter_id: str, stage: str, *, reason: str = "", actor: str = "user") -> dict[str, Any]:
         matter = self._require_matter(matter_id)
         stage = self.workflow.validate(stage)
+        if stage == "closed" and matter["status"] != "closed":
+            raise ValueError("Use the close matter action so delivery and required work are checked.")
         path = f"{matter['path']}/matter.md"
         next_actions = {
             "intake": "Complete orientation and identify missing facts.",
@@ -164,6 +181,7 @@ class MatterService:
             metadata_updates={
                 "status": stage,
                 "next_action": next_actions[stage],
+                "closed_at": None if matter["status"] == "closed" else self._matter_metadata(matter).get("closed_at"),
                 "updated_at": iso_now(),
             },
         )
@@ -175,6 +193,86 @@ class MatterService:
         )
         self.index.rebuild()
         return self.get(matter_id)
+
+    def perform_action(self, matter_id: str, action: str) -> dict[str, Any]:
+        matter = self._require_matter(matter_id)
+        if matter["status"] != "respond":
+            raise ValueError("Response actions are available only in Respond.")
+        metadata = self._matter_metadata(matter)
+        now = iso_now()
+
+        if action == "approve_response":
+            if metadata.get("response_approved_at"):
+                raise ValueError("The response is already approved.")
+            updates = {
+                "response_approved_at": now,
+                "next_action": "Send the approved response.",
+                "updated_at": now,
+            }
+            self._complete_open_work_items(matter_id, item_type="approval")
+            event_type = "response_approved"
+            title = "Response approved"
+        elif action == "mark_as_sent":
+            if not metadata.get("response_approved_at"):
+                raise ValueError("The response must be approved before it is marked as sent.")
+            if metadata.get("response_sent_at"):
+                raise ValueError("The response is already marked as sent.")
+            updates = {
+                "response_sent_at": now,
+                "next_action": "Complete required work, then close the matter.",
+                "updated_at": now,
+            }
+            event_type = "response_sent"
+            title = "Response marked as sent"
+        elif action == "close_matter":
+            if not metadata.get("response_sent_at"):
+                raise ValueError("The response must be sent before the matter can close.")
+            required = [
+                item for item in self.index.list_work_items(matter_id)
+                if item["required"] and item["status"] not in {"done", "closed"}
+            ]
+            if required:
+                raise ValueError("Complete required work before closing the matter.")
+            updates = {
+                "status": "closed",
+                "closed_at": now,
+                "next_action": "No active action. Reopen if facts, law, or policy change.",
+                "updated_at": now,
+            }
+            event_type = "matter_closed"
+            title = "Matter closed"
+        else:
+            raise ValueError(f"Unknown matter action: {action}")
+
+        self.vault.update_markdown(f"{matter['path']}/matter.md", metadata_updates=updates)
+        self.append_event(
+            matter_id,
+            event_type,
+            {"title": title, "actor": "user"},
+            rebuild=False,
+        )
+        self.index.rebuild()
+        return self.get(matter_id)
+
+    def note_durable_decision_recorded(self, matter_id: str) -> None:
+        matter = self._require_matter(matter_id)
+        metadata = self._matter_metadata(matter)
+        next_action = str(metadata.get("next_action") or matter.get("next_action") or "")
+        if matter["status"] == "respond" and not metadata.get("response_approved_at"):
+            next_action = "Approve the response."
+        elif matter["status"] == "respond":
+            next_action = "Send the approved response."
+        elif matter["status"] == "explore":
+            next_action = "Create work product based on the chosen path."
+        self.vault.update_markdown(
+            f"{matter['path']}/matter.md",
+            metadata_updates={
+                "durable_decision_needed": False,
+                "next_action": next_action,
+                "updated_at": iso_now(),
+            },
+        )
+        self._complete_open_work_items(matter_id, item_type="decision")
     def create_work_item(self, request: WorkItemCreate, *, rebuild: bool = True) -> dict[str, Any]:
         matter = self._require_matter(request.matter_id, allow_unindexed=True)
         work_item_id = new_id("WI")
@@ -206,6 +304,12 @@ class MatterService:
             self.index.rebuild()
         return {**metadata, "path": path}
     def complete_open_work_items(self, matter_id: str, *, item_type: str | None = None) -> list[str]:
+        completed = self._complete_open_work_items(matter_id, item_type=item_type)
+        if completed:
+            self.index.rebuild()
+        return completed
+
+    def _complete_open_work_items(self, matter_id: str, *, item_type: str | None = None) -> list[str]:
         completed: list[str] = []
         for item in self.index.list_work_items(matter_id):
             if item["status"] in {"done", "closed"}:
@@ -217,8 +321,6 @@ class MatterService:
                 metadata_updates={"status": "done", "completed_at": iso_now()},
             )
             completed.append(item["work_item_id"])
-        if completed:
-            self.index.rebuild()
         return completed
     def append_event(
         self,
@@ -250,6 +352,8 @@ class MatterService:
         return path
     def matter_path(self, matter_id: str) -> str:
         return self._require_matter(matter_id)["path"]
+    def _matter_metadata(self, matter: dict[str, Any]) -> dict[str, Any]:
+        return self.vault.read_markdown(f"{matter['path']}/matter.md")["metadata"]
     def _require_matter(self, matter_id: str, *, allow_unindexed: bool = False) -> dict[str, Any]:
         matter = self.index.get_matter(matter_id)
         if matter:
@@ -273,6 +377,45 @@ class MatterService:
         for path in sorted(events_dir.glob("*.md"), reverse=True)[:6]:
             events.append(self.vault.read_markdown(self.vault.relative(path))["metadata"])
         return events
+
+    def _label_conversations(self, tree: list[dict[str, Any]]) -> None:
+        folder = next(
+            (node for node in tree if node["type"] == "folder" and node["name"] == "conversations"),
+            None,
+        )
+        for node in (folder or {}).get("children", []):
+            if node["type"] != "file" or node.get("extension") != ".md":
+                continue
+            document = self.vault.read_markdown(node["path"])
+            if document["metadata"].get("record_type") == "chat_transcript":
+                node["label"] = document["metadata"].get("title") or "Matter chat"
+                node["record_type"] = "chat_transcript"
+
+    def _label_internal_records(self, tree: list[dict[str, Any]]) -> None:
+        for node in tree:
+            if node["type"] == "folder":
+                self._label_internal_records(node.get("children", []))
+                continue
+            if node.get("extension") != ".md" or not (
+                node["name"].startswith(("WI-", "EVT-", "DOS-", "RES-"))
+                or "/work-product/" in node["path"]
+                or "/events/" in node["path"]
+                or "/research/runs/" in node["path"]
+                or "/documents/batches/" in node["path"]
+            ):
+                continue
+            document = self.vault.read_markdown(node["path"])
+            metadata = document["metadata"]
+            node["record_type"] = metadata.get("record_type", "matter_record")
+            node["label"] = (
+                metadata.get("title")
+                or metadata.get("summary")
+                or ("Background research" if metadata.get("record_type") == "research_run" else None)
+                or ("First-pass research" if metadata.get("research_id") else None)
+                or ("Uploaded document set" if metadata.get("record_type") == "document_batch" else None)
+                or str(metadata.get("event_type", "Matter update")).replace("_", " ").title()
+                or "Matter record"
+            )
 
     @staticmethod
     def _why_now(

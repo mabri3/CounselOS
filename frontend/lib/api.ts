@@ -1,13 +1,20 @@
 import type {
   AgentDefinition,
   AgentDetail,
+  AttachmentReference,
   Audience,
   ChatResponse,
+  ChatConversation,
+  ChatConversationSummary,
+  CompanyProfile,
+  DailyConversation,
+  DailyConversationSummary,
   Decision,
   Matter,
   MatterDetail,
   ResearchNote,
   ResearchResult,
+  ResearchRun,
   Schedule,
   SettingsPayload,
   Stage,
@@ -18,6 +25,19 @@ import type {
 import { DEFAULT_SETTINGS, agentDetailFrom } from "./stubs";
 
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api";
+
+export function effortLabel(effort: string): string {
+  return {
+    default: "Default",
+    none: "None",
+    minimal: "Minimal",
+    low: "Low",
+    medium: "Medium",
+    high: "High",
+    xhigh: "Extra high",
+    max: "Maximum",
+  }[effort] ?? effort;
+}
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
@@ -48,6 +68,16 @@ export async function moveMatter(matterId: string, stage: string, reason = ""): 
   return request(`/matters/${encodeURIComponent(matterId)}/stage`, {
     method: "PATCH",
     body: JSON.stringify({ stage, reason }),
+  });
+}
+
+export async function performMatterAction(
+  matterId: string,
+  action: "approve_response" | "mark_as_sent" | "close_matter",
+): Promise<MatterDetail> {
+  return request(`/matters/${encodeURIComponent(matterId)}/actions`, {
+    method: "POST",
+    body: JSON.stringify({ action }),
   });
 }
 
@@ -83,6 +113,55 @@ export async function uploadDocument(matterId: string, file: File): Promise<Reco
   return request(`/matters/${encodeURIComponent(matterId)}/upload`, { method: "POST", body });
 }
 
+export async function uploadDocuments(matterId: string, files: File[]): Promise<Record<string, unknown>> {
+  const body = new FormData();
+  files.forEach((file) => body.append("files", file));
+  return request(`/matters/${encodeURIComponent(matterId)}/uploads`, { method: "POST", body });
+}
+
+export async function uploadWorkspaceDocuments(files: File[]): Promise<{ attachments: AttachmentReference[] }> {
+  const body = new FormData();
+  files.forEach((file) => body.append("files", file));
+  return request("/daily-uploads", { method: "POST", body });
+}
+
+export async function startIntake(matterId: string): Promise<ChatResponse> {
+  return request(`/matters/${encodeURIComponent(matterId)}/intake`, { method: "POST" });
+}
+
+export async function startResearchRun(matterId: string, question = ""): Promise<ResearchRun> {
+  return request(`/matters/${encodeURIComponent(matterId)}/research-runs`, {
+    method: "POST",
+    body: JSON.stringify({ question }),
+  });
+}
+
+export async function getResearchRun(matterId: string, runId: string): Promise<ResearchRun> {
+  return request(`/matters/${encodeURIComponent(matterId)}/research-runs/${encodeURIComponent(runId)}`);
+}
+
+export async function applyBatchAction(matterId: string, batchId: string, action: "preview" | "apply" | "undo"): Promise<Record<string, unknown>> {
+  return request(`/matters/${encodeURIComponent(matterId)}/batches`, {
+    method: "POST",
+    body: JSON.stringify({ batch_id: batchId, action }),
+  });
+}
+
+export async function finalizeWorkProduct(matterId: string, draftPath: string): Promise<Record<string, unknown>> {
+  return request(`/matters/${encodeURIComponent(matterId)}/work-product/finalize`, {
+    method: "POST",
+    body: JSON.stringify({ draft_path: draftPath }),
+  });
+}
+
+export async function getCompanyProfile(): Promise<CompanyProfile> {
+  return request("/settings/company");
+}
+
+export async function saveCompanyProfile(profile: CompanyProfile): Promise<CompanyProfile> {
+  return request("/settings/company", { method: "PUT", body: JSON.stringify(profile) });
+}
+
 export async function getFile(path: string): Promise<VaultDocument> {
   return request(`/files?path=${encodeURIComponent(path)}`);
 }
@@ -96,6 +175,24 @@ export async function saveFile(document: VaultDocument): Promise<{ status: strin
 
 export async function sendChat(payload: Record<string, unknown>): Promise<ChatResponse> {
   return request("/chat", { method: "POST", body: JSON.stringify(payload) });
+}
+
+export async function getConversations(matterId: string): Promise<{ conversations: ChatConversationSummary[] }> {
+  return request(`/matters/${encodeURIComponent(matterId)}/conversations`);
+}
+
+export async function getConversation(matterId: string, conversationId: string): Promise<ChatConversation> {
+  return request(
+    `/matters/${encodeURIComponent(matterId)}/conversations/${encodeURIComponent(conversationId)}`,
+  );
+}
+
+export async function getDailyConversations(): Promise<{ conversations: DailyConversationSummary[] }> {
+  return request("/daily-conversations");
+}
+
+export async function getDailyConversation(day: string): Promise<DailyConversation> {
+  return request(`/daily-conversations/${encodeURIComponent(day)}`);
 }
 
 export async function getDecisions(status?: string): Promise<{ decisions: Decision[] }> {
@@ -129,11 +226,59 @@ export function rawFileUrl(path: string): string {
 /* ── Settings and agent administration ───────────────────────────────── */
 
 export async function getSettings(): Promise<WorkspaceSettings> {
-  const { values } = await request<SettingsPayload>("/settings");
+  const { values, model_catalog } = await request<SettingsPayload>("/settings");
+  const catalog = model_catalog ?? { providers: [], warning: "The model catalog is unavailable." };
+  const providerValue = typeof values["agents.provider"] === "string" ? values["agents.provider"] : "mock";
+  const selectedProvider = catalog.providers.find((provider) => provider.id === providerValue)
+    ?? catalog.providers[0];
+  const requestedModel = typeof values["agents.reasoning_model"] === "string"
+    ? values["agents.reasoning_model"]
+    : "";
+  const selectedModel = selectedProvider?.models.find((model) => model.id === requestedModel)
+    ?? selectedProvider?.models[0];
+  const requestedEffort = typeof values["agents.reasoning_effort"] === "string"
+    ? values["agents.reasoning_effort"]
+    : "default";
+  const selectedEffort = selectedModel?.efforts.includes(requestedEffort)
+    ? requestedEffort
+    : selectedModel?.efforts[0] ?? "default";
+
   return {
+    model_catalog: catalog,
     sections: DEFAULT_SETTINGS.map((section) => ({
       ...section,
       rows: section.rows.map((row) => {
+        if (row.config_key === "agents.provider") {
+          return {
+            ...row,
+            value: selectedProvider?.id ?? "mock",
+            options: catalog.providers.map((provider) => provider.id),
+            option_labels: Object.fromEntries(
+              catalog.providers.map((provider) => [provider.id, provider.label]),
+            ),
+          };
+        }
+        if (row.config_key === "agents.reasoning_model") {
+          return {
+            ...row,
+            value: selectedModel?.id ?? "mock",
+            options: selectedProvider?.models.map((model) => model.id) ?? ["mock"],
+            option_labels: Object.fromEntries(
+              selectedProvider?.models.map((model) => [model.id, model.label]) ?? [],
+            ),
+          };
+        }
+        if (row.config_key === "agents.reasoning_effort") {
+          const efforts = selectedModel?.efforts ?? ["default"];
+          return {
+            ...row,
+            value: selectedEffort,
+            options: efforts,
+            option_labels: Object.fromEntries(
+              efforts.map((effort) => [effort, effortLabel(effort)]),
+            ),
+          };
+        }
         if (!row.config_key || !(row.config_key in values)) return { ...row };
         const stored = values[row.config_key];
         return row.kind === "toggle"
@@ -174,7 +319,6 @@ export async function saveAgentDetail(agent: AgentDetail): Promise<AgentDefiniti
       max_steps: agent.max_steps,
       audience_id: agent.audience_id,
       audience_prompt: agent.audience_prompt,
-      schedule_text: agent.schedule_text,
     }),
   });
 }

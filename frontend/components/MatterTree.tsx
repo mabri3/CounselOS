@@ -6,55 +6,87 @@ import type { FileNode } from "@/lib/types";
 function TreeNode({
   node,
   activePath,
+  onNewChat,
   onSelect,
   depth = 0,
 }: {
   node: FileNode;
   activePath: string | null;
+  onNewChat: () => void;
   onSelect: (path: string) => void;
   depth?: number;
 }) {
   const [open, setOpen] = useState(depth < 2);
   if (node.type === "folder") {
+    const folderLabel = treeLabel(node);
     return (
       <div>
-        <div className="tree-row" onClick={() => setOpen((value) => !value)}>
-          <span>{open ? "⌄" : "›"}</span>
-          <span>▱</span>
-          <span>{node.name}</span>
+        <div className="tree-folder-row">
+          <button className="tree-row" onClick={() => setOpen((value) => !value)} type="button">
+            <span className="tree-folder">{open ? "▾" : "▸"} {folderLabel}</span>
+          </button>
+          {node.name === "conversations" ? (
+            <button aria-label="New chat" className="tree-add" onClick={onNewChat} title="New chat" type="button">+</button>
+          ) : null}
         </div>
         {open && node.children ? (
           <div className="tree-indent">
             {node.children.map((child) => (
-              <TreeNode key={child.path} node={child} activePath={activePath} onSelect={onSelect} depth={depth + 1} />
+              <TreeNode key={child.path} node={child} activePath={activePath} onNewChat={onNewChat} onSelect={onSelect} depth={depth + 1} />
             ))}
+            {node.name === "conversations" && !node.children.length ? <div className="tree-empty">No saved chats</div> : null}
           </div>
         ) : null}
       </div>
     );
   }
+  const kind = node.record_type === "chat_transcript"
+    ? "conversation"
+    : node.path.includes("/research/") || node.path.includes("/drafts/")
+    ? "agent"
+    : node.extension === ".md" ? "human" : "source";
   return (
-    <div className={`tree-row ${activePath === node.path ? "active" : ""}`} onClick={() => onSelect(node.path)}>
-      <span>{node.extension === ".md" ? "◇" : "□"}</span>
-      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{node.name}</span>
-    </div>
+    <button
+      className={`tree-row ${activePath === node.path ? "active" : ""}`}
+      onClick={() => onSelect(node.path)}
+      title={node.label ?? node.name}
+      type="button"
+    >
+      <span className={`tree-dot ${kind}`} />
+      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{treeLabel(node)}</span>
+    </button>
   );
+}
+
+function treeLabel(node: FileNode): string {
+  if (node.name === "work-product") return "Work Product";
+  if (node.name === "draft") return "Draft";
+  if (node.name === "final") return "Final";
+  if (node.name === "dossier.md") return "Dossier";
+  if (node.name === "conversations") return "Chats";
+  return node.label ?? node.name;
 }
 
 export default function MatterTree({
   tree,
   activePath,
+  onNewChat,
   onSelect,
   onUpload,
   uploading,
 }: {
   tree: FileNode[];
   activePath: string | null;
+  onNewChat: () => void;
   onSelect: (path: string) => void;
   onUpload: (file: File) => Promise<void>;
   uploading: boolean;
 }) {
   const [dragging, setDragging] = useState(false);
+  const conversationFolder = tree.find((node) => node.type === "folder" && node.name === "conversations");
+  const visibleTree: FileNode[] = conversationFolder
+    ? tree
+    : [{ name: "conversations", label: "Chats", path: "", type: "folder", children: [] }, ...tree];
 
   async function uploadFromInput(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -72,8 +104,8 @@ export default function MatterTree({
   return (
     <>
       <div className="tree">
-        {tree.map((node) => (
-          <TreeNode key={node.path} node={node} activePath={activePath} onSelect={onSelect} />
+        {visibleTree.map((node) => (
+          <TreeNode key={node.path || node.name} node={node} activePath={activePath} onNewChat={onNewChat} onSelect={onSelect} />
         ))}
       </div>
       <div
@@ -83,11 +115,11 @@ export default function MatterTree({
         onDragLeave={() => setDragging(false)}
         onDrop={drop}
       >
-        {uploading ? "Uploading and extracting…" : "Drop PDF, Word, Markdown, or text here"}
-        <div style={{ marginTop: 8 }}>
-          <label className="button compact" style={{ display: "inline-block", textTransform: "none", letterSpacing: 0, color: "var(--text)" }}>
-            Choose file
-            <input hidden type="file" onChange={uploadFromInput} accept=".md,.txt,.pdf,.docx,.csv,.json" />
+        {uploading ? "Uploading and extracting…" : "Drop a PDF, Word file, Markdown or text here"}
+        <div style={{ marginTop: 10 }}>
+          <label className="btn compact" style={{ display: "inline-block" }}>
+            Choose a file
+            <input hidden type="file" onChange={uploadFromInput} accept=".md,.txt,.pdf,.docx" />
           </label>
         </div>
       </div>

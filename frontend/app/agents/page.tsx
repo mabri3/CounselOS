@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
-import { getAudiences, getAutomations, getTools, saveAgentDetail } from "@/lib/api";
+import LinkifiedText from "@/components/LinkifiedText";
+import { getAgentDetail, getAudiences, getAutomations, getTools, saveAgentDetail } from "@/lib/api";
 import { FIXED_AGENT_RULES, agentDetailFrom, agentStateColor } from "@/lib/stubs";
 import type { AgentDetail, Audience, ToolDefinition } from "@/lib/types";
 
@@ -57,6 +58,31 @@ export default function AgentsPage() {
     });
   }
 
+  async function loadAgentFromFile() {
+    if (!draft) return;
+    setBusy(true);
+    setError("");
+    try {
+      const loaded = await getAgentDetail(draft.agent_id);
+      setAgents((current) => current.map((agent) => agent.agent_id === loaded.agent_id ? loaded : agent));
+      setDraft(loaded);
+      setDirty(false);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not load the agent file.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function resetToDefault() {
+    if (!draft) return;
+    const saved = agents.find((agent) => agent.agent_id === draft.agent_id);
+    if (!saved) return;
+    setDraft(saved);
+    setDirty(false);
+    setError("");
+  }
+
   if (error && !draft) return <AppShell><main className="page"><p className="error">{error}</p></main></AppShell>;
   if (!draft) {
     return (
@@ -88,7 +114,7 @@ export default function AgentsPage() {
                 onClick={() => { setDraft(agent); setDirty(false); }}
               >
                 <span className="agent-rail-name">{agent.name}</span>
-                <span className="agent-rail-role">{agent.description}</span>
+                <span className="agent-rail-role"><LinkifiedText text={agent.description} /></span>
                 <span className="signal" style={{ marginTop: 6, fontSize: 13, fontWeight: 400, color: agentStateColor(agent.state) }}>
                   <span className="dot sm" style={{ background: agentStateColor(agent.state) }} />
                   {agent.state}
@@ -96,14 +122,6 @@ export default function AgentsPage() {
               </button>
             ))}
           </div>
-          <button
-            className="btn"
-            disabled
-            style={{ marginTop: 14, borderStyle: "dashed" }}
-            title="Creating agents from the UI is not wired up yet — add a Markdown file under 00_System/agents/"
-          >
-            New agent
-          </button>
         </aside>
 
         <div className="admin-main">
@@ -115,11 +133,12 @@ export default function AgentsPage() {
               <div style={{ marginTop: 24, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                 <div>
                   <div className="field-label">Name</div>
-                  <input className="text-input" onChange={(event) => patch({ name: event.target.value })} value={draft.name} />
+                  <input aria-label="Agent name" className="text-input" onChange={(event) => patch({ name: event.target.value })} value={draft.name} />
                 </div>
                 <div>
                   <div className="field-label">One line about what it is for</div>
                   <input
+                    aria-label="Agent description"
                     className="text-input"
                     onChange={(event) => patch({ description: event.target.value })}
                     value={draft.description}
@@ -131,6 +150,7 @@ export default function AgentsPage() {
                 <div className="section-heading">How it should behave</div>
                 <p>Written in plain language. This is the agent&apos;s standing instruction, not a prompt template.</p>
                 <textarea
+                  aria-label="Agent instructions"
                   className="text-input prose"
                   onChange={(event) => patch({ instructions: event.target.value })}
                   style={{ minHeight: 150 }}
@@ -155,6 +175,7 @@ export default function AgentsPage() {
                   ))}
                 </div>
                 <textarea
+                  aria-label="Written for"
                   className="text-input prose"
                   onChange={(event) => {
                     const audiencePrompt = event.target.value;
@@ -195,15 +216,18 @@ export default function AgentsPage() {
               </div>
 
               <div className="field-block">
-                <div className="section-heading">When it runs</div>
-                <textarea
-                  className="text-input prose"
-                  onChange={(event) => patch({ schedule_text: event.target.value })}
-                  style={{ minHeight: 70 }}
-                  value={draft.schedule_text}
-                />
-                <div style={{ marginTop: 7, font: "400 14px var(--sans)", color: "var(--ink-4)" }}>
-                  Reads as: {draft.schedule_reads_as}
+                <div className="section-heading">How it starts</div>
+                <p>The agent does not control its timing. Recurring work is configured as an automation.</p>
+                <div className="agent-note" style={{ marginTop: 10 }}>
+                  <div style={{ font: "400 15px/1.6 var(--sans)", color: "var(--ink-2)" }}>
+                    {draft.start_description}
+                  </div>
+                  <Link
+                    href="/automations"
+                    style={{ display: "inline-block", marginTop: 8, font: "500 14px var(--sans)", textDecoration: "underline", textUnderlineOffset: 3 }}
+                  >
+                    Manage automations
+                  </Link>
                 </div>
               </div>
             </div>
@@ -216,6 +240,8 @@ export default function AgentsPage() {
               </>}
             </span>
             <div className="btn-row">
+              <button className="btn" disabled={busy} onClick={() => void loadAgentFromFile()}>Load from file</button>
+              <button className="btn" disabled={!dirty || busy} onClick={resetToDefault}>Reset to default</button>
               <button className="btn" disabled={!dirty || busy} onClick={() => void load()}>Discard</button>
               <button
                 className="btn primary"
@@ -223,7 +249,7 @@ export default function AgentsPage() {
                 onClick={async () => {
                   setBusy(true);
                   setError("");
-                  try { await saveAgentDetail(draft); setDirty(false); }
+                  try { await saveAgentDetail(draft); await load(); }
                   catch (caught) { setError(caught instanceof Error ? caught.message : "Could not save agent."); }
                   finally { setBusy(false); }
                 }}
