@@ -13,6 +13,7 @@ FastAPI :8000
         |
         +--> Markdown vault (authoritative)
         +--> SQLite index (rebuildable)
+        +--> .counsel-os/active-vault.json (active-vault pointer only)
         +--> LLM provider
         +--> Optional search provider
         +--> In-process scheduler
@@ -27,6 +28,11 @@ The Python backend is retained because document extraction, local file work, age
 ## 3. Why Markdown plus SQLite
 
 Markdown is the authoritative, inspectable record. SQLite solves cross-matter queries without forcing the initial product into a database-first design. The index is rebuilt at startup and after mutations. This intentionally trades scalability for clarity and low implementation risk.
+
+All legal and product content stays inside the selected vault. The one
+administrative exception is `.counsel-os/active-vault.json` at the project
+root. It stores only `schema_version` and the canonical `vault_path`. It does
+not store matter, company, chat, decision, briefing, or agent content.
 
 ## 4. Main backend components
 
@@ -45,6 +51,10 @@ Markdown is the authoritative, inspectable record. SQLite solves cross-matter qu
 - `ToolRegistry`: hot-loads tool Markdown and maps descriptions to approved handlers.
 - `AgentRunner`: bounded provider/tool loop.
 - `SchedulerService`: local schedule polling and execution.
+- `ActiveContextManager`: leases one runtime context to each request and
+  serializes safe active-vault changes.
+- `VaultManager`: validates existing vaults and creates new blank vaults by
+  staging and renaming a complete candidate directory.
 
 ### 4.1 Derived matter work state
 
@@ -200,6 +210,26 @@ bound services. It never calls an intelligence provider directly. **Scan now**
 does not enable or change a schedule. A paused Watch creates a visible skipped
 run when its schedule is invoked.
 
+### 11.1 Active vault changes
+
+Normal requests lease the active `AppContext`. A vault change blocks new
+leases, waits for current leases, and stops the scheduler loop. It returns
+**Busy** without cancelling work when a scheduled task or research run is
+active.
+
+The candidate context is built and checked before the pointer changes.
+Candidate construction can rebuild only that vault's disposable SQLite index;
+it does not run interruption recovery or change authoritative Markdown. A
+successful change atomically saves the pointer, swaps the context, runs
+best-effort interruption recovery, and starts the new scheduler. Recovery is
+post-activation work; its failure does not roll the selection back after
+candidate Markdown might have changed. A failure before activation restores
+the old pointer and context and restarts the old scheduler.
+
+A valid saved pointer wins at startup. `VAULT_PATH` selects the first vault
+only when no valid saved pointer exists. The application does not rewrite
+`.env`.
+
 ## 12. Frontend boundaries
 
 - `AppShell`: navigation and global framing.
@@ -215,6 +245,8 @@ run when its schedule is invoked.
   and cadence.
 - `BriefingWorkspace`: URL-backed reading, filters, saved views, and digests.
 - `ReviewPacketPanel`: evidence, company links, and explicit lawyer outcomes.
+- Settings `Vaults`: shows the exact active path and provides confirmed,
+  non-destructive create and load actions.
 
 The frontend performs no direct file or model access.
 

@@ -273,6 +273,22 @@ export type ChatResponse = {
   review_author?: string | null;
 };
 
+export type ChatRunState = "queued" | "running" | "completed" | "failed" | "interrupted";
+
+export type ChatRun = {
+  run_id: string;
+  matter_id: string;
+  conversation_id?: string | null;
+  state: ChatRunState;
+  status: string;
+  created_at: string;
+  started_at?: string | null;
+  finished_at?: string | null;
+  failure_detail?: string | null;
+  response?: ChatResponse | null;
+  path: string;
+};
+
 export type ChatHistoryMessage = {
   message_id: string;
   role: "user" | "assistant";
@@ -465,6 +481,11 @@ export type WorkspaceSettings = {
 export type SettingsPayload = {
   values: Record<string, unknown>;
   model_catalog?: ModelCatalog;
+};
+
+export type VaultInfo = {
+  name: string;
+  path: string;
 };
 
 export type AgentDetail = AgentDefinition & {

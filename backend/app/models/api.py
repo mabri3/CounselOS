@@ -164,6 +164,15 @@ class SettingsUpdate(BaseModel):
     values: dict[str, Any] = Field(default_factory=dict)
 
 
+class VaultPathRequest(BaseModel):
+    path: str
+
+
+class VaultInfo(BaseModel):
+    name: str
+    path: str
+
+
 class AnnotationCreate(BaseModel):
     source_path: str
     question: str = Field(min_length=1)
@@ -341,6 +350,23 @@ class ChatResponse(BaseModel):
     cards: list[ChatCard] = Field(default_factory=list)
     applied_skills: list[AppliedSkillSummary] = Field(default_factory=list)
     review_author: str | None = None
+
+
+ChatRunState = Literal["queued", "running", "completed", "failed", "interrupted"]
+
+
+class ChatRun(BaseModel):
+    run_id: str
+    matter_id: str
+    conversation_id: str | None = None
+    state: ChatRunState
+    status: str
+    created_at: str
+    started_at: str | None = None
+    finished_at: str | None = None
+    failure_detail: str | None = None
+    response: ChatResponse | None = None
+    path: str
 
 
 class BatchActionRequest(BaseModel):

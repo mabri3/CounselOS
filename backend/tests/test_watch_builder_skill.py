@@ -19,6 +19,7 @@ from app.services.vault import VaultService
 from app.services.watches import WatchStore
 from app.tools.handlers import activate_watch, build_handlers, create_watch_draft, scan_watch
 from app.tools.registry import ToolExecutionContext, ToolRegistry
+from conftest import TEST_VAULT_SOURCE
 
 
 class IndexFake:
@@ -128,7 +129,7 @@ async def test_start_watch_is_explicit_and_schedule_failure_leaves_draft(tmp_pat
 @pytest.mark.asyncio
 async def test_research_agent_can_call_all_three_registered_watch_handlers(tmp_path):
     app = app_fake(tmp_path)
-    source_vault = VaultService(__import__("pathlib").Path(__file__).resolve().parents[2] / "vault")
+    source_vault = VaultService(TEST_VAULT_SOURCE)
     registry = ToolRegistry(source_vault, build_handlers())
     from app.agents.registry import AgentRegistry
     agent = AgentRegistry(source_vault, 8).get("research-agent")

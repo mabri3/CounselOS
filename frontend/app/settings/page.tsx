@@ -2,12 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
-import CompanyInterview, { COMPANY_PROFILE_FIELDS } from "@/components/CompanyInterview";
+import CompanyInterview, { COMPANY_PROFILE_FIELDS, companyReplacementMessage } from "@/components/CompanyInterview";
 import LinkifiedText from "@/components/LinkifiedText";
-import { effortLabel, getCompanyProfile, getSettings, saveCompanyProfile, saveSettings } from "@/lib/api";
+import { createVault, effortLabel, getActiveVault, getCompanyProfile, getSettings, loadVault, saveCompanyProfile, saveSettings } from "@/lib/api";
 import { role } from "@/lib/design";
 import { getProviderCapabilities } from "@/lib/watchApi";
-import type { CompanyProfile, SettingRow, WorkspaceSettings } from "@/lib/types";
+import type { CompanyProfile, SettingRow, VaultInfo, WorkspaceSettings } from "@/lib/types";
 import type { ProviderCapability } from "@/lib/watchTypes";
 
 function alignModelRows(rows: SettingRow[], settings: WorkspaceSettings): SettingRow[] {
@@ -47,7 +47,10 @@ export default function SettingsPage() {
   const [settings, setSettings] = useState<WorkspaceSettings | null>(null);
   const [savedSettings, setSavedSettings] = useState<WorkspaceSettings | null>(null);
   const [company, setCompany] = useState<CompanyProfile | null>(null);
+  const [savedCompany, setSavedCompany] = useState<CompanyProfile | null>(null);
   const [providers, setProviders] = useState<ProviderCapability[]>([]);
+  const [vault, setVault] = useState<VaultInfo | null>(null);
+  const [vaultPath, setVaultPath] = useState("");
   const [section, setSection] = useState("agents");
   const [settingsDirty, setSettingsDirty] = useState(false);
   const [companyDirty, setCompanyDirty] = useState(false);
@@ -57,15 +60,18 @@ export default function SettingsPage() {
   const load = useCallback(async () => {
     try {
       setError("");
-      const [nextSettings, nextCompany, providerResult] = await Promise.all([
+      const [nextSettings, nextCompany, providerResult, nextVault] = await Promise.all([
         getSettings(),
         getCompanyProfile(),
         getProviderCapabilities(),
+        getActiveVault(),
       ]);
       setSettings(nextSettings);
       setSavedSettings(nextSettings);
       setCompany(nextCompany);
+      setSavedCompany(nextCompany);
       setProviders(providerResult.items);
+      setVault(nextVault);
       setSettingsDirty(false);
       setCompanyDirty(false);
     }
@@ -97,12 +103,13 @@ export default function SettingsPage() {
   }
 
   if (error && !settings) return <AppShell><main className="page"><p className="error">{error}</p></main></AppShell>;
-  if (!settings || !company) return <AppShell><main className="page"><div className="loading">Loading settings…</div></main></AppShell>;
+  if (!settings || !company || !vault) return <AppShell><main className="page"><div className="loading">Loading settings…</div></main></AppShell>;
 
   const current = settings.sections.find((entry) => entry.id === section) ?? settings.sections[0];
   const companySection = section === "company";
   const providerSection = section === "intelligence-providers";
-  const activeDirty = companySection ? companyDirty : providerSection ? false : settingsDirty;
+  const vaultSection = section === "vaults";
+  const activeDirty = companySection ? companyDirty : providerSection || vaultSection ? false : settingsDirty;
   const selectedModelRow = current.rows.find((row) => row.config_key === "agents.reasoning_model");
   const selectedModel = selectedModelRow?.option_labels?.[selectedModelRow.value ?? ""]
     ?? selectedModelRow?.value
@@ -125,15 +132,18 @@ export default function SettingsPage() {
             ))}
             <button className={`admin-rail-link ${providerSection ? "active" : ""}`} onClick={() => setSection("intelligence-providers")}>Watch providers</button>
             <button className={`admin-rail-link ${companySection ? "active" : ""}`} onClick={() => setSection("company")}>Company</button>
+            <button className={`admin-rail-link ${vaultSection ? "active" : ""}`} onClick={() => setSection("vaults")}>Vaults</button>
           </div>
         </aside>
 
         <div className="admin-main">
           <div className="admin-scroll">
             <div className="admin-body" style={{ maxWidth: 760 }}>
-              <h1 style={{ fontSize: 26 }}>{companySection ? "Company" : providerSection ? "Watch providers" : current.title}</h1>
+              <h1 style={{ fontSize: 26 }}>{vaultSection ? "Vaults" : companySection ? "Company" : providerSection ? "Watch providers" : current.title}</h1>
               <p style={{ margin: "6px 0 24px", font: "400 15px var(--sans)", color: "var(--ink-3)" }}>
-                {companySection
+                {vaultSection
+                  ? "Create a blank workspace or load an existing Counsel OS vault."
+                  : companySection
                   ? "Company context used by agents across matters."
                   : providerSection
                     ? "Public intelligence services that a Watch can use. Provider keys stay outside Counsel OS screens."
@@ -150,7 +160,57 @@ export default function SettingsPage() {
                 <p className="error" style={{ margin: "-12px 0 18px" }}>{settings.model_catalog.warning}</p>
               ) : null}
 
-              {providerSection ? (
+              {vaultSection ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+                  <div className="setting-row" style={{ alignItems: "flex-start" }}>
+                    <div>
+                      <div className="setting-label">Current vault</div>
+                      <div className="setting-help">{vault.name}</div>
+                    </div>
+                    <code style={{ maxWidth: 470, overflowWrap: "anywhere", textAlign: "right" }}>{vault.path}</code>
+                  </div>
+                  <div>
+                    <label className="field-label" htmlFor="vault-path">Absolute path</label>
+                    <input
+                      className="text-input"
+                      id="vault-path"
+                      onChange={(event) => setVaultPath(event.target.value)}
+                      placeholder="/Users/name/Counsel OS Vault"
+                      style={{ marginTop: 7, width: "100%" }}
+                      value={vaultPath}
+                    />
+                    <p className="setting-help" style={{ marginTop: 7 }}>
+                      Your current vault is preserved. Counsel OS will not move or delete its files.
+                    </p>
+                  </div>
+                  <div className="btn-row">
+                    {(["create", "load"] as const).map((action) => (
+                      <button
+                        className={`btn ${action === "create" ? "primary" : ""}`}
+                        disabled={busy || !vaultPath.trim()}
+                        key={action}
+                        onClick={async () => {
+                          const verb = action === "create" ? "create a new vault" : "load this vault";
+                          if (!window.confirm(`Confirm that you want to ${verb}. Your current vault is preserved. No files will be moved or deleted.`)) return;
+                          setBusy(true);
+                          setError("");
+                          try {
+                            if (action === "create") await createVault(vaultPath.trim());
+                            else await loadVault(vaultPath.trim());
+                            window.location.assign("/");
+                          } catch (caught) {
+                            setError(caught instanceof Error ? caught.message : "Could not change the active vault.");
+                            setBusy(false);
+                          }
+                        }}
+                      >
+                        {busy ? "Working…" : action === "create" ? "Create new vault" : "Load existing vault"}
+                      </button>
+                    ))}
+                  </div>
+                  {error ? <p className="error">{error}</p> : null}
+                </div>
+              ) : providerSection ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                   {providers.length ? providers.map((provider) => {
                     const ready = provider.configured && provider.available;
@@ -180,6 +240,7 @@ export default function SettingsPage() {
                   <CompanyInterview
                     onSaved={(savedProfile) => {
                       setCompany(savedProfile);
+                      setSavedCompany(savedProfile);
                       setCompanyDirty(false);
                     }}
                     profile={company}
@@ -291,7 +352,7 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <div className="admin-foot">
+          {!vaultSection ? <div className="admin-foot">
             <span className={error ? "error" : "stub-note"}>
               {error || (providerSection ? "Provider status is read-only." : !activeDirty ? "Saved" : companySection ? "Company context has unsaved changes." : current.id === "agents" ? "Model settings have unsaved changes." : "Document review settings have unsaved changes.")}
             </span>
@@ -304,7 +365,9 @@ export default function SettingsPage() {
                   setError("");
                   try {
                     if (companySection) {
-                      setCompany(await getCompanyProfile());
+                      const nextCompany = await getCompanyProfile();
+                      setCompany(nextCompany);
+                      setSavedCompany(nextCompany);
                       setCompanyDirty(false);
                     } else {
                       const nextSettings = await getSettings();
@@ -325,7 +388,14 @@ export default function SettingsPage() {
                   setError("");
                   try {
                     if (companySection) {
-                      setCompany(await saveCompanyProfile(company));
+                      const replacementMessage = companyReplacementMessage(
+                        savedCompany?.company_name ?? "",
+                        company.company_name,
+                      );
+                      if (replacementMessage && !window.confirm(replacementMessage)) return;
+                      const savedProfile = await saveCompanyProfile(company);
+                      setCompany(savedProfile);
+                      setSavedCompany(savedProfile);
                       setCompanyDirty(false);
                     } else {
                       await saveSettings(settings);
@@ -358,7 +428,7 @@ export default function SettingsPage() {
                 {busy ? "Saving…" : "Save changes"}
               </button>
             </div>
-          </div>
+          </div> : null}
         </div>
       </div>
     </AppShell>

@@ -19,10 +19,18 @@ class ResearchRunService:
         self.research = research
         self._tasks: dict[str, asyncio.Task[None]] = {}
 
-    def start(self, matter_id: str, questions: list[str]) -> dict[str, Any]:
+    @property
+    def has_active_work(self) -> bool:
+        return any(not task.done() for task in self._tasks.values())
+
+    def start(self, matter_id: str, questions: list[str], *, source_action_key: str | None = None) -> dict[str, Any]:
         clean_questions = [item.strip() for item in questions if item.strip()][: self.MAX_QUESTIONS]
         if not clean_questions:
             raise ValueError("At least one research question is required.")
+        if source_action_key:
+            existing = next((run for run in self.list(matter_id) if run.get("source_action_key") == source_action_key), None)
+            if existing:
+                return existing
         run_id = new_id("RUN")
         record = self._write(
             matter_id,
@@ -31,6 +39,7 @@ class ResearchRunService:
             questions=clean_questions,
             completed=0,
             status="Research is queued.",
+            source_action_key=source_action_key,
         )
         self._tasks[run_id] = asyncio.create_task(self._execute(matter_id, run_id, clean_questions))
         return record
@@ -41,6 +50,18 @@ class ResearchRunService:
             raise KeyError(f"Research run not found: {run_id}")
         document = self.vault.read_markdown(path)
         return {**document["metadata"], "path": path}
+
+    def record_completed(self, matter_id: str, question: str, result_path: str, *, source_action_key: str) -> dict[str, Any]:
+        existing = next((run for run in self.list(matter_id) if run.get("source_action_key") == source_action_key), None)
+        if existing:
+            return existing
+        run_id = new_id("RUN")
+        return self._write(
+            matter_id, run_id, state="completed", questions=[question], completed=1,
+            status="Research is complete.", results=[{"path": result_path}],
+            source_action_key=source_action_key, finished_at=iso_now(),
+            dossier_effect="Research support is ready for the next dossier update.",
+        )
 
     def list(self, matter_id: str) -> list[dict[str, Any]]:
         directory = self.vault.resolve(f"{self._matter_path(matter_id)}/research/runs")
@@ -72,6 +93,11 @@ class ResearchRunService:
         if task is not None:
             await task
 
+    async def wait_for_active_work(self) -> None:
+        tasks = [task for task in self._tasks.values() if not task.done()]
+        if tasks:
+            await asyncio.gather(*tasks, return_exceptions=True)
+
     async def _execute(self, matter_id: str, run_id: str, questions: list[str]) -> None:
         results: list[dict[str, Any]] = []
         self._write(matter_id, run_id, state="running", questions=questions, completed=0, status="Research is running.")
@@ -95,10 +121,10 @@ class ResearchRunService:
                 status="Research was interrupted.", results=results, finished_at=iso_now(),
             )
             raise
-        except Exception as exc:
+        except Exception:
             self._write(
                 matter_id, run_id, state="failed", questions=questions, completed=len(results),
-                status=f"Research stopped after preserving {len(results)} useful result(s): {exc}",
+                status=f"Research stopped after preserving {len(results)} useful result(s).",
                 results=results, finished_at=iso_now(),
             )
         finally:

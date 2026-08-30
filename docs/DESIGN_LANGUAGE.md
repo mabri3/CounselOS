@@ -69,8 +69,13 @@ Base UI text is `15px`. Grey is dark enough to read (`#55524b`, not `#8a857c`).
 
 This is the one rule that never bends.
 
-- Agent output: **dashed** iris border, iris tint, labelled with the agent's name
-  and "not yet reviewed" until a human accepts it.
+- Agent output keeps the **dashed** iris border and iris tint. Ordinary Themis
+  conversation is labelled **Themis**.
+- **Themis · Not yet reviewed by an attorney** appears only on qualifying
+  generated work product with an explicit current unreviewed state, such as an
+  unsaved company-profile draft or an open generated review packet.
+- Saved company profiles use **Company profile · Saved**. Resolved or
+  monitoring review packets do not show an unreviewed status.
 - Recorded decisions: solid border, serif, a real date, a named human.
 - Recommendations never appear inside the decision table. They sit outside it,
   and the only path from one to the other is the act of recording.
@@ -79,7 +84,9 @@ This is the one rule that never bends.
   recommendation into a recorded decision on its own. An agent can draft a
   reply and can never send one. These are locked settings, not defaults.
 - The full assistant block uses the dashed iris treatment and the label
-  **Themis · Not reviewed**. A small icon alone is not enough.
+  **Themis**. A small icon alone is not enough.
+- Source support and attorney review are separate states. Do not infer either
+  state from a folder, file name, or missing metadata.
 - Show source or action provenance only when the stored data supports it. Never
   invent provenance or describe every fact as extracted.
 

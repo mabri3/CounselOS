@@ -146,6 +146,7 @@ class MatterService:
         base = matter["path"]
         matter_metadata = self.vault.read_markdown(f"{base}/matter.md")["metadata"]
         tree = self.vault.list_tree(base)
+        self._exclude_research_run_records(tree)
         self._label_conversations(tree)
         self._label_internal_records(tree)
         work_items = self.index.list_work_items(matter_id)
@@ -593,6 +594,20 @@ class MatterService:
                 or str(metadata.get("event_type", "Matter update")).replace("_", " ").title()
                 or "Matter record"
             )
+
+    def _exclude_research_run_records(self, tree: list[dict[str, Any]]) -> None:
+        kept: list[dict[str, Any]] = []
+        for node in tree:
+            if node["type"] == "folder":
+                self._exclude_research_run_records(node.get("children", []))
+                kept.append(node)
+                continue
+            if node.get("extension") == ".md":
+                metadata = self.vault.read_markdown(node["path"])["metadata"]
+                if metadata.get("record_type") == "research_run":
+                    continue
+            kept.append(node)
+        tree[:] = kept
 
     @staticmethod
     def _why_now(

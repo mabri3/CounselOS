@@ -52,6 +52,7 @@ export default function MatterWorkspace({
   const [modalOpen, setModalOpen] = useState(false);
   const [chatSeed, setChatSeed] = useState({ text: "", revision: 0 });
   const [conversationSeed, setConversationSeed] = useState({ conversationId: "", revision: 0 });
+  const [middleSection, setMiddleSection] = useState<"overview" | "chat">("overview");
   const [uploading, setUploading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -148,6 +149,11 @@ export default function MatterWorkspace({
     setCollapsedPanes((current) => ({ ...current, document: false }));
   }
 
+  function openChatWithSeed(text: string) {
+    setMiddleSection("chat");
+    setChatSeed((current) => ({ text, revision: current.revision + 1 }));
+  }
+
   function togglePane(pane: keyof typeof collapsedPanes) {
     setCollapsedPanes((current) => {
       const openCount = Object.values(current).filter((collapsed) => !collapsed).length;
@@ -220,6 +226,7 @@ export default function MatterWorkspace({
     const conversationId = conversationIdFromPath(path);
     setTreeActivePath(path);
     if (conversationId) {
+      setMiddleSection("chat");
       setConversationSeed((current) => ({ conversationId, revision: current.revision + 1 }));
       return;
     }
@@ -241,10 +248,7 @@ export default function MatterWorkspace({
       return;
     }
     if (control.id === "draft_work_product") {
-      setChatSeed((current) => ({
-        text: "Draft the work product for the chosen path and save it in this matter.",
-        revision: current.revision + 1,
-      }));
+      openChatWithSeed("Draft the work product for the chosen path and save it in this matter.");
       return;
     }
     if (control.id === "review_draft" && draftPath) {
@@ -326,10 +330,6 @@ export default function MatterWorkspace({
       ? "btn agent"
       : "btn primary";
 
-  function focusConversation() {
-    setCollapsedPanes({ tree: true, overview: false, document: true });
-  }
-
   return (
     <div className="matter-shell">
       <header
@@ -407,6 +407,7 @@ export default function MatterWorkspace({
                 activePath={treeActivePath}
                 onNewChat={() => {
                   setTreeActivePath(null);
+                  setMiddleSection("chat");
                   setConversationSeed((current) => ({ conversationId: "", revision: current.revision + 1 }));
                 }}
                 onSelect={selectMatterItem}
@@ -446,20 +447,33 @@ export default function MatterWorkspace({
           <div className="pane-content" hidden={collapsedPanes.overview}>
             <div className="pane-head">
               <span>Matter overview</span>
-              <div className="btn-row">
-                {!collapsedPanes.tree || !collapsedPanes.document ? (
-                  <button className="btn quiet compact" onClick={focusConversation} type="button">Focus conversation</button>
-                ) : null}
-                <button
-                  aria-label="Collapse matter overview"
-                  className="pane-collapse"
-                  onClick={() => togglePane("overview")}
-                  title="Collapse matter overview"
-                  type="button"
-                >‹</button>
-              </div>
+              <button
+                aria-label="Collapse matter overview"
+                className="pane-collapse"
+                onClick={() => togglePane("overview")}
+                title="Collapse matter overview"
+                type="button"
+              >‹</button>
             </div>
-            <div className="brief-scroll">
+            <div className={`middle-section ${middleSection === "overview" ? "active" : "collapsed"}`}>
+              <button
+                aria-controls="matter-overview-panel"
+                aria-expanded={middleSection === "overview"}
+                className="middle-section-toggle"
+                id="matter-overview-toggle"
+                onClick={() => setMiddleSection("overview")}
+                type="button"
+              >
+                <span>Overview</span>
+                <span aria-hidden="true">{middleSection === "overview" ? "−" : "+"}</span>
+              </button>
+              <div
+                aria-labelledby="matter-overview-toggle"
+                className="middle-section-panel brief-scroll"
+                hidden={middleSection !== "overview"}
+                id="matter-overview-panel"
+                role="region"
+              >
               <div className="matter-brief">
                 <section className={`matter-call ${lifecycleAction.id === "none" ? "is-complete" : ""}`}>
                   <span className="matter-call-kicker">
@@ -527,7 +541,7 @@ export default function MatterWorkspace({
                     <strong>Matter artifacts</strong>
                     {artifacts.length ? artifacts.map((item) => (
                       <button className="matter-artifact-link" key={`${item.kind}:${item.path}`} onClick={() => openDocument(item.path)} type="button">
-                        <span>{{ recommendation: "Working recommendation", research: "Latest research", draft: "Current draft", final: "Approved / final response" }[item.kind]}</span>
+                        <span>{{ recommendation: "Working recommendation", research: "First-pass research", draft: "Current draft", final: "Approved / final response" }[item.kind]}</span>
                         <span>{item.label}</span>
                       </button>
                     )) : <span className="matter-artifact-empty">No user-facing artifacts are saved yet.</span>}
@@ -590,7 +604,7 @@ export default function MatterWorkspace({
                             <span>Editable dossier</span><span>Open the full matter summary</span>
                           </button>
                         ) : null}
-                        {researchPath ? <button className="matter-artifact-link" onClick={() => openDocument(researchPath)} type="button"><span>Latest research</span><span>Open the research packet</span></button> : null}
+                        {researchPath ? <button className="matter-artifact-link" onClick={() => openDocument(researchPath)} type="button"><span>First-pass research</span><span>Open the research packet</span></button> : null}
                       </div>
                     </section>
 
@@ -605,27 +619,49 @@ export default function MatterWorkspace({
                 </details>
               </div>
             </div>
+            </div>
 
-            <ChatPanel
-              activeFile={activePath}
-              matterId={detail.matter_id}
-              matterTitle={detail.title}
-              onRefresh={reload}
-              onOpenDocument={openDocument}
-              conversationSeed={conversationSeed}
-              onConversationChange={(conversationId) => {
-                if (!conversationId) {
-                  setTreeActivePath(null);
-                  return;
-                }
-                const path = findConversationPath(detail.tree, conversationId);
-                if (path) setTreeActivePath(path);
-              }}
-              seed={chatSeed}
-              reviewAuthor={reviewAuthor.name}
-              lawyerAuthor={reviewSettings.lawyer}
-              onReviewAuthorChange={reviewAuthor.setName}
-            />
+            <div className={`middle-section ${middleSection === "chat" ? "active" : "collapsed"}`}>
+              <button
+                aria-controls="matter-chat-panel"
+                aria-expanded={middleSection === "chat"}
+                className="middle-section-toggle"
+                id="matter-chat-toggle"
+                onClick={() => setMiddleSection("chat")}
+                type="button"
+              >
+                <span>Chat with Themis</span>
+                <span aria-hidden="true">{middleSection === "chat" ? "−" : "+"}</span>
+              </button>
+              <div
+                aria-labelledby="matter-chat-toggle"
+                className="middle-section-panel"
+                hidden={middleSection !== "chat"}
+                id="matter-chat-panel"
+                role="region"
+              >
+                <ChatPanel
+                  activeFile={activePath}
+                  matterId={detail.matter_id}
+                  matterTitle={detail.title}
+                  onRefresh={reload}
+                  onOpenDocument={openDocument}
+                  conversationSeed={conversationSeed}
+                  onConversationChange={(conversationId) => {
+                    if (!conversationId) {
+                      setTreeActivePath(null);
+                      return;
+                    }
+                    const path = findConversationPath(detail.tree, conversationId);
+                    if (path) setTreeActivePath(path);
+                  }}
+                  seed={chatSeed}
+                  reviewAuthor={reviewAuthor.name}
+                  lawyerAuthor={reviewSettings.lawyer}
+                  onReviewAuthorChange={reviewAuthor.setName}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -660,10 +696,9 @@ export default function MatterWorkspace({
               activeReviewAuthor={reviewAuthor.name}
               lawyerAuthor={reviewSettings.lawyer}
               onReviewAuthorChange={reviewAuthor.setName}
-              onAskAgent={() => setChatSeed((current) => ({
-                text: `Propose replacement language for ${activePath?.split("/").at(-1) ?? "this document"}. Save the revision to the active file so I can accept or reject each redline.`,
-                revision: current.revision + 1,
-              }))}
+              onAskAgent={() => openChatWithSeed(
+                `Propose replacement language for ${activePath?.split("/").at(-1) ?? "this document"}. Save the revision to the active file so I can accept or reject each redline.`,
+              )}
               onCollapse={() => togglePane("document")}
               onUpload={upload}
             />
@@ -743,8 +778,8 @@ function collectEvidence(tree: FileNode[]): EvidenceNode[] {
         out.push({ path: node.path, ...matterRecord });
       } else if (folder === "documents") {
         out.push({ path: node.path, name: node.label ?? node.name, kind: "Source document", note: "Attached to the matter" });
-      } else if (folder === "research") {
-        out.push({ path: node.path, name: node.label ?? node.name, kind: "Agent research", note: "Written by Themis, unreviewed" });
+      } else if (folder === "research" && !node.path.includes("/research/runs/")) {
+        out.push({ path: node.path, name: node.label ?? node.name, kind: "First-pass research", note: "Saved research packet" });
       }
     }
   };

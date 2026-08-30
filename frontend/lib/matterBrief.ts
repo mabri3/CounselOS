@@ -94,8 +94,10 @@ export function matterArtifacts(tree: FileNode[], approvedArtifactPath?: string 
   const markdown = files.filter((node) => node.extension === ".md" || node.name.endsWith(".md"));
   const recommendation = markdown.find((node) => node.name === "recommendations.md");
   const research = markdown.filter((node) => (
-    node.record_type === "research" ||
-    (node.path.includes("/research/") && node.name !== "annotations.md")
+    !node.path.includes("/research/runs/") && (
+      node.record_type === "research" ||
+      (node.path.includes("/research/") && node.name !== "annotations.md")
+    )
   )).at(-1);
   const workProducts = markdown.filter((node) => node.record_type === "work_product");
   const legacyDrafts = markdown.filter((node) => (
@@ -116,7 +118,7 @@ export function matterArtifacts(tree: FileNode[], approvedArtifactPath?: string 
 
   return [
     recommendation && { kind: "recommendation" as const, path: recommendation.path, label: recommendation.label ?? recommendation.name },
-    research && { kind: "research" as const, path: research.path, label: research.label ?? research.name },
+    research && { kind: "research" as const, path: research.path, label: "First-pass research" },
     draft && { kind: "draft" as const, path: draft.path, label: draft.label ?? draft.name },
     final && { kind: "final" as const, path: final.path, label: final.label ?? final.name },
   ].filter((item): item is MatterArtifact => Boolean(item));

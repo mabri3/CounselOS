@@ -11,6 +11,17 @@ import type {
 
 export type CompanyProfileField = Exclude<keyof CompanyProfile, "source_id" | "version">;
 
+export function normalizeCompanyName(name: string): string {
+  return name.trim().replace(/\s+/g, " ").toLowerCase();
+}
+
+export function companyReplacementMessage(savedName: string, draftName: string): string | null {
+  const saved = savedName.trim();
+  const draft = draftName.trim();
+  if (!saved || !draft || normalizeCompanyName(saved) === normalizeCompanyName(draft)) return null;
+  return `Replace the company profile for ${saved} with ${draft}?`;
+}
+
 export const COMPANY_PROFILE_FIELDS: { key: CompanyProfileField; label: string; help: string }[] = [
   { key: "company_name", label: "Company name", help: "The name used in the company profile." },
   { key: "website_url", label: "Website", help: "The company website used as background context." },
@@ -132,6 +143,8 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
 
   async function saveDraft() {
     if (saving || saved) return;
+    const replacementMessage = companyReplacementMessage(profile.company_name, draft.company_name);
+    if (replacementMessage && !window.confirm(replacementMessage)) return;
     setSaving(true);
     setError("");
     try {
@@ -231,13 +244,13 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
 }
 
 function AssistantTurn({ children }: { children: string }) {
-  return <div className="assistant-message"><div className="agent-label">Themis · Not reviewed</div><div className="bubble-agent"><p>{children}</p></div></div>;
+  return <div className="assistant-message"><div className="agent-label">Themis</div><div className="bubble-agent"><p>{children}</p></div></div>;
 }
 
 function QuestionTurn({ question }: { question: CompanyInterviewQuestion }) {
   return (
     <div className="assistant-message company-question">
-      <div className="agent-label">Themis · Not reviewed</div>
+      <div className="agent-label">Themis</div>
       <div className="bubble-agent"><p>{question.text}</p></div>
       {question.reason ? <p className="company-question-reason">Why I ask: {question.reason}</p> : null}
     </div>
@@ -256,7 +269,7 @@ function ReviewCard({ draft, error, saved, saving, warning, onChange, onSave, on
 }) {
   return (
     <section className={`company-review-card ${saved ? "saved" : ""}`} aria-label="Company profile draft">
-      <div className="agent-label">{saved ? "Company profile · Saved" : "Themis · Not reviewed"}</div>
+      <div className="agent-label">{saved ? "Company profile · Saved" : "Themis · Not yet reviewed by an attorney"}</div>
       <h2>{saved ? "Company profile saved" : "Review the company profile"}</h2>
       <p className="company-review-state">{saved ? "This profile is saved in company.md." : "Edit this draft if needed. Nothing is saved until you choose Save."}</p>
       <dl className="company-review-fields">

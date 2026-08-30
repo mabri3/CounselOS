@@ -185,11 +185,24 @@ class DecisionService:
         return {"reviewed": reviewed, "flagged": flagged, "changes": changes}
 
     def _evaluate(self, decision: dict[str, Any], now) -> tuple[str, str]:
-        next_review = parse_iso(decision.get("next_review_at"))
+        parsed_dates: dict[str, Any] = {}
+        for field in ("next_review_at", "last_reviewed_at", "decided_at"):
+            value = decision.get(field)
+            if value is None or value == "":
+                parsed_dates[field] = None
+                continue
+            if not isinstance(value, str):
+                return "review_recommended", f"Invalid {field}; review is recommended."
+            try:
+                parsed_dates[field] = parse_iso(value)
+            except ValueError:
+                return "review_recommended", f"Invalid {field}; review is recommended."
+
+        next_review = parsed_dates["next_review_at"]
         if next_review and next_review <= now:
             return "stale", f"Scheduled review date passed on {next_review.date().isoformat()}."
 
-        anchor = parse_iso(decision.get("last_reviewed_at")) or parse_iso(decision.get("decided_at"))
+        anchor = parsed_dates["last_reviewed_at"] or parsed_dates["decided_at"]
         if anchor and now - anchor >= timedelta(days=self.review_age_days):
             return "review_recommended", f"Decision has not been reviewed in {self.review_age_days} days."
 

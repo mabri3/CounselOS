@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
+
 import json
 
 import pytest
@@ -9,6 +11,7 @@ from app.main import app
 from app.models.api import CompanyProfile
 from app.models.awareness import SafeFetchResult
 from app.providers.base import ProviderReply
+from app.services.company import CompanyProfileVersionConflictError
 
 
 FIELDS = ["company_name", "website_url", "summary", "business_model", "products_services", "jurisdictions", "regulatory_context", "data_practices", "risk_posture"]
@@ -250,3 +253,99 @@ def test_put_persists_profile(app_context):
     assert response.status_code == 200
     saved = app_context.vault.read_markdown("00_System/company.md")
     assert saved["metadata"]["profile"]["company_name"] == "Acme"
+
+
+def test_same_company_edit_saves_with_current_version(app_context):
+    client = _client(app_context)
+    current = client.put(
+        "/api/settings/company",
+        json=_profile(company_name="Acme", summary="Original summary"),
+    ).json()
+
+    response = client.put(
+        "/api/settings/company",
+        json={**current, "company_name": "  ACME  ", "summary": "Updated summary"},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["summary"] == "Updated summary"
+
+
+def test_stale_version_returns_conflict_without_changing_company_file(app_context):
+    client = _client(app_context)
+    first = client.put(
+        "/api/settings/company",
+        json=_profile(company_name="Acme", summary="First summary"),
+    ).json()
+    latest = client.put(
+        "/api/settings/company",
+        json={**first, "summary": "Latest summary"},
+    ).json()
+    path = app_context.vault.resolve("00_System/company.md")
+    before = path.read_bytes()
+
+    response = client.put(
+        "/api/settings/company",
+        json={**first, "company_name": "Beta", "summary": "Stale summary"},
+    )
+
+    assert response.status_code == 409
+    assert response.json()["detail"] == "The company profile changed. Reload it and try again."
+    assert path.read_bytes() == before
+    assert app_context.company.read().version == latest["version"]
+
+
+def test_empty_first_run_profile_saves_without_version(app_context):
+    app_context.vault.resolve("00_System/company.md").unlink(missing_ok=True)
+
+    response = _client(app_context).put(
+        "/api/settings/company",
+        json=_profile(company_name="Acme"),
+    )
+
+    assert response.status_code == 200
+    assert response.json()["company_name"] == "Acme"
+    assert response.json()["version"]
+
+
+def test_external_markdown_edit_invalidates_saved_version(app_context):
+    client = _client(app_context)
+    current = client.put(
+        "/api/settings/company",
+        json=_profile(company_name="Acme", summary="Original summary"),
+    ).json()
+    document = app_context.vault.read_markdown("00_System/company.md")
+    app_context.vault.write_markdown(
+        "00_System/company.md",
+        document["content"] + "\n\nExternally added context.",
+        document["metadata"],
+    )
+    before = app_context.vault.resolve("00_System/company.md").read_bytes()
+
+    response = client.put(
+        "/api/settings/company",
+        json={**current, "summary": "Stale overwrite"},
+    )
+
+    assert response.status_code == 409
+    assert app_context.vault.resolve("00_System/company.md").read_bytes() == before
+
+
+def test_concurrent_company_writes_allow_only_one_matching_version(app_context):
+    current = app_context.company.write(
+        CompanyProfile(**_profile(company_name="Acme", summary="Original summary"))
+    )
+    first = current.model_copy(update={"summary": "First update"})
+    second = current.model_copy(update={"summary": "Second update"})
+
+    def save(profile):
+        try:
+            return app_context.company.write(profile).summary
+        except CompanyProfileVersionConflictError:
+            return "conflict"
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        results = list(pool.map(save, [first, second]))
+
+    assert results.count("conflict") == 1
+    assert app_context.company.read().summary in {"First update", "Second update"}

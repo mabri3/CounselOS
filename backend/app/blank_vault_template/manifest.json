@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "description": "Immutable core files for a blank Counsel OS vault.",
+  "files": {
+    ".counsel-os-vault.json": "{\n  \"schema_version\": 1\n}\n",
+    "00_System/Agents.md": "---\nrecord_type: system_instructions\n---\n# Agent standards\n\nGive the useful answer first. Keep recommendations separate from recorded decisions. Preserve source files and state material assumptions.\n",
+    "00_System/Soul.md": "---\nrecord_type: system_identity\nversion: 0.1.0\n---\n# Soul\n\nHelp product counsel move from a raw request to an organized, researched, editable starting point. Reduce cognitive load and produce useful work without legal-answer theater.\n",
+    "00_System/workflows/product-counsel.md": "---\nworkflow_id: product-counsel\nname: Product Counsel Workflow\nstages:\n  - id: intake\n    label: Intake\n  - id: research\n    label: Research\n  - id: explore\n    label: Explore\n  - id: generate\n    label: Generate\n  - id: respond\n    label: Respond\n  - id: closed\n    label: Closed\n---\n# Product Counsel Workflow\n\nMove work from intake to a preserved closed record.\n",
+    "00_System/agents/counsel-copilot.md": "---\nagent_id: counsel-copilot\nname: Counsel Copilot\ndescription: General workspace assistant for product counsel.\nenabled: true\nmax_steps: 6\nallowed_tools: [read_file, list_files, search_vault, write_markdown, run_research]\n---\n# Counsel Copilot\n\nOrient the lawyer, answer directly, and use the active matter as the default scope.\n",
+    "00_System/agents/intake-agent.md": "---\nagent_id: intake-agent\nname: Intake Agent\ndescription: Organizes a new legal request.\nenabled: true\nmax_steps: 6\nallowed_tools: [read_file, write_markdown]\n---\n# Intake Agent\n\nIdentify the business objective, decision, and facts that can change the path.\n",
+    "00_System/agents/research-agent.md": "---\nagent_id: research-agent\nname: Research Agent\ndescription: Produces a supported first research pass.\nenabled: true\nmax_steps: 6\nallowed_tools: [read_file, list_files, search_vault, write_markdown]\n---\n# Research Agent\n\nSeparate sources, assumptions, and generated analysis.\n",
+    "00_System/agents/decision-monitor.md": "---\nagent_id: decision-monitor\nname: Decision Monitor\ndescription: Reviews recorded decisions for changed support.\nenabled: true\nmax_steps: 6\nallowed_tools: [read_file, search_vault]\n---\n# Decision Monitor\n\nReport decisions that need lawyer review without changing them.\n",
+    "00_System/tools/read_file.md": "---\ntool_id: read_file\nhandler: read_file\ndescription: Read a workspace file.\nparameters: {type: object, properties: {path: {type: string}}, required: [path], additionalProperties: false}\n---\n# Read file\n",
+    "00_System/tools/list_files.md": "---\ntool_id: list_files\nhandler: list_files\ndescription: List workspace files.\nparameters: {type: object, properties: {directory: {type: string}}, additionalProperties: false}\n---\n# List files\n",
+    "00_System/tools/search_vault.md": "---\ntool_id: search_vault\nhandler: search_vault\ndescription: Search workspace text.\nparameters: {type: object, properties: {query: {type: string}}, required: [query], additionalProperties: false}\n---\n# Search vault\n",
+    "00_System/tools/write_markdown.md": "---\ntool_id: write_markdown\nhandler: write_markdown\ndescription: Write a Markdown work file.\nparameters: {type: object, properties: {path: {type: string}, content: {type: string}}, required: [content], additionalProperties: false}\n---\n# Write Markdown\n",
+    "00_System/tools/run_research.md": "---\ntool_id: run_research\nhandler: run_research\ndescription: Run a first research pass for the active matter.\nparameters: {type: object, properties: {question: {type: string}}, required: [question], additionalProperties: false}\n---\n# Run research\n"
+  }
+}

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import AttachmentPicker from "@/components/AttachmentPicker";
@@ -10,10 +10,10 @@ import ChatCards from "@/components/ChatCards";
 import SkillCommandMenu from "@/components/SkillCommandMenu";
 import LinkifiedText from "@/components/LinkifiedText";
 import UploadIntentCard from "@/components/UploadIntentCard";
-import { getConversation, getConversations, getSkills, sendChat, uploadDocuments } from "@/lib/api";
+import { getChatRun, getConversation, getConversations, getSkills, retryChatRun, startChatRun, uploadDocuments } from "@/lib/api";
 import { skillBuilderGoal } from "@/lib/skills";
 import { mutationOutcome } from "@/lib/matterBrief";
-import type { AppliedSkillSummary, AttachmentReference, CardAction, ChatCard, SkillDefinition, ToolTrace } from "@/lib/types";
+import type { AppliedSkillSummary, AttachmentReference, CardAction, ChatCard, ChatRun, ChatRunState, SkillDefinition, ToolTrace } from "@/lib/types";
 
 type Message = { message_id?: string; role: "user" | "assistant"; content: string; trace?: ToolTrace[]; cards?: ChatCard[]; attachments?: AttachmentReference[]; applied_skills?: AppliedSkillSummary[] };
 
@@ -22,6 +22,33 @@ const SUGGESTIONS = [
   "Which other matters does this touch?",
   "What would change your view?",
 ];
+
+export const chatRunStorageKey = (matterId: string, conversationId?: string | null) =>
+  `counsel-os:chat-run:${matterId}:${conversationId || "new"}`;
+
+type RunStorage = Pick<Storage, "getItem" | "setItem" | "removeItem">;
+
+export function pendingChatRunId(storage: RunStorage, matterId: string, conversationId?: string | null): string | null {
+  return storage.getItem(chatRunStorageKey(matterId, conversationId))
+    ?? storage.getItem(chatRunStorageKey(matterId));
+}
+
+export function rememberChatRun(storage: RunStorage, matterId: string, run: Pick<ChatRun, "run_id" | "conversation_id">): void {
+  const pendingKey = chatRunStorageKey(matterId);
+  const conversationKey = chatRunStorageKey(matterId, run.conversation_id);
+  storage.setItem(conversationKey, run.run_id);
+  if (run.conversation_id) storage.removeItem(pendingKey);
+  else storage.setItem(pendingKey, run.run_id);
+}
+
+export function chatRunStateLabel(state: ChatRunState): string {
+  return { queued: "Queued", running: "Working", completed: "Completed", failed: "Failed", interrupted: "Interrupted" }[state];
+}
+
+export function safeChatFailureDetail(detail?: string | null): string {
+  if (!detail || /failed to fetch/i.test(detail) || /https?:\/\//i.test(detail) || detail.length > 240) return "";
+  return detail;
+}
 
 /**
  * Canvas 2b — the copilot is a thread at the foot of the matter, not a pane of
@@ -65,6 +92,10 @@ export default function ChatPanel({
   const [uploading, setUploading] = useState(false);
   const [skills, setSkills] = useState<SkillDefinition[]>([]);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [activeRun, setActiveRun] = useState<ChatRun | null>(null);
+  const [waiting, setWaiting] = useState(false);
+  const completedRuns = useRef(new Set<string>());
+  const refreshedRuns = useRef(new Set<string>());
 
   useEffect(() => {
     if (!busy) { setElapsedSeconds(0); return; }
@@ -101,6 +132,56 @@ export default function ChatPanel({
     return () => { cancelled = true; };
   }, [matterId]);
 
+  const finishRun = useCallback(async (run: ChatRun) => {
+    setActiveRun(run);
+    setWaiting(false);
+    setBusy(false);
+    if (run.state !== "completed" || completedRuns.current.has(run.run_id)) return;
+    completedRuns.current.add(run.run_id);
+    if (run.response?.review_author) onReviewAuthorChange(run.response.review_author);
+    const nextConversationId = run.response?.conversation_id ?? run.conversation_id;
+    if (nextConversationId) {
+      try {
+        const saved = await getConversation(matterId, nextConversationId);
+        setConversationId(saved.conversation_id);
+        setMessages(saved.messages);
+        onConversationChange?.(saved.conversation_id);
+      } catch {
+        if (run.response) setMessages((current) => current.some((item) => item.role === "assistant" && item.content === run.response?.reply)
+          ? current
+          : [...current, { role: "assistant", content: run.response!.reply, trace: run.response!.trace, cards: run.response!.cards, applied_skills: run.response!.applied_skills }]);
+      }
+    } else if (run.response && !messages.some((item) => item.role === "assistant" && item.content === run.response?.reply)) {
+      setMessages((current) => [...current, { role: "assistant", content: run.response!.reply, trace: run.response!.trace, cards: run.response!.cards, applied_skills: run.response!.applied_skills }]);
+    }
+    window.localStorage.removeItem(chatRunStorageKey(matterId, run.conversation_id));
+    window.localStorage.removeItem(chatRunStorageKey(matterId));
+    if (!refreshedRuns.current.has(run.run_id)) {
+      refreshedRuns.current.add(run.run_id);
+      await onRefresh();
+    }
+  }, [matterId, messages, onConversationChange, onRefresh, onReviewAuthorChange]);
+
+  useEffect(() => {
+    if (!activeRun || !waiting || !["queued", "running"].includes(activeRun.state)) return;
+    let cancelled = false;
+    const check = async () => {
+      try {
+        const next = await getChatRun(matterId, activeRun.run_id);
+        if (cancelled) return;
+        setActiveRun(next);
+        if (!["queued", "running"].includes(next.state)) await finishRun(next);
+      } catch {
+        if (!cancelled) setHistoryError("Themis could not finish this request.");
+        setWaiting(false);
+        setBusy(false);
+      }
+    };
+    void check();
+    const timer = window.setInterval(() => void check(), 2000);
+    return () => { cancelled = true; window.clearInterval(timer); };
+  }, [activeRun?.run_id, activeRun?.state, finishRun, matterId, waiting]);
+
   useEffect(() => {
     if (seed?.text) setInput(seed.text);
   }, [seed]);
@@ -108,6 +189,23 @@ export default function ChatPanel({
   useEffect(() => {
     if (conversationSeed?.revision) void openConversation(conversationSeed.conversationId);
   }, [conversationSeed]);
+
+  useEffect(() => {
+    if (loadingHistory) return;
+    const runId = pendingChatRunId(window.localStorage, matterId, conversationId);
+    if (!runId || activeRun?.run_id === runId) return;
+    setBusy(true);
+    setWaiting(true);
+    void getChatRun(matterId, runId).then(async (run) => {
+      rememberChatRun(window.localStorage, matterId, run);
+      setActiveRun(run);
+      if (!["queued", "running"].includes(run.state)) await finishRun(run);
+    }).catch(() => {
+      setHistoryError("Themis could not finish this request.");
+      setBusy(false);
+      setWaiting(false);
+    });
+  }, [activeRun?.run_id, conversationId, finishRun, loadingHistory, matterId]);
 
   async function submit(text: string, cardAction?: CardAction, actionAttachments: AttachmentReference[] = attachments) {
     const trimmed = text.trim();
@@ -118,12 +216,11 @@ export default function ChatPanel({
       return;
     }
     const visibleText = trimmed || cardActionText(cardAction) || `Attached ${actionAttachments.map((item) => item.name).join(", ")}`;
-    setMessages((current) => [...current, { role: "user", content: visibleText, attachments: actionAttachments }]);
     setInput("");
     setAttachments([]);
     setBusy(true);
     try {
-      const response = await sendChat({
+      const run = await startChatRun(matterId, {
         message: trimmed,
         matter_id: matterId,
         active_file: activeFile,
@@ -135,18 +232,22 @@ export default function ChatPanel({
         review_author: reviewAuthor,
         lawyer_author: lawyerAuthor,
       });
-      if (response.review_author) onReviewAuthorChange(response.review_author);
-      setConversationId(response.conversation_id ?? conversationId);
-      onConversationChange?.(response.conversation_id ?? conversationId);
-      if (response.refresh.length || response.changed_paths.length) await onRefresh();
-      setMessages((current) => [...current, { role: "assistant", content: response.reply, trace: response.trace, cards: response.cards, applied_skills: response.applied_skills }]);
+      setActiveRun(run);
+      setWaiting(["queued", "running"].includes(run.state));
+      rememberChatRun(window.localStorage, matterId, run);
+      if (run.conversation_id) {
+        const saved = await getConversation(matterId, run.conversation_id);
+        setConversationId(saved.conversation_id);
+        setMessages(saved.messages);
+        onConversationChange?.(saved.conversation_id);
+      } else {
+        setMessages((current) => [...current, { role: "user", content: visibleText, attachments: actionAttachments }]);
+      }
+      if (!["queued", "running"].includes(run.state)) await finishRun(run);
     } catch (caught) {
-      setMessages((current) => [
-        ...current,
-        { role: "assistant", content: caught instanceof Error ? caught.message : "The chat request failed." },
-      ]);
-    } finally {
       setBusy(false);
+      setWaiting(false);
+      setHistoryError("Themis could not finish this request.");
     }
   }
 
@@ -168,6 +269,9 @@ export default function ChatPanel({
   }
 
   async function openConversation(nextId: string) {
+    setActiveRun(null);
+    setWaiting(false);
+    setBusy(false);
     if (!nextId) {
       setConversationId(null);
       setMessages([]);
@@ -191,6 +295,18 @@ export default function ChatPanel({
     }
   }
 
+  async function retryRun() {
+    if (!activeRun || !["failed", "interrupted"].includes(activeRun.state)) return;
+    setBusy(true); setWaiting(true); setHistoryError("");
+    try {
+      const next = await retryChatRun(matterId, activeRun.run_id);
+      setActiveRun(next);
+      rememberChatRun(window.localStorage, matterId, next);
+    } catch {
+      setBusy(false); setWaiting(false); setHistoryError("Themis could not finish this request.");
+    }
+  }
+
   function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
@@ -202,6 +318,23 @@ export default function ChatPanel({
     <div className="chat-panel">
       {historyError ? <p className="error chat-history-status">{historyError}</p> : null}
       {loadingHistory ? <p className="chat-history-status">Loading saved chat…</p> : null}
+      {activeRun ? (
+        <section className={`chat-card ${activeRun.state === "failed" || activeRun.state === "interrupted" ? "wash-failure" : activeRun.state === "completed" ? "" : "wash-agent"}`} role="status">
+          <div className="chat-card-kicker">Themis · {chatRunStateLabel(activeRun.state)}</div>
+          {activeRun.state === "failed" || activeRun.state === "interrupted" ? (
+            <>
+              <div className="chat-card-summary">Themis could not finish this request.</div>
+              {safeChatFailureDetail(activeRun.failure_detail) ? <div className="chat-card-detail">{safeChatFailureDetail(activeRun.failure_detail)}</div> : null}
+              {activeRun.response?.reply ? <div className="chat-card-detail"><strong>Saved response</strong><ReactMarkdown remarkPlugins={[remarkGfm]}>{activeRun.response.reply}</ReactMarkdown></div> : null}
+            </>
+          ) : <div className="chat-card-summary">{activeRun.status}</div>}
+          <div className="chat-card-actions">
+            {["failed", "interrupted"].includes(activeRun.state) ? <button className="btn tiny quiet" disabled={busy} onClick={() => void retryRun()}>Retry</button> : null}
+            {waiting && ["queued", "running"].includes(activeRun.state) ? <button className="btn tiny quiet" onClick={() => { setWaiting(false); setBusy(false); }}>Stop waiting</button> : null}
+          </div>
+          {waiting && ["queued", "running"].includes(activeRun.state) ? <div className="chat-card-detail">Server work continues if you stop waiting.</div> : null}
+        </section>
+      ) : null}
       {messages.length ? (
         <div className="thread">
           {messages.map((message, index) =>
@@ -214,7 +347,7 @@ export default function ChatPanel({
             ) : (
               <div className="assistant-message" key={message.message_id ?? index}>
                 {message.applied_skills?.map((skill) => <div className="applied-skill-label" key={skill.skill_id}>Applied skill: {skill.name}</div>)}
-                <div className="agent-label">Themis · Not reviewed</div>
+                <div className="agent-label">Themis</div>
                 <div className="bubble-agent">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
                   <ChatCards cards={message.cards} disabled={busy} matterId={matterId} onAction={handleCardAction} onOpenDocument={onOpenDocument} onRefresh={onRefresh} />

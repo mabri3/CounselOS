@@ -24,6 +24,7 @@ class SchedulerService:
         self.poll_seconds = poll_seconds
         self.app: Any | None = None
         self._task: asyncio.Task | None = None
+        self._run_tasks: set[asyncio.Task] = set()
         self._running: set[str] = set()
         self._watch_runner: Callable[[str], Awaitable[ScanResult | Digest]] | None = None
         self._digest_runner: Callable[[str], Awaitable[ScanResult | Digest]] | None = None
@@ -36,6 +37,10 @@ class SchedulerService:
 
     def bind_digest_runner(self, runner: Callable[[str], Awaitable[ScanResult | Digest]]) -> None:
         self._digest_runner = runner
+
+    @property
+    def has_active_work(self) -> bool:
+        return bool(self._running) or any(not task.done() for task in self._run_tasks)
 
     def create(self, request: ScheduleCreate) -> dict[str, Any]:
         schedule_id = new_id("SCH")
@@ -115,6 +120,11 @@ class SchedulerService:
                 pass
             self._task = None
 
+    async def wait_for_active_work(self) -> None:
+        tasks = [task for task in self._run_tasks if not task.done()]
+        if tasks:
+            await asyncio.gather(*tasks, return_exceptions=True)
+
     async def run(self, schedule_id: str) -> dict[str, Any]:
         if not self.app:
             raise RuntimeError("Scheduler is not bound to the application context.")
@@ -183,7 +193,9 @@ class SchedulerService:
                         continue
                     next_run = parse_iso(schedule.get("next_run_at"))
                     if next_run is None or next_run <= utc_now():
-                        asyncio.create_task(self.run(schedule["schedule_id"]))
+                        task = asyncio.create_task(self.run(schedule["schedule_id"]))
+                        self._run_tasks.add(task)
+                        task.add_done_callback(self._run_tasks.discard)
             except Exception:
                 # A scheduler failure is visible through last_status but must not take down the app.
                 pass

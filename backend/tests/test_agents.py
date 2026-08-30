@@ -69,6 +69,11 @@ async def test_agent_decision_check_does_not_change_decision_files(app_context):
     from app.tools.registry import ToolExecutionContext
 
     agent = app_context.agents.get("counsel-copilot")
+    malformed = app_context.decisions.get("DEC-DEMO-APEX-RETENTION")
+    app_context.vault.update_markdown(
+        malformed["path"], metadata_updates={"decided_at": "invalid"}
+    )
+    app_context.index.rebuild()
     paths = [item["path"] for item in app_context.decisions.list()]
     before = {path: app_context.vault.resolve(path).read_bytes() for path in paths}
 
@@ -81,6 +86,7 @@ async def test_agent_decision_check_does_not_change_decision_files(app_context):
 
     assert result.status == "success"
     assert result.changed_paths == []
+    assert result.data["flagged"] >= 1
     assert {path: app_context.vault.resolve(path).read_bytes() for path in paths} == before
 
 

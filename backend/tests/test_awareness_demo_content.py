@@ -1,12 +1,11 @@
-from pathlib import Path
-
 from app.models.awareness import BriefingItem, Development, ReviewPacket, Scan
 from app.services.briefing_store import BriefingStore
 from app.services.vault import VaultService
 from app.services.watches import WatchStore
+from conftest import TEST_VAULT_SOURCE
 
 
-VAULT_ROOT = Path(__file__).resolve().parents[2] / "vault"
+VAULT_ROOT = TEST_VAULT_SOURCE
 
 
 def test_demo_watch_and_view_parse_with_expected_scope() -> None:

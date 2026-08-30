@@ -8,6 +8,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
+ACTIVE_VAULT_POINTER = PROJECT_ROOT / ".counsel-os" / "active-vault.json"
 
 
 class Settings(BaseSettings):
@@ -25,6 +26,7 @@ class Settings(BaseSettings):
     llm_reasoning_effort: str | None = Field(None, alias="LLM_REASONING_EFFORT")
     llm_timeout_seconds: int = Field(120, alias="LLM_TIMEOUT_SECONDS")
     max_agent_steps: int = Field(6, alias="MAX_AGENT_STEPS")
+    chat_run_timeout_seconds: int = Field(180, alias="CHAT_RUN_TIMEOUT_SECONDS")
 
     search_provider: str = Field("disabled", alias="SEARCH_PROVIDER")
     tavily_api_key: str | None = Field(None, alias="TAVILY_API_KEY")
@@ -60,6 +62,9 @@ class Settings(BaseSettings):
     @property
     def cache_db_path(self) -> Path:
         return self.resolved_vault_path / ".counsel_os_cache.db"
+
+    def for_vault(self, vault_path: Path) -> "Settings":
+        return self.model_copy(update={"vault_path": str(vault_path.resolve())})
 
 
 @lru_cache(maxsize=1)

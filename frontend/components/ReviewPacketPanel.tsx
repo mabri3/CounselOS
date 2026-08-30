@@ -55,7 +55,7 @@ export default function ReviewPacketPanel({ packet: initialPacket, matterId, mit
   }
 
   return <section className="agent-note" aria-labelledby={`packet-${packet.packet_id}`} style={{ marginTop: 16 }}>
-    <div className="agent-label">Themis · Not reviewed</div>
+    <div className="agent-label">{packet.status === "open" ? "Themis · Not yet reviewed by an attorney" : "Themis"}</div>
     <h2 id={`packet-${packet.packet_id}`} style={{ margin: "8px 0 4px" }}>Review packet</h2>
     <p><strong>{packet.status === "open" ? "Needs review" : packet.status === "monitoring" ? "Monitoring" : "Resolved"}</strong> · {packet.review_priority.replace("_", " ")} · {packet.potential_impact} potential impact</p>
     <p><LinkifiedText text={packet.what_happened} /></p><p><strong>Why it appeared:</strong> <LinkifiedText text={packet.why_surfaced} /></p>

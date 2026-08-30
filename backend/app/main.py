@@ -6,18 +6,20 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
+from app.active_context import ActiveContextManager
 from app.routers import awareness, automations, chat, decisions, files, matters, settings as settings_router, skills, system
-from app.runtime import AppContext
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    context = AppContext(get_settings())
+    manager = ActiveContextManager(get_settings())
+    context = manager.context
+    app.state.context_manager = manager
     app.state.context = context
     if context.settings.scheduler_enabled:
         context.scheduler.start()
     yield
-    await context.scheduler.stop()
+    await manager.shutdown()
 
 
 settings = get_settings()

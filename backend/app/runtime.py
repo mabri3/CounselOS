@@ -20,6 +20,7 @@ from app.services.briefing_query import BriefingQueryService
 from app.services.briefing_research import BriefingResearchService
 from app.services.briefing_store import BriefingStore
 from app.services.chat_history import ChatHistoryService
+from app.services.chat_runs import ChatRunService
 from app.services.company import CompanyProfileService
 from app.services.company_interview import CompanyInterviewService
 from app.services.decisions import DecisionService
@@ -56,7 +57,7 @@ from app.skills.registry import SkillRegistry
 class AppContext:
     """Explicit service container; keeps the MVP modular without a DI framework."""
 
-    def __init__(self, settings: Settings | None = None):
+    def __init__(self, settings: Settings | None = None, *, recover_interrupted: bool = True):
         self.settings = settings or get_settings()
         self.vault = VaultService(self.settings.resolved_vault_path)
         self.settings_store = SettingsService(self.vault)
@@ -139,7 +140,8 @@ class AppContext:
             self.index,
         )
         # Recover durable runs before any router can query awareness records.
-        self.watch_scans.mark_interrupted_runs()
+        if recover_interrupted:
+            self.watch_scans.mark_interrupted_runs()
         self.briefing_query = BriefingQueryService(self.briefing, self.index)
         self.briefing_research = BriefingResearchService(self.briefing)
         self.research = ResearchService(
@@ -176,7 +178,13 @@ class AppContext:
         )
         self.research.bind_agent_runner(self.runner.run)
         self.research_runs = ResearchRunService(self.vault, self.research)
-        self.research_runs.mark_running_interrupted()
+        if recover_interrupted:
+            self.research_runs.mark_running_interrupted()
+        self.chat_runs = ChatRunService(
+            self.vault, self, timeout_seconds=self.settings.chat_run_timeout_seconds
+        )
+        if recover_interrupted:
+            self.chat_runs.mark_running_interrupted()
         self.scheduler.bind(self)
         self.scheduler.bind_watch_runner(
             lambda watch_id: self.watch_scans.run_watch(watch_id, "scheduled")
@@ -187,6 +195,20 @@ class AppContext:
             self.briefing, self.decisions, self.matters, self.index
         )
         self.annotations.bind(self.runner)
+
+    def recover_interrupted_work(self) -> None:
+        self.watch_scans.mark_interrupted_runs()
+        self.research_runs.mark_running_interrupted()
+        self.chat_runs.mark_running_interrupted()
+
+    def has_active_work(self) -> bool:
+        return self.scheduler.has_active_work or self.research_runs.has_active_work or self.chat_runs.has_active_work
+
+    def validate_runtime(self) -> None:
+        if not self.workflow.stages():
+            raise ValueError("The vault workflow has no stages.")
+        self.agents.get("counsel-copilot")
+        self.tools.list()
 
     async def _run_briefing_research(self, item, question: str):
         return await self.runner.run(

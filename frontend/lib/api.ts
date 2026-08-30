@@ -4,6 +4,7 @@ import type {
   AttachmentReference,
   Audience,
   ChatResponse,
+  ChatRun,
   ChatConversation,
   ChatConversationSummary,
   CompanyInterview,
@@ -35,6 +36,7 @@ import type {
   Stage,
   ToolDefinition,
   VaultDocument,
+  VaultInfo,
   WorkspaceSettings,
 } from "./types";
 import { DEFAULT_SETTINGS, agentDetailFrom } from "./stubs";
@@ -253,6 +255,23 @@ export async function sendChat(payload: Record<string, unknown>): Promise<ChatRe
   return request("/chat", { method: "POST", body: JSON.stringify(payload) });
 }
 
+export async function startChatRun(matterId: string, payload: Record<string, unknown>): Promise<ChatRun> {
+  return request(`/matters/${encodeURIComponent(matterId)}/chat-runs`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function getChatRun(matterId: string, runId: string): Promise<ChatRun> {
+  return request(`/matters/${encodeURIComponent(matterId)}/chat-runs/${encodeURIComponent(runId)}`);
+}
+
+export async function retryChatRun(matterId: string, runId: string): Promise<ChatRun> {
+  return request(`/matters/${encodeURIComponent(matterId)}/chat-runs/${encodeURIComponent(runId)}/retry`, {
+    method: "POST",
+  });
+}
+
 export async function getSkills(): Promise<{ skills: SkillDefinition[] }> {
   return request("/skills");
 }
@@ -419,6 +438,18 @@ export async function saveSettings(settings: WorkspaceSettings): Promise<Setting
     ),
   );
   return request("/settings", { method: "PUT", body: JSON.stringify({ values }) });
+}
+
+export async function getActiveVault(): Promise<VaultInfo> {
+  return request("/settings/vault");
+}
+
+export async function createVault(path: string): Promise<VaultInfo> {
+  return request("/settings/vault/create", { method: "POST", body: JSON.stringify({ path }) });
+}
+
+export async function loadVault(path: string): Promise<VaultInfo> {
+  return request("/settings/vault/load", { method: "POST", body: JSON.stringify({ path }) });
 }
 
 export async function getAgentDetail(agentId: string): Promise<AgentDetail> {

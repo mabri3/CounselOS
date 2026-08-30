@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import {
   completableCurrentWorkItemId,
   controlIdForCurrentWork,
@@ -100,6 +101,13 @@ const tree: FileNode[] = [{
     { name: "newest.md", label: "Newest final", path: "matters/M-1/custom-output/newest.md", type: "file", extension: ".md", record_type: "work_product", state: "final", updated_at: 200 },
   ],
 }, {
+  name: "research", path: "matters/M-1/research", type: "folder", children: [
+    { name: "packet.md", label: "Old research label", path: "matters/M-1/research/packet.md", type: "file", extension: ".md", record_type: "research" },
+    { name: "runs", path: "matters/M-1/research/runs", type: "folder", children: [
+      { name: "RUN-1.md", label: "Queued", path: "matters/M-1/research/runs/RUN-1.md", type: "file", extension: ".md", record_type: "research_run" },
+    ] },
+  ],
+}, {
   name: "work-product", path: "matters/M-1/work-product", type: "folder", children: [{
     name: "final", path: "matters/M-1/work-product/final", type: "folder", children: [
       { name: "folder-only.md", path: "matters/M-1/work-product/final/folder-only.md", type: "file", extension: ".md" },
@@ -113,9 +121,12 @@ const tree: FileNode[] = [{
 }];
 const artifacts = matterArtifacts(tree);
 assert.deepEqual(artifacts.map((item) => [item.kind, item.path]), [
+  ["research", "matters/M-1/research/packet.md"],
   ["draft", "matters/M-1/custom-output/draft.md"],
   ["final", "matters/M-1/custom-output/newest.md"],
 ]);
+assert.equal(artifacts.find((item) => item.kind === "research")?.label, "First-pass research");
+assert.equal(artifacts.some((item) => item.path.includes("/research/runs/")), false);
 assert.equal(isKnownMatterArtifactPath("matters/M-1/custom-output/newest.md", artifacts), true);
 const approvedArtifacts = matterArtifacts(tree, "matters/M-1/custom-output/approved.md");
 assert.equal(approvedArtifacts.find((item) => item.kind === "final")?.path, "matters/M-1/custom-output/approved.md");
@@ -144,5 +155,11 @@ const closeWithRequiredWork = matterAction({
 } as MatterDetail, false);
 assert.equal(closeWithRequiredWork.id, "close_matter");
 assert.match(closeWithRequiredWork.detail, /Required work remains/);
+
+const workspaceSource = readFileSync(new URL("../components/MatterWorkspace.tsx", import.meta.url), "utf8");
+assert.equal(workspaceSource.includes("Latest research"), false);
+assert.equal(workspaceSource.includes("Agent research"), false);
+assert.equal(workspaceSource.includes("Written by Themis, unreviewed"), false);
+assert.ok((workspaceSource.match(/First-pass research/g) ?? []).length >= 3, "workspace uses one research label");
 
 console.log("All checks passed.");

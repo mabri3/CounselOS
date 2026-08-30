@@ -20,18 +20,18 @@
     "semantic_hash": ""
   },
   "backend/app/agents/runner.py": {
-    "mtime": 1788116545.0518558,
-    "ast_hash": "421c97c9612d6f70086c515b393b563d",
+    "mtime": 1788125019.751037,
+    "ast_hash": "79709a77a3614a21d70025feef847793",
     "semantic_hash": ""
   },
   "backend/app/config.py": {
-    "mtime": 1788043774.3858395,
-    "ast_hash": "4ac44c3c55ce1255914e28079a1ed5f0",
+    "mtime": 1788124069.0187848,
+    "ast_hash": "240fde8256cddd26c1f7d3bbff1edbb0",
     "semantic_hash": ""
   },
   "backend/app/main.py": {
-    "mtime": 1788046101.5741322,
-    "ast_hash": "7d2ea6bced9494bfc280ddbb5b9d0797",
+    "mtime": 1788123193.9890873,
+    "ast_hash": "daefbaa86b114ad3b5ef2ef537cbd3b6",
     "semantic_hash": ""
   },
   "backend/app/models/__init__.py": {
@@ -40,8 +40,8 @@
     "semantic_hash": "d272240919a547b113896b92d9c1212e"
   },
   "backend/app/models/api.py": {
-    "mtime": 1788114084.5576906,
-    "ast_hash": "de98d18faf0232c375e0d5e1a48bbdd6",
+    "mtime": 1788124069.0182369,
+    "ast_hash": "a9c549456d5568995c874e2cc2569cc2",
     "semantic_hash": ""
   },
   "backend/app/providers/__init__.py": {
@@ -80,8 +80,8 @@
     "semantic_hash": ""
   },
   "backend/app/routers/chat.py": {
-    "mtime": 1788115837.3957694,
-    "ast_hash": "836cec64fd6e922b2ca5260cbfade4f4",
+    "mtime": 1788125168.034729,
+    "ast_hash": "6385a8312b603ffa9c8021a76b39999d",
     "semantic_hash": ""
   },
   "backend/app/routers/decisions.py": {
@@ -90,9 +90,9 @@
     "semantic_hash": ""
   },
   "backend/app/routers/dependencies.py": {
-    "mtime": 1787721012.0,
-    "ast_hash": "3fc5121d3eea76ed581fc8a84110397a",
-    "semantic_hash": "3fc5121d3eea76ed581fc8a84110397a"
+    "mtime": 1788122330.5569546,
+    "ast_hash": "21556dc6cbc989dc8a6e435df5f6d946",
+    "semantic_hash": ""
   },
   "backend/app/routers/files.py": {
     "mtime": 1788025501.4184172,
@@ -110,8 +110,8 @@
     "semantic_hash": "7107d3f5d8683e4ae74022a5d88f960a"
   },
   "backend/app/runtime.py": {
-    "mtime": 1788114257.2609496,
-    "ast_hash": "94939434e417feedf1fa95a6a28aa968",
+    "mtime": 1788124159.3806536,
+    "ast_hash": "3d69471d3faa87a453288f3c50e351a3",
     "semantic_hash": ""
   },
   "backend/app/services/__init__.py": {
@@ -120,8 +120,8 @@
     "semantic_hash": "4f2cec223026cf4ed7d7c4ee6194a8e7"
   },
   "backend/app/services/decisions.py": {
-    "mtime": 1788045871.1141555,
-    "ast_hash": "2ef829468d08efcfc183571d03cf854b",
+    "mtime": 1788119180.005427,
+    "ast_hash": "b9f2ed7b7c2b7b7014f7209b6b0650c6",
     "semantic_hash": ""
   },
   "backend/app/services/index.py": {
@@ -135,8 +135,8 @@
     "semantic_hash": ""
   },
   "backend/app/services/matters.py": {
-    "mtime": 1788115146.7881572,
-    "ast_hash": "f53349b7cecbae9ef435cc971c1a860a",
+    "mtime": 1788124187.5038984,
+    "ast_hash": "79c5d5ec99d2ad1642abe68ebab52735",
     "semantic_hash": ""
   },
   "backend/app/services/research.py": {
@@ -145,8 +145,8 @@
     "semantic_hash": ""
   },
   "backend/app/services/scheduler.py": {
-    "mtime": 1788044865.6482825,
-    "ast_hash": "80d0b2eb7c95051b7f8d63b2a6d374fd",
+    "mtime": 1788123193.9880257,
+    "ast_hash": "876a508d5f1b9b46a8e77ba1841aab37",
     "semantic_hash": ""
   },
   "backend/app/services/search.py": {
@@ -205,18 +205,18 @@
     "semantic_hash": ""
   },
   "backend/tests/conftest.py": {
-    "mtime": 1788046143.8943467,
-    "ast_hash": "850de43a62749c1b0cbb3de13f7a98a7",
+    "mtime": 1788118288.3890147,
+    "ast_hash": "0eabf938d9619a6981f15edb11d269d8",
     "semantic_hash": ""
   },
   "backend/tests/test_agents.py": {
-    "mtime": 1788058842.5743442,
-    "ast_hash": "83a4dcd7e580b2b382143189a10ae3d5",
+    "mtime": 1788118533.937538,
+    "ast_hash": "1c228eb1a82653fbebb7355fdaa3fcc2",
     "semantic_hash": ""
   },
   "backend/tests/test_decisions.py": {
-    "mtime": 1788045679.172311,
-    "ast_hash": "5884fdd809969079de46eef11fae824b",
+    "mtime": 1788119152.0897346,
+    "ast_hash": "df571ef74c2f2482b2fcc5c9d3dfb7ff",
     "semantic_hash": ""
   },
   "backend/tests/test_ingestion.py": {
@@ -280,8 +280,8 @@
     "semantic_hash": ""
   },
   "frontend/components/ChatPanel.tsx": {
-    "mtime": 1788115540.3774092,
-    "ast_hash": "e439b4c3f1ccdc2fccd8c89468c35836",
+    "mtime": 1788125028.9498918,
+    "ast_hash": "74d56f9bbedb1fde3793d03939616017",
     "semantic_hash": ""
   },
   "frontend/components/DecisionTable.tsx": {
@@ -305,8 +305,8 @@
     "semantic_hash": ""
   },
   "frontend/components/MatterWorkspace.tsx": {
-    "mtime": 1788116547.2253761,
-    "ast_hash": "915baa0762c41714eebe846b2bdfe688",
+    "mtime": 1788124983.6341069,
+    "ast_hash": "fcf4bcd5dd87cebda75c0cbe4ca8f837",
     "semantic_hash": ""
   },
   "frontend/components/NewMatterForm.tsx": {
@@ -315,17 +315,17 @@
     "semantic_hash": ""
   },
   "frontend/lib/api.ts": {
-    "mtime": 1788115744.958392,
-    "ast_hash": "943b03bd80caf49e832839d6f29bb4b4",
+    "mtime": 1788124109.3263962,
+    "ast_hash": "70790168f070f9d9dae9f715d5bb3fbd",
     "semantic_hash": ""
   },
   "frontend/lib/types.ts": {
-    "mtime": 1788115744.9575102,
-    "ast_hash": "d2d4714a95db744d92aa73be3789e1a9",
+    "mtime": 1788124109.3255455,
+    "ast_hash": "9ccf909823c8d57d33e77027c46e860e",
     "semantic_hash": ""
   },
   "frontend/next-env.d.ts": {
-    "mtime": 1788116717.2742016,
+    "mtime": 1788124582.6469078,
     "ast_hash": "8195d2c60ce847a459ae9d308d6a5724",
     "semantic_hash": ""
   },
@@ -400,8 +400,8 @@
     "semantic_hash": ""
   },
   "docs/ACCEPTANCE_TESTS.md": {
-    "mtime": 1788115839.6198316,
-    "ast_hash": "745cb9f71c92e2ddda6e52dc1d8861d1",
+    "mtime": 1788122754.6143053,
+    "ast_hash": "4641e51556f410f37568e3b9e6fe0fe7",
     "semantic_hash": ""
   },
   "docs/API.md": {
@@ -410,8 +410,8 @@
     "semantic_hash": ""
   },
   "docs/ARCHITECTURE.md": {
-    "mtime": 1788048196.1261153,
-    "ast_hash": "6b966de8b523e866fcdb9e8443df9d08",
+    "mtime": 1788123445.787349,
+    "ast_hash": "37d9a36c6d8350249752bb7fa43609aa",
     "semantic_hash": ""
   },
   "docs/BUILD_PLAN.md": {
@@ -475,8 +475,8 @@
     "semantic_hash": ""
   },
   "vault/00_System/company.md": {
-    "mtime": 1788077133.414235,
-    "ast_hash": "dac6b3fe8aa4ccf01560ff8ee6b26635",
+    "mtime": 1788120870.2612884,
+    "ast_hash": "a26cb2a7628b6c76b43d1a209c50a0d4",
     "semantic_hash": ""
   },
   "vault/00_System/memory.md": {
@@ -490,8 +490,8 @@
     "semantic_hash": ""
   },
   "vault/00_System/schedules/inbox-watcher.md": {
-    "mtime": 1788112053.6441557,
-    "ast_hash": "3227bea0ff94675387057243d770f3cf",
+    "mtime": 1788125640.6921716,
+    "ast_hash": "a49969b6fec175edc3a850b70ef5e060",
     "semantic_hash": ""
   },
   "vault/00_System/tools/append_memory.md": {
@@ -890,8 +890,8 @@
     "semantic_hash": ""
   },
   "frontend/app/settings/page.tsx": {
-    "mtime": 1788115505.0564625,
-    "ast_hash": "612bfa9ce09b3fd21740ef5c6dac7fdb",
+    "mtime": 1788125013.7166748,
+    "ast_hash": "0d94ddc5463fb56ba908e6bfdc0b60b1",
     "semantic_hash": ""
   },
   "frontend/app/workspace/page.tsx": {
@@ -940,13 +940,13 @@
     "semantic_hash": ""
   },
   "docs/DESIGN_LANGUAGE.md": {
-    "mtime": 1788061233.147228,
-    "ast_hash": "c81772771494e200265e994841c8d69e",
+    "mtime": 1788122740.0510507,
+    "ast_hash": "cd8fad753686177e798ef050aa4b9894",
     "semantic_hash": ""
   },
   "backend/app/routers/settings.py": {
-    "mtime": 1788114481.7515423,
-    "ast_hash": "73b6aac96a64c77b3d5e3b39a90dac9a",
+    "mtime": 1788124135.7115057,
+    "ast_hash": "72a8dfea310ea58b1437e35fbf656934",
     "semantic_hash": ""
   },
   "backend/app/services/annotations.py": {
@@ -1035,8 +1035,8 @@
     "semantic_hash": ""
   },
   "backend/app/services/chat_history.py": {
-    "mtime": 1787933514.1960368,
-    "ast_hash": "824235b53e1e78b98f4f4e9beceb12af",
+    "mtime": 1788124971.8652751,
+    "ast_hash": "c7ddab42239660036ab05ae06ba0bcb3",
     "semantic_hash": ""
   },
   "backend/tests/test_chat_history.py": {
@@ -1170,8 +1170,8 @@
     "semantic_hash": ""
   },
   "backend/app/services/company.py": {
-    "mtime": 1787899326.9651074,
-    "ast_hash": "7fb394e7c33ba8f16172c54c2ba7abd9",
+    "mtime": 1788125031.2760186,
+    "ast_hash": "fcdbbfc9d597779956d5cbcc4e1ff08a",
     "semantic_hash": ""
   },
   "backend/app/services/dossier.py": {
@@ -1185,8 +1185,8 @@
     "semantic_hash": ""
   },
   "backend/app/services/research_runs.py": {
-    "mtime": 1787899534.7943728,
-    "ast_hash": "27d801aad8b3c729e80e3782199d4f79",
+    "mtime": 1788124202.5404017,
+    "ast_hash": "a3de00fd6a2f5f48d24a5e8e057b3046",
     "semantic_hash": ""
   },
   "backend/app/services/work_product.py": {
@@ -1220,8 +1220,8 @@
     "semantic_hash": ""
   },
   "frontend/components/ChatCards.tsx": {
-    "mtime": 1788115632.6618176,
-    "ast_hash": "10fe9272df66f33b81b86c3ec940642d",
+    "mtime": 1788124234.3382473,
+    "ast_hash": "490b082cd18cf245f8df9cc2d0516813",
     "semantic_hash": ""
   },
   "frontend/components/UploadIntentCard.tsx": {
@@ -1840,8 +1840,8 @@
     "semantic_hash": ""
   },
   "backend/tests/test_awareness_demo_content.py": {
-    "mtime": 1788048873.6869369,
-    "ast_hash": "604afac45c62f36ee14b5138a1140a10",
+    "mtime": 1788119152.0968251,
+    "ast_hash": "eab00438d594008e737500b4c70ebc5a",
     "semantic_hash": ""
   },
   "backend/tests/test_awareness_end_to_end.py": {
@@ -1920,8 +1920,8 @@
     "semantic_hash": ""
   },
   "backend/tests/test_watch_builder_skill.py": {
-    "mtime": 1788045762.4414842,
-    "ast_hash": "c77af1791eb96f08a36fb5c096be8bf2",
+    "mtime": 1788119152.0975904,
+    "ast_hash": "0664301a4803f950a6663e8eb60db253",
     "semantic_hash": ""
   },
   "backend/tests/test_watch_scans.py": {
@@ -1970,8 +1970,8 @@
     "semantic_hash": ""
   },
   "frontend/components/BriefingReader.tsx": {
-    "mtime": 1788062331.4400651,
-    "ast_hash": "3472ce22652c0f7f1673cbc3de59d886",
+    "mtime": 1788122160.154985,
+    "ast_hash": "4d41c660b2479065ba1c36e3c567da1e",
     "semantic_hash": ""
   },
   "frontend/components/BriefingWorkspace.tsx": {
@@ -1980,8 +1980,8 @@
     "semantic_hash": ""
   },
   "frontend/components/ReviewPacketPanel.tsx": {
-    "mtime": 1788046884.970401,
-    "ast_hash": "3cfab9f0340458d6c744d3ec893a06c3",
+    "mtime": 1788122160.1555011,
+    "ast_hash": "a4e29a555b97e71fc438f7ad0c1f479b",
     "semantic_hash": ""
   },
   "frontend/components/SourceRoleEditor.tsx": {
@@ -2145,13 +2145,13 @@
     "semantic_hash": ""
   },
   "backend/tests/test_company_interview.py": {
-    "mtime": 1788116657.0691822,
-    "ast_hash": "4bf6331f44727e80860d28e687c24462",
+    "mtime": 1788125031.276213,
+    "ast_hash": "7ef739023e9df5488fa56593dd33a548",
     "semantic_hash": ""
   },
   "frontend/components/CompanyInterview.tsx": {
-    "mtime": 1788115530.2624874,
-    "ast_hash": "8c91bf2eb17c24dd4e923e023590309c",
+    "mtime": 1788125013.7163994,
+    "ast_hash": "9834c78f9426e780513cfe9aa04120c4",
     "semantic_hash": ""
   },
   "docs/END_TO_END_TEST_KIT.md": {
@@ -2190,13 +2190,13 @@
     "semantic_hash": ""
   },
   "frontend/lib/matterBrief.ts": {
-    "mtime": 1788116560.7257352,
-    "ast_hash": "0211ea6fad975c2617c0ec345badab34",
+    "mtime": 1788124109.3269281,
+    "ast_hash": "97f05ebaffd3f66c4bddb324b6d1fa71",
     "semantic_hash": ""
   },
   "frontend/scripts/check-matter-brief.ts": {
-    "mtime": 1788116529.348786,
-    "ast_hash": "993950a8299e34a241f7718ea52ca9da",
+    "mtime": 1788125008.1407943,
+    "ast_hash": "c422f10071b15194bd2371d350a2b8b0",
     "semantic_hash": ""
   },
   "docs/matter-page.handoff-plan.md": {
@@ -2275,8 +2275,8 @@
     "semantic_hash": ""
   },
   "docs/matter-workflow-reliability.handoff-progress.md": {
-    "mtime": 1788116471.134137,
-    "ast_hash": "5696478116579b5022010bcb60d727e7",
+    "mtime": 1788117050.935784,
+    "ast_hash": "b8390984bc7cb4ceaa3a27f53a947d56",
     "semantic_hash": ""
   },
   "docs/matter-workflow-reliability.handoff-prompt.md": {
@@ -4257,6 +4257,1601 @@
   "frontend/public/brand/themis-ai-logo-silhouette-sword-v8.png": {
     "mtime": 1788076536.9405735,
     "ast_hash": "13ce108745a98143b7783b38134c8f35",
+    "semantic_hash": ""
+  },
+  "backend/tests/test_fixture_isolation.py": {
+    "mtime": 1788118288.389779,
+    "ast_hash": "31600ca04534d5b92c16a20f695379d3",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/Agents.md": {
+    "mtime": 1788118343.802454,
+    "ast_hash": "683a57c94c21b0e005a9145a5a99506a",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/Soul.md": {
+    "mtime": 1788118343.8025527,
+    "ast_hash": "76165ad4b7f1918cd4df2a323890444a",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/agents/counsel-copilot.md": {
+    "mtime": 1788118343.8027012,
+    "ast_hash": "440444e2e5d8186e11613724a8938a80",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/agents/decision-monitor.md": {
+    "mtime": 1788118343.8028038,
+    "ast_hash": "1ad5209b4a5242f2ab6ea59bfb917793",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/agents/intake-agent.md": {
+    "mtime": 1788118343.8028874,
+    "ast_hash": "1d648a5cde86f59004aac12d1a8725a2",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/agents/research-agent.md": {
+    "mtime": 1788118343.803022,
+    "ast_hash": "cd64edb3241b07b581c16b06eb452b06",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/audiences.md": {
+    "mtime": 1788118343.8032475,
+    "ast_hash": "23f573e3e3543def658aeddd75b39931",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/company.md": {
+    "mtime": 1788118344.841471,
+    "ast_hash": "846bc8a7c5853bb0b3ad6c78d15c0569",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/legal-awareness/views/for-you.md": {
+    "mtime": 1788118343.8037415,
+    "ast_hash": "d3483b22dda95f107c1225639b978363",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/legal-awareness/watches/alternative-data.md": {
+    "mtime": 1788118343.803893,
+    "ast_hash": "6004110632a3a88e0b47333cf012f7e9",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/memory.md": {
+    "mtime": 1788118343.803997,
+    "ast_hash": "21940c16225c9b3ec247f0dca720e901",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/schedules/decision-audit.md": {
+    "mtime": 1788118343.8041565,
+    "ast_hash": "270c80dad4cc6067494499c5a1d964c6",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/schedules/inbox-watcher.md": {
+    "mtime": 1788118361.119584,
+    "ast_hash": "44e742f87777ef03d3c8bb348d96464c",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/skills/product-launch-review.md": {
+    "mtime": 1788118416.7686942,
+    "ast_hash": "ea937474d403cbec786cd1a99e2a87f0",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/skills/watch-builder.md": {
+    "mtime": 1788118343.8044147,
+    "ast_hash": "1bb09455575b4273744193866b190c73",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/activate_watch.md": {
+    "mtime": 1788118343.8045652,
+    "ast_hash": "06f9107c6ee1cdbd8e8a518a3cfd417a",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/append_memory.md": {
+    "mtime": 1788118343.8046498,
+    "ast_hash": "21c3b21a6e4617396e2e2506c9984bfa",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/approve_response.md": {
+    "mtime": 1788118343.8047264,
+    "ast_hash": "766a33c4fee6c57f9a313e032c65caab",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/audit_decisions.md": {
+    "mtime": 1788118343.8047976,
+    "ast_hash": "1ed75aa733fb299814b1efcc80c86a5b",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/close_matter.md": {
+    "mtime": 1788118343.8048728,
+    "ast_hash": "cadd997772808113e6c403db246bff88",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/complete_work_item.md": {
+    "mtime": 1788118343.9283044,
+    "ast_hash": "acf4b37cc49692901e2c622c66f949ea",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/create_agent.md": {
+    "mtime": 1788118343.9284687,
+    "ast_hash": "86904c1400739b5e6ec4184ea17991f4",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/create_schedule.md": {
+    "mtime": 1788118343.9285636,
+    "ast_hash": "3be7bb1ce3cf6a11b49090476d0850dc",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/create_watch_draft.md": {
+    "mtime": 1788118343.9286358,
+    "ast_hash": "57c551ec4d2d962b7a195b0b2961ef94",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/create_work_item.md": {
+    "mtime": 1788118343.9287167,
+    "ast_hash": "fc72aa972fb2cdf7b626f554336bfc4d",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/list_files.md": {
+    "mtime": 1788118343.9288158,
+    "ast_hash": "a519d59fd03d9694716d750741e26db7",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/mark_response_sent.md": {
+    "mtime": 1788118343.92891,
+    "ast_hash": "b006c4033e3010e946650dc3bc610e6e",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/move_matter_stage.md": {
+    "mtime": 1788118343.9289913,
+    "ast_hash": "946808ce27b1ade47a289412d3f3b937",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/read_file.md": {
+    "mtime": 1788118343.9291868,
+    "ast_hash": "4f8245a9dec757eac08dcf0815a39798",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/record_decision.md": {
+    "mtime": 1788118343.9292657,
+    "ast_hash": "b3bb483f9e0658afc7daa9450445b3c4",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/run_research.md": {
+    "mtime": 1788118343.9293528,
+    "ast_hash": "e81dbd60915a7dfc24a377f4adbe9b1b",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/save_work_product.md": {
+    "mtime": 1788118343.9295456,
+    "ast_hash": "5c0bd15a7bb903da1bdb5a20bce8df13",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/scan_watch.md": {
+    "mtime": 1788118343.9296281,
+    "ast_hash": "512de8aefe90ff50ca260191d97f3886",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/search_vault.md": {
+    "mtime": 1788118343.9297342,
+    "ast_hash": "1f19faa81af8b1cf856d7735b8e25b0b",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/tools/write_markdown.md": {
+    "mtime": 1788118343.9298105,
+    "ast_hash": "0e5c1bbdbdf166a69fd087cbed7c0934",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/user.md": {
+    "mtime": 1788118343.9299223,
+    "ast_hash": "e36df71f71406a9ed5d068ec969748a4",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/00_System/workflows/product-counsel.md": {
+    "mtime": 1788118343.9300733,
+    "ast_hash": "24ed8548c2e086e243a92f86543007a1",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/01_Playbooks/decision-review.md": {
+    "mtime": 1788118343.9301987,
+    "ast_hash": "492fb2899078823e5f359bc7e7d75af6",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/01_Playbooks/product-review.md": {
+    "mtime": 1788118344.0748098,
+    "ast_hash": "72a7bc17a837cc6c18e039be2cbaf4b3",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/02_Company_Knowledge/product-and-funds-flow.md": {
+    "mtime": 1788118344.0749834,
+    "ast_hash": "0831432d57d25a3874a29491e65af45f",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/beacon-instant-onboarding/events/2026-08-25-seeded.md": {
+    "mtime": 1788118344.0752072,
+    "ast_hash": "a9462c26253c5ce1840d090b854d94ba",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/beacon-instant-onboarding/facts.md": {
+    "mtime": 1788118344.0753133,
+    "ast_hash": "b8da4ce0b4df4bafd3aa7a0e60e23480",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/beacon-instant-onboarding/issues.md": {
+    "mtime": 1788118344.0754442,
+    "ast_hash": "08df403d518bf72b28a0e2265dfbdcb7",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/beacon-instant-onboarding/matter.md": {
+    "mtime": 1788118344.0755448,
+    "ast_hash": "2f0ce838b48034d23e731af0f56d17e4",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/beacon-instant-onboarding/participants.md": {
+    "mtime": 1788118344.0756652,
+    "ast_hash": "a5beeb4b881337221c5cd230e1ca1081",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/beacon-instant-onboarding/recommendations.md": {
+    "mtime": 1788118344.0757377,
+    "ast_hash": "60bd6d83fc76e0eea811dfd93dc1ee59",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/beacon-instant-onboarding/request.md": {
+    "mtime": 1788118344.0758307,
+    "ast_hash": "25349dd89d780f21d3ea50bc00b416ad",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/beacon-instant-onboarding/work-items/WI-MAT-DEMO-BEACON-1.md": {
+    "mtime": 1788118344.0760157,
+    "ast_hash": "471c55bf1eaefbe3eae1058facab0a9f",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/beacon-instant-onboarding/work-items/WI-MAT-DEMO-BEACON-2.md": {
+    "mtime": 1788118344.0762498,
+    "ast_hash": "fd9fddeff033941758061c3364c9c4db",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/cedar-cash-sweep/decisions/DEC-DEMO-CEDAR-LAUNCH.md": {
+    "mtime": 1788118344.0764725,
+    "ast_hash": "7abb38d108620e41c04f4527fac40dd3",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/cedar-cash-sweep/events/2026-08-25-seeded.md": {
+    "mtime": 1788118344.0766115,
+    "ast_hash": "94a93aeaa2a9e2c95a991c89c16c72d2",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/cedar-cash-sweep/facts.md": {
+    "mtime": 1788118344.076977,
+    "ast_hash": "5f36a359216b487333f60d932b50b1b4",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/cedar-cash-sweep/final/launch-guidance.md": {
+    "mtime": 1788118344.0772648,
+    "ast_hash": "6286cdf8b6f7e41312e4fcf0a4f71d88",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/cedar-cash-sweep/issues.md": {
+    "mtime": 1788118344.0773618,
+    "ast_hash": "8609153238e22823cbe14b5c07cede4e",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/cedar-cash-sweep/matter.md": {
+    "mtime": 1788118344.0775175,
+    "ast_hash": "0c293c2b718821dece3e7fcb1d76afa2",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/cedar-cash-sweep/participants.md": {
+    "mtime": 1788118344.0785103,
+    "ast_hash": "d1f2045c9d13d3259a72b2d617d8a4ba",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/cedar-cash-sweep/recommendations.md": {
+    "mtime": 1788118344.1975179,
+    "ast_hash": "ce0a9c1e8a6d8614631051ba95b2d618",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/cedar-cash-sweep/request.md": {
+    "mtime": 1788118344.197647,
+    "ast_hash": "264617253168104f8da6d54783653ce4",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/cedar-cash-sweep/work-items/WI-MAT-DEMO-CEDAR-1.md": {
+    "mtime": 1788118344.19784,
+    "ast_hash": "9ab7d832e478085245bf236d81b77c55",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/cedar-cash-sweep/work-items/WI-MAT-DEMO-CEDAR-2.md": {
+    "mtime": 1788118344.197934,
+    "ast_hash": "f142a073d0f81cdc0e2ea710ac41e88e",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/cedar-cash-sweep/work-items/WI-MAT-DEMO-CEDAR-3.md": {
+    "mtime": 1788118344.1980736,
+    "ast_hash": "47b6aab7876308214cce00f7df51e1c6",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/delta-pricing-copy/events/2026-08-25-seeded.md": {
+    "mtime": 1788118344.1982465,
+    "ast_hash": "7a1c8e0fab1c35a898f3d074cd75949a",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/delta-pricing-copy/facts.md": {
+    "mtime": 1788118344.1983259,
+    "ast_hash": "ee7c6c904cd1092246ecf97ac03be82b",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/delta-pricing-copy/issues.md": {
+    "mtime": 1788118344.198409,
+    "ast_hash": "358a5ed4c3395a5e8b9b921629184d52",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/delta-pricing-copy/matter.md": {
+    "mtime": 1788118344.1985123,
+    "ast_hash": "e2ea2d11170b12db9a9f1935ebd1354d",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/delta-pricing-copy/participants.md": {
+    "mtime": 1788118344.1985996,
+    "ast_hash": "45406ff94210949f7cc12d21157e3ad4",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/delta-pricing-copy/recommendations.md": {
+    "mtime": 1788118344.198679,
+    "ast_hash": "af9fed901f0d8c76e44f4a5595fffd66",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/delta-pricing-copy/request.md": {
+    "mtime": 1788118344.198764,
+    "ast_hash": "9a4bd72249baab42d6734daa23f533fd",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/delta-pricing-copy/work-items/WI-MAT-DEMO-DELTA-1.md": {
+    "mtime": 1788118344.1988919,
+    "ast_hash": "c24e9ef1f051a98473189d0e8484f081",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/delta-pricing-copy/work-items/WI-MAT-DEMO-DELTA-2.md": {
+    "mtime": 1788118344.1989746,
+    "ast_hash": "c59e0bc7ae53acf12d5ccab4c8f6e563",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/harbor-support-response/events/2026-08-25-seeded.md": {
+    "mtime": 1788118344.1991632,
+    "ast_hash": "87479f23da77a12126dec97848b3366b",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/harbor-support-response/facts.md": {
+    "mtime": 1788118344.1992471,
+    "ast_hash": "70ccbef369d82b1b39dc21684b3bd264",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/harbor-support-response/issues.md": {
+    "mtime": 1788118344.1993244,
+    "ast_hash": "e2998cede47216f52cbd52af5ce85caf",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/harbor-support-response/matter.md": {
+    "mtime": 1788118344.1994028,
+    "ast_hash": "b254d311ade02a6bce20fb1016c43c9d",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/harbor-support-response/participants.md": {
+    "mtime": 1788118344.317045,
+    "ast_hash": "b89b8af3be246465767a4821399aa267",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/harbor-support-response/recommendations.md": {
+    "mtime": 1788118344.317286,
+    "ast_hash": "b019a7b468239533957ad32a0007db53",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/harbor-support-response/request.md": {
+    "mtime": 1788118344.3174953,
+    "ast_hash": "ac478bbe87fa5c4a4c5d46e384a99195",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/harbor-support-response/work-items/WI-MAT-DEMO-HARBOR-1.md": {
+    "mtime": 1788118344.3177137,
+    "ast_hash": "e52731e529bce0261452fa058f8b284c",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/harbor-support-response/work-items/WI-MAT-DEMO-HARBOR-2.md": {
+    "mtime": 1788118344.317795,
+    "ast_hash": "9381485d927d9e660d6970dd379f8e6f",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/mason-sdk-closed/decisions/DEC-DEMO-MASON.md": {
+    "mtime": 1788118344.3179889,
+    "ast_hash": "221b79de641dcb7c2040a11df1da0c91",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/mason-sdk-closed/events/2026-07-12-seeded.md": {
+    "mtime": 1788118344.3181267,
+    "ast_hash": "d22a8b34d446468d268dcc6db2e54904",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/mason-sdk-closed/facts.md": {
+    "mtime": 1788118344.3182313,
+    "ast_hash": "9d4e7495e7ce84c4b63b56b78395cf16",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/mason-sdk-closed/issues.md": {
+    "mtime": 1788118344.3183117,
+    "ast_hash": "7992c00a7f4733f7684e2942f66a0740",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/mason-sdk-closed/matter.md": {
+    "mtime": 1788118344.318387,
+    "ast_hash": "a3bdcbfe069df8ece37c5a895d058ac7",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/mason-sdk-closed/participants.md": {
+    "mtime": 1788118344.3184779,
+    "ast_hash": "66eb148c076e9b25b7771b828687292f",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/mason-sdk-closed/recommendations.md": {
+    "mtime": 1788118344.318583,
+    "ast_hash": "8c9a66fadbe827982c0119bec755a69e",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/mason-sdk-closed/request.md": {
+    "mtime": 1788118344.3186693,
+    "ast_hash": "cdc640ca464bbbcbfe5b7e1d9ea5dea9",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/mason-sdk-closed/work-items/WI-MAT-DEMO-MASON-1.md": {
+    "mtime": 1788118344.3188019,
+    "ast_hash": "ab1d29105137b3da5a1d1b249f3fe1e8",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/northstar-ai-underwriting/events/2026-08-27-seeded.md": {
+    "mtime": 1788118344.3189666,
+    "ast_hash": "ff9198cd95f9c23b2c43b6770016d182",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/northstar-ai-underwriting/facts.md": {
+    "mtime": 1788118344.3190486,
+    "ast_hash": "36d79ebe6b028fc1639df11c159777a0",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/northstar-ai-underwriting/issues.md": {
+    "mtime": 1788118344.3191233,
+    "ast_hash": "ef1385fb8fd866af218856101f613d8c",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/northstar-ai-underwriting/matter.md": {
+    "mtime": 1788118344.3192143,
+    "ast_hash": "11890492eca888107dcfad18d164d158",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/northstar-ai-underwriting/participants.md": {
+    "mtime": 1788118344.441984,
+    "ast_hash": "72488354589b87fb613797ca4c1847f1",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/northstar-ai-underwriting/recommendations.md": {
+    "mtime": 1788118344.4420977,
+    "ast_hash": "f4c11273d5f9b341fbec00d0460415c6",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/northstar-ai-underwriting/request.md": {
+    "mtime": 1788118344.4422238,
+    "ast_hash": "2042ccc8b5547486bc19e0a8a76a87ab",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/northstar-ai-underwriting/research/research-plan.md": {
+    "mtime": 1788118344.4424112,
+    "ast_hash": "2c1cb043be70dc156bd847510234068e",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/northstar-ai-underwriting/source-documents/model-change-summary.md": {
+    "mtime": 1788118344.4425902,
+    "ast_hash": "c2791f27b9aacde08bb17bd66ab66313",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/northstar-ai-underwriting/work-items/WI-MAT-DEMO-NORTHSTAR-1.md": {
+    "mtime": 1788118344.4427724,
+    "ast_hash": "af79639068b50f82d9d65d8d94b8cec8",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/northstar-ai-underwriting/work-items/WI-MAT-DEMO-NORTHSTAR-2.md": {
+    "mtime": 1788118344.442862,
+    "ast_hash": "5fd44eafc4a1179e52814059531a1389",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/orbit-bank-data/events/2026-08-25-seeded.md": {
+    "mtime": 1788118344.443049,
+    "ast_hash": "212eb9e30dbc1630409a9e80bef14380",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/orbit-bank-data/facts.md": {
+    "mtime": 1788118344.4432085,
+    "ast_hash": "f336bb6f2c8d80964a931a3aa500759b",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/orbit-bank-data/issues.md": {
+    "mtime": 1788118344.4433131,
+    "ast_hash": "435f61e9b4e62b450a686a501618f302",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/orbit-bank-data/matter.md": {
+    "mtime": 1788118344.4433982,
+    "ast_hash": "8e34e82b9a1f763c54cedaa8b10c3d23",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/orbit-bank-data/participants.md": {
+    "mtime": 1788118344.443475,
+    "ast_hash": "31ae97c7628bebfc5b93f82192202b47",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/orbit-bank-data/recommendations.md": {
+    "mtime": 1788118344.4435973,
+    "ast_hash": "ce3141102adea8dda4f358140b17ae7b",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/orbit-bank-data/request.md": {
+    "mtime": 1788118344.4436839,
+    "ast_hash": "9d16b3e8b0102d68907943b71aa3a4b6",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/orbit-bank-data/work-items/WI-MAT-DEMO-ORBIT-1.md": {
+    "mtime": 1788118344.4438417,
+    "ast_hash": "24592fe0d7e5a8df61314425f04f0f6b",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/project-apex-ai/decisions/DEC-DEMO-APEX-RETENTION.md": {
+    "mtime": 1788118344.4441495,
+    "ast_hash": "d7f9b1e37d3a41e66624432558c7c0d5",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/project-apex-ai/events/2026-08-25-seeded.md": {
+    "mtime": 1788118344.4443018,
+    "ast_hash": "4017efda8e65e953a5d14f00cf38c011",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/project-apex-ai/facts.md": {
+    "mtime": 1788118344.4444811,
+    "ast_hash": "4fddf27781a41c16b994981b4da5aa42",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/project-apex-ai/issues.md": {
+    "mtime": 1788118344.5989118,
+    "ast_hash": "8c6d5fa6ee1ab116cda2a8f4f69ea0ad",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/project-apex-ai/matter.md": {
+    "mtime": 1788118344.5990236,
+    "ast_hash": "7fe6a5c06fb7296ab04d1140a0d79712",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/project-apex-ai/participants.md": {
+    "mtime": 1788118344.5991232,
+    "ast_hash": "4ca27897d77fbf83b60ca3ce9c0dd369",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/project-apex-ai/recommendations.md": {
+    "mtime": 1788118344.599227,
+    "ast_hash": "c4652ae4fecc753adf8e8c23ad4dd997",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/project-apex-ai/request.md": {
+    "mtime": 1788118344.5993173,
+    "ast_hash": "152dce2039018fa1b1918e555b36b054",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/project-apex-ai/research/RES-MAT-DEMO-APEX.md": {
+    "mtime": 1788118344.5994747,
+    "ast_hash": "de62b4d85765db23980bc7564f34d17e",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/project-apex-ai/work-items/WI-MAT-DEMO-APEX-1.md": {
+    "mtime": 1788118344.5996137,
+    "ast_hash": "b3304114450e5ccca33129b69a02970d",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/project-apex-ai/work-items/WI-MAT-DEMO-APEX-2.md": {
+    "mtime": 1788118344.5997045,
+    "ast_hash": "b20137a026fe8218a09e0a142f0eca54",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/pulse-earned-wage-access/events/2026-08-28-seeded.md": {
+    "mtime": 1788118344.5998824,
+    "ast_hash": "508085e71e251d09e83677b8ff77f401",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/pulse-earned-wage-access/facts.md": {
+    "mtime": 1788118344.5999618,
+    "ast_hash": "7ec5882268b90f951f386ab50582680c",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/pulse-earned-wage-access/issues.md": {
+    "mtime": 1788118344.6000452,
+    "ast_hash": "d0aaa1a2a5f11f0c4b3e3465671346a0",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/pulse-earned-wage-access/matter.md": {
+    "mtime": 1788118344.60012,
+    "ast_hash": "5af2a39c567733f1ad536339e6318a47",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/pulse-earned-wage-access/participants.md": {
+    "mtime": 1788118344.6002069,
+    "ast_hash": "d341f20dfd651157c089c1a50e5b3c1f",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/pulse-earned-wage-access/recommendations.md": {
+    "mtime": 1788118344.600281,
+    "ast_hash": "2a53a73803eeee9cb7660db179aa2cf5",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/pulse-earned-wage-access/request.md": {
+    "mtime": 1788118344.6003497,
+    "ast_hash": "6770cceeb12f83a4eb9cd2627a002fc7",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/pulse-earned-wage-access/source-documents/product-brief.md": {
+    "mtime": 1788118344.6004999,
+    "ast_hash": "4c82ead1b2333fdc57cb8ab85d41743a",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/pulse-earned-wage-access/work-items/WI-MAT-DEMO-PULSE-1.md": {
+    "mtime": 1788118344.6006618,
+    "ast_hash": "741acec8fabf2b6413c1aac3e2135895",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/pulse-earned-wage-access/work-items/WI-MAT-DEMO-PULSE-2.md": {
+    "mtime": 1788118344.6007538,
+    "ast_hash": "bc2cb27b52e6ca3e304666e516a3eeb4",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/relay-open-banking/dossier.md": {
+    "mtime": 1788118344.7294023,
+    "ast_hash": "b4b2d4aa14f40775ef822900d9b353ce",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/relay-open-banking/drafts/decision-note.md": {
+    "mtime": 1788118344.7295492,
+    "ast_hash": "64b3920698fa0e237d843e4e6841c8ca",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/relay-open-banking/events/2026-08-28-seeded.md": {
+    "mtime": 1788118344.7296994,
+    "ast_hash": "a513c4f18a253a999461326bf25c99d2",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/relay-open-banking/facts.md": {
+    "mtime": 1788118344.7298017,
+    "ast_hash": "a636c6eb26cb66b8a8b064959180be6a",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/relay-open-banking/issues.md": {
+    "mtime": 1788118344.7298963,
+    "ast_hash": "c4dbd24c5ba446538c304ffe72aaa350",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/relay-open-banking/matter.md": {
+    "mtime": 1788118344.7299886,
+    "ast_hash": "83aa7b7200ca5affa62459e8c670ccbb",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/relay-open-banking/participants.md": {
+    "mtime": 1788118344.7300806,
+    "ast_hash": "b3fc515c6067ba8ef46f2c6301d7f520",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/relay-open-banking/recommendations.md": {
+    "mtime": 1788118344.7301667,
+    "ast_hash": "8b4de9d9930e57479a722fb7bc411cd2",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/relay-open-banking/request.md": {
+    "mtime": 1788118344.7302604,
+    "ast_hash": "8a1b762c31b108087be8d4a8c20d331c",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/relay-open-banking/research/section-1033-and-consent-memo.md": {
+    "mtime": 1788118344.730524,
+    "ast_hash": "45429a8328d8fa63785132dd30ecc8c7",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/relay-open-banking/work-items/WI-MAT-DEMO-RELAY-1.md": {
+    "mtime": 1788118344.7306654,
+    "ast_hash": "553e87bddd4c9c09d50dc599f4c67a44",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/03_Matters/relay-open-banking/work-items/WI-MAT-DEMO-RELAY-2.md": {
+    "mtime": 1788118344.7307477,
+    "ast_hash": "2f1208fcc808e0a4010f4d2ac9641d23",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/04_Inbox/README.md": {
+    "mtime": 1788118344.7308793,
+    "ast_hash": "a2a6b6f43d62d652f16c3df61e5e019d",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/05_Briefing/developments/DEV-DEMO-ALTERNATIVE-DATA.md": {
+    "mtime": 1788118344.7310317,
+    "ast_hash": "8ab3d759937f5ae286352080dcb104dc",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/05_Briefing/items/ITEM-DEMO-ALTERNATIVE-DATA-BRIEFING.md": {
+    "mtime": 1788118344.7311664,
+    "ast_hash": "60c576b05e9b4bf0069982da1303675a",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/05_Briefing/items/ITEM-DEMO-ALTERNATIVE-DATA-DECISION.md": {
+    "mtime": 1788118344.7312455,
+    "ast_hash": "4db90c5fdc3b319ac9c51e3954faefb3",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/05_Briefing/review-packets/PKT-DEMO-ALTERNATIVE-DATA.md": {
+    "mtime": 1788118344.7313817,
+    "ast_hash": "511ebd1f1d0ff389143ee770d70ac508",
+    "semantic_hash": ""
+  },
+  "backend/tests/fixtures/vault/05_Briefing/scans/SCAN-DEMO-ALTERNATIVE-DATA-BOTH.md": {
+    "mtime": 1788118344.7316294,
+    "ast_hash": "698cc6f3bd952c9b8b497b4e053e649c",
+    "semantic_hash": ""
+  },
+  "backend/app/active_context.py": {
+    "mtime": 1788123602.2426531,
+    "ast_hash": "30f74aabb752be819c3afd29c1b30a6f",
+    "semantic_hash": ""
+  },
+  "backend/app/blank_vault_template/manifest.json": {
+    "mtime": 1788123228.4368844,
+    "ast_hash": "28f8154962080523749c41f96689897f",
+    "semantic_hash": ""
+  },
+  "backend/app/vault_manager.py": {
+    "mtime": 1788123228.436576,
+    "ast_hash": "330717609c1d443bf54f4c77bbe63fc6",
+    "semantic_hash": ""
+  },
+  "backend/tests/test_vault_management.py": {
+    "mtime": 1788123634.1717868,
+    "ast_hash": "a3dc5ff3df0897f2b5c8641d83ab8d5e",
+    "semantic_hash": ""
+  },
+  "frontend/scripts/check-middle-pane-accordion.ts": {
+    "mtime": 1788122229.6758173,
+    "ast_hash": "6fc392b719ffd9b34a4b042a9aa797e6",
+    "semantic_hash": ""
+  },
+  "frontend/scripts/check-review-status-copy.ts": {
+    "mtime": 1788122160.1559794,
+    "ast_hash": "e46de3469cae3efdc71a9db6206b456a",
+    "semantic_hash": ""
+  },
+  ".agents/skills/live-agent-ux-experiment/SKILL.md": {
+    "mtime": 1788119453.892512,
+    "ast_hash": "d64916957fa431b2b8da354fb7deac25",
+    "semantic_hash": ""
+  },
+  ".agents/skills/live-agent-ux-experiment/agents/openai.yaml": {
+    "mtime": 1788119426.3782914,
+    "ast_hash": "0576dbe742fec42cb2f6c7148890093c",
+    "semantic_hash": ""
+  },
+  ".agents/skills/live-agent-ux-experiment/references/experiment-protocol.md": {
+    "mtime": 1788119453.8951588,
+    "ast_hash": "aa6a1b115739597a2ce695ff823ab021",
+    "semantic_hash": ""
+  },
+  "chat-reliability-ux-fixes.handoff-plan.md": {
+    "mtime": 1788122851.3023193,
+    "ast_hash": "c6c7ae7bd72792d933f5d76987280a8d",
+    "semantic_hash": ""
+  },
+  "chat-reliability-ux-fixes.handoff-progress.md": {
+    "mtime": 1788125641.8525102,
+    "ast_hash": "9205f65801577e1ef7eff087ad99b29e",
+    "semantic_hash": ""
+  },
+  "chat-reliability-ux-fixes.handoff-prompt.md": {
+    "mtime": 1788122882.0696034,
+    "ast_hash": "33c2e075ab0ce70874f47adc7857c710",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-01-instant-consumer-account-onboarding-with-p-71d1c0/conversations/CONV-20260830-bce32c.md": {
+    "mtime": 1788120923.8484776,
+    "ast_hash": "bb8b5031c72f37b72bccdbb13c444781",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-01-instant-consumer-account-onboarding-with-p-71d1c0/dossier-revisions/DOS-20260830-b90b5d.md": {
+    "mtime": 1788120923.8266659,
+    "ast_hash": "577622015db14f21701bafc26e07d2a2",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-01-instant-consumer-account-onboarding-with-p-71d1c0/dossier-revisions/DOS-20260830-db06de.md": {
+    "mtime": 1788120966.6264215,
+    "ast_hash": "ec7909fcc7b85e5b751b055e7838b56f",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-01-instant-consumer-account-onboarding-with-p-71d1c0/dossier.md": {
+    "mtime": 1788120966.6269736,
+    "ast_hash": "57f50ebf880064715dd75a4954e04e68",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-01-instant-consumer-account-onboarding-with-p-71d1c0/events/2026-08-30-EVT-20260830-1bc7cc.md": {
+    "mtime": 1788120923.800482,
+    "ast_hash": "568aa6875b9847f004e9a72ab817e0d3",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-01-instant-consumer-account-onboarding-with-p-71d1c0/events/2026-08-30-EVT-20260830-6b50ee.md": {
+    "mtime": 1788120923.828819,
+    "ast_hash": "3a7b83c4feb6c111acb00f3cace22304",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-01-instant-consumer-account-onboarding-with-p-71d1c0/events/2026-08-30-EVT-20260830-8f19a2.md": {
+    "mtime": 1788120895.8377712,
+    "ast_hash": "d57b8989a18b585f9a4644e8f86babc8",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-01-instant-consumer-account-onboarding-with-p-71d1c0/events/2026-08-30-EVT-20260830-e7acd7.md": {
+    "mtime": 1788120966.6281521,
+    "ast_hash": "8da1210ae0a7b49b51f4ac835685ee0b",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-01-instant-consumer-account-onboarding-with-p-71d1c0/events/2026-08-30-EVT-20260830-fb489a.md": {
+    "mtime": 1788120966.6275525,
+    "ast_hash": "13260931b032fa9f4900b51bdb29f5b9",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-01-instant-consumer-account-onboarding-with-p-71d1c0/facts.md": {
+    "mtime": 1788120923.7990413,
+    "ast_hash": "894f0cb470d203693dac79344770649e",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-01-instant-consumer-account-onboarding-with-p-71d1c0/issues.md": {
+    "mtime": 1788120895.79953,
+    "ast_hash": "67049a7e93c1b136ad2e82a10aa680db",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-01-instant-consumer-account-onboarding-with-p-71d1c0/matter.md": {
+    "mtime": 1788120896.1538124,
+    "ast_hash": "842d6c18646c77e10afaeef048a16963",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-01-instant-consumer-account-onboarding-with-p-71d1c0/participants.md": {
+    "mtime": 1788120895.7989159,
+    "ast_hash": "be22344469bd17128c89be0500adc685",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-01-instant-consumer-account-onboarding-with-p-71d1c0/recommendations.md": {
+    "mtime": 1788120895.799866,
+    "ast_hash": "a3155f91dea872981fd27932f339affb",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-01-instant-consumer-account-onboarding-with-p-71d1c0/request.md": {
+    "mtime": 1788120895.798463,
+    "ast_hash": "12822cf2e5a5baa1fa79631428fcffc2",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-01-instant-consumer-account-onboarding-with-p-71d1c0/research/RES-20260830-554eb7.md": {
+    "mtime": 1788120966.623333,
+    "ast_hash": "9852f54783f380bb391db6246fc573fe",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-01-instant-consumer-account-onboarding-with-p-71d1c0/research/runs/RUN-20260830-2f1ed9.md": {
+    "mtime": 1788120966.779271,
+    "ast_hash": "40401ada0aa9134cb0f073d4862c7bcf",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-01-instant-consumer-account-onboarding-with-p-71d1c0/work-items/WI-20260830-436e15.md": {
+    "mtime": 1788120895.818565,
+    "ast_hash": "46cc073271835487a0d148464a7cc9b8",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/conversations/CONV-20260830-d5ac63.md": {
+    "mtime": 1788121224.5122383,
+    "ast_hash": "debecb9ad540577d41beb4436260fcd9",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/dossier-revisions/DOS-20260830-0dc95d.md": {
+    "mtime": 1788121254.030233,
+    "ast_hash": "76d1af299cfaf288f1daf31dd43bf9ca",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/dossier-revisions/DOS-20260830-96e31a.md": {
+    "mtime": 1788121161.1677024,
+    "ast_hash": "a80d1c87d4ad6f4ec6a7263b09ebdcf7",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/dossier.md": {
+    "mtime": 1788121254.0314884,
+    "ast_hash": "99c05de802e41390b65f5d4aa4bf33f3",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/events/2026-08-30-EVT-20260830-08aabf.md": {
+    "mtime": 1788121254.0344636,
+    "ast_hash": "b2d766befa53f4431fec47264a1073c5",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/events/2026-08-30-EVT-20260830-37ce60.md": {
+    "mtime": 1788121254.032935,
+    "ast_hash": "19c34665828aa91d245194d89ee0cbe3",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/events/2026-08-30-EVT-20260830-3ca8cd.md": {
+    "mtime": 1788121224.4750848,
+    "ast_hash": "812966ec68de31d758d4fa2fb5e3f1c4",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/events/2026-08-30-EVT-20260830-b5f2a6.md": {
+    "mtime": 1788121007.380064,
+    "ast_hash": "f71666c191054e9624f7855657028342",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/events/2026-08-30-EVT-20260830-d0578b.md": {
+    "mtime": 1788121161.170821,
+    "ast_hash": "1496cc7ff1a3b9cfaab57e00301019fa",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/events/2026-08-30-EVT-20260830-db5489.md": {
+    "mtime": 1788121161.1687684,
+    "ast_hash": "dbb7a293516f1a8ad7ac448a78ab1173",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/events/2026-08-30-EVT-20260830-ed75ca.md": {
+    "mtime": 1788121161.3359673,
+    "ast_hash": "e491094f0f2dccb965ecce7e60dd9528",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/facts.md": {
+    "mtime": 1788121224.4732459,
+    "ast_hash": "91dae4e9677383200a2872efa0a3735a",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/issues.md": {
+    "mtime": 1788121007.362594,
+    "ast_hash": "d489db19217da00105bdaa9b20ea436d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/matter.md": {
+    "mtime": 1788121161.3351848,
+    "ast_hash": "8153bd1e568c7effebef6d8a0e6069b7",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/participants.md": {
+    "mtime": 1788121007.3618934,
+    "ast_hash": "b283fd5501dc6e6a9069573050f355fd",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/recommendations.md": {
+    "mtime": 1788121208.4454222,
+    "ast_hash": "40fe00f950691911fcc2324ebfc24258",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/request.md": {
+    "mtime": 1788121007.3614898,
+    "ast_hash": "3104f59dc28e9e25ecdee822209c4f8b",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/research/RES-20260830-801418.md": {
+    "mtime": 1788121161.166538,
+    "ast_hash": "69bbfb5b9845d5262a9e2bdb81bad89c",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/research/RES-20260830-bb8c6c.md": {
+    "mtime": 1788121254.0239606,
+    "ast_hash": "2e1d36e62ada7b79125a64d9ec86dbcd",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/research/runs/RUN-20260830-c2dce6.md": {
+    "mtime": 1788121254.2273676,
+    "ast_hash": "1fec44aa2d6e5a99aa88d7870276e57d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/work-items/WI-20260830-d84d89.md": {
+    "mtime": 1788121208.6320202,
+    "ast_hash": "816908c42d4a111bab8d6dccfd70d140",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-02-beneficial-owner-verification-for-small-bu-7630aa/work-items/WI-20260830-fcdb3e.md": {
+    "mtime": 1788121161.1702569,
+    "ast_hash": "8c18bdd699b1535c2ef8874c2a194f40",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-03-background-checks-for-business-owners-and--7878fe/conversations/CONV-20260830-82dee3.md": {
+    "mtime": 1788121148.0774174,
+    "ast_hash": "0995846e1b50f566f6f46988790de5cf",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-03-background-checks-for-business-owners-and--7878fe/dossier-revisions/DOS-20260830-95be58.md": {
+    "mtime": 1788121198.8904066,
+    "ast_hash": "2f465d1ac21f429e53ec6acbcaef2808",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-03-background-checks-for-business-owners-and--7878fe/dossier-revisions/DOS-20260830-cc6778.md": {
+    "mtime": 1788121148.0621996,
+    "ast_hash": "c94ec427ebdbb51d10c604afd5fa3b77",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-03-background-checks-for-business-owners-and--7878fe/dossier.md": {
+    "mtime": 1788121198.8917592,
+    "ast_hash": "bad9515afc55c98790ac50b6a676d863",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-03-background-checks-for-business-owners-and--7878fe/events/2026-08-30-EVT-20260830-1069bf.md": {
+    "mtime": 1788121198.8925278,
+    "ast_hash": "23ea1628cf08f1b7282f582c0228f38e",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-03-background-checks-for-business-owners-and--7878fe/events/2026-08-30-EVT-20260830-1d31d8.md": {
+    "mtime": 1788121105.2836661,
+    "ast_hash": "b63b57cfff1d31a55f7108fd2cf741cb",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-03-background-checks-for-business-owners-and--7878fe/events/2026-08-30-EVT-20260830-5bb283.md": {
+    "mtime": 1788121148.04877,
+    "ast_hash": "f30332b9055b755c0c545f05c3a6f54c",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-03-background-checks-for-business-owners-and--7878fe/events/2026-08-30-EVT-20260830-a07d97.md": {
+    "mtime": 1788121198.8943214,
+    "ast_hash": "d2ab841257f10fe173b8b79b5d5a9850",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-03-background-checks-for-business-owners-and--7878fe/events/2026-08-30-EVT-20260830-a0857a.md": {
+    "mtime": 1788121148.06319,
+    "ast_hash": "0e3add6ccfc8088b51abf83db3005ca7",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-03-background-checks-for-business-owners-and--7878fe/facts.md": {
+    "mtime": 1788121148.0478942,
+    "ast_hash": "a4d874079cad4f04014a7f0a1645709a",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-03-background-checks-for-business-owners-and--7878fe/issues.md": {
+    "mtime": 1788121105.2423208,
+    "ast_hash": "ac9236ac2045ffbbf37c541d768790d4",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-03-background-checks-for-business-owners-and--7878fe/matter.md": {
+    "mtime": 1788121105.5820496,
+    "ast_hash": "08e3a4578733d85feec9989ee06843a8",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-03-background-checks-for-business-owners-and--7878fe/participants.md": {
+    "mtime": 1788121105.241731,
+    "ast_hash": "36b4cb667f69f8ef1acb4e1548fe159d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-03-background-checks-for-business-owners-and--7878fe/recommendations.md": {
+    "mtime": 1788121105.242753,
+    "ast_hash": "6c0b02e6ad557174f378b5b361ad2c00",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-03-background-checks-for-business-owners-and--7878fe/request.md": {
+    "mtime": 1788121105.2413843,
+    "ast_hash": "e3f5fb441480fba42fd8500030384e1a",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-03-background-checks-for-business-owners-and--7878fe/research/RES-20260830-cb3d1a.md": {
+    "mtime": 1788121198.887574,
+    "ast_hash": "1e856aea0db4951f60339ee6d86e38b7",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-03-background-checks-for-business-owners-and--7878fe/research/runs/RUN-20260830-9bbc50.md": {
+    "mtime": 1788121199.0745857,
+    "ast_hash": "44bc63c14068b56448fb1aaae8fb980d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-03-background-checks-for-business-owners-and--7878fe/work-items/WI-20260830-4ab394.md": {
+    "mtime": 1788121105.2655692,
+    "ast_hash": "16f8a553921bc57253562db8df85441e",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-04-business-payments-api-with-marketplace-sub-6e546b/conversations/CONV-20260830-f5376a.md": {
+    "mtime": 1788121188.75252,
+    "ast_hash": "c3c0bc2ea3603bced8b419ce3753f7aa",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-04-business-payments-api-with-marketplace-sub-6e546b/dossier-revisions/DOS-20260830-502dc0.md": {
+    "mtime": 1788121188.7313857,
+    "ast_hash": "d612c67638bf886b6111e2a70d7e9efe",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-04-business-payments-api-with-marketplace-sub-6e546b/dossier-revisions/DOS-20260830-9c3bf2.md": {
+    "mtime": 1788121242.6537874,
+    "ast_hash": "bc8243e849df31dd4c1bb41333a137a4",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-04-business-payments-api-with-marketplace-sub-6e546b/dossier.md": {
+    "mtime": 1788121242.6541848,
+    "ast_hash": "b7850da8aa7679cf61d59f13fb33bf5c",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-04-business-payments-api-with-marketplace-sub-6e546b/events/2026-08-30-EVT-20260830-0f8826.md": {
+    "mtime": 1788121188.7330635,
+    "ast_hash": "932cff521f39f7871ad6e6f49fa95928",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-04-business-payments-api-with-marketplace-sub-6e546b/events/2026-08-30-EVT-20260830-2f6eaa.md": {
+    "mtime": 1788121242.6553152,
+    "ast_hash": "96fe335fcc1e6066012884ce21c10bf8",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-04-business-payments-api-with-marketplace-sub-6e546b/events/2026-08-30-EVT-20260830-40e39f.md": {
+    "mtime": 1788121188.7063158,
+    "ast_hash": "d884e852545edc9becedb82b7cfcece5",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-04-business-payments-api-with-marketplace-sub-6e546b/events/2026-08-30-EVT-20260830-e2d152.md": {
+    "mtime": 1788121119.9075422,
+    "ast_hash": "2f1518966b518f8ce87bfb8e9b08a7a8",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-04-business-payments-api-with-marketplace-sub-6e546b/events/2026-08-30-EVT-20260830-ea9eb5.md": {
+    "mtime": 1788121242.6546714,
+    "ast_hash": "90f7a11d76a21e7fe9d4f2cde650dd50",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-04-business-payments-api-with-marketplace-sub-6e546b/facts.md": {
+    "mtime": 1788121188.704677,
+    "ast_hash": "de1424f00f4841d44af9e5cea66cf66f",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-04-business-payments-api-with-marketplace-sub-6e546b/issues.md": {
+    "mtime": 1788121119.8761837,
+    "ast_hash": "51797ec9112933e84c3cf2f3384fd149",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-04-business-payments-api-with-marketplace-sub-6e546b/matter.md": {
+    "mtime": 1788121120.204762,
+    "ast_hash": "a3db6f179c2c4ceab06dee4114aad8d4",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-04-business-payments-api-with-marketplace-sub-6e546b/participants.md": {
+    "mtime": 1788121119.8757207,
+    "ast_hash": "5c602d3d62fcce24a9925672b90a4339",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-04-business-payments-api-with-marketplace-sub-6e546b/recommendations.md": {
+    "mtime": 1788121119.876399,
+    "ast_hash": "548b27d66a488952d92cc8d2ae6f2d76",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-04-business-payments-api-with-marketplace-sub-6e546b/request.md": {
+    "mtime": 1788121119.8754466,
+    "ast_hash": "923864edb2e3b3e6580bb641a5ac85f4",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-04-business-payments-api-with-marketplace-sub-6e546b/research/RES-20260830-fb4a84.md": {
+    "mtime": 1788121242.6519628,
+    "ast_hash": "a273b6ad0e43ebb6ab7ecf3c24aa5406",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-04-business-payments-api-with-marketplace-sub-6e546b/research/runs/RUN-20260830-17c075.md": {
+    "mtime": 1788121242.820059,
+    "ast_hash": "2049d143e014de002f7d5de557bfdb42",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-04-business-payments-api-with-marketplace-sub-6e546b/work-items/WI-20260830-738a80.md": {
+    "mtime": 1788121119.892788,
+    "ast_hash": "1616d6ec7717a568a645e692435e4e17",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-05-real-time-payments-with-risk-based-holds-f470d8/conversations/CONV-20260830-f69f66.md": {
+    "mtime": 1788121186.3320906,
+    "ast_hash": "23bd881dd28b08da1b862ff3e397fdaf",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-05-real-time-payments-with-risk-based-holds-f470d8/dossier-revisions/DOS-20260830-12d7c0.md": {
+    "mtime": 1788121186.3173764,
+    "ast_hash": "037c2d825d7f30d0a3c735940ce16364",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-05-real-time-payments-with-risk-based-holds-f470d8/dossier-revisions/DOS-20260830-e0f410.md": {
+    "mtime": 1788121233.2042692,
+    "ast_hash": "bbcbbfe89ce65dde65a3a686602d2eb8",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-05-real-time-payments-with-risk-based-holds-f470d8/dossier.md": {
+    "mtime": 1788121233.2051337,
+    "ast_hash": "2083f8484baf75acd0925c70e093cb09",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-05-real-time-payments-with-risk-based-holds-f470d8/events/2026-08-30-EVT-20260830-201296.md": {
+    "mtime": 1788121233.2107792,
+    "ast_hash": "6d495b02c36fcb11b0f1724f543c6ea7",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-05-real-time-payments-with-risk-based-holds-f470d8/events/2026-08-30-EVT-20260830-72ca46.md": {
+    "mtime": 1788121186.3074627,
+    "ast_hash": "c88751b3c386cd2702c3981665a20ec4",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-05-real-time-payments-with-risk-based-holds-f470d8/events/2026-08-30-EVT-20260830-8e756f.md": {
+    "mtime": 1788121186.3185706,
+    "ast_hash": "218f6f643bb602f4eefb1f7d83666271",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-05-real-time-payments-with-risk-based-holds-f470d8/events/2026-08-30-EVT-20260830-bee682.md": {
+    "mtime": 1788121233.206393,
+    "ast_hash": "f358852eafb6c1e660f278496ed01546",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-05-real-time-payments-with-risk-based-holds-f470d8/events/2026-08-30-EVT-20260830-e8a969.md": {
+    "mtime": 1788121134.2877772,
+    "ast_hash": "84ea7df555d14bd7ea343701bb929964",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-05-real-time-payments-with-risk-based-holds-f470d8/facts.md": {
+    "mtime": 1788121186.3069127,
+    "ast_hash": "7dac6c6bdf1bc5726c871348965a3af5",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-05-real-time-payments-with-risk-based-holds-f470d8/issues.md": {
+    "mtime": 1788121134.259378,
+    "ast_hash": "ff40040e871421c649f1818430341065",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-05-real-time-payments-with-risk-based-holds-f470d8/matter.md": {
+    "mtime": 1788121134.8888018,
+    "ast_hash": "f6135a8d3990090b2349eb0da69b223a",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-05-real-time-payments-with-risk-based-holds-f470d8/participants.md": {
+    "mtime": 1788121134.2585135,
+    "ast_hash": "21264aa680fb8a4fa3bd56ff6b87576f",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-05-real-time-payments-with-risk-based-holds-f470d8/recommendations.md": {
+    "mtime": 1788121134.2597926,
+    "ast_hash": "e5fc3848f07f06fa6d97d51255ab65cf",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-05-real-time-payments-with-risk-based-holds-f470d8/request.md": {
+    "mtime": 1788121134.258103,
+    "ast_hash": "be757fac1f574feae36c2012faa1e454",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-05-real-time-payments-with-risk-based-holds-f470d8/research/RES-20260830-cd557f.md": {
+    "mtime": 1788121233.2008388,
+    "ast_hash": "a78f10709fc445bf7b6a5330ec8f7c10",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-05-real-time-payments-with-risk-based-holds-f470d8/research/runs/RUN-20260830-f6f053.md": {
+    "mtime": 1788121233.3925045,
+    "ast_hash": "37fce1363ca56ebefd21a4c2780f4eb9",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-05-real-time-payments-with-risk-based-holds-f470d8/work-items/WI-20260830-c2a54f.md": {
+    "mtime": 1788121134.275511,
+    "ast_hash": "d713e17233cb5cbf693502bdc3564c9f",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-06-linked-external-accounts-and-automated-cas-7b35e2/conversations/CONV-20260830-a2d493.md": {
+    "mtime": 1788121186.216123,
+    "ast_hash": "b6702ccaf1fcfb01c00913d4757b04ed",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-06-linked-external-accounts-and-automated-cas-7b35e2/dossier-revisions/DOS-20260830-16a2f0.md": {
+    "mtime": 1788121186.2026436,
+    "ast_hash": "2f570ebbeb3e73cdf2ed965be536d7d9",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-06-linked-external-accounts-and-automated-cas-7b35e2/dossier-revisions/DOS-20260830-5a0597.md": {
+    "mtime": 1788121242.4628325,
+    "ast_hash": "9c1981c582bffc3b16d11fd8c2dbe791",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-06-linked-external-accounts-and-automated-cas-7b35e2/dossier.md": {
+    "mtime": 1788121242.463471,
+    "ast_hash": "50ebe99ba494b0dd8c3f4db3c78ca68b",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-06-linked-external-accounts-and-automated-cas-7b35e2/events/2026-08-30-EVT-20260830-4780a1.md": {
+    "mtime": 1788121242.4649782,
+    "ast_hash": "13a4e054977e5b075e9bd6a8ee761048",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-06-linked-external-accounts-and-automated-cas-7b35e2/events/2026-08-30-EVT-20260830-585029.md": {
+    "mtime": 1788121186.2036116,
+    "ast_hash": "458576c60b249831d7e86a0f1ad3c296",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-06-linked-external-accounts-and-automated-cas-7b35e2/events/2026-08-30-EVT-20260830-7a4ad4.md": {
+    "mtime": 1788121242.4641843,
+    "ast_hash": "36e037cf35061e036c9008d6f29bcd82",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-06-linked-external-accounts-and-automated-cas-7b35e2/events/2026-08-30-EVT-20260830-c2c2fc.md": {
+    "mtime": 1788121151.823325,
+    "ast_hash": "27c98df6d6a36e09d6e73f2654741089",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-06-linked-external-accounts-and-automated-cas-7b35e2/events/2026-08-30-EVT-20260830-cadc70.md": {
+    "mtime": 1788121186.1917815,
+    "ast_hash": "b585a57b8cc60cbdee2a78980dd6bdc6",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-06-linked-external-accounts-and-automated-cas-7b35e2/facts.md": {
+    "mtime": 1788121186.1912282,
+    "ast_hash": "856965d22028467ab8ee8e14eb0c8f3c",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-06-linked-external-accounts-and-automated-cas-7b35e2/issues.md": {
+    "mtime": 1788121151.7911515,
+    "ast_hash": "9ba8bc8538f7fe2e83074883c852ee37",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-06-linked-external-accounts-and-automated-cas-7b35e2/matter.md": {
+    "mtime": 1788121152.1196206,
+    "ast_hash": "a037887010f0bd0caa669abe410f38e7",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-06-linked-external-accounts-and-automated-cas-7b35e2/participants.md": {
+    "mtime": 1788121151.790534,
+    "ast_hash": "cd71d63ae08f479e0f5bd5a500f40cb5",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-06-linked-external-accounts-and-automated-cas-7b35e2/recommendations.md": {
+    "mtime": 1788121151.7915232,
+    "ast_hash": "e4b3f942fffc4ea815abc96471e92d8f",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-06-linked-external-accounts-and-automated-cas-7b35e2/request.md": {
+    "mtime": 1788121151.7901392,
+    "ast_hash": "5a3a87f8fd47051122505ea717ee1a08",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-06-linked-external-accounts-and-automated-cas-7b35e2/research/RES-20260830-91e6ad.md": {
+    "mtime": 1788121242.4577465,
+    "ast_hash": "4e9c9f41c4850ad62f2747ab4739c8f8",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-06-linked-external-accounts-and-automated-cas-7b35e2/research/runs/RUN-20260830-2dcd5d.md": {
+    "mtime": 1788121242.6506176,
+    "ast_hash": "1e46d84c54b8bec3b5a3d47d184c58d0",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-06-linked-external-accounts-and-automated-cas-7b35e2/work-items/WI-20260830-e22a5c.md": {
+    "mtime": 1788121151.8083663,
+    "ast_hash": "17998086219c405d26b67cabbf0aaeac",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-07-risk-based-account-deactivation-and-funds--423b9f/conversations/CONV-20260830-2e5183.md": {
+    "mtime": 1788121167.279701,
+    "ast_hash": "8e2909785224fa61fbb7864edc1d64ff",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-07-risk-based-account-deactivation-and-funds--423b9f/events/2026-08-30-EVT-20260830-e07a61.md": {
+    "mtime": 1788121166.3018148,
+    "ast_hash": "9aae0b34c652f1f777679ed94909be03",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-07-risk-based-account-deactivation-and-funds--423b9f/facts.md": {
+    "mtime": 1788121166.257138,
+    "ast_hash": "cac9c305b520f670befaecef821857b9",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-07-risk-based-account-deactivation-and-funds--423b9f/issues.md": {
+    "mtime": 1788121166.2574117,
+    "ast_hash": "4261388bd8f76cf5e6947ab496dbccd5",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-07-risk-based-account-deactivation-and-funds--423b9f/matter.md": {
+    "mtime": 1788121166.5949342,
+    "ast_hash": "0ee108fb67a958d6d8a949a7b4e97717",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-07-risk-based-account-deactivation-and-funds--423b9f/participants.md": {
+    "mtime": 1788121166.256865,
+    "ast_hash": "5bb1a1e0a2581eb13daa541c4bf82432",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-07-risk-based-account-deactivation-and-funds--423b9f/recommendations.md": {
+    "mtime": 1788121166.2576663,
+    "ast_hash": "4a560d3ef51d4f9adfff0fc3b17c7bac",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-07-risk-based-account-deactivation-and-funds--423b9f/request.md": {
+    "mtime": 1788121166.256522,
+    "ast_hash": "25cc48dee26220d89b9fada8f8e9faaa",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-07-risk-based-account-deactivation-and-funds--423b9f/work-items/WI-20260830-44ad48.md": {
+    "mtime": 1788121166.2803755,
+    "ast_hash": "479dcd13fa26408a07d326f58c9612d2",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-08-privacy-controls-for-transaction-data-and--82eb0a/conversations/CONV-20260830-bbc4c0.md": {
+    "mtime": 1788121184.9443471,
+    "ast_hash": "df8d15e31adecdfe3ec0ca8fb0f55ae9",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-08-privacy-controls-for-transaction-data-and--82eb0a/events/2026-08-30-EVT-20260830-d9b5a0.md": {
+    "mtime": 1788121180.8290281,
+    "ast_hash": "ab3dbbf78cbbd8fdd3e71253b0284ac8",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-08-privacy-controls-for-transaction-data-and--82eb0a/facts.md": {
+    "mtime": 1788121180.8240232,
+    "ast_hash": "7acaf78c4c90da84a5476e8462d1a77c",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-08-privacy-controls-for-transaction-data-and--82eb0a/issues.md": {
+    "mtime": 1788121180.8243139,
+    "ast_hash": "1ef1d66b73d24584bc95b0e57917cb9d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-08-privacy-controls-for-transaction-data-and--82eb0a/matter.md": {
+    "mtime": 1788121181.1253865,
+    "ast_hash": "f7b9d1b0a5be2f212d1ecc0ce35837ac",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-08-privacy-controls-for-transaction-data-and--82eb0a/participants.md": {
+    "mtime": 1788121180.823743,
+    "ast_hash": "fce6b2796af43d39723b91a8487f2b07",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-08-privacy-controls-for-transaction-data-and--82eb0a/recommendations.md": {
+    "mtime": 1788121180.824589,
+    "ast_hash": "4d69d97bd5f489183e0321ea4e76d5a2",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-08-privacy-controls-for-transaction-data-and--82eb0a/request.md": {
+    "mtime": 1788121180.8234208,
+    "ast_hash": "4d61f0b63fbe2f3944e1a099323db122",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-08-privacy-controls-for-transaction-data-and--82eb0a/work-items/WI-20260830-81c5c8.md": {
+    "mtime": 1788121180.8275971,
+    "ast_hash": "1bb3f8484d98f433e7ce6c813bc10204",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-09-preapproved-credit-marketing-based-on-depo-25aaab/conversations/CONV-20260830-f1eb38.md": {
+    "mtime": 1788121242.846694,
+    "ast_hash": "27e53a97c2d49295e680febc2f795037",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-09-preapproved-credit-marketing-based-on-depo-25aaab/dossier-revisions/DOS-20260830-022e36.md": {
+    "mtime": 1788121242.8329597,
+    "ast_hash": "7ae1e3e3c82f1e802cf832f48557afb2",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-09-preapproved-credit-marketing-based-on-depo-25aaab/dossier-revisions/DOS-20260830-e43592.md": {
+    "mtime": 1788121273.7831209,
+    "ast_hash": "a1026a6064cd6aa9444c44264f11a6f1",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-09-preapproved-credit-marketing-based-on-depo-25aaab/dossier.md": {
+    "mtime": 1788121273.7845728,
+    "ast_hash": "267a75e56e8ef07ac231452ec839aade",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-09-preapproved-credit-marketing-based-on-depo-25aaab/events/2026-08-30-EVT-20260830-080f5a.md": {
+    "mtime": 1788121242.8224864,
+    "ast_hash": "2413e3907aa45ed7ca98fe2e1ac8be53",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-09-preapproved-credit-marketing-based-on-depo-25aaab/events/2026-08-30-EVT-20260830-300ceb.md": {
+    "mtime": 1788121242.8338442,
+    "ast_hash": "340794358399410caab11b69d2a09d42",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-09-preapproved-credit-marketing-based-on-depo-25aaab/events/2026-08-30-EVT-20260830-67cf31.md": {
+    "mtime": 1788121273.7865984,
+    "ast_hash": "6877b438c7c075f17cef923f3df714cb",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-09-preapproved-credit-marketing-based-on-depo-25aaab/events/2026-08-30-EVT-20260830-a15156.md": {
+    "mtime": 1788121273.7887127,
+    "ast_hash": "22b8304be4a1ce42b91a12918b0c4b4b",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-09-preapproved-credit-marketing-based-on-depo-25aaab/events/2026-08-30-EVT-20260830-faced2.md": {
+    "mtime": 1788121198.4322386,
+    "ast_hash": "0322960740fa1b995cc627fa29af7ae1",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-09-preapproved-credit-marketing-based-on-depo-25aaab/facts.md": {
+    "mtime": 1788121242.8219838,
+    "ast_hash": "3e41b5c6d3796e9b18222a357db8a79e",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-09-preapproved-credit-marketing-based-on-depo-25aaab/issues.md": {
+    "mtime": 1788121198.3757362,
+    "ast_hash": "fe591fba9e1f83861b20c648eb5f051c",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-09-preapproved-credit-marketing-based-on-depo-25aaab/matter.md": {
+    "mtime": 1788121198.7162516,
+    "ast_hash": "9015e3a89a4cea62846ae85456612254",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-09-preapproved-credit-marketing-based-on-depo-25aaab/participants.md": {
+    "mtime": 1788121198.3750641,
+    "ast_hash": "ac24531542fdbc29f369f72aa0339120",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-09-preapproved-credit-marketing-based-on-depo-25aaab/recommendations.md": {
+    "mtime": 1788121198.3760626,
+    "ast_hash": "a62d0d566e23937212de29ecfc7c99c9",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-09-preapproved-credit-marketing-based-on-depo-25aaab/request.md": {
+    "mtime": 1788121198.3746212,
+    "ast_hash": "b42554959b4595f8c4d5f79dea95c279",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-09-preapproved-credit-marketing-based-on-depo-25aaab/research/RES-20260830-f7ff9e.md": {
+    "mtime": 1788121273.7764916,
+    "ast_hash": "423a49634274c3ab86ead914edd0d57a",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-09-preapproved-credit-marketing-based-on-depo-25aaab/research/runs/RUN-20260830-9ffbe8.md": {
+    "mtime": 1788121273.9754615,
+    "ast_hash": "5a17f876c1cdd3da13e6fe74ff1a0b54",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-09-preapproved-credit-marketing-based-on-depo-25aaab/work-items/WI-20260830-aae995.md": {
+    "mtime": 1788121198.4079232,
+    "ast_hash": "378274a05a63e9b09d87e138ff37c8a8",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-10-referral-campaign-and-influencer-claims-fo-53b20e/conversations/CONV-20260830-0f1f5b.md": {
+    "mtime": 1788121216.8754706,
+    "ast_hash": "91309ce7bd479c73b4db830d827d9642",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-10-referral-campaign-and-influencer-claims-fo-53b20e/events/2026-08-30-EVT-20260830-923d9e.md": {
+    "mtime": 1788121212.8983965,
+    "ast_hash": "03d9e94c7ebf477c1d044cd8e46de663",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-10-referral-campaign-and-influencer-claims-fo-53b20e/facts.md": {
+    "mtime": 1788121212.8747401,
+    "ast_hash": "a86b3291241aa42ddcfcaf7785d5da51",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-10-referral-campaign-and-influencer-claims-fo-53b20e/issues.md": {
+    "mtime": 1788121212.875111,
+    "ast_hash": "d8885df00475a88e96960e957d0823d5",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-10-referral-campaign-and-influencer-claims-fo-53b20e/matter.md": {
+    "mtime": 1788121213.1793308,
+    "ast_hash": "7cbe9c207649d36add221401aa18a9ff",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-10-referral-campaign-and-influencer-claims-fo-53b20e/participants.md": {
+    "mtime": 1788121212.87437,
+    "ast_hash": "8192d3ed73538fa5361c18a47cb6db2b",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-10-referral-campaign-and-influencer-claims-fo-53b20e/recommendations.md": {
+    "mtime": 1788121212.8754756,
+    "ast_hash": "a2e52ee6b44a6f828b432a084ced5e85",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-10-referral-campaign-and-influencer-claims-fo-53b20e/request.md": {
+    "mtime": 1788121212.8739452,
+    "ast_hash": "a6a925041031a86a0dba3112a02c39bc",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/harborline-ux-test-10-referral-campaign-and-influencer-claims-fo-53b20e/work-items/WI-20260830-59e12a.md": {
+    "mtime": 1788121212.8885777,
+    "ast_hash": "83382d8f54b6542bcf93628374f5b8a7",
+    "semantic_hash": ""
+  },
+  "backend/app/services/chat_runs.py": {
+    "mtime": 1788125103.9114516,
+    "ast_hash": "1e25cbb165f23b7d69ddc3a3c2b6351a",
+    "semantic_hash": ""
+  },
+  "backend/tests/test_chat_runs.py": {
+    "mtime": 1788125068.2636712,
+    "ast_hash": "beedf931b8e9637cfe7b75845e17410b",
+    "semantic_hash": ""
+  },
+  "frontend/scripts/check-chat-run-recovery.ts": {
+    "mtime": 1788125028.9502668,
+    "ast_hash": "f241c429ed7f637a02aba3df3f900774",
     "semantic_hash": ""
   }
 }

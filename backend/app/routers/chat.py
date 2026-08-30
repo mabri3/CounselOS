@@ -4,9 +4,10 @@ from datetime import date
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 
-from app.models.api import ChatMessage, ChatRequest, ChatResponse, MatterUpdateCard, ResearchStatusCard, WorkProductCard
+from app.models.api import ChatMessage, ChatRequest, ChatResponse, ChatRun, MatterUpdateCard, ResearchStatusCard, WorkProductCard
 from app.routers.dependencies import get_context
 from app.runtime import AppContext
+from app.agents.runner import RunnerExecutionState
 
 
 router = APIRouter(tags=["chat"])
@@ -41,6 +42,45 @@ def get_daily_conversation(
 
 @router.post("/chat", response_model=ChatResponse)
 async def chat(payload: ChatRequest, context: AppContext = Depends(get_context)):
+    return await execute_chat(payload, context)
+
+
+@router.post("/matters/{matter_id}/chat-runs", response_model=ChatRun, status_code=202)
+async def start_chat_run(matter_id: str, payload: ChatRequest, context: AppContext = Depends(get_context)):
+    try:
+        return context.chat_runs.start(matter_id, payload)
+    except (KeyError, FileNotFoundError) as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@router.get("/matters/{matter_id}/chat-runs/{run_id}", response_model=ChatRun)
+async def get_chat_run(matter_id: str, run_id: str, context: AppContext = Depends(get_context)):
+    try:
+        return context.chat_runs.get(matter_id, run_id)
+    except (KeyError, FileNotFoundError) as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@router.post("/matters/{matter_id}/chat-runs/{run_id}/retry", response_model=ChatRun, status_code=202)
+async def retry_chat_run(matter_id: str, run_id: str, context: AppContext = Depends(get_context)):
+    try:
+        return context.chat_runs.retry(matter_id, run_id)
+    except (KeyError, FileNotFoundError) as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+
+async def execute_chat(
+    payload: ChatRequest,
+    context: AppContext,
+    *,
+    run_id: str | None = None,
+    execution_state: RunnerExecutionState | None = None,
+    checkpoint=None,
+) -> ChatResponse:
     try:
         if not payload.message.strip() and not payload.card_action and not payload.attachments:
             raise ValueError("Send a message, card action, or attachment.")
@@ -61,16 +101,27 @@ async def chat(payload: ChatRequest, context: AppContext = Depends(get_context))
             history = []
             if conversation_id:
                 saved = context.chat_history.get(payload.matter_id, conversation_id)
-                _reject_duplicate_question_action(saved, payload)
+                same_run_user = bool(
+                    run_id and context.chat_history.find_run_message(
+                        payload.matter_id, conversation_id, run_id, "user"
+                    )
+                )
+                if not same_run_user:
+                    _reject_duplicate_question_action(saved, payload)
                 history = _history(saved)
-            saved = context.chat_history.append(
-                payload.matter_id,
-                conversation_id,
-                role="user",
-                content=user_content,
-                attachments=[item.model_dump() for item in payload.attachments],
-                card_action=payload.card_action.model_dump() if payload.card_action else None,
+            existing_user = (
+                context.chat_history.find_run_message(payload.matter_id, conversation_id, run_id, "user")
+                if run_id and conversation_id else None
             )
+            if existing_user:
+                saved = context.chat_history.get(payload.matter_id, conversation_id)
+            else:
+                saved = context.chat_history.append(
+                    payload.matter_id, conversation_id, role="user", content=user_content,
+                    attachments=[item.model_dump() for item in payload.attachments],
+                    card_action=payload.card_action.model_dump() if payload.card_action else None,
+                    run_id=run_id,
+                )
             conversation_id = saved["conversation_id"]
         else:
             if payload.conversation_id:
@@ -100,20 +151,26 @@ async def chat(payload: ChatRequest, context: AppContext = Depends(get_context))
                     "skill_id": skill_id,
                     "agent_id": "research-agent" if skill_id == "watch-builder" else payload.agent_id,
                 }
-            )
+            ),
+            execution_state=execution_state,
+            checkpoint=checkpoint,
         )
         if payload.matter_id:
-            _apply_matter_actions(context, payload, saved, response)
+            _apply_matter_actions(context, payload, saved, response, run_id=run_id)
         if payload.matter_id:
-            saved = context.chat_history.append(
-                payload.matter_id,
-                conversation_id,
-                role="assistant",
-                content=response.reply,
-                trace=[item.model_dump() for item in response.trace],
-                cards=[item.model_dump() for item in response.cards],
-                applied_skills=[item.model_dump() for item in response.applied_skills],
-            )
+            if response.reply.strip():
+                if run_id:
+                    saved = context.chat_history.upsert_run_assistant(
+                        payload.matter_id, conversation_id, run_id, content=response.reply,
+                        trace=[item.model_dump() for item in response.trace], cards=[item.model_dump() for item in response.cards],
+                        applied_skills=[item.model_dump() for item in response.applied_skills],
+                    )
+                else:
+                    saved = context.chat_history.append(
+                        payload.matter_id, conversation_id, role="assistant", content=response.reply,
+                        trace=[item.model_dump() for item in response.trace], cards=[item.model_dump() for item in response.cards],
+                        applied_skills=[item.model_dump() for item in response.applied_skills],
+                    )
         else:
             saved = context.chat_history.append_daily(
                 workspace_day,
@@ -166,7 +223,10 @@ def _watch_builder_requested(content: str, payload: ChatRequest) -> bool:
     return monitoring and creation
 
 
-def _apply_matter_actions(context: AppContext, payload: ChatRequest, saved: dict, response: ChatResponse) -> None:
+def _apply_matter_actions(
+    context: AppContext, payload: ChatRequest, saved: dict, response: ChatResponse,
+    *, run_id: str | None = None,
+) -> None:
     matter_id = payload.matter_id
     if not matter_id:
         return
@@ -183,13 +243,43 @@ def _apply_matter_actions(context: AppContext, payload: ChatRequest, saved: dict
         response.cards.append(MatterUpdateCard(action_id=action["action_id"], summary="Matter updated", changed_sections=["Facts", "Sources"]))
         response.changed_paths.append(context.matter_records.get(matter_id)["path"])
     if payload.card_action and payload.card_action.action == "answer" and payload.card_action.values:
-        action = context.matter_records.apply_update(
-            matter_id,
-            facts=[{"text": f"Intake response: {value}", "source_ids": [saved["conversation_id"]]} for value in payload.card_action.values],
-            sources=[{"source_id": saved["conversation_id"], "kind": "conversation", "label": "Current matter chat"}],
-            summary="Saved an intake response",
+        automatic_key = f"intake:{payload.card_action.card_id}"
+        source_action_key = f"{matter_id}:{saved['conversation_id']}:{payload.card_action.card_id}"
+        intake_source_id = f"{saved['conversation_id']}:{payload.card_action.card_id}"
+        checkpoint = context.chat_runs.automatic_action(matter_id, run_id, automatic_key) if run_id else None
+        if run_id and checkpoint is None:
+            context.chat_runs.checkpoint_automatic_action(
+                matter_id, run_id, automatic_key, state="planned",
+                source_action_key=source_action_key,
+            )
+        records = context.matter_records.get(matter_id)
+        expected_facts = [f"Intake response: {value}" for value in payload.card_action.values]
+        facts_already_saved = all(
+            any(
+                fact.get("status") == "active"
+                and fact.get("text") == text
+                and intake_source_id in fact.get("source_ids", [])
+                for fact in records["facts"]
+            )
+            for text in expected_facts
         )
-        response.cards = [MatterUpdateCard(action_id=action["action_id"], summary="Matter updated", changed_sections=["Facts", "Missing information"])]
+        if checkpoint and checkpoint.get("state") == "completed":
+            action_id = str(checkpoint.get("action_id") or payload.card_action.card_id)
+        elif facts_already_saved:
+            matching_action = next(
+                (item for item in reversed(records.get("actions", [])) if item.get("summary") == "Saved an intake response"),
+                {},
+            )
+            action_id = str(matching_action.get("action_id") or payload.card_action.card_id)
+        else:
+            action = context.matter_records.apply_update(
+                matter_id,
+                facts=[{"text": text, "source_ids": [intake_source_id]} for text in expected_facts],
+                sources=[{"source_id": intake_source_id, "kind": "conversation", "label": "Current matter chat"}],
+                summary="Saved an intake response",
+            )
+            action_id = action["action_id"]
+        response.cards = [MatterUpdateCard(action_id=action_id, summary="Matter updated", changed_sections=["Facts", "Missing information"])]
         if context.dossiers.get(matter_id) is None:
             matter = context.matters.get(matter_id)
             facts = context.matter_records.get(matter_id)["facts"]
@@ -197,8 +287,25 @@ def _apply_matter_actions(context: AppContext, payload: ChatRequest, saved: dict
             content += "\n\n## Known facts\n\n" + "\n".join(f"- {item['text']}" for item in facts if item.get("status") == "active")
             content += "\n\n## Missing information\n\n- Continue focused intake as needed.\n\n## Work product\n\nNo work product yet."
             context.dossiers.propose_update(matter_id, content, expected_hash=None)
-        run = context.research_runs.start(matter_id, [f"What material source-based issues should counsel research for {context.matters.get(matter_id)['title']}?"])
+        model_ran_research = any(item.tool == "run_research" and item.status == "success" for item in response.trace)
+        question = f"What material source-based issues should counsel research for {context.matters.get(matter_id)['title']}?"
+        if model_ran_research:
+            packet_path = next((path for path in response.changed_paths if "/research/" in path and "/runs/" not in path), "")
+            run = context.research_runs.record_completed(
+                matter_id, question, packet_path, source_action_key=source_action_key
+            )
+        else:
+            run = context.research_runs.start(
+                matter_id,
+                [question],
+                source_action_key=source_action_key,
+            )
         response.cards.append(ResearchStatusCard(run_id=run["run_id"], state=run["state"], total=run["total"], completed=run["completed"], status=run["status"], dossier_effect=run["dossier_effect"]))
+        if run_id:
+            context.chat_runs.checkpoint_automatic_action(
+                matter_id, run_id, automatic_key, state="completed",
+                action_id=action_id, research_run_id=run["run_id"], source_action_key=source_action_key,
+            )
         response.refresh.append("matter")
     typed_save_succeeded = any(
         item.tool == "save_work_product" and item.status == "success"

@@ -179,7 +179,7 @@ function ItemReader({ item, setItem, catalog, backHref, watchNames }: { item: Br
     <div className="work-rail-layout rail-roomy" style={{ marginTop: 26 }}>
       <article className="work-main">
         <section className="agent-note" aria-label="Why this appeared">
-          <span className="state-label state-agent">Themis · Not reviewed</span>
+          <span className="state-label state-agent">Themis</span>
           <h2 style={{ margin: "12px 0 8px", font: "600 19px var(--serif)" }}>Why this reached you</h2>
           <p className="reader-prose">{item.why_shown}</p>
         </section>
@@ -235,10 +235,10 @@ function ItemReader({ item, setItem, catalog, backHref, watchNames }: { item: Br
         </section>
 
         <section className="rail-card wash-agent ask-panel">
-          <span className="state-label state-agent">Themis · Not reviewed</span>
+          <span className="state-label state-agent">Themis</span>
           <h2 className="rail-card-title" style={{ marginTop: 12 }}>Ask about this development</h2>
           <p className="rail-card-help">Themis keeps this item in context. Answers are drafts for you to judge — they are never recorded decisions.</p>
-          {turns.length ? <div className="ask-thread">{turns.map((turn, index) => turn.role === "user" ? <div className="bubble-you" key={index}>{turn.content}</div> : <div className="assistant-message" key={index}><div className="agent-label">Themis · Not reviewed</div><div className="bubble-agent"><ReactMarkdown remarkPlugins={[remarkGfm]}>{turn.content}</ReactMarkdown>{turn.result?.warnings.map((warning) => <div className="warning-callout" key={warning}>{warning}</div>)}{turn.result?.sources.length ? <details><summary>Sources used ({turn.result.sources.length})</summary>{turn.result.sources.map((source) => <div key={source.canonical_url}><a href={source.canonical_url} rel="noreferrer" target="_blank">{source.title}</a></div>)}</details> : null}</div></div>)}</div> : null}
+          {turns.length ? <div className="ask-thread">{turns.map((turn, index) => turn.role === "user" ? <div className="bubble-you" key={index}>{turn.content}</div> : <div className="assistant-message" key={index}><div className="agent-label">Themis</div><div className="bubble-agent"><ReactMarkdown remarkPlugins={[remarkGfm]}>{turn.content}</ReactMarkdown>{turn.result?.warnings.map((warning) => <div className="warning-callout" key={warning}>{warning}</div>)}{turn.result?.sources.length ? <details><summary>Sources used ({turn.result.sources.length})</summary>{turn.result.sources.map((source) => <div key={source.canonical_url}><a href={source.canonical_url} rel="noreferrer" target="_blank">{source.title}</a></div>)}</details> : null}</div></div>)}</div> : null}
           <div className="composer-suggestions" style={{ marginTop: 13 }}>{BRIEFING_PROMPTS.map((prompt) => <button className="suggestion" disabled={busy} key={prompt} onClick={() => void usePrompt(prompt)} type="button">{prompt}</button>)}</div>
           {picker ? <div className="card" style={{ margin: "12px 0", padding: 12 }} aria-label={`Choose a ${picker.kind}`}>
             <div className="field-label">Choose a {picker.kind}</div>

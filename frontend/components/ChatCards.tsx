@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { KeyboardEvent, useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { finalizeWorkProduct, getResearchRun } from "@/lib/api";
 import type { CardAction, ChatCard, ResearchRun } from "@/lib/types";
 
@@ -38,7 +38,7 @@ export default function ChatCards({ cards = [], matterId, disabled, onAction, on
             </section>
           );
         }
-        if (card.type === "research_status") return <ResearchCard card={card} key={key} matterId={matterId} />;
+        if (card.type === "research_status") return <ResearchCard card={card} key={key} matterId={matterId} onRefresh={onRefresh} />;
         if (card.type === "watch_draft") return <WatchCard card={card} disabled={disabled} key={key} onAction={onAction} />;
         if (card.type === "watch_scan") return <WatchCard card={card} disabled={disabled} key={key} onAction={onAction} />;
         return <WorkProductCard card={card} disabled={disabled} key={key} matterId={matterId} onOpenDocument={onOpenDocument} onRefresh={onRefresh} />;
@@ -236,25 +236,34 @@ function QuestionCard({ card, disabled, onAction }: { card: Extract<ChatCard, { 
   );
 }
 
-function ResearchCard({ card, matterId }: { card: Extract<ChatCard, { type: "research_status" }>; matterId?: string }) {
+function ResearchCard({ card, matterId, onRefresh }: { card: Extract<ChatCard, { type: "research_status" }>; matterId?: string; onRefresh?: Props["onRefresh"] }) {
   const [run, setRun] = useState<ResearchRun | Extract<ChatCard, { type: "research_status" }>>(card);
+  const refreshedRunId = useRef<string | null>(null);
+  const onRefreshRef = useRef(onRefresh);
+  onRefreshRef.current = onRefresh;
   useEffect(() => {
-    if (!matterId || !["queued", "running"].includes(card.state)) return;
+    if (!matterId) return;
     let cancelled = false;
-    const timer = window.setInterval(() => {
-      void getResearchRun(matterId, card.run_id).then((next) => {
-        if (!cancelled) setRun(next);
-        if (!["queued", "running"].includes(next.state)) window.clearInterval(timer);
-      }).catch(() => window.clearInterval(timer));
-    }, 2000);
+    let timer: number | undefined;
+    const check = () => void getResearchRun(matterId, card.run_id).then(async (next) => {
+      if (cancelled) return;
+      setRun(next);
+      if (["queued", "running"].includes(next.state)) {
+        timer = window.setTimeout(check, 2000);
+      } else if (refreshedRunId.current !== next.run_id) {
+        refreshedRunId.current = next.run_id;
+        await onRefreshRef.current?.();
+      }
+    }).catch(() => undefined);
+    check();
     return () => { cancelled = true; window.clearInterval(timer); };
-  }, [card.run_id, card.state, matterId]);
+  }, [card.run_id, matterId]);
   const active = run.state === "queued" || run.state === "running";
   return (
     <details className="chat-card research-card">
       <summary>
         <span className={`research-indicator ${active ? "active" : ""}`} aria-hidden="true" />
-        <span><span className="chat-card-kicker">Research · {run.state}</span><span className="chat-card-summary">{run.status}</span></span>
+        <span><span className="chat-card-kicker">First-pass research · {{ queued: "Queued", running: "Working", completed: "Completed", failed: "Failed", interrupted: "Interrupted" }[run.state]}</span><span className="chat-card-summary">{run.status}</span></span>
         <span className="research-progress">{run.completed}/{run.total}</span>
       </summary>
       <div className="chat-card-detail">{run.dossier_effect || "No dossier change is recorded yet."}</div>

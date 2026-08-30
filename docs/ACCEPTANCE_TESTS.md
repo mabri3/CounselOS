@@ -252,7 +252,8 @@ isolated browser session as described above.
 - [x] Confirm that the rationale is visible and editable before recording. It can be empty, but it must not store a hidden orientation value.
 - [x] Confirm that the decider defaults only from the matter legal owner. Decision and decider are required before submit.
 - [x] Open and cancel the modal. Confirm that no decision is written. Then use the final explicit record action and confirm that exactly one decision is written.
-- [x] Open a full assistant answer. Confirm that the full block, not only a small icon, uses the dashed iris agent treatment and is labelled `Themis · Not reviewed`.
+- [x] Open a full assistant answer. Confirm that the full block, not only a small icon, uses the dashed iris agent treatment and is labelled `Themis`.
+- [x] Confirm that `Themis · Not yet reviewed by an attorney` appears only on qualifying generated work product with an explicit current unreviewed state.
 - [x] Confirm that `Actions taken (N)` follows the answer in a closed disclosure.
 
 ### Readability, state language, and administration
@@ -417,3 +418,34 @@ The browser console had no errors. The repository-vault hash was
 `79bd335cfd0d61327ee0696bcde3d919e381908910f8c124f9ddf6031d945964`
 before and after both walks. Both temporary vaults were moved to Trash after
 their servers stopped.
+
+## Q. Middle pane, review labels, and vault selection
+
+These checks are planned. They do not record observed browser results.
+
+- [ ] Open a matter at normal and short viewport heights. Confirm that
+  **Overview** and **Chat with Themis** remain visible as two headers and that
+  the selected section uses the available middle-pane height.
+- [ ] Type an unsent chat message, add attachments, select a saved
+  conversation, and switch sections. Confirm that chat state and scroll state
+  remain intact and that the left tree and right document pane do not collapse.
+- [ ] Use a saved conversation, new chat, and seeded chat action. Confirm that
+  each action opens **Chat with Themis**. Confirm that both headers are keyboard
+  buttons with matching expanded state and labelled regions.
+- [ ] Confirm that ordinary matter chat, company interview, and Briefing
+  answers use `Themis`. Confirm that only an unsaved generated company-profile
+  draft and an open generated review packet use
+  `Themis · Not yet reviewed by an attorney`.
+- [ ] In Settings → Vaults, confirm the current vault name and exact path.
+  Create a blank vault at a new absolute path. Confirm that it has no user work,
+  can create one matter, and can complete one mock chat.
+- [ ] Load an existing current-format vault. Confirm that the prior vault is
+  unchanged, no files were moved or deleted, and the page navigates to `/`.
+- [ ] Restart with a different repository `VAULT_PATH`. Confirm that a valid
+  `.counsel-os/active-vault.json` selection wins and each vault uses its own
+  disposable SQLite index.
+- [ ] Attempt unsafe, overlapping, aliased, and symlink-escaping paths. Confirm
+  that each is rejected without a partial target or authoritative-file change.
+- [ ] Attempt a switch during a request lease, scheduled task, and research
+  run. Confirm that the switch waits for the lease and returns **Busy** for
+  active work without cancelling it.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Live Agent UX Experiment"
+  short_description: "Run live UX tests and produce a repair backlog"
+  default_prompt: "Use $live-agent-ux-experiment to run a browser-only Counsel OS experiment and deliver what works, what does not, what is broken, and a detailed repair backlog."

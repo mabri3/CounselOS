@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException
+from pathlib import Path
+
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 from app.models.api import (
     CompanyInterviewDraftRequest,
@@ -8,12 +10,64 @@ from app.models.api import (
     CompanyInterviewGuide,
     CompanyProfile,
     SettingsUpdate,
+    VaultInfo,
+    VaultPathRequest,
 )
+from app.active_context import VaultBusyError
 from app.routers.dependencies import get_context
 from app.runtime import AppContext
+from app.services.company import CompanyProfileVersionConflictError
+from app.vault_manager import VaultManager
 
 
 router = APIRouter(prefix="/settings", tags=["settings"])
+
+
+@router.get("/vault", response_model=VaultInfo)
+def get_vault(context: AppContext = Depends(get_context)):
+    path = context.vault.root
+    return {"name": path.name, "path": str(path)}
+
+
+async def _activate_vault(request: Request, path: str, *, create: bool) -> dict[str, str]:
+    manager = request.app.state.context_manager
+    try:
+        selected: Path | None = None
+
+        def prepare(current_vault: Path) -> Path:
+            nonlocal selected
+            vaults = VaultManager(current_vault)
+            selected = vaults.create(path) if create else vaults.load(path)
+            return selected
+
+        context = await manager.select(prepare)
+        assert selected is not None
+        request.app.state.context = context
+        return {"name": selected.name, "path": str(selected)}
+    except VaultBusyError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    except Exception as exc:
+        if create and selected is not None:
+            raise HTTPException(
+                status_code=500,
+                detail=(
+                    f"Vault created at {selected}, but Counsel OS could not activate it: {exc}. "
+                    "The completed vault was preserved and can be loaded from that path."
+                ),
+            ) from exc
+        if isinstance(exc, (KeyError, OSError, ValueError)):
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+        raise
+
+
+@router.post("/vault/create", response_model=VaultInfo)
+async def create_vault(payload: VaultPathRequest, request: Request):
+    return await _activate_vault(request, payload.path, create=True)
+
+
+@router.post("/vault/load", response_model=VaultInfo)
+async def load_vault(payload: VaultPathRequest, request: Request):
+    return await _activate_vault(request, payload.path, create=False)
 
 
 @router.get("/company", response_model=CompanyProfile)
@@ -23,7 +77,13 @@ def get_company_profile(context: AppContext = Depends(get_context)):
 
 @router.put("/company", response_model=CompanyProfile)
 def update_company_profile(payload: CompanyProfile, context: AppContext = Depends(get_context)):
-    return context.company.write(payload)
+    try:
+        return context.company.write(payload)
+    except CompanyProfileVersionConflictError as exc:
+        raise HTTPException(
+            status_code=409,
+            detail="The company profile changed. Reload it and try again.",
+        ) from exc
 
 
 @router.get("/company/interview", response_model=CompanyInterviewGuide)

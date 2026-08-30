@@ -12,11 +12,18 @@ from app.runtime import AppContext
 from app.routers import awareness
 
 
+TEST_VAULT_SOURCE = Path(__file__).resolve().parent / "fixtures" / "vault"
+
+
+def copy_test_vault(destination: Path) -> None:
+    """Copy the committed deterministic fixture into one isolated test vault."""
+    shutil.copytree(TEST_VAULT_SOURCE, destination)
+
+
 @pytest.fixture()
 def app_context(tmp_path: Path) -> AppContext:
-    source = Path(__file__).resolve().parents[2] / "vault"
     vault = tmp_path / "vault"
-    shutil.copytree(source, vault)
+    copy_test_vault(vault)
     settings_file = vault / "00_System" / "settings.md"
     if settings_file.exists():
         settings_file.unlink()

@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import json
 import re
-from typing import Any
+import hashlib
+from dataclasses import dataclass, field
+from typing import Any, Callable
 
 from app.agents.context import ContextBuilder
 from app.agents.registry import AgentRegistry
@@ -11,6 +13,23 @@ from app.models.awareness import WatchDraftCard, WatchScanCard
 from app.providers.base import LLMProvider
 from app.tools.registry import ToolExecutionContext, ToolExecutionResult, ToolRegistry
 from app.skills.registry import SkillRegistry
+
+
+@dataclass
+class RunnerExecutionState:
+    messages: list[dict[str, Any]] = field(default_factory=list)
+    trace: list[ToolTrace] = field(default_factory=list)
+    changed_paths: list[str] = field(default_factory=list)
+    refresh: list[str] = field(default_factory=list)
+    cards: list[Any] = field(default_factory=list)
+    completed_mutations: dict[str, dict[str, str]] = field(default_factory=dict)
+    useful_content: str = ""
+
+
+class AgentExecutionError(Exception):
+    def __init__(self, state: RunnerExecutionState):
+        super().__init__("Agent execution did not finish.")
+        self.state = state
 
 
 class AgentRunner:
@@ -30,7 +49,28 @@ class AgentRunner:
         self.skills = skills
         self.app_context = app_context
 
-    async def run(self, request: ChatRequest) -> ChatResponse:
+    async def run(
+        self,
+        request: ChatRequest,
+        *,
+        execution_state: RunnerExecutionState | None = None,
+        checkpoint: Callable[[RunnerExecutionState], None] | None = None,
+    ) -> ChatResponse:
+        state = execution_state or RunnerExecutionState()
+        try:
+            return await self._run(request, state=state, checkpoint=checkpoint)
+        except AgentExecutionError:
+            raise
+        except Exception as exc:
+            raise AgentExecutionError(state) from exc
+
+    async def _run(
+        self,
+        request: ChatRequest,
+        *,
+        state: RunnerExecutionState,
+        checkpoint: Callable[[RunnerExecutionState], None] | None,
+    ) -> ChatResponse:
         review_author = _resolved_review_author(request)
         agent = self.agents.get(request.agent_id)
         skill = self.skills.get(request.skill_id) if request.skill_id else None
@@ -50,6 +90,7 @@ class AgentRunner:
         ]
         messages.extend(message.model_dump() for message in request.history[-12:])
         messages.append({"role": "user", "content": request.message})
+        state.messages = messages
         decision_recording_allowed = _explicit_decision_recording_requested(request.message)
         lifecycle_permissions = _lifecycle_permissions(request.message)
         watch_activation_allowed = _explicit_watch_activation_requested(request)
@@ -69,10 +110,12 @@ class AgentRunner:
             if tool.get("function", {}).get("name") not in lifecycle_permissions
             or lifecycle_permissions[tool["function"]["name"]]
         ]
-        trace: list[ToolTrace] = []
-        changed_paths: list[str] = []
-        refresh: list[str] = []
-        cards: list[QuestionCard | MatterUpdateCard | WorkProductCard | WatchDraftCard | WatchScanCard] = list(_cards_for(request))
+        trace = state.trace
+        changed_paths = state.changed_paths
+        refresh = state.refresh
+        cards = state.cards
+        if not cards:
+            cards.extend(_cards_for(request))
 
         if request.card_action and request.card_action.action in {"save_draft", "change_something"}:
             reply = (
@@ -111,6 +154,12 @@ class AgentRunner:
 
         for _ in range(agent.max_steps):
             reply = await self.provider.complete(messages, provider_tools)
+            if not isinstance(reply.content, str) or not isinstance(reply.tool_calls, list):
+                raise ValueError("The provider returned a malformed reply.")
+            if reply.content.strip():
+                state.useful_content = reply.content.strip()
+                if checkpoint:
+                    checkpoint(state)
             if not reply.tool_calls:
                 return ChatResponse(
                     reply=reply.content or "I completed the available work but did not receive a final model response.",
@@ -136,7 +185,16 @@ class AgentRunner:
                 }
             )
             for call in reply.tool_calls:
-                if call.name in lifecycle_permissions and not lifecycle_permissions[call.name]:
+                fingerprint = _tool_fingerprint(call.name, call.arguments)
+                mutation = _is_mutation_tool(self.tools, call.name)
+                completed = state.completed_mutations.get(fingerprint) if mutation else None
+                if completed:
+                    result = ToolExecutionResult(
+                        tool=call.name,
+                        status="success",
+                        summary=f"Already completed in this chat run: {completed['summary']}",
+                    )
+                elif call.name in lifecycle_permissions and not lifecycle_permissions[call.name]:
                     result = ToolExecutionResult(
                         tool=call.name,
                         status="error",
@@ -180,6 +238,13 @@ class AgentRunner:
                         summary=result.summary,
                     )
                 )
+                if result.status == "success" and mutation and not completed:
+                    state.completed_mutations[fingerprint] = {
+                        "tool": call.name,
+                        "summary": result.summary,
+                    }
+                    if checkpoint:
+                        checkpoint(state)
                 if (
                     result.status == "success"
                     and review_author != "Themis"
@@ -235,6 +300,17 @@ class AgentRunner:
 
 def _unique(values: list[str]) -> list[str]:
     return list(dict.fromkeys(values))
+
+
+def _tool_fingerprint(name: str, arguments: dict[str, Any]) -> str:
+    normalized = json.dumps(arguments, sort_keys=True, separators=(",", ":"), default=str)
+    return hashlib.sha256(f"{name}:{normalized}".encode("utf-8")).hexdigest()
+
+
+def _is_mutation_tool(tools: ToolRegistry, name: str) -> bool:
+    read_only_handlers = {"audit_decisions", "list_files", "read_file", "search_vault"}
+    definition = next((item for item in tools.list() if item.get("tool_id") == name), None)
+    return bool(definition and definition.get("handler") not in read_only_handlers)
 
 
 def _resolved_review_author(request: ChatRequest) -> str:

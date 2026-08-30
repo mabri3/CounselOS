@@ -8,8 +8,8 @@ instructions: Check the intake folder for new files and turn each item into a ne
 interval_seconds: 30
 watch_path: 04_Inbox
 enabled: true
-last_run_at: '2026-08-30T17:47:33+00:00'
-next_run_at: '2026-08-30T17:48:00+00:00'
+last_run_at: '2026-08-30T21:36:00+00:00'
+next_run_at: '2026-08-30T21:36:30+00:00'
 last_status: success
 last_message: ''
 ---

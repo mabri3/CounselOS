@@ -60,6 +60,7 @@ class ChatHistoryService:
         attachments: list[dict[str, Any]] | None = None,
         card_action: dict[str, Any] | None = None,
         applied_skills: list[dict[str, str]] | None = None,
+        run_id: str | None = None,
     ) -> dict[str, Any]:
         if role not in {"user", "assistant"}:
             raise ValueError(f"Unsupported chat role: {role}")
@@ -85,6 +86,7 @@ class ChatHistoryService:
                 "attachments": attachments or [],
                 "card_action": card_action,
                 "applied_skills": applied_skills or [],
+                "run_id": run_id,
             }
         )
         path = self._matter_path(matter_id, conversation_id)
@@ -102,6 +104,56 @@ class ChatHistoryService:
                 "immutable": True,
                 "messages": messages,
             },
+        )
+        return self.get(matter_id, conversation_id)
+
+    def find_run_message(self, matter_id: str, conversation_id: str, run_id: str, role: str) -> dict[str, Any] | None:
+        conversation = self.get(matter_id, conversation_id)
+        return next(
+            (message for message in conversation["messages"] if message.get("run_id") == run_id and message.get("role") == role),
+            None,
+        )
+
+    def find_conversation_for_run(self, matter_id: str, run_id: str) -> str | None:
+        for conversation in self.list(matter_id):
+            full = self.get(matter_id, conversation["conversation_id"])
+            if any(message.get("run_id") == run_id for message in full["messages"]):
+                return str(conversation["conversation_id"])
+        return None
+
+    def upsert_run_assistant(
+        self,
+        matter_id: str,
+        conversation_id: str,
+        run_id: str,
+        *,
+        content: str,
+        trace: list[dict[str, Any]] | None = None,
+        cards: list[dict[str, Any]] | None = None,
+        applied_skills: list[dict[str, str]] | None = None,
+    ) -> dict[str, Any]:
+        conversation = self.get(matter_id, conversation_id)
+        existing = next(
+            (message for message in conversation["messages"] if message.get("run_id") == run_id and message.get("role") == "assistant"),
+            None,
+        )
+        if existing is None:
+            return self.append(
+                matter_id, conversation_id, role="assistant", content=content,
+                trace=trace, cards=cards, applied_skills=applied_skills, run_id=run_id,
+            )
+        existing.update({
+            "content": content,
+            "trace": trace or [],
+            "cards": cards or [],
+            "applied_skills": applied_skills or [],
+            "updated_at": iso_now(),
+        })
+        document = self.vault.read_markdown(conversation["path"])
+        metadata = document["metadata"]
+        metadata.update({"messages": conversation["messages"], "updated_at": iso_now()})
+        self.vault.write_markdown(
+            conversation["path"], self._render(conversation["messages"], heading="# Matter chat"), metadata,
         )
         return self.get(matter_id, conversation_id)
 
