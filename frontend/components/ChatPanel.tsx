@@ -12,6 +12,7 @@ import LinkifiedText from "@/components/LinkifiedText";
 import UploadIntentCard from "@/components/UploadIntentCard";
 import { getConversation, getConversations, getSkills, sendChat, uploadDocuments } from "@/lib/api";
 import { skillBuilderGoal } from "@/lib/skills";
+import { mutationOutcome } from "@/lib/matterBrief";
 import type { AppliedSkillSummary, AttachmentReference, CardAction, ChatCard, SkillDefinition, ToolTrace } from "@/lib/types";
 
 type Message = { message_id?: string; role: "user" | "assistant"; content: string; trace?: ToolTrace[]; cards?: ChatCard[]; attachments?: AttachmentReference[]; applied_skills?: AppliedSkillSummary[] };
@@ -63,6 +64,14 @@ export default function ChatPanel({
   const [attachments, setAttachments] = useState<AttachmentReference[]>([]);
   const [uploading, setUploading] = useState(false);
   const [skills, setSkills] = useState<SkillDefinition[]>([]);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+
+  useEffect(() => {
+    if (!busy) { setElapsedSeconds(0); return; }
+    const started = Date.now();
+    const timer = window.setInterval(() => setElapsedSeconds(Math.floor((Date.now() - started) / 1000)), 1000);
+    return () => window.clearInterval(timer);
+  }, [busy]);
 
   useEffect(() => { void getSkills().then(({ skills: saved }) => setSkills(saved)).catch(() => setSkills([])); }, []);
 
@@ -129,8 +138,8 @@ export default function ChatPanel({
       if (response.review_author) onReviewAuthorChange(response.review_author);
       setConversationId(response.conversation_id ?? conversationId);
       onConversationChange?.(response.conversation_id ?? conversationId);
-      setMessages((current) => [...current, { role: "assistant", content: response.reply, trace: response.trace, cards: response.cards, applied_skills: response.applied_skills }]);
       if (response.refresh.length || response.changed_paths.length) await onRefresh();
+      setMessages((current) => [...current, { role: "assistant", content: response.reply, trace: response.trace, cards: response.cards, applied_skills: response.applied_skills }]);
     } catch (caught) {
       setMessages((current) => [
         ...current,
@@ -209,6 +218,11 @@ export default function ChatPanel({
                 <div className="bubble-agent">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
                   <ChatCards cards={message.cards} disabled={busy} matterId={matterId} onAction={handleCardAction} onOpenDocument={onOpenDocument} onRefresh={onRefresh} />
+                  {mutationOutcome(messages[index - 1]?.role === "user" ? messages[index - 1].content : "", message.trace, message.cards) === "recorded" ? (
+                    <div className="mutation-status recorded">Workspace state change recorded</div>
+                  ) : mutationOutcome(messages[index - 1]?.role === "user" ? messages[index - 1].content : "", message.trace, message.cards) === "no_change" ? (
+                    <div className="mutation-status no-change">No workspace state change recorded</div>
+                  ) : null}
                   {message.trace?.length ? (
                     <details className="chat-actions">
                       <summary>Actions taken ({message.trace.length})</summary>
@@ -229,9 +243,9 @@ export default function ChatPanel({
             ),
           )}
           {busy ? (
-            <div className="agent-label">
+            <div className="agent-label" role="status">
               <span className="agent-mark" style={{ width: 12, height: 12 }} />
-              Themis is working through the available actions…
+              {elapsedSeconds < 10 ? "Working…" : "Still working…"} {elapsedSeconds}s
             </div>
           ) : null}
         </div>

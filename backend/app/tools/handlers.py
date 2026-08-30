@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 from app.models.api import AgentCreate, DecisionCreate, ScheduleCreate, WorkItemCreate
@@ -26,6 +26,11 @@ def build_handlers() -> dict[str, Handler]:
         "list_files": list_files,
         "search_vault": search_vault,
         "write_markdown": write_markdown,
+        "save_work_product": save_work_product,
+        "complete_work_item": complete_work_item,
+        "approve_response": approve_response,
+        "mark_response_sent": mark_response_sent,
+        "close_matter": close_matter,
         "move_matter_stage": move_matter_stage,
         "create_work_item": create_work_item,
         "run_research": run_research,
@@ -68,11 +73,10 @@ async def search_vault(context: ToolExecutionContext, arguments: dict[str, Any])
 async def write_markdown(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
     raw_path = str(arguments.get("path") or "").strip()
     if not raw_path:
-        title = str(arguments.get("title") or "agent-draft")
-        if not context.matter_id:
-            raise ValueError("A path or active matter is required.")
-        base = context.app.matters.matter_path(context.matter_id)
-        raw_path = f"{base}/drafts/{_filename(title)}.md"
+        raise ValueError("A note path is required. Use save_work_product for recommendations, drafts, or responses.")
+    if not context.matter_id:
+        raise ValueError("An active matter is required.")
+    _validate_generic_write_path(context, raw_path)
     existing = context.app.vault.exists(raw_path)
     if existing:
         current = context.app.vault.read_document(raw_path)
@@ -97,6 +101,90 @@ async def write_markdown(context: ToolExecutionContext, arguments: dict[str, Any
         "refresh": ["tree", "matter"],
         "data": {"path": path},
     }
+
+
+def _validate_generic_write_path(context: ToolExecutionContext, raw_path: str) -> None:
+    if "\\" in raw_path:
+        raise ValueError("The note path must use forward slashes.")
+    base = PurePosixPath(context.app.matters.matter_path(context.matter_id))
+    supplied = PurePosixPath(raw_path)
+    if (
+        supplied.is_absolute()
+        or ".." in supplied.parts
+        or supplied.suffix.lower() != ".md"
+        or base not in supplied.parents
+    ):
+        raise ValueError("The note path must be a Markdown file inside the active matter.")
+    relative = supplied.relative_to(base).as_posix()
+    protected_files = {"matter.md", "request.md", "facts.md", "issues.md", "participants.md", "recommendations.md"}
+    protected_roots = {
+        "research", "decisions", "work-items", "events", "conversations", "documents/batches",
+        "work-product/draft", "work-product/final",
+    }
+    configured = {
+        Path(context.app.matter_paths.folder(context.matter_id, key)).relative_to(base).as_posix()
+        for key in ("matter_files.draft_outputs_dir", "matter_files.final_outputs_dir")
+    }
+    if (
+        relative in protected_files
+        or any(relative == root or relative.startswith(f"{root}/") for root in protected_roots | configured)
+    ):
+        raise ValueError("Use a typed tool for protected matter records and work products.")
+
+
+async def save_work_product(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
+    matter_id = str(arguments.get("matter_id") or context.matter_id or "")
+    if not matter_id:
+        raise ValueError("An active matter is required.")
+    kind = str(arguments.get("kind") or "").strip()
+    title = str(arguments.get("title") or "").strip()
+    content = str(arguments.get("content") or "")
+    if kind not in {"recommendation", "draft", "response"}:
+        raise ValueError("kind must be recommendation, draft, or response.")
+    if kind == "recommendation":
+        path = f"{context.app.matters.matter_path(matter_id)}/recommendations.md"
+        context.app.vault.update_markdown(path, content=content, metadata_updates={"record_type": "recommendations", "matter_id": matter_id})
+        result = {"title": title or "Recommendations", "vault_path": path, "state": "draft"}
+    else:
+        result = context.app.work_products.create_draft(matter_id, title=title or ("Response" if kind == "response" else "Draft"), content=content)
+        path = result["vault_path"]
+    context.app.index.rebuild()
+    return {"summary": f"Saved {kind}: {result['title']}.", "changed_paths": [path], "refresh": ["tree", "matter"], "data": result}
+
+
+def _lawyer_actor(context: ToolExecutionContext) -> str:
+    actor = str(context.lawyer_author or "").strip()
+    if not actor:
+        raise ValueError("A lawyer author is required for this lifecycle action.")
+    return actor
+
+
+async def complete_work_item(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
+    matter_id = str(arguments.get("matter_id") or context.matter_id or "")
+    result = context.app.matters.complete_work_item(matter_id, str(arguments.get("work_item_id") or ""), actor=_lawyer_actor(context))
+    return {"summary": "Completed the selected work item.", "changed_paths": result["changed_paths"], "refresh": ["matter", "kanban"], "data": result}
+
+
+async def approve_response(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
+    return _lifecycle_tool(context, arguments, "approve_response", "Approved the final response.")
+
+
+async def mark_response_sent(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
+    return _lifecycle_tool(context, arguments, "mark_as_sent", "Recorded outside delivery of the approved response.")
+
+
+async def close_matter(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
+    return _lifecycle_tool(context, arguments, "close_matter", "Closed the matter.")
+
+
+def _lifecycle_tool(context: ToolExecutionContext, arguments: dict[str, Any], action: str, summary: str) -> dict[str, Any]:
+    matter_id = str(arguments.get("matter_id") or context.matter_id or "")
+    result = context.app.matters.perform_action(
+        matter_id, action, actor=_lawyer_actor(context),
+        artifact_path=arguments.get("artifact_path"), work_item_id=arguments.get("work_item_id"),
+        note=arguments.get("note"),
+    )
+    return {"summary": summary, "changed_paths": result["changed_paths"], "refresh": ["matter", "kanban", "tree"], "data": result}
 
 
 def _is_reviewable_work_product(path: str, document: dict[str, Any]) -> bool:

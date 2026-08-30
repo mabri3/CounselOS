@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 
-from app.models.api import AnnotationCreate, BatchActionRequest, ChatChoice, ChatResponse, MatterActionRequest, MatterCreate, QuestionCard, ResearchRunStart, StageUpdate, WorkProductFinalizeRequest
+from app.models.api import AnnotationCreate, BatchActionRequest, ChatChoice, ChatResponse, MatterActionRequest, MatterActionResult, MatterCreate, QuestionCard, ResearchRunStart, StageUpdate, WorkItemCompleteRequest, WorkProductFinalizeRequest
 from app.routers.dependencies import get_context
 from app.runtime import AppContext
 from app.models.awareness import MitigationCreate, MitigationPatch
@@ -113,16 +113,32 @@ def update_stage(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
-@router.post("/{matter_id}/actions")
+@router.post("/{matter_id}/actions", response_model=MatterActionResult)
 def perform_action(
     matter_id: str,
     payload: MatterActionRequest,
     context: AppContext = Depends(get_context),
 ):
     try:
-        return context.matters.perform_action(matter_id, payload.action)
+        return context.matters.perform_action(
+            matter_id, payload.action, actor=payload.actor,
+            artifact_path=payload.artifact_path, work_item_id=payload.work_item_id,
+            note=payload.note,
+        )
     except (KeyError, ValueError) as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+        raise HTTPException(status_code=409 if isinstance(exc, ValueError) else 404, detail=str(exc)) from exc
+
+
+@router.post("/{matter_id}/work-items/complete", response_model=MatterActionResult)
+def complete_work_item(
+    matter_id: str,
+    payload: WorkItemCompleteRequest,
+    context: AppContext = Depends(get_context),
+):
+    try:
+        return context.matters.complete_work_item(matter_id, payload.work_item_id, actor=payload.actor)
+    except (KeyError, ValueError) as exc:
+        raise HTTPException(status_code=409 if isinstance(exc, ValueError) else 404, detail=str(exc)) from exc
 
 
 @router.post("/{matter_id}/research")

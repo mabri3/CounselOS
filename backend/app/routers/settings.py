@@ -43,6 +43,7 @@ async def draft_company_profile(
             payload.current_profile,
             payload.question_id,
             payload.finish,
+            website_url=payload.website_url,
         )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
@@ -71,6 +72,10 @@ async def update_settings(
     payload: SettingsUpdate,
     context: AppContext = Depends(get_context),
 ):
+    try:
+        context.settings_store.validate(payload.values)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
     current_model = (
         context.settings.llm_model
         if context.settings.llm_provider == "openai_compatible"

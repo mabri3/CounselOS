@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import pytest
 from fastapi.testclient import TestClient
 
 
@@ -18,7 +19,7 @@ def _empty_settings(app_context):
 
 def test_settings_merge_rather_than_replace(app_context):
     _empty_settings(app_context)
-    assert app_context.settings_store.read()["values"] == {}
+    assert app_context.settings_store.read()["values"]["matter_files.source_documents_dir"] == "documents"
     app_context.settings_store.write(
         {
             "general.organisation": "DemoCo Financial",
@@ -193,3 +194,23 @@ def test_saved_model_settings_are_loaded_on_restart(app_context):
     assert isinstance(restarted.provider, OpenAICompatibleProvider)
     assert restarted.settings.llm_model == "saved-model"
     assert restarted.settings.llm_reasoning_effort == "max"
+
+
+def test_invalid_matter_path_setting_does_not_modify_stored_values(app_context):
+    before = app_context.settings_store.write(
+        {"matter_files.source_documents_dir": "source-files"}
+    )["values"]
+    response = _client(app_context).put(
+        "/api/settings",
+        json={"values": {"matter_files.draft_outputs_dir": "../outside"}},
+    )
+    assert response.status_code == 422
+    assert app_context.settings_store.read()["values"] == before
+
+
+def test_overlapping_matter_path_settings_are_rejected(app_context):
+    with pytest.raises(ValueError, match="must not overlap"):
+        app_context.settings_store.write({
+            "matter_files.draft_outputs_dir": "outputs",
+            "matter_files.final_outputs_dir": "outputs/final",
+        })

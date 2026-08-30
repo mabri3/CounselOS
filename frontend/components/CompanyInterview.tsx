@@ -23,21 +23,24 @@ export const COMPANY_PROFILE_FIELDS: { key: CompanyProfileField; label: string; 
   { key: "risk_posture", label: "Risk posture", help: "The company’s practical approach to legal and business risk." },
 ];
 
-type Exchange = { question: CompanyInterviewQuestion; answer: string; reply: string };
+type Exchange = { question: CompanyInterviewQuestion; answer: string; reply: string; websiteUsed: boolean; warning: string };
 type Props = { profile: CompanyProfile; onSaved: (profile: CompanyProfile) => void };
 
 export default function CompanyInterview({ profile, onSaved }: Props) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const websiteRef = useRef<HTMLInputElement>(null);
   const [interview, setInterview] = useState<Interview | null>(null);
   const [question, setQuestion] = useState<CompanyInterviewQuestion | null>(null);
   const [history, setHistory] = useState<CompanyInterviewTurn[]>([]);
   const [exchanges, setExchanges] = useState<Exchange[]>([]);
   const [input, setInput] = useState("");
+  const [websiteInput, setWebsiteInput] = useState("");
   const [draft, setDraft] = useState<CompanyProfile>(profile);
   const [reviewing, setReviewing] = useState(false);
   const [warning, setWarning] = useState("");
   const [loading, setLoading] = useState(true);
   const [working, setWorking] = useState(false);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
@@ -58,8 +61,19 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
 
   useEffect(() => { void loadInterview(); }, [loadInterview]);
 
-  async function advance(finish = false) {
-    const answer = input.trim();
+  useEffect(() => {
+    if (!working) {
+      setElapsedSeconds(0);
+      return;
+    }
+    const startedAt = Date.now();
+    const timer = window.setInterval(() => setElapsedSeconds(Math.floor((Date.now() - startedAt) / 1000)), 1000);
+    return () => window.clearInterval(timer);
+  }, [working]);
+
+  async function advance(finish = false, leaveWebsiteBlank = false) {
+    const websiteQuestion = question?.question_id === "website_url";
+    const answer = websiteQuestion ? (leaveWebsiteBlank ? "Leave blank" : websiteInput.trim()) : input.trim();
     if (!question || working || (!finish && !answer)) return;
     setWorking(true);
     setError("");
@@ -71,11 +85,18 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
         current_profile: draft,
         question_id: question.question_id,
         finish,
+        ...(!finish && websiteQuestion ? { website_url: leaveWebsiteBlank ? "" : websiteInput.trim() } : {}),
       });
       setDraft(result.draft);
       setWarning(result.warning ?? "");
       if (!finish) {
-        setExchanges((current) => [...current, { question, answer, reply: result.reply }]);
+        setExchanges((current) => [...current, {
+          question,
+          answer,
+          reply: result.reply,
+          websiteUsed: result.website_used,
+          warning: result.warning ?? "",
+        }]);
         setHistory((current) => [
           ...current,
           { role: "assistant", content: question.text },
@@ -83,9 +104,10 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
         ]);
       }
       setInput("");
+      setWebsiteInput("");
       setQuestion(result.question ?? null);
       setReviewing(result.complete || finish);
-      requestAnimationFrame(() => inputRef.current?.focus());
+      requestAnimationFrame(() => (websiteRef.current ?? inputRef.current)?.focus());
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Could not continue the company interview.");
     } finally {
@@ -99,12 +121,13 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
     setHistory([]);
     setExchanges([]);
     setInput("");
+    setWebsiteInput("");
     setDraft(profile);
     setReviewing(false);
     setWarning("");
     setError("");
     setSaved(false);
-    requestAnimationFrame(() => inputRef.current?.focus());
+    requestAnimationFrame(() => (websiteRef.current ?? inputRef.current)?.focus());
   }
 
   async function saveDraft() {
@@ -147,10 +170,12 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
             <QuestionTurn question={exchange.question} />
             <div className="bubble-you">{exchange.answer}</div>
             <AssistantTurn>{exchange.reply}</AssistantTurn>
+            {exchange.websiteUsed ? <p className="company-interview-warning" role="status"><strong>Website read</strong> · Public website content was used as untrusted background.</p> : null}
+            {exchange.warning ? <p className="company-interview-warning" role="status"><strong>Note:</strong> {exchange.warning}</p> : null}
           </div>
         ))}
         {question && !reviewing ? <QuestionTurn question={question} /> : null}
-        {working ? <AssistantTurn>Themis is updating the profile and choosing the next useful question…</AssistantTurn> : null}
+        {working ? <AssistantTurn>{elapsedSeconds < 5 ? "Working…" : `Still working… ${elapsedSeconds} seconds elapsed.`}</AssistantTurn> : null}
         {reviewing ? (
           <ReviewCard
             draft={draft}
@@ -167,21 +192,36 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
 
       {question && !reviewing ? (
         <div className="company-interview-composer">
-          <label className="field-label" htmlFor="company-interview-answer">Your answer</label>
+          <label className="field-label" htmlFor={question.question_id === "website_url" ? "company-interview-website" : "company-interview-answer"}>
+            {question.question_id === "website_url" ? "Public HTTPS website (optional)" : "Your answer"}
+          </label>
           <div className="composer-field">
-            <textarea
-              id="company-interview-answer"
-              onChange={(event) => setInput(event.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Describe the company, paste its website, or answer in your own words…"
-              ref={inputRef}
-              rows={3}
-              value={input}
-            />
-            <button className="btn primary compact" disabled={!input.trim() || working} onClick={() => void advance()} type="button">Send</button>
+            {question.question_id === "website_url" ? (
+              <input
+                className="text-input"
+                id="company-interview-website"
+                onChange={(event) => setWebsiteInput(event.target.value)}
+                placeholder="https://example.com"
+                ref={websiteRef}
+                type="url"
+                value={websiteInput}
+              />
+            ) : (
+              <textarea
+                id="company-interview-answer"
+                onChange={(event) => setInput(event.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Answer in your own words…"
+                ref={inputRef}
+                rows={3}
+                value={input}
+              />
+            )}
+            <button className="btn primary compact" disabled={question.question_id === "website_url" ? !websiteInput.trim() || working : !input.trim() || working} onClick={() => void advance()} type="button">Send</button>
           </div>
           <div className="company-interview-composer-foot">
-            <span>Enter sends. Shift+Enter adds a new line.</span>
+            <span>{question.question_id === "website_url" ? "Only a public HTTPS address can be read. Its content is untrusted background." : "Enter sends. Shift+Enter adds a new line."}</span>
+            {question.question_id === "website_url" ? <button className="btn tiny quiet" disabled={working} onClick={() => void advance(false, true)} type="button">Leave blank</button> : null}
             {exchanges.length ? <button className="btn tiny quiet" disabled={working} onClick={() => void advance(true)} type="button">Review draft now</button> : null}
           </div>
         </div>

@@ -45,6 +45,7 @@ function alignModelRows(rows: SettingRow[], settings: WorkspaceSettings): Settin
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState<WorkspaceSettings | null>(null);
+  const [savedSettings, setSavedSettings] = useState<WorkspaceSettings | null>(null);
   const [company, setCompany] = useState<CompanyProfile | null>(null);
   const [providers, setProviders] = useState<ProviderCapability[]>([]);
   const [section, setSection] = useState("agents");
@@ -62,6 +63,7 @@ export default function SettingsPage() {
         getProviderCapabilities(),
       ]);
       setSettings(nextSettings);
+      setSavedSettings(nextSettings);
       setCompany(nextCompany);
       setProviders(providerResult.items);
       setSettingsDirty(false);
@@ -305,7 +307,9 @@ export default function SettingsPage() {
                       setCompany(await getCompanyProfile());
                       setCompanyDirty(false);
                     } else {
-                      setSettings(await getSettings());
+                      const nextSettings = await getSettings();
+                      setSettings(nextSettings);
+                      setSavedSettings(nextSettings);
                       setSettingsDirty(false);
                     }
                   }
@@ -325,10 +329,29 @@ export default function SettingsPage() {
                       setCompanyDirty(false);
                     } else {
                       await saveSettings(settings);
+                      const nextSettings = await getSettings();
+                      setSettings(nextSettings);
+                      setSavedSettings(nextSettings);
                       setSettingsDirty(false);
                     }
                   }
-                  catch (caught) { setError(caught instanceof Error ? caught.message : "Could not save settings."); }
+                  catch (caught) {
+                    const message = caught instanceof Error ? caught.message : "Could not save settings.";
+                    if (!companySection) {
+                      try {
+                        const nextSettings = await getSettings();
+                        setSettings(nextSettings);
+                        setSavedSettings(nextSettings);
+                        setSettingsDirty(false);
+                      } catch {
+                        if (savedSettings) {
+                          setSettings(savedSettings);
+                          setSettingsDirty(false);
+                        }
+                      }
+                    }
+                    setError(message);
+                  }
                   finally { setBusy(false); }
                 }}
               >

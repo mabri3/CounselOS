@@ -16,6 +16,8 @@ import type {
   DocumentReview,
   DocumentReviewAction,
   Matter,
+  MatterActionRequest,
+  MatterActionResult,
   MatterDetail,
   ResearchNote,
   ResearchResult,
@@ -103,11 +105,22 @@ export async function moveMatter(matterId: string, stage: string, reason = ""): 
 
 export async function performMatterAction(
   matterId: string,
-  action: "approve_response" | "mark_as_sent" | "close_matter",
-): Promise<MatterDetail> {
+  payload: MatterActionRequest,
+): Promise<MatterActionResult> {
   return request(`/matters/${encodeURIComponent(matterId)}/actions`, {
     method: "POST",
-    body: JSON.stringify({ action }),
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function completeWorkItem(
+  matterId: string,
+  workItemId: string,
+  actor: string,
+): Promise<MatterActionResult> {
+  return request(`/matters/${encodeURIComponent(matterId)}/work-items/complete`, {
+    method: "POST",
+    body: JSON.stringify({ work_item_id: workItemId, actor }),
   });
 }
 
@@ -198,6 +211,7 @@ export async function getCompanyInterview(): Promise<CompanyInterview> {
 
 export async function advanceCompanyInterview(payload: {
   message: string;
+  website_url?: string | null;
   history: CompanyInterviewTurn[];
   current_profile: CompanyProfile;
   question_id: string;

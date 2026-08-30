@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from app.models.api import ChatResponse
+from app.models.api import ChatResponse, WorkItemCreate
 from app.services.research_runs import ResearchRunService
 
 
@@ -13,8 +13,74 @@ async def test_research_writes_packet_and_moves_to_explore(app_context):
     assert app_context.index.get_matter("MAT-DEMO-ORBIT")["status"] == "explore"
     work_items = app_context.index.list_work_items("MAT-DEMO-ORBIT")
     original = next(item for item in work_items if item["item_type"] == "research")
-    assert original["status"] == "done"
-    assert any(item["item_type"] == "counsel_review" for item in work_items)
+    assert original["status"] == "open"
+    review = next(item for item in work_items if item["item_type"] == "counsel_review")
+    review_metadata = app_context.vault.read_markdown(review["path"])["metadata"]
+    assert review_metadata["source_kind"] == "research_review"
+    assert review_metadata["research_path"] == result["path"]
+
+
+@pytest.mark.asyncio
+async def test_repeated_research_reuses_open_review_item(app_context):
+    first = await app_context.research.run("MAT-DEMO-ORBIT", "First question")
+    first_items = app_context.index.list_work_items("MAT-DEMO-ORBIT")
+    first_review = next(
+        item for item in first_items
+        if app_context.vault.read_markdown(item["path"])["metadata"].get("source_kind") == "research_review"
+    )
+
+    second = await app_context.research.run("MAT-DEMO-ORBIT", "Second question")
+    reviews = [
+        item for item in app_context.index.list_work_items("MAT-DEMO-ORBIT")
+        if app_context.vault.read_markdown(item["path"])["metadata"].get("source_kind") == "research_review"
+    ]
+
+    assert len(reviews) == 1
+    assert reviews[0]["work_item_id"] == first_review["work_item_id"]
+    assert app_context.vault.read_markdown(reviews[0]["path"])["metadata"]["research_path"] == second["path"]
+    assert first["path"] != second["path"]
+
+
+@pytest.mark.asyncio
+async def test_completed_research_review_gets_new_item_on_next_run(app_context):
+    await app_context.research.run("MAT-DEMO-ORBIT", "First question")
+    review = next(
+        item for item in app_context.index.list_work_items("MAT-DEMO-ORBIT")
+        if app_context.vault.read_markdown(item["path"])["metadata"].get("source_kind") == "research_review"
+    )
+    app_context.vault.update_markdown(review["path"], metadata_updates={"status": "done"})
+    app_context.index.rebuild()
+
+    await app_context.research.run("MAT-DEMO-ORBIT", "Second question")
+    reviews = [
+        item for item in app_context.index.list_work_items("MAT-DEMO-ORBIT")
+        if app_context.vault.read_markdown(item["path"])["metadata"].get("source_kind") == "research_review"
+    ]
+    assert len(reviews) == 2
+    assert len([item for item in reviews if item["status"] == "open"]) == 1
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("stage", ["explore", "generate", "respond"])
+async def test_research_preserves_later_workflow_stages(app_context, stage):
+    app_context.matters.move_stage("MAT-DEMO-ORBIT", stage)
+    await app_context.research.run("MAT-DEMO-ORBIT", "A later-stage question")
+    assert app_context.index.get_matter("MAT-DEMO-ORBIT")["status"] == stage
+
+
+@pytest.mark.asyncio
+async def test_research_completes_only_supplied_exact_work_item(app_context):
+    items = app_context.index.list_work_items("MAT-DEMO-ORBIT")
+    research_item = next(item for item in items if item["item_type"] == "research")
+    other = app_context.matters.create_work_item(
+        WorkItemCreate(matter_id="MAT-DEMO-ORBIT", title="Other research", item_type="research")
+    )
+    await app_context.research.run(
+        "MAT-DEMO-ORBIT", "Question", work_item_id=research_item["work_item_id"]
+    )
+    current = {item["work_item_id"]: item for item in app_context.index.list_work_items("MAT-DEMO-ORBIT")}
+    assert current[research_item["work_item_id"]]["status"] == "done"
+    assert current[other["work_item_id"]]["status"] == "open"
 
 
 @pytest.mark.asyncio
@@ -114,3 +180,23 @@ async def test_research_failure_preserves_labeled_useful_packet(app_context):
     assert "Generated analysis warning" in packet["content"]
     assert "Orientation" in packet["content"]
     assert packet["metadata"]["analysis_warning"]
+
+
+@pytest.mark.asyncio
+async def test_blank_research_intent_uses_matter_title(app_context):
+    result = await app_context.research.run("MAT-DEMO-BEACON", "   ", change_stage=False)
+    packet = app_context.vault.read_markdown(result["path"])
+    assert packet["metadata"]["question"] == app_context.index.get_matter("MAT-DEMO-BEACON")["title"]
+
+
+@pytest.mark.asyncio
+async def test_missing_source_keys_preserve_packet_with_citation_warning(app_context):
+    async def malformed_search(_query, *, matter_path=None):
+        return {"internal": [{"snippet": "Useful lead without a path"}], "external": []}
+
+    app_context.research.search.search = malformed_search
+    result = await app_context.research.run("MAT-DEMO-BEACON", "What applies?", change_stage=False)
+    packet = app_context.vault.read_markdown(result["path"])
+    assert "Working Analysis" in packet["content"]
+    assert packet["metadata"]["citation_warning"]
+    assert "citation formatting failed" in result["warning"].lower()

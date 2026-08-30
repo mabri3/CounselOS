@@ -20,8 +20,8 @@
     "semantic_hash": ""
   },
   "backend/app/agents/runner.py": {
-    "mtime": 1788045756.1407816,
-    "ast_hash": "e0be833946885f30383cc685cd79205b",
+    "mtime": 1788114952.768666,
+    "ast_hash": "1a5013ea242f5ccda99512d9b6b84e5a",
     "semantic_hash": ""
   },
   "backend/app/config.py": {
@@ -40,8 +40,8 @@
     "semantic_hash": "d272240919a547b113896b92d9c1212e"
   },
   "backend/app/models/api.py": {
-    "mtime": 1788071178.2607162,
-    "ast_hash": "a00e349f1a1e6e845ea08e221b11121d",
+    "mtime": 1788114084.5576906,
+    "ast_hash": "de98d18faf0232c375e0d5e1a48bbdd6",
     "semantic_hash": ""
   },
   "backend/app/providers/__init__.py": {
@@ -80,8 +80,8 @@
     "semantic_hash": ""
   },
   "backend/app/routers/chat.py": {
-    "mtime": 1788045635.8355086,
-    "ast_hash": "1de99c86d880e0fe9400823f90554bad",
+    "mtime": 1788115837.3957694,
+    "ast_hash": "836cec64fd6e922b2ca5260cbfade4f4",
     "semantic_hash": ""
   },
   "backend/app/routers/decisions.py": {
@@ -100,8 +100,8 @@
     "semantic_hash": ""
   },
   "backend/app/routers/matters.py": {
-    "mtime": 1788045625.0906768,
-    "ast_hash": "0cc6bbaed5f912e38671338c7adfb4c6",
+    "mtime": 1788114741.0450978,
+    "ast_hash": "597217f99bb748a56a86af4c504c0377",
     "semantic_hash": ""
   },
   "backend/app/routers/system.py": {
@@ -110,8 +110,8 @@
     "semantic_hash": "7107d3f5d8683e4ae74022a5d88f960a"
   },
   "backend/app/runtime.py": {
-    "mtime": 1788068160.0938249,
-    "ast_hash": "5be49965bda3685a5f57fef56c800613",
+    "mtime": 1788114257.2609496,
+    "ast_hash": "94939434e417feedf1fa95a6a28aa968",
     "semantic_hash": ""
   },
   "backend/app/services/__init__.py": {
@@ -130,18 +130,18 @@
     "semantic_hash": ""
   },
   "backend/app/services/ingestion.py": {
-    "mtime": 1788026661.0023406,
-    "ast_hash": "39bbbd40dc899ad4c0815036db7e80e3",
+    "mtime": 1788114257.2599113,
+    "ast_hash": "77c755a080efddba48de259a33d5faea",
     "semantic_hash": ""
   },
   "backend/app/services/matters.py": {
-    "mtime": 1788045871.1148946,
-    "ast_hash": "e8eff4d85411c62d9c3b6c34783b8448",
+    "mtime": 1788115146.7881572,
+    "ast_hash": "f53349b7cecbae9ef435cc971c1a860a",
     "semantic_hash": ""
   },
   "backend/app/services/research.py": {
-    "mtime": 1787954577.397389,
-    "ast_hash": "dacfafb9b2df8d5be8d6c147b99e4dd4",
+    "mtime": 1788114237.637756,
+    "ast_hash": "b635339bab1e17ac908f4b49138ea06e",
     "semantic_hash": ""
   },
   "backend/app/services/scheduler.py": {
@@ -170,8 +170,8 @@
     "semantic_hash": "25900bd44dbccd346b0e96a706ef9f98"
   },
   "backend/app/tools/handlers.py": {
-    "mtime": 1788045709.181614,
-    "ast_hash": "f3f3c93152decb3ff98fca61cad9eb57",
+    "mtime": 1788115146.7889657,
+    "ast_hash": "9a329831d2ab8625bf16668e7031cea5",
     "semantic_hash": ""
   },
   "backend/app/tools/registry.py": {
@@ -220,18 +220,18 @@
     "semantic_hash": ""
   },
   "backend/tests/test_ingestion.py": {
-    "mtime": 1787944933.324464,
-    "ast_hash": "66f3d79d1f85a5247bc3f6685d760d33",
+    "mtime": 1788114332.4738991,
+    "ast_hash": "ba2543450c440329799ed943812733e2",
     "semantic_hash": ""
   },
   "backend/tests/test_matters.py": {
-    "mtime": 1788048474.9910555,
-    "ast_hash": "83d56381fcff3cb15b1664b70bb92dc9",
+    "mtime": 1788115163.0929043,
+    "ast_hash": "716769af70472a2d0afaaac029706dba",
     "semantic_hash": ""
   },
   "backend/tests/test_research.py": {
-    "mtime": 1787954607.0812988,
-    "ast_hash": "08cbbc0f7d51b77819e8ac6aa29d8f31",
+    "mtime": 1788114366.3735218,
+    "ast_hash": "5ee0253e82224e64ba8bbc44af8c4a46",
     "semantic_hash": ""
   },
   "backend/tests/test_scheduler.py": {
@@ -280,8 +280,8 @@
     "semantic_hash": ""
   },
   "frontend/components/ChatPanel.tsx": {
-    "mtime": 1788047880.039221,
-    "ast_hash": "e4fe064b2ef96955d9096bf2ef7e4508",
+    "mtime": 1788115540.3774092,
+    "ast_hash": "e439b4c3f1ccdc2fccd8c89468c35836",
     "semantic_hash": ""
   },
   "frontend/components/DecisionTable.tsx": {
@@ -305,8 +305,8 @@
     "semantic_hash": ""
   },
   "frontend/components/MatterWorkspace.tsx": {
-    "mtime": 1788072316.3430548,
-    "ast_hash": "d88bad8dcda957b02d52cbee23713d84",
+    "mtime": 1788115772.292567,
+    "ast_hash": "cf0ad6085883c2b0f39b0f8f88a8d506",
     "semantic_hash": ""
   },
   "frontend/components/NewMatterForm.tsx": {
@@ -315,17 +315,17 @@
     "semantic_hash": ""
   },
   "frontend/lib/api.ts": {
-    "mtime": 1788071384.9353633,
-    "ast_hash": "1bbcc489d66d6d8de783c1068580a3d9",
+    "mtime": 1788115744.958392,
+    "ast_hash": "943b03bd80caf49e832839d6f29bb4b4",
     "semantic_hash": ""
   },
   "frontend/lib/types.ts": {
-    "mtime": 1788071384.934439,
-    "ast_hash": "5e422e58e2d83ddf272ebe180cbb487a",
+    "mtime": 1788115744.9575102,
+    "ast_hash": "d2d4714a95db744d92aa73be3789e1a9",
     "semantic_hash": ""
   },
   "frontend/next-env.d.ts": {
-    "mtime": 1788072237.2289114,
+    "mtime": 1788111433.9153187,
     "ast_hash": "8195d2c60ce847a459ae9d308d6a5724",
     "semantic_hash": ""
   },
@@ -340,9 +340,9 @@
     "semantic_hash": ""
   },
   "frontend/tsconfig.json": {
-    "mtime": 1787724380.1786215,
-    "ast_hash": "4702c57e203bf19749275e3c04f94ac1",
-    "semantic_hash": "4702c57e203bf19749275e3c04f94ac1"
+    "mtime": 1788075897.480136,
+    "ast_hash": "27b149feb549a4f8e838fd9acf97eff6",
+    "semantic_hash": ""
   },
   "scripts/dev.sh": {
     "mtime": 1787722139.0,
@@ -400,8 +400,8 @@
     "semantic_hash": ""
   },
   "docs/ACCEPTANCE_TESTS.md": {
-    "mtime": 1788048300.1442246,
-    "ast_hash": "b871b33a648b57f2ef1b6e54cbd1c4aa",
+    "mtime": 1788115839.6198316,
+    "ast_hash": "745cb9f71c92e2ddda6e52dc1d8861d1",
     "semantic_hash": ""
   },
   "docs/API.md": {
@@ -455,8 +455,8 @@
     "semantic_hash": ""
   },
   "vault/00_System/agents/counsel-copilot.md": {
-    "mtime": 1787935810.5869806,
-    "ast_hash": "68c79ab2aa24abd2783bca65774ace59",
+    "mtime": 1788114812.9479306,
+    "ast_hash": "440444e2e5d8186e11613724a8938a80",
     "semantic_hash": ""
   },
   "vault/00_System/agents/decision-monitor.md": {
@@ -475,8 +475,8 @@
     "semantic_hash": ""
   },
   "vault/00_System/company.md": {
-    "mtime": 1787899811.2467928,
-    "ast_hash": "846bc8a7c5853bb0b3ad6c78d15c0569",
+    "mtime": 1788077133.414235,
+    "ast_hash": "dac6b3fe8aa4ccf01560ff8ee6b26635",
     "semantic_hash": ""
   },
   "vault/00_System/memory.md": {
@@ -490,8 +490,8 @@
     "semantic_hash": ""
   },
   "vault/00_System/schedules/inbox-watcher.md": {
-    "mtime": 1788072363.4272623,
-    "ast_hash": "fab41d2d5b3c85a958a62a00881f79d9",
+    "mtime": 1788112053.6441557,
+    "ast_hash": "3227bea0ff94675387057243d770f3cf",
     "semantic_hash": ""
   },
   "vault/00_System/tools/append_memory.md": {
@@ -855,8 +855,8 @@
     "semantic_hash": ""
   },
   "vault/03_Matters/project-apex-ai/work-items/WI-MAT-DEMO-APEX-1.md": {
-    "mtime": 1787721223.0,
-    "ast_hash": "2028cf4496cc0681b4a6b65e94a843df",
+    "mtime": 1788076186.0686517,
+    "ast_hash": "b3304114450e5ccca33129b69a02970d",
     "semantic_hash": ""
   },
   "vault/03_Matters/project-apex-ai/work-items/WI-MAT-DEMO-APEX-2.md": {
@@ -890,8 +890,8 @@
     "semantic_hash": ""
   },
   "frontend/app/settings/page.tsx": {
-    "mtime": 1788068780.2602947,
-    "ast_hash": "65e3d3c20f8f35e5fc8f86fadfabcd28",
+    "mtime": 1788115505.0564625,
+    "ast_hash": "612bfa9ce09b3fd21740ef5c6dac7fdb",
     "semantic_hash": ""
   },
   "frontend/app/workspace/page.tsx": {
@@ -930,8 +930,8 @@
     "semantic_hash": ""
   },
   "frontend/lib/stubs.ts": {
-    "mtime": 1788026903.8610468,
-    "ast_hash": "6772c622f4d41efef50f99a82d0b772d",
+    "mtime": 1788115491.3640442,
+    "ast_hash": "b40519716e12fa2a99d7f7cd3ab9d62e",
     "semantic_hash": ""
   },
   "CLAUDE.md": {
@@ -945,8 +945,8 @@
     "semantic_hash": ""
   },
   "backend/app/routers/settings.py": {
-    "mtime": 1788071384.9335513,
-    "ast_hash": "378ee63efd4bfe74485f551ebed7a473",
+    "mtime": 1788114481.7515423,
+    "ast_hash": "73b6aac96a64c77b3d5e3b39a90dac9a",
     "semantic_hash": ""
   },
   "backend/app/services/annotations.py": {
@@ -955,8 +955,8 @@
     "semantic_hash": ""
   },
   "backend/app/services/settings.py": {
-    "mtime": 1787791710.101715,
-    "ast_hash": "11f1c3a105a626f7b1852bb6cc087859",
+    "mtime": 1788114257.2592921,
+    "ast_hash": "29b6080495a2b51f4f81269d308f1ca1",
     "semantic_hash": ""
   },
   "backend/tests/test_annotations.py": {
@@ -970,8 +970,8 @@
     "semantic_hash": ""
   },
   "backend/tests/test_settings.py": {
-    "mtime": 1787843196.4757037,
-    "ast_hash": "b670abf8222c2bf74aed73a43539e8c8",
+    "mtime": 1788114392.5992713,
+    "ast_hash": "204086ccd87265102df10e5af6eca8fc",
     "semantic_hash": ""
   },
   "frontend/components/MattersTable.tsx": {
@@ -1040,8 +1040,8 @@
     "semantic_hash": ""
   },
   "backend/tests/test_chat_history.py": {
-    "mtime": 1787934518.742818,
-    "ast_hash": "cea0206c897600971adb31a613ee97ac",
+    "mtime": 1788115837.3965132,
+    "ast_hash": "0a226797d5183a85be515b035f6ab153",
     "semantic_hash": ""
   },
   "frontend/components/LinkifiedText.tsx": {
@@ -1070,8 +1070,8 @@
     "semantic_hash": ""
   },
   "frontend/lib/matterActions.ts": {
-    "mtime": 1787982515.3323183,
-    "ast_hash": "9df59c01dbf4fa7e0960f1ebaffa3ca4",
+    "mtime": 1788115772.2910664,
+    "ast_hash": "c03597df165b300e53dc6e799350d20c",
     "semantic_hash": ""
   },
   "vault/03_Matters/orbit-bank-data/conversations/CONV-20260827-653157.md": {
@@ -1190,8 +1190,8 @@
     "semantic_hash": ""
   },
   "backend/app/services/work_product.py": {
-    "mtime": 1787899363.4825497,
-    "ast_hash": "61f7dded152f80a032955651d0d38444",
+    "mtime": 1788114352.2125192,
+    "ast_hash": "acb0d17171bde87dbb254ed22fc2a7e6",
     "semantic_hash": ""
   },
   "backend/tests/test_dossier.py": {
@@ -1210,8 +1210,8 @@
     "semantic_hash": ""
   },
   "backend/tests/test_work_product.py": {
-    "mtime": 1787899429.045455,
-    "ast_hash": "b61d340e42a081e8c7c5976ac8013337",
+    "mtime": 1788114389.928356,
+    "ast_hash": "44beb1e793d4afb4352399e0720862ef",
     "semantic_hash": ""
   },
   "frontend/components/AttachmentPicker.tsx": {
@@ -1220,8 +1220,8 @@
     "semantic_hash": ""
   },
   "frontend/components/ChatCards.tsx": {
-    "mtime": 1788047888.8471308,
-    "ast_hash": "febc402953a8d3189097add1d20d5e39",
+    "mtime": 1788115632.6618176,
+    "ast_hash": "10fe9272df66f33b81b86c3ec940642d",
     "semantic_hash": ""
   },
   "frontend/components/UploadIntentCard.tsx": {
@@ -2140,18 +2140,18 @@
     "semantic_hash": ""
   },
   "backend/app/services/company_interview.py": {
-    "mtime": 1788071310.827005,
-    "ast_hash": "45f5b6220839c8280414d3bf0438055f",
+    "mtime": 1788114522.3602939,
+    "ast_hash": "f9405897c28ebf8e9c106de72f35c0c6",
     "semantic_hash": ""
   },
   "backend/tests/test_company_interview.py": {
-    "mtime": 1788071482.7901402,
-    "ast_hash": "347e63c12146297e3558ac0d679e4164",
+    "mtime": 1788114522.360622,
+    "ast_hash": "715f6c4e55a274e3442ae542ef99a415",
     "semantic_hash": ""
   },
   "frontend/components/CompanyInterview.tsx": {
-    "mtime": 1788071444.309727,
-    "ast_hash": "fbfef759f63fc6461b607f19064acadd",
+    "mtime": 1788115530.2624874,
+    "ast_hash": "8c91bf2eb17c24dd4e923e023590309c",
     "semantic_hash": ""
   },
   "docs/END_TO_END_TEST_KIT.md": {
@@ -2187,6 +2187,2076 @@
   "frontend/public/brand/themis-ai-logo-neutral-v3.png": {
     "mtime": 1788071662.101516,
     "ast_hash": "b1ec21bc0d0fec8344a2e1e6892026ac",
+    "semantic_hash": ""
+  },
+  "frontend/lib/matterBrief.ts": {
+    "mtime": 1788115806.829263,
+    "ast_hash": "f8dd6dc06f0b4922c3140a6167183e61",
+    "semantic_hash": ""
+  },
+  "frontend/scripts/check-matter-brief.ts": {
+    "mtime": 1788115806.8299825,
+    "ast_hash": "3a36efb6747234ceda30cd8e071df562",
+    "semantic_hash": ""
+  },
+  "docs/matter-page.handoff-plan.md": {
+    "mtime": 1788075602.3855002,
+    "ast_hash": "813143bf7276cd9ff13d23052b300e66",
+    "semantic_hash": ""
+  },
+  "docs/matter-page.handoff-progress.md": {
+    "mtime": 1788076332.5977645,
+    "ast_hash": "2f97d153965795e1ebb55ec2afdd70c7",
+    "semantic_hash": ""
+  },
+  "docs/matter-page.handoff-prompt.md": {
+    "mtime": 1788075602.3849335,
+    "ast_hash": "0188960246f41a9a05043afbc9c5f1cb",
+    "semantic_hash": ""
+  },
+  "frontend/public/brand/themis-ai-logo-detailed-vibrant-red-v7.png": {
+    "mtime": 1788075833.729018,
+    "ast_hash": "b8da5b068cb729c1f932f74b0945d03b",
+    "semantic_hash": ""
+  },
+  "frontend/public/brand/themis-ai-logo-dusty-red-v5.png": {
+    "mtime": 1788075371.0527244,
+    "ast_hash": "f29170ac6d20e4703599f6e37c30b0d0",
+    "semantic_hash": ""
+  },
+  "frontend/public/brand/themis-ai-logo-oxblood-v4.png": {
+    "mtime": 1788074697.3876169,
+    "ast_hash": "f930f38e678cc3e8a9e607bbb29f4e77",
+    "semantic_hash": ""
+  },
+  "frontend/public/brand/themis-ai-logo-vibrant-red-v6.png": {
+    "mtime": 1788075642.1523912,
+    "ast_hash": "abad4d8f8f4b6e1d202e23093f873c29",
+    "semantic_hash": ""
+  },
+  "backend/app/services/matter_paths.py": {
+    "mtime": 1788114389.9274073,
+    "ast_hash": "9e14f1539a754abd3e32985d52d3b9ec",
+    "semantic_hash": ""
+  },
+  "backend/tests/test_agent_action_permissions.py": {
+    "mtime": 1788114997.292935,
+    "ast_hash": "0614798cc1e6381247cf12d2acc6da25",
+    "semantic_hash": ""
+  },
+  "backend/tests/test_matter_action_api.py": {
+    "mtime": 1788114885.674736,
+    "ast_hash": "fa650fa5a9f3c4836109e06f7721746b",
+    "semantic_hash": ""
+  },
+  "backend/tests/test_matter_action_tools.py": {
+    "mtime": 1788115182.5849566,
+    "ast_hash": "01faf9f5ac7442239b4ca6cd50593cbe",
+    "semantic_hash": ""
+  },
+  "backend/tests/test_matter_lifecycle.py": {
+    "mtime": 1788115182.5845206,
+    "ast_hash": "2a3fa7bc9749cb0c45e8d70880dcf8ed",
+    "semantic_hash": ""
+  },
+  "backend/tests/test_matter_paths.py": {
+    "mtime": 1788114389.9279685,
+    "ast_hash": "78fa411c4eedf6deeb512920bc126862",
+    "semantic_hash": ""
+  },
+  "docs/MATTER_WORKFLOW_RELIABILITY_BUILD_PLAN.md": {
+    "mtime": 1788112367.2666574,
+    "ast_hash": "df40b532c157355da46253376054f6c4",
+    "semantic_hash": ""
+  },
+  "docs/matter-workflow-reliability.handoff-plan.md": {
+    "mtime": 1788111685.3159268,
+    "ast_hash": "f2f2daca3533393e3f60f42f1e0f5181",
+    "semantic_hash": ""
+  },
+  "docs/matter-workflow-reliability.handoff-progress.md": {
+    "mtime": 1788115658.823657,
+    "ast_hash": "bd40992cad551d2400417e23fa53be17",
+    "semantic_hash": ""
+  },
+  "docs/matter-workflow-reliability.handoff-prompt.md": {
+    "mtime": 1788111685.3164203,
+    "ast_hash": "c7d6cdd727ad43bcda7e7511693cd9cd",
+    "semantic_hash": ""
+  },
+  "vault/00_System/tools/approve_response.md": {
+    "mtime": 1788114792.9615703,
+    "ast_hash": "766a33c4fee6c57f9a313e032c65caab",
+    "semantic_hash": ""
+  },
+  "vault/00_System/tools/close_matter.md": {
+    "mtime": 1788114792.9684174,
+    "ast_hash": "cadd997772808113e6c403db246bff88",
+    "semantic_hash": ""
+  },
+  "vault/00_System/tools/complete_work_item.md": {
+    "mtime": 1788114792.9583528,
+    "ast_hash": "acf4b37cc49692901e2c622c66f949ea",
+    "semantic_hash": ""
+  },
+  "vault/00_System/tools/mark_response_sent.md": {
+    "mtime": 1788114792.9644787,
+    "ast_hash": "b006c4033e3010e946650dc3bc610e6e",
+    "semantic_hash": ""
+  },
+  "vault/00_System/tools/save_work_product.md": {
+    "mtime": 1788114792.9539518,
+    "ast_hash": "5c0bd15a7bb903da1bdb5a20bce8df13",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/conversations/CONV-20260830-3853ab.md": {
+    "mtime": 1788091956.2766523,
+    "ast_hash": "26b66c0bfdbdac05ac1055699a445206",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/counsel-recommendation-memo.md": {
+    "mtime": 1788077384.5753636,
+    "ast_hash": "6e4b968db2454dcc89d88ad8424a6fe0",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/decisions/DEC-20260830-00ae01.md": {
+    "mtime": 1788092128.9958298,
+    "ast_hash": "89d98c0c90478918ad6b596e1ac21d11",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/disclosure-checklist.md": {
+    "mtime": 1788077368.980244,
+    "ast_hash": "970ccd3e61abe565a6331ef9d5c07d54",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/dossier-revisions/DOS-20260830-369917.md": {
+    "mtime": 1788077264.0812638,
+    "ast_hash": "ac11997adac5d4523308fa6020249c5b",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/dossier-revisions/DOS-20260830-bd4265.md": {
+    "mtime": 1788077256.221472,
+    "ast_hash": "c70146a23b32547aacd114e56ee60ac9",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/dossier-revisions/DOS-20260830-f78837.md": {
+    "mtime": 1788077342.7804177,
+    "ast_hash": "cd072a21512b79dfdde71a399ab54f9b",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/dossier.md": {
+    "mtime": 1788077342.781723,
+    "ast_hash": "944081591a6afc9bf0d883709beef137",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-0a339f.md": {
+    "mtime": 1788077447.2051947,
+    "ast_hash": "0f7bcb9bcc3d9714165f3160712a133d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-189dd9.md": {
+    "mtime": 1788091847.2710536,
+    "ast_hash": "669b0daaba348366049e86c1ac704669",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-28f49f.md": {
+    "mtime": 1788077354.1690779,
+    "ast_hash": "d44fed12d5f2237fe1a84458b8187e0f",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-2d78eb.md": {
+    "mtime": 1788077342.7828767,
+    "ast_hash": "0719e530394ef8a89a338e7ea230fe94",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-326ef9.md": {
+    "mtime": 1788077264.0837092,
+    "ast_hash": "10733e986bbcfc22b893a80042814251",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-4ba7a0.md": {
+    "mtime": 1788077353.967295,
+    "ast_hash": "7cd53d98120f22726e7da228a1185571",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-51dc0d.md": {
+    "mtime": 1788077237.2345402,
+    "ast_hash": "d582fdfbaea4947f8123a3bebd458a63",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-530e51.md": {
+    "mtime": 1788077353.8966403,
+    "ast_hash": "221f9c988a9db818fee4dd68a94f04ce",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-5b5d9e.md": {
+    "mtime": 1788077354.1192415,
+    "ast_hash": "21a42a7809fd52658300fac3521a4139",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-5d93b6.md": {
+    "mtime": 1788077342.8595972,
+    "ast_hash": "92dccb086ec03ad606f8a0a47de0e538",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-6f1166.md": {
+    "mtime": 1788077256.2227373,
+    "ast_hash": "f30156c73f4119bd82803c8cb5834252",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-7e3bf2.md": {
+    "mtime": 1788077342.7877064,
+    "ast_hash": "ebb41dc399b1bda66de84455cc8c7071",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-900d4f.md": {
+    "mtime": 1788077264.0859013,
+    "ast_hash": "1845675b325e92580191cbd9826d6384",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-9102c7.md": {
+    "mtime": 1788077333.128444,
+    "ast_hash": "eb78cf5fda3b652207ce2b208bbb0f92",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-d6caf5.md": {
+    "mtime": 1788077354.0687943,
+    "ast_hash": "d37c3b6f3c2adddeb28739a7372640cd",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-df3a36.md": {
+    "mtime": 1788077520.8572848,
+    "ast_hash": "f70b744eadcf0511f3e24d28d6aa9164",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-e0c109.md": {
+    "mtime": 1788077384.6487117,
+    "ast_hash": "475528e98fdf46fc5b7fa7c12b027417",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-e21269.md": {
+    "mtime": 1788077394.8628335,
+    "ast_hash": "97dec9e260524e3bdfd5138c836d274f",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-eb9af8.md": {
+    "mtime": 1788077539.9247427,
+    "ast_hash": "9afb1a3eeb692fc6f8dd8f813a0521be",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-f6bbdf.md": {
+    "mtime": 1788077256.2095292,
+    "ast_hash": "40f314616a0b27e66d82dc775bf2800f",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/events/2026-08-30-EVT-20260830-f77969.md": {
+    "mtime": 1788077354.0185869,
+    "ast_hash": "7169dfdb898f33eee7bc633f26dc4854",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/facts.md": {
+    "mtime": 1788077256.207909,
+    "ast_hash": "31e1021670a8d469be68f923c4f567ff",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/issues.md": {
+    "mtime": 1788077254.758929,
+    "ast_hash": "c7c4f6e18cd26d3d51188fa432961d96",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/matter.md": {
+    "mtime": 1788077539.923437,
+    "ast_hash": "8317cc0be7fe2b7f7c6f2443f756bdfe",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/participants.md": {
+    "mtime": 1788077237.2193437,
+    "ast_hash": "28ad32b15d5d1b2b9f625f89a5da6111",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/recommendations.md": {
+    "mtime": 1788077237.2205925,
+    "ast_hash": "3f5a5a2d6a151d16f488d993f25fbe95",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/request.md": {
+    "mtime": 1788077237.2184508,
+    "ast_hash": "cbc860bcf776800bf7b5ec260c7ef1a2",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/research/RES-20260830-2a2c90.md": {
+    "mtime": 1788077264.0739472,
+    "ast_hash": "4c98df8be8af8c58c326b38db9f430e0",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/research/RES-20260830-356e28.md": {
+    "mtime": 1788077342.7740474,
+    "ast_hash": "2f0869b584f3c6f677895f279d024442",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/research/runs/RUN-20260830-5d0167.md": {
+    "mtime": 1788077264.1487432,
+    "ast_hash": "50f037d3cc4c0d7fe88abe97243691ff",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/work-items/WI-20260830-647dde.md": {
+    "mtime": 1788077354.017887,
+    "ast_hash": "c13dcebb4dfce2818738174b9432445f",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/work-items/WI-20260830-64a80a.md": {
+    "mtime": 1788077315.8144023,
+    "ast_hash": "c36e6eafe7c90588ee89a9c69f649b1b",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/work-items/WI-20260830-6e7ede.md": {
+    "mtime": 1788077354.1187155,
+    "ast_hash": "38a1300e7c4e6d179684b79ea790794d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/work-items/WI-20260830-8654ab.md": {
+    "mtime": 1788077353.966836,
+    "ast_hash": "ec84833e9561a47467025474ee0fd911",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/work-items/WI-20260830-acfc03.md": {
+    "mtime": 1788077342.7855675,
+    "ast_hash": "3750997926dfb3921ed2f2046b5f2a85",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/work-items/WI-20260830-b86f0a.md": {
+    "mtime": 1788077353.8928235,
+    "ast_hash": "f29a13be2604af1c0d7728bed5a99dd7",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/work-items/WI-20260830-c04555.md": {
+    "mtime": 1788077354.068336,
+    "ast_hash": "083f11d20f296f8fc5abda64a2398fa9",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/work-items/WI-20260830-c44b2d.md": {
+    "mtime": 1788077354.1685874,
+    "ast_hash": "f27e541dfc3963200ec2aba240d97cff",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/work-product/draft/northstar-ux-test-01-pay-in-4-checkout-disclosures-advice-15cbff.md": {
+    "mtime": 1788077439.4424174,
+    "ast_hash": "2758f2c73bf7cfd7415057a219850e10",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/work-product/final/northstar-ux-test-01-pay-in-4-checkout-disclosures-advice-15cbff-1a46d2.md": {
+    "mtime": 1788077447.2043684,
+    "ast_hash": "269b42ab769ac8261338f232665705bb",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-01-pay-in-4-checkout-disclosures-43cada/work-product/final/northstar-ux-test-01-pay-in-4-checkout-disclosures-advice-15cbff-9f3eb0.md": {
+    "mtime": 1788091847.2702785,
+    "ast_hash": "d4e58c6ec9f8b8ec39a6e170b1e26f86",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/conversations/CONV-20260830-d3dad9.md": {
+    "mtime": 1788078057.8996508,
+    "ast_hash": "8bcc6a25cc83b6cbcf6c91b81f1b9105",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/decisions/DEC-20260830-merchant-subsidy.md": {
+    "mtime": 1788077864.4579911,
+    "ast_hash": "8b4b67c906dd209990b1f4edc8fa9a35",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/dossier-revisions/DOS-20260830-4fb1eb.md": {
+    "mtime": 1788077730.6834185,
+    "ast_hash": "ce7c7bb46d650e42a8a134308b297be5",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/dossier-revisions/DOS-20260830-709639.md": {
+    "mtime": 1788077795.8799965,
+    "ast_hash": "18d2ef0c056b3f4b041a3a6dbfa0201d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/dossier-revisions/DOS-20260830-e17486.md": {
+    "mtime": 1788077737.8150148,
+    "ast_hash": "4fc78f1c5936570c3a8db0d66ec78592",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/dossier.md": {
+    "mtime": 1788077795.8806317,
+    "ast_hash": "9d8ff33187fc0af3e897a7a75cc8495c",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/events/2026-08-30-EVT-20260830-295ae0.md": {
+    "mtime": 1788077698.1475,
+    "ast_hash": "f1188f6cd7eb7ebcead3b8d96a318c3d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/events/2026-08-30-EVT-20260830-40fd9d.md": {
+    "mtime": 1788077730.685127,
+    "ast_hash": "42cfd6bf327259c088217e5e88fe1d4f",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/events/2026-08-30-EVT-20260830-649acc.md": {
+    "mtime": 1788077818.0066533,
+    "ast_hash": "eb61a191da2155318cad1c36f7cbe992",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/events/2026-08-30-EVT-20260830-655c4b.md": {
+    "mtime": 1788077737.8175802,
+    "ast_hash": "0c7b48df43be0531d68fdbc0aca8aafd",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/events/2026-08-30-EVT-20260830-7478c1.md": {
+    "mtime": 1788077730.6651525,
+    "ast_hash": "7b65854adcff84db5ebbd418b0ec8f31",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/events/2026-08-30-EVT-20260830-7688c6.md": {
+    "mtime": 1788077785.1045127,
+    "ast_hash": "256a1b0ec47b543ffbbf05f8ae22c024",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/events/2026-08-30-EVT-20260830-883386.md": {
+    "mtime": 1788077795.8812788,
+    "ast_hash": "c366a42c76af32471277479a8aa59d71",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/events/2026-08-30-EVT-20260830-88d698.md": {
+    "mtime": 1788077818.0628722,
+    "ast_hash": "ad4e7552c7fa81f15f66d6bf2678c514",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/events/2026-08-30-EVT-20260830-b53d1a.md": {
+    "mtime": 1788077795.9446228,
+    "ast_hash": "c293e90af8387c869e3baa9b32fbd77a",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/events/2026-08-30-EVT-20260830-cfa213.md": {
+    "mtime": 1788077737.8190603,
+    "ast_hash": "a98c7a456bd08e5af113a1db8be711fe",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/events/2026-08-30-EVT-20260830-ec6c6a.md": {
+    "mtime": 1788077818.2328305,
+    "ast_hash": "dc8990cbf6593165ec05fc3092fdc603",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/events/2026-08-30-EVT-20260830-ee38b6.md": {
+    "mtime": 1788078045.5118794,
+    "ast_hash": "c273a806035a354f38c620d2a38186df",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/events/2026-08-30-EVT-20260830-f34a0d.md": {
+    "mtime": 1788077818.118633,
+    "ast_hash": "82db15f2885f925828b10ab1b66dcf1c",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/events/2026-08-30-EVT-20260830-f6c039.md": {
+    "mtime": 1788077818.1762233,
+    "ast_hash": "788ccfd00705560022072ec3a5bd0636",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/events/2026-08-30-EVT-20260830-f7c275.md": {
+    "mtime": 1788077795.88292,
+    "ast_hash": "4eb98ea15f63bf778fabf8e9a68f7a86",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/events/2026-08-30-EVT-20260830-f80a69.md": {
+    "mtime": 1788077894.9375246,
+    "ast_hash": "6225e8b9d351b12d91e835fc76571364",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/facts.md": {
+    "mtime": 1788077730.663812,
+    "ast_hash": "6b0e471a1b199a054ecd9e24e31da6bc",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/issues.md": {
+    "mtime": 1788077698.1391037,
+    "ast_hash": "cca2baf6fb7a25ba9fa80f72b2be9530",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/matter.md": {
+    "mtime": 1788078045.5107424,
+    "ast_hash": "9fd98fca19888b2923062dece817b9bd",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/participants.md": {
+    "mtime": 1788077698.1382575,
+    "ast_hash": "ed77b1d9559fea1bc1a81d68bcaf80fc",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/recommendations.md": {
+    "mtime": 1788077698.1396184,
+    "ast_hash": "3e8f51226320ecaeea1a09a19f1a20f7",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/request.md": {
+    "mtime": 1788077698.137666,
+    "ast_hash": "2e167648b44eb9f8bd6ea666c38100fd",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/research/RES-20260830-3b5004.md": {
+    "mtime": 1788077795.8769457,
+    "ast_hash": "bf78f0858f7fd5917c20dfbd3bdfe0f3",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/research/RES-20260830-a47ca3.md": {
+    "mtime": 1788077737.8093739,
+    "ast_hash": "2f47110b02e79f3a3c39cbf00a319b73",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/research/memo-longer-term-installment-first-pass.md": {
+    "mtime": 1788077817.9226413,
+    "ast_hash": "e4fa23109a10f8c781064c0bf3a7b550",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/research/runs/RUN-20260830-3b94dc.md": {
+    "mtime": 1788077773.903612,
+    "ast_hash": "c29cda01083a59133bb61d505979de26",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/work-items/WI-20260830-213cf1.md": {
+    "mtime": 1788077745.521974,
+    "ast_hash": "4df683578fc2306f99c8aec0a452092f",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/work-items/WI-20260830-4849e9.md": {
+    "mtime": 1788077818.06241,
+    "ast_hash": "901e405957da03ce7fc88cdc457e9e20",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/work-items/WI-20260830-54fc5f.md": {
+    "mtime": 1788077818.2323632,
+    "ast_hash": "ce91615ac5dc5b0eef0354476489652e",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/work-items/WI-20260830-5d994e.md": {
+    "mtime": 1788077818.006143,
+    "ast_hash": "e7af915aa70ac32c50c1c64b0a50d7aa",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/work-items/WI-20260830-695fb7.md": {
+    "mtime": 1788077853.2963185,
+    "ast_hash": "229b3f8176ce31b107565063ee38bb0b",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/work-items/WI-20260830-7aa56e.md": {
+    "mtime": 1788077818.1757529,
+    "ast_hash": "00bf609318278669af08108c3b0ed531",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/work-items/WI-20260830-c884b0.md": {
+    "mtime": 1788077795.8823292,
+    "ast_hash": "67179bd817ae2c9b7a41e1f202fed92a",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/work-product/draft/launch-readiness-memo.md": {
+    "mtime": 1788078033.298156,
+    "ast_hash": "b312f0a268751d50b1e29f68e5e0b649",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-02-longer-term-installment-loan-compliance-2bf7ee/work-product/final/legal-response-longer-term-installment.md": {
+    "mtime": 1788078072.6568422,
+    "ast_hash": "9843a38023698c4bbd55dbd2ff3b5810",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/conversations/CONV-20260830-da8828.md": {
+    "mtime": 1788078849.284151,
+    "ast_hash": "00ce1cb6d5daed593e59dbaa07c594a7",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/decisions/DEC-20260830-3e3027.md": {
+    "mtime": 1788078768.461841,
+    "ast_hash": "0153c0801489523aa1e16b32325a67a2",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/dossier-revisions/DOS-20260830-93ac0f.md": {
+    "mtime": 1788078239.9625711,
+    "ast_hash": "45eddd4fbefab929897a24fd40fc5b8e",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/dossier-revisions/DOS-20260830-9cf6aa.md": {
+    "mtime": 1788078251.6317687,
+    "ast_hash": "127d3d60b18d3849e9b7a241afa9b33b",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/dossier-revisions/DOS-20260830-fff657.md": {
+    "mtime": 1788078277.1198232,
+    "ast_hash": "d8e09617321980f2b7384c199dbb9abb",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/dossier.md": {
+    "mtime": 1788078277.1213188,
+    "ast_hash": "5df8da25808e7e9e823412a65c1e72ff",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-0eb6c3.md": {
+    "mtime": 1788078277.1228395,
+    "ast_hash": "0f5d16f5d992672732b08593f201e0d6",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-2173fa.md": {
+    "mtime": 1788078251.6347952,
+    "ast_hash": "7b16cb8fc755d7fd8dbe31cda0328fdd",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-2733ea.md": {
+    "mtime": 1788078571.5358098,
+    "ast_hash": "b01c4ed9576f42aa63d5d691f8e93753",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-275d50.md": {
+    "mtime": 1788078571.314553,
+    "ast_hash": "ac62643875459a6e464e139870314643",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-2ac009.md": {
+    "mtime": 1788078657.708222,
+    "ast_hash": "e3fc8c4900fed968cbd78801ab4e3a00",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-2c0cf1.md": {
+    "mtime": 1788078277.2111547,
+    "ast_hash": "c9cc1eb3218c69c33c3fb39081bfec17",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-3aa54a.md": {
+    "mtime": 1788078223.4940932,
+    "ast_hash": "5ad6a87bb2d46678f32f62680d77593b",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-3bcea4.md": {
+    "mtime": 1788078768.4673727,
+    "ast_hash": "f22f85fcede53626c29e5ddfb9d61e54",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-408158.md": {
+    "mtime": 1788078277.1259856,
+    "ast_hash": "9783d75bdc0392dfc1544613c010d90d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-6724b7.md": {
+    "mtime": 1788078571.5998914,
+    "ast_hash": "31d721a2c3c1fd5720f76481c9e85004",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-779fb5.md": {
+    "mtime": 1788078264.3109012,
+    "ast_hash": "86370da9c1c76a87bdc74119e72bb02d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-7cb03a.md": {
+    "mtime": 1788078571.7320855,
+    "ast_hash": "5424c9e97d2ad606029b031fd6c465a4",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-a0d7c8.md": {
+    "mtime": 1788078239.944774,
+    "ast_hash": "2888e579e8ee3e222b8c80235f0f51d5",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-a1cd47.md": {
+    "mtime": 1788078571.377895,
+    "ast_hash": "8cccdc6d80143841465175b4494883f3",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-c22e10.md": {
+    "mtime": 1788078571.665431,
+    "ast_hash": "ad1163f9b77171340bf838605aa64bcb",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-cd3505.md": {
+    "mtime": 1788078571.7981472,
+    "ast_hash": "446692f60d97400076252af88bc5e73f",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-e6d739.md": {
+    "mtime": 1788078838.5223668,
+    "ast_hash": "bb8d31793e2ded2d18c1ec6d3e30e2be",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-ebae95.md": {
+    "mtime": 1788078571.471924,
+    "ast_hash": "64330dd735b97a294f93832a2deef679",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-ef7268.md": {
+    "mtime": 1788078571.8654315,
+    "ast_hash": "9552cba8cd6a66cef1546190d0389610",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-f51605.md": {
+    "mtime": 1788078251.6369863,
+    "ast_hash": "d5b4a43e0445199ba7b1b272cd251a08",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/events/2026-08-30-EVT-20260830-fea63f.md": {
+    "mtime": 1788078239.9648857,
+    "ast_hash": "ac755dd60567cd4089b8fd3666c31121",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/facts.md": {
+    "mtime": 1788078239.9429953,
+    "ast_hash": "9311dc5073ad84d2ff082da6937ac82f",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/issues.md": {
+    "mtime": 1788078283.2927291,
+    "ast_hash": "6715af87293b9604970081eaeb42a86a",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/matter.md": {
+    "mtime": 1788078838.5213895,
+    "ast_hash": "ca2c42812a0ecc0683fcb7c06acacd1d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/participants.md": {
+    "mtime": 1788078223.4619493,
+    "ast_hash": "0a6306fca91b47be48ce50ac37e0320a",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/pilot-process-and-legal-work-product.md": {
+    "mtime": 1788078571.2349079,
+    "ast_hash": "1b2c6f80fd57c9912c4fdda9b5b47011",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/proposed-decision.md": {
+    "mtime": 1788078748.1202328,
+    "ast_hash": "4efddc5921f052c8d168f4edf7b76e03",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/recommendations.md": {
+    "mtime": 1788078288.4629219,
+    "ast_hash": "8d0a45cb09cc7a2067e9899f6d1f421c",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/request.md": {
+    "mtime": 1788078223.4597359,
+    "ast_hash": "750d7403a0a042ef6864493041d083f1",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/research/RES-20260830-189b78.md": {
+    "mtime": 1788078277.1140113,
+    "ast_hash": "b200803b16d8b836df3ebbba15063296",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/research/RES-20260830-1ec80e.md": {
+    "mtime": 1788078251.6254745,
+    "ast_hash": "573177282644c0fe3e911335674a6c04",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/research/runs/RUN-20260830-089784.md": {
+    "mtime": 1788078251.726211,
+    "ast_hash": "e65c2edbc947b71035cc6e9a01e2d5f6",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/response-package.md": {
+    "mtime": 1788078895.4711585,
+    "ast_hash": "ba42a97310d2c0797a29c2abd3b995e0",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/work-items/WI-20260830-007827.md": {
+    "mtime": 1788078571.7316308,
+    "ast_hash": "17455ca3aa2098cea824b7414838d388",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/work-items/WI-20260830-0317a1.md": {
+    "mtime": 1788078634.4485793,
+    "ast_hash": "3bb3040c540ab2b2e7b7cb8280a15b62",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/work-items/WI-20260830-14b75c.md": {
+    "mtime": 1788078571.471249,
+    "ast_hash": "95366bc05fd5062e1fe192d7a7668d64",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/work-items/WI-20260830-22d7a6.md": {
+    "mtime": 1788078571.865021,
+    "ast_hash": "8cdb83c4d9abf98395a5b3b8b8ad99d5",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/work-items/WI-20260830-4deb39.md": {
+    "mtime": 1788078277.1248732,
+    "ast_hash": "9dbdaa479d8b730f39ee0daf63c6915b",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/work-items/WI-20260830-5760ae.md": {
+    "mtime": 1788078522.1119747,
+    "ast_hash": "f3e27c032ab1a2b7ce021c4bbd130d50",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/work-items/WI-20260830-62a1ef.md": {
+    "mtime": 1788078571.3141048,
+    "ast_hash": "b86d5ec9da96e9c42588883e7afa90c1",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/work-items/WI-20260830-755a58.md": {
+    "mtime": 1788078571.3774362,
+    "ast_hash": "01120eec3bc83e493296c7e463cc4ac3",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/work-items/WI-20260830-9c11ef.md": {
+    "mtime": 1788078571.665006,
+    "ast_hash": "14f9f063aff4d251ec98b18e8946e826",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/work-items/WI-20260830-ed393e.md": {
+    "mtime": 1788078571.797473,
+    "ast_hash": "533fed5e3ad4ffd188c6b37b8a2b1073",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-03-credit-reporting-and-customer-disputes-eb6fcc/work-items/WI-20260830-f8fd75.md": {
+    "mtime": 1788078571.5353475,
+    "ast_hash": "5a0bf2f2076a409d9d73db42a2e78a1f",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/conversations/CONV-20260830-d03be5.md": {
+    "mtime": 1788079517.6616695,
+    "ast_hash": "8d36c77851a44430755b9b775c29b7b6",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/decisions/DEC-20260830-d5e753.md": {
+    "mtime": 1788092668.9649098,
+    "ast_hash": "994bad00878afcc7c28f06c5d511ef23",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/dossier-revisions/DOS-20260830-207aae.md": {
+    "mtime": 1788078995.8544865,
+    "ast_hash": "d4f834b553ca7144fcd03cb82875143c",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/dossier-revisions/DOS-20260830-607c2e.md": {
+    "mtime": 1788079045.1142945,
+    "ast_hash": "af7777d12020dcda606a5c07553ef8e8",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/dossier-revisions/DOS-20260830-ebac9f.md": {
+    "mtime": 1788079002.946643,
+    "ast_hash": "4c1285c05c0c6f03b781bd3ff22fca7a",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/dossier.md": {
+    "mtime": 1788079431.4009373,
+    "ast_hash": "595519cfaa2f08eb5e1e26abf4638ed8",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/drafts/decision-draft-dual-track-adverse-action-design.md": {
+    "mtime": 1788079494.865494,
+    "ast_hash": "479a65324c3ee637c0bca208f971fca6",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/events/2026-08-30-EVT-20260830-02d27c.md": {
+    "mtime": 1788079514.9412897,
+    "ast_hash": "4dbab06aa931eead998a46affd2f5fed",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/events/2026-08-30-EVT-20260830-3fe07f.md": {
+    "mtime": 1788079045.121419,
+    "ast_hash": "54592abd02838c88842535e1c4e681ae",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/events/2026-08-30-EVT-20260830-5a8b40.md": {
+    "mtime": 1788079002.9491827,
+    "ast_hash": "10c69852869ac2f6ddc55ed80882e4be",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/events/2026-08-30-EVT-20260830-6643d3.md": {
+    "mtime": 1788079045.1166594,
+    "ast_hash": "abc8945072576f1bd03a9ac39828dbde",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/events/2026-08-30-EVT-20260830-73da82.md": {
+    "mtime": 1788078982.9089324,
+    "ast_hash": "8ca8c283f68cbbb1336d3eca3961c768",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/events/2026-08-30-EVT-20260830-8ae729.md": {
+    "mtime": 1788079033.317136,
+    "ast_hash": "010ddbd80a746d105d262fe8422f2bd8",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/events/2026-08-30-EVT-20260830-8d9745.md": {
+    "mtime": 1788079033.6934924,
+    "ast_hash": "03e0f3696b0a1841c2277290f2dfbf51",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/events/2026-08-30-EVT-20260830-9b05f4.md": {
+    "mtime": 1788079002.9503365,
+    "ast_hash": "4f0aa2b5d8320f6cd09b131337981bd8",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/events/2026-08-30-EVT-20260830-bb200b.md": {
+    "mtime": 1788079033.5424502,
+    "ast_hash": "9188079835e83ba177bde237bd716c4e",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/events/2026-08-30-EVT-20260830-ca6890.md": {
+    "mtime": 1788078995.8361843,
+    "ast_hash": "002f270a747a411fb304ea3ea5e8f137",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/events/2026-08-30-EVT-20260830-d7b92e.md": {
+    "mtime": 1788079033.4663713,
+    "ast_hash": "017211e05e21fb83eb00befa53a40e21",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/events/2026-08-30-EVT-20260830-d8f5d0.md": {
+    "mtime": 1788079045.2212138,
+    "ast_hash": "7168dbb7f818ee672c097e3536c3117e",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/events/2026-08-30-EVT-20260830-d921d4.md": {
+    "mtime": 1788079035.7627401,
+    "ast_hash": "c9a4bc3612ad8be427ed5b7e3c20fc9b",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/events/2026-08-30-EVT-20260830-dfff0a.md": {
+    "mtime": 1788078995.8562307,
+    "ast_hash": "a84c49cb850ce81c87fd0b17ded950b9",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/events/2026-08-30-EVT-20260830-ee53c9.md": {
+    "mtime": 1788079033.3921764,
+    "ast_hash": "e150beca578bcdc2c589dc8039d0caac",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/events/2026-08-30-EVT-20260830-fd00c6.md": {
+    "mtime": 1788079385.0158868,
+    "ast_hash": "b5dd2c7fa6c673ff790932ebc06e5856",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/events/2026-08-30-EVT-20260830-fde02e.md": {
+    "mtime": 1788079033.6183152,
+    "ast_hash": "e8e3429111129adfb8c4e2552e000917",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/facts.md": {
+    "mtime": 1788079132.4023678,
+    "ast_hash": "b2180cf20c8eee49d459fe395c0a99f1",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/issues.md": {
+    "mtime": 1788079136.5920043,
+    "ast_hash": "3f64b78b75dfdf0a49e386bb5d72cbd1",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/matter.md": {
+    "mtime": 1788079514.9393632,
+    "ast_hash": "9f0694f73f6babc9dd18302c945aeda7",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/notice-communication-package.md": {
+    "mtime": 1788079250.446581,
+    "ast_hash": "1c6ec40639ec40f93efcd41ad9f11291",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/participants.md": {
+    "mtime": 1788078982.8917186,
+    "ast_hash": "f119391a297a79fae60d7c55e05db4d9",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/recommendations.md": {
+    "mtime": 1788079285.9214966,
+    "ast_hash": "635b951c9af5c9f6cbcb05f407a2fd99",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/request.md": {
+    "mtime": 1788078982.8913267,
+    "ast_hash": "90c23d625dc293b5c9750bc798ea0564",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/research/RES-20260830-1fd1a9.md": {
+    "mtime": 1788079174.989988,
+    "ast_hash": "e43ef25b8c3106015c97acd906fc8fbb",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/research/RES-20260830-e13060.md": {
+    "mtime": 1788079002.9407392,
+    "ast_hash": "8a37c7eb0eddd6e849e14f8cf37d8de9",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/research/runs/RUN-20260830-b7f6d5.md": {
+    "mtime": 1788079003.0534606,
+    "ast_hash": "c7dbaf09163f6761e1e1221d02480975",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/work-items/WI-20260830-21e028.md": {
+    "mtime": 1788079094.3253925,
+    "ast_hash": "431c0f2f25c07fa774fbb8c608e09fa6",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/work-items/WI-20260830-48be50.md": {
+    "mtime": 1788079326.0034442,
+    "ast_hash": "27aec3a46c89001eddcbb2839816eded",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/work-items/WI-20260830-71dcad.md": {
+    "mtime": 1788079335.2517562,
+    "ast_hash": "4cedbc4e54d1835ba6de663c5607c604",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/work-items/WI-20260830-9dbf89.md": {
+    "mtime": 1788079344.7231486,
+    "ast_hash": "f3324fc252f1f23e8b77630ed54441f3",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/work-items/WI-20260830-b92ebf.md": {
+    "mtime": 1788079354.3524914,
+    "ast_hash": "04ec93199173a386e973693df73323f3",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/work-items/WI-20260830-de12ee.md": {
+    "mtime": 1788079363.5187254,
+    "ast_hash": "4c73721f6f4f6cbae88950a85406eee3",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/work-items/WI-20260830-e6f53b.md": {
+    "mtime": 1788079373.4016292,
+    "ast_hash": "a22306b360dab92b3315eb3e3e3d3262",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/work-items/WI-20260830-f458c5.md": {
+    "mtime": 1788079316.32347,
+    "ast_hash": "5471da0b10ddbce3aa9b79bb61a880c6",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-04-adverse-action-notices-for-declined-applica-dfe958/work-product/final/launch-readiness-response.md": {
+    "mtime": 1788079419.389382,
+    "ast_hash": "e6ccceba18e5c4a0d6cf7c4fa55709c0",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/conversations/CONV-20260830-3d31f3.md": {
+    "mtime": 1788080420.174771,
+    "ast_hash": "fe9a2c9cb790b28195161d24ae260132",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/decisions/DEC-20260830-89a2ca.md": {
+    "mtime": 1788092879.9636817,
+    "ast_hash": "0ba700f45a5a328323e9663fc2b88974",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/dossier-revisions/DOS-20260830-c8578b.md": {
+    "mtime": 1788079685.3128564,
+    "ast_hash": "d61cbc98c0b26dc522fc55226d010480",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/dossier-revisions/DOS-20260830-f03c62.md": {
+    "mtime": 1788079698.5009096,
+    "ast_hash": "5f5e3dd7e0a43f19c4f87f630ebe8986",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/dossier.md": {
+    "mtime": 1788079698.5021095,
+    "ast_hash": "336c8598e24f6ac1b103f6c00c53f173",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/events/2026-08-30-EVT-20260830-1e2ee8.md": {
+    "mtime": 1788079685.3158612,
+    "ast_hash": "78c2144328a54a1ddfee77e657517c6a",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/events/2026-08-30-EVT-20260830-3219ad.md": {
+    "mtime": 1788080389.7168715,
+    "ast_hash": "3d10ce49117681ac626988c7df54ea14",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/events/2026-08-30-EVT-20260830-55e264.md": {
+    "mtime": 1788080391.3130481,
+    "ast_hash": "38c75a1417ac4f988970ec1e29b11d73",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/events/2026-08-30-EVT-20260830-6a2b98.md": {
+    "mtime": 1788079658.2111242,
+    "ast_hash": "1456e5dd47cbde80ac280a8f5781d438",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/events/2026-08-30-EVT-20260830-78fc59.md": {
+    "mtime": 1788079698.5032768,
+    "ast_hash": "dee4ce5085ed5a7bffe873c293633648",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/events/2026-08-30-EVT-20260830-a20d73.md": {
+    "mtime": 1788079672.4498827,
+    "ast_hash": "51eded9c819485dbc64e1eb7a85087f4",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/events/2026-08-30-EVT-20260830-a682e8.md": {
+    "mtime": 1788079687.9714267,
+    "ast_hash": "d13eb1ccbb5e141eb4adaccb2ce6d162",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/events/2026-08-30-EVT-20260830-c0c386.md": {
+    "mtime": 1788079698.5046673,
+    "ast_hash": "092f36977b7682ac2ca049218e76ffca",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/events/2026-08-30-EVT-20260830-c6ab0e.md": {
+    "mtime": 1788079685.450859,
+    "ast_hash": "9901d5d207134c9018ff7b4d39047d18",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/events/2026-08-30-EVT-20260830-ea1a0f.md": {
+    "mtime": 1788079889.9119515,
+    "ast_hash": "b4f7f6d4eba0d2b28ba50544b8a1115e",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/events/2026-08-30-EVT-20260830-efa5c7.md": {
+    "mtime": 1788079685.3189209,
+    "ast_hash": "8db67c376d024e4277cbce88ed9c66e9",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/facts.md": {
+    "mtime": 1788079730.926585,
+    "ast_hash": "eff00011cc6710367cdb7def8f1d5ce0",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/issues.md": {
+    "mtime": 1788079731.061151,
+    "ast_hash": "14d781fbe76d8d048e96ccd0bb24de39",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/matter.md": {
+    "mtime": 1788080391.312291,
+    "ast_hash": "10b1575cec1518af3cf6547ec970fa7d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/participants.md": {
+    "mtime": 1788079658.176521,
+    "ast_hash": "6a4f434016aa790e1e4a2d93bd64bb02",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/recommendations.md": {
+    "mtime": 1788079888.589929,
+    "ast_hash": "c930eb80de1b314fb8ce8779d48a0586",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/request.md": {
+    "mtime": 1788079658.1760733,
+    "ast_hash": "fcdfc3365375cc2745ef5f34fa0e7c99",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/research/RES-20260830-0222ac.md": {
+    "mtime": 1788079685.3090312,
+    "ast_hash": "fa54d72c0795e14b6edfc9a29f847075",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/research/RES-20260830-e0c53f.md": {
+    "mtime": 1788079698.4959593,
+    "ast_hash": "36bdef9b401489023f096a35d6fae975",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/research/runs/RUN-20260830-003cbe.md": {
+    "mtime": 1788079698.6456118,
+    "ast_hash": "fc12e8557884d2854e8b3ae864b7ec1d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/work-items/WI-20260830-471710.md": {
+    "mtime": 1788079685.3177211,
+    "ast_hash": "4a2767a2070d38dcf0f34c7420bebcf9",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/work-items/WI-20260830-cf63c3.md": {
+    "mtime": 1788079746.043639,
+    "ast_hash": "0a744151e343f3fa42719aea2e61a254",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/work-product/draft/decision-autopay-pilot-scope-and-authorization-controls.md": {
+    "mtime": 1788080365.9491158,
+    "ast_hash": "f7f74d65f879f030907c43c956d6c878",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/work-products/autopay-enrollment-launch-advice-memo.md": {
+    "mtime": 1788079999.997697,
+    "ast_hash": "aab9c4955c170b50b3c760d19fa9778d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/conversations/CONV-20260830-e7b0d1.md": {
+    "mtime": 1788080899.7127233,
+    "ast_hash": "e4269eac7e277767f6fff699fc3c8af1",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/decisions/DEC-20260830-19991b.md": {
+    "mtime": 1788093038.3130057,
+    "ast_hash": "5ce503ccb9d3c63616694a6a83b66ff0",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/dossier-revisions/DOS-20260830-395d52.md": {
+    "mtime": 1788080564.6284702,
+    "ast_hash": "fe76a72723d742cd0eb3d19f05e07caf",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/dossier-revisions/DOS-20260830-44720c.md": {
+    "mtime": 1788080577.8875043,
+    "ast_hash": "10320a413b6b66af420af0c313a31643",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/dossier-revisions/DOS-20260830-fd540d.md": {
+    "mtime": 1788080659.8393338,
+    "ast_hash": "655ceb7dbeb46cf3c7ec4f3d8bebe889",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/dossier.md": {
+    "mtime": 1788080659.84057,
+    "ast_hash": "9693080ab89647d18230c9bd1804b4fc",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/events/2026-08-30-EVT-20260830-13ae02.md": {
+    "mtime": 1788080659.84179,
+    "ast_hash": "e4ab8d27a0ae871449e6b3bfeb537da4",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/events/2026-08-30-EVT-20260830-19964e.md": {
+    "mtime": 1788080630.126191,
+    "ast_hash": "05ac21dd9ce6f867533fb64e7b281234",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/events/2026-08-30-EVT-20260830-1b2a37.md": {
+    "mtime": 1788080634.682303,
+    "ast_hash": "1cd367c8394251add01b511b19716994",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/events/2026-08-30-EVT-20260830-271b3f.md": {
+    "mtime": 1788080632.7881763,
+    "ast_hash": "38045b8f475dc56c2875d02f6f87b2c0",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/events/2026-08-30-EVT-20260830-334b81.md": {
+    "mtime": 1788080632.6557105,
+    "ast_hash": "6e1f7d23cde9d2735fba20bb6865beb4",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/events/2026-08-30-EVT-20260830-3b8058.md": {
+    "mtime": 1788080564.6360753,
+    "ast_hash": "27abfda037a946b89b298ba5a736292c",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/events/2026-08-30-EVT-20260830-409903.md": {
+    "mtime": 1788080564.7785807,
+    "ast_hash": "26f092155aa243ce49aadf061b0a78ef",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/events/2026-08-30-EVT-20260830-4980cb.md": {
+    "mtime": 1788080569.3527646,
+    "ast_hash": "c3c2331e14ff1893a814c1b6190ad3f7",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/events/2026-08-30-EVT-20260830-590491.md": {
+    "mtime": 1788080534.8409173,
+    "ast_hash": "0024435e3a9db0dd9c0ee6cabbd1a2db",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/events/2026-08-30-EVT-20260830-6786a1.md": {
+    "mtime": 1788080659.9810872,
+    "ast_hash": "48e6be726676fd46fb1a5bd7a91dfcd8",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/events/2026-08-30-EVT-20260830-72d6f1.md": {
+    "mtime": 1788080577.890032,
+    "ast_hash": "fbd12776c2f67c1b7e7348929062bd6b",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/events/2026-08-30-EVT-20260830-9d6225.md": {
+    "mtime": 1788080660.1220396,
+    "ast_hash": "e3d212784bc59d186e8361c6263f6503",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/events/2026-08-30-EVT-20260830-ab0eee.md": {
+    "mtime": 1788080577.8913555,
+    "ast_hash": "4d838b3c625f5c8106aa4d18270c1e57",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/events/2026-08-30-EVT-20260830-b19569.md": {
+    "mtime": 1788080552.7611845,
+    "ast_hash": "fa19ad9f5a9ad2873f7b772428fcb83b",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/events/2026-08-30-EVT-20260830-bfb0d4.md": {
+    "mtime": 1788080564.6310525,
+    "ast_hash": "abc98f2d73f98c7ffd208d0e45a7c341",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/events/2026-08-30-EVT-20260830-decfbb.md": {
+    "mtime": 1788080874.4953687,
+    "ast_hash": "0ebfefd1654444177499860411e8a98c",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/events/2026-08-30-EVT-20260830-e1f7d0.md": {
+    "mtime": 1788093110.365313,
+    "ast_hash": "7a9b5f069baf46b871dd2c82aad63dc4",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/events/2026-08-30-EVT-20260830-ed03df.md": {
+    "mtime": 1788080630.2585366,
+    "ast_hash": "91a85726006678bcb44bb543a0465e8b",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/events/2026-08-30-EVT-20260830-f113b2.md": {
+    "mtime": 1788080634.8156326,
+    "ast_hash": "b9133a43c28a1d50b6aef5a94b6fd148",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/facts.md": {
+    "mtime": 1788080569.3507137,
+    "ast_hash": "dced33e404bde38f31bbcb2713d1034a",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/issues.md": {
+    "mtime": 1788080550.1215415,
+    "ast_hash": "555d9fa456c70cf26b0f2f6ce2081e3e",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/matter.md": {
+    "mtime": 1788080874.494052,
+    "ast_hash": "850c28faa778ab6289cd717f2624dc78",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/orientation-and-issue-map.md": {
+    "mtime": 1788080627.7528515,
+    "ast_hash": "c00131aa4db189f8167910b793397018",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/participants.md": {
+    "mtime": 1788080534.8151495,
+    "ast_hash": "1af18903e89a0a62ada8359d0c3cba92",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/recommendation-late-fees.md": {
+    "mtime": 1788080764.7149055,
+    "ast_hash": "fcad5c71241c9ce23b805823053f52a2",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/recommendations.md": {
+    "mtime": 1788080534.81638,
+    "ast_hash": "8f0ee0ccc8200b6cbf9d31f791dc86f9",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/request.md": {
+    "mtime": 1788080534.8146973,
+    "ast_hash": "236beec0819fc5b7d5c9bd1b13b9d6f4",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/research-packet.md": {
+    "mtime": 1788080671.8041716,
+    "ast_hash": "044355db2a27985fd982c01d5c8717f2",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/research/RES-20260830-50f6ea.md": {
+    "mtime": 1788080577.8813827,
+    "ast_hash": "32fcd550473e305494996e3b483d269c",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/research/RES-20260830-61de94.md": {
+    "mtime": 1788080564.6238635,
+    "ast_hash": "e840e3f05501792cf73836ff75cd5d2a",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/research/RES-20260830-d6c3db.md": {
+    "mtime": 1788080659.8322284,
+    "ast_hash": "02c23f0ca1eef0fed72116ad74968943",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/research/runs/RUN-20260830-2b0577.md": {
+    "mtime": 1788080578.035596,
+    "ast_hash": "42ded4be1819184db64832bef83acd8d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/work-items/WI-20260830-10f962.md": {
+    "mtime": 1788080564.6342266,
+    "ast_hash": "78602e58ccd0b73229997361aa7f1a69",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/work-items/WI-20260830-280f36.md": {
+    "mtime": 1788080588.7622752,
+    "ast_hash": "e89c89ef32e21015c9dd0e30f9efb34e",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/work-items/WI-20260830-573511.md": {
+    "mtime": 1788080632.7876415,
+    "ast_hash": "1ade752b91c10889702a722d15e458c3",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/work-items/WI-20260830-70e2e5.md": {
+    "mtime": 1788080630.2579904,
+    "ast_hash": "0a3396a34393911f0ee9e4fe3908adf2",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/work-items/WI-20260830-71e63e.md": {
+    "mtime": 1788080634.6810029,
+    "ast_hash": "fd316acc6f41d03cb0b9b56f90323ef0",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/work-items/WI-20260830-ac5eed.md": {
+    "mtime": 1788093048.577749,
+    "ast_hash": "365db6d76f2be276bc9bf72896c9ddf0",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/work-items/WI-20260830-b4bac6.md": {
+    "mtime": 1788080659.980628,
+    "ast_hash": "10ac21448ec98993f22c572aaa5aec67",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/work-items/WI-20260830-d67cb8.md": {
+    "mtime": 1788080632.654354,
+    "ast_hash": "7c6917635b2bd67eacaaee57824619f0",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-06-late-fees-and-missed-payment-treatment-f3c248/work-items/WI-20260830-fc1c7a.md": {
+    "mtime": 1788080659.8453705,
+    "ast_hash": "9fa3641387ac039a33c51df0ec648b26",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/conversations/CONV-20260830-697e8e.md": {
+    "mtime": 1788093213.7438045,
+    "ast_hash": "41a0d384ffbfdfbcfad59165027667e1",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/decisions/DEC-20260830-4037e5.md": {
+    "mtime": 1788081396.0270774,
+    "ast_hash": "ca62151588d66c6bf034df2545fad745",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/dossier-revisions/DOS-20260830-55ea25.md": {
+    "mtime": 1788081055.0743725,
+    "ast_hash": "389453c43cec7c0547357d98ef444075",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/dossier-revisions/DOS-20260830-cc4cfd.md": {
+    "mtime": 1788081062.615769,
+    "ast_hash": "c0e3eec971b15fb4bfb3e83250a79e75",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/dossier.md": {
+    "mtime": 1788081062.6169248,
+    "ast_hash": "89aad242ee418a7dd7ebb2fc50f234fd",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/events/2026-08-30-EVT-20260830-0acff7.md": {
+    "mtime": 1788081417.0753162,
+    "ast_hash": "679646227636659afdcfe882b056435c",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/events/2026-08-30-EVT-20260830-138c89.md": {
+    "mtime": 1788081355.2162669,
+    "ast_hash": "c6073bc6cf0ec413ce5f927ffebd66be",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/events/2026-08-30-EVT-20260830-284051.md": {
+    "mtime": 1788081417.5470393,
+    "ast_hash": "9e994c10a9e4b013dae63781f92feb16",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/events/2026-08-30-EVT-20260830-85c672.md": {
+    "mtime": 1788081417.9675608,
+    "ast_hash": "b4b43aefa79d8ec391639353fe0d0789",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/events/2026-08-30-EVT-20260830-b0c04f.md": {
+    "mtime": 1788081062.6179059,
+    "ast_hash": "24903a2e1a6f1b4ab73036c623a4529c",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/events/2026-08-30-EVT-20260830-ca98c8.md": {
+    "mtime": 1788081039.506211,
+    "ast_hash": "159c22322d9c447bc3d5b97c200fb586",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/events/2026-08-30-EVT-20260830-ce6110.md": {
+    "mtime": 1788081418.347225,
+    "ast_hash": "9cbdfa07a2f41aa7531eac4b54dcbd3c",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/events/2026-08-30-EVT-20260830-da33b2.md": {
+    "mtime": 1788081062.6191373,
+    "ast_hash": "53c2616ef0ffacebd550f4c2a4f83f95",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/events/2026-08-30-EVT-20260830-f5b0fe.md": {
+    "mtime": 1788081055.0545323,
+    "ast_hash": "dbc7ffe7144e9718ac99db6d7fd07fab",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/events/2026-08-30-EVT-20260830-ff0598.md": {
+    "mtime": 1788081055.076928,
+    "ast_hash": "bde38383c13bb6b3c69a379a8ec6a2ca",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/facts.md": {
+    "mtime": 1788081055.0525618,
+    "ast_hash": "95a04791e95a242b6df9a83618be4698",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/issues.md": {
+    "mtime": 1788081039.4934318,
+    "ast_hash": "2c516ae9bf620d1d02daf9b599ebcdc4",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/matter.md": {
+    "mtime": 1788081355.2147956,
+    "ast_hash": "60f383bc44f7a135d58a66514fbfd482",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/participants.md": {
+    "mtime": 1788081039.492287,
+    "ast_hash": "bf73f202a329c18d6b93a3c51ea08f2b",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/recommendations.md": {
+    "mtime": 1788081039.4938412,
+    "ast_hash": "10eeea5f2419650431269e5a915fb771",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/request.md": {
+    "mtime": 1788081039.4918284,
+    "ast_hash": "a70b99fbb58886f7cee0ab246c8664a5",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/research/RES-20260830-15cd14.md": {
+    "mtime": 1788081077.4608784,
+    "ast_hash": "708383425c50891dbe6e919aa5394807",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/research/runs/RUN-20260830-6281c8.md": {
+    "mtime": 1788081062.8340719,
+    "ast_hash": "3cd136505448e0666e0dd246a00a7eae",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/work-items/WI-20260830-66ca42.md": {
+    "mtime": 1788081132.671694,
+    "ast_hash": "5b731b3fe1e1ef5923f6174e880d90ac",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/work-product/draft/decision-draft-for-alex-morgan.md": {
+    "mtime": 1788081340.9235332,
+    "ast_hash": "978d9361eb02285eb7b0e21d1538266a",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/work-product/draft/issues-recommendations-memo-outline.md": {
+    "mtime": 1788081309.6886053,
+    "ast_hash": "4998a7c70c933a160e9fcbb920236e97",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/work-product/draft/issues-recommendations-memo.md": {
+    "mtime": 1788081265.2950387,
+    "ast_hash": "22aef2958c300ea14b65271aeb0bef68",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-07-refunds-returns-and-transaction-disputes-28952f/work-product/draft/working-recommendation-for-product.md": {
+    "mtime": 1788081310.5385928,
+    "ast_hash": "c64c907b8b92d5fdcfc2b02809886bbf",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/claims-matrix.md": {
+    "mtime": 1788081797.9393752,
+    "ast_hash": "687bc0cf7fb4f0f333e51f2eb68de766",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/conversations/CONV-20260830-d56e7b.md": {
+    "mtime": 1788093360.9382443,
+    "ast_hash": "a487a2fcd22a8f673a93e4a361473e4e",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/decisions/DEC-20260830-3c32b3.md": {
+    "mtime": 1788082155.864678,
+    "ast_hash": "fdc2aa55c4e63abae8a59b902664797c",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/dossier-revisions/DOS-20260830-36e95a.md": {
+    "mtime": 1788081588.0084198,
+    "ast_hash": "585b15fd27efdbdf4211adb53ad25404",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/dossier-revisions/DOS-20260830-437020.md": {
+    "mtime": 1788081727.0843549,
+    "ast_hash": "f5bf044d0333d908aea07997c1870b23",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/dossier-revisions/DOS-20260830-cc6d3f.md": {
+    "mtime": 1788081578.3875396,
+    "ast_hash": "6a99844b5283036743d532fcd2a201d4",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/dossier.md": {
+    "mtime": 1788081727.0856915,
+    "ast_hash": "92c04fe5fc7a5b21b5b62405e3dd8628",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/events/2026-08-30-EVT-20260830-04a05f.md": {
+    "mtime": 1788081727.0869527,
+    "ast_hash": "534ae19909394d865f850425f1dacc1c",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/events/2026-08-30-EVT-20260830-0c2cdc.md": {
+    "mtime": 1788081981.1326368,
+    "ast_hash": "43bf0b818b84e1dc8533a71dc2cbdc17",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/events/2026-08-30-EVT-20260830-12515f.md": {
+    "mtime": 1788081557.9429252,
+    "ast_hash": "14aa41326b04bac90e4bc695bc556920",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/events/2026-08-30-EVT-20260830-26921b.md": {
+    "mtime": 1788081578.389681,
+    "ast_hash": "f21e0817519e6c146c472faa4c787aeb",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/events/2026-08-30-EVT-20260830-32eb9c.md": {
+    "mtime": 1788081716.6915302,
+    "ast_hash": "b4e5a7d8a61b0d1f1f8c9bb9db05d201",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/events/2026-08-30-EVT-20260830-7e4e57.md": {
+    "mtime": 1788081578.3699067,
+    "ast_hash": "9599ce42bcc49c03047134a2ec08dba2",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/events/2026-08-30-EVT-20260830-886035.md": {
+    "mtime": 1788081727.0900853,
+    "ast_hash": "c810e1d81ebb365b1736f36853e2aa3d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/events/2026-08-30-EVT-20260830-ac03d8.md": {
+    "mtime": 1788081727.256232,
+    "ast_hash": "594042c16637af368959cc4eb6ba4df0",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/events/2026-08-30-EVT-20260830-b44fc3.md": {
+    "mtime": 1788081823.388208,
+    "ast_hash": "47203677cf0066ada8106939472d4bc8",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/events/2026-08-30-EVT-20260830-b4d895.md": {
+    "mtime": 1788082155.8708706,
+    "ast_hash": "90d1e4db8c7270b23c7b6ea071ce8a38",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/events/2026-08-30-EVT-20260830-be86f8.md": {
+    "mtime": 1788081588.0123394,
+    "ast_hash": "54a2c546c966be8d7043b36346def9f3",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/events/2026-08-30-EVT-20260830-da6da9.md": {
+    "mtime": 1788081588.0107927,
+    "ast_hash": "5c30e035b55f072ad68440b2b148e52b",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/facts.md": {
+    "mtime": 1788081578.3682604,
+    "ast_hash": "3cf17321e46dfeac399f26860873d22d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/issues.md": {
+    "mtime": 1788081557.920723,
+    "ast_hash": "c6a12f9bd15c1d0707ae40dea73a21d9",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/matter.md": {
+    "mtime": 1788082155.869629,
+    "ast_hash": "ef85df00d856fa79edc11b3db96a6e3b",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/participants.md": {
+    "mtime": 1788081557.9197934,
+    "ast_hash": "3ed37bafe75748cff7514135f3e22204",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/recommendations.md": {
+    "mtime": 1788081979.5522234,
+    "ast_hash": "20b37c6cadd73d1f6bd5ecf0112ab410",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/request.md": {
+    "mtime": 1788081557.919398,
+    "ast_hash": "99a3dd6ddf986f90890c671ca114999f",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/research/RES-20260830-103efe.md": {
+    "mtime": 1788081727.0768936,
+    "ast_hash": "891e2337d9b3a28317aeb903b0cc52eb",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/research/RES-20260830-60f83b.md": {
+    "mtime": 1788081588.003247,
+    "ast_hash": "c0ceac2cf1510275a36c5b8c0714091a",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/research/runs/RUN-20260830-1db0c2.md": {
+    "mtime": 1788081691.9451582,
+    "ast_hash": "0fe3a8640b1438bc0c445a8ee578f955",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/work-items/WI-20260830-55bb1a.md": {
+    "mtime": 1788081727.088896,
+    "ast_hash": "42f210cc2169b0589ba7453552788883",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/work-items/WI-20260830-85b56d.md": {
+    "mtime": 1788081658.8257039,
+    "ast_hash": "4560bdaa90bcd35f3bd89468f2b17668",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/work-product/draft/claims-approval-memo.md": {
+    "mtime": 1788081952.838343,
+    "ast_hash": "1dd8350e67b11df3077c2960950877bb",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-08-marketing-claims-for-approval-and-affordabi-97cd99/working-analysis.md": {
+    "mtime": 1788081737.8621216,
+    "ast_hash": "56eee8ad69d590198917e798a7ebfb87",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/conversations/CONV-20260830-e09382.md": {
+    "mtime": 1788093451.091504,
+    "ast_hash": "3ccb7b1caa4ab8d13b0776d25e3229c1",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/dossier-revisions/DOS-20260830-16d8ea.md": {
+    "mtime": 1788082400.1231163,
+    "ast_hash": "96c4d3e3fc9ebc864892dbf3a6aab1c7",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/dossier-revisions/DOS-20260830-17ab69.md": {
+    "mtime": 1788082523.3551393,
+    "ast_hash": "d285bb03e0438139587ef394325b5266",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/dossier-revisions/DOS-20260830-bc2fd1.md": {
+    "mtime": 1788082391.1678646,
+    "ast_hash": "b207e7e7f0f6de0ecf3811ed58a62125",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/dossier.md": {
+    "mtime": 1788082523.3557255,
+    "ast_hash": "d809686c4afbef3ad310a20596d35fb1",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/events/2026-08-30-EVT-20260830-26afd1.md": {
+    "mtime": 1788082474.4746475,
+    "ast_hash": "32f8998108dee4a678a13ca6a1fa6277",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/events/2026-08-30-EVT-20260830-2f1860.md": {
+    "mtime": 1788082391.1696336,
+    "ast_hash": "732b67afe51f4d167e42af94a1db8d8d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/events/2026-08-30-EVT-20260830-35d59b.md": {
+    "mtime": 1788082391.147365,
+    "ast_hash": "16bb9e44216a3a71aa868cfd3e0bfc25",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/events/2026-08-30-EVT-20260830-525243.md": {
+    "mtime": 1788082523.64676,
+    "ast_hash": "d1c244ae6e0b7a407ea05ac853ed8725",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/events/2026-08-30-EVT-20260830-59d1cb.md": {
+    "mtime": 1788082473.764442,
+    "ast_hash": "37de673af079dab7d2ecc8731f9b8f10",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/events/2026-08-30-EVT-20260830-5ae9c0.md": {
+    "mtime": 1788082474.044287,
+    "ast_hash": "b290e2f77aaecb4d07bf4105b9c50799",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/events/2026-08-30-EVT-20260830-5f5b25.md": {
+    "mtime": 1788082400.1242068,
+    "ast_hash": "0342344ea62566e1fd2c11e0c32a28f1",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/events/2026-08-30-EVT-20260830-645f8c.md": {
+    "mtime": 1788082523.5158489,
+    "ast_hash": "e2028f85a5c22bef1cee0fcc23a363b0",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/events/2026-08-30-EVT-20260830-6c300a.md": {
+    "mtime": 1788082474.1786826,
+    "ast_hash": "c0db792e3ce089972bdbda56b3ebddd4",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/events/2026-08-30-EVT-20260830-8999fe.md": {
+    "mtime": 1788082476.5095325,
+    "ast_hash": "a93916291b4eb308b36c947fac2a21c3",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/events/2026-08-30-EVT-20260830-951252.md": {
+    "mtime": 1788082523.356536,
+    "ast_hash": "870c3d810716288540880913554db343",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/events/2026-08-30-EVT-20260830-96acc7.md": {
+    "mtime": 1788082400.1247973,
+    "ast_hash": "7166deb617855fe8de0c7dffd280c951",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/events/2026-08-30-EVT-20260830-c36bb8.md": {
+    "mtime": 1788082473.9099205,
+    "ast_hash": "733fd45660e3eeb572db7448c7a06540",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/events/2026-08-30-EVT-20260830-c6bc2b.md": {
+    "mtime": 1788082377.239918,
+    "ast_hash": "f625436d2c2e2382d4d3c9166f632467",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/events/2026-08-30-EVT-20260830-e9c29e.md": {
+    "mtime": 1788082538.4889388,
+    "ast_hash": "1d7279b6ab0c7e2bb437d9ab00effd3a",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/events/2026-08-30-EVT-20260830-f64a77.md": {
+    "mtime": 1788082474.3124468,
+    "ast_hash": "431773bfd0d5c0953a5f7d1c724d8161",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/events/2026-08-30-EVT-20260830-fa8049.md": {
+    "mtime": 1788082474.6101406,
+    "ast_hash": "02fbdcf558a7b7df00771a7eeab033e8",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/facts.md": {
+    "mtime": 1788082494.0040514,
+    "ast_hash": "d26f6f396a12773cc2244ba07c3496c3",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/intake-orientation.md": {
+    "mtime": 1788082485.0032408,
+    "ast_hash": "215936946b2d6725745b3eb78d2c8b16",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/issues.md": {
+    "mtime": 1788082498.2188184,
+    "ast_hash": "e2812bca75a5830ba2833f786d5ce178",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/matter.md": {
+    "mtime": 1788082538.4876816,
+    "ast_hash": "9376f045d024ce8760bf2b5deb922eb3",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/participants.md": {
+    "mtime": 1788082377.1987472,
+    "ast_hash": "d42aaf0750d9c2f303ad4dc6eeb773b1",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/recommendations.md": {
+    "mtime": 1788082377.2008488,
+    "ast_hash": "c2834de866019422feeba7f9bc2fa5ea",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/request.md": {
+    "mtime": 1788082377.1983068,
+    "ast_hash": "8cffed1f59284113cae660cf43fbc3fe",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/research/RES-20260830-9782bb.md": {
+    "mtime": 1788082428.9795387,
+    "ast_hash": "469be2d26ee7600f4be275b30b388501",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/research/RES-20260830-a516aa.md": {
+    "mtime": 1788082523.3505251,
+    "ast_hash": "4cc0152efda53647ca7010a2add71571",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/research/runs/RUN-20260830-7adc1e.md": {
+    "mtime": 1788082400.270574,
+    "ast_hash": "c12181db60b8aa1b03fb6e468bc1088d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/research/state-rules-research.md": {
+    "mtime": 1788082553.3609533,
+    "ast_hash": "20c931f5bf7903b5168b4c83372dbda6",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/work-items/WI-20260830-37a91c.md": {
+    "mtime": 1788082473.9092941,
+    "ast_hash": "f5e19ad9a1b78d8cd882460547e314bd",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/work-items/WI-20260830-5453d2.md": {
+    "mtime": 1788082438.393211,
+    "ast_hash": "9cb7078a73cf008afbd498a0e34a29bb",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/work-items/WI-20260830-63b94d.md": {
+    "mtime": 1788082548.0168803,
+    "ast_hash": "32a4ee367bbc416f25a2a33e799a989d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/work-items/WI-20260830-6d67c1.md": {
+    "mtime": 1788082474.6095834,
+    "ast_hash": "93724335a98bb8884917b0c6853e25c9",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/work-items/WI-20260830-a6ded4.md": {
+    "mtime": 1788082474.474165,
+    "ast_hash": "82117ed71554f76e895271b539591ca8",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/work-items/WI-20260830-ae2ba8.md": {
+    "mtime": 1788082474.1781542,
+    "ast_hash": "654bf9440de846ff1a104ff1c48aed51",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/work-items/WI-20260830-d4011d.md": {
+    "mtime": 1788082474.311946,
+    "ast_hash": "1e7c3160c75cdbc83c523617bff597d9",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/work-items/WI-20260830-f34559.md": {
+    "mtime": 1788082542.3258235,
+    "ast_hash": "0f12015bc205ddbc9e081c0e061d5ad7",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-09-servicing-and-collections-contact-strategy-186d45/work-items/WI-20260830-f63cd9.md": {
+    "mtime": 1788082473.7622776,
+    "ast_hash": "3062a874a250676e66265aab0f97af5e",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/conversations/CONV-20260830-246263.md": {
+    "mtime": 1788093619.945008,
+    "ast_hash": "bad1c19c97bdccccb9c58df8df772087",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/decisions/DEC-20260830-65574c.md": {
+    "mtime": 1788083353.2924187,
+    "ast_hash": "f0c66a1847a6350d6f6259620f2ff91e",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/dossier-revisions/DOS-20260830-0b2bb6.md": {
+    "mtime": 1788082848.4413655,
+    "ast_hash": "f2a0f550df01d61117e61db4e536482e",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/dossier-revisions/DOS-20260830-457f2c.md": {
+    "mtime": 1788082855.3126936,
+    "ast_hash": "00418fe7f8e692b25cd91003a971eabc",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/dossier.md": {
+    "mtime": 1788082855.3139963,
+    "ast_hash": "232ea9ade1dd11a4b80a67ae173e0563",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/events/2026-08-30-EVT-20260830-00971e.md": {
+    "mtime": 1788083157.7672997,
+    "ast_hash": "41b6ffc876934ff850a08dd1337bc5a5",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/events/2026-08-30-EVT-20260830-5cc622.md": {
+    "mtime": 1788082855.3151386,
+    "ast_hash": "cc83b15236f2dc8697977c78c56f5a85",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/events/2026-08-30-EVT-20260830-66a6a2.md": {
+    "mtime": 1788082841.872962,
+    "ast_hash": "dd3acaf4214a7cf41295e8fa39b2b472",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/events/2026-08-30-EVT-20260830-6ceb38.md": {
+    "mtime": 1788082855.317457,
+    "ast_hash": "6516afb780d35c6e6a93923d07e27886",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/events/2026-08-30-EVT-20260830-6dc39e.md": {
+    "mtime": 1788083185.9521174,
+    "ast_hash": "d4f4c6b9aa135db4265abcfd4fdbc341",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/events/2026-08-30-EVT-20260830-77dfd9.md": {
+    "mtime": 1788082848.433722,
+    "ast_hash": "7e60108a6cc3a8e2073bf75207be79c8",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/events/2026-08-30-EVT-20260830-b267f1.md": {
+    "mtime": 1788082848.442359,
+    "ast_hash": "969f0592a6d07a73a71e4b7ab8cab6b1",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/events/2026-08-30-EVT-20260830-cbe996.md": {
+    "mtime": 1788083014.652512,
+    "ast_hash": "a40b18c7bad2436f3bef18dbf7ad7ce1",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/events/2026-08-30-EVT-20260830-e84109.md": {
+    "mtime": 1788083334.572031,
+    "ast_hash": "e6aae94090bd4bbfac86290d34c151f4",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/facts.md": {
+    "mtime": 1788082848.433161,
+    "ast_hash": "604fd1154fa53f23f39ed5f743e4d928",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/issues.md": {
+    "mtime": 1788082841.859475,
+    "ast_hash": "670af4bc552a188dc072c7481b223791",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/matter.md": {
+    "mtime": 1788083334.5706966,
+    "ast_hash": "8c34c6ab3624737d2b6a33f6eb7ea20d",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/participants.md": {
+    "mtime": 1788082841.8585534,
+    "ast_hash": "4695926e6304a6ec793cbc4f9671611e",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/recommendations.md": {
+    "mtime": 1788082841.860009,
+    "ast_hash": "ded86ab4252a95a07a894bb0418152f5",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/recommendations/tiered-launch-recommendation.md": {
+    "mtime": 1788083147.438378,
+    "ast_hash": "08ddb4d54e3e2d9190144ab2f3b1d4e7",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/request.md": {
+    "mtime": 1788082841.8581693,
+    "ast_hash": "b0f270219faeee047ac46cb86ec2335f",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/research/RES-20260830-3413d4.md": {
+    "mtime": 1788082936.9061222,
+    "ast_hash": "1f9b7d58fbf7a1b3aa414ee041427707",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/research/runs/RUN-20260830-73913e.md": {
+    "mtime": 1788082855.4904737,
+    "ast_hash": "9d08d7708f76acc9cc25c9968f1af4c6",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/work-items/WI-20260830-73e5f4.md": {
+    "mtime": 1788082905.1063325,
+    "ast_hash": "effc37d33e9d5ae7d5dfa7ae1b442ac4",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/work-product/draft/draft-decision-record-expanded-data-program.md": {
+    "mtime": 1788083274.935769,
+    "ast_hash": "be4ca00409d1405b4176a554c31aa853",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/work-product/draft/lawyer-response-expanded-data-program.md": {
+    "mtime": 1788083198.4224453,
+    "ast_hash": "8741da47793e52e0506d1defb0e03e24",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/work-product/draft/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-444a09.md": {
+    "mtime": 1788083087.6152494,
+    "ast_hash": "2c4c02736f42f0b515255ca23ec808df",
+    "semantic_hash": ""
+  },
+  "vault/03_Matters/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-1fb9aa/work-product/final/northstar-ux-test-10-customer-data-and-merchant-relationship-cha-444a09-b1d36c.md": {
+    "mtime": 1788083157.7665343,
+    "ast_hash": "3d7d0b92be1f6752c636d33c60cfced0",
+    "semantic_hash": ""
+  },
+  "frontend/public/brand/themis-ai-logo-silhouette-sword-v8.png": {
+    "mtime": 1788076536.9405735,
+    "ast_hash": "13ce108745a98143b7783b38134c8f35",
     "semantic_hash": ""
   }
 }

@@ -46,28 +46,36 @@ def test_response_approval_delivery_and_closure_are_separate(app_context):
     )
     matter_id = created["matter_id"]
     app_context.matters.move_stage(matter_id, "respond", reason="Draft is ready")
+    draft = app_context.work_products.create_draft(
+        matter_id, title="Customer response", content="The approved customer response."
+    )
+    final = app_context.work_products.finalize(matter_id, draft["vault_path"])
 
     with pytest.raises(ValueError, match="approved"):
-        app_context.matters.perform_action(matter_id, "mark_as_sent")
+        app_context.matters.perform_action(matter_id, "mark_as_sent", actor="Counsel")
     with pytest.raises(ValueError, match="sent"):
-        app_context.matters.perform_action(matter_id, "close_matter")
+        app_context.matters.perform_action(matter_id, "close_matter", actor="Counsel")
 
-    approved = app_context.matters.perform_action(matter_id, "approve_response")
-    assert approved["status"] == "respond"
-    assert approved["response_approved_at"]
-    assert not approved["response_sent_at"]
+    approved = app_context.matters.perform_action(
+        matter_id, "approve_response", actor="Counsel", artifact_path=final["vault_path"]
+    )
+    assert approved["matter"]["status"] == "respond"
+    assert approved["matter"]["response_approved_at"]
+    assert not approved["matter"]["response_sent_at"]
 
-    sent = app_context.matters.perform_action(matter_id, "mark_as_sent")
-    assert sent["status"] == "respond"
-    assert sent["response_sent_at"]
+    sent = app_context.matters.perform_action(matter_id, "mark_as_sent", actor="Counsel")
+    assert sent["matter"]["status"] == "respond"
+    assert sent["matter"]["response_sent_at"]
 
     with pytest.raises(ValueError, match="required work"):
-        app_context.matters.perform_action(matter_id, "close_matter")
+        app_context.matters.perform_action(matter_id, "close_matter", actor="Counsel")
 
-    app_context.matters.complete_open_work_items(matter_id)
-    closed = app_context.matters.perform_action(matter_id, "close_matter")
-    assert closed["status"] == "closed"
-    assert closed["closed_at"]
+    for item in app_context.index.list_work_items(matter_id):
+        if item["required"] and item["status"] not in {"done", "closed"}:
+            app_context.matters.complete_work_item(matter_id, item["work_item_id"], actor="Counsel")
+    closed = app_context.matters.perform_action(matter_id, "close_matter", actor="Counsel")
+    assert closed["matter"]["status"] == "closed"
+    assert closed["matter"]["closed_at"]
 
 
 def test_stage_move_cannot_bypass_matter_closure(app_context):

@@ -35,6 +35,24 @@ class StageUpdate(BaseModel):
 
 class MatterActionRequest(BaseModel):
     action: MatterAction
+    actor: str = Field(min_length=1)
+    artifact_path: str | None = None
+    work_item_id: str | None = None
+    note: str | None = None
+
+
+class WorkItemCompleteRequest(BaseModel):
+    work_item_id: str = Field(min_length=1)
+    actor: str = Field(min_length=1)
+
+
+class MatterActionResult(BaseModel):
+    action: MatterAction | Literal["complete_work_item"]
+    matter: dict[str, Any]
+    changed_paths: list[str] = Field(default_factory=list)
+    event_path: str | None = None
+    work_item_id: str | None = None
+    already_recorded: bool = False
 
 
 class FileUpdate(BaseModel):
@@ -379,6 +397,7 @@ class CompanyInterviewTurn(BaseModel):
 
 class CompanyInterviewDraftRequest(BaseModel):
     message: str = ""
+    website_url: str | None = None
     history: list[CompanyInterviewTurn] = Field(default_factory=list)
     current_profile: CompanyProfile
     question_id: str = "overview"

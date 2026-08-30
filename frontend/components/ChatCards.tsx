@@ -145,11 +145,12 @@ function WorkProductCard({ card, disabled, matterId, onOpenDocument, onRefresh }
   return (
     <section className="chat-card work-product-card">
       <div className="chat-card-kicker">Work Product · {current.state === "final" ? "Final" : "Draft"}</div>
-      <button className="work-product-link" onClick={() => onOpenDocument?.(current.vault_path)} type="button">{current.title}</button>
+      <div className="chat-card-summary">{current.title}</div>
       {current.summary ? <div className="chat-card-detail">{current.summary}</div> : null}
       {error ? <div className="error chat-card-detail">{error}</div> : null}
-      {current.state === "draft" && matterId ? (
-        <div className="chat-card-actions">
+      <div className="chat-card-actions">
+        {onOpenDocument ? <button className="btn tiny quiet" onClick={() => onOpenDocument(current.vault_path)} type="button">Open artifact</button> : null}
+        {current.state === "draft" && matterId ? (
           <button className="btn primary compact" disabled={disabled || busy} onClick={async () => {
             setBusy(true); setError("");
             try {
@@ -159,8 +160,8 @@ function WorkProductCard({ card, disabled, matterId, onOpenDocument, onRefresh }
             } catch (caught) { setError(caught instanceof Error ? caught.message : "Could not finalize the work product."); }
             finally { setBusy(false); }
           }}>{busy ? "Finalizing…" : "Finalize"}</button>
-        </div>
-      ) : null}
+        ) : null}
+      </div>
     </section>
   );
 }

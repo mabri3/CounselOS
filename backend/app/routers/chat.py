@@ -200,7 +200,14 @@ def _apply_matter_actions(context: AppContext, payload: ChatRequest, saved: dict
         run = context.research_runs.start(matter_id, [f"What material source-based issues should counsel research for {context.matters.get(matter_id)['title']}?"])
         response.cards.append(ResearchStatusCard(run_id=run["run_id"], state=run["state"], total=run["total"], completed=run["completed"], status=run["status"], dossier_effect=run["dossier_effect"]))
         response.refresh.append("matter")
-    if any(phrase in lowered for phrase in ("draft the work product", "create work product", "draft work product")):
+    typed_save_succeeded = any(
+        item.tool == "save_work_product" and item.status == "success"
+        for item in response.trace
+    )
+    if (
+        not typed_save_succeeded
+        and any(phrase in lowered for phrase in ("draft the work product", "create work product", "draft work product"))
+    ):
         matter = context.matters.get(matter_id)
         draft = context.work_products.create_draft(
             matter_id,

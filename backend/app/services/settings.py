@@ -9,19 +9,29 @@ from app.utils.time import iso_now
 class SettingsService:
     PATH = "00_System/settings.md"
     ATTESTATION_KEY = "data.provider_no_training_attested"
+    MATTER_FILE_DEFAULTS = {
+        "matter_files.source_documents_dir": "documents",
+        "matter_files.draft_outputs_dir": "work-product/draft",
+        "matter_files.final_outputs_dir": "work-product/final",
+    }
 
     def __init__(self, vault: VaultService):
         self.vault = vault
 
     def read(self) -> dict[str, Any]:
         if not self.vault.exists(self.PATH):
-            return {"values": {}}
+            return {"values": dict(self.MATTER_FILE_DEFAULTS)}
         values = self.vault.read_markdown(self.PATH)["metadata"].get("values", {})
-        return {"values": dict(values) if isinstance(values, dict) else {}}
+        stored = dict(values) if isinstance(values, dict) else {}
+        return {"values": {**self.MATTER_FILE_DEFAULTS, **stored}}
 
     def write(self, values: dict[str, Any]) -> dict[str, Any]:
         stored = self.read()["values"]
         merged = {**stored, **values}
+        from app.services.matter_paths import MatterPathPolicy
+
+        validated = MatterPathPolicy.validate_values(merged)
+        merged.update(validated)
         now = iso_now()
 
         if (
@@ -41,3 +51,8 @@ class SettingsService:
             {"values": merged, "updated_at": now},
         )
         return {"values": merged}
+
+    def validate(self, values: dict[str, Any]) -> None:
+        from app.services.matter_paths import MatterPathPolicy
+
+        MatterPathPolicy.validate_values({**self.read()["values"], **values})

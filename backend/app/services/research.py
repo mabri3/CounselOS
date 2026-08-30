@@ -44,13 +44,12 @@ class ResearchService:
         question: str = "",
         *,
         change_stage: bool = True,
+        work_item_id: str | None = None,
     ) -> dict[str, Any]:
         matter = self.index.get_matter(matter_id)
         if not matter:
             raise KeyError(f"Matter not found: {matter_id}")
-        if change_stage and matter["status"] != "research":
-            self.matters.move_stage(matter_id, "research", reason="Research run started", actor="research-agent")
-            matter = self.index.get_matter(matter_id) or matter
+        original_stage = matter["status"]
 
         request_path = f"{matter['path']}/request.md"
         request_text = self.vault.read_markdown(request_path)["content"] if self.vault.exists(request_path) else ""
@@ -86,7 +85,12 @@ class ResearchService:
             body = f"**Generated analysis warning.** {analysis_warning}\n\n{body}"
         packet_id = new_id("RES")
         path = f"{matter['path']}/research/{packet_id}.md"
-        source_lines = self._source_lines(search_result)
+        citation_warning: str | None = None
+        try:
+            source_lines = self._source_lines(search_result)
+        except Exception as exc:
+            citation_warning = f"Research citation formatting failed: {exc}"
+            source_lines = "- Source details could not be formatted. Review the research warning metadata."
         self.vault.write_markdown(
             path,
             (
@@ -108,8 +112,10 @@ class ResearchService:
                 "external_search_enabled": bool(search_result.get("external")),
                 "warning": search_result.get("warning"),
                 "analysis_warning": analysis_warning,
+                "citation_warning": citation_warning,
             },
         )
+        warnings = [warning for warning in (search_result.get("warning"), analysis_warning, citation_warning) if warning]
         orientation_warning: str | None = None
         try:
             generated_summary = DossierService.section(body, "Matter summary")
@@ -135,12 +141,84 @@ class ResearchService:
             )
         except Exception as exc:
             orientation_warning = f"Matter orientation update failed: {exc}"
-            self.vault.update_markdown(path, metadata_updates={"orientation_warning": orientation_warning})
+            warnings.append(orientation_warning)
+            try:
+                self.vault.update_markdown(path, metadata_updates={"orientation_warning": orientation_warning})
+            except Exception:
+                pass
         if change_stage:
-            self.matters.complete_open_work_items(matter_id, item_type="research")
-            self.matters.create_work_item(
+            try:
+                if work_item_id:
+                    self._complete_exact_work_item(matter_id, work_item_id)
+                self._upsert_research_review(matter, packet_id, path)
+            except Exception as exc:
+                warnings.append(f"Research review work item update failed: {exc}")
+        try:
+            self.matters.append_event(
+                matter_id,
+                "research_completed",
+                {"title": "First-pass research completed", "path": path},
+                rebuild=False,
+            )
+            self.index.rebuild()
+        except Exception as exc:
+            warnings.append(f"Research completion record update failed: {exc}")
+        moved_to_explore = False
+        if change_stage and original_stage in {"intake", "research"}:
+            try:
+                self.matters.move_stage(
+                    matter_id,
+                    "explore",
+                    reason="First-pass research packet is ready for counsel exploration",
+                    actor="research-agent",
+                )
+                moved_to_explore = True
+            except Exception as exc:
+                warnings.append(f"Matter stage update failed: {exc}")
+        if warnings:
+            try:
+                self.vault.update_markdown(path, metadata_updates={"warnings": warnings})
+            except Exception:
+                pass
+        return {
+            "summary": (
+                "First-pass research is complete and the matter moved to Explore."
+                if moved_to_explore
+                else "First-pass research is complete. The matter stage did not change."
+            ),
+            "path": path,
+            "warning": " ".join(warnings) or None,
+            "internal_sources": len(search_result.get("internal", [])),
+            "external_sources": len(search_result.get("external", [])),
+            "analysis_warning": analysis_warning,
+            "orientation_warning": orientation_warning,
+        }
+
+    def _complete_exact_work_item(self, matter_id: str, work_item_id: str) -> None:
+        item = next(
+            (item for item in self.index.list_work_items(matter_id) if item["work_item_id"] == work_item_id),
+            None,
+        )
+        if not item or item["status"] in {"done", "closed"}:
+            return
+        self.vault.update_markdown(
+            item["path"],
+            metadata_updates={"status": "done", "completed_at": iso_now()},
+        )
+
+    def _upsert_research_review(self, matter: dict[str, Any], packet_id: str, path: str) -> None:
+        review_item = None
+        for item in self.index.list_work_items(matter["matter_id"]):
+            if item["item_type"] != "counsel_review" or item["status"] in {"done", "closed"}:
+                continue
+            metadata = self.vault.read_markdown(item["path"])["metadata"]
+            if metadata.get("source_kind") == "research_review":
+                review_item = item
+                break
+        if review_item is None:
+            review_item = self.matters.create_work_item(
                 WorkItemCreate(
-                    matter_id=matter_id,
+                    matter_id=matter["matter_id"],
                     title="Review the first-pass research packet",
                     description="Confirm the key facts, authorities, and viable paths before generating the response.",
                     item_type="counsel_review",
@@ -150,33 +228,14 @@ class ResearchService:
                 ),
                 rebuild=False,
             )
-        self.matters.append_event(
-            matter_id,
-            "research_completed",
-            {"title": "First-pass research completed", "path": path},
-            rebuild=False,
+        self.vault.update_markdown(
+            review_item["path"],
+            metadata_updates={
+                "source_kind": "research_review",
+                "research_id": packet_id,
+                "research_path": path,
+            },
         )
-        self.index.rebuild()
-        if change_stage:
-            self.matters.move_stage(
-                matter_id,
-                "explore",
-                reason="First-pass research packet is ready for counsel exploration",
-                actor="research-agent",
-            )
-        return {
-            "summary": (
-                "First-pass research is complete and the matter moved to Explore."
-                if change_stage
-                else "First-pass research is complete. The matter stage did not change."
-            ),
-            "path": path,
-            "warning": search_result.get("warning"),
-            "internal_sources": len(search_result.get("internal", [])),
-            "external_sources": len(search_result.get("external", [])),
-            "analysis_warning": analysis_warning,
-            "orientation_warning": orientation_warning,
-        }
 
     @staticmethod
     def _prompt(

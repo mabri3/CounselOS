@@ -21,8 +21,8 @@ CONTENT_FIELDS = tuple(
     field for field in CompanyProfile.model_fields if field not in {"source_id", "version"}
 )
 PROFILE_FIELDS = set(CONTENT_FIELDS)
-URL_PATTERN = re.compile(r"https?://[^\s<>()\[\]{}\"']+", re.IGNORECASE)
 MAX_ANSWERS = 6
+ABSENT_WEBSITE_VALUES = {"", "leave blank", "none", "no website"}
 
 INITIAL_QUESTION = CompanyInterviewQuestion(
     question_id="overview",
@@ -98,29 +98,32 @@ class CompanyInterviewService:
         current_profile: CompanyProfile,
         question_id: str,
         finish: bool = False,
+        website_url: str | None = None,
     ) -> CompanyInterviewDraftResponse:
         answer = " ".join(message.strip().split())
         if not finish and not answer:
             raise ValueError("Send an answer or choose Review draft now.")
 
+        website_url, website_warning = self._website_candidate(website_url)
         direct_updates: dict[str, str] = {}
-        if answer and question_id in PROFILE_FIELDS:
+        if question_id == "website_url":
+            direct_updates["website_url"] = website_url
+        elif answer and question_id in PROFILE_FIELDS:
             direct_updates[question_id] = answer
         elif answer and question_id == "overview" and not current_profile.summary.strip():
             direct_updates["summary"] = answer
 
-        website_url, website_warning = self._website_candidate(answer, history, current_profile)
         if website_url:
             direct_updates["website_url"] = website_url
         fallback = current_profile.model_copy(update=direct_updates)
 
         website_text = ""
-        website_used = False
-        if website_url and self._should_fetch(answer, history, current_profile, website_url):
+        if website_url:
             try:
                 fetched = await self.fetcher.fetch(website_url, self.limits)
                 website_text = self._plain_text(fetched.excerpt)
-                website_used = True
+                if not website_text:
+                    website_warning = "The public website had no readable content. The interview continued from your answers."
             except Exception:
                 website_warning = "The public website could not be read. The interview continued from your answers."
 
@@ -130,18 +133,19 @@ class CompanyInterviewService:
                 draft=fallback,
                 reply="I prepared the current company profile for your review.",
                 complete=True,
-                website_used=website_used,
+                website_used=False,
                 warning=website_warning,
             )
 
         if self.settings.llm_provider.strip().lower() == "mock":
-            question = None if answer_count >= MAX_ANSWERS else self._fallback_question(fallback)
+            skipped_fields = {"website_url"} if question_id == "website_url" else set()
+            question = None if answer_count >= MAX_ANSWERS else self._fallback_question(fallback, skipped_fields)
             return CompanyInterviewDraftResponse(
                 draft=fallback,
                 reply="That helps. I updated the working company profile.",
                 question=question,
                 complete=question is None,
-                website_used=website_used,
+                website_used=False,
                 warning=website_warning or "A model is not configured, so the interview is using focused local follow-ups.",
             )
 
@@ -176,27 +180,34 @@ class CompanyInterviewService:
             parsed = self._parse_turn(reply.content, current_profile)
             draft = parsed["profile"].model_copy(update=direct_updates)
             complete = bool(parsed["complete"]) or answer_count >= MAX_ANSWERS
-            question = None if complete else CompanyInterviewQuestion(
-                question_id=parsed["focus_field"],
-                text=parsed["next_question"],
-                reason=parsed["next_question_reason"],
-            )
+            if complete:
+                question = None
+            elif question_id == "website_url" and parsed["focus_field"] == "website_url":
+                question = self._fallback_question(draft, {"website_url"})
+                complete = question is None
+            else:
+                question = CompanyInterviewQuestion(
+                    question_id=parsed["focus_field"],
+                    text=parsed["next_question"],
+                    reason=parsed["next_question_reason"],
+                )
             return CompanyInterviewDraftResponse(
                 draft=draft,
                 reply=parsed["acknowledgement"],
                 question=question,
                 complete=complete,
-                website_used=website_used,
+                website_used=bool(website_text),
                 warning=website_warning,
             )
         except Exception:
-            question = None if answer_count >= MAX_ANSWERS else self._fallback_question(fallback)
+            skipped_fields = {"website_url"} if question_id == "website_url" else set()
+            question = None if answer_count >= MAX_ANSWERS else self._fallback_question(fallback, skipped_fields)
             return CompanyInterviewDraftResponse(
                 draft=fallback,
                 reply="That helps. I updated the working company profile.",
                 question=question,
                 complete=question is None,
-                website_used=website_used,
+                website_used=False,
                 warning=website_warning or "The model interview was unavailable, so a focused local follow-up was used.",
             )
 
@@ -217,15 +228,10 @@ class CompanyInterviewService:
 
     @staticmethod
     def _website_candidate(
-        answer: str,
-        history: list[CompanyInterviewTurn],
-        current_profile: CompanyProfile,
+        website_url: str | None,
     ) -> tuple[str, str | None]:
-        match = URL_PATTERN.search(answer)
-        candidate = match.group(0).rstrip(".,;:!?") if match else ""
-        if not candidate and not history:
-            candidate = current_profile.website_url.strip()
-        if not candidate:
+        candidate = " ".join((website_url or "").strip().split())
+        if candidate.lower() in ABSENT_WEBSITE_VALUES:
             return "", None
         try:
             SafeHttpFetcher._validate_url(candidate)
@@ -234,18 +240,13 @@ class CompanyInterviewService:
         return candidate, None
 
     @staticmethod
-    def _should_fetch(
-        answer: str,
-        history: list[CompanyInterviewTurn],
-        current_profile: CompanyProfile,
-        website_url: str,
-    ) -> bool:
-        return website_url in answer or (not history and website_url == current_profile.website_url.strip())
-
-    @staticmethod
-    def _fallback_question(profile: CompanyProfile) -> CompanyInterviewQuestion | None:
+    def _fallback_question(
+        profile: CompanyProfile,
+        skipped_fields: set[str] | None = None,
+    ) -> CompanyInterviewQuestion | None:
+        skipped = skipped_fields or set()
         for field, (text, reason) in FALLBACK_QUESTIONS.items():
-            if not str(getattr(profile, field)).strip():
+            if field not in skipped and not str(getattr(profile, field)).strip():
                 return CompanyInterviewQuestion(question_id=field, text=text, reason=reason)
         return None
 

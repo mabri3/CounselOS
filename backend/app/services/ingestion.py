@@ -14,6 +14,7 @@ from pypdf import PdfReader
 
 from app.services.index import IndexService
 from app.services.matters import MatterService
+from app.services.matter_paths import MatterPathPolicy
 from app.services.vault import VaultService
 from app.utils.paths import safe_filename
 from app.utils.time import iso_now
@@ -34,11 +35,13 @@ class IngestionService:
         vault: VaultService,
         index: IndexService,
         matters: MatterService,
+        matter_paths: MatterPathPolicy,
         max_upload_mb: int = 25,
     ):
         self.vault = vault
         self.index = index
         self.matters = matters
+        self.matter_paths = matter_paths
         self.max_upload_bytes = max_upload_mb * 1024 * 1024
 
     async def upload_to_matter(self, matter_id: str, upload: UploadFile) -> dict[str, Any]:
@@ -50,8 +53,10 @@ class IngestionService:
         data = await upload.read()
         if len(data) > self.max_upload_bytes:
             raise ValueError(f"Upload exceeds {self.max_upload_bytes // (1024 * 1024)} MB limit.")
-        base = self.matters.matter_path(matter_id)
-        destination = f"{base}/documents/{name}"
+        source_folder = self.matter_paths.folder(
+            matter_id, "matter_files.source_documents_dir"
+        )
+        destination = f"{source_folder}/{name}"
         self.vault.write_bytes(destination, data)
         content_hash = hashlib.sha256(data).hexdigest()
         result: dict[str, Any] = {
@@ -66,7 +71,7 @@ class IngestionService:
 
         extracted, review = self._extract(name, data)
         if extracted.strip() or suffix in {".pdf", ".docx"}:
-            companion = f"{base}/documents/{name}.extracted.md"
+            companion = f"{source_folder}/{name}.extracted.md"
             extracted_body = extracted.strip() or (
                 "No extractable text was found. The source may contain only images or empty pages."
             )

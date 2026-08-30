@@ -30,6 +30,17 @@ export const DEFAULT_SETTINGS: SettingsSection[] = [
       { id: "default-review-author", config_key: "document_review.default_author", kind: "select", label: "Default review author", help: "New browser sessions start with Themis or the configured lawyer. A custom author is session-only.", value: "Themis", options: ["Themis", "Lawyer"] },
     ],
   },
+  {
+    id: "matter-files",
+    label: "Files and outputs",
+    title: "Files and outputs",
+    sub: "Set where source files, drafts, and final work are stored. Each path is relative to its matter and stays inside the vault.",
+    rows: [
+      { id: "source-documents-dir", config_key: "matter_files.source_documents_dir", kind: "text", label: "Source documents", help: "The folder for files supplied with a matter. This path is relative to each matter and stays inside the vault.", value: "documents" },
+      { id: "draft-outputs-dir", config_key: "matter_files.draft_outputs_dir", kind: "text", label: "Draft outputs", help: "The folder for draft work product. This path is relative to each matter and stays inside the vault.", value: "work-product/draft" },
+      { id: "final-outputs-dir", config_key: "matter_files.final_outputs_dir", kind: "text", label: "Final outputs", help: "The folder for final work product. This path is relative to each matter and stays inside the vault.", value: "work-product/final" },
+    ],
+  },
 ];
 
 /** These three hold for every agent, whatever the tool ticks say. */

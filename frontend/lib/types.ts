@@ -53,8 +53,20 @@ export type Matter = {
   next_action: string;
   durable_decision_needed?: boolean;
   response_approved_at?: string | null;
+  response_approved_artifact_path?: string | null;
+  response_approved_artifact_id?: string | null;
+  response_approved_by?: string | null;
+  response_approval_event_path?: string | null;
   response_sent_at?: string | null;
+  response_sent_artifact_path?: string | null;
+  response_sent_artifact_id?: string | null;
+  response_sent_by?: string | null;
+  response_delivery_method?: "outside_counsel_os" | null;
+  response_delivery_note?: string | null;
+  response_delivery_event_path?: string | null;
   closed_at?: string | null;
+  closed_by?: string | null;
+  closure_event_path?: string | null;
   updated_at: string;
   open_work_items?: number;
   required_work_items?: number;
@@ -73,6 +85,31 @@ export type WorkItem = {
   owner: string;
   due_at?: string | null;
   required: number;
+  completed_at?: string | null;
+};
+
+export type MatterActionId = "approve_response" | "mark_as_sent" | "close_matter";
+
+export type MatterActionRequest = {
+  action: MatterActionId;
+  actor: string;
+  artifact_path?: string | null;
+  work_item_id?: string | null;
+  note?: string | null;
+};
+
+export type WorkItemCompleteRequest = {
+  work_item_id: string;
+  actor: string;
+};
+
+export type MatterActionResult = {
+  action: MatterActionId | "complete_work_item";
+  matter: MatterDetail;
+  changed_paths: string[];
+  event_path?: string | null;
+  work_item_id?: string | null;
+  already_recorded: boolean;
 };
 
 export type Decision = {
@@ -96,7 +133,9 @@ export type FileNode = {
   path: string;
   type: "folder" | "file";
   extension?: string;
+  updated_at?: number;
   record_type?: string;
+  state?: "draft" | "final" | string;
   children?: FileNode[];
 };
 
@@ -312,6 +351,13 @@ export type CompanyInterviewDraft = {
   website_used: boolean;
   warning?: string | null;
 };
+
+export type MatterFileSettingKey =
+  | "matter_files.source_documents_dir"
+  | "matter_files.draft_outputs_dir"
+  | "matter_files.final_outputs_dir";
+
+export type MatterFileSettings = Record<MatterFileSettingKey, string>;
 
 export type ChatConversationSummary = {
   conversation_id: string;

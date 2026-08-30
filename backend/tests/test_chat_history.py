@@ -2,7 +2,12 @@ from __future__ import annotations
 
 from datetime import date, timedelta
 
+import pytest
 from fastapi.testclient import TestClient
+
+from app.models.api import ChatRequest, ChatResponse, ToolTrace
+from app.providers.base import ProviderReply, ProviderToolCall
+from app.routers.chat import _apply_matter_actions
 
 
 def _client(app_context):
@@ -10,6 +15,97 @@ def _client(app_context):
 
     app.state.context = app_context
     return TestClient(app)
+
+
+def test_successful_typed_work_product_save_prevents_fallback_draft(app_context, monkeypatch):
+    calls = []
+    monkeypatch.setattr(
+        app_context.work_products,
+        "create_draft",
+        lambda *args, **kwargs: calls.append((args, kwargs)),
+    )
+    response = ChatResponse(
+        reply="Draft saved.",
+        trace=[ToolTrace(tool="save_work_product", status="success", summary="Saved response draft.")],
+    )
+
+    _apply_matter_actions(
+        app_context,
+        ChatRequest(message="Draft the work product.", matter_id="MAT-DEMO-BEACON"),
+        {"messages": [], "conversation_id": "CONV-TEST"},
+        response,
+    )
+
+    assert calls == []
+
+
+def test_typed_save_creates_exactly_one_draft_and_one_work_product_card(app_context, monkeypatch):
+    class SaveProvider:
+        def __init__(self):
+            self.calls = 0
+
+        async def complete(self, messages, tools=None):
+            self.calls += 1
+            if self.calls == 1:
+                return ProviderReply(tool_calls=[ProviderToolCall(
+                    id="save",
+                    name="save_work_product",
+                    arguments={"title": "Typed answer", "content": "One draft", "kind": "response"},
+                )])
+            return ProviderReply(content="Saved the draft.")
+
+    created = []
+    original = app_context.work_products.create_draft
+
+    def counted_create(*args, **kwargs):
+        result = original(*args, **kwargs)
+        created.append(result)
+        return result
+
+    monkeypatch.setattr(app_context.work_products, "create_draft", counted_create)
+    app_context.runner.provider = SaveProvider()
+
+    response = _client(app_context).post(
+        "/api/chat",
+        json={"message": "Draft the work product.", "matter_id": "MAT-DEMO-BEACON"},
+    )
+
+    assert response.status_code == 200
+    assert len(created) == 1
+    cards = [card for card in response.json()["cards"] if card["type"] == "work_product"]
+    assert len(cards) == 1
+    assert cards[0]["vault_path"] == created[0]["vault_path"]
+    assert cards[0]["state"] == "draft"
+
+
+@pytest.mark.parametrize("trace", [
+    [],
+    [ToolTrace(tool="save_work_product", status="error", summary="Save failed.")],
+])
+def test_missing_or_failed_typed_save_keeps_fallback_draft(app_context, monkeypatch, trace):
+    calls = []
+
+    def create_draft(*args, **kwargs):
+        calls.append((args, kwargs))
+        return {
+            "title": "Fallback advice",
+            "vault_path": "03_Matters/beacon-instant-onboarding/work-product/draft/fallback.md",
+            "state": "draft",
+            "summary": "Editable first-pass advice",
+        }
+
+    monkeypatch.setattr(app_context.work_products, "create_draft", create_draft)
+    response = ChatResponse(reply="Useful draft text.", trace=trace)
+
+    _apply_matter_actions(
+        app_context,
+        ChatRequest(message="Draft the work product.", matter_id="MAT-DEMO-BEACON"),
+        {"messages": [], "conversation_id": "CONV-TEST"},
+        response,
+    )
+
+    assert len(calls) == 1
+    assert response.changed_paths == ["03_Matters/beacon-instant-onboarding/work-product/draft/fallback.md"]
 
 
 def test_matter_chat_is_saved_and_can_start_a_new_conversation(app_context):

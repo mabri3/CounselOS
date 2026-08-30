@@ -9,12 +9,12 @@ import LinkifiedText from "@/components/LinkifiedText";
 import MatterTree from "@/components/MatterTree";
 import RecordDecisionModal from "@/components/RecordDecisionModal";
 import ReviewPacketPanel from "@/components/ReviewPacketPanel";
-import { getFile, getSettings, moveMatter, performMatterAction, runResearch, uploadDocument } from "@/lib/api";
+import { completeWorkItem, getFile, getSettings, moveMatter, performMatterAction, runResearch, uploadDocument } from "@/lib/api";
 import { useReviewAuthor } from "@/lib/reviewAuthor";
 import { dueWord, riskLabel, signalFor, stageLabel } from "@/lib/design";
-import { controlIdForCurrentWork, currentWorkItemFor, openItemsFor } from "@/lib/matterBrief";
+import { completableCurrentWorkItemId, controlIdForCurrentWork, currentWorkItemFor, matterArtifacts, openItemsFor } from "@/lib/matterBrief";
 import type { MatterControlId } from "@/lib/matterBrief";
-import { matterAction } from "@/lib/matterActions";
+import { lifecycleActionNeedsDirectMutation, matterAction } from "@/lib/matterActions";
 import type { MatterActionView } from "@/lib/matterActions";
 import type { FileNode, MatterDetail } from "@/lib/types";
 import { getMatterMitigations, getReviewPackets } from "@/lib/watchApi";
@@ -57,7 +57,7 @@ export default function MatterWorkspace({
   const [error, setError] = useState("");
   const [reviewPackets, setReviewPackets] = useState<ReviewPacket[]>([]);
   const [mitigations, setMitigations] = useState<Mitigation[]>([]);
-  const [reviewSettings, setReviewSettings] = useState({ lawyer: "Lawyer", defaultAuthor: "Themis" });
+  const [reviewSettings, setReviewSettings] = useState({ lawyer: "", defaultAuthor: "Themis" });
   const reviewAuthor = useReviewAuthor(reviewSettings.defaultAuthor);
   const [collapsedPanes, setCollapsedPanes] = useState({ tree: true, overview: false, document: !documentRequested });
   const [paneWeights, setPaneWeights] = useState({ tree: 0.24, overview: 1, document: 1.15 });
@@ -88,7 +88,7 @@ export default function MatterWorkspace({
     return () => { cancelled = true; };
   }, [detail.path]);
 
-  useEffect(() => { void getSettings().then((saved) => { const rows = saved.sections.find((item) => item.id === "document-review")?.rows ?? []; setReviewSettings({ lawyer: rows.find((item) => item.config_key === "document_review.lawyer_name")?.value || "Lawyer", defaultAuthor: rows.find((item) => item.config_key === "document_review.default_author")?.value || "Themis" }); }); }, []);
+  useEffect(() => { void getSettings().then((saved) => { const rows = saved.sections.find((item) => item.id === "document-review")?.rows ?? []; setReviewSettings({ lawyer: rows.find((item) => item.config_key === "document_review.lawyer_name")?.value?.trim() || "", defaultAuthor: rows.find((item) => item.config_key === "document_review.default_author")?.value || "Themis" }); }); }, []);
 
   const loadAwareness = useCallback(async () => {
     try {
@@ -100,20 +100,27 @@ export default function MatterWorkspace({
   useEffect(() => { void loadAwareness(); }, [loadAwareness]);
 
   const evidence = useMemo(() => collectEvidence(detail.tree), [detail.tree]);
-  const draftPath = useMemo(() => findFirstFile(detail.tree, "drafts"), [detail.tree]);
+  const artifacts = useMemo(
+    () => matterArtifacts(detail.tree, detail.response_approved_artifact_path),
+    [detail.response_approved_artifact_path, detail.tree],
+  );
+  const draftPath = artifacts.find((item) => item.kind === "draft")?.path ?? null;
+  const finalPath = artifacts.find((item) => item.kind === "final")?.path ?? null;
   const dossierPath = useMemo(() => findFileByName(detail.tree, "dossier.md"), [detail.tree]);
-  const workProductPaths = useMemo(() => collectWorkProduct(detail.tree), [detail.tree]);
-  const primaryAction = matterAction(detail, Boolean(draftPath));
+  const lifecycleAction = matterAction(detail, Boolean(draftPath));
   const currentWorkItem = currentWorkItemFor(
     detail.work_items,
     detail.work_state.next_work_item_id,
   );
-  const currentControlId = controlIdForCurrentWork(primaryAction.id, currentWorkItem);
-  const currentControl: MatterControl = currentControlId === primaryAction.id
-    ? primaryAction
+  const currentControlId = controlIdForCurrentWork(lifecycleAction.id, currentWorkItem);
+  const currentControl: MatterControl = currentControlId === lifecycleAction.id
+    ? lifecycleAction
     : currentControlId === "run_research"
       ? { id: "run_research", category: "Work action", label: "Run research", detail: "Run the current research work item." }
       : { id: "open_work_item", category: "Work item", label: "Open work item", detail: "Open the saved work item and review its details." };
+  const completableWorkItemId = currentWorkItem?.item_type === "approval" && lifecycleAction.id === "approve_response"
+    ? null
+    : completableCurrentWorkItemId(currentWorkItem);
   const signal = signalFor(detail);
   const due = dueWord(detail);
 
@@ -219,32 +226,32 @@ export default function MatterWorkspace({
     setActivePath(path);
   }
 
-  async function runCurrentControl() {
+  async function runControl(control: MatterControl | MatterActionView) {
     setError("");
-    if (currentControl.id === "open_work_item" && currentWorkItem) {
+    if (control.id === "open_work_item" && currentWorkItem) {
       openDocument(currentWorkItem.path);
       return;
     }
-    if (currentControl.id === "review_intake") {
+    if (control.id === "review_intake") {
       openDocument(defaultPath);
       return;
     }
-    if (currentControl.id === "review_and_decide") {
+    if (control.id === "review_and_decide") {
       setModalOpen(true);
       return;
     }
-    if (currentControl.id === "draft_work_product") {
+    if (control.id === "draft_work_product") {
       setChatSeed((current) => ({
         text: "Draft the work product for the chosen path and save it in this matter.",
         revision: current.revision + 1,
       }));
       return;
     }
-    if (currentControl.id === "review_draft" && draftPath) {
+    if (control.id === "review_draft" && draftPath) {
       openDocument(draftPath);
       return;
     }
-    if (currentControl.id === "review_remaining_work") {
+    if (control.id === "review_remaining_work") {
       const remainingWork = document.getElementById("remaining-work");
       remainingWork?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
@@ -252,22 +259,50 @@ export default function MatterWorkspace({
 
     setBusy(true);
     try {
-      if (currentControl.id === "run_research") {
+      if (control.id === "run_research") {
         const result = await runResearch(detail.matter_id);
         await reload();
         openDocument(result.path);
-      } else if (currentControl.id === "start_work_product") {
+      } else if (control.id === "start_work_product") {
         await moveMatter(detail.matter_id, "generate", "Judgment complete; starting work product");
         await reload();
-      } else if (["approve_response", "mark_as_sent", "close_matter"].includes(currentControl.id)) {
-        await performMatterAction(
-          detail.matter_id,
-          currentControl.id as "approve_response" | "mark_as_sent" | "close_matter",
-        );
+      } else if (control.id !== "open_work_item" && lifecycleActionNeedsDirectMutation(control.id)) {
+        const actor = reviewSettings.lawyer.trim();
+        if (!actor) throw new Error("Add the lawyer name in document review settings before you record this action.");
+        if (control.id === "approve_response" && !finalPath) {
+          throw new Error("A current final work product is required before approval can be recorded.");
+        }
+        await performMatterAction(detail.matter_id, {
+          action: control.id,
+          actor,
+          artifact_path: control.id === "approve_response" ? finalPath : undefined,
+          work_item_id: control.id === "approve_response" && currentWorkItem?.item_type === "approval"
+            ? currentWorkItem.work_item_id
+            : undefined,
+        });
         await reload();
       }
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Could not complete the matter action.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function completeCurrentWork() {
+    if (!completableWorkItemId) return;
+    setError("");
+    const actor = reviewSettings.lawyer.trim();
+    if (!actor) {
+      setError("Add the lawyer name in document review settings before you complete this work item.");
+      return;
+    }
+    setBusy(true);
+    try {
+      await completeWorkItem(detail.matter_id, completableWorkItemId, actor);
+      await reload();
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not complete the selected work item.");
     } finally {
       setBusy(false);
     }
@@ -282,9 +317,9 @@ export default function MatterWorkspace({
     detail.work_state.next_action,
   );
   const requiredCount = openItems.filter((item) => item.required).length;
-  const currentTask = primaryAction.id === "none"
-    ? primaryAction.detail
-    : detail.work_state.next_action.trim() || currentWorkItem?.title || primaryAction.detail;
+  const currentTask = lifecycleAction.id === "none"
+    ? lifecycleAction.detail
+    : detail.work_state.next_action.trim() || currentWorkItem?.title || lifecycleAction.detail;
   const primaryActionClass = currentControl.category === "Counsel judgment" || currentControl.category === "Approval"
     ? "btn review"
     : currentControl.id === "run_research" || currentControl.id === "draft_work_product"
@@ -426,13 +461,13 @@ export default function MatterWorkspace({
             </div>
             <div className="brief-scroll">
               <div className="matter-brief">
-                <section className={`matter-call ${primaryAction.id === "none" ? "is-complete" : ""}`}>
+                <section className={`matter-call ${lifecycleAction.id === "none" ? "is-complete" : ""}`}>
                   <span className="matter-call-kicker">
-                    {primaryAction.id === "none" ? "Matter status" : "Next action"}
+                    {lifecycleAction.id === "none" ? "Matter status" : "Required work"}
                   </span>
                   <p className="matter-call-task"><LinkifiedText text={currentTask} /></p>
 
-                  {primaryAction.id !== "none" ? (
+                  {lifecycleAction.id !== "none" ? (
                     <div className="matter-recommendation">
                       <div className="matter-recommendation-label">
                         Working recommendation · Source and review status not recorded
@@ -452,21 +487,51 @@ export default function MatterWorkspace({
                     </div>
                   ) : null}
 
-                  {primaryAction.id !== "none" ? (
+                  {lifecycleAction.id !== "none" ? (
                     <div className="matter-call-do">
                       <span>{currentControl.category}</span>
                       <button
                         aria-busy={busy}
                         className={`${primaryActionClass} matter-call-button`}
                         disabled={busy}
-                        onClick={() => void runCurrentControl()}
+                        onClick={() => void runControl(currentControl)}
                         title={currentControl.detail}
                         type="button"
                       >
                         {busy ? "Working…" : currentControl.label}
                       </button>
+                      {completableWorkItemId ? (
+                        <button className="btn quiet matter-call-button" disabled={busy} onClick={() => void completeCurrentWork()} type="button">
+                          Complete work item
+                        </button>
+                      ) : null}
                     </div>
                   ) : null}
+
+                  {lifecycleAction.id !== "none" && lifecycleAction.id !== currentControl.id ? (
+                    <div className="matter-lifecycle-action">
+                      <span>{lifecycleAction.category} · Stage action</span>
+                      <p>{lifecycleAction.detail}</p>
+                      <button
+                        className={`${lifecycleAction.category === "Approval" || lifecycleAction.category === "Counsel judgment" ? "btn review" : "btn quiet"} compact`}
+                        disabled={busy}
+                        onClick={() => void runControl(lifecycleAction)}
+                        type="button"
+                      >
+                        {lifecycleAction.label}
+                      </button>
+                    </div>
+                  ) : null}
+
+                  <div className="matter-artifacts compact">
+                    <strong>Matter artifacts</strong>
+                    {artifacts.length ? artifacts.map((item) => (
+                      <button className="matter-artifact-link" key={`${item.kind}:${item.path}`} onClick={() => openDocument(item.path)} type="button">
+                        <span>{{ recommendation: "Working recommendation", research: "Latest research", draft: "Current draft", final: "Approved / final response" }[item.kind]}</span>
+                        <span>{item.label}</span>
+                      </button>
+                    )) : <span className="matter-artifact-empty">No user-facing artifacts are saved yet.</span>}
+                  </div>
                 </section>
 
                 <section className="matter-open" id="remaining-work">
@@ -494,7 +559,7 @@ export default function MatterWorkspace({
                 <details className="matter-reference">
                   <summary>Materials, activity, and decision maintenance</summary>
                   <div className="matter-reference-body">
-                    {primaryAction.id === "none" && recommendationText ? (
+                    {lifecycleAction.id === "none" && recommendationText ? (
                       <section>
                         <h2>Saved recommendation</h2>
                         <div className="matter-recommendation">
@@ -526,11 +591,6 @@ export default function MatterWorkspace({
                           </button>
                         ) : null}
                         {researchPath ? <button className="matter-artifact-link" onClick={() => openDocument(researchPath)} type="button"><span>Latest research</span><span>Open the research packet</span></button> : null}
-                        {workProductPaths.map((item) => (
-                          <button className="matter-artifact-link" key={item.path} onClick={() => openDocument(item.path)} type="button">
-                            <span>{item.state} work product</span><span>{item.label}</span>
-                          </button>
-                        ))}
                       </div>
                     </section>
 
@@ -720,11 +780,6 @@ function findConversationPath(tree: FileNode[], conversationId: string): string 
   return (folder?.children ?? []).find((node) => node.path.endsWith(`/${conversationId}.md`))?.path ?? null;
 }
 
-function findFirstFile(tree: FileNode[], folderName: string): string | null {
-  const folder = tree.find((node) => node.type === "folder" && node.name === folderName);
-  return (folder?.children ?? []).find((node) => node.type === "file")?.path ?? null;
-}
-
 function findLatestResearch(tree: FileNode[]): string | null {
   const folder = tree.find((node) => node.type === "folder" && node.name === "research");
   const files = (folder?.children ?? []).filter(
@@ -742,17 +797,4 @@ function findFileByName(tree: FileNode[], name: string): string | null {
     }
   }
   return null;
-}
-
-function collectWorkProduct(tree: FileNode[]): { path: string; label: string; state: "Draft" | "Final" }[] {
-  const items: { path: string; label: string; state: "Draft" | "Final" }[] = [];
-  const walk = (nodes: FileNode[]) => {
-    for (const node of nodes) {
-      if (node.type === "folder") walk(node.children ?? []);
-      else if (node.path.includes("/work-product/draft/")) items.push({ path: node.path, label: node.label ?? node.name, state: "Draft" });
-      else if (node.path.includes("/work-product/final/")) items.push({ path: node.path, label: node.label ?? node.name, state: "Final" });
-    }
-  };
-  walk(tree);
-  return items.slice(0, 4);
 }

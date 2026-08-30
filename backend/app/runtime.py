@@ -31,6 +31,7 @@ from app.services.index import IndexService
 from app.services.ingestion import IngestionService
 from app.services.internal_knowledge import InternalKnowledgeService
 from app.services.matters import MatterService
+from app.services.matter_paths import MatterPathPolicy
 from app.services.mitigations import MitigationService
 from app.services.matter_state import MatterStateService
 from app.services.matter_records import MatterRecordService
@@ -66,18 +67,20 @@ class AppContext:
 
         self.matter_state = MatterStateService(self.vault)
         self.matters = MatterService(self.vault, self.index, self.workflow, self.matter_state)
+        self.matter_paths = MatterPathPolicy(self.settings_store, self.matters)
         self.chat_history = ChatHistoryService(self.vault, self.matters)
         self.company = CompanyProfileService(self.vault)
         self.matter_records = MatterRecordService(self.vault, self.matters)
         self.dossiers = DossierService(self.vault, self.matters)
         self.matters.bind_dossiers(self.dossiers)
-        self.work_products = WorkProductService(self.vault, self.matters)
+        self.work_products = WorkProductService(self.vault, self.matters, self.matter_paths)
         self.document_reviews = DocumentReviewService(self.vault)
         self.document_exports = DocumentExportService(self.vault)
         self.ingestion = IngestionService(
             self.vault,
             self.index,
             self.matters,
+            self.matter_paths,
             max_upload_mb=self.settings.max_upload_mb,
         )
         self.decisions = DecisionService(

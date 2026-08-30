@@ -48,9 +48,18 @@ export function matterAction(detail: MatterDetail, hasDraft: boolean): MatterAct
     const requiredOpen = detail.work_items.some(
       (item) => Boolean(item.required) && !["done", "closed"].includes(item.status),
     );
-    return requiredOpen
-      ? { id: "review_remaining_work", category: "Work action", label: "Review remaining work", detail: "Complete required work before closing the matter." }
-      : { id: "close_matter", category: "Matter closure", label: "Close matter", detail: "Delivery is complete and no required work remains." };
+    return {
+      id: "close_matter",
+      category: "Matter closure",
+      label: "Close matter",
+      detail: requiredOpen
+        ? "Required work remains and will block closure until it is complete."
+        : "Delivery is complete and no required work remains.",
+    };
   }
   return { id: "none", category: "Matter closure", label: "Matter closed", detail: "The work was delivered or otherwise resolved." };
+}
+
+export function lifecycleActionNeedsDirectMutation(action: MatterActionId): action is "approve_response" | "mark_as_sent" | "close_matter" {
+  return action === "approve_response" || action === "mark_as_sent" || action === "close_matter";
 }

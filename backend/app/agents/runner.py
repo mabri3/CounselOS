@@ -6,7 +6,7 @@ from typing import Any
 
 from app.agents.context import ContextBuilder
 from app.agents.registry import AgentRegistry
-from app.models.api import AppliedSkillSummary, ChatChoice, ChatRequest, ChatResponse, MatterUpdateCard, QuestionCard, ToolTrace
+from app.models.api import AppliedSkillSummary, ChatChoice, ChatRequest, ChatResponse, MatterUpdateCard, QuestionCard, ToolTrace, WorkProductCard
 from app.models.awareness import WatchDraftCard, WatchScanCard
 from app.providers.base import LLMProvider
 from app.tools.registry import ToolExecutionContext, ToolExecutionResult, ToolRegistry
@@ -51,6 +51,7 @@ class AgentRunner:
         messages.extend(message.model_dump() for message in request.history[-12:])
         messages.append({"role": "user", "content": request.message})
         decision_recording_allowed = _explicit_decision_recording_requested(request.message)
+        lifecycle_permissions = _lifecycle_permissions(request.message)
         watch_activation_allowed = _explicit_watch_activation_requested(request)
         provider_tools = self.tools.provider_tools(agent)
         if not decision_recording_allowed:
@@ -63,10 +64,15 @@ class AgentRunner:
                 tool for tool in provider_tools
                 if tool.get("function", {}).get("name") != "activate_watch"
             ]
+        provider_tools = [
+            tool for tool in provider_tools
+            if tool.get("function", {}).get("name") not in lifecycle_permissions
+            or lifecycle_permissions[tool["function"]["name"]]
+        ]
         trace: list[ToolTrace] = []
         changed_paths: list[str] = []
         refresh: list[str] = []
-        cards: list[QuestionCard | MatterUpdateCard | WatchDraftCard | WatchScanCard] = list(_cards_for(request))
+        cards: list[QuestionCard | MatterUpdateCard | WorkProductCard | WatchDraftCard | WatchScanCard] = list(_cards_for(request))
 
         if request.card_action and request.card_action.action in {"save_draft", "change_something"}:
             reply = (
@@ -94,7 +100,7 @@ class AgentRunner:
             trace.append(ToolTrace(tool=tool_name, status=result.status, summary=result.summary))
             changed_paths.extend(result.changed_paths)
             refresh.extend(result.refresh)
-            card = _watch_card_from_data(result.data)
+            card = _card_from_tool_data(result.data)
             if card:
                 cards.append(card)
             return ChatResponse(
@@ -130,7 +136,13 @@ class AgentRunner:
                 }
             )
             for call in reply.tool_calls:
-                if call.name == "activate_watch" and not watch_activation_allowed:
+                if call.name in lifecycle_permissions and not lifecycle_permissions[call.name]:
+                    result = ToolExecutionResult(
+                        tool=call.name,
+                        status="error",
+                        summary=f"{call.name} was not allowed because the current message did not explicitly request that separate action.",
+                    )
+                elif call.name == "activate_watch" and not watch_activation_allowed:
                     result = ToolExecutionResult(
                         tool=call.name,
                         status="error",
@@ -182,7 +194,7 @@ class AgentRunner:
                     ))
                 changed_paths.extend(result.changed_paths)
                 refresh.extend(result.refresh)
-                card = _watch_card_from_data(result.data)
+                card = _card_from_tool_data(result.data)
                 if card:
                     cards.append(card)
                 messages.append(
@@ -262,6 +274,26 @@ def _explicit_watch_activation_requested(request: ChatRequest) -> bool:
     return bool(re.search(r"\b(start|activate|enable)\b.{0,50}\b(this |the |my )?watch\b", normalized))
 
 
+def _lifecycle_permissions(message: str) -> dict[str, bool]:
+    normalized = " ".join(message.lower().split())
+    # These state changes need a direct instruction from the current user. Anchoring
+    # prevents permissions from being granted by pasted text, quotations, advice
+    # questions, or hypothetical clauses later in the message.
+    direct = normalized.strip()
+    if (
+        "?" in message
+        or any(mark in message for mark in ('"', "“", "”", "'"))
+        or re.search(r"\b(if|would|could|might|hypothetically|suppose)\b", direct)
+    ):
+        direct = ""
+    prefix = r"^(?:please\s+|kindly\s+)?"
+    return {
+        "approve_response": bool(re.search(prefix + r"approve\b.{0,40}\b(response|final|answer|it)\b", direct)),
+        "mark_response_sent": bool(re.search(prefix + r"(mark|record|log)\b.{0,50}\b(sent|delivered|delivery)\b", direct)),
+        "close_matter": bool(re.search(prefix + r"(close|finish)\b.{0,30}\b(this |the )?matter\b", direct)),
+    }
+
+
 def _cards_for(request: ChatRequest) -> list[QuestionCard | MatterUpdateCard]:
     if not request.matter_id:
         return []
@@ -298,7 +330,13 @@ def _watch_id_from_card(card_id: str, values: list[str]) -> str:
     raise ValueError("The Watch card does not identify a Watch.")
 
 
-def _watch_card_from_data(data: dict[str, Any]) -> WatchDraftCard | WatchScanCard | None:
+def _card_from_tool_data(data: dict[str, Any]) -> WorkProductCard | WatchDraftCard | WatchScanCard | None:
+    if (
+        isinstance(data, dict)
+        and all(data.get(key) for key in ("title", "vault_path", "state"))
+        and data.get("state") in {"draft", "final"}
+    ):
+        return WorkProductCard.model_validate(data)
     card = data.get("card") if isinstance(data, dict) else None
     if not isinstance(card, dict):
         return None

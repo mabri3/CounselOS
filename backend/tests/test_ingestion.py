@@ -103,3 +103,16 @@ async def test_docx_upload_converts_headings_lists_and_tables_to_markdown(app_co
     assert "- Notify customers" in markdown
     assert "| Term | Value |" in markdown
     assert "| --- | --- |" in markdown
+
+
+@pytest.mark.asyncio
+async def test_upload_uses_configured_source_folder_but_batch_records_stay_fixed(app_context):
+    app_context.settings_store.write({"matter_files.source_documents_dir": "source-files"})
+    result = await app_context.ingestion.upload_many_to_matter(
+        "MAT-DEMO-BEACON",
+        [UploadFile(file=io.BytesIO(b"Source text"), filename="source.txt")],
+    )
+    assert "/source-files/source.txt" in result["attachments"][0]["path"]
+    assert app_context.vault.exists(
+        f"03_Matters/beacon-instant-onboarding/documents/batches/{result['batch_id']}.md"
+    )

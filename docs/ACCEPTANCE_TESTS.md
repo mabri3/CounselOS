@@ -352,3 +352,68 @@ result. Use the isolated browser procedure above.
   changes without adding the fact to an outbound request.
 - [ ] Confirm that the browser console has no errors and that the repository
   vault hash is unchanged before and after the full run.
+
+## P. Matter workflow reliability
+
+These checks were completed with the isolated browser procedure above.
+
+### Files and work products
+
+- [x] Save and reload all three **Files and outputs** settings. Confirm that
+  `00_System/settings.md` stores the values and new sources, drafts, and finals
+  use the configured matter-relative folders.
+- [x] Enter an absolute path, a traversal path, an overlapping folder, and a
+  protected matter-record path. Confirm that each value is rejected and that
+  no file is written outside the matter or over a protected record.
+- [x] Finalize one unchanged draft twice. Confirm that both requests return the
+  same final path and ID and that only one immutable final exists.
+- [x] Edit that draft and finalize it again. Confirm that a new immutable final
+  is created and that the earlier final remains unchanged and can still open.
+
+### Exact workflow changes
+
+- [x] Ask for drafting without approval, delivery, or closure language.
+  Confirm that lifecycle tools are not available for that message. Then ask
+  for each lifecycle action explicitly and confirm that only the requested
+  tool is available.
+- [x] Complete one selected work item by exact ID. Confirm that its siblings
+  remain open and that a retry does not change its first completion time or
+  create a second stable event.
+- [x] Keep required work open after delivery. Confirm that required work stays
+  the primary action and that **Close matter** stays visible as a separate
+  lifecycle action. Confirm that closure fails and names the unfinished items.
+- [x] Approve, mark sent, and close through successful structured actions.
+  Confirm that `matter.md` persists the artifact, actor, first timestamp, and
+  event path. Confirm that retries do not change first timestamps or duplicate
+  stable events.
+- [x] Force model prose that claims a workspace change without a successful
+  mutation tool. Confirm that the UI shows **No workspace state change
+  recorded**, shows no success card, and makes no durable change.
+
+### Research, company, and progress
+
+- [x] Run research twice before review. Confirm that both runs reuse one open
+  research-review work item. Complete it, run research again, and confirm that
+  exactly one new review item is created.
+- [x] Enter `leave blank` for the company website. Confirm that Website remains
+  blank. Enter a public HTTPS URL and confirm that **Website read** appears only
+  when the backend reports that it used the site.
+- [x] Use a blocked or unreadable website. Confirm that one warning appears and
+  that the company interview continues with useful output.
+- [x] Start a slow chat or interview request. Confirm that the UI shows honest
+  elapsed time, no percentage, backend phase, or ETA; prevents a duplicate
+  submit; and leaves safe navigation and existing documents usable.
+
+Observed on 2026-08-30 with two temporary vault copies and the in-app browser.
+The first walk covered configured file placement, upload, draft editing,
+unchanged and changed finalization, required-work priority, exact completion,
+approval, reload, delivery, blocked and successful closure, retry timestamps
+and event counts, false mutation prose, research-review reuse, website status,
+warnings, and elapsed progress. The correction walk confirmed the exact
+**Open artifact** and **Finalize** actions, direct **Complete work item** action,
+expanded no-change wording, and the non-repeating **Leave blank** flow. Focused
+tests covered lifecycle tool exposure and cross-matter symbolic-link rejection.
+The browser console had no errors. The repository-vault hash was
+`79bd335cfd0d61327ee0696bcde3d919e381908910f8c124f9ddf6031d945964`
+before and after both walks. Both temporary vaults were moved to Trash after
+their servers stopped.

@@ -1,0 +1,29 @@
+---
+matter_id: MAT-20260830-d76eef
+record_type: dossier
+editable: true
+source_revision: 03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/dossier-revisions/DOS-20260830-f03c62.md
+updated_at: '2026-08-30T08:48:18+00:00'
+content_hash: 6911944097ae8273fa618adba80d185c2531abff1a60fc9a099de147a1b6df99
+---
+# Matter dossier
+
+## Summary
+
+Northstar Pay (fintech installment lender working with bank/lending partners, payment processors, and servicing vendors) wants to make autopay enrollment easier for installment-loan customers at checkout or in-app, with pre-withdrawal reminders, payment-method changes, and possibly an enrollment incentive. Payment amounts can change after refunds, disputes, or adjustments, and Product is considering retries and backup payment methods after failed payments. Launch is targeted in six weeks. Legal (Brian Harris) must confirm the authorization, notice, retry, cancellation, and incentive rules before launch.
+
+## Decision question
+
+Can Northstar Pay launch the simplified autopay enrollment flow in six weeks using ACH and/or debit-card recurring authorization, and what authorization language, advance-notice timing for amount changes, retry/backup-method limits, cancellation procedure, and enrollment-incentive terms must be built into the UX to stay within Regulation E, NACHA, card-network, and state-law limits?
+
+## Open questions
+
+- Which states/products are in scope (pay-in-4 vs. longer-term installments), and which lending partners and payment processors apply per state — the partner map is still unconfirmed.
+- Is autopay ACH, recurring debit, or both? The rules differ materially.
+- Retry policy specifics: number, timing, fees, and whether the backup method is separately authorized at enrollment.
+- Nature of the enrollment incentive (fee discount vs. promotional credit) and its terms.
+- How payment-amount changes are communicated before withdrawal, and whether cancellation is fully self-service.
+
+## Research
+
+Latest review: `03_Matters/northstar-ux-test-05-autopay-enrollment-and-payment-authorizatio-d76eef/research/RES-20260830-e0c53f.md`

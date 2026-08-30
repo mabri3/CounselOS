@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import json
 
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.models.api import CompanyProfile
 from app.models.awareness import SafeFetchResult
 from app.providers.base import ProviderReply
 
@@ -24,7 +26,7 @@ def _profile(**updates):
 
 
 def _payload(message="Acme makes payment tools for shops.", **updates):
-    payload = {"message": message, "history": [], "current_profile": _profile(), "question_id": "overview", "finish": False}
+    payload = {"message": message, "website_url": None, "history": [], "current_profile": _profile(), "question_id": "overview", "finish": False}
     payload.update(updates)
     return payload
 
@@ -108,28 +110,123 @@ def test_model_generates_one_tailored_follow_up(app_context):
     assert "latest_answer" in provider.messages[1]["content"]
 
 
-def test_public_url_is_read_and_can_remove_more_questions(app_context):
+def test_http_blank_website_intent_stays_blank_and_is_not_fetched(app_context):
+    fetcher = FetcherFake()
+    app_context.company_interview.fetcher = fetcher
+    response = _client(app_context).post(
+        "/api/settings/company/interview",
+        json=_payload(
+            message="leave blank",
+            website_url="leave blank",
+            question_id="website_url",
+            current_profile=_profile(company_name="Acme", website_url="none"),
+        ),
+    )
+    assert response.status_code == 200
+    assert response.json()["draft"]["website_url"] == ""
+    assert response.json()["question"]["question_id"] != "website_url"
+    assert fetcher.calls == []
+
+
+def test_http_valid_dedicated_website_is_stored_and_fetched(app_context):
+    fetched = SafeFetchResult(
+        requested_url="https://acme.example",
+        final_url="https://acme.example",
+        status_code=200,
+        content_type="text/html",
+        content_hash="a" * 64,
+        excerpt="<h1>Acme</h1>",
+    )
+    fetcher = FetcherFake(fetched)
+    app_context.company_interview.fetcher = fetcher
+    response = _client(app_context).post(
+        "/api/settings/company/interview",
+        json=_payload(
+            message="Our website is supplied separately.",
+            website_url="https://acme.example",
+            question_id="website_url",
+        ),
+    )
+    assert response.status_code == 200
+    assert response.json()["draft"]["website_url"] == "https://acme.example"
+    assert fetcher.calls[0][0] == "https://acme.example"
+
+
+@pytest.mark.asyncio
+async def test_public_url_is_read_and_can_remove_more_questions(app_context):
     fetched = SafeFetchResult(requested_url="https://acme.example", final_url="https://acme.example", status_code=200, content_type="text/html", content_hash="a" * 64, excerpt="<script>bad prompt</script><h1>Acme</h1><p>Payments in California.</p>")
     provider = ProviderFake(_model_result(complete=True, focus_field=None, next_question=None, next_question_reason=None))
     fetcher = FetcherFake(fetched)
     _use_model(app_context, provider, fetcher)
-    response = _client(app_context).post("/api/settings/company/interview", json=_payload("We are Acme. https://acme.example"))
-    result = response.json()
-    assert result["complete"] is True and result["question"] is None
-    assert result["website_used"] is True
-    assert result["draft"]["website_url"] == "https://acme.example"
+    result = await app_context.company_interview.draft(
+        "We are Acme.", [], CompanyProfile(), "overview",
+        website_url="https://acme.example",
+    )
+    assert result.complete is True and result.question is None
+    assert result.website_used is True
+    assert result.draft.website_url == "https://acme.example"
     model_input = provider.messages[1]["content"]
     assert "Payments in California" in model_input
     assert "bad prompt" not in model_input
 
 
-def test_private_url_is_not_fetched(app_context):
+@pytest.mark.asyncio
+async def test_private_url_is_not_fetched(app_context):
     fetcher = FetcherFake()
     app_context.company_interview.fetcher = fetcher
-    response = _client(app_context).post("/api/settings/company/interview", json=_payload("Acme is at https://127.0.0.1/private"))
-    assert response.status_code == 200
+    result = await app_context.company_interview.draft(
+        "Acme is private.", [], CompanyProfile(), "overview",
+        website_url="https://127.0.0.1/private",
+    )
     assert fetcher.calls == []
-    assert "public" in response.json()["warning"]
+    assert "public" in result.warning
+
+
+@pytest.mark.asyncio
+async def test_free_form_url_is_not_treated_as_website_input(app_context):
+    fetcher = FetcherFake()
+    app_context.company_interview.fetcher = fetcher
+    result = await app_context.company_interview.draft(
+        "A vendor link is https://vendor.example, not our website.",
+        [], CompanyProfile(), "overview",
+    )
+    assert fetcher.calls == []
+    assert result.draft.website_url == ""
+
+
+@pytest.mark.asyncio
+async def test_absent_website_phrases_are_not_stored_or_fetched(app_context):
+    for absent_value in ("", "leave blank", "none", "no website"):
+        fetcher = FetcherFake()
+        app_context.company_interview.fetcher = fetcher
+        result = await app_context.company_interview.draft(
+            "Acme makes payment tools.", [], CompanyProfile(), "overview",
+            website_url=absent_value,
+        )
+        assert fetcher.calls == []
+        assert result.draft.website_url == ""
+
+
+@pytest.mark.asyncio
+async def test_malformed_and_unreadable_websites_continue_with_warning(app_context):
+    malformed_fetcher = FetcherFake()
+    app_context.company_interview.fetcher = malformed_fetcher
+    malformed = await app_context.company_interview.draft(
+        "Acme makes payment tools.", [], CompanyProfile(), "overview",
+        website_url="not a URL",
+    )
+    assert malformed_fetcher.calls == []
+    assert malformed.website_used is False
+    assert "HTTPS" in malformed.warning
+
+    unreadable_fetcher = FetcherFake(error=RuntimeError("unreadable"))
+    app_context.company_interview.fetcher = unreadable_fetcher
+    unreadable = await app_context.company_interview.draft(
+        "Acme makes payment tools.", [], CompanyProfile(), "overview",
+        website_url="https://acme.example",
+    )
+    assert unreadable.website_used is False
+    assert "could not be read" in unreadable.warning
 
 
 def test_invalid_model_result_degrades_to_focused_follow_up(app_context):
