@@ -40,3 +40,28 @@ def test_applying_revision_rechecks_content_hash(app_context):
     app_context.vault.update_markdown(first["path"], content="Another lawyer edit")
     with pytest.raises(ValueError, match="changed"):
         service.apply_revision("MAT-DEMO-BEACON", proposed["revision_path"], expected_hash=service._hash("Lawyer edit"))
+
+
+def test_dossier_orientation_updates_sections_and_preserves_other_content(app_context):
+    service = app_context.dossiers
+
+    result = service.update_orientation(
+        "MAT-DEMO-RELAY",
+        summary="Relay needs a migration decision before contract renewal.",
+        decision_question="Should Relay require reauthorization within 90 days?",
+        open_questions=["Which banks still use stored credentials?", "Can deletion finish in 30 days?"],
+        research_path="03_Matters/relay-open-banking/research/new-review.md",
+    )
+
+    assert result["state"] == "applied"
+    assert service.orientation("MAT-DEMO-RELAY") == {
+        "summary": "Relay needs a migration decision before contract renewal.",
+        "decision_question": "Should Relay require reauthorization within 90 days?",
+        "open_questions": [
+            "Which banks still use stored credentials?",
+            "Can deletion finish in 30 days?",
+        ],
+    }
+    content = service.get("MAT-DEMO-RELAY")["content"]
+    assert "## Work product\n\nNo work product yet." in content
+    assert "Latest review: `03_Matters/relay-open-banking/research/new-review.md`" in content

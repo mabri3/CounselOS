@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import re
 from typing import Any
 
 from app.services.matters import MatterService
@@ -21,6 +22,39 @@ class DossierService:
     def content_hash(self, matter_id: str) -> str | None:
         dossier = self.get(matter_id)
         return self._hash(dossier["content"]) if dossier else None
+
+    def orientation(self, matter_id: str) -> dict[str, Any]:
+        dossier = self.get(matter_id)
+        if not dossier:
+            return {"summary": "", "decision_question": "", "open_questions": []}
+        content = dossier["content"]
+        return {
+            "summary": self.section(content, "Summary") or self.section(content, "Current ask"),
+            "decision_question": self.section(content, "Decision question"),
+            "open_questions": self.list_section(content, "Open questions"),
+        }
+
+    def update_orientation(
+        self,
+        matter_id: str,
+        *,
+        summary: str,
+        decision_question: str,
+        open_questions: list[str],
+        research_path: str,
+    ) -> dict[str, Any]:
+        current = self.get(matter_id)
+        content = current["content"] if current else "# Matter dossier\n"
+        content = self._set_section(content, "Summary", summary)
+        content = self._set_section(content, "Decision question", decision_question)
+        content = self._set_section(
+            content,
+            "Open questions",
+            "\n".join(f"- {question.strip()}" for question in open_questions if question.strip()),
+        )
+        content = self._set_section(content, "Research", f"Latest review: `{research_path}`")
+        expected_hash = self._hash(current["content"]) if current else None
+        return self.propose_update(matter_id, content, expected_hash=expected_hash)
 
     def propose_update(
         self, matter_id: str, content: str, *, expected_hash: str | None,
@@ -73,3 +107,29 @@ class DossierService:
     def _hash(content: str) -> str:
         stored_content = content.strip() + "\n"
         return hashlib.sha256(stored_content.encode("utf-8")).hexdigest()
+
+    @staticmethod
+    def section(content: str, heading: str) -> str:
+        match = re.search(
+            rf"(?ms)^##\s+{re.escape(heading)}\s*\n+(.*?)(?=^##\s+|\Z)",
+            content,
+        )
+        return match.group(1).strip() if match else ""
+
+    @classmethod
+    def list_section(cls, content: str, heading: str) -> list[str]:
+        section = cls.section(content, heading)
+        items = [
+            re.sub(r"^\s*(?:[-*+]\s+|\d+[.)]\s+)", "", line).strip()
+            for line in section.splitlines()
+            if re.match(r"^\s*(?:[-*+]\s+|\d+[.)]\s+)", line)
+        ]
+        return [item for item in items if item]
+
+    @classmethod
+    def _set_section(cls, content: str, heading: str, value: str) -> str:
+        replacement = f"## {heading}\n\n{value.strip()}\n\n"
+        pattern = rf"(?ms)^##\s+{re.escape(heading)}\s*\n+.*?(?=^##\s+|\Z)"
+        if re.search(pattern, content):
+            return re.sub(pattern, replacement, content, count=1).rstrip() + "\n"
+        return content.rstrip() + f"\n\n{replacement}"

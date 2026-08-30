@@ -1,14 +1,18 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from app.models.api import MatterCreate, WorkItemCreate
 from app.services.index import IndexService
+from app.services.matter_state import MatterStateService
 from app.services.vault import VaultService
 from app.services.workflow import WorkflowService
 from app.utils.ids import new_id, slugify
 from app.utils.time import iso_now
+
+if TYPE_CHECKING:
+    from app.services.dossier import DossierService
 
 
 class MatterService:
@@ -17,10 +21,17 @@ class MatterService:
         vault: VaultService,
         index: IndexService,
         workflow: WorkflowService,
+        matter_state: MatterStateService,
     ):
         self.vault = vault
         self.index = index
         self.workflow = workflow
+        self.matter_state = matter_state
+        self._dossiers: DossierService | None = None
+
+    def bind_dossiers(self, dossiers: DossierService) -> None:
+        self._dossiers = dossiers
+
     def list(self) -> list[dict[str, Any]]:
         matters = self.index.list_matters()
         work_items = self.index.list_work_items()
@@ -33,6 +44,7 @@ class MatterService:
             matter["required_work_items"] = sum(
                 item["required"] and item["status"] not in {"done", "closed"} for item in items
             )
+            matter["work_state"] = self.matter_state.resolve(matter, items)
         return matters
     def create(self, request: MatterCreate) -> dict[str, Any]:
         matter_id = new_id("MAT")
@@ -106,7 +118,7 @@ class MatterService:
         )
         for directory in (
             "documents", "work-items", "research", "drafts", "decisions", "events", "conversations",
-            "dossier-revisions", "work-product/draft", "work-product/final",
+            "dossier-revisions", "mitigations", "work-product/draft", "work-product/final",
         ):
             self.vault.resolve(base / directory).mkdir(parents=True, exist_ok=True)
         self.create_work_item(
@@ -142,11 +154,19 @@ class MatterService:
         required = [
             item for item in work_items if item["required"] and item["status"] not in {"done", "closed"}
         ]
-        next_work = next((item for item in work_items if item["status"] not in {"done", "closed"}), None)
+        work_state = self.matter_state.resolve(matter, work_items)
+        dossier_orientation = self._dossiers.orientation(matter_id) if self._dossiers else {
+            "summary": "",
+            "decision_question": "",
+            "open_questions": [],
+        }
         orientation = {
             "headline": matter.get("next_action") or "Review the matter request.",
+            "summary": dossier_orientation["summary"] or matter.get("description") or "",
+            "decision_question": dossier_orientation["decision_question"] or matter.get("next_action") or "",
+            "open_questions": dossier_orientation["open_questions"] or [item["title"] for item in required[:4]],
             "why_now": self._why_now(matter, required, decisions),
-            "next_action": next_work["title"] if next_work else matter.get("next_action"),
+            "next_action": work_state["next_action"],
             "attention": [item["title"] for item in required[:4]],
             "recent_changes": [event.get("title", event.get("event_type", "Update")) for event in events],
         }
@@ -156,6 +176,7 @@ class MatterService:
             "response_approved_at": matter_metadata.get("response_approved_at"),
             "response_sent_at": matter_metadata.get("response_sent_at"),
             "closed_at": matter_metadata.get("closed_at"),
+            "work_state": work_state,
             "orientation": orientation,
             "work_items": work_items,
             "decisions": decisions,
@@ -168,19 +189,11 @@ class MatterService:
         if stage == "closed" and matter["status"] != "closed":
             raise ValueError("Use the close matter action so delivery and required work are checked.")
         path = f"{matter['path']}/matter.md"
-        next_actions = {
-            "intake": "Complete orientation and identify missing facts.",
-            "research": "Run or supervise first-pass research.",
-            "explore": "Review the research packet and choose the legal path to test.",
-            "generate": "Generate the work product that supports the recommended path.",
-            "respond": "Review, decide, and deliver the response.",
-            "closed": "No active action. Reopen if facts, law, or policy change.",
-        }
         self.vault.update_markdown(
             path,
             metadata_updates={
                 "status": stage,
-                "next_action": next_actions[stage],
+                "next_action": self.matter_state.default_next_action(stage),
                 "closed_at": None if matter["status"] == "closed" else self._matter_metadata(matter).get("closed_at"),
                 "updated_at": iso_now(),
             },
@@ -303,6 +316,37 @@ class MatterService:
             )
             self.index.rebuild()
         return {**metadata, "path": path}
+
+    def create_review_work_item(
+        self,
+        request: WorkItemCreate,
+        *,
+        review_packet_id: str,
+        decision_id: str | None = None,
+        rebuild: bool = True,
+    ) -> dict[str, Any]:
+        item = self.create_work_item(request, rebuild=False)
+        self.vault.update_markdown(
+            item["path"],
+            metadata_updates={
+                "review_packet_id": review_packet_id,
+                "decision_id": decision_id,
+            },
+        )
+        self.append_event(
+            request.matter_id,
+            "review_work_created",
+            {
+                "title": request.title,
+                "work_item_id": item["work_item_id"],
+                "review_packet_id": review_packet_id,
+                "decision_id": decision_id,
+            },
+            rebuild=False,
+        )
+        if rebuild:
+            self.index.rebuild()
+        return {**item, "review_packet_id": review_packet_id, "decision_id": decision_id}
     def complete_open_work_items(self, matter_id: str, *, item_type: str | None = None) -> list[str]:
         completed = self._complete_open_work_items(matter_id, item_type=item_type)
         if completed:

@@ -1,8 +1,7 @@
 ---
 tool_id: search_vault
 handler: search_vault
-description: Search Markdown and text files in the vault using a lightweight lexical
-  search.
+description: Search Markdown and text files in the workspace.
 parameters:
   type: object
   properties:

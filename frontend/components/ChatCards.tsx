@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { finalizeWorkProduct, getResearchRun } from "@/lib/api";
 import type { CardAction, ChatCard, ResearchRun } from "@/lib/types";
@@ -38,10 +39,97 @@ export default function ChatCards({ cards = [], matterId, disabled, onAction, on
           );
         }
         if (card.type === "research_status") return <ResearchCard card={card} key={key} matterId={matterId} />;
+        if (card.type === "watch_draft") return <WatchCard card={card} disabled={disabled} key={key} onAction={onAction} />;
+        if (card.type === "watch_scan") return <WatchCard card={card} disabled={disabled} key={key} onAction={onAction} />;
         return <WorkProductCard card={card} disabled={disabled} key={key} matterId={matterId} onOpenDocument={onOpenDocument} onRefresh={onRefresh} />;
       })}
     </div>
   ) : null;
+}
+
+function WatchCard({ card, disabled, onAction }: {
+  card: Extract<ChatCard, { type: "watch_draft" | "watch_scan" }>;
+  disabled?: boolean;
+  onAction: Props["onAction"];
+}) {
+  const [activeAction, setActiveAction] = useState<string | null>(null);
+  const pending = card.status === "pending" || activeAction !== null;
+  const status = activeAction ? watchActionPendingLabel(activeAction) : watchStatusLabel(card.status);
+
+  async function runAction(action: (typeof card.allowed_actions)[number]) {
+    setActiveAction(action);
+    try {
+      await onAction({ card_id: card.card_id, action, values: [card.watch_id] });
+    } finally {
+      setActiveAction(null);
+    }
+  }
+
+  return (
+    <section className={`chat-card ${card.status === "partial" ? "wash-attention" : pending ? "wash-agent" : card.status === "failed" ? "wash-failure" : ""}`} aria-busy={pending}>
+      <div className="chat-card-kicker">{card.type === "watch_draft" ? "Watch draft" : "Scan now"} · {status}</div>
+      <div className="chat-card-summary">{card.title}</div>
+      {card.summary ? <div className="chat-card-detail">{card.summary}</div> : null}
+      {card.status === "partial" ? <div className="chat-card-detail"><strong>Partial result.</strong> Useful results are available, but part of the scan did not complete.</div> : null}
+      {card.warnings.length ? (
+        <div className="chat-card-detail" role="status">
+          <strong>{card.warnings.length === 1 ? "Warning" : "Warnings"}</strong>
+          <ul>
+            {card.warnings.map((warning, index) => <li key={`${card.card_id}-warning-${index}`}>{warning}</li>)}
+          </ul>
+        </div>
+      ) : null}
+      {card.type === "watch_draft" ? (
+        <div className="chat-card-detail">
+          This Watch is a draft. Scan now runs it once. Only Start Watch activates its schedule.
+        </div>
+      ) : null}
+      {card.allowed_actions.length ? (
+        <div className="chat-card-actions">
+          {card.allowed_actions.map((action) => {
+            if (action === "open_watch" || action === "open_scan") {
+              const href = action === "open_scan" && card.type === "watch_scan" ? card.scan_url : card.watch_url;
+              return <Link className="btn tiny quiet" href={href} key={action}>{watchActionLabel(action)}</Link>;
+            }
+            return (
+              <button
+                className={`btn ${action === "start_watch" ? "primary compact" : "tiny quiet"}`}
+                disabled={disabled || pending}
+                key={action}
+                onClick={() => void runAction(action)}
+              >
+                {activeAction === action ? watchActionPendingLabel(action) : watchActionLabel(action)}
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+function watchActionLabel(action: Extract<ChatCard, { type: "watch_draft" | "watch_scan" }>["allowed_actions"][number]): string {
+  const labels: Record<string, string> = {
+    save_draft: "Save draft",
+    scan_now: "Scan now",
+    change_something: "Change something",
+    start_watch: "Start Watch",
+    open_watch: "Open Watch",
+    open_scan: "Open scan",
+    scan_again: "Scan again",
+  };
+  return labels[action] ?? action;
+}
+
+function watchStatusLabel(status: Extract<ChatCard, { type: "watch_draft" | "watch_scan" }>["status"]): string {
+  return { pending: "Pending", partial: "Partial", success: "Ready", failed: "Failed" }[status];
+}
+
+function watchActionPendingLabel(action: string): string {
+  if (action === "scan_now" || action === "scan_again") return "Scanning…";
+  if (action === "start_watch") return "Starting…";
+  if (action === "save_draft") return "Saving…";
+  return "Updating…";
 }
 
 function WorkProductCard({ card, disabled, matterId, onOpenDocument, onRefresh }: {

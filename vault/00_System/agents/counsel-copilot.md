@@ -1,7 +1,7 @@
 ---
 agent_id: counsel-copilot
 name: Counsel Copilot
-description: General agentic workspace assistant for product counsel.
+description: General workspace assistant for product counsel.
 enabled: true
 max_steps: 6
 allowed_tools:

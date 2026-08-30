@@ -1,7 +1,7 @@
 ---
 tool_id: run_research
 handler: run_research
-description: Run the first-pass research workflow and write an inspectable packet.
+description: Run first-pass research and save a reviewable memo.
 parameters:
   type: object
   properties:

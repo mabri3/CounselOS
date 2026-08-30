@@ -45,6 +45,15 @@ async def chat(payload: ChatRequest, context: AppContext = Depends(get_context))
         if not payload.message.strip() and not payload.card_action and not payload.attachments:
             raise ValueError("Send a message, card action, or attachment.")
         user_content = payload.message.strip() or _action_text(payload)
+        try:
+            skill_id, model_content = context.skills.parse_invocation(user_content)
+        except KeyError as exc:
+            raise ValueError(str(exc)) from exc
+        if skill_id is None and _watch_builder_requested(user_content, payload):
+            # Watch Builder is a first-party skill. Keep card turns on the same
+            # deterministic tool-capable agent even when the slash command is absent.
+            context.skills.get("watch-builder")
+            skill_id = "watch-builder"
         if payload.matter_id:
             if payload.workspace_day:
                 raise ValueError("A chat cannot be both matter-scoped and day-scoped.")
@@ -83,7 +92,16 @@ async def chat(payload: ChatRequest, context: AppContext = Depends(get_context))
                 card_action=payload.card_action.model_dump() if payload.card_action else None,
             )
             conversation_id = None
-        response = await context.runner.run(payload.model_copy(update={"message": user_content, "history": history}))
+        response = await context.runner.run(
+            payload.model_copy(
+                update={
+                    "message": model_content,
+                    "history": history,
+                    "skill_id": skill_id,
+                    "agent_id": "research-agent" if skill_id == "watch-builder" else payload.agent_id,
+                }
+            )
+        )
         if payload.matter_id:
             _apply_matter_actions(context, payload, saved, response)
         if payload.matter_id:
@@ -94,6 +112,7 @@ async def chat(payload: ChatRequest, context: AppContext = Depends(get_context))
                 content=response.reply,
                 trace=[item.model_dump() for item in response.trace],
                 cards=[item.model_dump() for item in response.cards],
+                applied_skills=[item.model_dump() for item in response.applied_skills],
             )
         else:
             saved = context.chat_history.append_daily(
@@ -102,6 +121,7 @@ async def chat(payload: ChatRequest, context: AppContext = Depends(get_context))
                 content=response.reply,
                 trace=[item.model_dump() for item in response.trace],
                 cards=[item.model_dump() for item in response.cards],
+                applied_skills=[item.model_dump() for item in response.applied_skills],
             )
         response.conversation_id = conversation_id
         response.changed_paths = list(dict.fromkeys([*response.changed_paths, saved["path"]]))
@@ -133,6 +153,17 @@ def _reject_duplicate_question_action(saved: dict, payload: ChatRequest) -> None
         return
     if any((message.get("card_action") or {}).get("card_id") == action.card_id for message in saved["messages"]):
         raise ValueError("This question was already answered.")
+
+
+def _watch_builder_requested(content: str, payload: ChatRequest) -> bool:
+    if payload.card_action and payload.card_action.action in {
+        "save_draft", "scan_now", "change_something", "start_watch", "scan_again",
+    }:
+        return True
+    lowered = " ".join(content.lower().split())
+    monitoring = any(term in lowered for term in ("monitor", "monitoring", "watch", "recurring scan"))
+    creation = any(term in lowered for term in ("create", "start", "set up", "change", "edit"))
+    return monitoring and creation
 
 
 def _apply_matter_actions(context: AppContext, payload: ChatRequest, saved: dict, response: ChatResponse) -> None:

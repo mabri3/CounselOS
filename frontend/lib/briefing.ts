@@ -7,11 +7,12 @@
  * decisions whose ground has shifted, then automations that have stopped.
  */
 
-import { daysLate, isOverdue, role, stageLabel } from "./design";
+import { daysLate, decisionNeedsReview, formatShortDate, matterAwaitsJudgment, matterNextAction, role, stageLabel } from "./design";
 import type { Decision, Matter, Schedule } from "./types";
+import type { ReviewPacket } from "./watchTypes";
 import { scheduleIsFailing } from "./design";
 
-export type BriefingKind = "overdue" | "judgment" | "review" | "failing";
+export type BriefingKind = "overdue" | "blocked" | "assignment" | "judgment" | "review" | "packet" | "failing";
 
 export type BriefingItem = {
   id: string;
@@ -29,9 +30,9 @@ export type BriefingItem = {
   primary: boolean;
 };
 
-const RANK: Record<BriefingKind, number> = { overdue: 0, judgment: 1, review: 2, failing: 3 };
+const RANK: Record<BriefingKind, number> = { overdue: 0, blocked: 1, assignment: 2, judgment: 3, packet: 4, review: 5, failing: 6 };
 
-export type ComingUpItem = { id: string; text: string; when: string };
+export type ComingUpItem = { id: string; text: string; when: string; href: string };
 
 export type Briefing = {
   items: BriefingItem[];
@@ -45,32 +46,29 @@ function matterHref(matter: Matter): string {
 }
 
 function whyFor(matter: Matter): string {
-  return (
-    matter.next_action ||
-    matter.description ||
-    `Sitting in ${stageLabel(matter.status).toLowerCase()} with no next action recorded.`
-  );
+  return matterNextAction(matter);
 }
 
 export function buildBriefing(
   matters: Matter[],
   decisions: Decision[],
   schedules: Schedule[],
+  reviewPackets: ReviewPacket[] = [],
 ): Briefing {
   const items: BriefingItem[] = [];
 
   for (const matter of matters) {
     if (matter.status === "closed") continue;
-    if (isOverdue(matter)) {
+    if (matter.work_state.signal.kind === "overdue") {
       const late = daysLate(matter);
       items.push({
         id: `matter-${matter.matter_id}`,
         kind: "overdue",
         status: "Overdue",
         color: role.failure,
-        rowBg: "#FFFAF8",
-        title: matter.next_action || matter.title,
-        why: matter.next_action ? matter.description || matter.title : whyFor(matter),
+        rowBg: role.failureWash,
+        title: matterNextAction(matter),
+        why: matter.description || matter.title,
         when: late === 1 ? "1 day late" : `${late} days late`,
         action: matter.status === "respond" ? "Review and send" : "Open the matter",
         href: matterHref(matter),
@@ -78,16 +76,33 @@ export function buildBriefing(
       });
       continue;
     }
-    if (matter.status === "explore") {
+    if (matter.work_state.signal.kind === "blocked" || matter.work_state.next_actor === "unassigned") {
+      const blocked = matter.work_state.signal.kind === "blocked";
+      items.push({
+        id: `matter-${matter.matter_id}`,
+        kind: blocked ? "blocked" : "assignment",
+        status: blocked ? "Blocked" : "Needs assignment",
+        color: role.attentionDeep,
+        rowBg: role.attentionWash,
+        title: matterNextAction(matter),
+        why: matter.description || matter.title,
+        when: matter.work_state.due_at ? `Due ${formatShortDate(matter.work_state.due_at)}` : "No date",
+        action: "Open the matter",
+        href: matterHref(matter),
+        primary: false,
+      });
+      continue;
+    }
+    if (matterAwaitsJudgment(matter)) {
       items.push({
         id: `matter-${matter.matter_id}`,
         kind: "judgment",
         status: "Waiting on you",
         color: role.attention,
-        rowBg: "#FFFDF4",
+        rowBg: role.attentionWash,
         title: matter.title,
         why: whyFor(matter),
-        when: matter.target_date ? `Due ${String(matter.target_date).slice(0, 10)}` : "No date",
+        when: matter.work_state.due_at ? `Due ${formatShortDate(matter.work_state.due_at)}` : "No date",
         action: "Read the memo",
         href: `${matterHref(matter)}?focus=research`,
         primary: false,
@@ -96,13 +111,13 @@ export function buildBriefing(
   }
 
   for (const decision of decisions) {
-    if (decision.review_status === "fresh") continue;
+    if (!decisionNeedsReview(decision)) continue;
     items.push({
       id: `decision-${decision.decision_id}`,
       kind: "review",
       status: "Needs review",
       color: role.attention,
-      rowBg: "#FFFDF4",
+      rowBg: role.attentionWash,
       title: decision.title,
       why: decision.staleness_reason || "The ground this decision rests on has moved since you recorded it.",
       when: decision.review_status === "stale" ? "Stale" : "Review recommended",
@@ -112,6 +127,14 @@ export function buildBriefing(
     });
   }
 
+  for (const packet of reviewPackets) {
+    if (packet.attention_state !== "required" || packet.status !== "open") continue;
+    items.push({ id: `packet-${packet.packet_id}`, kind: "packet", status: "Needs review", color: role.attention,
+      rowBg: role.attentionWash, title: packet.what_happened, why: packet.why_surfaced,
+      when: packet.timing || "Review today", action: "Review packet",
+      href: `/decisions?packet=${encodeURIComponent(packet.packet_id)}`, primary: false });
+  }
+
   for (const schedule of schedules) {
     if (!scheduleIsFailing(schedule)) continue;
     items.push({
@@ -119,10 +142,10 @@ export function buildBriefing(
       kind: "failing",
       status: "Failing",
       color: role.failure,
-      rowBg: "#FFFAF8",
+      rowBg: role.failureWash,
       title: `Reconnect ${schedule.title.toLowerCase()}`,
       why: `The last run failed. Nothing has been filed by this automation since ${
-        schedule.last_run_at ? String(schedule.last_run_at).slice(0, 10) : "it stopped"
+        schedule.last_run_at ? formatShortDate(schedule.last_run_at) : "it stopped"
       }.`,
       when: "Last run failed",
       action: "Reconnect",
@@ -139,23 +162,26 @@ export function buildBriefing(
     .slice(0, 4)
     .map((matter) => ({
       id: matter.matter_id,
-      text: matter.next_action
-        ? `${matter.title} — ${lowerFirst(matter.next_action)}`
-        : `${matter.title} is ${stageLabel(matter.status).toLowerCase()}`,
-      when: matter.target_date ? String(matter.target_date).slice(0, 10) : stageLabel(matter.status),
+      text: `${matter.title} — ${lowerFirst(matterNextAction(matter))}`,
+      when: matter.work_state.due_at ? formatShortDate(matter.work_state.due_at) : stageLabel(matter.status),
+      href: matterHref(matter),
     }));
 
   const overdue = items.filter((item) => item.kind === "overdue").length;
+  const blocked = items.filter((item) => item.kind === "blocked").length;
+  const assignment = items.filter((item) => item.kind === "assignment").length;
+  const judgment = items.filter((item) => item.kind === "judgment").length;
+  const review = items.filter((item) => item.kind === "review").length;
+  const packets = items.filter((item) => item.kind === "packet").length;
+  const failing = items.filter((item) => item.kind === "failing").length;
 
   return {
     items,
     comingUp,
     headline: items.length === 0
-      ? "Nothing needs your judgment"
-      : `${countWord(items.length)} ${items.length === 1 ? "thing needs" : "things need"} your judgment`,
-    subhead: items.length === 0
-      ? "Everything is either running or waiting on someone who isn't you."
-      : `${overdue === 0 ? "Nothing is overdue" : overdue === 1 ? "One is overdue" : `${countWord(overdue)} are overdue`}. Everything else is either running or waiting on someone who isn't you.`,
+      ? "Nothing needs your attention"
+      : `${countWord(items.length)} ${items.length === 1 ? "thing needs" : "things need"} your attention`,
+    subhead: `Across matters, decisions, review packets, and schedules: ${overdue} overdue · ${blocked} blocked · ${assignment} unassigned · ${judgment} awaiting judgment · ${review} ${review === 1 ? "decision needs" : "decisions need"} review · ${packets} review ${packets === 1 ? "packet" : "packets"} · ${failing} failed ${failing === 1 ? "schedule" : "schedules"}.`,
   };
 }
 

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
 import AutomationPanel from "@/components/AutomationPanel";
-import { createSchedule, getAutomations, runSchedule } from "@/lib/api";
+import { createSchedule, getAutomations, runSchedule, updateSchedule } from "@/lib/api";
 import { scheduleIsFailing } from "@/lib/design";
 import type { AgentDefinition, Schedule } from "@/lib/types";
 
@@ -38,7 +38,7 @@ export default function AutomationsPage() {
             <h1>Automations</h1>
             <p>
               {running} running.{" "}
-              {failing === 0 ? "Nothing needs reconnecting." : `${failing} need${failing === 1 ? "s" : ""} reconnecting.`}
+              {failing === 0 ? "No failed runs." : `${failing} failed automation${failing === 1 ? "" : "s"}.`}
             </p>
           </div>
         </div>
@@ -55,6 +55,20 @@ export default function AutomationsPage() {
               setError("");
               try { await runSchedule(scheduleId); await load(); }
               catch (caught) { setError(caught instanceof Error ? caught.message : "Could not run the automation."); }
+              finally { setBusySchedule(null); }
+            }}
+            onUpdate={async (scheduleId, enabled) => {
+              setBusySchedule(scheduleId);
+              setError("");
+              try {
+                const schedule = schedules.find((item) => item.schedule_id === scheduleId);
+                const payload = schedule && "revision" in schedule
+                  ? { enabled, expected_revision: schedule.revision }
+                  : { enabled };
+                await updateSchedule(scheduleId, payload);
+                await load();
+              }
+              catch (caught) { setError(caught instanceof Error ? caught.message : "Could not update the automation."); }
               finally { setBusySchedule(null); }
             }}
             schedules={schedules}

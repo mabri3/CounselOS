@@ -15,6 +15,8 @@ class ToolExecutionContext:
     app: Any
     matter_id: str | None = None
     active_file: str | None = None
+    review_author: str | None = None
+    lawyer_author: str | None = None
 
 
 @dataclass

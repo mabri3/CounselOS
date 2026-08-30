@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import LinkifiedText from "@/components/LinkifiedText";
-import { STAGES, role, signalFor, dueWord } from "@/lib/design";
+import { STAGES, isWaitingSignal, matterNextAction, matterNextOwner, role, signalFor, dueWord } from "@/lib/design";
 import type { Matter, StageId } from "@/lib/types";
 
 /**
@@ -25,8 +25,15 @@ export default function StageBoard({
       {STAGES.map((stage) => {
         const items = matters.filter((matter) => matter.status === stage.id);
         const signals = items.map(signalFor);
-        const needs = signals.filter((signal) => signal.word === "Waiting on you" || signal.word === "Overdue").length;
-        const working = signals.some((signal) => signal.word === "Themis is working");
+        const overdue = signals.filter((signal) => signal.kind === "overdue").length;
+        const waiting = signals.filter((signal) => isWaitingSignal(signal.kind)).length;
+        const needsAssignment = signals.filter((signal) => signal.kind === "needs_assignment").length;
+        const attentionParts = [
+          overdue ? `${overdue} overdue` : "",
+          waiting ? `${waiting} waiting` : "",
+          needsAssignment ? `${needsAssignment} ${needsAssignment === 1 ? "needs" : "need"} assignment` : "",
+        ].filter(Boolean);
+        const signalColor = overdue > 0 ? role.failure : role.attention;
         const over = overColumn === stage.id;
         const acceptsDrop = stage.id !== "closed";
 
@@ -47,22 +54,17 @@ export default function StageBoard({
           >
             <header
               className="board-head"
-              style={{ borderBottom: needs > 0 ? `2px solid ${role.attention}` : "1px solid var(--line)" }}
+              style={{ borderBottom: attentionParts.length > 0 ? `2px solid ${signalColor}` : "1px solid var(--line)" }}
               title={stage.sub}
             >
-              <span style={{ color: needs > 0 ? "var(--ink)" : "var(--ink-4)" }}>{stage.label}</span>
-              <span>{items.length}</span>
+              <span style={{ color: attentionParts.length > 0 ? "var(--ink)" : "var(--ink-4)" }}>{stage.label}</span>
+              <span aria-label={`${items.length} ${items.length === 1 ? "matter" : "matters"}`}>{items.length}</span>
             </header>
 
-            {needs > 0 ? (
-              <span className="signal" style={{ padding: "0 6px", color: role.attentionDeep }}>
-                <span className="dot sm" style={{ background: role.attention }} />
-                {needs === 1 ? "1 needs you" : `${needs} need you`}
-              </span>
-            ) : working ? (
-              <span className="signal" style={{ padding: "0 6px", color: role.agent }}>
-                <span className="dot sm" style={{ background: role.agent }} />
-                Themis is working
+            {attentionParts.length > 0 ? (
+              <span className="signal" style={{ padding: "0 6px", color: overdue > 0 ? role.failure : role.attentionDeep }}>
+                <span className="dot sm" style={{ background: signalColor }} />
+                {attentionParts.join(" · ")}
               </span>
             ) : null}
 
@@ -89,7 +91,7 @@ export default function StageBoard({
                     <span
                       className="signal"
                       style={{ marginBottom: 6, color: signal.wordColor, fontSize: 13 }}
-                      title={signal.word === "Waiting on you" ? "Research is done. This matter needs your judgment." : signal.word === "Themis is working" ? "The agent is researching or drafting this matter." : "The target date has passed."}
+                      title={signal.word}
                     >
                       <span className="dot sm" style={{ background: signal.rail }} />
                       {signal.word}
@@ -98,9 +100,13 @@ export default function StageBoard({
                   <Link className="board-card-title" href={`/matters/${encodeURIComponent(matter.matter_id)}`}>
                     {matter.title}
                   </Link>
-                  <span className="board-card-why"><LinkifiedText text={matter.next_action || matter.description} /></span>
+                  <span className="board-card-why">
+                    {matter.status === "closed"
+                      ? <span aria-label="No active next action">—</span>
+                      : <LinkifiedText text={matterNextAction(matter)} />}
+                  </span>
                   <span className="board-card-foot">
-                    <span>{matter.legal_owner || "Unassigned"}</span>
+                    <span>{matterNextOwner(matter)}</span>
                     <span style={{ color: due.color }}>{due.text}</span>
                   </span>
                 </article>

@@ -10,13 +10,23 @@ import type {
   DailyConversation,
   DailyConversationSummary,
   Decision,
+  DocumentReview,
+  DocumentReviewAction,
   Matter,
   MatterDetail,
   ResearchNote,
   ResearchResult,
   ResearchRun,
   Schedule,
+  ScheduleUpdate,
   SettingsPayload,
+  SkillCreate,
+  SkillDefinition,
+  SkillDraftRequest,
+  SkillDraftResponse,
+  SkillQuestion,
+  SkillSuggestionsResponse,
+  SkillUpdate,
   Stage,
   ToolDefinition,
   VaultDocument,
@@ -39,16 +49,33 @@ export function effortLabel(effort: string): string {
   }[effort] ?? effort;
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+function formatErrorDetail(detail: unknown, fallback: string): string {
+  if (typeof detail === "string") return detail || fallback;
+
+  const entries = Array.isArray(detail) ? detail : [detail];
+  const messages = entries.flatMap((entry) => {
+    if (!entry || typeof entry !== "object") return [];
+    const validation = entry as { loc?: unknown; msg?: unknown };
+    if (typeof validation.msg !== "string" || !validation.msg) return [];
+    const path = Array.isArray(validation.loc)
+      ? validation.loc.filter((part) => typeof part === "string" || typeof part === "number").join(".")
+      : "";
+    return [path ? `${path}: ${validation.msg}` : validation.msg];
+  });
+  return messages.length ? messages.join("; ") : fallback;
+}
+
+export async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
     ...init,
     headers: init?.body instanceof FormData ? init.headers : { "Content-Type": "application/json", ...init?.headers },
     cache: "no-store",
   });
   if (!response.ok) {
-    const payload = await response.json().catch(() => ({ detail: response.statusText }));
-    throw new Error(payload.detail ?? `Request failed: ${response.status}`);
+    const payload: { detail?: unknown } = await response.json().catch(() => ({ detail: response.statusText }));
+    throw new Error(formatErrorDetail(payload.detail, `Request failed: ${response.status}`));
   }
+  if (response.status === 204) return undefined as T;
   return response.json() as Promise<T>;
 }
 
@@ -173,8 +200,54 @@ export async function saveFile(document: VaultDocument): Promise<{ status: strin
   });
 }
 
+export async function getDocumentReview(path: string): Promise<DocumentReview> {
+  return request(`/files/review?path=${encodeURIComponent(path)}`);
+}
+
+export async function updateDocumentReview(path: string, action: DocumentReviewAction): Promise<DocumentReview> {
+  return request(`/files/review?path=${encodeURIComponent(path)}`, {
+    method: "PUT",
+    body: JSON.stringify(action),
+  });
+}
+
+export function exportFileUrl(path: string, format: "docx" | "pdf"): string {
+  return `${API_BASE}/files/export?path=${encodeURIComponent(path)}&format=${format}`;
+}
+
 export async function sendChat(payload: Record<string, unknown>): Promise<ChatResponse> {
   return request("/chat", { method: "POST", body: JSON.stringify(payload) });
+}
+
+export async function getSkills(): Promise<{ skills: SkillDefinition[] }> {
+  return request("/skills");
+}
+
+export async function getSkillQuestions(): Promise<{ questions: SkillQuestion[] }> {
+  return request("/skills/questions");
+}
+
+export async function draftSkill(payload: SkillDraftRequest): Promise<SkillDraftResponse> {
+  return request("/skills/draft", { method: "POST", body: JSON.stringify(payload) });
+}
+
+export async function getSkillSuggestions(): Promise<SkillSuggestionsResponse> {
+  return request("/skills/suggestions", { method: "POST" });
+}
+
+export async function createSkill(payload: SkillCreate): Promise<SkillDefinition> {
+  return request("/skills", { method: "POST", body: JSON.stringify(payload) });
+}
+
+export async function getSkill(skillId: string): Promise<SkillDefinition> {
+  return request(`/skills/${encodeURIComponent(skillId)}`);
+}
+
+export async function updateSkill(skillId: string, payload: SkillUpdate): Promise<SkillDefinition> {
+  return request(`/skills/${encodeURIComponent(skillId)}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
 }
 
 export async function getConversations(matterId: string): Promise<{ conversations: ChatConversationSummary[] }> {
@@ -215,6 +288,13 @@ export async function runSchedule(scheduleId: string): Promise<Record<string, un
   return request(`/automations/schedules/${encodeURIComponent(scheduleId)}/run`, { method: "POST" });
 }
 
+export async function updateSchedule(scheduleId: string, payload: ScheduleUpdate): Promise<Schedule> {
+  return request(`/automations/schedules/${encodeURIComponent(scheduleId)}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
 export async function createSchedule(payload: Record<string, unknown>): Promise<Schedule> {
   return request("/automations/schedules", { method: "POST", body: JSON.stringify(payload) });
 }
@@ -243,9 +323,7 @@ export async function getSettings(): Promise<WorkspaceSettings> {
     ? requestedEffort
     : selectedModel?.efforts[0] ?? "default";
 
-  return {
-    model_catalog: catalog,
-    sections: DEFAULT_SETTINGS.map((section) => ({
+  const sections = DEFAULT_SETTINGS.map((section) => ({
       ...section,
       rows: section.rows.map((row) => {
         if (row.config_key === "agents.provider") {
@@ -285,8 +363,17 @@ export async function getSettings(): Promise<WorkspaceSettings> {
           ? { ...row, on: typeof stored === "boolean" ? stored : row.on }
           : { ...row, value: typeof stored === "string" ? stored : row.value };
       }),
-    })),
-  };
+    }));
+  const reviewRows = sections.find((section) => section.id === "document-review")?.rows;
+  if (reviewRows) {
+    const lawyer = reviewRows.find((row) => row.config_key === "document_review.lawyer_name")?.value?.trim() || "Lawyer";
+    const defaultAuthor = reviewRows.find((row) => row.config_key === "document_review.default_author");
+    if (defaultAuthor) {
+      defaultAuthor.options = ["Themis", lawyer];
+      if (!["Themis", lawyer].includes(defaultAuthor.value ?? "")) defaultAuthor.value = "Themis";
+    }
+  }
+  return { model_catalog: catalog, sections };
 }
 
 export async function saveSettings(settings: WorkspaceSettings): Promise<SettingsPayload> {

@@ -5,9 +5,50 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from app.models.api import AnnotationCreate, BatchActionRequest, ChatChoice, ChatResponse, MatterActionRequest, MatterCreate, QuestionCard, ResearchRunStart, StageUpdate, WorkProductFinalizeRequest
 from app.routers.dependencies import get_context
 from app.runtime import AppContext
+from app.models.awareness import MitigationCreate, MitigationPatch
 
 
 router = APIRouter(prefix="/matters", tags=["matters"])
+
+
+@router.get("/{matter_id}/mitigations")
+def list_mitigations(matter_id: str, context: AppContext = Depends(get_context)):
+    try:
+        context.matters.get(matter_id)
+        return {"items": context.mitigations.list(matter_id)}
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@router.post("/{matter_id}/mitigations", status_code=201)
+def create_mitigation(
+    matter_id: str,
+    payload: MitigationCreate,
+    context: AppContext = Depends(get_context),
+):
+    try:
+        context.matters.get(matter_id)
+        return context.mitigations.create(matter_id, payload)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@router.patch("/{matter_id}/mitigations/{mitigation_id}")
+def update_mitigation(
+    matter_id: str,
+    mitigation_id: str,
+    payload: MitigationPatch,
+    context: AppContext = Depends(get_context),
+):
+    try:
+        return context.mitigations.update(
+            matter_id, mitigation_id, payload, payload.expected_revision
+        )
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        status = 409 if "revision conflict" in str(exc).lower() else 422
+        raise HTTPException(status_code=status, detail=str(exc)) from exc
 
 
 @router.get("")

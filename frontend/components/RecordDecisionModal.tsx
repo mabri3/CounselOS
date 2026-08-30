@@ -23,13 +23,15 @@ export default function RecordDecisionModal({
   onRecorded: () => Promise<void>;
 }) {
   const [chosenPath, setChosenPath] = useState(suggestion);
-  const [decider, setDecider] = useState(detail.legal_owner || "Brian Harris");
+  const [rationale, setRationale] = useState(detail.orientation.why_now || "");
+  const [decider, setDecider] = useState(detail.legal_owner || "");
   const [reviewAt, setReviewAt] = useState(defaultReview());
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
   async function record() {
     if (!chosenPath.trim()) { setError("Say what was decided."); return; }
+    if (!decider.trim()) { setError("Enter who made the decision."); return; }
     setBusy(true);
     setError("");
     try {
@@ -37,8 +39,8 @@ export default function RecordDecisionModal({
         matter_id: detail.matter_id,
         title: detail.title,
         chosen_path: chosenPath.trim(),
-        rationale: detail.orientation.why_now,
-        decision_maker: decider,
+        rationale: rationale.trim(),
+        decision_maker: decider.trim(),
         risk_level: detail.risk_level,
         next_review_at: reviewAt || null,
         linked_paths: basis,
@@ -61,7 +63,7 @@ export default function RecordDecisionModal({
 
         <div className="modal-body">
           <div>
-            <div className="field-label">Decision</div>
+            <div className="field-label">Decision {suggestion.trim() ? <span className="field-source">Themis draft</span> : null}</div>
             <textarea
               aria-label="Decision"
               autoFocus
@@ -70,6 +72,18 @@ export default function RecordDecisionModal({
               style={{ minHeight: 96 }}
               value={chosenPath}
             />
+          </div>
+
+          <div>
+            <div className="field-label">Rationale {detail.orientation.why_now.trim() ? <span className="field-source">Themis draft</span> : null}</div>
+            <textarea
+              aria-label="Rationale"
+              className="text-input prose"
+              onChange={(event) => setRationale(event.target.value)}
+              style={{ minHeight: 88 }}
+              value={rationale}
+            />
+            <div className="field-help">Optional. Explain why this decision was made.</div>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
@@ -107,7 +121,7 @@ export default function RecordDecisionModal({
           </span>
           <div className="btn-row">
             <button className="btn" disabled={busy} onClick={onClose}>Cancel</button>
-            <button className="btn primary" disabled={busy} onClick={() => void record()}>
+            <button className="btn primary" disabled={busy || !chosenPath.trim() || !decider.trim()} onClick={() => void record()}>
               {busy ? "Recording…" : "Record durable decision"}
             </button>
           </div>

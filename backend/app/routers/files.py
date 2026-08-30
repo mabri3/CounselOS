@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import FileResponse
 
-from app.models.api import FileUpdate
+from app.models.api import DocumentReviewAction, FileUpdate
 from app.routers.dependencies import get_context
 from app.runtime import AppContext
 
@@ -36,6 +36,45 @@ def raw_file(
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
+@router.get("/review")
+def get_review(
+    path: str = Query(...),
+    context: AppContext = Depends(get_context),
+):
+    try:
+        return context.document_reviews.get(path)
+    except (ValueError, FileNotFoundError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@router.put("/review")
+def update_review(
+    payload: DocumentReviewAction,
+    path: str = Query(...),
+    context: AppContext = Depends(get_context),
+):
+    try:
+        result = context.document_reviews.apply(path, payload)
+        context.index.rebuild()
+        return result
+    except (ValueError, FileNotFoundError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@router.get("/export")
+def export_file(
+    path: str = Query(...),
+    format: str = Query(..., pattern="^(docx|pdf)$"),
+    context: AppContext = Depends(get_context),
+):
+    try:
+        output_path, media_type = context.document_exports.export(path, format)
+        resolved = context.vault.resolve(output_path)
+        return FileResponse(resolved, media_type=media_type, filename=resolved.name)
+    except (ValueError, FileNotFoundError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
 @router.get("")
 def read_file(
     path: str = Query(...),
@@ -59,6 +98,8 @@ def update_file(
             raise ValueError("This is an immutable original record. Create a new version instead.")
         if not current.get("editable"):
             raise ValueError("This file type is read-only in the MVP.")
+        if path.lower().endswith(".md") and current.get("metadata", {}).get("review", {}).get("tracking"):
+            raise ValueError("Use save_revision with an explicit review author while Track Changes is on.")
         if path.lower().endswith(".md"):
             saved = context.vault.write_markdown(path, payload.content, payload.metadata)
         else:

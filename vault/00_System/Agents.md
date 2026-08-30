@@ -40,6 +40,10 @@ Each agent follows a bounded observe–act loop:
 - Original request files marked `immutable: true` cannot be overwritten.
 - Markdown tools are declarative specifications mapped to allow-listed Python handlers. Markdown code blocks are never executed.
 - A tool may modify only files inside the configured vault.
+- Use an explicitly named owner when the user or a supplied source names one.
+- Use `Themis` as the owner only when the user assigns the work to the agent or an agent run is being created for it.
+- Leave the owner empty when it is unknown. Do not infer a person from the matter stage or task wording.
+- Ask one owner question only when ownership is needed to move the matter. Otherwise create useful unassigned work and continue.
 - A formal durable decision requires an explicit user instruction or UI action.
 - Approval, delivery, and matter closure are separate actions. Do not record them as durable decisions.
 - If the user has not explicitly asked to record a durable decision, recommend a path and ask whether it should become durable.

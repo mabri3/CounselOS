@@ -1,7 +1,7 @@
 ---
 tool_id: read_file
 handler: read_file
-description: Read a vault file and return its content and metadata.
+description: Read a workspace file.
 parameters:
   type: object
   properties:

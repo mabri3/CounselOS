@@ -1,11 +1,13 @@
 "use client";
 
 import { DragEvent, useEffect, useState } from "react";
+import DocumentReview from "@/components/DocumentReview";
 import LinkifiedText from "@/components/LinkifiedText";
 import MarkdownRichEditor from "@/components/MarkdownRichEditor";
-import { getFile, rawFileUrl, saveFile } from "@/lib/api";
+import { exportFileUrl, getDocumentReview, getFile, rawFileUrl, saveFile, updateDocumentReview } from "@/lib/api";
 import { parseMemo } from "@/lib/research";
-import type { VaultDocument } from "@/lib/types";
+import type { DocumentReview as ReviewState, DocumentReviewAction, VaultDocument } from "@/lib/types";
+import { authorId, REVIEW_AUTHOR_PALETTE } from "@/lib/reviewAuthor";
 
 /**
  * Canvas 4c — the work surface. A what-you-see editor over a file that stays
@@ -16,34 +18,110 @@ export default function DocumentPanel({
   onUpload,
   onAskAgent,
   onCollapse,
+  activeReviewAuthor,
+  lawyerAuthor,
+  onReviewAuthorChange,
 }: {
   activePath: string | null;
   onUpload: (file: File) => Promise<void>;
   onAskAgent?: () => void;
   onCollapse?: () => void;
+  activeReviewAuthor: string;
+  lawyerAuthor: string;
+  onReviewAuthorChange: (name: string) => void;
 }) {
   const [document, setDocument] = useState<VaultDocument | null>(null);
-  const [mode, setMode] = useState<"editing" | "markdown" | "sources">("editing");
+  const [review, setReview] = useState<ReviewState | null>(null);
+  const [mode, setMode] = useState<"editing" | "markdown" | "review" | "sources">("editing");
   const [dirty, setDirty] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [editorVersion, setEditorVersion] = useState(0);
 
   useEffect(() => {
     if (!activePath) { setDocument(null); return; }
     setBusy(true);
     setError("");
-    void getFile(activePath)
-      .then((result) => { setDocument(result); setDirty(false); setMode("editing"); })
+    void loadDocument(activePath)
+      .then(({ result, reviewState }) => {
+        setDocument(result);
+        setReview(reviewState);
+        setDirty(false);
+        setMode("editing");
+        setEditorVersion((current) => current + 1);
+      })
       .catch((caught) => setError(caught instanceof Error ? caught.message : "Could not load the file."))
       .finally(() => setBusy(false));
   }, [activePath]);
 
-  async function save() {
-    if (!document || !document.editable) return;
+  async function loadDocument(path: string): Promise<{ result: VaultDocument; reviewState: ReviewState | null }> {
+    let result = await getFile(path);
+    if (!result.editable && ["pdf", "docx"].includes(result.kind)) {
+      try {
+        result = await getFile(`${path}.extracted.md`);
+      } catch {
+        // Keep the source viewer when no editable companion exists.
+      }
+    }
+    const reviewState = result.kind === "markdown" && result.editable
+      ? await getDocumentReview(result.path)
+      : null;
+    return { result, reviewState };
+  }
+
+  async function save(): Promise<boolean> {
+    if (!document || !document.editable) return false;
     setBusy(true);
-    try { await saveFile(document); setDirty(false); }
-    catch (caught) { setError(caught instanceof Error ? caught.message : "Could not save the file."); }
+    setError("");
+    try {
+      let nextReview: ReviewState | null = null;
+      if (review?.tracking) {
+        const existing = review.authors.find((item) => item.author_id === authorId(activeReviewAuthor));
+        nextReview = await updateDocumentReview(document.path, { action: "save_revision", content: document.content, author_id: authorId(activeReviewAuthor), author_name: activeReviewAuthor, author_color: existing?.color ?? REVIEW_AUTHOR_PALETTE[review.authors.length % REVIEW_AUTHOR_PALETTE.length] });
+      } else if (review) nextReview = await updateDocumentReview(document.path, { action: "save_untracked", content: document.content });
+      else await saveFile(document);
+      setDirty(false);
+      if (document.kind === "markdown") setReview(nextReview ?? await getDocumentReview(document.path));
+      setEditorVersion((current) => current + 1);
+      return true;
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not save the file.");
+      return false;
+    }
     finally { setBusy(false); }
+  }
+
+  async function reviewAction(action: DocumentReviewAction) {
+    if (!document) return;
+    if (dirty && !await save()) return;
+    setBusy(true);
+    setError("");
+    try {
+      const actorName = ["edit_comment", "delete_comment_entry", "resolve_comment", "reopen_comment", "delete_comment_thread", "delete_resolved_comments"].includes(action.action) ? lawyerAuthor : activeReviewAuthor;
+      const actorId = authorId(actorName);
+      const actor = review?.authors.find((item) => item.author_id === actorId);
+      const nextReview = await updateDocumentReview(document.path, { ...action, author_id: action.author_id ?? actorId, author_name: action.author_name ?? actorName, author_color: action.author_color ?? actor?.color ?? REVIEW_AUTHOR_PALETTE[(review?.authors.length ?? 0) % REVIEW_AUTHOR_PALETTE.length] });
+      const nextDocument = await getFile(document.path);
+      setDocument(nextDocument);
+      setReview(nextReview);
+      setDirty(false);
+      setEditorVersion((current) => current + 1);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not update document review.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function exportDocument(format: "docx" | "pdf") {
+    if (!document) return;
+    if (dirty && !await save()) return;
+    const link = window.document.createElement("a");
+    link.href = exportFileUrl(document.path, format);
+    link.download = "";
+    window.document.body.appendChild(link);
+    link.click();
+    link.remove();
   }
 
   async function drop(event: DragEvent<HTMLDivElement>) {
@@ -69,6 +147,7 @@ export default function DocumentPanel({
   const citations = isResearch ? parseMemo(document).citations : [];
   const agentWritten = /^(research|drafts)\//.test(document.path.split("/").slice(2).join("/"))
     || String(document.metadata.author ?? "").toLowerCase().includes("agent");
+  const sourcePath = typeof document.metadata.source_path === "string" ? document.metadata.source_path : null;
 
   return (
     <div className="doc-pane" onDragOver={(event) => event.preventDefault()} onDrop={drop}>
@@ -114,18 +193,37 @@ export default function DocumentPanel({
             </div>
           )}
         </div>
-      ) : isMarkdown && (mode === "editing" || !document.editable) ? (
-        <MarkdownRichEditor
+      ) : isMarkdown && (mode === "editing" || !document.editable) ? review ? (
+        <DocumentReview
+          author={review.authors.find((item) => item.author_id === authorId(activeReviewAuthor)) ?? { author_id: authorId(activeReviewAuthor), name: activeReviewAuthor, color: REVIEW_AUTHOR_PALETTE[review.authors.length % REVIEW_AUTHOR_PALETTE.length] }}
+          busy={busy}
           key={document.path}
-          markdown={document.content}
-          onAskAgent={document.editable ? onAskAgent : undefined}
+          lawyerAuthorId={authorId(lawyerAuthor)}
+          onAction={reviewAction}
+          onAuthorChange={onReviewAuthorChange}
           readOnly={!document.editable}
+          review={review}
+        >{({ mode: reviewMode, reviewers, onAddComment, onOpenThread, onSelectionContext }) => <MarkdownRichEditor
+          key={`${document.path}-${editorVersion}`}
+          markdown={document.content}
+          onAddComment={onAddComment}
+          onAskAgent={document.editable ? onAskAgent : undefined}
+          onOpenCommentThread={onOpenThread}
+          onSelectionContext={onSelectionContext}
+          readOnly={!document.editable}
+          reviewComments={review.comments}
+          reviewMode={reviewMode}
+          reviewReviewers={reviewers}
+          reviewSegments={review.segments}
+          reviewTracking={review.tracking}
+          reviewAuthor={review.authors.find((item) => item.author_id === authorId(activeReviewAuthor)) ?? { author_id: authorId(activeReviewAuthor), name: activeReviewAuthor, color: REVIEW_AUTHOR_PALETTE[review.authors.length % REVIEW_AUTHOR_PALETTE.length] }}
           onChange={(content) => {
             setDocument((current) => (current ? { ...current, content } : current));
             setDirty(true);
           }}
-        />
-      ) : isMarkdown || document.editable ? (
+        />}</DocumentReview>
+      ) : <MarkdownRichEditor key={document.path} markdown={document.content} readOnly />
+      : isMarkdown || document.editable ? (
         <div className="doc-scroll">
           <textarea
             aria-label="Raw Markdown"
@@ -150,13 +248,22 @@ export default function DocumentPanel({
       {error ? <p className="error" style={{ margin: "0 34px 12px" }}>{error}</p> : null}
 
       <div className="doc-bar" style={{ position: "static", borderBottom: 0, borderTop: "1px solid var(--line-soft)" }}>
-        <span style={{ font: "400 14px var(--sans)", color: "var(--ink-3)" }}>
-          Stored as <span className="mono" style={{ fontSize: 13, color: "var(--ink-4)" }}>{document.name}</span>
-          {isMarkdown ? " — the file stays plain Markdown." : "."}
-        </span>
+        <div className="review-footer-status">
+          <span>{dirty ? "Unsaved changes" : "Saved"}</span>
+          {isMarkdown && review ? (
+            <span className="track-toggle">Redline {review.tracking ? "on" : "off"}</span>
+          ) : null}
+        </div>
         <div className="btn-row">
+          {isMarkdown ? (
+            <>
+              {sourcePath ? <a className="btn compact" href={rawFileUrl(sourcePath)} rel="noreferrer" target="_blank">Original</a> : null}
+              <button className="btn compact" disabled={busy} onClick={() => void exportDocument("docx")} type="button">Word</button>
+              <button className="btn compact" disabled={busy} onClick={() => void exportDocument("pdf")} type="button">PDF</button>
+            </>
+          ) : null}
           <button className="btn primary compact" disabled={!dirty || busy || !document.editable} onClick={() => void save()}>
-            {busy ? "Saving…" : "Save"}
+            {busy ? "Saving…" : dirty && review?.tracking ? "Save redline" : "Save"}
           </button>
         </div>
       </div>

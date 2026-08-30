@@ -20,6 +20,7 @@ A coding agent should read [`AGENTS.md`](AGENTS.md), [`docs/PRD.md`](docs/PRD.md
 - Three-pane matter workspace
 - Markdown editing and file tree
 - PDF/DOCX ingestion with editable Markdown extraction
+- Markdown comments and tracked changes with native Word/PDF review export
 - FastAPI backend
 - Markdown source of truth plus rebuildable SQLite index
 - Markdown-loaded agents, tools, workflows, schedules, company context, user context, and memory
@@ -28,6 +29,10 @@ A coding agent should read [`AGENTS.md`](AGENTS.md), [`docs/PRD.md`](docs/PRD.md
 - Research packets
 - Decision register and staleness checks
 - Scheduler and inbox watcher
+- Continuous Legal Awareness with editable Watches and scheduled scans
+- Native public collection and optional Polaris public intelligence
+- Briefing reading, saved views, immutable digests, and review packets
+- Local matching to company matters, decisions, and mitigations
 
 ## Quick start
 
@@ -110,6 +115,26 @@ TAVILY_API_KEY=your-key
 
 Without it, research still runs against the matter, company context, playbooks, and prior vault records.
 
+## Optional Polaris intelligence
+
+Polaris is an optional public-intelligence source for Watches. It is separate
+from the main model provider.
+
+```dotenv
+POLARIS_API_KEY=your-key
+```
+
+Choose **Native**, **Polaris**, or **Both** in Watch Builder. Polaris uses the
+fixed Themis Lime brain and cannot receive company, matter, decision, document,
+or other private context. Counsel OS checks the editable public query before a
+network call. Company-specific matching stays local. If one provider in Both
+mode fails, the scan keeps the other provider's useful output and shows a
+**Partial** state.
+
+Open **Briefing** to read monitored developments. Open **Watches** from the
+Briefing area to create or edit collection rules. **Scan now** runs once and
+does not start a schedule. **Start Watch** creates or enables the schedule.
+
 ## Important development warning
 
 This scaffold has no authentication, tenant isolation, enterprise authorization, or production secret management. Do not expose it directly to the public internet or load real privileged material into an untrusted environment.
@@ -149,4 +174,4 @@ npm run build
 6. Walk the acceptance scenarios in `docs/ACCEPTANCE_TESTS.md`.
 7. Improve only the workflow that fails or feels cognitively heavy.
 
-Do not begin with cloud tenancy, native Word redlining, embeddings, multi-agent voting, or a general plugin framework.
+Do not begin with cloud tenancy, source-layout-preserving document round trips, embeddings, multi-agent voting, or a general plugin framework.

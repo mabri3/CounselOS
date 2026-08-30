@@ -19,6 +19,25 @@ next_action: Run or supervise first-pass research.
 created_at: '2026-08-25T15:00:00+00:00'
 updated_at: '2026-08-28T07:00:08+00:00'
 closed_at: null
+review:
+  segments:
+  - kind: equal
+    text: '# Beacon: Instant Business Onboarding
+
+
+      New onboarding flow removes a manual review step for low-risk applicants.
+
+      '
+    change_id: ''
+    author_id: ''
+    author_name: ''
+    author_color: ''
+    created_at: ''
+  comments: []
+  version: 2
+  tracking: false
+  authors: []
+  comment_events: []
 ---
 # Beacon: Instant Business Onboarding
 

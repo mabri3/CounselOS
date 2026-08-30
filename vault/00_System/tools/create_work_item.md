@@ -1,7 +1,7 @@
 ---
 tool_id: create_work_item
 handler: create_work_item
-description: Create a typed work item in the active matter.
+description: Add a work item to the active matter.
 parameters:
   type: object
   properties:
@@ -19,6 +19,13 @@ parameters:
       type: string
     owner:
       type: string
+      description: >-
+        Use an explicitly named owner when the user or a supplied source names
+        one. Use Themis only when the user assigns the work to the agent or an
+        agent run is being created for it. Leave the owner empty when it is
+        unknown; do not infer a person from the matter stage or task wording.
+        Ask one owner question only when ownership is needed to move the
+        matter. Otherwise create useful unassigned work and continue.
     due_at:
       type: string
     required:

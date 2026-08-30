@@ -1,7 +1,7 @@
 ---
 agent_id: decision-monitor
 name: Decision Monitor
-description: Reviews recorded decisions for staleness signals.
+description: Checks recorded decisions when review dates pass or linked sources change.
 enabled: true
 max_steps: 4
 allowed_tools:

@@ -9,6 +9,7 @@
 - Matter orientation and next-action synthesis.
 - Markdown-backed WYSIWYG editing with a raw Markdown toggle and immutable formatted views.
 - PDF and DOCX preservation plus extracted Markdown companions.
+- Markdown comments and tracked changes with accept/reject review and native DOCX/PDF review export.
 - Markdown source of truth and rebuildable SQLite read model.
 - Hot-loaded `Soul.md`, `Agents.md`, user, company, memory, workflows, agents, tools, and schedules.
 - Bounded agent/tool loop with visible operational trace.
@@ -42,8 +43,8 @@ The whole interface was rebuilt against the `Counsel OS` design canvas. See
 
 ## Deliberately lightweight
 
-- The Markdown editor supports focused formatted drafting, not full word-processing features such as comments or tracked changes.
-- PDF and DOCX files are read-only; extracted text is editable.
+- The Markdown editor supports focused formatted drafting and document review, not full source-layout-preserving word processing.
+- PDF and DOCX source files remain read-only; extracted Markdown is editable and exports use regenerated layout.
 - Chat returns a complete response rather than streaming tokens.
 - Search is lexical unless a provider is added.
 - The scheduler is in-process and single-instance.
@@ -55,8 +56,8 @@ The whole interface was rebuilt against the `Counsel OS` design canvas. See
 - Authentication, authorization, multi-tenancy, or collaboration.
 - Cloud object storage or Postgres.
 - Durable background queue.
-- Native Word tracked changes or round-trip export.
-- Native PDF editing.
+- Import or round-trip preservation of existing Word/PDF comments and redlines.
+- Source-layout-preserving Word/PDF editing.
 - Citation validation, citator integration, or mandatory legal-review gates.
 - Multi-agent consensus or reviewer-veto workflows.
 - Tauri packaging or local shell execution.
@@ -75,5 +76,26 @@ The whole interface was rebuilt against the `Counsel OS` design canvas. See
 - New schedules wait for their first interval, and a scheduled task cannot recreate its own schedule in mock mode.
 - The third pane round-trips headings, bold, italic, links, quotes, and lists between formatted and raw Markdown modes; save persists after reload.
 - Immutable Markdown renders as formatted read-only content with no edit or save controls.
+- DOCX export contains native tracked changes and comments; PDF export contains standard text-markup annotations.
 
 NeuralWatt was configured through the OpenAI-compatible adapter with `deepseek-v4-flash`. A live request returned a valid function tool call through the Counsel OS provider interface. Mock mode remains the verified no-key baseline.
+
+## Attention-audit work in progress
+
+The planned product contract keeps the matter as the full work container and
+keeps the dossier as an optional summary. `matter.md` remains the root record
+and default agent context. The planned matter tree starts narrow, shows no
+visual record selection when no file was requested, and groups structured files
+under the exact human-readable Matter Records mapping in
+`docs/ACCEPTANCE_TESTS.md`.
+
+The same planned acceptance walk covers visible and editable decision rationale,
+an explicit final record action, full **Themis · Not reviewed** styling, readable
+tables, **Recorded** and **Needs review** state words, schedule resume, and the
+Advanced controls on Settings, Agents, and Skills. It also covers one research
+state with no cited sources.
+
+Recommendations remain separate from recorded decisions. Source or action
+provenance appears only when stored data supports it. These items are planned
+acceptance coverage, not observed pass results. Dated results will be added only
+after the coordinator completes the isolated browser walk.

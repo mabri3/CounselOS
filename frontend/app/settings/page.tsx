@@ -4,7 +4,10 @@ import { useCallback, useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
 import LinkifiedText from "@/components/LinkifiedText";
 import { effortLabel, getCompanyProfile, getSettings, saveCompanyProfile, saveSettings } from "@/lib/api";
+import { role } from "@/lib/design";
+import { getProviderCapabilities } from "@/lib/watchApi";
 import type { CompanyProfile, SettingRow, WorkspaceSettings } from "@/lib/types";
+import type { ProviderCapability } from "@/lib/watchTypes";
 
 const COMPANY_FIELDS: { key: keyof CompanyProfile; label: string; help: string }[] = [
   { key: "summary", label: "Company summary", help: "A short description that gives agents the right company context." },
@@ -52,7 +55,8 @@ function alignModelRows(rows: SettingRow[], settings: WorkspaceSettings): Settin
 export default function SettingsPage() {
   const [settings, setSettings] = useState<WorkspaceSettings | null>(null);
   const [company, setCompany] = useState<CompanyProfile | null>(null);
-  const [section, setSection] = useState("general");
+  const [providers, setProviders] = useState<ProviderCapability[]>([]);
+  const [section, setSection] = useState("agents");
   const [dirty, setDirty] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -60,9 +64,14 @@ export default function SettingsPage() {
   const load = useCallback(async () => {
     try {
       setError("");
-      const [nextSettings, nextCompany] = await Promise.all([getSettings(), getCompanyProfile()]);
+      const [nextSettings, nextCompany, providerResult] = await Promise.all([
+        getSettings(),
+        getCompanyProfile(),
+        getProviderCapabilities(),
+      ]);
       setSettings(nextSettings);
       setCompany(nextCompany);
+      setProviders(providerResult.items);
       setDirty(false);
     }
     catch (caught) { setError(caught instanceof Error ? caught.message : "Could not load settings."); }
@@ -75,8 +84,15 @@ export default function SettingsPage() {
     setSettings((current) => current && ({
       ...current,
       sections: current.sections.map((entry) => {
-        if (entry.id !== section) return entry;
-        const rows = entry.rows.map((row) => (row.id === rowId ? { ...row, ...patch } : row));
+        const selected = current.sections.find((candidate) => candidate.id === section) ?? current.sections[0];
+        if (entry.id !== selected.id) return entry;
+        let rows = entry.rows.map((row) => (row.id === rowId ? { ...row, ...patch } : row));
+        if (entry.id === "document-review") {
+          const lawyer = rows.find((row) => row.config_key === "document_review.lawyer_name")?.value?.trim() || "Lawyer";
+          rows = rows.map((row) => row.config_key === "document_review.default_author"
+            ? { ...row, options: ["Themis", lawyer], value: ["Themis", lawyer].includes(row.value ?? "") ? row.value : "Themis" }
+            : row);
+        }
         return {
           ...entry,
           rows: entry.id === "agents" ? alignModelRows(rows, current) : rows,
@@ -90,6 +106,11 @@ export default function SettingsPage() {
 
   const current = settings.sections.find((entry) => entry.id === section) ?? settings.sections[0];
   const companySection = section === "company";
+  const providerSection = section === "intelligence-providers";
+  const selectedModelRow = current.rows.find((row) => row.config_key === "agents.reasoning_model");
+  const selectedModel = selectedModelRow?.option_labels?.[selectedModelRow.value ?? ""]
+    ?? selectedModelRow?.value
+    ?? "Not configured";
 
   return (
     <AppShell>
@@ -99,13 +120,14 @@ export default function SettingsPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {settings.sections.map((entry) => (
               <button
-                className={`admin-rail-link ${entry.id === current.id ? "active" : ""}`}
+                className={`admin-rail-link ${!companySection && !providerSection && entry.id === current.id ? "active" : ""}`}
                 key={entry.id}
                 onClick={() => setSection(entry.id)}
               >
                 {entry.label}
               </button>
             ))}
+            <button className={`admin-rail-link ${providerSection ? "active" : ""}`} onClick={() => setSection("intelligence-providers")}>Watch providers</button>
             <button className={`admin-rail-link ${companySection ? "active" : ""}`} onClick={() => setSection("company")}>Company</button>
           </div>
         </aside>
@@ -113,22 +135,51 @@ export default function SettingsPage() {
         <div className="admin-main">
           <div className="admin-scroll">
             <div className="admin-body" style={{ maxWidth: 760 }}>
-              <h1 style={{ fontSize: 26 }}>{companySection ? "Company" : current.title}</h1>
+              <h1 style={{ fontSize: 26 }}>{companySection ? "Company" : providerSection ? "Watch providers" : current.title}</h1>
               <p style={{ margin: "6px 0 24px", font: "400 15px var(--sans)", color: "var(--ink-3)" }}>
-                {companySection ? "Company context used by agents across matters." : current.sub}
-              </p>
-              <p className="stub-note" style={{ margin: "-12px 0 22px", lineHeight: 1.55 }}>
                 {companySection
-                  ? `Stored in 00_System/company.md${company.version ? ` · Version ${company.version.slice(0, 10)}` : ""}.`
-                  : current.id === "agents"
-                  ? "Provider, model, and effort choices apply to new model requests as soon as you save."
-                  : "These choices are stored as workspace preferences. Some describe planned behavior. Provider attestation changes are timestamped."}
+                  ? "Company context used by agents across matters."
+                  : providerSection
+                    ? "Public intelligence services that a Watch can use. Provider keys stay outside CounselOS screens."
+                    : current.sub}
               </p>
-              {!companySection && current.id === "agents" && settings.model_catalog.warning ? (
+              {!companySection && !providerSection && current.id === "agents" ? (
+                <div className="agent-note" style={{ margin: "-12px 0 22px" }}>
+                  <div className="field-label">Current model</div>
+                  <div style={{ marginTop: 5, font: "500 16px var(--sans)", color: "var(--ink-2)" }}>{selectedModel}</div>
+                  <p style={{ margin: "5px 0 0" }}>This model is used for new requests. Changes apply after you save.</p>
+                </div>
+              ) : null}
+              {!companySection && !providerSection && current.id === "agents" && settings.model_catalog.warning ? (
                 <p className="error" style={{ margin: "-12px 0 18px" }}>{settings.model_catalog.warning}</p>
               ) : null}
 
-              {companySection ? COMPANY_FIELDS.map((field) => (
+              {providerSection ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {providers.length ? providers.map((provider) => {
+                    const ready = provider.configured && provider.available;
+                    const state = ready ? "Configured · Ready" : provider.configured ? "Configured · Unavailable" : "Not configured";
+                    const stateColor = ready ? role.healthy : provider.configured ? role.failure : role.attentionDeep;
+                    return (
+                      <div className="setting-row" key={provider.provider_id}>
+                        <div>
+                          <div className="setting-label">{provider.label}</div>
+                          <div className="setting-help">
+                            {provider.provider_id === "polaris"
+                              ? "Optional public intelligence for Watches. It is not the main CounselOS model."
+                              : "Public intelligence for Watch scans."}
+                          </div>
+                          {provider.warning ? <div className="setting-help" style={{ marginTop: 4 }}>{provider.warning}</div> : null}
+                        </div>
+                        <span className="signal" style={{ color: stateColor, flex: "none", fontWeight: 500 }}>
+                          <span className="dot" style={{ background: stateColor }} />
+                          {state}
+                        </span>
+                      </div>
+                    );
+                  }) : <div className="empty-state">No Watch providers are available.</div>}
+                </div>
+              ) : companySection ? COMPANY_FIELDS.map((field) => (
                 <div className="setting-row company-setting-row" key={field.key}>
                   <div>
                     <div className="setting-label">{field.label}</div>
@@ -145,10 +196,34 @@ export default function SettingsPage() {
                     value={company[field.key]}
                   />
                 </div>
-              )) : current.rows.map((row) => {
+              )) : current.rows.map((row, index) => {
                 if (row.kind === "heading") {
-                  return <div className="setting-heading" key={row.id}>{row.label}</div>;
+                  const advancedRows = current.rows.slice(index + 1);
+                  return (
+                    <details key={row.id} style={{ marginTop: 20 }}>
+                      <summary className="setting-heading" style={{ cursor: "pointer" }}>{row.label}</summary>
+                      {advancedRows.map((advancedRow) => (
+                        <div className="setting-row" key={advancedRow.id}>
+                          <div>
+                            <div className="setting-label">{advancedRow.label}</div>
+                            {advancedRow.help ? <div className="setting-help"><LinkifiedText text={advancedRow.help} /></div> : null}
+                          </div>
+                          <select
+                            aria-label={advancedRow.label}
+                            className="select-input setting-control"
+                            onChange={(event) => update(advancedRow.id, { value: event.target.value })}
+                            value={advancedRow.value}
+                          >
+                            {(advancedRow.options ?? [advancedRow.value ?? ""]).map((option) => (
+                              <option key={option} value={option}>{advancedRow.option_labels?.[option] ?? option}</option>
+                            ))}
+                          </select>
+                        </div>
+                      ))}
+                    </details>
+                  );
                 }
+                if (current.rows.slice(0, index).some((candidate) => candidate.kind === "heading")) return null;
                 return (
                   <div className="setting-row" key={row.id}>
                     <div>
@@ -174,7 +249,7 @@ export default function SettingsPage() {
                         onChange={(event) => update(row.id, { value: event.target.value })}
                         value={row.value}
                       >
-                        {(row.options ?? [row.value ?? ""]).map((option) => (
+                        {(row.config_key === "document_review.default_author" ? ["Themis", current.rows.find((item) => item.config_key === "document_review.lawyer_name")?.value?.trim() || "Lawyer"] : row.options ?? [row.value ?? ""]).map((option) => (
                           <option key={option} value={option}>{row.option_labels?.[option] ?? option}</option>
                         ))}
                       </select>
@@ -206,13 +281,13 @@ export default function SettingsPage() {
 
           <div className="admin-foot">
             <span className={error ? "error" : "stub-note"}>
-              {error || (companySection ? "Saved to 00_System/company.md as company context." : "Saved to 00_System/settings.md as workspace preferences.")}
+              {error || (providerSection ? "Provider status is read-only." : !dirty ? "Saved" : companySection ? "Company context has unsaved changes." : current.id === "agents" ? "Model settings have unsaved changes." : "Document review settings have unsaved changes.")}
             </span>
             <div className="btn-row">
-              <button className="btn" disabled={!dirty || busy} onClick={() => void load()}>Discard</button>
+              <button className="btn" disabled={providerSection || !dirty || busy} onClick={() => void load()}>Discard</button>
               <button
                 className="btn primary"
-                disabled={!dirty || busy}
+                disabled={providerSection || !dirty || busy}
                 onClick={async () => {
                   setBusy(true);
                   setError("");
@@ -225,7 +300,7 @@ export default function SettingsPage() {
                   finally { setBusy(false); }
                 }}
               >
-                {busy ? "Saving…" : dirty ? "Save changes" : "Saved"}
+                {busy ? "Saving…" : "Save changes"}
               </button>
             </div>
           </div>

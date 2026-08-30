@@ -1,7 +1,7 @@
 ---
 tool_id: audit_decisions
 handler: audit_decisions
-description: Audit all recorded decisions for deterministic staleness signals.
+description: Check recorded decisions for passed review dates or changed sources.
 parameters:
   type: object
   properties: {}

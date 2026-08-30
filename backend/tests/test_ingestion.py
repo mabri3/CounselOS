@@ -4,6 +4,7 @@ import io
 
 import pytest
 from fastapi import UploadFile
+from docx import Document
 from pypdf import PdfWriter
 
 
@@ -76,3 +77,29 @@ async def test_same_content_has_stable_source_and_version(app_context):
 
     assert first["source_id"] == second["source_id"]
     assert first["version"] == second["version"]
+
+
+@pytest.mark.asyncio
+async def test_docx_upload_converts_headings_lists_and_tables_to_markdown(app_context):
+    source = io.BytesIO()
+    document = Document()
+    document.add_heading("Service Terms", level=1)
+    document.add_paragraph("Keep records for 30 days.")
+    document.add_paragraph("Notify customers", style="List Bullet")
+    table = document.add_table(rows=2, cols=2)
+    table.rows[0].cells[0].text = "Term"
+    table.rows[0].cells[1].text = "Value"
+    table.rows[1].cells[0].text = "Notice"
+    table.rows[1].cells[1].text = "30 days"
+    document.save(source)
+    source.seek(0)
+
+    result = await app_context.ingestion.upload_to_matter(
+        "MAT-DEMO-BEACON", UploadFile(file=source, filename="terms.docx")
+    )
+
+    markdown = app_context.vault.read_markdown(result["extracted_path"])["content"]
+    assert "# Service Terms" in markdown
+    assert "- Notify customers" in markdown
+    assert "| Term | Value |" in markdown
+    assert "| --- | --- |" in markdown

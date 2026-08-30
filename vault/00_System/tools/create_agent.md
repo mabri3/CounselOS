@@ -1,7 +1,7 @@
 ---
 tool_id: create_agent
 handler: create_agent
-description: Create a hot-loadable Markdown agent definition.
+description: Create an agent definition as a Markdown file.
 parameters:
   type: object
   properties:

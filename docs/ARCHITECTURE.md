@@ -32,14 +32,40 @@ Markdown is the authoritative, inspectable record. SQLite solves cross-matter qu
 
 - `VaultService`: safe file reads/writes, frontmatter, tree construction, and search corpus.
 - `IndexService`: rebuilds and queries matters, work items, decisions, schedules, and document metadata.
-- `MatterService`: creates matters, derives next actions, moves stages, and writes events.
+- `MatterStateService`: derives one current work-state projection from saved matter, work-item, and research-run facts.
+- `MatterService`: creates matters, moves stages, and owns matter mutations and events.
 - `IngestionService`: stores uploads and extracts PDF/DOCX text.
+- `DocumentReviewService`: stores a review baseline and comments in Markdown frontmatter and applies accept/reject actions.
+- `DocumentExportService`: regenerates DOCX files with native Word review objects and PDFs with standard review annotations.
 - `ResearchService`: creates first-pass research packets.
 - `DecisionMonitor`: deterministic staleness checks.
 - `AgentRegistry`: hot-loads agent Markdown.
+- `SkillRegistry`: hot-loads enabled declarative skill Markdown and validates one slash invocation.
+- `SkillBuilderService`: returns the fixed interview, safe unsaved drafts, and user-started evidence-backed suggestions.
 - `ToolRegistry`: hot-loads tool Markdown and maps descriptions to approved handlers.
 - `AgentRunner`: bounded provider/tool loop.
 - `SchedulerService`: local schedule polling and execution.
+
+### 4.1 Derived matter work state
+
+Matter work state follows one direction:
+
+```text
+Markdown facts
+  -> MatterStateService projection
+  -> matter list and detail API responses
+  -> frontend and agent context
+```
+
+Markdown remains the source of truth. `MatterStateService` reads the matter,
+required work items, and saved research-run records. It calculates `work_state`
+when the matter is read. The service does not save a second copy in Markdown or
+SQLite.
+
+The frontend can map a signal to presentation, but it does not infer execution
+from a matter stage or select another next work item. The agent receives the
+same projection in its context. `MatterService` still owns all mutations,
+including stage changes, approval, delivery, closure, and event writes.
 
 ## 5. Provider boundary
 
@@ -63,7 +89,9 @@ Python defines the executable handler. The registry refuses unknown handler keys
 ```text
 POST /api/chat
   -> load selected agent
+  -> validate and remove one optional leading skill command
   -> build system + matter + active file context
+  -> insert the skill after active-agent instructions for this turn only
   -> call provider with allowed tools
   -> execute tool calls
   -> append observations
@@ -72,6 +100,20 @@ POST /api/chat
 ```
 
 The trace records actions and results, not hidden reasoning.
+
+Skill Markdown never changes the selected agent or its tool allow-list. The original slash command and the assistant's small applied-skill summary are saved in the conversation record.
+
+## 8.1 Request flow: guided skills
+
+```text
+fixed local questions
+  -> unsaved provider draft or deterministic fallback
+  -> editable review
+  -> explicit Create skill
+  -> 00_System/skills/<skill-id>.md
+```
+
+Repeated-work review runs only after the user selects **Find repeated work**. It reads at most 100 user-authored messages. Accepted suggestions show evidence loaded from those stored messages and do not write a skill.
 
 ## 8. Request flow: mutation
 
@@ -106,11 +148,57 @@ The MVP is deterministic:
 - Linked source modified after decision/last review => review recommended.
 - Too old without review => review recommended.
 
-An external legal-change agent is a future extension, not a claim made by this scaffold.
+Continuous Legal Awareness adds external collection to this deterministic
+audit. It does not replace the audit or rewrite an existing decision.
+
+## 10.1 Continuous Legal Awareness
+
+```text
+editable Watch
+  -> OutboundQueryPolicy (local private-data check)
+  -> native and/or Polaris public collection
+  -> durable developments and provider observations
+  -> local match against current private knowledge
+  -> Briefing item and optional review packet
+  -> explicit lawyer outcome
+```
+
+`IntelligenceProvider.scan()` accepts only an immutable
+`OutboundWatchQuery`. The allow-list contains the standing question, public
+keywords, topics, jurisdictions, regulators, courts, industries, date window,
+public source URLs, and explicitly public entities. Before any network call,
+`OutboundQueryPolicy` rejects company aliases, internal products, matter IDs,
+paths, email addresses, and distinctive private excerpts. Company-specific
+matching happens later, inside Counsel OS.
+
+Native collection uses `SafeHttpFetcher`, which checks DNS answers, the
+connected address, redirects, sizes, timeouts, and retry limits. Polaris uses
+the fixed Themis Lime brain and `polaris-advisor`. It is advisor-read-only and
+does not support model discovery, tools, function calls, embeddings, arbitrary
+JSON schemas, endpoint changes, or redirects. The fixed `*.ts.net` origin is a
+pinned exception for that one adapter. Polaris citations start as supplied
+support, not verified support.
+
+`WatchScanService` alone coordinates `both` mode. It keeps a checkpoint for
+each provider and advances only a successful provider. If one provider fails,
+it saves the other provider's useful result and marks the scan partial.
+`DevelopmentService` owns stable identity, exact URL or official-ID merging,
+content versions, and provider provenance. Every scan snapshots the Watch
+collection settings, then reloads current private knowledge before local
+matching.
+
+Awareness records remain Markdown-first under
+`00_System/legal-awareness/`, `05_Briefing/`, and matter `mitigations/`.
+SQLite indexes list and query fields. Detail reads return to Markdown.
 
 ## 11. Scheduler
 
 The scheduler is an asyncio task in the FastAPI process. It reads Markdown schedules, runs due jobs, and updates schedule metadata. This is intentionally not durable across process crashes and is suitable only for a local single-process MVP.
+
+The scheduler also dispatches `watch_scan` and `briefing_digest` jobs through
+bound services. It never calls an intelligence provider directly. **Scan now**
+does not enable or change a schedule. A paused Watch creates a visible skipped
+run when its schedule is invoked.
 
 ## 12. Frontend boundaries
 
@@ -119,9 +207,14 @@ The scheduler is an asyncio task in the FastAPI process. It reads Markdown sched
 - `MatterWorkspace`: pane coordination.
 - `MatterTree`: navigation and uploads.
 - `ChatPanel`: messages, presets, and action trace.
-- `DocumentPanel`: Markdown editing and native-file links.
+- `SkillBuilder`: fixed guided interview, editable draft, saved-skill editing, and repeated-work suggestions.
+- `DocumentPanel`: Markdown editing, native-file companions, review controls, and DOCX/PDF export.
 - `DecisionTable`: global register.
 - `AutomationPanel`: schedules, manual execution, and simple schedule creation.
+- `WatchBuilder`: one editable draft flow for provider, query, sources, roles,
+  and cadence.
+- `BriefingWorkspace`: URL-backed reading, filters, saved views, and digests.
+- `ReviewPacketPanel`: evidence, company links, and explicit lawyer outcomes.
 
 The frontend performs no direct file or model access.
 

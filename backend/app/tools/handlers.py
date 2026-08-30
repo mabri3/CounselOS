@@ -1,9 +1,21 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 from app.models.api import AgentCreate, DecisionCreate, ScheduleCreate, WorkItemCreate
+from app.models.awareness import (
+    BriefingBehavior,
+    InternalScope,
+    PublicWatchQuery,
+    ReviewBehavior,
+    ScheduleRecurrence,
+    Watch,
+    WatchDraftCreate,
+    WatchPatch,
+    WatchSource,
+)
 from app.tools.registry import Handler, ToolExecutionContext
 from app.utils.time import iso_now
 
@@ -21,6 +33,9 @@ def build_handlers() -> dict[str, Handler]:
         "audit_decisions": audit_decisions,
         "create_agent": create_agent,
         "create_schedule": create_schedule,
+        "create_watch_draft": create_watch_draft,
+        "scan_watch": scan_watch,
+        "activate_watch": activate_watch,
         "append_memory": append_memory,
     }
 
@@ -58,13 +73,23 @@ async def write_markdown(context: ToolExecutionContext, arguments: dict[str, Any
             raise ValueError("A path or active matter is required.")
         base = context.app.matters.matter_path(context.matter_id)
         raw_path = f"{base}/drafts/{_filename(title)}.md"
-    if context.app.vault.exists(raw_path):
+    existing = context.app.vault.exists(raw_path)
+    if existing:
         current = context.app.vault.read_document(raw_path)
         if current.get("metadata", {}).get("immutable"):
             raise ValueError("The original request is immutable. Create a new version or event instead.")
     content = str(arguments.get("content") or "")
     metadata = arguments.get("metadata") or {}
-    path = context.app.vault.write_markdown(raw_path, content, metadata)
+    if existing and raw_path.lower().endswith(".md") and _is_reviewable_work_product(raw_path, current):
+        path = context.app.document_reviews.propose_agent_revision(
+            raw_path,
+            content,
+            metadata,
+            author_name=context.review_author or "Themis",
+            lawyer_author=context.lawyer_author,
+        )
+    else:
+        path = context.app.vault.write_markdown(raw_path, content, metadata)
     context.app.index.rebuild()
     return {
         "summary": f"Wrote {path}.",
@@ -72,6 +97,14 @@ async def write_markdown(context: ToolExecutionContext, arguments: dict[str, Any
         "refresh": ["tree", "matter"],
         "data": {"path": path},
     }
+
+
+def _is_reviewable_work_product(path: str, document: dict[str, Any]) -> bool:
+    record_type = str(document.get("metadata", {}).get("record_type") or "")
+    return (
+        record_type in {"extracted_document", "work_product", "draft"}
+        or any(part in path for part in ("/documents/", "/drafts/", "/work-product/"))
+    )
 
 
 async def move_matter_stage(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
@@ -156,10 +189,9 @@ async def record_decision(context: ToolExecutionContext, arguments: dict[str, An
 
 
 async def audit_decisions(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
-    result = context.app.decisions.audit()
+    result = context.app.decisions.audit(persist=False)
     return {
-        "summary": f"Audited {result['reviewed']} decision(s); {result['flagged']} need review.",
-        "refresh": ["decisions", "dashboard"],
+        "summary": f"Checked {result['reviewed']} decision(s); {result['flagged']} need review.",
         "data": result,
     }
 
@@ -185,6 +217,163 @@ async def create_schedule(context: ToolExecutionContext, arguments: dict[str, An
         "changed_paths": [result["path"]],
         "refresh": ["automations", "tree"],
         "data": result,
+    }
+
+
+async def create_watch_draft(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
+    """Persist an editable Watch draft. This action never creates a schedule."""
+    standing_question = str(
+        arguments.get("standing_question") or arguments.get("question") or "What material legal developments changed?"
+    ).strip()
+    title = str(arguments.get("title") or _watch_title(standing_question)).strip()
+    query_values = dict(arguments.get("public_query") or {})
+    query_values.setdefault("standing_question", standing_question)
+    for key in ("keywords", "topics", "jurisdictions", "regulators", "courts", "industries"):
+        if key in arguments and key not in query_values:
+            query_values[key] = arguments[key]
+    request = WatchDraftCreate(
+        title=title,
+        standing_question=standing_question,
+        public_query=PublicWatchQuery.model_validate(query_values),
+        purposes=arguments.get("purposes") or ["awareness"],
+        provider=str(arguments.get("provider") or "native"),
+    )
+    watch = context.app.watches.create_draft(request)
+    changes: dict[str, Any] = {}
+    model_fields = {
+        "sources": WatchSource,
+        "internal_scope": InternalScope,
+        "recurrence": ScheduleRecurrence,
+        "briefing": BriefingBehavior,
+        "review": ReviewBehavior,
+    }
+    for key, model in model_fields.items():
+        if key in arguments and arguments[key] is not None:
+            value = arguments[key]
+            changes[key] = [model.model_validate(item) for item in value] if key == "sources" else model.model_validate(value)
+    if changes:
+        watch = context.app.watches.update(
+            watch.watch_id,
+            WatchPatch(expected_revision=watch.revision, **changes),
+            watch.revision,
+        )
+    context.app.index.rebuild()
+    return {
+        "summary": f"Saved Watch draft: {watch.title}. It is disabled and has no schedule.",
+        "changed_paths": [watch.path],
+        "refresh": ["watches", "briefing", "tree"],
+        "data": {"watch": watch.model_dump(mode="json"), "card": _watch_draft_card(watch)},
+    }
+
+
+async def scan_watch(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
+    """Run one draft scan without enabling the Watch or changing its schedule."""
+    watch_id = str(arguments.get("watch_id") or "").strip()
+    if not watch_id:
+        draft = await create_watch_draft(context, arguments)
+        watch_id = str(draft["data"]["watch"]["watch_id"])
+    before = context.app.watches.get(watch_id)
+    result = await context.app.watch_scans.run_watch(watch_id, "draft")
+    after = context.app.watches.get(watch_id)
+    # Scan services may update checkpoints, but a draft scan must never activate.
+    if after.enabled or after.schedule_id:
+        raise ValueError("Draft scan attempted to activate or schedule the Watch")
+    scan = result.scan
+    sources_checked = [
+        coverage.model_dump(mode="json")
+        for coverage in scan.source_coverage
+    ]
+    failures = [
+        warning for warning in scan.warnings
+        if any(word in warning.lower() for word in ("fail", "unavailable", "error", "could not"))
+    ]
+    summary = (
+        f"Scanned draft {before.title}: {len(sources_checked)} source result(s), "
+        f"{len(result.preview_items)} sample Briefing item(s), and "
+        f"{len(result.preview_packets)} possible review connection(s). The Watch remains disabled."
+    )
+    return {
+        "summary": summary,
+        "changed_paths": list(dict.fromkeys([scan.path, *scan.created_paths, after.path])),
+        "refresh": ["watches", "briefing", "tree"],
+        "data": {
+            "watch": after.model_dump(mode="json"),
+            "scan": scan.model_dump(mode="json"),
+            "sources_checked": sources_checked,
+            "failures": failures,
+            "sample_briefing_items": [item.model_dump(mode="json") for item in result.preview_items[:5]],
+            "possible_review_connections": [packet.model_dump(mode="json") for packet in result.preview_packets[:5]],
+            "card": _watch_scan_card(after, result),
+        },
+    }
+
+
+async def activate_watch(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
+    """Create a schedule and explicitly activate an existing Watch draft."""
+    watch_id = str(arguments.get("watch_id") or "").strip()
+    if not watch_id:
+        raise ValueError("watch_id is required; save the draft before starting it")
+    watch = context.app.watches.get(watch_id)
+    if watch.enabled and watch.schedule_id:
+        return {
+            "summary": f"Watch {watch.title} is already active.",
+            "data": {"watch": watch.model_dump(mode="json"), "card": _watch_draft_card(watch)},
+        }
+    recurrence = ScheduleRecurrence.model_validate(arguments.get("recurrence") or watch.recurrence.model_dump())
+    # Create first. If this fails, no Watch state is changed.
+    schedule = context.app.scheduler.create(ScheduleCreate(
+        title=str(arguments.get("schedule_title") or f"{watch.title} scan"),
+        agent_id="research-agent",
+        instructions=f"Run the scheduled scan for Watch {watch.watch_id}.",
+        kind="watch_scan",
+        target_watch_id=watch.watch_id,
+        recurrence=recurrence,
+        interval_seconds=recurrence.interval_seconds or 3600,
+        enabled=True,
+    ))
+    activated = watch.model_copy(update={
+        "enabled": True,
+        "schedule_id": schedule["schedule_id"],
+        "status": "healthy",
+        "recurrence": recurrence,
+        "revision": watch.revision + 1,
+        "updated_at": datetime.now(UTC),
+    })
+    context.app.watches._write(Watch.model_validate(activated))
+    context.app.index.rebuild()
+    return {
+        "summary": f"Started Watch: {watch.title}.",
+        "changed_paths": [watch.path, schedule["path"]],
+        "refresh": ["watches", "briefing", "automations", "tree"],
+        "data": {"watch": activated.model_dump(mode="json"), "schedule": schedule, "card": _watch_draft_card(activated)},
+    }
+
+
+def _watch_title(question: str) -> str:
+    clean = question.rstrip(" ?.!").strip()
+    return (clean[:140] + " Watch") if clean else "Legal developments Watch"
+
+
+def _watch_draft_card(watch: Watch) -> dict[str, Any]:
+    return {
+        "type": "watch_draft", "card_id": f"watch-draft:{watch.watch_id}",
+        "watch_id": watch.watch_id, "status": "success", "title": watch.title,
+        "summary": "Active Watch" if watch.enabled else "Saved draft · Disabled · No schedule" if not watch.schedule_id else "Saved draft · Disabled",
+        "watch_path": watch.path, "vault_path": watch.path, "watch_url": f"/watches/{watch.watch_id}",
+        "allowed_actions": ["change_something"] if watch.enabled else ["save_draft", "scan_now", "change_something", "start_watch"],
+    }
+
+
+def _watch_scan_card(watch: Watch, result: Any) -> dict[str, Any]:
+    scan = result.scan
+    return {
+        "type": "watch_scan", "card_id": f"watch-scan:{watch.watch_id}:{scan.scan_id}",
+        "watch_id": watch.watch_id, "scan_id": scan.scan_id,
+        "status": scan.status if scan.status in {"partial", "success", "failed"} else "pending",
+        "summary": f"{scan.briefing_item_count} Briefing item(s); {scan.review_packet_count} possible review connection(s).",
+        "warnings": scan.warnings, "vault_path": scan.path,
+        "watch_url": f"/watches/{watch.watch_id}", "scan_url": f"/briefing/scans/{scan.scan_id}",
+        "allowed_actions": ["open_watch", "open_scan", "scan_again"],
     }
 
 

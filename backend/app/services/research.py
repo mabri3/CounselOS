@@ -5,6 +5,7 @@ from typing import Any
 
 from app.models.api import ChatRequest, WorkItemCreate
 from app.providers.base import LLMProvider
+from app.services.dossier import DossierService
 from app.services.index import IndexService
 from app.services.matters import MatterService
 from app.services.search import SearchService
@@ -23,12 +24,14 @@ class ResearchService:
         matters: MatterService,
         search: SearchService,
         provider: LLMProvider,
+        dossiers: DossierService,
     ):
         self.vault = vault
         self.index = index
         self.matters = matters
         self.search = search
         self.provider = provider
+        self.dossiers = dossiers
         self._agent_runner: Callable[[ChatRequest], Awaitable[Any]] | None = None
 
     def bind_agent_runner(self, runner: Callable[[ChatRequest], Awaitable[Any]]) -> None:
@@ -107,6 +110,32 @@ class ResearchService:
                 "analysis_warning": analysis_warning,
             },
         )
+        orientation_warning: str | None = None
+        try:
+            generated_summary = DossierService.section(body, "Matter summary")
+            generated_question = DossierService.section(body, "Decision question")
+            generated_open_questions = DossierService.list_section(body, "Open questions")
+            current_orientation = self.dossiers.orientation(matter_id)
+            self.dossiers.update_orientation(
+                matter_id,
+                summary=(
+                    generated_summary
+                    or current_orientation["summary"]
+                    or matter.get("description")
+                    or matter["title"]
+                ),
+                decision_question=(
+                    generated_question
+                    or current_orientation["decision_question"]
+                    or matter.get("next_action")
+                    or research_question
+                ),
+                open_questions=generated_open_questions or current_orientation["open_questions"],
+                research_path=path,
+            )
+        except Exception as exc:
+            orientation_warning = f"Matter orientation update failed: {exc}"
+            self.vault.update_markdown(path, metadata_updates={"orientation_warning": orientation_warning})
         if change_stage:
             self.matters.complete_open_work_items(matter_id, item_type="research")
             self.matters.create_work_item(
@@ -146,6 +175,7 @@ class ResearchService:
             "internal_sources": len(search_result.get("internal", [])),
             "external_sources": len(search_result.get("external", [])),
             "analysis_warning": analysis_warning,
+            "orientation_warning": orientation_warning,
         }
 
     @staticmethod
@@ -162,8 +192,19 @@ class ResearchService:
             f"Research question:\n{question}\n\n"
             f"Internal search results:\n{search_result.get('internal', [])}\n\n"
             f"External search results:\n{search_result.get('external', [])}\n\n"
-            "Return: (1) executive orientation, (2) likely rules/issues, (3) viable paths, "
-            "(4) facts that could change the answer, and (5) recommended last-mile verification."
+            "Begin with these exact Markdown sections:\n\n"
+            "## Matter summary\n"
+            "Write 2–4 short sentences explaining who is involved, what is happening, why counsel is involved, "
+            "and the important timing or consequence. Use only matter facts.\n\n"
+            "## Decision question\n"
+            "Write one direct question that names the concrete choices, scale or deadline when material, and the "
+            "business consequence. It must make sense without another file. Avoid generic verbs such as review, "
+            "assess, consider, or approve the path. Keep it under 90 words.\n\n"
+            "## Open questions\n"
+            "List 1–5 material questions that remain unresolved after this review. Include missing business facts and "
+            "research questions only when the answer could change the recommendation or decision. Use Markdown bullets.\n\n"
+            "Then return: likely rules/issues, viable paths, facts that could change the answer, and recommended "
+            "last-mile verification. Keep the recommendation separate from the lawyer's decision."
         )
 
     @staticmethod

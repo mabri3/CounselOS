@@ -26,6 +26,19 @@ class SearchService:
             warning = f"Search provider '{self.settings.search_provider}' is not configured."
         return {"query": query, "internal": internal, "external": external, "warning": warning}
 
+    async def search_external(self, query: str) -> dict[str, Any]:
+        """Search only the configured public provider; never touch the vault."""
+        external: list[dict[str, Any]] = []
+        warning: str | None = None
+        if self.settings.search_provider.lower() == "tavily" and self.settings.tavily_api_key:
+            try:
+                external = await self._tavily(query)
+            except Exception as exc:  # A provider failure can still yield a partial scan.
+                warning = f"External search failed: {exc}"
+        elif self.settings.search_provider.lower() not in {"", "disabled", "none"}:
+            warning = f"Search provider '{self.settings.search_provider}' is not configured."
+        return {"query": query, "external": external, "warning": warning}
+
     async def _tavily(self, query: str) -> list[dict[str, Any]]:
         payload = {
             "api_key": self.settings.tavily_api_key,

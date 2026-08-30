@@ -1,6 +1,6 @@
 # Context Map
 
-Last verified: 2026-08-25
+Last verified: 2026-08-29
 
 ## Selective Reading Guide
 
@@ -14,6 +14,7 @@ Start with `AGENTS.md` and `current.md`. Read only the paths mapped to the activ
 | Core domain | `backend/app/services/`, `backend/app/agents/`, `backend/app/tools/` | Matters, vault/index behavior, research, decisions, agents, tools, scheduling | Changing backend behavior |
 | Interfaces/API | `backend/app/routers/`, `backend/app/models/api.py`, `docs/API.md`, `frontend/lib/api.ts`, `frontend/lib/types.ts` | HTTP routes, request/response models, frontend client contracts | Changing or debugging API behavior |
 | Document editor | `frontend/components/DocumentPanel.tsx`, `frontend/components/MarkdownRichEditor.tsx`, `frontend/app/globals.css`, `backend/app/services/vault.py` | Third-pane mode selection, Markdown-rich-text conversion, editor presentation, editability contract | Changing formatted drafting or read-only document behavior |
+| Design language | `docs/DESIGN_LANGUAGE.md`, `frontend/lib/design.ts`, `frontend/app/globals.css` | Canonical semantic colors, light washes, shared state labels, typography, and interaction rules | Changing any screen, state color, badge, table, card, or control |
 | Intake and dossier checkpoint | `docs/BUILD_PLAN.md`, `vault/00_System/agents/intake-agent.md`, `frontend/components/NewMatterForm.tsx`, `frontend/components/ChatPanel.tsx`, `frontend/components/MatterWorkspace.tsx`, `backend/app/services/chat_history.py`, `backend/app/services/matters.py`, `backend/app/services/research.py` | Preserved intake transcript, traceable fact corrections, issue spotting, focused clarification, dossier generation, and matter-page summary | Planning or implementing the active checkpoint |
 | Agent answer standards | `AGENTS.md`, `vault/00_System/Agents.md`, `vault/00_System/Soul.md`, `backend/app/agents/runner.py` | Best-effort answer delivery, graceful degradation, source honesty, and question gating | Changing agent behavior or failure handling |
 | Company context | `vault/00_System/company.md`, `frontend/app/settings/page.tsx`, `backend/app/routers/settings.py`, `backend/app/services/settings.py` | Current company source and planned Settings editing surface | Changing company setup or agent grounding |

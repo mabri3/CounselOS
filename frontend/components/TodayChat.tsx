@@ -1,14 +1,19 @@
 "use client";
 
-import { KeyboardEvent, useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import AttachmentPicker from "@/components/AttachmentPicker";
 import ChatCards from "@/components/ChatCards";
+import SkillCommandMenu from "@/components/SkillCommandMenu";
 import LinkifiedText from "@/components/LinkifiedText";
 import UploadIntentCard from "@/components/UploadIntentCard";
-import { getDailyConversation, getDailyConversations, sendChat, uploadWorkspaceDocuments } from "@/lib/api";
-import type { AttachmentReference, CardAction, ChatHistoryMessage, DailyConversationSummary } from "@/lib/types";
+import { getDailyConversation, getDailyConversations, getSkills, sendChat, uploadWorkspaceDocuments } from "@/lib/api";
+import { formatLongDate } from "@/lib/design";
+import { skillBuilderGoal } from "@/lib/skills";
+import type { AttachmentReference, CardAction, ChatHistoryMessage, DailyConversationSummary, SkillDefinition } from "@/lib/types";
 
 const SUGGESTIONS = [
   "What needs my attention today?",
@@ -25,13 +30,8 @@ function localDay(): string {
 }
 
 function dayLabel(day: string, today: string): string {
-  if (day === today) return `Today — ${day}`;
-  return new Date(`${day}T00:00:00`).toLocaleDateString("en-GB", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
+  if (day === today) return `Today — ${formatLongDate(day)}`;
+  return formatLongDate(day);
 }
 
 type Props = {
@@ -39,6 +39,8 @@ type Props = {
 };
 
 export default function TodayChat({ onRefresh }: Props) {
+  const router = useRouter();
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const today = useMemo(localDay, []);
   const [days, setDays] = useState<DailyConversationSummary[]>([]);
   const [selectedDay, setSelectedDay] = useState(today);
@@ -49,7 +51,10 @@ export default function TodayChat({ onRefresh }: Props) {
   const [error, setError] = useState("");
   const [attachments, setAttachments] = useState<AttachmentReference[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [skills, setSkills] = useState<SkillDefinition[]>([]);
   const isToday = selectedDay === today;
+
+  useEffect(() => { void getSkills().then(({ skills: saved }) => setSkills(saved)).catch(() => setSkills([])); }, []);
 
   const loadDays = useCallback(async () => {
     const result = await getDailyConversations();
@@ -87,7 +92,12 @@ export default function TodayChat({ onRefresh }: Props) {
   async function submit(text: string, cardAction?: CardAction, actionAttachments: AttachmentReference[] = attachments) {
     const message = text.trim();
     if ((!message && !cardAction && !actionAttachments.length) || busy || !isToday) return;
-    const visibleText = message || cardAction?.values?.join(", ") || cardAction?.action || `Attached ${actionAttachments.map((item) => item.name).join(", ")}`;
+    const builderGoal = !cardAction ? skillBuilderGoal(text) : null;
+    if (builderGoal) {
+      router.push(`/skills?goal=${encodeURIComponent(builderGoal)}`);
+      return;
+    }
+    const visibleText = message || cardActionText(cardAction) || `Attached ${actionAttachments.map((item) => item.name).join(", ")}`;
     const previousMessages = messages;
     setMessages((current) => [
       ...current,
@@ -136,9 +146,9 @@ export default function TodayChat({ onRefresh }: Props) {
       <div className="today-chat-head">
         <div>
           <div className="section-heading" id="today-chat-title">Ask about your work</div>
-          <p>Counsel Copilot can search the workspace, compare matters, and take actions that you request.</p>
+          <p>Themis can search the workspace, compare matters, and take actions that you request.</p>
         </div>
-        <span className="agent-label"><span className="agent-mark" />Counsel Copilot</span>
+        <span className="agent-label"><span className="agent-mark" />Themis</span>
       </div>
 
       <div className="today-chat-day-row">
@@ -165,6 +175,7 @@ export default function TodayChat({ onRefresh }: Props) {
             <div className="bubble-you" key={message.message_id ?? index}><LinkifiedText text={message.content} /></div>
           ) : (
             <div className="bubble-agent" key={message.message_id ?? index}>
+              {message.applied_skills?.map((skill) => <div className="applied-skill-label" key={skill.skill_id}>Applied skill: {skill.name}</div>)}
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
               {message.trace?.length ? (
                 <div className="trace-list" style={{ marginTop: 10 }}>
@@ -196,7 +207,8 @@ export default function TodayChat({ onRefresh }: Props) {
           <div className="composer-field">
             <AttachmentPicker disabled={busy || loading || uploading} onSelect={addFiles} />
             <textarea
-              aria-label="Ask Counsel Copilot about your work"
+              ref={inputRef}
+              aria-label="Ask Themis about your work"
               disabled={busy || loading}
               onChange={(event) => setInput(event.target.value)}
               onKeyDown={handleKeyDown}
@@ -208,8 +220,22 @@ export default function TodayChat({ onRefresh }: Props) {
               {uploading ? "Uploading…" : "Send"}
             </button>
           </div>
+          <SkillCommandMenu input={input} skills={skills} onSelect={(skill) => { setInput(`/${skill.skill_id} `); requestAnimationFrame(() => inputRef.current?.focus()); }} />
+          <div className="composer-note"><Link className="build-skill-link" href="/skills">Build a skill</Link></div>
         </>
       ) : null}
     </section>
   );
+}
+
+function cardActionText(action?: CardAction): string {
+  if (!action) return "";
+  if (action.action === "save_draft") return "Save this Watch as a draft";
+  if (action.action === "scan_now") return "Scan this Watch now without starting its schedule";
+  if (action.action === "scan_again") return "Scan this Watch again";
+  if (action.action === "change_something") return "Change something in this Watch";
+  if (action.action === "start_watch") return "Start this Watch and activate its schedule";
+  if (action.action === "skip") return "Skip";
+  if (action.action === "stop") return "No more questions";
+  return action.values?.join(", ") ?? action.action;
 }

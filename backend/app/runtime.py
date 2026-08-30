@@ -4,27 +4,51 @@ from app.agents.context import ContextBuilder
 from app.agents.registry import AgentRegistry
 from app.agents.runner import AgentRunner
 from app.config import Settings, get_settings
+from app.intelligence.fetch import SafeHttpFetcher
+from app.intelligence.native import NativeIntelligenceProvider
+from app.intelligence.outbound_policy import OutboundQueryPolicy
+from app.intelligence.polaris import PolarisIntelligenceProvider
+from app.intelligence.registry import IntelligenceRegistry
+from app.intelligence.source_support import SourceSupportService
+from app.models.api import ChatRequest
+from app.models.awareness import SafeFetchLimits
 from app.providers.factory import build_provider
 from app.providers.openai_compatible import OpenAICompatibleProvider
 from app.services.annotations import AnnotationService
+from app.services.awareness_matching import AwarenessMatcher
+from app.services.briefing_query import BriefingQueryService
+from app.services.briefing_research import BriefingResearchService
+from app.services.briefing_store import BriefingStore
 from app.services.chat_history import ChatHistoryService
 from app.services.company import CompanyProfileService
 from app.services.decisions import DecisionService
+from app.services.developments import DevelopmentService
+from app.services.document_export import DocumentExportService
+from app.services.document_review import DocumentReviewService
 from app.services.dossier import DossierService
 from app.services.index import IndexService
 from app.services.ingestion import IngestionService
+from app.services.internal_knowledge import InternalKnowledgeService
 from app.services.matters import MatterService
+from app.services.mitigations import MitigationService
+from app.services.matter_state import MatterStateService
 from app.services.matter_records import MatterRecordService
 from app.services.research import ResearchService
 from app.services.research_runs import ResearchRunService
+from app.services.review_outcomes import ReviewOutcomeService
+from app.services.review_packets import ReviewPacketService
 from app.services.scheduler import SchedulerService
 from app.services.search import SearchService
 from app.services.settings import SettingsService
+from app.services.skill_builder import SkillBuilderService
 from app.services.vault import VaultService
+from app.services.watch_scans import WatchScanService
+from app.services.watches import WatchStore
 from app.services.workflow import WorkflowService
 from app.services.work_product import WorkProductService
 from app.tools.handlers import build_handlers
 from app.tools.registry import ToolRegistry
+from app.skills.registry import SkillRegistry
 
 
 class AppContext:
@@ -39,12 +63,16 @@ class AppContext:
         self.workflow = WorkflowService(self.vault)
         self.index.rebuild()
 
-        self.matters = MatterService(self.vault, self.index, self.workflow)
+        self.matter_state = MatterStateService(self.vault)
+        self.matters = MatterService(self.vault, self.index, self.workflow, self.matter_state)
         self.chat_history = ChatHistoryService(self.vault, self.matters)
         self.company = CompanyProfileService(self.vault)
         self.matter_records = MatterRecordService(self.vault, self.matters)
         self.dossiers = DossierService(self.vault, self.matters)
+        self.matters.bind_dossiers(self.dossiers)
         self.work_products = WorkProductService(self.vault, self.matters)
+        self.document_reviews = DocumentReviewService(self.vault)
+        self.document_exports = DocumentExportService(self.vault)
         self.ingestion = IngestionService(
             self.vault,
             self.index,
@@ -59,17 +87,69 @@ class AppContext:
         )
         self.provider = build_provider(self.settings)
         self.search = SearchService(self.settings, self.vault)
+        self.watches = WatchStore(self.vault)
+        self.briefing = BriefingStore(self.vault)
+        self.developments = DevelopmentService(self.vault)
+        self.internal_knowledge = InternalKnowledgeService(self.vault)
+        self.awareness_matcher = AwarenessMatcher()
+        self.review_packets = ReviewPacketService(self.vault, self.briefing)
+        self.mitigations = MitigationService(self.vault)
+        limits = SafeFetchLimits(
+            request_timeout_seconds=self.settings.intelligence_request_timeout_seconds,
+            run_timeout_seconds=self.settings.intelligence_run_timeout_seconds,
+            max_redirects=self.settings.intelligence_max_redirects,
+            max_compressed_bytes=self.settings.intelligence_max_compressed_bytes,
+            max_decompressed_bytes=self.settings.intelligence_max_decompressed_bytes,
+            max_excerpt_characters=self.settings.intelligence_max_excerpt_characters,
+        )
+        self.intelligence_fetcher = SafeHttpFetcher()
+        self.native_intelligence = NativeIntelligenceProvider(
+            self.intelligence_fetcher,
+            self.search,
+            limits=limits,
+            max_discovery_urls=self.settings.intelligence_max_discovery_urls,
+            max_candidates=self.settings.intelligence_max_candidates,
+        )
+        self.polaris_intelligence = PolarisIntelligenceProvider(self.settings.polaris_api_key)
+        self.intelligence = IntelligenceRegistry(
+            self.native_intelligence, self.polaris_intelligence
+        )
+        self.outbound_query_policy = OutboundQueryPolicy()
+        self.source_support = SourceSupportService(self.intelligence_fetcher, limits=limits)
+        self.watch_scans = WatchScanService(
+            self.watches,
+            self.briefing,
+            self.developments,
+            self.intelligence,
+            self.outbound_query_policy,
+            self.internal_knowledge,
+            self.awareness_matcher,
+            self.review_packets,
+            self.index,
+        )
+        # Recover durable runs before any router can query awareness records.
+        self.watch_scans.mark_interrupted_runs()
+        self.briefing_query = BriefingQueryService(self.briefing, self.index)
+        self.briefing_research = BriefingResearchService(self.briefing)
         self.research = ResearchService(
             self.vault,
             self.index,
             self.matters,
             self.search,
             self.provider,
+            self.dossiers,
         )
         self.annotations = AnnotationService(self.vault, self.matters)
         self.agents = AgentRegistry(self.vault, self.settings.max_agent_steps)
+        self.skills = SkillRegistry(self.vault)
+        self.skill_builder = SkillBuilderService(
+            self.skills,
+            self.chat_history,
+            self.provider,
+            self.settings,
+        )
         self.tools = ToolRegistry(self.vault, build_handlers())
-        self.agent_context = ContextBuilder(self.vault, self.index, self.agents)
+        self.agent_context = ContextBuilder(self.vault, self.index, self.agents, self.matter_state)
         self.scheduler = SchedulerService(
             self.vault,
             self.index,
@@ -80,13 +160,34 @@ class AppContext:
             self.agents,
             self.tools,
             self.agent_context,
+            self.skills,
             self,
         )
         self.research.bind_agent_runner(self.runner.run)
         self.research_runs = ResearchRunService(self.vault, self.research)
         self.research_runs.mark_running_interrupted()
         self.scheduler.bind(self)
+        self.scheduler.bind_watch_runner(
+            lambda watch_id: self.watch_scans.run_watch(watch_id, "scheduled")
+        )
+        self.scheduler.bind_digest_runner(self._run_briefing_digest)
+        self.briefing_research.bind_agent_runner(self._run_briefing_research)
+        self.review_outcomes = ReviewOutcomeService(
+            self.briefing, self.decisions, self.matters, self.index
+        )
         self.annotations.bind(self.runner)
+
+    async def _run_briefing_research(self, item, question: str):
+        return await self.runner.run(
+            ChatRequest(
+                message=question or f"Research this Briefing item further: {item.title}",
+                active_file=item.path,
+                agent_id="research-agent",
+            )
+        )
+
+    async def _run_briefing_digest(self, view_id: str):
+        return self.briefing_query.create_digest(view_id)
 
     def _load_saved_model_settings(self) -> None:
         values = self.settings_store.read()["values"]
@@ -126,6 +227,10 @@ class AppContext:
         self.provider = next_provider
         self.research.provider = next_provider
         self.runner.provider = next_provider
+        self.skill_builder.provider = next_provider
+        self.skill_builder.settings = next_settings
+        # The bound adapter uses the current runner, whose provider was refreshed above.
+        self.briefing_research.bind_agent_runner(self._run_briefing_research)
 
     async def model_catalog(self) -> dict[str, object]:
         compatible_models: list[dict[str, object]] = []

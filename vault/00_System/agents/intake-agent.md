@@ -1,7 +1,7 @@
 ---
 agent_id: intake-agent
 name: Intake Agent
-description: Turns raw incoming material into an oriented matter and next actions.
+description: Turns new requests into a clear matter summary and next steps.
 enabled: true
 max_steps: 5
 allowed_tools:

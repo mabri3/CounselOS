@@ -127,7 +127,7 @@ Do not add a separate intake-session store. Reuse the existing matter conversati
 - No mandatory verifier, citation gate, confidence gate, multi-agent vote, or legal-perfection refusal.
 - No auth, cloud tenancy, message broker, embeddings, vector database, plugin marketplace, or new agent framework.
 - No automatic cross-matter fact propagation.
-- No native Word redlining, contract-review module, regulatory-change monitor, or business-user portal.
+- No source-layout-preserving Word/PDF round trip, contract-review module, regulatory-change monitor, or business-user portal.
 - No image OCR or vision pipeline. Preserve an uploaded image as a source only until a real workflow proves that image understanding is required.
 - No new design system, navigation model, page shell, matter layout, or broad visual refresh.
 
@@ -136,6 +136,34 @@ Do not add a separate intake-session store. Reuse the existing matter conversati
 **Status:** Completed and verified on 2026-08-26.
 
 The matter workspace uses one Markdown value for formatted and raw editing. Headings, emphasis, links, quotes, and lists round-trip through the existing file API. Immutable request files remain read-only. See `decisions.md` for the durable milestone.
+
+## Completed checkpoint — Markdown document review and export
+
+The editor can track typed or agent-proposed changes, add comments to selected text, and accept or reject changes. DOCX export uses native Word comments and tracked changes. PDF export uses standard highlight, underline, and strikeout annotations. Export regenerates layout from Markdown; it does not preserve the source file's layout or import existing review objects.
+
+## Completed checkpoint — Decision-ready matter orientation
+
+**Thesis:** A busy lawyer should understand the matter and the judgment required without opening another file. `dossier.md` remains the one editable matter summary; the overview must not create or store a second summary.
+
+**Payoff moment:** Open a reviewed matter and see a concrete matter summary, a decision question that names the real choices and stakes, material open questions, and the separate agent recommendation.
+
+**Demo script:**
+
+1. Run or complete a matter review.
+2. Confirm that the model writes or updates the `Summary`, `Decision question`, and `Open questions` sections in `dossier.md`.
+3. Open the matter overview and confirm that it reads those sections from the dossier.
+4. Confirm that a matter without a dossier still shows its existing description and next action.
+
+**Build:**
+
+- Reuse `DossierService` and its content-hash protection. Do not add a summary table, metadata copy, or frontend model call.
+- Ask the configured model for a short factual summary, one decision-ready question, and a short list of material open questions as part of research review. Preserve useful research output if orientation parsing fails.
+- Treat the dossier as the curated orientation view. Keep detailed facts in `facts.md`, legal issues in `issues.md`, and actionable work in work items. Do not add a separate open-questions file.
+- Project the three dossier sections through the existing matter orientation response.
+- Render summary, question, open questions, and recommendation as separate concepts in the existing overview pane.
+- Add focused tests for dossier extraction, fallback behavior, research updates, and the matter response.
+
+**Parked backlog:** Automatic regeneration after every matter mutation remains deferred until observed stale summaries justify that cost. Intake and research are the current refresh points.
 
 ## Wave 0 — Verify the scaffold
 

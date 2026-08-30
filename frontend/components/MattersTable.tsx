@@ -3,13 +3,11 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import LinkifiedText from "@/components/LinkifiedText";
-import { dueWord, stageLabel, STAGES } from "@/lib/design";
+import { dueWord, matterNextAction, matterNextOwner, riskLabel, signalCellTint, signalFor, stageLabel, STAGES } from "@/lib/design";
 import type { Matter } from "@/lib/types";
 
 type SortKey = "stage" | "owner" | "due";
 type SortDirection = "asc" | "desc";
-
-const columns = "minmax(0,2fr) 150px minmax(0,2fr) 120px 110px 90px";
 
 export default function MattersTable({ matters }: { matters: Matter[] }) {
   const [sortKey, setSortKey] = useState<SortKey>("due");
@@ -21,6 +19,12 @@ export default function MattersTable({ matters }: { matters: Matter[] }) {
       return direction === "asc" ? compared : -compared;
     });
   }, [direction, matters, sortKey]);
+
+  const owners = new Set(matters.map(matterNextOwner));
+  const showOwner = owners.size > 1;
+  const columns = showOwner
+    ? "minmax(0,2fr) 150px minmax(0,2fr) 120px 110px 90px"
+    : "minmax(0,2fr) 150px minmax(0,2fr) 110px 90px";
 
   function sortBy(key: SortKey) {
     if (key === sortKey) {
@@ -48,23 +52,31 @@ export default function MattersTable({ matters }: { matters: Matter[] }) {
 
   return (
     <div className="register">
-      <div className="register-grid register-head record-meta" style={{ gridTemplateColumns: columns }}>
+      <div
+        className="register-grid register-head record-meta"
+        style={{ gridTemplateColumns: columns, textTransform: "none" }}
+      >
         <span>Matter</span>
         <span>{sortable("stage", "Stage")}</span>
         <span>Next action</span>
-        <span>{sortable("owner", "Owner")}</span>
+        {showOwner ? <span>{sortable("owner", "Next owner")}</span> : null}
         <span>{sortable("due", "Due")}</span>
         <span>Risk</span>
       </div>
       {sorted.map((matter) => {
         const due = dueWord(matter);
+        const signal = signalFor(matter);
         return (
           <div
             className="register-grid register-row"
             key={matter.matter_id}
-            style={{ gridTemplateColumns: columns }}
+            style={{
+              background: "#fffefb",
+              borderLeft: `5px solid ${signal.rail}`,
+              gridTemplateColumns: columns,
+            }}
           >
-            <span>
+            <span className="register-matter-cell" style={{ background: signalCellTint(signal.kind) }}>
               <Link className="register-title" href={`/matters/${encodeURIComponent(matter.matter_id)}`} style={{ display: "block" }}>
                 {matter.title}
               </Link>
@@ -72,11 +84,23 @@ export default function MattersTable({ matters }: { matters: Matter[] }) {
                 {matter.matter_type.replaceAll("_", " ")}
               </span>
             </span>
-            <span className="register-cell" title={STAGES.find((stage) => stage.id === matter.status)?.sub}>{stageLabel(matter.status)}</span>
-            <span className="register-cell"><LinkifiedText text={matter.next_action || "No next action recorded."} /></span>
-            <span className="register-cell">{matter.legal_owner || "Unassigned"}</span>
+            <span className="register-cell" title={STAGES.find((stage) => stage.id === matter.status)?.sub}>
+              <span style={{ display: "block" }}>{stageLabel(matter.status)}</span>
+              {signal.word ? (
+                <span className="signal" style={{ color: signal.wordColor, fontSize: 11.5, marginTop: 3 }}>
+                  <span className="dot sm" style={{ background: signal.rail }} />
+                  {signal.word}
+                </span>
+              ) : null}
+            </span>
+            <span className="register-cell">
+              {matter.status === "closed"
+                ? <span aria-label="No active next action">—</span>
+                : <LinkifiedText text={matterNextAction(matter)} />}
+            </span>
+            {showOwner ? <span className="register-cell">{matterNextOwner(matter)}</span> : null}
             <span className="register-cell" style={{ color: due.color }}>{due.text}</span>
-            <span className="register-cell" title="The matter's recorded risk level.">{matter.risk_level}</span>
+            <span className="register-cell" title="The matter's recorded risk level.">{riskLabel(matter.risk_level)}</span>
           </div>
         );
       })}
@@ -86,15 +110,18 @@ export default function MattersTable({ matters }: { matters: Matter[] }) {
 
 function compare(left: Matter, right: Matter, key: SortKey): number {
   if (key === "due") {
-    const leftTime = dateTime(left.target_date);
-    const rightTime = dateTime(right.target_date);
+    const leftClosed = left.status === "closed";
+    const rightClosed = right.status === "closed";
+    if (leftClosed !== rightClosed) return leftClosed ? 1 : -1;
+    const leftTime = dateTime(left.work_state.due_at);
+    const rightTime = dateTime(right.work_state.due_at);
     if (leftTime === null && rightTime === null) return left.title.localeCompare(right.title);
     if (leftTime === null) return 1;
     if (rightTime === null) return -1;
     return leftTime - rightTime || left.title.localeCompare(right.title);
   }
-  const leftValue = key === "stage" ? stageLabel(left.status) : left.legal_owner || "Unassigned";
-  const rightValue = key === "stage" ? stageLabel(right.status) : right.legal_owner || "Unassigned";
+  const leftValue = key === "stage" ? stageLabel(left.status) : matterNextOwner(left);
+  const rightValue = key === "stage" ? stageLabel(right.status) : matterNextOwner(right);
   return leftValue.localeCompare(rightValue) || left.title.localeCompare(right.title);
 }
 

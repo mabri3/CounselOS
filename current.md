@@ -1,10 +1,12 @@
 # Current Project State
 
-Last updated: 2026-08-27
+Last updated: 2026-08-29
 
 ## Active Goal
 
-Prepare the Issue-Spotting Intake to Decision-Ready Dossier checkpoint for execution. The plan is approved as product direction, but implementation has not started.
+Complete integration and isolated browser acceptance for Continuous Legal
+Awareness and Decision Maintenance. The implementation and focused feature
+tests are present. Final combined verification is still pending.
 
 ## Why This Goal Now
 
@@ -14,7 +16,8 @@ Attorney interviews and code review support one next product loop: company conte
 
 ### Now
 
-- [ ] Review and approve the execution order in `docs/BUILD_PLAN.md`.
+- [ ] Run the assembled awareness tests and full backend/frontend verification.
+- [ ] Complete the awareness browser walk against a temporary vault copy.
 
 ### Next
 
@@ -28,7 +31,6 @@ Attorney interviews and code review support one next product loop: company conte
 ### Later
 
 - External Slack, Jira, Asana, and email intake connectors after manual paste becomes a measured bottleneck.
-- Continuous legal-change monitoring after linked decision sources and manual rechecks prove useful.
 - Commercial legal-research integration after pilot source-verification needs are measured.
 - Native provider adapters after the OpenAI-compatible path is reliable.
 - Better retrieval and external legal research integrations after the local research flow is useful.
@@ -50,6 +52,15 @@ Attorney interviews and code review support one next product loop: company conte
 
 ## Verified Evidence
 
+- Continuous Legal Awareness has Markdown-backed Watches, native and Polaris
+  adapters, local outbound privacy checks, durable scans and developments,
+  Briefing items, saved views, digests, review packets, and mitigations.
+- The awareness API exposes providers, sources, Watches, scans, Briefing,
+  digests, review packets, and matter mitigations.
+- Watch scans keep per-provider checkpoints and useful partial results.
+- Company-specific matching uses current local knowledge after public
+  collection. Private context is not passed to Polaris or native discovery.
+
 - FastAPI backend, Next.js frontend, Markdown vault, and SQLite index are the documented architecture — `docs/ARCHITECTURE.md`.
 - Six sample matters, four agents, twelve tools, and two schedules exist in `vault/`.
 - Core API routes are documented for health, configuration, matters, files, chat, decisions, and automations — `docs/API.md`.
@@ -64,6 +75,7 @@ Attorney interviews and code review support one next product loop: company conte
 
 ## Recent Changes
 
+- Made the Today attention washes the shared app palette, documented the semantic color rules, and treated legacy decision status `current` as not needing review.
 - Added the Issue-Spotting Intake to Decision-Ready Dossier checkpoint to `docs/BUILD_PLAN.md`.
 - Added repository and runtime agent rules for best-effort answers, source honesty, graceful degradation, and focused clarification.
 - Completed Wave 0 and the mock-mode MVP acceptance walk.

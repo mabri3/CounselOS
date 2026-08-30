@@ -8,7 +8,7 @@ import LinkifiedText from "@/components/LinkifiedText";
 import NewMatterForm from "@/components/NewMatterForm";
 import StageBoard from "@/components/StageBoard";
 import { createMatter, getAutomations, getDecisions, getMatters, moveMatter } from "@/lib/api";
-import { role, scheduleIsFailing } from "@/lib/design";
+import { decisionNeedsReview, formatDateTime, matterAwaitsJudgment, role, scheduleIsFailing } from "@/lib/design";
 import type { Decision, Matter, Schedule, StageId } from "@/lib/types";
 
 /** Canvas 3b — the command centre, calmed rather than cut. */
@@ -42,7 +42,7 @@ export default function WorkspacePage() {
   useEffect(() => { void load(); }, [load]);
 
   const inFlight = matters.filter((matter) => matter.status !== "closed").length;
-  const needsYou = matters.filter((matter) => matter.status === "explore").length;
+  const needsYou = matters.filter(matterAwaitsJudgment).length;
   const failing = schedules.filter(scheduleIsFailing);
 
   const quarter = useMemo(
@@ -51,9 +51,9 @@ export default function WorkspacePage() {
       { n: String(inFlight), label: "matters in flight", color: role.ink },
       { n: String(decisions.length), label: "decisions recorded", color: role.ink },
       {
-        n: String(decisions.filter((decision) => decision.review_status === "fresh").length),
-        label: "decisions still current",
-        color: role.healthy,
+        n: String(decisions.filter(decisionNeedsReview).length),
+        label: "decisions need review",
+        color: role.attentionDeep,
       },
     ],
     [matters, decisions, inFlight],
@@ -72,9 +72,7 @@ export default function WorkspacePage() {
             <h1>Workspace</h1>
             <p>
               {inFlight} matter{inFlight === 1 ? "" : "s"} in flight.{" "}
-              <Link href="/" style={{ textDecoration: "underline", textUnderlineOffset: 3 }}>
-                {needsYou === 0 ? "Nothing needs you today" : `${needsYou} need${needsYou === 1 ? "s" : ""} you today`}
-              </Link>.
+              {needsYou} {needsYou === 1 ? "matter awaits" : "matters await"} your judgment.
             </p>
           </div>
         </div>
@@ -102,7 +100,7 @@ export default function WorkspacePage() {
             <span className="legend-item"><span className="dot" style={{ background: role.failure }} />Overdue</span>
             <span className="legend-item"><span className="dot" style={{ background: role.attention }} />Waiting on you</span>
             <span className="legend-item"><span className="dot" style={{ background: role.agent }} />Themis is working</span>
-            <span className="legend-item"><span className="dot" style={{ background: "#d6d1c7" }} />Nothing owed</span>
+            <span className="legend-item"><span className="dot" style={{ background: "#d6d1c7" }} />No action needed</span>
           </div>
           {loaded ? (
             <StageBoard
@@ -166,7 +164,7 @@ export default function WorkspacePage() {
                   />
                   <span style={{ flex: 1 }}><LinkifiedText text={`${schedule.title} · ${schedule.last_status || "ran"}`} /></span>
                   <span style={{ flex: "none", font: "400 14px var(--sans)", color: "var(--ink-5)" }}>
-                    {String(schedule.last_run_at).slice(0, 16).replace("T", " ")}
+                    {formatDateTime(schedule.last_run_at)}
                   </span>
                 </div>
               ))}

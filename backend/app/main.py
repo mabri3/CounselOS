@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.routers import automations, chat, decisions, files, matters, settings as settings_router, system
+from app.routers import awareness, automations, chat, decisions, files, matters, settings as settings_router, skills, system
 from app.runtime import AppContext
 
 
@@ -32,8 +32,10 @@ app.add_middleware(
 
 for router in (
     system.router,
+    awareness.router,
     matters.router,
     files.router,
+    skills.router,
     chat.router,
     decisions.router,
     automations.router,

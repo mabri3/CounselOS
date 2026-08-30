@@ -1,7 +1,7 @@
 ---
 tool_id: list_files
 handler: list_files
-description: List folders and files in the active matter or a vault path.
+description: List files and folders in the active matter or workspace.
 parameters:
   type: object
   properties:

@@ -34,6 +34,45 @@ async def test_research_uses_bound_research_agent_without_changing_manual_behavi
 
 
 @pytest.mark.asyncio
+async def test_research_refreshes_precomputed_dossier_orientation(app_context):
+    async def run_agent(_request):
+        return ChatResponse(
+            reply=(
+                "## Matter summary\n\n"
+                "Orbit uses an automated notice process that may need updated reason codes. "
+                "Counsel must resolve the notice approach before launch.\n\n"
+                "## Decision question\n\n"
+                "Should Orbit block launch until the new reason codes are in every notice?\n\n"
+                "## Open questions\n\n"
+                "- Which notices still use the old reason codes?\n"
+                "- Can the launch be limited to updated states?\n\n"
+                "## Likely issues\n\nNotice accuracy and launch scope."
+            )
+        )
+
+    app_context.research.bind_agent_runner(run_agent)
+    result = await app_context.research.run(
+        "MAT-DEMO-ORBIT",
+        "What notice and reason-code work is needed?",
+        change_stage=False,
+    )
+
+    assert result["orientation_warning"] is None
+    assert app_context.dossiers.orientation("MAT-DEMO-ORBIT") == {
+        "summary": (
+            "Orbit uses an automated notice process that may need updated reason codes. "
+            "Counsel must resolve the notice approach before launch."
+        ),
+        "decision_question": "Should Orbit block launch until the new reason codes are in every notice?",
+        "open_questions": [
+            "Which notices still use the old reason codes?",
+            "Can the launch be limited to updated states?",
+        ],
+    }
+    assert "## Matter summary" in app_context.vault.read_markdown(result["path"])["content"]
+
+
+@pytest.mark.asyncio
 async def test_automatic_research_run_is_async_persisted_and_does_not_change_stage(app_context):
     original_stage = app_context.index.get_matter("MAT-DEMO-BEACON")["status"]
     runs = ResearchRunService(app_context.vault, app_context.research)

@@ -30,6 +30,16 @@ class Settings(BaseSettings):
     tavily_api_key: str | None = Field(None, alias="TAVILY_API_KEY")
     search_max_results: int = Field(6, alias="SEARCH_MAX_RESULTS")
 
+    polaris_api_key: str | None = Field(None, alias="POLARIS_API_KEY")
+    intelligence_request_timeout_seconds: int = Field(15, alias="INTELLIGENCE_REQUEST_TIMEOUT_SECONDS")
+    intelligence_run_timeout_seconds: int = Field(60, alias="INTELLIGENCE_RUN_TIMEOUT_SECONDS")
+    intelligence_max_redirects: int = Field(3, alias="INTELLIGENCE_MAX_REDIRECTS")
+    intelligence_max_compressed_bytes: int = Field(2 * 1024 * 1024, alias="INTELLIGENCE_MAX_COMPRESSED_BYTES")
+    intelligence_max_decompressed_bytes: int = Field(5 * 1024 * 1024, alias="INTELLIGENCE_MAX_DECOMPRESSED_BYTES")
+    intelligence_max_excerpt_characters: int = Field(12000, alias="INTELLIGENCE_MAX_EXCERPT_CHARACTERS")
+    intelligence_max_discovery_urls: int = Field(50, alias="INTELLIGENCE_MAX_DISCOVERY_URLS")
+    intelligence_max_candidates: int = Field(100, alias="INTELLIGENCE_MAX_CANDIDATES")
+
     scheduler_enabled: bool = Field(True, alias="SCHEDULER_ENABLED")
     scheduler_poll_seconds: int = Field(5, alias="SCHEDULER_POLL_SECONDS")
     decision_review_age_days: int = Field(180, alias="DECISION_REVIEW_AGE_DAYS")

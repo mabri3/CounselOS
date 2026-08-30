@@ -31,6 +31,9 @@ import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { RevisionTextNode } from "@/components/RevisionTextNode";
+import RevisionPlugin, { REVIEW_SYNC_TAG, REVISION_BOUNDARY, type ReviewDisplayMode } from "@/components/RevisionPlugin";
+import type { DocumentComment, DocumentReviewSegment } from "@/lib/types";
 import {
   $createParagraphNode,
   $getSelection,
@@ -78,7 +81,13 @@ function ToolbarButton({
 }
 
 /** Canvas 4c — a real editor bar: block style, marks, lists, and one agent action. */
-function EditorToolbar({ onAskAgent }: { onAskAgent?: () => void }) {
+function EditorToolbar({
+  onAskAgent,
+  onAddComment,
+}: {
+  onAskAgent?: () => void;
+  onAddComment?: (context: { quote: string; anchorStart?: number; anchorEnd?: number; returnFocus: HTMLElement | null; rect: DOMRect | null }) => void;
+}) {
   const [editor] = useLexicalComposerContext();
 
   function formatText(format: TextFormatType) {
@@ -99,6 +108,20 @@ function EditorToolbar({ onAskAgent }: { onAskAgent?: () => void }) {
     const url = window.prompt("Link URL");
     if (url === null) return;
     editor.dispatchCommand(TOGGLE_LINK_COMMAND, url.trim() || null);
+  }
+
+  function addComment() {
+    let quote = "";
+    editor.getEditorState().read(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) quote = selection.getTextContent().trim();
+    });
+    if (!quote) {
+      window.alert("Select the text that the comment applies to.");
+      return;
+    }
+    const native = window.getSelection();
+    onAddComment?.({ quote, returnFocus: editor.getRootElement(), rect: native?.rangeCount ? native.getRangeAt(0).getBoundingClientRect() : null });
   }
 
   return (
@@ -123,6 +146,7 @@ function EditorToolbar({ onAskAgent }: { onAskAgent?: () => void }) {
       <ToolbarButton label="Numbered" title="Numbered list" onClick={() => editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined)} />
       <ToolbarButton label="Quote" title="Quote" onClick={() => formatBlock("quote")} />
       <ToolbarButton label="Link" title="Add or remove link" onClick={addLink} />
+      {onAddComment ? <ToolbarButton label="Comment" title="Add a comment to the selected text" onClick={addComment} /> : null}
       <span className="rich-toolbar-spacer" />
       {onAskAgent ? (
         <button className="btn agent tiny" type="button" onClick={onAskAgent}>Ask Themis to redraft</button>
@@ -135,16 +159,34 @@ export default function MarkdownRichEditor({
   markdown,
   onChange,
   onAskAgent,
+  onAddComment,
   readOnly = false,
+  reviewSegments,
+  reviewComments = [],
+  reviewMode = "current",
+  reviewReviewers = new Set<string>(),
+  reviewTracking = false,
+  reviewAuthor,
+  onOpenCommentThread,
+  onSelectionContext,
 }: {
   markdown: string;
   onChange?: (markdown: string) => void;
   onAskAgent?: () => void;
+  onAddComment?: (context: { quote: string; anchorStart?: number; anchorEnd?: number; returnFocus: HTMLElement | null; rect: DOMRect | null }) => void;
   readOnly?: boolean;
+  reviewSegments?: DocumentReviewSegment[];
+  reviewComments?: DocumentComment[];
+  reviewMode?: ReviewDisplayMode;
+  reviewReviewers?: Set<string>;
+  reviewTracking?: boolean;
+  reviewAuthor?: { author_id: string; name: string; color: string };
+  onOpenCommentThread?: (threadId: string, returnFocus: HTMLElement | null) => void;
+  onSelectionContext?: (context: { quote: string; anchorStart?: number; anchorEnd?: number; returnFocus: HTMLElement | null; rect: DOMRect | null }) => void;
 }) {
   const initialConfig = {
     namespace: "CounselOsMarkdownEditor",
-    nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, LinkNode, AutoLinkNode],
+    nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, LinkNode, AutoLinkNode, RevisionTextNode],
     theme: {
       heading: {
         h1: "rich-heading rich-heading-h1",
@@ -167,7 +209,7 @@ export default function MarkdownRichEditor({
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <div className="rich-editor-shell">
-        {readOnly ? null : <EditorToolbar onAskAgent={onAskAgent} />}
+        {readOnly ? null : <EditorToolbar onAddComment={onAddComment} onAskAgent={onAskAgent} />}
         <div className="rich-editor-surface">
           <RichTextPlugin
             contentEditable={<ContentEditable className="rich-content" />}
@@ -178,6 +220,7 @@ export default function MarkdownRichEditor({
       </div>
       <AutoLinkPlugin matchers={AUTO_LINK_MATCHERS} />
       <ClickableLinkPlugin />
+      {reviewSegments && reviewAuthor ? <RevisionPlugin comments={reviewComments} markdown={markdown} mode={reviewMode} onOpenThread={onOpenCommentThread ?? (() => undefined)} onSelectionContext={onSelectionContext ?? (() => undefined)} readOnly={readOnly} reviewers={reviewReviewers} segments={reviewSegments} tracking={reviewTracking} trackingAuthor={reviewAuthor} /> : null}
       {readOnly ? null : (
         <>
           <HistoryPlugin />
@@ -186,7 +229,7 @@ export default function MarkdownRichEditor({
           <MarkdownShortcutPlugin transformers={MARKDOWN_TRANSFORMERS} />
           <OnChangePlugin
             ignoreSelectionChange
-            onChange={(editorState) => editorState.read(() => onChange?.($convertToMarkdownString(MARKDOWN_TRANSFORMERS)))}
+            onChange={(editorState, _editor, tags) => { if (!tags.has(REVIEW_SYNC_TAG)) editorState.read(() => onChange?.($convertToMarkdownString(MARKDOWN_TRANSFORMERS).replaceAll(REVISION_BOUNDARY, ""))); }}
           />
         </>
       )}

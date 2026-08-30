@@ -32,7 +32,14 @@ def loads(text: str) -> Post:
     lines = normalized.splitlines(keepends=True)
     if not lines or lines[0].strip() != "---":
         return Post(normalized)
-    closing = next((index for index, line in enumerate(lines[1:], start=1) if line.strip() == "---"), None)
+    closing = next(
+        (
+            index
+            for index, line in enumerate(lines[1:], start=1)
+            if line.rstrip("\r\n") == "---"
+        ),
+        None,
+    )
     if closing is None:
         return Post(normalized)
     raw_metadata = "".join(lines[1:closing])

@@ -4,6 +4,8 @@ from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, Field
 
+from app.models.awareness import ScheduleRecurrence, WatchDraftCard, WatchScanCard
+
 
 Stage = Literal["intake", "research", "explore", "generate", "respond", "closed"]
 MatterAction = Literal["approve_response", "mark_as_sent", "close_matter"]
@@ -40,6 +42,38 @@ class FileUpdate(BaseModel):
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
+class DocumentReviewAction(BaseModel):
+    action: Literal[
+        "set_tracking",
+        "save_revision",
+        "save_untracked",
+        "set_author_color",
+        "add_comment",
+        "reply_comment",
+        "edit_comment",
+        "delete_comment_entry",
+        "resolve_comment",
+        "reopen_comment",
+        "delete_comment_thread",
+        "delete_resolved_comments",
+        "accept_change",
+        "reject_change",
+    ]
+    content: str | None = None
+    author_id: str | None = None
+    author_name: str | None = None
+    author_color: str | None = None
+    thread_id: str | None = None
+    body: str | None = None
+    color: str | None = None
+    enabled: bool | None = None
+    change_id: str | None = None
+    comment_id: str | None = None
+    quote: str | None = None
+    anchor_start: int | None = None
+    anchor_end: int | None = None
+
+
 class WorkItemCreate(BaseModel):
     matter_id: str
     title: str
@@ -71,11 +105,22 @@ class ScheduleCreate(BaseModel):
     title: str
     agent_id: str
     instructions: str
-    kind: Literal["agent_prompt", "inbox_watch", "decision_audit"] = "agent_prompt"
+    kind: Literal["agent_prompt", "inbox_watch", "decision_audit", "watch_scan", "briefing_digest"] = "agent_prompt"
     interval_seconds: int = Field(default=3600, ge=10)
     watch_path: str | None = None
     matter_id: str | None = None
+    target_watch_id: str | None = None
+    target_view_id: str | None = None
+    recurrence: ScheduleRecurrence | None = None
     enabled: bool = True
+
+
+class ScheduleUpdate(BaseModel):
+    enabled: bool | None = None
+    target_watch_id: str | None = None
+    target_view_id: str | None = None
+    recurrence: ScheduleRecurrence | None = None
+    expected_revision: int | None = Field(default=None, ge=1)
 
 
 class AgentCreate(BaseModel):
@@ -107,6 +152,65 @@ class AnnotationCreate(BaseModel):
     quote: str = ""
     citation: str = ""
     who: str = "Brian Harris"
+
+
+class SkillCreate(BaseModel):
+    skill_id: str = Field(min_length=1, max_length=64)
+    name: str = Field(min_length=1, max_length=160)
+    description: str = Field(min_length=1)
+    instructions: str = Field(min_length=1)
+
+
+class SkillUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=1, max_length=160)
+    description: str | None = Field(default=None, min_length=1)
+    instructions: str | None = Field(default=None, min_length=1)
+
+
+class SkillQuestion(BaseModel):
+    question_id: str
+    text: str
+    choices: list[str] = Field(default_factory=list)
+    selection_mode: Literal["single", "multiple", "free_text"] = "single"
+    allow_skip: bool = True
+    allow_build_now: bool = True
+    selected: str | list[str] | None = None
+
+
+class SkillDraft(BaseModel):
+    skill_id: str = Field(pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+    name: str = Field(min_length=1, max_length=160)
+    description: str = Field(min_length=1)
+    instructions: str = Field(min_length=1)
+
+
+class SkillDraftRequest(BaseModel):
+    goal: str = Field(min_length=1)
+    answers: dict[str, str | list[str]] = Field(default_factory=dict)
+
+
+class SkillDraftResponse(BaseModel):
+    draft: SkillDraft
+    warning: str | None = None
+
+
+class SkillEvidence(BaseModel):
+    message_id: str
+    content: str
+    created_at: str
+    scope: str
+
+
+class SkillSuggestion(BaseModel):
+    name: str
+    description: str
+    goal: str
+    evidence: list[SkillEvidence]
+
+
+class SkillSuggestionsResponse(BaseModel):
+    suggestions: list[SkillSuggestion] = Field(default_factory=list, max_length=3)
+    warning: str | None = None
 
 
 class ChatMessage(BaseModel):
@@ -162,7 +266,7 @@ class WorkProductCard(BaseModel):
 
 
 ChatCard = Annotated[
-    QuestionCard | MatterUpdateCard | ResearchStatusCard | WorkProductCard,
+    QuestionCard | MatterUpdateCard | ResearchStatusCard | WorkProductCard | WatchDraftCard | WatchScanCard,
     Field(discriminator="type"),
 ]
 
@@ -176,7 +280,11 @@ class AttachmentReference(BaseModel):
 
 class CardAction(BaseModel):
     card_id: str
-    action: Literal["answer", "skip", "stop", "edit", "undo", "apply", "preview"]
+    action: Literal[
+        "answer", "skip", "stop", "edit", "undo", "apply", "preview",
+        "save_draft", "scan_now", "change_something", "start_watch",
+        "open_watch", "open_scan", "scan_again",
+    ]
     values: list[str] = Field(default_factory=list)
 
 
@@ -190,12 +298,20 @@ class ChatRequest(BaseModel):
     history: list[ChatMessage] = Field(default_factory=list)
     card_action: CardAction | None = None
     attachments: list[AttachmentReference] = Field(default_factory=list)
+    skill_id: str | None = Field(default=None, exclude=True)
+    review_author: str | None = None
+    lawyer_author: str | None = None
 
 
 class ToolTrace(BaseModel):
     tool: str
     status: Literal["success", "error"]
     summary: str
+
+
+class AppliedSkillSummary(BaseModel):
+    skill_id: str
+    name: str
 
 
 class ChatResponse(BaseModel):
@@ -205,6 +321,8 @@ class ChatResponse(BaseModel):
     changed_paths: list[str] = Field(default_factory=list)
     refresh: list[str] = Field(default_factory=list)
     cards: list[ChatCard] = Field(default_factory=list)
+    applied_skills: list[AppliedSkillSummary] = Field(default_factory=list)
+    review_author: str | None = None
 
 
 class BatchActionRequest(BaseModel):

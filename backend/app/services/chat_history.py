@@ -4,6 +4,8 @@ import re
 from datetime import date
 from typing import Any
 
+from yaml import YAMLError
+
 from app.services.matters import MatterService
 from app.services.vault import VaultService
 from app.utils.ids import new_id
@@ -43,7 +45,7 @@ class ChatHistoryService:
         return {
             **self._summary(document),
             "path": document["path"],
-            "messages": list(metadata.get("messages") or []),
+            "messages": self._messages(metadata),
         }
 
     def append(
@@ -57,6 +59,7 @@ class ChatHistoryService:
         cards: list[dict[str, Any]] | None = None,
         attachments: list[dict[str, Any]] | None = None,
         card_action: dict[str, Any] | None = None,
+        applied_skills: list[dict[str, str]] | None = None,
     ) -> dict[str, Any]:
         if role not in {"user", "assistant"}:
             raise ValueError(f"Unsupported chat role: {role}")
@@ -81,6 +84,7 @@ class ChatHistoryService:
                 "cards": cards or [],
                 "attachments": attachments or [],
                 "card_action": card_action,
+                "applied_skills": applied_skills or [],
             }
         )
         path = self._matter_path(matter_id, conversation_id)
@@ -126,7 +130,7 @@ class ChatHistoryService:
         return {
             **self._daily_summary(document),
             "path": document["path"],
-            "messages": list(metadata.get("messages") or []),
+            "messages": self._messages(metadata),
         }
 
     def append_daily(
@@ -139,6 +143,7 @@ class ChatHistoryService:
         cards: list[dict[str, Any]] | None = None,
         attachments: list[dict[str, Any]] | None = None,
         card_action: dict[str, Any] | None = None,
+        applied_skills: list[dict[str, str]] | None = None,
     ) -> dict[str, Any]:
         if role not in {"user", "assistant"}:
             raise ValueError(f"Unsupported chat role: {role}")
@@ -161,6 +166,7 @@ class ChatHistoryService:
                 "cards": cards or [],
                 "attachments": attachments or [],
                 "card_action": card_action,
+                "applied_skills": applied_skills or [],
             }
         )
         path = self._daily_path(day)
@@ -179,6 +185,45 @@ class ChatHistoryService:
             },
         )
         return self.get_daily(day)
+
+    def recent_user_messages(self, limit: int = 100) -> list[dict[str, str]]:
+        bounded_limit = max(0, min(limit, 100))
+        if bounded_limit == 0:
+            return []
+        paths = list(self.vault.resolve("00_System/conversations").glob("*.md"))
+        matters_root = self.vault.resolve("03_Matters")
+        if matters_root.exists():
+            paths.extend(matters_root.glob("*/conversations/CONV-*.md"))
+        messages: list[dict[str, str]] = []
+        for path in paths:
+            try:
+                document = self.vault.read_markdown(self.vault.relative(path))
+            except (OSError, ValueError, YAMLError):
+                continue
+            metadata = document["metadata"]
+            scope = (
+                str(metadata.get("matter_id"))
+                if metadata.get("scope") == "matter"
+                else str(metadata.get("day") or "Today")
+            )
+            for message in metadata.get("messages") or []:
+                if not isinstance(message, dict) or message.get("role") != "user":
+                    continue
+                message_id = str(message.get("message_id") or "")
+                content = str(message.get("content") or "")
+                created_at = str(message.get("created_at") or "")
+                if not message_id or not content:
+                    continue
+                messages.append(
+                    {
+                        "message_id": message_id,
+                        "content": content,
+                        "created_at": created_at,
+                        "scope": scope,
+                    }
+                )
+        messages.sort(key=lambda item: item["created_at"], reverse=True)
+        return messages[:bounded_limit]
 
     def _matter_path(self, matter_id: str, conversation_id: str) -> str:
         if not _CONVERSATION_ID.fullmatch(conversation_id):
@@ -224,6 +269,17 @@ class ChatHistoryService:
             "updated_at": metadata.get("updated_at", ""),
             "message_count": len(messages),
         }
+
+    @staticmethod
+    def _messages(metadata: dict[str, Any]) -> list[dict[str, Any]]:
+        messages: list[dict[str, Any]] = []
+        for raw in metadata.get("messages") or []:
+            if not isinstance(raw, dict):
+                continue
+            message = dict(raw)
+            message.setdefault("applied_skills", [])
+            messages.append(message)
+        return messages
 
     @staticmethod
     def _title(content: str) -> str:

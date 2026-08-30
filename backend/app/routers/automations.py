@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.models.api import AgentCreate, AgentUpdate, ScheduleCreate
+from app.models.api import AgentCreate, AgentUpdate, ScheduleCreate, ScheduleUpdate
 from app.routers.dependencies import get_context
 from app.runtime import AppContext
 
@@ -18,6 +18,18 @@ def list_automations(context: AppContext = Depends(get_context)):
 @router.post("/schedules", status_code=201)
 def create_schedule(payload: ScheduleCreate, context: AppContext = Depends(get_context)):
     return context.scheduler.create(payload)
+
+
+@router.patch("/schedules/{schedule_id}")
+def update_schedule(
+    schedule_id: str,
+    payload: ScheduleUpdate,
+    context: AppContext = Depends(get_context),
+):
+    try:
+        return context.scheduler.update(schedule_id, payload)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
 @router.post("/schedules/{schedule_id}/run")

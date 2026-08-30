@@ -34,6 +34,14 @@ Keep recommendations separate from explicitly recorded decisions. That is record
 - Prefer focused files and boring, testable code.
 - Do not introduce auth, cloud tenancy, a queue, embeddings, Tauri, native Word redlining, or a plugin marketplace before the core acceptance tests pass.
 
+## Design language
+
+- Treat `docs/DESIGN_LANGUAGE.md` as the source of truth for visual and interaction rules.
+- Reuse semantic roles from `frontend/lib/design.ts` and matching variables in `frontend/app/globals.css`. Do not add page-local attention colors.
+- Color must show meaning: rose is overdue or failed, amber needs the lawyer's attention, purple is agent work, and green is healthy or complete.
+- Put a clear state word beside each color. Never make color the only signal.
+- Use light washes on rows and title cells to guide attention. Reserve stronger tints for small controls, badges, and selected states.
+
 ## Verification
 
 ```bash

@@ -1,8 +1,8 @@
 ---
 tool_id: write_markdown
 handler: write_markdown
-description: Create or update a Markdown work product inside the vault. Immutable
-  originals cannot be overwritten.
+description: Create or update a Markdown work product. Original source files cannot
+  be overwritten.
 parameters:
   type: object
   properties:

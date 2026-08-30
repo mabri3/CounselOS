@@ -5,23 +5,38 @@
  * Nothing in the UI should hard-code these hexes; import the role instead.
  */
 
-import type { Decision, Matter, Schedule, StageId } from "./types";
+import type { Decision, Matter, MatterSignalKind, Schedule, StageId } from "./types";
 
 export const role = {
   attention: "#E0A008",
   attentionTint: "#FDEEC0",
+  attentionWash: "#FFFDF4",
   attentionDeep: "#8A6612",
   healthy: "#146B54",
   healthyTint: "#E0EFE9",
+  healthyWash: "#F8FCFA",
   failure: "#B33A20",
   failureTint: "#F8E3DC",
+  failureWash: "#FFFAF8",
   agent: "#5F5AC0",
   agentTint: "#F4F3FC",
+  agentWash: "#FDFDFF",
   ink: "#1b1a17",
   quiet: "#5f5b54",
   quietTint: "#efece5",
+  quietWash: "#FBFAF7",
   hairline: "#e6e2d9",
 } as const;
+
+/** Shared status words keep colour and meaning paired on every surface. */
+export const statusRole = {
+  attention: { label: "Needs attention", color: role.attentionDeep, tint: role.attentionTint, wash: role.attentionWash },
+  healthy: { label: "Healthy", color: role.healthy, tint: role.healthyTint, wash: role.healthyWash },
+  failure: { label: "Failed", color: role.failure, tint: role.failureTint, wash: role.failureWash },
+  agent: { label: "Agent work", color: role.agent, tint: role.agentTint, wash: role.agentWash },
+} as const;
+
+export const reviewAuthorPalette = ["#2F5597", "#7030A0", "#008272", "#A64B00", "#C0006F", "#5B6573", "#7A3E00", "#006B8F"] as const;
 
 /** The six stages, in plain language. Same words on every surface. */
 export const STAGES: { id: StageId; label: string; sub: string }[] = [
@@ -37,19 +52,51 @@ export function stageLabel(stage: string): string {
   return STAGES.find((entry) => entry.id === stage)?.label ?? stage;
 }
 
-/** A matter is overdue when its target date has passed and it is still open. */
+export function matterAwaitsJudgment(matter: Matter): boolean {
+  return matter.work_state.signal.kind === "waiting_on_you";
+}
+
+export function matterIsAgentWorking(matter: Matter): boolean {
+  return matter.work_state.execution_state === "queued" || matter.work_state.execution_state === "running";
+}
+
+export function matterNeedsAttention(matter: Matter): boolean {
+  const kind = matter.work_state.signal.kind;
+  return kind === "overdue" || kind === "needs_assignment" || isWaitingSignal(kind);
+}
+
+export function isWaitingSignal(kind: MatterSignalKind): boolean {
+  return ["waiting_on_owner", "waiting_on_you", "blocked", "execution_unknown"].includes(kind);
+}
+
+export function signalCellTint(kind: MatterSignalKind): string {
+  if (kind === "overdue") return role.failureWash;
+  if (isWaitingSignal(kind) || kind === "needs_assignment") return role.attentionWash;
+  if (kind === "agent_working" || kind === "ready_for_themis") return role.agentWash;
+  return "transparent";
+}
+
+/** Prefer the authoritative projection, with a fallback for a stale API response. */
+export function matterNextAction(matter: Matter): string {
+  if (matter.status === "closed") return "Closed";
+  return matter.work_state?.next_action || matter.next_action;
+}
+
+export function matterNextOwner(matter: Matter): string {
+  if (matter.work_state.next_owner) return matter.work_state.next_owner;
+  if (matter.work_state.next_actor === "unassigned") return "Unassigned";
+  if (matter.work_state.next_actor === "you") return "You";
+  return "—";
+}
+
+/** Read the backend verdict. Date parsing must not override the work-state signal. */
 export function isOverdue(matter: Matter): boolean {
-  if (!matter.target_date || matter.status === "closed") return false;
-  const target = parseDisplayDate(matter.target_date);
-  if (Number.isNaN(target.getTime())) return false;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return target < today;
+  return matter.work_state.signal.kind === "overdue";
 }
 
 export function daysLate(matter: Matter): number {
-  if (!matter.target_date) return 0;
-  const target = parseDisplayDate(matter.target_date);
+  if (!matter.work_state.due_at) return 0;
+  const target = parseDisplayDate(matter.work_state.due_at);
   if (Number.isNaN(target.getTime())) return 0;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -61,29 +108,29 @@ export type Signal = {
   rail: string;
   /** Row background wash. */
   bg: string;
-  /** The word beside the colour. Empty means "nothing owed" — no signal shown. */
-  word: "" | "Overdue" | "Waiting on you" | "Themis is working";
+  /** The factual state label shown beside the colour. */
+  kind: MatterSignalKind;
+  word: string;
   wordColor: string;
 };
 
 /**
  * The single place a matter turns into a colour. Order matters: overdue beats
- * waiting on the lawyer, which beats an agent working.
+ * waiting, which beats an agent working.
  */
 export function signalFor(matter: Matter): Signal {
-  if (isOverdue(matter)) {
-    return { rail: role.failure, bg: "#FFFAF8", word: "Overdue", wordColor: role.failure };
-  }
-  if (matter.status === "explore") {
-    return { rail: role.attention, bg: "#FFFDF4", word: "Waiting on you", wordColor: role.attentionDeep };
-  }
-  if (matter.status === "research" || matter.status === "generate") {
-    return { rail: role.agent, bg: "#FDFDFF", word: "Themis is working", wordColor: role.agent };
-  }
+  const { kind, label } = matter.work_state.signal;
   if (matter.status === "closed") {
-    return { rail: "transparent", bg: "#fbfaf7", word: "", wordColor: role.quiet };
+    return { kind, rail: "transparent", bg: "#fbfaf7", word: "Closed", wordColor: role.quiet };
   }
-  return { rail: role.hairline, bg: "#fffefb", word: "", wordColor: role.quiet };
+  if (kind === "overdue") return { kind, rail: role.failure, bg: role.failureWash, word: label, wordColor: role.failure };
+  if (isWaitingSignal(kind) || kind === "needs_assignment") {
+    return { kind, rail: role.attention, bg: role.attentionWash, word: label, wordColor: role.attentionDeep };
+  }
+  if (kind === "agent_working" || kind === "ready_for_themis") {
+    return { kind, rail: role.agent, bg: role.agentWash, word: label, wordColor: role.agent };
+  }
+  return { kind, rail: role.hairline, bg: "#fffefb", word: "No action needed", wordColor: role.quiet };
 }
 
 export function dueWord(matter: Matter): { text: string; color: string } {
@@ -91,22 +138,49 @@ export function dueWord(matter: Matter): { text: string; color: string } {
     const late = daysLate(matter);
     return { text: late === 1 ? "1 day late" : `${late} days late`, color: role.failure };
   }
-  if (!matter.target_date) return { text: "No date", color: role.quiet };
-  return { text: formatDay(matter.target_date), color: role.quiet };
+  if (!matter.work_state.due_at) return { text: "No date", color: role.quiet };
+  return { text: formatDay(matter.work_state.due_at), color: role.quiet };
 }
 
-export function formatDay(value: string | null | undefined): string {
+export function formatShortDate(value: string | Date | null | undefined): string {
   if (!value) return "—";
-  const date = parseDisplayDate(value);
+  const date = parseDisplayDate(String(value));
   if (Number.isNaN(date.getTime())) return String(value).slice(0, 10);
-  return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-export function formatLongDay(value: string | null | undefined): string {
+export function formatLongDate(value: string | Date | null | undefined): string {
   if (!value) return "—";
-  const date = parseDisplayDate(value);
+  const date = parseDisplayDate(String(value));
   if (Number.isNaN(date.getTime())) return String(value);
-  return date.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  return date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+}
+
+export function formatDateTime(value: string | Date | null | undefined): string {
+  if (!value) return "—";
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  return date.toLocaleString("en-US", {
+    month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit",
+  });
+}
+
+export function formatTime(value: string | Date | null | undefined): string {
+  if (!value) return "—";
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  return date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+}
+
+/** Compatible aliases for existing callers. */
+export const formatDay = formatShortDate;
+export const formatLongDay = formatLongDate;
+
+export const RISK_DEFINITION = "Risk is the recorded level of legal or business impact.";
+
+export function riskLabel(value: string | null | undefined): string {
+  const clean = value?.trim() ?? "";
+  return !clean || clean.toLowerCase() === "unknown" ? "Not assessed" : clean;
 }
 
 /** Date-only vault values are calendar dates, not midnight UTC timestamps. */
@@ -119,7 +193,7 @@ function parseDisplayDate(value: string): Date {
 }
 
 export function decisionSignal(decision: Decision): { stale: boolean; label: string; detail: string } {
-  if (decision.review_status === "fresh") {
+  if (!decisionNeedsReview(decision)) {
     return {
       stale: false,
       label: decision.next_review_at ? formatDay(decision.next_review_at) : "—",
@@ -128,6 +202,11 @@ export function decisionSignal(decision: Decision): { stale: boolean; label: str
   }
   const detail = decision.staleness_reason || "Needs review";
   return { stale: true, label: shorten(detail), detail };
+}
+
+/** Older vault records use `current`; it has the same meaning as `fresh`. */
+export function decisionNeedsReview(decision: Decision): boolean {
+  return decision.review_status !== "fresh" && decision.review_status !== "current";
 }
 
 /** The register column is narrow; the full reason stays in the tooltip. */

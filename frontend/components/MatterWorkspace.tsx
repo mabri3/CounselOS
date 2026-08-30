@@ -1,17 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import type { CSSProperties } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { CSSProperties, KeyboardEvent, PointerEvent } from "react";
 import ChatPanel from "@/components/ChatPanel";
 import DocumentPanel from "@/components/DocumentPanel";
 import LinkifiedText from "@/components/LinkifiedText";
 import MatterTree from "@/components/MatterTree";
 import RecordDecisionModal from "@/components/RecordDecisionModal";
-import { getFile, moveMatter, performMatterAction, runResearch, uploadDocument } from "@/lib/api";
-import { dueWord, role, signalFor, stageLabel } from "@/lib/design";
+import ReviewPacketPanel from "@/components/ReviewPacketPanel";
+import { getFile, getSettings, moveMatter, performMatterAction, runResearch, uploadDocument } from "@/lib/api";
+import { useReviewAuthor } from "@/lib/reviewAuthor";
+import { dueWord, signalFor, stageLabel } from "@/lib/design";
 import { matterAction } from "@/lib/matterActions";
 import type { FileNode, MatterDetail } from "@/lib/types";
+import { getMatterMitigations, getReviewPackets } from "@/lib/watchApi";
+import type { Mitigation, ReviewPacket } from "@/lib/watchTypes";
 
 /**
  * Canvas 2b — question, recommendation, evidence, decision. The copilot and
@@ -31,23 +35,41 @@ export default function MatterWorkspace({
   const defaultPath = `${detail.path}/matter.md`;
   const researchPath = findLatestResearch(detail.tree);
   const initialFallback = focusResearch && researchPath ? researchPath : defaultPath;
+  const documentRequested = Boolean(initialPath || (focusResearch && researchPath));
   const [activePath, setActivePath] = useState<string | null>(() => safeMatterPath(initialPath, detail.path, initialFallback));
-  const [treeActivePath, setTreeActivePath] = useState<string | null>(() => safeMatterPath(initialPath, detail.path, initialFallback));
+  const [treeActivePath, setTreeActivePath] = useState<string | null>(() =>
+    documentRequested ? safeMatterPath(initialPath, detail.path, initialFallback) : null,
+  );
   const [recommendation, setRecommendation] = useState<string | null>(null);
-  const [panel, setPanel] = useState<"" | "trace" | "history">("");
   const [modalOpen, setModalOpen] = useState(false);
   const [chatSeed, setChatSeed] = useState({ text: "", revision: 0 });
   const [conversationSeed, setConversationSeed] = useState({ conversationId: "", revision: 0 });
   const [uploading, setUploading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [collapsedPanes, setCollapsedPanes] = useState({ tree: false, overview: false, document: false });
+  const [reviewPackets, setReviewPackets] = useState<ReviewPacket[]>([]);
+  const [mitigations, setMitigations] = useState<Mitigation[]>([]);
+  const [reviewSettings, setReviewSettings] = useState({ lawyer: "Lawyer", defaultAuthor: "Themis" });
+  const reviewAuthor = useReviewAuthor(reviewSettings.defaultAuthor);
+  const [collapsedPanes, setCollapsedPanes] = useState({ tree: true, overview: false, document: !documentRequested });
+  const [paneWeights, setPaneWeights] = useState({ tree: 0.24, overview: 1, document: 1.15 });
+  const treePaneRef = useRef<HTMLElement>(null);
+  const overviewPaneRef = useRef<HTMLDivElement>(null);
+  const documentPaneRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<{
+    left: keyof typeof paneWeights;
+    right: keyof typeof paneWeights;
+    startX: number;
+    leftWidth: number;
+    rightWidth: number;
+  } | null>(null);
 
   useEffect(() => {
     const requested = safeMatterPath(initialPath, detail.path, initialFallback);
     setActivePath(requested);
-    setTreeActivePath(requested);
-  }, [detail.path, initialFallback, initialPath]);
+    setTreeActivePath(documentRequested ? requested : null);
+    setCollapsedPanes((current) => ({ ...current, document: !documentRequested }));
+  }, [detail.path, documentRequested, initialFallback, initialPath]);
 
   /** The agent's standing recommendation lives in the matter's own Markdown. */
   useEffect(() => {
@@ -57,6 +79,17 @@ export default function MatterWorkspace({
       .catch(() => { if (!cancelled) setRecommendation(""); });
     return () => { cancelled = true; };
   }, [detail.path]);
+
+  useEffect(() => { void getSettings().then((saved) => { const rows = saved.sections.find((item) => item.id === "document-review")?.rows ?? []; setReviewSettings({ lawyer: rows.find((item) => item.config_key === "document_review.lawyer_name")?.value || "Lawyer", defaultAuthor: rows.find((item) => item.config_key === "document_review.default_author")?.value || "Themis" }); }); }, []);
+
+  const loadAwareness = useCallback(async () => {
+    try {
+      const [packetData, mitigationData] = await Promise.all([getReviewPackets({ limit: 100 }), getMatterMitigations(detail.matter_id)]);
+      setReviewPackets(packetData.items.filter((packet) => packet.affected_matters.includes(detail.matter_id) || packet.affected_decisions.some((id) => detail.decisions.some((decision) => decision.decision_id === id))));
+      setMitigations(mitigationData.items);
+    } catch { /* Keep the existing matter workspace usable if awareness data is unavailable. */ }
+  }, [detail.decisions, detail.matter_id]);
+  useEffect(() => { void loadAwareness(); }, [loadAwareness]);
 
   const evidence = useMemo(() => collectEvidence(detail.tree), [detail.tree]);
   const draftPath = useMemo(() => findFirstFile(detail.tree, "drafts"), [detail.tree]);
@@ -87,6 +120,7 @@ export default function MatterWorkspace({
   function openDocument(path: string) {
     setActivePath(path);
     setTreeActivePath(path);
+    setCollapsedPanes((current) => ({ ...current, document: false }));
   }
 
   function togglePane(pane: keyof typeof collapsedPanes) {
@@ -95,6 +129,66 @@ export default function MatterWorkspace({
       if (!current[pane] && openCount === 1) return current;
       return { ...current, [pane]: !current[pane] };
     });
+  }
+
+  const paneRefs = {
+    tree: treePaneRef,
+    overview: overviewPaneRef,
+    document: documentPaneRef,
+  };
+  const paneMinimums = { tree: 210, overview: 360, document: 430 };
+
+  function applyResize(
+    left: keyof typeof paneWeights,
+    right: keyof typeof paneWeights,
+    leftWidth: number,
+    rightWidth: number,
+    requestedDelta: number,
+  ) {
+    const delta = Math.max(
+      paneMinimums[left] - leftWidth,
+      Math.min(requestedDelta, rightWidth - paneMinimums[right]),
+    );
+    setPaneWeights((current) => {
+      const next = { ...current };
+      for (const pane of Object.keys(paneRefs) as Array<keyof typeof paneWeights>) {
+        if (!collapsedPanes[pane]) next[pane] = paneRefs[pane].current?.getBoundingClientRect().width ?? current[pane];
+      }
+      next[left] = leftWidth + delta;
+      next[right] = rightWidth - delta;
+      return next;
+    });
+  }
+
+  function startResize(
+    event: PointerEvent<HTMLDivElement>,
+    left: keyof typeof paneWeights,
+    right: keyof typeof paneWeights,
+  ) {
+    const leftWidth = paneRefs[left].current?.getBoundingClientRect().width;
+    const rightWidth = paneRefs[right].current?.getBoundingClientRect().width;
+    if (!leftWidth || !rightWidth) return;
+    dragRef.current = { left, right, startX: event.clientX, leftWidth, rightWidth };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function continueResize(event: PointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current;
+    if (!drag) return;
+    applyResize(drag.left, drag.right, drag.leftWidth, drag.rightWidth, event.clientX - drag.startX);
+  }
+
+  function resizeWithKeyboard(
+    event: KeyboardEvent<HTMLDivElement>,
+    left: keyof typeof paneWeights,
+    right: keyof typeof paneWeights,
+  ) {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    event.preventDefault();
+    const leftWidth = paneRefs[left].current?.getBoundingClientRect().width;
+    const rightWidth = paneRefs[right].current?.getBoundingClientRect().width;
+    if (!leftWidth || !rightWidth) return;
+    applyResize(left, right, leftWidth, rightWidth, event.key === "ArrowLeft" ? -24 : 24);
   }
 
   function selectMatterItem(path: string) {
@@ -114,10 +208,7 @@ export default function MatterWorkspace({
       return;
     }
     if (primaryAction.id === "review_and_decide") {
-      setChatSeed((current) => ({
-        text: "Help me review the options and decide. Recommend a path, do not record a decision, and ask whether the material choice should become a durable decision.",
-        revision: current.revision + 1,
-      }));
+      setModalOpen(true);
       return;
     }
     if (primaryAction.id === "draft_work_product") {
@@ -132,7 +223,9 @@ export default function MatterWorkspace({
       return;
     }
     if (primaryAction.id === "review_remaining_work") {
-      setPanel("trace");
+      const remainingWork = document.getElementById("remaining-work");
+      if (remainingWork instanceof HTMLDetailsElement) remainingWork.open = true;
+      remainingWork?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
 
@@ -159,25 +252,45 @@ export default function MatterWorkspace({
     }
   }
 
-  const recommendationBody = stripMarkdown(
-    (recommendation ?? "")
-      .split("\n")
-      .filter((line) => line.trim() && !line.trim().startsWith("#"))
-      .slice(0, 3)
-      .join(" "),
-  );
+  const proposedPath = parseProposedPath(recommendation ?? "");
+  const recommendationText = proposedPath || recommendationSummary(recommendation ?? "");
+  const openWorkItems = detail.work_items.filter((item) => !["done", "closed"].includes(item.status));
+  const matterQuestion = questionForMatter(detail, primaryAction.id);
+  const unresolved = Array.from(new Set([
+    ...detail.orientation.open_questions,
+    ...openWorkItems.map((item) => item.title),
+  ]));
+  const dossierStatement = buildDossierStatement(detail, matterQuestion, recommendationText, openWorkItems);
+
+  function focusConversation() {
+    setCollapsedPanes({ tree: true, overview: false, document: true });
+  }
 
   return (
     <div className="matter-shell">
-      <header className="matter-head">
+      <header
+        className="matter-head"
+        style={{
+          background: signal.bg,
+          borderLeft: `5px solid ${signal.rail}`,
+        }}
+      >
         <div style={{ minWidth: 0 }}>
-          <div className="matter-crumb">
-            <Link href="/matters" style={{ textDecoration: "underline", textUnderlineOffset: 3 }}>Matters</Link>
-            {" · "}
-            {stageLabel(detail.status).toLowerCase()}
-            {detail.risk_level ? ` · ${detail.risk_level.toLowerCase()} risk` : ""}
-            {" · "}
-            <span style={{ color: due.color }}>{due.text}</span>
+          <div className="matter-head-context">
+            {signal.word ? (
+              <span className="matter-status-signal" style={{ color: signal.wordColor }}>
+                <span className="dot sm" style={{ background: signal.rail }} />
+                {signal.word}
+              </span>
+            ) : null}
+            <div className="matter-crumb">
+              <Link href="/matters" style={{ textDecoration: "underline", textUnderlineOffset: 3 }}>Matters</Link>
+              {" · "}
+              {stageLabel(detail.status).toLowerCase()}
+              {detail.risk_level ? ` · ${detail.risk_level.toLowerCase()} risk` : ""}
+              {" · "}
+              <span style={{ color: due.color }}>{due.text}</span>
+            </div>
           </div>
           <h1 className="matter-title"><LinkifiedText text={detail.title} /></h1>
         </div>
@@ -185,7 +298,7 @@ export default function MatterWorkspace({
           <div style={{ textAlign: "right" }}>
             <div style={{ font: "400 13px var(--sans)", color: "var(--ink-4)" }}>Next action</div>
             <div style={{ font: "500 15px var(--sans)", color: "var(--ink)" }}>
-              <LinkifiedText text={detail.orientation.next_action || primaryAction.detail} />
+              <LinkifiedText text={detail.work_state.next_action || primaryAction.detail} />
             </div>
           </div>
         </div>
@@ -197,13 +310,15 @@ export default function MatterWorkspace({
         className="matter-panes"
         style={{
           gridTemplateColumns: [
-            collapsedPanes.tree ? "44px" : "minmax(210px, 0.55fr)",
-            collapsedPanes.overview ? "44px" : "minmax(360px, 1fr)",
-            collapsedPanes.document ? "44px" : "minmax(430px, 1.15fr)",
+            collapsedPanes.tree ? "44px" : `minmax(210px, ${paneWeights.tree}fr)`,
+            collapsedPanes.tree || collapsedPanes.overview ? "0px" : "8px",
+            collapsedPanes.overview ? "44px" : `minmax(360px, ${paneWeights.overview}fr)`,
+            collapsedPanes.overview || collapsedPanes.document ? "0px" : "8px",
+            collapsedPanes.document ? "44px" : `minmax(430px, ${paneWeights.document}fr)`,
           ].join(" "),
         } as CSSProperties}
       >
-        <aside className="matter-tree-pane">
+        <aside className="matter-tree-pane" ref={treePaneRef}>
           <button
             aria-expanded={!collapsedPanes.tree}
             className="pane-rail"
@@ -238,7 +353,21 @@ export default function MatterWorkspace({
           </div>
         </aside>
 
-        <div className="brief-pane">
+        <div
+          aria-label="Resize matter contents and matter overview"
+          aria-orientation="vertical"
+          className={`pane-resizer ${collapsedPanes.tree || collapsedPanes.overview ? "hidden" : ""}`}
+          onKeyDown={(event) => resizeWithKeyboard(event, "tree", "overview")}
+          onLostPointerCapture={() => { dragRef.current = null; }}
+          onPointerCancel={() => { dragRef.current = null; }}
+          onPointerDown={(event) => startResize(event, "tree", "overview")}
+          onPointerMove={continueResize}
+          onPointerUp={() => { dragRef.current = null; }}
+          role="separator"
+          tabIndex={collapsedPanes.tree || collapsedPanes.overview ? -1 : 0}
+        />
+
+        <div className="brief-pane" ref={overviewPaneRef}>
           <button
             aria-expanded={!collapsedPanes.overview}
             className="pane-rail"
@@ -251,162 +380,92 @@ export default function MatterWorkspace({
           </button>
           <div className="pane-content" hidden={collapsedPanes.overview}>
             <div className="pane-head">
-              <span>Matter overview</span>
-              <button aria-label="Collapse matter overview" className="pane-collapse" onClick={() => togglePane("overview")} title="Collapse matter overview" type="button">‹</button>
+              <span>Matter conversation</span>
+              <div className="btn-row">
+                {!collapsedPanes.tree || !collapsedPanes.document ? (
+                  <button className="btn quiet compact" onClick={focusConversation} type="button">Focus conversation</button>
+                ) : null}
+                <button
+                  aria-label="Collapse matter conversation"
+                  className="pane-collapse"
+                  onClick={() => togglePane("overview")}
+                  title="Collapse matter conversation"
+                  type="button"
+                >‹</button>
+              </div>
             </div>
             <div className="brief-scroll">
-            <div className="brief-inner">
-              <div style={{ font: "600 14px var(--sans)", color: "var(--ink-4)" }}>The question</div>
-              <p className="the-question"><LinkifiedText text={detail.orientation.headline || detail.description || detail.title} /></p>
+              <details className="matter-context">
+                <summary>
+                  <span className="matter-context-kicker">Matter context</span>
+                  <span className="matter-context-statement"><LinkifiedText text={dossierStatement} /></span>
+                  <span className="matter-context-toggle">Show full matter brief</span>
+                </summary>
+                <div className="matter-context-body">
+                  <section>
+                    <h2>Current question</h2>
+                    <p className="matter-context-question"><LinkifiedText text={matterQuestion} /></p>
+                  </section>
 
-              <div className="agent-note" style={{ marginTop: 26 }} title="Agent analysis is a suggested path. It is not a recorded human decision.">
-                <div className="agent-label">
-                  <span className="agent-mark" />
-                  Agent recommendation — not a decision
-                </div>
-                {recommendation === null ? (
-                  <p style={{ font: "400 15px var(--sans)", color: "var(--ink-3)" }}>Reading the matter…</p>
-                ) : recommendationBody ? (
-                  <>
-                    <p style={{ font: "400 16px/1.6 var(--serif)", color: "var(--ink-2)", textWrap: "pretty" }}>
-                      <LinkifiedText text={recommendationBody} />
-                    </p>
-                    <p style={{ font: "400 14px/1.6 var(--sans)", color: "var(--ink-3)" }}>
-                      Nothing here is on the record until you record it.
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <p style={{ font: "400 16px/1.6 var(--serif)", color: "var(--ink-2)" }}>
-                      Themis has not proposed a path yet.
-                    </p>
-                    <button
-                      className="btn agent compact"
-                      disabled={busy}
-                      style={{ marginTop: 12 }}
-                      onClick={async () => {
-                        setBusy(true);
-                        setError("");
-                        try {
-                          const result = await runResearch(detail.matter_id);
-                          await reload();
-                          openDocument(result.path);
-                        } catch (caught) {
-                          setError(caught instanceof Error ? caught.message : "Could not run research.");
-                        } finally { setBusy(false); }
-                      }}
-                    >
-                      {busy ? "Researching…" : "Run first-pass research"}
-                    </button>
-                  </>
-                )}
-              </div>
-
-              <div style={{ marginTop: 28 }}>
-                <div style={{ font: "600 14px var(--sans)", color: "var(--ink-4)" }}>What that rests on</div>
-                <div style={{ marginTop: 10, display: "flex", flexDirection: "column", gap: 1 }}>
-                  {evidence.length === 0 ? (
-                    <div className="faint small" style={{ padding: "11px 12px" }}>
-                      No source documents attached yet. Drop one in the files panel.
+                  <section>
+                    <h2>Working recommendation</h2>
+                    <div className="agent-note" title="Agent analysis is a suggested path. It is not a recorded human decision.">
+                      <div className="agent-label">Themis · Not reviewed</div>
+                      {recommendation === null ? (
+                        <p>Reading the matter…</p>
+                      ) : recommendationText ? (
+                        <>
+                          <p><LinkifiedText text={recommendationText} /></p>
+                          <div className="matter-record-note">This is a working recommendation. It is not an approval or recorded decision.</div>
+                        </>
+                      ) : (
+                        <p>Themis has not proposed a path yet.</p>
+                      )}
                     </div>
-                  ) : null}
-                  {evidence.map((node) => (
-                    <button className="evidence-row" key={node.path} onClick={() => openDocument(node.path)} style={{ background: "none", border: 0, cursor: "pointer", textAlign: "left" }}>
-                      <span className="evidence-kind">{node.kind}</span>
-                      <span style={{ flex: 1 }}>
-                        <span className="evidence-name"><LinkifiedText text={node.name} /></span>
-                        <span className="evidence-note"><LinkifiedText text={node.note} /></span>
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
+                  </section>
 
-              {dossierPath || workProductPaths.length ? (
-                <div className="matter-artifacts">
-                  <div className="chat-card-kicker">Matter artifacts</div>
-                  {dossierPath ? (
-                    <button className="matter-artifact-link" onClick={() => openDocument(dossierPath)} type="button">
-                      <span>Dossier</span><span>Open the editable matter summary</span>
-                    </button>
-                  ) : null}
-                  {workProductPaths.map((item) => (
-                    <button className="matter-artifact-link" key={item.path} onClick={() => openDocument(item.path)} type="button">
-                      <span>Work Product · {item.state}</span><span>{item.label}</span>
-                    </button>
-                  ))}
-                </div>
-              ) : null}
+                  <section id="remaining-work">
+                    <h2>What remains unresolved</h2>
+                    {unresolved.length ? (
+                      <ul>{unresolved.map((item) => <li key={item}><LinkifiedText text={item} /></li>)}</ul>
+                    ) : <p>No unresolved questions or required work are recorded.</p>}
+                  </section>
 
-              <div className="decision-call">
-                <div style={{ font: "600 13.5px var(--sans)", color: "#6B4A02" }}>{primaryAction.category}</div>
-                <p><LinkifiedText text={primaryAction.detail} /></p>
-                {primaryAction.id !== "none" ? (
-                  <button className="btn primary compact" disabled={busy} style={{ marginTop: 12 }} onClick={() => void runPrimaryAction()}>
-                    {primaryAction.label}
-                  </button>
-                ) : null}
-                {detail.durable_decision_needed ? (
-                  <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid rgba(107, 74, 2, .2)" }}>
-                    <div style={{ font: "600 13px var(--sans)", color: "var(--ink-3)" }}>Material choice for future reliance</div>
-                    <button className="btn quiet compact" style={{ marginTop: 9 }} onClick={() => setModalOpen(true)} title="Save this choice as a dated decision that can be found and reviewed later.">
-                      Record durable decision
-                    </button>
-                  </div>
-                ) : null}
-              </div>
-
-              <div className="btn-row" style={{ marginTop: 26 }}>
-                <button className="btn quiet compact" onClick={() => setPanel((p) => (p === "trace" ? "" : "trace"))} title="Show the agent work recorded for this matter.">
-                  {panel === "trace" ? "Hide what the agent did" : "What the agent did"}
-                </button>
-                <button className="btn quiet compact" onClick={() => setPanel((p) => (p === "history" ? "" : "history"))} title="Show changes to the matter over time.">
-                  {panel === "history" ? "Hide matter history" : "Matter history"}
-                </button>
-                {researchPath ? (
-                  <button className="btn quiet compact" onClick={() => openDocument(researchPath)} type="button">
-                    Read the research
-                  </button>
-                ) : null}
-              </div>
-
-              {panel === "trace" ? (
-                <div className="trace-list">
-                  {detail.work_items.length === 0 ? (
-                    <div className="trace-item">No agent work has been recorded on this matter.</div>
-                  ) : null}
-                  {detail.work_items.map((item) => (
-                    <div className="trace-item" key={item.work_item_id}>
-                      <span style={{ flex: "none", color: item.status === "done" ? role.healthy : role.attentionDeep }}>
-                        {item.status === "done" ? "✓" : "•"}
-                      </span>
-                      <span style={{ flex: 1 }}><LinkifiedText text={item.title} /></span>
+                  <section>
+                    <h2>Matter materials</h2>
+                    <div className="evidence-list">
+                    {evidence.length ? evidence.map((node) => (
+                      <button className="evidence-row" key={node.path} onClick={() => openDocument(node.path)} type="button">
+                        <span className="evidence-kind">{node.kind}</span>
+                        <span style={{ flex: 1 }}>
+                          <span className="evidence-name"><LinkifiedText text={node.name} /></span>
+                          <span className="evidence-note"><LinkifiedText text={node.note} /></span>
+                        </span>
+                      </button>
+                    )) : <p>No source documents or research are attached yet.</p>}
+                    {dossierPath ? (
+                      <button className="matter-artifact-link" onClick={() => openDocument(dossierPath)} type="button">
+                        <span>Editable dossier</span><span>Open the full matter summary</span>
+                      </button>
+                    ) : null}
+                    {researchPath ? <button className="matter-artifact-link" onClick={() => openDocument(researchPath)} type="button"><span>Latest research</span><span>Open the research packet</span></button> : null}
+                    {workProductPaths.map((item) => (
+                      <button className="matter-artifact-link" key={item.path} onClick={() => openDocument(item.path)} type="button">
+                        <span>{item.state} work product</span><span>{item.label}</span>
+                      </button>
+                    ))}
                     </div>
-                  ))}
-                </div>
-              ) : null}
+                  </section>
 
-              {panel === "history" ? (
-                <div className="trace-list">
-                  {detail.orientation.recent_changes.length === 0 ? (
-                    <div className="trace-item">Nothing has happened on this matter yet.</div>
-                  ) : null}
-                  {detail.orientation.recent_changes.map((change, index) => (
-                    <div className="trace-item" key={index}>
-                      <span style={{ flex: "none", color: "var(--ink-5)" }}>·</span>
-                      <span style={{ flex: 1 }}><LinkifiedText text={change} /></span>
-                    </div>
-                  ))}
+                  <section>
+                    <h2>Recent activity</h2>
+                    {detail.orientation.recent_changes.length ? (
+                      <ul>{detail.orientation.recent_changes.map((change, index) => <li key={index}><LinkifiedText text={change} /></li>)}</ul>
+                    ) : <p>Nothing has happened on this matter yet.</p>}
+                  </section>
+                  {reviewPackets.length ? <section><h2>Decision maintenance</h2>{reviewPackets.map((packet) => <ReviewPacketPanel key={packet.packet_id} packet={packet} matterId={detail.matter_id} mitigations={mitigations} onChanged={loadAwareness} />)}</section> : mitigations.length ? <section><h2>Mitigations</h2><ul>{mitigations.map((item) => <li key={item.mitigation_id}>{item.title} — {item.status}</li>)}</ul></section> : null}
                 </div>
-              ) : null}
-
-              {signal.word ? (
-                <div className="signal" style={{ marginTop: 26, color: signal.wordColor }}>
-                  <span className="dot" style={{ background: signal.rail }} />
-                  {signal.word}
-                </div>
-              ) : null}
-              </div>
+              </details>
             </div>
 
             <ChatPanel
@@ -425,11 +484,28 @@ export default function MatterWorkspace({
                 if (path) setTreeActivePath(path);
               }}
               seed={chatSeed}
+              reviewAuthor={reviewAuthor.name}
+              lawyerAuthor={reviewSettings.lawyer}
+              onReviewAuthorChange={reviewAuthor.setName}
             />
           </div>
         </div>
 
-        <div className="document-pane-shell">
+        <div
+          aria-label="Resize matter overview and document"
+          aria-orientation="vertical"
+          className={`pane-resizer ${collapsedPanes.overview || collapsedPanes.document ? "hidden" : ""}`}
+          onKeyDown={(event) => resizeWithKeyboard(event, "overview", "document")}
+          onLostPointerCapture={() => { dragRef.current = null; }}
+          onPointerCancel={() => { dragRef.current = null; }}
+          onPointerDown={(event) => startResize(event, "overview", "document")}
+          onPointerMove={continueResize}
+          onPointerUp={() => { dragRef.current = null; }}
+          role="separator"
+          tabIndex={collapsedPanes.overview || collapsedPanes.document ? -1 : 0}
+        />
+
+        <div className="document-pane-shell" ref={documentPaneRef}>
           <button
             aria-expanded={!collapsedPanes.document}
             className="pane-rail"
@@ -443,8 +519,11 @@ export default function MatterWorkspace({
           <div className="document-pane-content" hidden={collapsedPanes.document}>
             <DocumentPanel
               activePath={activePath}
+              activeReviewAuthor={reviewAuthor.name}
+              lawyerAuthor={reviewSettings.lawyer}
+              onReviewAuthorChange={reviewAuthor.setName}
               onAskAgent={() => setChatSeed((current) => ({
-                text: `Redraft ${activePath?.split("/").at(-1) ?? "this document"}.`,
+                text: `Propose replacement language for ${activePath?.split("/").at(-1) ?? "this document"}. Save the revision to the active file so I can accept or reject each redline.`,
                 revision: current.revision + 1,
               }))}
               onCollapse={() => togglePane("document")}
@@ -460,22 +539,83 @@ export default function MatterWorkspace({
           detail={detail}
           onClose={() => setModalOpen(false)}
           onRecorded={reload}
-          suggestion={recommendationBody || detail.orientation.next_action || ""}
+          suggestion={proposedPath}
         />
       ) : null}
     </div>
   );
 }
 
-/** The recommendation is read out of Markdown; show it as prose, not source. */
-function stripMarkdown(value: string): string {
-  return value
-    .replace(/`([^`]*)`/g, "$1")
-    .replace(/\*\*([^*]+)\*\*/g, "$1")
-    .replace(/(^|\s)[*_]([^*_]+)[*_]/g, "$1$2")
-    .replace(/^[-*]\s+/gm, "")
-    .replace(/\s+/g, " ")
-    .trim();
+/** A proposal exists only when the recommendation record labels it on one line. */
+function parseProposedPath(markdown: string): string {
+  const body = markdown.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, "");
+  const paragraphs = body.split(/\n\s*\n/).map((paragraph) => paragraph.trim()).filter(Boolean);
+  const firstSubstantive = paragraphs.find((paragraph) => !paragraph.startsWith("#"));
+  const firstForMatching = stripEmphasis(firstSubstantive ?? "");
+  if (/^No (?:launch )?recommendation\b/i.test(firstForMatching)) return "";
+
+  for (const rawLine of body.split("\n")) {
+    const matchLine = stripEmphasis(rawLine.trim());
+    const match = matchLine.match(/^(?:Working path|Recommended path):\s*(.+)$/i);
+    if (!match) continue;
+    return match[1]
+      .split(/(?<=[.!?])\s+/)
+      .filter((sentence) => !/^(?:Counsel must confirm|Confirm|Pending|Open question)\b/i.test(sentence.trim()))
+      .join(" ")
+      .trim();
+  }
+  return "";
+}
+
+/** Falls back to the first recommendation paragraph when older records lack a path label. */
+function recommendationSummary(markdown: string): string {
+  const body = markdown.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, "");
+  const paragraph = body
+    .split(/\n\s*\n/)
+    .map((value) => value.trim())
+    .find((value) => value && !value.startsWith("#"));
+  const normalized = stripEmphasis(paragraph ?? "");
+  return /^No (?:launch )?recommendation\b/i.test(normalized) ? "" : normalized;
+}
+
+function questionForMatter(detail: MatterDetail, actionId: string): string {
+  const recorded = detail.orientation.decision_question.trim();
+  if (recorded.endsWith("?")) return recorded;
+  if (actionId === "approve_response") return "Can we send this customer response as written?";
+  if (actionId === "mark_as_sent") return "Has the approved response been sent?";
+  if (actionId === "close_matter") return "Is this matter ready to close?";
+  if (actionId === "review_and_decide") return "Which path should we take?";
+  if (actionId === "run_research") return "What do we need to know before giving advice?";
+  return recorded || detail.orientation.headline || detail.description || detail.title;
+}
+
+function buildDossierStatement(
+  detail: MatterDetail,
+  question: string,
+  recommendation: string,
+  openWorkItems: MatterDetail["work_items"],
+): string {
+  const summary = detail.orientation.summary || detail.description || detail.title;
+  const remaining = openWorkItems
+    .slice(0, 2)
+    .map((item) => sentenceFragment(item.description || item.title))
+    .filter(Boolean);
+  const parts = [summary, `The current question is: ${question}`];
+  if (recommendation) parts.push(`The current working recommendation is to ${lowercaseStart(recommendation)}`);
+  if (remaining.length) parts.push(`The remaining work is to ${remaining.map(lowercaseStart).join(" and ")}`);
+  return parts.join(" ");
+}
+
+function lowercaseStart(value: string): string {
+  return value ? value[0].toLowerCase() + value.slice(1) : value;
+}
+
+function sentenceFragment(value: string): string {
+  return lowercaseStart(value.trim().replace(/[.!?]+$/, ""));
+}
+
+function stripEmphasis(value: string): string {
+  return value.replace(/\*\*|__|(?<!\*)\*(?!\*)|(?<!_)_(?!_)/g, "").trim();
 }
 
 type EvidenceNode = { path: string; name: string; kind: string; note: string };
@@ -483,10 +623,19 @@ type EvidenceNode = { path: string; name: string; kind: string; note: string };
 /** Flattens the matter tree into the two things the lawyer actually cites. */
 function collectEvidence(tree: FileNode[]): EvidenceNode[] {
   const out: EvidenceNode[] = [];
+  const matterRecordLabels: Record<string, { name: string; kind: string; note: string }> = {
+    "request.md": { name: "Original request", kind: "Matter record", note: "The request that started this matter" },
+    "facts.md": { name: "Facts, sources & assumptions", kind: "Matter record", note: "The current factual record" },
+    "issues.md": { name: "Issue map", kind: "Matter record", note: "The legal and operational questions" },
+    "recommendations.md": { name: "Working recommendation", kind: "Themis analysis", note: "Suggested path, not yet approved" },
+  };
   const walk = (nodes: FileNode[], folder: string) => {
     for (const node of nodes) {
       if (node.type === "folder") { walk(node.children ?? [], node.name); continue; }
-      if (folder === "documents") {
+      const matterRecord = matterRecordLabels[node.name];
+      if (matterRecord) {
+        out.push({ path: node.path, ...matterRecord });
+      } else if (folder === "documents") {
         out.push({ path: node.path, name: node.label ?? node.name, kind: "Source document", note: "Attached to the matter" });
       } else if (folder === "research") {
         out.push({ path: node.path, name: node.label ?? node.name, kind: "Agent research", note: "Written by Themis, unreviewed" });

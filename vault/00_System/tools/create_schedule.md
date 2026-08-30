@@ -1,7 +1,7 @@
 ---
 tool_id: create_schedule
 handler: create_schedule
-description: Create a recurring automation assigned to an agent.
+description: Set recurring work for an agent.
 parameters:
   type: object
   properties:

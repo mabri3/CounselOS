@@ -1,16 +1,15 @@
 "use client";
 
-import { useParams, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { use, useCallback, useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
 import MatterWorkspace from "@/components/MatterWorkspace";
 import { getMatter } from "@/lib/api";
 import type { MatterDetail } from "@/lib/types";
 
-export default function MatterPage() {
-  const params = useParams<{ matterId: string }>();
+export default function MatterPage({ params }: { params: Promise<{ matterId: string }> }) {
+  const { matterId } = use(params);
   const searchParams = useSearchParams();
-  const matterId = params.matterId;
   const initialPath = searchParams.get("file");
   const focusResearch = searchParams.get("focus") === "research";
   const [detail, setDetail] = useState<MatterDetail | null>(null);

@@ -3,9 +3,12 @@
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import AppShell from "@/components/AppShell";
 import LinkifiedText from "@/components/LinkifiedText";
 import { answerAnnotation, createAnnotation, getAnnotations, getFile, getMatter } from "@/lib/api";
+import { formatDateTime } from "@/lib/design";
 import { parseMemo, splitCitations } from "@/lib/research";
 import type { FileNode, MatterDetail, ResearchMemo, ResearchNote } from "@/lib/types";
 
@@ -55,6 +58,9 @@ export default function ResearchPage() {
     () => memo?.citations.find((citation) => citation.id === openSource) ?? memo?.citations[0] ?? null,
     [memo, openSource],
   );
+  const memoByline = memo?.citations.length
+    ? memo.byline
+    : memo?.byline.replace(/ · no sources cited$/i, "");
 
   if (error && (!detail || !memo)) return <AppShell><main className="page"><p className="error">{error}</p></main></AppShell>;
   if (!detail || !memo) {
@@ -93,7 +99,9 @@ export default function ResearchPage() {
           <div style={{ flex: "none", display: "flex", alignItems: "center", gap: 14 }}>
             <span className="agent-label" style={{ fontWeight: 500 }}>
               <span className="agent-mark" style={{ width: 10, height: 10 }} />
-              Themis wrote this · {memo.citations.length} sources · unreviewed
+              Themis wrote this · {memo.citations.length
+                ? `${memo.citations.length} cited source${memo.citations.length === 1 ? "" : "s"}`
+                : "No cited sources"}
             </span>
             <Link className="btn compact" href={`/matters/${encodeURIComponent(matterId)}?file=${encodeURIComponent(memo.path)}`}>
               Open in the matter
@@ -105,7 +113,7 @@ export default function ResearchPage() {
           <div className="memo-scroll">
             <article className="memo-sheet">
               <h1>{memo.title}</h1>
-              <p className="memo-byline">{memo.byline}</p>
+              <p className="memo-byline">{memoByline}</p>
 
               <div className="memo-body reading">
                 {memo.blocks.map((block, index) => {
@@ -153,7 +161,9 @@ export default function ResearchPage() {
                         style={{ display: "flex", gap: 11, alignItems: "baseline", background: "none", border: 0, padding: 0, cursor: "pointer", textAlign: "left" }}
                       >
                         <Citation active={openSource === citation.id} n={citation.n} onOpen={() => {}} inline={false} />
-                        <span style={{ font: "400 14.5px var(--sans)", color: "var(--ink-2)" }}>{citation.name}</span>
+                        <span style={{ font: "400 14.5px var(--sans)", color: "var(--ink-2)" }}>
+                          {humanSourceLabel(citation.name, citation.kind)}
+                        </span>
                       </button>
                     ))}
                   </div>
@@ -178,24 +188,28 @@ export default function ResearchPage() {
                       <span style={{ font: "600 11px var(--sans)", background: "var(--agent)", color: "var(--paper)", borderRadius: 4, padding: "2px 7px" }}>
                         {source.n}
                       </span>
-                      <span style={{ font: "600 17px/1.3 var(--serif)", color: "var(--ink)" }}>{source.name}</span>
+                      <span style={{ font: "600 17px/1.3 var(--serif)", color: "var(--ink)" }}>
+                        {humanSourceLabel(source.name, source.kind)}
+                      </span>
                     </div>
-                    <div style={{ font: "400 13.5px var(--sans)", color: "var(--ink-4)", marginTop: 6, wordBreak: "break-word" }}>
-                      <LinkifiedText text={source.kind} />
-                    </div>
+                    <SourceDetails kind={source.kind} />
                     <div className="source-quote"><LinkifiedText text={source.quote} /></div>
-                    <p style={{ margin: "14px 0 0", font: "400 14.5px/1.6 var(--sans)", color: "var(--ink-3)" }}><LinkifiedText text={source.note} /></p>
+                    {!source.kind.startsWith("Vault document · ") ? (
+                      <p style={{ margin: "14px 0 0", font: "400 14.5px/1.6 var(--sans)", color: "var(--ink-3)" }}>
+                        <LinkifiedText text={source.note} />
+                      </p>
+                    ) : null}
                     <div className="btn-row" style={{ marginTop: 18 }}>
                       <button
                         className="btn agent compact"
-                        onClick={() => { setRail("notes"); setDraftNote(`About "${source.name}": `); }}
+                        onClick={() => { setRail("notes"); setDraftNote(`About "${humanSourceLabel(source.name, source.kind)}": `); }}
                       >
                         Ask about this passage
                       </button>
                     </div>
                   </div>
                 ) : (
-                  <div className="note-empty">This memo cites no sources.</div>
+                  <div className="note-empty">Select Notes &amp; questions to add a question about this research.</div>
                 )
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
@@ -206,7 +220,7 @@ export default function ResearchPage() {
                         <div style={{ display: "flex", alignItems: "baseline", gap: 9, marginTop: 9 }}>
                           <span style={{ font: "600 13.5px var(--sans)", color: "var(--ink)" }}>{note.who}</span>
                           <span style={{ font: "400 13px var(--sans)", color: "var(--ink-5)" }}>
-                            {new Date(note.created_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
+                            {formatDateTime(note.created_at)}
                           </span>
                         </div>
                         <div style={{ font: "400 15px/1.55 var(--sans)", color: "var(--ink)", marginTop: 4 }}><LinkifiedText text={note.question} /></div>
@@ -217,7 +231,9 @@ export default function ResearchPage() {
                             <span className="agent-mark" />
                             Themis
                           </div>
-                          <div className="reading"><LinkifiedText text={note.answer} /></div>
+                          <div className="reading">
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{note.answer}</ReactMarkdown>
+                          </div>
                         </div>
                       ) : (
                         <div className="note-answer">
@@ -328,6 +344,29 @@ function Citation({
     >
       {n}
     </button>
+  );
+}
+
+function humanSourceLabel(value: string, kind: string): string {
+  if (!kind.startsWith("Vault document")) return value;
+  const fileName = value.split(/[\\/]/).at(-1) ?? value;
+  const withoutExtension = fileName.replace(/\.[a-z0-9]{1,8}$/i, "");
+  return withoutExtension
+    .replace(/[_-]+/g, " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function SourceDetails({ kind }: { kind: string }) {
+  const [label, ...rawParts] = kind.split(" · ");
+  const raw = rawParts.join(" · ");
+  if (!raw) {
+    return <div style={{ font: "400 13.5px var(--sans)", color: "var(--ink-4)", marginTop: 6 }}>{label}</div>;
+  }
+  return (
+    <details style={{ font: "400 13.5px var(--sans)", color: "var(--ink-4)", marginTop: 6 }}>
+      <summary>{label} details</summary>
+      <div style={{ marginTop: 5, wordBreak: "break-word" }}><LinkifiedText text={raw} /></div>
+    </details>
   );
 }
 

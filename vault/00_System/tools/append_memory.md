@@ -1,7 +1,7 @@
 ---
 tool_id: append_memory
 handler: append_memory
-description: Append a durable user instruction or learning to memory.md.
+description: Save an instruction or lesson in workspace memory.
 parameters:
   type: object
   properties:

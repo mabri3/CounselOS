@@ -1,7 +1,7 @@
 ---
 tool_id: move_matter_stage
 handler: move_matter_stage
-description: Move the active matter to a legal-workflow stage.
+description: Move the active matter to another stage.
 parameters:
   type: object
   properties:

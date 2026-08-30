@@ -4,9 +4,12 @@ import shutil
 from pathlib import Path
 
 import pytest
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
 
 from app.config import Settings
 from app.runtime import AppContext
+from app.routers import awareness
 
 
 @pytest.fixture()
@@ -14,6 +17,9 @@ def app_context(tmp_path: Path) -> AppContext:
     source = Path(__file__).resolve().parents[2] / "vault"
     vault = tmp_path / "vault"
     shutil.copytree(source, vault)
+    settings_file = vault / "00_System" / "settings.md"
+    if settings_file.exists():
+        settings_file.unlink()
     settings = Settings(
         vault_path=str(vault),
         scheduler_enabled=False,
@@ -24,3 +30,11 @@ def app_context(tmp_path: Path) -> AppContext:
         decision_review_age_days=180,
     )
     return AppContext(settings)
+
+
+@pytest.fixture()
+def awareness_client(app_context: AppContext) -> TestClient:
+    app = FastAPI()
+    app.state.context = app_context
+    app.include_router(awareness.router, prefix="/api")
+    return TestClient(app)

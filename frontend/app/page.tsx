@@ -4,13 +4,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import AppShell from "@/components/AppShell";
-import LinkifiedText from "@/components/LinkifiedText";
 import BriefingList from "@/components/BriefingList";
 import NewMatterForm from "@/components/NewMatterForm";
 import TodayChat from "@/components/TodayChat";
 import { createMatter, getAutomations, getDecisions, getMatters } from "@/lib/api";
 import { buildBriefing } from "@/lib/briefing";
+import { formatLongDate } from "@/lib/design";
+import { getReviewPackets } from "@/lib/watchApi";
 import type { Decision, Matter, Schedule } from "@/lib/types";
+import type { ReviewPacket } from "@/lib/watchTypes";
 
 /** Canvas 3a — Today is the front door. The command centre is one click down. */
 export default function TodayPage() {
@@ -18,6 +20,7 @@ export default function TodayPage() {
   const [matters, setMatters] = useState<Matter[]>([]);
   const [decisions, setDecisions] = useState<Decision[]>([]);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
+  const [reviewPackets, setReviewPackets] = useState<ReviewPacket[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
@@ -25,14 +28,16 @@ export default function TodayPage() {
   const load = useCallback(async () => {
     try {
       setError("");
-      const [matterData, decisionData, automationData] = await Promise.all([
+      const [matterData, decisionData, automationData, packetData] = await Promise.all([
         getMatters(),
         getDecisions(),
         getAutomations(),
+        getReviewPackets({ limit: 100 }),
       ]);
       setMatters(matterData.matters);
       setDecisions(decisionData.decisions);
       setSchedules(automationData.schedules);
+      setReviewPackets(packetData.items);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Could not load today.");
     } finally {
@@ -43,13 +48,15 @@ export default function TodayPage() {
   useEffect(() => { void load(); }, [load]);
 
   const briefing = useMemo(
-    () => buildBriefing(matters, decisions, schedules),
-    [matters, decisions, schedules],
+    () => buildBriefing(matters, decisions, schedules, reviewPackets),
+    [matters, decisions, schedules, reviewPackets],
   );
 
   const inFlight = matters.filter((matter) => matter.status !== "closed").length;
-  const working = matters.filter((matter) => matter.status === "research" || matter.status === "generate").length;
-  const today = new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
+  const working = matters.filter((matter) =>
+    matter.work_state.execution_state === "queued" || matter.work_state.execution_state === "running"
+  ).length;
+  const today = formatLongDate(new Date());
 
   return (
     <AppShell>
@@ -65,13 +72,13 @@ export default function TodayPage() {
 
           {briefing.comingUp.length ? (
             <div style={{ marginTop: 22 }}>
-              <div style={{ font: "600 15px var(--sans)", color: "var(--ink)" }}>Coming up — nothing to do yet</div>
+              <div style={{ font: "600 15px var(--sans)", color: "var(--ink)" }}>Coming up</div>
               <div className="quiet-list" style={{ marginTop: 8 }}>
                 {briefing.comingUp.map((item) => (
-                  <div className="quiet-row" key={item.id}>
-                    <span style={{ flex: 1 }}><LinkifiedText text={item.text} /></span>
+                  <Link className="quiet-row" href={item.href} key={item.id}>
+                    <span style={{ flex: 1 }}>{item.text}</span>
                     <span>{item.when}</span>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -100,7 +107,7 @@ export default function TodayPage() {
           <div className="section-heading">The rest of the practice</div>
           <p style={{ margin: "5px 0 0", font: "400 15px/1.6 var(--sans)", color: "var(--ink-3)" }}>
             {inFlight} matter{inFlight === 1 ? "" : "s"} in flight, {working} being worked by an agent,{" "}
-            {decisions.length} decision{decisions.length === 1 ? "" : "s"} on the record. Start a new matter, move the
+            {decisions.length} decision{decisions.length === 1 ? "" : "s"} recorded. Start a new matter, move the
             board, or see what ran overnight.
           </p>
         </div>

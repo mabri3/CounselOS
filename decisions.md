@@ -54,3 +54,43 @@ Keep entries chronological and append-only. When a decision changes, add a new e
 - Consequences: The dossier uses current, non-superseded facts and links back to source records. It is a synthesis, not the source of truth for what the requester said.
 - Supersedes: none; this clarifies the intake-to-dossier decision above.
 - Evidence: `backend/app/services/chat_history.py`, `backend/app/services/matters.py`, `docs/PRD.md`, `docs/BUILD_PLAN.md`.
+
+### 2026-08-29 — Decision: Shared semantic color language
+
+- Status: `accepted`
+- Context: Today and Matters used different background strengths for the same waiting and overdue states. Stage color could also imply that every item in a stage had the same work state.
+- Decision: Use one shared semantic palette across the app. Rose means overdue or failed, amber means the lawyer's attention is needed, purple means agent work, and green means healthy or complete. Use the light Today-style wash for rows, cards, and matter-title cells. Keep stronger tints for compact controls and focused callouts.
+- Safeguards: Show a state word with every semantic color. Derive color from the work state, not the workflow stage. Treat legacy decision status `current` as current, not as a review alert.
+- Consequences: `docs/DESIGN_LANGUAGE.md` is the canonical design reference. Application code uses `frontend/lib/design.ts` and matching CSS variables instead of page-local attention colors.
+- Evidence: Today and Matters visual comparison on 2026-08-29; `frontend/lib/briefing.ts`; `frontend/lib/design.ts`.
+
+### 2026-08-29 — Decision: Continuous Legal Awareness trust boundary
+
+- Status: `accepted`
+- Context: Legal developments must be collected from public sources and matched
+  to private company facts without sending private context to an external
+  intelligence service.
+- Decision: A Watch selects `native`, `polaris`, or `both`. Before a provider
+  call, Counsel OS converts editable public intent into a validated immutable
+  outbound query. Company aliases, internal products, matter IDs, paths,
+  emails, and distinctive document excerpts stay local. Explicitly classified
+  public Watch subjects are allowed. Company-specific matching runs only after
+  collection and only inside Counsel OS.
+- Provider limits: Polaris uses the fixed Themis Lime brain and
+  `polaris-advisor`. It is advisor-read-only. It has no model discovery, tools,
+  function calls, embeddings, arbitrary response schema, redirects, or
+  endpoint override. A Polaris citation is Supplied until Counsel OS retrieves
+  and checks it.
+- Failure behavior: `WatchScanService` coordinates Both mode, preserves useful
+  output when one provider fails, reports Partial, and advances only the
+  successful provider's checkpoint.
+- Consequences: Watch defines collection; saved view defines presentation;
+  digest is an immutable view snapshot; review packet prepares judgment. A
+  review packet never becomes a decision, and a mitigation requires an
+  explicit lawyer record action.
+- Supersedes: The 2026-08-27 statement that continuous monitoring remained a
+  deferred backlog item.
+- Evidence: `backend/app/intelligence/`,
+  `backend/app/services/watch_scans.py`,
+  `backend/app/services/awareness_matching.py`, and
+  `backend/app/services/review_outcomes.py`.

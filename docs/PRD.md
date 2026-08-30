@@ -218,6 +218,7 @@ A product lawyer should be able to use the application for a real product questi
 - Matter workspace with tree, chat, and editor.
 - Markdown editing.
 - PDF and DOCX upload with text extraction to an editable Markdown companion.
+- Markdown comments, tracked changes, accept/reject review, and regenerated DOCX/PDF export.
 - Agent registry loaded from Markdown.
 - Tool registry loaded from Markdown descriptions and mapped to approved Python handlers.
 - OpenAI-compatible model adapter and no-key mock adapter.
@@ -230,13 +231,14 @@ A product lawyer should be able to use the application for a real product questi
 - Agent-created schedules and agents.
 - Inbox watcher.
 - Human-readable action trace showing tools used and records changed.
+- Guided creation and editing of reusable Markdown skills that apply to one explicit chat turn.
 
 ### 6.2 Explicitly excluded from MVP
 
 - Multi-tenant cloud deployment.
 - Authentication, SSO, enterprise RBAC, ethical walls, or team permissions.
-- Native Microsoft Word editing or round-trip track changes.
-- Native PDF editing.
+- Preservation of the source Word/PDF layout during Markdown conversion.
+- Import and round-trip preservation of existing Word/PDF review annotations.
 - Full comment threads and Google Docs-style collaboration.
 - Court-grade citation validation or automated Shepardizing/KeyCiting.
 - Guaranteed comprehensive legal research.
@@ -414,6 +416,7 @@ Research is a useful first pass. It is not represented as exhaustive or perfect.
 - **Work:** Command center and Kanban.
 - **Decisions:** Global decision register.
 - **Automations:** Schedules, agents, and run history.
+- **Skills:** Guided reusable instructions, manual editing, and user-started repeated-work review.
 - **Matter workspace:** Opened from a matter card or deep link.
 
 A separate generic “Documents” application is not required. Documents are navigated inside the matter workspace.
@@ -844,6 +847,14 @@ The UI may display:
 
 It must not expose private chain-of-thought. The trace is an operational audit trail, not a transcript of internal reasoning.
 
+### 11.9 Guided skills
+
+A skill is a declarative Markdown instruction layer under `00_System/skills/`. A fixed five-question interview lets the lawyer build early, but always asks one final optional question before generating an unsaved draft. Only **Create skill** writes the file.
+
+One enabled skill applies to one chat turn through `/<skill-id> <request>`. Its instructions appear after the active agent instructions. It cannot change operating standards, user directions, or the agent tool allow-list. The original slash command and an **Applied skill** summary remain in chat history.
+
+**Find repeated work** is user-started. It analyzes only recent user messages. Each suggestion needs at least two stored message IDs, displays excerpts from those stored messages, and never creates or changes a skill without explicit approval.
+
 ---
 
 ## 12. Tool architecture
@@ -945,13 +956,13 @@ When no external provider is configured, the system must still produce an intern
 - Extract text using the backend.
 - Create an editable `.extracted.md` companion.
 - Allow opening or downloading the original.
-- Native PDF annotation is deferred.
+- Export regenerated PDFs with standard highlight, underline, strikeout, and comment annotations for Markdown review data.
 
 ### 14.3 DOCX
 
 - Upload and preserve the original file.
 - Extract paragraph text to an editable Markdown companion.
-- Round-trip DOCX generation and tracked changes are deferred.
+- Export regenerated DOCX files with native Word comments and tracked-change elements.
 
 ### 14.4 Drag and drop
 
@@ -963,10 +974,8 @@ When no external provider is configured, the system must still produce an intern
 ### 14.5 Future editor capabilities
 
 - Selection-based AI rewrite.
-- Simple text diff.
-- Comments.
-- Accept/reject changes.
-- DOCX export.
+- Import existing Word/PDF comments and redlines.
+- Preserve complex source layout during round trips.
 
 These are post-MVP features and should not block the core workflow.
 
@@ -1001,7 +1010,31 @@ Otherwise, the decision is **Fresh**.
 
 ### 15.3 External legal-change monitoring
 
-The future vision includes checking legal updates, policy changes, and product changes against prior decisions. The MVP does not claim a reliable external legal-change monitor. It provides the record structure, agent, scheduler, and internal triggers needed to add this capability.
+The MVP includes Continuous Legal Awareness. A lawyer can create an editable
+Watch, select Counsel OS native collection, Polaris, or both, run a one-time
+scan, and start or pause a schedule. A scan stores supported public
+developments, Briefing items, provider warnings, and source coverage. It then
+reloads current company knowledge inside Counsel OS to find links to matters,
+decisions, and mitigations.
+
+Briefing is a separate reading surface. Today contains only work that requires
+the lawyer's attention. Useful monitored items can remain Briefing-only.
+
+A Watch defines collection. A saved view defines presentation. A digest is an
+immutable, dated snapshot of a saved view. A review packet prepares a lawyer's
+judgment but never becomes a decision. The lawyer must explicitly choose Keep
+current, Revise decision, Create follow-up, Not relevant, or Keep monitoring.
+
+Each source has two separate labels:
+
+- An objective source type, such as regulation, case, regulator material, or
+  secondary legal analysis.
+- A Watch-specific role: primary, secondary, discovery-only, or excluded.
+
+Polaris supplies public intelligence only. Its citations remain **Supplied**
+until Counsel OS retrieves and checks the cited material. A provider failure
+does not erase useful output from another provider. The run is shown as
+**Partial**, with its warning and successful results preserved.
 
 ### 15.4 Audit output
 
@@ -1084,6 +1117,9 @@ A cloud or team product should replace the in-process scheduler with a durable j
 - `GET /api/files?path=...`
 - `PUT /api/files?path=...`
 - `GET /api/files/raw?path=...`
+- `GET /api/files/review?path=...`
+- `PUT /api/files/review?path=...`
+- `GET /api/files/export?path=...&format=docx|pdf`
 
 ### 17.4 Chat
 
@@ -1109,6 +1145,16 @@ Token streaming is desirable but not required for scaffold completion. The respo
 ### 17.7 Health
 
 - `GET /api/health`
+
+### 17.8 Skills
+
+- `GET /api/skills`
+- `GET /api/skills/questions`
+- `POST /api/skills/draft`
+- `POST /api/skills/suggestions`
+- `POST /api/skills`
+- `GET /api/skills/{skill_id}`
+- `PUT /api/skills/{skill_id}`
 
 ---
 
@@ -1245,6 +1291,7 @@ This direction is plausible but not a committed architecture. The MVP should not
 - **FR-016:** The matter workspace shall show a stage-aware primary action.
 - **FR-017:** Approval, delivery, durable-decision recording, and closure shall persist as separate actions.
 - **FR-018:** Matter closure shall require completed delivery or resolution and no open required work.
+- **FR-019:** Editable Markdown shall support comments, tracked changes, accept/reject actions, and regenerated Word/PDF export with native review objects.
 
 ### Chat and agents
 
@@ -1255,6 +1302,9 @@ This direction is plausible but not a committed architecture. The MVP should not
 - **FR-024:** The system shall return a useful answer after a bounded tool loop.
 - **FR-025:** The UI shall display operational tool traces without chain-of-thought.
 - **FR-026:** The user shall be able to create an agent through chat.
+- **FR-027:** The user shall be able to create a reusable skill through the fixed guided interview without prompt-design knowledge.
+- **FR-028:** One explicit slash command shall apply one enabled skill to one chat turn without changing agent tools.
+- **FR-029:** Applied-skill disclosure shall persist with matter and Today assistant messages.
 
 ### Research
 
@@ -1339,6 +1389,7 @@ This direction is plausible but not a committed architecture. The MVP should not
 2. Original appears under documents.
 3. Extracted Markdown companion appears.
 4. Companion opens and is editable.
+5. User can track edits, add a comment, accept or reject changes, and export a reviewed Word or PDF file.
 
 ### Scenario E — Decision staleness
 
@@ -1362,6 +1413,15 @@ This direction is plausible but not a committed architecture. The MVP should not
 3. A new matter is created.
 4. File is moved into the matter.
 5. Matter appears in Intake.
+
+### Scenario H — Guided skill to visible chat use
+
+1. Answer the first three guided questions and select **Build it now**.
+2. Answer or decline the final optional question.
+3. Review the unsaved editable draft, then explicitly create it.
+4. Invoke the saved skill with `/<skill-id>` in matter chat.
+5. Confirm the assistant shows **Applied skill: <name>** before and after reload.
+6. Start **Find repeated work** and confirm suggestions use stored user-message evidence and do not save automatically.
 
 ---
 
@@ -1424,7 +1484,7 @@ The included scaffold implements the foundation and representative portions of W
 2. Whether Markdown remains the canonical production store for multi-user deployments.
 3. Which commercial legal research provider should support external authority research.
 4. Whether company memory should be curated manually, automatically, or through a review queue.
-5. Whether native Word round-tripping is essential to the Product Counsel module.
+5. Whether later versions must preserve complex source layout and imported review objects during Word/PDF round trips.
 6. Whether each company should define its own workflow stages or select from module templates.
 7. Whether scheduled agents may make external changes without confirmation in a production team environment.
 8. Whether matters need formal privilege walls and legal-hold controls.

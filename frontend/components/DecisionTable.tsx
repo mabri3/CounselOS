@@ -1,13 +1,24 @@
 import Link from "next/link";
 import LinkifiedText from "@/components/LinkifiedText";
-import { decisionSignal, formatDay, shortName } from "@/lib/design";
+import { decisionSignal, formatLongDate } from "@/lib/design";
 import type { Decision } from "@/lib/types";
+import type { ReviewPacket } from "@/lib/watchTypes";
 
 /**
  * Canvas 1f. Recorded decisions are ink on paper: solid border, serif, a real
  * date, a named human. Recommendations never appear in this table.
  */
-export default function DecisionTable({ decisions, selectedDecision }: { decisions: Decision[]; selectedDecision?: string | null }) {
+export default function DecisionTable({
+  decisions,
+  matterTitles,
+  selectedDecision,
+  packets = [],
+}: {
+  decisions: Decision[];
+  matterTitles: Record<string, string>;
+  selectedDecision?: string | null;
+  packets?: ReviewPacket[];
+}) {
   if (!decisions.length) return <div className="empty-state">No decisions match this view.</div>;
 
   return (
@@ -23,6 +34,7 @@ export default function DecisionTable({ decisions, selectedDecision }: { decisio
 
       {decisions.map((decision) => {
         const review = decisionSignal(decision);
+        const linkedPackets = packets.filter((packet) => packet.affected_decisions.includes(decision.decision_id));
         return (
           <div
             className="register-grid register-row"
@@ -33,15 +45,17 @@ export default function DecisionTable({ decisions, selectedDecision }: { decisio
               boxShadow: selectedDecision === decision.decision_id ? "inset 3px 0 var(--agent)" : "none",
             }}
           >
-            <div className="register-date">{formatDay(decision.decided_at)}</div>
+            <div className="register-date">{formatLongDate(decision.decided_at)}</div>
             <div style={{ paddingRight: 18 }}>
               <Link className="register-title" href={`/matters/${encodeURIComponent(decision.matter_id)}`}>
                 {decision.chosen_path || decision.title}
               </Link>
             </div>
-            <div className="register-cell"><LinkifiedText text={decision.title} /></div>
+            <div className="register-cell">
+              <LinkifiedText text={matterTitles[decision.matter_id]?.trim() || `Matter ${decision.matter_id}`} />
+            </div>
             <div className="register-cell" style={{ paddingRight: 0 }}>
-              {shortName(decision.decision_maker) || "Not recorded"}
+              {decision.decision_maker.trim() || "Not recorded"}
             </div>
             <div className="register-basis"><LinkifiedText text={decision.rationale || "No basis recorded"} /></div>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -49,15 +63,18 @@ export default function DecisionTable({ decisions, selectedDecision }: { decisio
                 <Link
                   className="btn review tiny"
                   href={`/matters/${encodeURIComponent(decision.matter_id)}`}
-                  style={{ maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis" }}
-                  title={review.detail}
+                  style={{ maxWidth: "100%", overflowWrap: "anywhere", textAlign: "left", whiteSpace: "normal" }}
                 >
-                  {review.label}
+                  <span>
+                    <strong>Needs review</strong>
+                    {review.detail !== "Needs review" ? `: ${review.detail}` : ""}
+                  </span>
                 </Link>
               ) : (
-                <span style={{ font: "400 11px var(--sans)", color: "var(--ink-6)" }} title={review.detail}>{review.label}</span>
+                <span style={{ font: "400 11px var(--sans)", color: "var(--ink-6)" }}>Recorded</span>
               )}
             </div>
+            {linkedPackets.length ? <div style={{ gridColumn: "2 / -1", font: "400 12px var(--sans)" }}>{linkedPackets.map((packet) => <Link key={packet.packet_id} href={`/decisions?packet=${encodeURIComponent(packet.packet_id)}`} style={{ marginRight: 12 }}>Review packet · {packet.status === "open" ? "Needs review" : packet.status}</Link>)}</div> : null}
           </div>
         );
       })}

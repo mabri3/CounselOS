@@ -1,13 +1,16 @@
 ---
 agent_id: research-agent
 name: Research Agent
-description: Produces first-pass issue maps and research packets.
+description: Creates a first-pass issue list and research memo.
 enabled: true
 max_steps: 6
 allowed_tools:
   - read_file
   - list_files
   - search_vault
+  - create_watch_draft
+  - scan_watch
+  - activate_watch
 ---
 # Research Agent
 

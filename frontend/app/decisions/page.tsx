@@ -5,9 +5,12 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import AppShell from "@/components/AppShell";
 import DecisionTable from "@/components/DecisionTable";
 import LinkifiedText from "@/components/LinkifiedText";
+import ReviewPacketPanel from "@/components/ReviewPacketPanel";
 import { auditDecisions, getDecisions, getMatters } from "@/lib/api";
-import { formatDay } from "@/lib/design";
+import { decisionNeedsReview, formatLongDate } from "@/lib/design";
 import type { Decision, Matter } from "@/lib/types";
+import { getReviewPackets } from "@/lib/watchApi";
+import type { ReviewPacket } from "@/lib/watchTypes";
 
 /**
  * Canvas 1f. Two shapes on one page, and they never meet: open agent
@@ -21,13 +24,16 @@ export default function DecisionsPage() {
   const [filter, setFilter] = useState("all");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [packets, setPackets] = useState<ReviewPacket[]>([]);
+  const [selectedPacket, setSelectedPacket] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try {
       setError("");
-      const [decisionData, matterData] = await Promise.all([getDecisions(), getMatters()]);
+      const [decisionData, matterData, packetData] = await Promise.all([getDecisions(), getMatters(), getReviewPackets({ limit: 100 })]);
       setDecisions(decisionData.decisions);
       setMatters(matterData.matters);
+      setPackets(packetData.items);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Could not load decisions.");
     }
@@ -36,6 +42,7 @@ export default function DecisionsPage() {
   useEffect(() => { void load(); }, [load]);
   useEffect(() => {
     setSelectedDecision(new URLSearchParams(window.location.search).get("decision"));
+    setSelectedPacket(new URLSearchParams(window.location.search).get("packet"));
   }, []);
 
   useEffect(() => {
@@ -45,11 +52,15 @@ export default function DecisionsPage() {
 
   const visible = useMemo(() => {
     if (filter === "all") return decisions;
-    if (filter === "needs_review") return decisions.filter((decision) => decision.review_status !== "fresh");
+    if (filter === "needs_review") return decisions.filter(decisionNeedsReview);
     return decisions.filter((decision) => decision.decision_maker.toLowerCase().includes("harris"));
   }, [decisions, filter]);
 
-  const flagged = decisions.filter((decision) => decision.review_status !== "fresh").length;
+  const flagged = decisions.filter(decisionNeedsReview).length;
+  const matterTitles = useMemo(
+    () => Object.fromEntries(matters.map((matter) => [matter.matter_id, matter.title])),
+    [matters],
+  );
 
   /** A matter waiting on judgment is an open recommendation, not a decision. */
   const openRecommendations = matters.filter((matter) => matter.status === "explore");
@@ -60,7 +71,10 @@ export default function DecisionsPage() {
         <div className="page-header">
           <div>
             <h1>Decision register</h1>
-            <p>{decisions.length} recorded · {flagged} flagged for review</p>
+            <p>
+              {decisions.length} recorded
+              {flagged ? ` · ${flagged} need review` : ""}
+            </p>
           </div>
           <div className="btn-row">
             <div className="segmented">
@@ -86,7 +100,7 @@ export default function DecisionsPage() {
                 finally { setBusy(false); }
               }}
             >
-              {busy ? "Auditing…" : "Recheck against sources"}
+              {busy ? "Checking…" : "Check sources again"}
             </button>
           </div>
         </div>
@@ -99,11 +113,8 @@ export default function DecisionsPage() {
               <span className="agent-label">
                 <span className="agent-mark" />
                 <span className="record-meta" style={{ color: "var(--agent)" }}>
-                  {openRecommendations.length} open recommendation{openRecommendations.length === 1 ? "" : "s"} · nothing is recorded until you record it
+                  {openRecommendations.length} open recommendation{openRecommendations.length === 1 ? "" : "s"}
                 </span>
-              </span>
-              <span style={{ font: "400 11px var(--sans)", color: "#7d78c9" }}>
-                Dashed, tinted, never in the table below
               </span>
             </div>
             <div className="recommendation-grid">
@@ -114,7 +125,7 @@ export default function DecisionsPage() {
                       <LinkifiedText text={matter.next_action || matter.title} />
                     </div>
                     <div className="mono" style={{ fontSize: 10.5, color: "var(--ink-5)", marginTop: 4 }}>
-                      {matter.title} · updated {formatDay(matter.updated_at)}
+                      {matter.title} · updated {formatLongDate(matter.updated_at)}
                     </div>
                   </div>
                   <Link className="btn agent tiny" href={`/matters/${encodeURIComponent(matter.matter_id)}`}>Review</Link>
@@ -124,12 +135,12 @@ export default function DecisionsPage() {
           </div>
         ) : null}
 
-        <DecisionTable decisions={visible} selectedDecision={selectedDecision} />
+        {packets.length ? <section style={{ marginTop: 22 }}><h2>Decision review packets</h2>{packets.map((packet) => <details key={packet.packet_id} open={selectedPacket === packet.packet_id}><summary>{packet.status === "open" ? "Needs review" : packet.status === "monitoring" ? "Monitoring" : "Resolved"} · {packet.what_happened}</summary><ReviewPacketPanel packet={packet} matterId={packet.affected_matters[0]} onChanged={load} /></details>)}</section> : null}
+
+        <DecisionTable decisions={visible} matterTitles={matterTitles} packets={packets} selectedDecision={selectedDecision} />
 
         <p style={{ font: "400 11.5px/1.5 var(--sans)", color: "var(--ink-5)", marginTop: 12, maxWidth: "90ch" }}>
-          Recorded decisions are ink on paper: solid border, serif, a real date, a named human. Recommendations are
-          dashed, tinted iris, and sit outside the table entirely — there is no visual path from one to the other
-          except the act of recording.
+          Recommendations stay separate from recorded decisions until a lawyer records the decision.
         </p>
       </main>
     </AppShell>

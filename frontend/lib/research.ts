@@ -8,6 +8,7 @@
  */
 
 import type { Citation, MemoBlock, ResearchMemo, VaultDocument } from "./types";
+import { formatDateTime } from "./design";
 
 const SOURCE_LINE = /^[-*]\s+(Internal|External|Source)\s*:\s*(.+)$/i;
 const BACKTICK_PATH = /`([^`]+)`/;
@@ -51,7 +52,7 @@ export function parseMemo(document: VaultDocument): ResearchMemo {
     title,
     byline: [
       author,
-      created ? created.slice(0, 16).replace("T", " ") : null,
+      created ? formatDateTime(created) : null,
       citations.length ? `${citations.length} source${citations.length === 1 ? "" : "s"} cited` : "no sources cited",
     ]
       .filter(Boolean)

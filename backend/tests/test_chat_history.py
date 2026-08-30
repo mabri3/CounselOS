@@ -29,7 +29,9 @@ def test_matter_chat_is_saved_and_can_start_a_new_conversation(app_context):
 
     matter = client.get("/api/matters/MAT-DEMO-BEACON").json()
     conversations_folder = next(node for node in matter["tree"] if node["name"] == "conversations")
-    conversation_node = conversations_folder["children"][0]
+    conversation_node = next(
+        node for node in conversations_folder["children"] if node["label"] == "What is the real issue?"
+    )
     assert conversation_node["label"] == "What is the real issue?"
     assert conversation_node["record_type"] == "chat_transcript"
 
@@ -46,8 +48,12 @@ def test_matter_chat_is_saved_and_can_start_a_new_conversation(app_context):
 
     conversations = client.get("/api/matters/MAT-DEMO-BEACON/conversations")
     assert conversations.status_code == 200
-    assert len(conversations.json()["conversations"]) == 1
-    assert conversations.json()["conversations"][0]["message_count"] == 4
+    saved_summary = next(
+        item
+        for item in conversations.json()["conversations"]
+        if item["conversation_id"] == conversation_id
+    )
+    assert saved_summary["message_count"] == 4
 
     new_chat = client.post(
         "/api/chat",
@@ -170,3 +176,82 @@ def test_today_chat_rejects_invalid_or_mixed_scope(app_context):
         json={"message": "Change yesterday", "workspace_day": previous_day},
     )
     assert previous_day_write.status_code == 400
+
+
+def test_recent_user_messages_excludes_assistant_messages(app_context):
+    app_context.chat_history.append_daily(
+        "2026-08-27", role="user", content="Review this launch request."
+    )
+    app_context.chat_history.append_daily(
+        "2026-08-27", role="assistant", content="Here is my review."
+    )
+
+    messages = app_context.chat_history.recent_user_messages()
+
+    assert any(item["content"] == "Review this launch request." for item in messages)
+    assert all(item["content"] != "Here is my review." for item in messages)
+    assert all(set(item) == {"message_id", "content", "created_at", "scope"} for item in messages)
+
+
+def test_recent_user_messages_is_bounded_and_newest_first(app_context):
+    app_context.vault.write_markdown(
+        "00_System/conversations/2026-08-28.md",
+        "# Workspace chat\n",
+        {
+            "scope": "workspace_day",
+            "day": "2026-08-28",
+            "messages": [
+                {
+                    "message_id": "MSG-OLD",
+                    "role": "user",
+                    "content": "Older request",
+                    "created_at": "2099-08-28T08:00:00+00:00",
+                },
+                {
+                    "message_id": "MSG-NEW",
+                    "role": "user",
+                    "content": "Newer request",
+                    "created_at": "2099-08-28T09:00:00+00:00",
+                },
+            ],
+        },
+    )
+
+    messages = app_context.chat_history.recent_user_messages(limit=1)
+
+    assert [item["message_id"] for item in messages] == ["MSG-NEW"]
+
+
+def test_old_chat_messages_load_with_empty_applied_skills(app_context):
+    app_context.chat_history.append_daily(
+        "2026-08-27", role="user", content="Old message without skill metadata."
+    )
+    document = app_context.vault.read_markdown("00_System/conversations/2026-08-27.md")
+    messages = document["metadata"]["messages"]
+    messages[-1].pop("applied_skills", None)
+    app_context.vault.write_markdown(
+        "00_System/conversations/2026-08-27.md", document["content"], {**document["metadata"], "messages": messages}
+    )
+
+    loaded = app_context.chat_history.get_daily("2026-08-27")
+
+    assert loaded["messages"][-1]["applied_skills"] == []
+
+
+def test_applied_skill_survives_markdown_rule_in_assistant_reply(app_context):
+    app_context.chat_history.append_daily(
+        "2026-08-26", role="user", content="/launch-review Review this."
+    )
+    app_context.chat_history.append_daily(
+        "2026-08-26",
+        role="assistant",
+        content="Recommendation\n\n---\n\nNext step",
+        applied_skills=[{"skill_id": "launch-review", "name": "Launch Review"}],
+    )
+
+    loaded = app_context.chat_history.get_daily("2026-08-26")
+
+    assert loaded["messages"][-1]["content"] == "Recommendation\n\n---\n\nNext step"
+    assert loaded["messages"][-1]["applied_skills"] == [
+        {"skill_id": "launch-review", "name": "Launch Review"}
+    ]

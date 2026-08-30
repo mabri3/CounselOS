@@ -31,7 +31,7 @@ export function matterAction(detail: MatterDetail, hasDraft: boolean): MatterAct
     if (!detail.durable_decision_needed && detail.decisions.length > 0) {
       return { id: "start_work_product", category: "Work action", label: "Start work product", detail: "Use the chosen path to prepare the output." };
     }
-    return { id: "review_and_decide", category: "Counsel judgment", label: "Review and decide", detail: "Test the options and choose the path forward." };
+    return { id: "review_and_decide", category: "Counsel judgment", label: "Record decision", detail: "Review the proposed path and record the decision." };
   }
   if (detail.status === "generate") {
     return hasDraft
