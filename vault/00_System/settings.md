@@ -16,7 +16,7 @@ values:
   matters.privileged_by_default: true
   matters.watermark_exported_drafts: false
   agents.provider: openai_compatible
-  agents.reasoning_model: deepseek-v4-flash
+  agents.reasoning_model: glm-5.3
   agents.fast_model: Claude Haiku 4.5
   agents.require_factual_citations: true
   agents.max_tool_calls: '12'
@@ -41,8 +41,10 @@ values:
   integrations.esignature_enabled: false
   data.provider_no_training_attested_by: Brian Harris
   data.provider_no_training_attested_at: '2026-08-27T00:57:14+00:00'
-  agents.reasoning_effort: default
-updated_at: '2026-08-29T06:32:50+00:00'
+  agents.reasoning_effort: low
+  document_review.lawyer_name: Lawyer
+  document_review.default_author: Themis
+updated_at: '2026-08-30T05:23:58+00:00'
 ---
 # Workspace settings
 

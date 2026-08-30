@@ -6,6 +6,9 @@ import type {
   ChatResponse,
   ChatConversation,
   ChatConversationSummary,
+  CompanyInterview,
+  CompanyInterviewDraft,
+  CompanyInterviewTurn,
   CompanyProfile,
   DailyConversation,
   DailyConversationSummary,
@@ -187,6 +190,23 @@ export async function getCompanyProfile(): Promise<CompanyProfile> {
 
 export async function saveCompanyProfile(profile: CompanyProfile): Promise<CompanyProfile> {
   return request("/settings/company", { method: "PUT", body: JSON.stringify(profile) });
+}
+
+export async function getCompanyInterview(): Promise<CompanyInterview> {
+  return request("/settings/company/interview");
+}
+
+export async function advanceCompanyInterview(payload: {
+  message: string;
+  history: CompanyInterviewTurn[];
+  current_profile: CompanyProfile;
+  question_id: string;
+  finish?: boolean;
+}): Promise<CompanyInterviewDraft> {
+  return request("/settings/company/interview", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }
 
 export async function getFile(path: string): Promise<VaultDocument> {

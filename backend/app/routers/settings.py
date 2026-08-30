@@ -2,7 +2,13 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.models.api import CompanyProfile, SettingsUpdate
+from app.models.api import (
+    CompanyInterviewDraftRequest,
+    CompanyInterviewDraftResponse,
+    CompanyInterviewGuide,
+    CompanyProfile,
+    SettingsUpdate,
+)
 from app.routers.dependencies import get_context
 from app.runtime import AppContext
 
@@ -18,6 +24,28 @@ def get_company_profile(context: AppContext = Depends(get_context)):
 @router.put("/company", response_model=CompanyProfile)
 def update_company_profile(payload: CompanyProfile, context: AppContext = Depends(get_context)):
     return context.company.write(payload)
+
+
+@router.get("/company/interview", response_model=CompanyInterviewGuide)
+def get_company_interview(context: AppContext = Depends(get_context)):
+    return context.company_interview.guide()
+
+
+@router.post("/company/interview", response_model=CompanyInterviewDraftResponse)
+async def draft_company_profile(
+    payload: CompanyInterviewDraftRequest,
+    context: AppContext = Depends(get_context),
+):
+    try:
+        return await context.company_interview.draft(
+            payload.message,
+            payload.history,
+            payload.current_profile,
+            payload.question_id,
+            payload.finish,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @router.get("")

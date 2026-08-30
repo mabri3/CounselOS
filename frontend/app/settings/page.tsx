@@ -2,22 +2,13 @@
 
 import { useCallback, useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
+import CompanyInterview, { COMPANY_PROFILE_FIELDS } from "@/components/CompanyInterview";
 import LinkifiedText from "@/components/LinkifiedText";
 import { effortLabel, getCompanyProfile, getSettings, saveCompanyProfile, saveSettings } from "@/lib/api";
 import { role } from "@/lib/design";
 import { getProviderCapabilities } from "@/lib/watchApi";
 import type { CompanyProfile, SettingRow, WorkspaceSettings } from "@/lib/types";
 import type { ProviderCapability } from "@/lib/watchTypes";
-
-const COMPANY_FIELDS: { key: keyof CompanyProfile; label: string; help: string }[] = [
-  { key: "summary", label: "Company summary", help: "A short description that gives agents the right company context." },
-  { key: "business_model", label: "Business model", help: "How the company makes money and who its customers are." },
-  { key: "products_services", label: "Products and services", help: "The products, services, and main product areas." },
-  { key: "jurisdictions", label: "Jurisdictions", help: "The countries, states, or regions where the company operates." },
-  { key: "regulatory_context", label: "Regulatory context", help: "The main licenses, regulators, and legal frameworks." },
-  { key: "data_practices", label: "Data practices", help: "The main types of data and how the company uses them." },
-  { key: "risk_posture", label: "Risk posture", help: "The company’s practical approach to legal and business risk." },
-];
 
 function alignModelRows(rows: SettingRow[], settings: WorkspaceSettings): SettingRow[] {
   const providerRow = rows.find((row) => row.config_key === "agents.provider");
@@ -57,7 +48,8 @@ export default function SettingsPage() {
   const [company, setCompany] = useState<CompanyProfile | null>(null);
   const [providers, setProviders] = useState<ProviderCapability[]>([]);
   const [section, setSection] = useState("agents");
-  const [dirty, setDirty] = useState(false);
+  const [settingsDirty, setSettingsDirty] = useState(false);
+  const [companyDirty, setCompanyDirty] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -72,7 +64,8 @@ export default function SettingsPage() {
       setSettings(nextSettings);
       setCompany(nextCompany);
       setProviders(providerResult.items);
-      setDirty(false);
+      setSettingsDirty(false);
+      setCompanyDirty(false);
     }
     catch (caught) { setError(caught instanceof Error ? caught.message : "Could not load settings."); }
   }, []);
@@ -80,7 +73,7 @@ export default function SettingsPage() {
   useEffect(() => { void load(); }, [load]);
 
   function update(rowId: string, patch: Partial<SettingRow>) {
-    setDirty(true);
+    setSettingsDirty(true);
     setSettings((current) => current && ({
       ...current,
       sections: current.sections.map((entry) => {
@@ -107,6 +100,7 @@ export default function SettingsPage() {
   const current = settings.sections.find((entry) => entry.id === section) ?? settings.sections[0];
   const companySection = section === "company";
   const providerSection = section === "intelligence-providers";
+  const activeDirty = companySection ? companyDirty : providerSection ? false : settingsDirty;
   const selectedModelRow = current.rows.find((row) => row.config_key === "agents.reasoning_model");
   const selectedModel = selectedModelRow?.option_labels?.[selectedModelRow.value ?? ""]
     ?? selectedModelRow?.value
@@ -140,7 +134,7 @@ export default function SettingsPage() {
                 {companySection
                   ? "Company context used by agents across matters."
                   : providerSection
-                    ? "Public intelligence services that a Watch can use. Provider keys stay outside CounselOS screens."
+                    ? "Public intelligence services that a Watch can use. Provider keys stay outside Counsel OS screens."
                     : current.sub}
               </p>
               {!companySection && !providerSection && current.id === "agents" ? (
@@ -166,7 +160,7 @@ export default function SettingsPage() {
                           <div className="setting-label">{provider.label}</div>
                           <div className="setting-help">
                             {provider.provider_id === "polaris"
-                              ? "Optional public intelligence for Watches. It is not the main CounselOS model."
+                              ? "Optional public intelligence for Watches. It is not the main Counsel OS model."
                               : "Public intelligence for Watch scans."}
                           </div>
                           {provider.warning ? <div className="setting-help" style={{ marginTop: 4 }}>{provider.warning}</div> : null}
@@ -179,24 +173,40 @@ export default function SettingsPage() {
                     );
                   }) : <div className="empty-state">No Watch providers are available.</div>}
                 </div>
-              ) : companySection ? COMPANY_FIELDS.map((field) => (
-                <div className="setting-row company-setting-row" key={field.key}>
-                  <div>
-                    <div className="setting-label">{field.label}</div>
-                    <div className="setting-help">{field.help}</div>
-                  </div>
-                  <textarea
-                    aria-label={field.label}
-                    className="text-input setting-control"
-                    onChange={(event) => {
-                      setDirty(true);
-                      setCompany((currentProfile) => currentProfile && ({ ...currentProfile, [field.key]: event.target.value }));
+              ) : companySection ? (
+                <>
+                  <CompanyInterview
+                    onSaved={(savedProfile) => {
+                      setCompany(savedProfile);
+                      setCompanyDirty(false);
                     }}
-                    rows={3}
-                    value={company[field.key]}
+                    profile={company}
                   />
-                </div>
-              )) : current.rows.map((row, index) => {
+                  <details className="company-manual-editor">
+                    <summary>Edit company file manually</summary>
+                    <div className="company-manual-fields">
+                      {COMPANY_PROFILE_FIELDS.map((field) => (
+                        <div className="setting-row company-setting-row" key={field.key}>
+                          <div>
+                            <div className="setting-label">{field.label}</div>
+                            <div className="setting-help">{field.help}</div>
+                          </div>
+                          <textarea
+                            aria-label={field.label}
+                            className="text-input setting-control"
+                            onChange={(event) => {
+                              setCompanyDirty(true);
+                              setCompany((currentProfile) => currentProfile && ({ ...currentProfile, [field.key]: event.target.value }));
+                            }}
+                            rows={field.key === "company_name" || field.key === "website_url" ? 1 : 3}
+                            value={company[field.key]}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+                </>
+              ) : current.rows.map((row, index) => {
                 if (row.kind === "heading") {
                   const advancedRows = current.rows.slice(index + 1);
                   return (
@@ -281,20 +291,42 @@ export default function SettingsPage() {
 
           <div className="admin-foot">
             <span className={error ? "error" : "stub-note"}>
-              {error || (providerSection ? "Provider status is read-only." : !dirty ? "Saved" : companySection ? "Company context has unsaved changes." : current.id === "agents" ? "Model settings have unsaved changes." : "Document review settings have unsaved changes.")}
+              {error || (providerSection ? "Provider status is read-only." : !activeDirty ? "Saved" : companySection ? "Company context has unsaved changes." : current.id === "agents" ? "Model settings have unsaved changes." : "Document review settings have unsaved changes.")}
             </span>
             <div className="btn-row">
-              <button className="btn" disabled={providerSection || !dirty || busy} onClick={() => void load()}>Discard</button>
               <button
-                className="btn primary"
-                disabled={providerSection || !dirty || busy}
+                className="btn"
+                disabled={providerSection || !activeDirty || busy}
                 onClick={async () => {
                   setBusy(true);
                   setError("");
                   try {
-                    if (companySection) setCompany(await saveCompanyProfile(company));
-                    else await saveSettings(settings);
-                    setDirty(false);
+                    if (companySection) {
+                      setCompany(await getCompanyProfile());
+                      setCompanyDirty(false);
+                    } else {
+                      setSettings(await getSettings());
+                      setSettingsDirty(false);
+                    }
+                  }
+                  catch (caught) { setError(caught instanceof Error ? caught.message : "Could not discard settings changes."); }
+                  finally { setBusy(false); }
+                }}
+              >Discard</button>
+              <button
+                className="btn primary"
+                disabled={providerSection || !activeDirty || busy}
+                onClick={async () => {
+                  setBusy(true);
+                  setError("");
+                  try {
+                    if (companySection) {
+                      setCompany(await saveCompanyProfile(company));
+                      setCompanyDirty(false);
+                    } else {
+                      await saveSettings(settings);
+                      setSettingsDirty(false);
+                    }
                   }
                   catch (caught) { setError(caught instanceof Error ? caught.message : "Could not save settings."); }
                   finally { setBusy(false); }

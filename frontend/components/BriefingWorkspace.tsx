@@ -2,18 +2,29 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import AppShell from "@/components/AppShell";
 import BriefingItemList from "@/components/BriefingItemList";
 import BriefingQueryBar from "@/components/BriefingQueryBar";
 import { formatDateTime } from "@/lib/design";
-import { createSavedView, createSavedViewDigest, deleteSavedView, getBriefingItems, getDigests, getSavedViews, scheduleSavedViewDigest, updateSavedView } from "@/lib/watchApi";
+import { createSavedView, createSavedViewDigest, deleteSavedView, getBriefingItems, getDigests, getSavedViews, getWatches, scheduleSavedViewDigest, updateSavedView } from "@/lib/watchApi";
 import type { BriefingQuery, Digest, SavedView } from "@/lib/watchTypes";
 
 type RawParams = Record<string, string | string[] | undefined>;
+type Counts = { all: number; unread: number; review: number; saved: number };
 const repeated = ["watch", "source", "topic", "jurisdiction", "source_type", "source_role", "status"] as const;
 const defaults: BriefingQuery = { q: "", watch: [], source: [], topic: [], jurisdiction: [], source_type: [], source_role: [], status: [], read: "any", saved: "any", company_connection: "any", packet: "any", impact: null, legal_status: null, sort: "newest", group: "none", view: null, cursor: null, limit: 25 };
 
 function values(raw: RawParams, key: string): string[] { const value = raw[key]; return Array.isArray(value) ? value : value ? [value] : []; }
+/** The URL is the source of truth once the lawyer starts filtering. */
+function rawFrom(params: URLSearchParams): RawParams {
+  const raw: RawParams = {};
+  for (const key of new Set(params.keys())) {
+    const all = params.getAll(key);
+    raw[key] = all.length > 1 ? all : all[0];
+  }
+  return raw;
+}
 function parseQuery(raw: RawParams): BriefingQuery {
   const scalar = (key: string) => values(raw, key)[0];
   return { ...defaults, q: scalar("q") ?? "", watch: values(raw, "watch"), source: values(raw, "source"), topic: values(raw, "topic"), jurisdiction: values(raw, "jurisdiction"), source_type: values(raw, "source_type") as BriefingQuery["source_type"], source_role: values(raw, "source_role") as BriefingQuery["source_role"], status: values(raw, "status") as BriefingQuery["status"], read: (scalar("read") as BriefingQuery["read"]) || "any", saved: (scalar("saved") as BriefingQuery["saved"]) || "any", company_connection: (scalar("company_connection") as BriefingQuery["company_connection"]) || "any", packet: (scalar("packet") as BriefingQuery["packet"]) || "any", impact: (scalar("impact") as BriefingQuery["impact"]) || null, legal_status: scalar("legal_status") || null, sort: (scalar("sort") as BriefingQuery["sort"]) || "newest", group: (scalar("group") as BriefingQuery["group"]) || "none", view: scalar("view") || null, cursor: scalar("cursor") || null, limit: Number(scalar("limit")) || 25 };
@@ -28,46 +39,182 @@ function toParams(query: BriefingQuery): URLSearchParams {
   return params;
 }
 
+/** True when the lawyer has narrowed the list past the plain default view. */
+function isFiltered(query: BriefingQuery): boolean {
+  if (query.q || query.view || query.impact || query.legal_status) return true;
+  if (query.read !== "any" || query.saved !== "any" || query.company_connection !== "any" || query.packet !== "any") return true;
+  return repeated.some((key) => (query[key] as string[]).length > 0);
+}
+
+const SORT_WORD: Record<string, string> = {
+  newest: "newest first", relevance: "best match", potential_impact: "biggest potential impact",
+  primary_sources: "primary sources first", effective_date: "soonest effective date",
+  unread: "unread first", connected_decisions: "connected to a decision",
+};
+
 export default function BriefingWorkspace({ initialSearchParams }: { initialSearchParams: RawParams }) {
   const router = useRouter();
+  const search = useSearchParams();
+  const searchKey = search.toString();
   const [query, setQuery] = useState(() => parseQuery(initialSearchParams));
   const [items, setItems] = useState<Awaited<ReturnType<typeof getBriefingItems>> | null>(null);
   const [views, setViews] = useState<SavedView[]>([]); const [digests, setDigests] = useState<Digest[]>([]);
-  const [error, setError] = useState(""); const [busy, setBusy] = useState(false);
+  const [watchNames, setWatchNames] = useState<Record<string, string>>({});
+  const [counts, setCounts] = useState<Counts | null>(null);
+  const [error, setError] = useState(""); const [notice, setNotice] = useState(""); const [busy, setBusy] = useState(false);
   const [viewEditor, setViewEditor] = useState<{ mode: "save" | "rename"; name: string; viewId?: string } | null>(null);
   const queryString = useMemo(() => toParams(query).toString(), [query]);
+  const activeView = views.find((view) => view.view_id === query.view) ?? null;
 
-  useEffect(() => { let live = true; setError(""); Promise.all([getBriefingItems(query), getSavedViews(), getDigests()]).then(([page, viewPage, digestPage]) => { if (!live) return; setItems(page); setViews(viewPage.items); setDigests(digestPage.items); if (page.resolved_query) setQuery(page.resolved_query); }).catch((reason: unknown) => live && setError(message(reason))); return () => { live = false; }; }, [initialSearchParams]);
+  useEffect(() => {
+    let live = true;
+    setError("");
+    const requested = parseQuery(rawFrom(new URLSearchParams(searchKey)));
+    setQuery(requested);
+    setItems(null);
+    Promise.all([getBriefingItems(requested), getSavedViews(), getDigests()])
+      .then(([page, viewPage, digestPage]) => {
+        if (!live) return;
+        setItems(page); setViews(viewPage.items); setDigests(digestPage.items);
+        if (page.resolved_query) setQuery(page.resolved_query);
+      })
+      .catch((reason: unknown) => live && setError(message(reason)));
+    return () => { live = false; };
+  }, [searchKey]);
 
-  async function act(action: () => Promise<void>) { setBusy(true); setError(""); try { await action(); } catch (reason) { setError(message(reason)); } finally { setBusy(false); } }
+  /* Watch names and the count chips are orientation. Neither may break the list. */
+  useEffect(() => {
+    let live = true;
+    getWatches({ limit: 100 })
+      .then((page) => live && setWatchNames(Object.fromEntries(page.items.map((watch) => [watch.watch_id, watch.title]))))
+      .catch(() => undefined);
+    Promise.all([
+      getBriefingItems({ limit: 1 }), getBriefingItems({ limit: 1, read: "no" }),
+      getBriefingItems({ limit: 1, packet: "required" }), getBriefingItems({ limit: 1, saved: "yes" }),
+    ])
+      .then(([all, unread, review, saved]) => live && setCounts({ all: all.total, unread: unread.total, review: review.total, saved: saved.total }))
+      .catch(() => undefined);
+    return () => { live = false; };
+  }, [searchKey]);
+
+  async function act(action: () => Promise<void>) { setBusy(true); setError(""); setNotice(""); try { await action(); } catch (reason) { setError(message(reason)); } finally { setBusy(false); } }
   function apply(next = query) { router.push(`/briefing?${toParams({ ...next, cursor: null }).toString()}`); }
   async function saveView(name: string) { await act(async () => { const view = await createSavedView({ name, query: { ...query, view: null, cursor: null }, display: {} }); setViews((current) => [...current, view]); setViewEditor(null); apply({ ...view.query, view: view.view_id }); }); }
   async function rename(view: SavedView, name: string) { await act(async () => { const updated = await updateSavedView(view.view_id, { expected_revision: view.revision, name }); setViews((current) => current.map((entry) => entry.view_id === updated.view_id ? updated : entry)); setViewEditor(null); }); }
   async function remove(view: SavedView) { if (!window.confirm(`Delete saved view “${view.name}”? Past digests will stay available.`)) return; await act(async () => { await deleteSavedView(view.view_id, view.revision); setViews((current) => current.filter((entry) => entry.view_id !== view.view_id)); if (query.view === view.view_id) apply({ ...defaults }); }); }
   async function digestNow(view: SavedView) { await act(async () => { const digest = await createSavedViewDigest(view.view_id); setDigests((current) => [digest, ...current]); router.push(`/briefing/digests/${encodeURIComponent(digest.digest_id)}`); }); }
-  async function schedule(view: SavedView) { await act(async () => { await scheduleSavedViewDigest(view.view_id, { enabled: true, expected_revision: view.revision, recurrence: { kind: "daily", local_time: "08:00", time_zone: Intl.DateTimeFormat().resolvedOptions().timeZone, weekdays: [] } }); }); }
+  async function schedule(view: SavedView) { await act(async () => { await scheduleSavedViewDigest(view.view_id, { enabled: true, expected_revision: view.revision, recurrence: { kind: "daily", local_time: "08:00", time_zone: Intl.DateTimeFormat().resolvedOptions().timeZone, weekdays: [] } }); setNotice(`“${view.name}” will make a digest every day at 8:00 AM. Manage it on Automations.`); }); }
 
-  return <main className="page">
-    <header className="page-header"><div><div className="eyebrow">Briefing</div><h1 className="headline">For You</h1><p className="deck">Useful legal developments. Reading here does not add work to Today.</p></div><div className="btn-row"><Link className="btn" href="/watches">Watches</Link><button className="btn primary" disabled={busy} onClick={() => setViewEditor({ mode: "save", name: "" })} type="button">Save this view</button></div></header>
-    {viewEditor?.mode === "save" ? <ViewNameForm busy={busy} label="Saved view name" name={viewEditor.name} onCancel={() => setViewEditor(null)} onChange={(name) => setViewEditor({ mode: "save", name })} onSave={(name) => saveView(name)} /> : null}
+  /* Chips are filters, the same way the Matters counts are filters. */
+  const chips: { key: string; label: string; count?: number; active: boolean; next: BriefingQuery }[] = [
+    { key: "all", label: "Everything", count: counts?.all, active: !isFiltered(query), next: { ...defaults, sort: query.sort, group: query.group } },
+    { key: "review", label: "Needs your review", count: counts?.review, active: query.packet === "required", next: { ...defaults, sort: query.sort, group: query.group, packet: "required" } },
+    { key: "unread", label: "Unread", count: counts?.unread, active: query.read === "no", next: { ...defaults, sort: query.sort, group: query.group, read: "no" } },
+    { key: "saved", label: "Saved", count: counts?.saved, active: query.saved === "yes", next: { ...defaults, sort: query.sort, group: query.group, saved: "yes" } },
+  ];
+
+  return <AppShell><main className="page reader">
+    <header className="page-header">
+      <div className="page-header-main">
+        <div className="eyebrow">Continuous legal awareness</div>
+        <h1 className="headline">Briefing</h1>
+        <p className="page-lede">
+          Public legal developments your Watches picked up. Read here to stay current —
+          <strong> nothing you read on this page adds work to Today.</strong> When a development touches a
+          recorded decision, it also arrives on Today as a review packet.
+        </p>
+      </div>
+      <div className="btn-row">
+        <Link className="btn" href="/watches">Manage Watches</Link>
+        <button className="btn primary" disabled={busy} onClick={() => setViewEditor({ mode: "save", name: "" })} type="button">Save this view</button>
+      </div>
+    </header>
+
+    {viewEditor?.mode === "save" ? <ViewNameForm busy={busy} help="A saved view remembers this exact search so you can return to it, or turn it into a daily digest." label="Name this view" name={viewEditor.name} onCancel={() => setViewEditor(null)} onChange={(name) => setViewEditor({ mode: "save", name })} onSave={(name) => saveView(name)} /> : null}
     {error && <div className="error" role="alert">{error}</div>}
-    <BriefingQueryBar query={query} onChange={(patch) => setQuery((current) => ({ ...current, ...patch }))} onApply={() => apply()} />
-    <div className="list-reader-layout" style={{ marginTop: 20 }}>
-      <div className="list-reader-list"><div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10, font: "500 13px var(--sans)", color: "var(--ink-4)" }}><span>{items ? `${items.total} developments` : "Loading developments…"}</span>{query.view && <span>Saved view restored</span>}</div>{items && <BriefingItemList group={query.group} items={items.items} queryString={queryString} />}</div>
-      <aside className="list-reader-reader stack-list" aria-label="Saved Briefing views and digests">
-        <section className="card responsive-card" style={{ padding: 18 }}><h2 style={heading}>Saved views</h2>{views.length === 0 ? <p className="faint">No saved views yet.</p> : views.map((view) => <div className="row" key={view.view_id} style={{ display: "block", padding: "12px 0" }}><button className="btn quiet" onClick={() => apply({ ...view.query, view: view.view_id, cursor: null })} type="button">{view.name}</button>{viewEditor?.mode === "rename" && viewEditor.viewId === view.view_id ? <ViewNameForm busy={busy} label={`New name for ${view.name}`} name={viewEditor.name} onCancel={() => setViewEditor(null)} onChange={(name) => setViewEditor({ mode: "rename", name, viewId: view.view_id })} onSave={(name) => rename(view, name)} /> : <div className="btn-row" style={{ marginTop: 8 }}><button className="btn tiny" onClick={() => setViewEditor({ mode: "rename", name: view.name, viewId: view.view_id })} type="button">Rename</button><button className="btn tiny" onClick={() => digestNow(view)}>Digest now</button><button className="btn tiny" onClick={() => schedule(view)}>Schedule daily</button><button className="btn tiny" onClick={() => remove(view)}>Delete</button></div>}</div>)}</section>
-        <section className="card responsive-card" style={{ padding: 18 }}><h2 style={heading}>Digests</h2>{digests.length === 0 ? <p className="faint">No digests yet.</p> : digests.map((digest) => <Link href={`/briefing/digests/${encodeURIComponent(digest.digest_id)}`} key={digest.digest_id} className="row" style={{ display: "block", padding: "11px 0", textDecoration: "none" }}><strong>{digest.title}</strong><div className="faint" style={{ marginTop: 4 }}>{digest.item_ids.length} items · {formatDateTime(digest.created_at)}</div></Link>)}</section>
-        <section className="card responsive-card" style={{ padding: 18 }}><h2 style={heading}>Briefing tools</h2><div className="btn-row"><Link className="btn" href="/watches">Watches</Link><Link className="btn" href="/watches">Sources</Link></div></section>
+    {notice && <div className="warning-callout" style={{ marginTop: 14 }} role="status">{notice}</div>}
+
+    <div className="stat-chips" style={{ marginTop: 20 }}>
+      {chips.map((chip) => <button
+        className={`stat-chip ${chip.active ? "active" : ""}`}
+        key={chip.key} onClick={() => apply(chip.next)} type="button"
+      >
+        <b>{chip.count ?? "—"}</b><span>{chip.label}</span>
+      </button>)}
+    </div>
+
+    <BriefingQueryBar
+      query={query}
+      filtered={isFiltered(query)}
+      onChange={(patch) => setQuery((current) => ({ ...current, ...patch }))}
+      onApply={() => apply()}
+      onClear={() => apply({ ...defaults })}
+    />
+
+    <div className="work-rail-layout" style={{ marginTop: 22 }}>
+      <div className="work-main">
+        <div className="query-summary">
+          <span className="query-summary-count">
+            {items ? `${items.total} ${items.total === 1 ? "development" : "developments"}` : "Loading developments…"}
+            {activeView ? ` in “${activeView.name}”` : ""}
+          </span>
+          <span className="query-summary-note">Ordered by {SORT_WORD[query.sort] ?? query.sort}</span>
+        </div>
+        {items
+          ? <BriefingItemList group={query.group} items={items.items} queryString={queryString} watchNames={watchNames} />
+          : <div className="card"><div className="loading">Reading your Watches…</div></div>}
+      </div>
+
+      <aside className="work-rail" aria-label="Saved views, digests and Watches">
+        <section className="rail-card">
+          <h2 className="rail-card-title">Saved views</h2>
+          <p className="rail-card-help">A saved view remembers a search. Open one to return to it, or turn it into a digest.</p>
+          {views.length === 0
+            ? <p className="rail-card-empty">You haven&apos;t saved a view yet. Set the filters above, then choose <strong>Save this view</strong>.</p>
+            : <div className="rail-card-body">{views.map((view) => <div className="rail-entry" key={view.view_id}>
+              <button className="rail-entry-name" onClick={() => apply({ ...view.query, view: view.view_id, cursor: null })} type="button">{view.name}</button>
+              {query.view === view.view_id ? <div className="rail-entry-meta">Showing now</div> : null}
+              {viewEditor?.mode === "rename" && viewEditor.viewId === view.view_id
+                ? <ViewNameForm busy={busy} label={`New name for ${view.name}`} name={viewEditor.name} onCancel={() => setViewEditor(null)} onChange={(name) => setViewEditor({ mode: "rename", name, viewId: view.view_id })} onSave={(name) => rename(view, name)} />
+                : <div className="rail-entry-actions">
+                  <button className="btn tiny" disabled={busy} onClick={() => digestNow(view)} type="button">Make a digest now</button>
+                  <button className="btn tiny" disabled={busy} onClick={() => schedule(view)} type="button">Digest daily at 8 AM</button>
+                  <button className="btn tiny" onClick={() => setViewEditor({ mode: "rename", name: view.name, viewId: view.view_id })} type="button">Rename</button>
+                  <button className="btn tiny" disabled={busy} onClick={() => remove(view)} type="button">Delete</button>
+                </div>}
+            </div>)}</div>}
+        </section>
+
+        <section className="rail-card">
+          <h2 className="rail-card-title">Digests</h2>
+          <p className="rail-card-help">A digest freezes what a saved view showed on one date. Past digests never change, so they are safe to cite or share.</p>
+          {digests.length === 0
+            ? <p className="rail-card-empty">No digest yet. Save a view, then choose <strong>Make a digest now</strong>.</p>
+            : <div className="rail-card-body">{digests.map((digest) => <div className="rail-entry" key={digest.digest_id}>
+              <Link className="rail-entry-name" href={`/briefing/digests/${encodeURIComponent(digest.digest_id)}`}>{digest.title}</Link>
+              <div className="rail-entry-meta">{digest.item_ids.length} {digest.item_ids.length === 1 ? "item" : "items"} · {formatDateTime(digest.created_at)}</div>
+            </div>)}</div>}
+        </section>
+
+        <section className="rail-card">
+          <h2 className="rail-card-title">Where this comes from</h2>
+          <p className="rail-card-help">Watches are the standing searches that fill this page. Change what a Watch looks for and this list changes with it.</p>
+          <div className="btn-row" style={{ marginTop: 13 }}>
+            <Link className="btn compact" href="/watches">All Watches</Link>
+            <Link className="btn compact" href="/watches/new">New Watch</Link>
+          </div>
+        </section>
       </aside>
     </div>
-  </main>;
+  </main></AppShell>;
 }
 
-const heading = { margin: "0 0 10px", font: "600 18px var(--serif)" };
-function ViewNameForm({ busy, label, name, onCancel, onChange, onSave }: { busy: boolean; label: string; name: string; onCancel: () => void; onChange: (name: string) => void; onSave: (name: string) => Promise<void> }) {
+function ViewNameForm({ busy, help, label, name, onCancel, onChange, onSave }: { busy: boolean; help?: string; label: string; name: string; onCancel: () => void; onChange: (name: string) => void; onSave: (name: string) => Promise<void> }) {
   const trimmed = name.trim();
   return <form className="filter-bar" onSubmit={(event) => { event.preventDefault(); if (trimmed) void onSave(trimmed); }} style={{ marginTop: 12 }}>
-    <label>{label}<input autoFocus className="text-input" onChange={(event) => onChange(event.target.value)} required value={name} /></label>
+    <label style={{ flex: "1 1 240px" }}>{label}<input autoFocus className="text-input" onChange={(event) => onChange(event.target.value)} required value={name} />
+      {help ? <span className="form-help">{help}</span> : null}
+    </label>
     <div className="filter-bar-actions"><button className="btn primary compact" disabled={busy || !trimmed} type="submit">{busy ? "Saving…" : "Save"}</button><button className="btn compact" disabled={busy} onClick={onCancel} type="button">Cancel</button></div>
   </form>;
 }

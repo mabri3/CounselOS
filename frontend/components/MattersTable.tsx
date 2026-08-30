@@ -39,6 +39,8 @@ export default function MattersTable({ matters }: { matters: Matter[] }) {
     return <div className="empty-state">No matters match these filters.</div>;
   }
 
+  const templateVar = (value: string) => ({ "--register-columns": value }) as React.CSSProperties;
+
   const sortable = (key: SortKey, label: string) => (
     <button
       aria-label={`Sort by ${label}`}
@@ -54,7 +56,7 @@ export default function MattersTable({ matters }: { matters: Matter[] }) {
     <div className="register">
       <div
         className="register-grid register-head record-meta"
-        style={{ gridTemplateColumns: columns, textTransform: "none" }}
+        style={{ ...templateVar(columns), textTransform: "none" }}
       >
         <span>Matter</span>
         <span>{sortable("stage", "Stage")}</span>
@@ -73,7 +75,7 @@ export default function MattersTable({ matters }: { matters: Matter[] }) {
             style={{
               background: "#fffefb",
               borderLeft: `5px solid ${signal.rail}`,
-              gridTemplateColumns: columns,
+              ...templateVar(columns),
             }}
           >
             <span className="register-matter-cell" style={{ background: signalCellTint(signal.kind) }}>

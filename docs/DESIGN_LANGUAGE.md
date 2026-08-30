@@ -46,6 +46,11 @@ guide the eye without filling the screen with strong color. Use the strong tint
 only for a small badge, button, selected filter, or focused callout. Stage names
 do not receive a semantic color because a stage does not prove who is waiting.
 
+Emphasis is not a colour role. Unread, new, and selected are shown with weight,
+an ink spine, or a border — never with ochre. On Briefing, ochre belongs only to
+an item whose review packet is **Required**, because that is the only item on
+the page that is genuinely waiting on the lawyer.
+
 The state controls the color. A page, route, or component must not assign a
 different color to the same state. Use the shared role tokens instead of a local
 hex value.
@@ -143,6 +148,19 @@ record.
 - Each tracked change has individual **Accept**, **Reject**, **Accept and next**, and **Reject and next** actions. There are no bulk review actions.
 - Comments open from selected text. Show the same thread in a contextual popover and the document comment rail.
 - Resolved comments remain visible until the lawyer explicitly deletes them.
+
+## Layout
+
+Two shapes carry most screens.
+
+- `page-header` names the destination: an eyebrow, a serif headline, and a
+  `page-lede` that says in one or two sentences what the page is for and what it
+  will not do. Counts sit under it as `stat-chip` filters wherever a count is
+  also a way to narrow the list.
+- `work-rail-layout` puts the thing being read or worked in the wide left
+  column (`work-main`) and actions, context and provenance in the narrow sticky
+  right column (`work-rail`). The rail never takes the width from the work.
+  Each `rail-card` names one job and carries a sentence of help under the name.
 
 ## Screens
 

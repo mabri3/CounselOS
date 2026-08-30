@@ -342,6 +342,8 @@ class ResearchRunStart(BaseModel):
 class CompanyProfile(BaseModel):
     source_id: str = "SRC-COMPANY"
     version: str = ""
+    company_name: str = ""
+    website_url: str = ""
     summary: str = ""
     business_model: str = ""
     products_services: str = ""
@@ -349,3 +351,49 @@ class CompanyProfile(BaseModel):
     regulatory_context: str = ""
     data_practices: str = ""
     risk_posture: str = ""
+
+
+CompanyProfileInputField = Literal[
+    "company_name",
+    "website_url",
+    "summary",
+    "business_model",
+    "products_services",
+    "jurisdictions",
+    "regulatory_context",
+    "data_practices",
+    "risk_posture",
+]
+
+
+class CompanyInterviewQuestion(BaseModel):
+    question_id: str
+    text: str
+    reason: str
+
+
+class CompanyInterviewTurn(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str
+
+
+class CompanyInterviewDraftRequest(BaseModel):
+    message: str = ""
+    history: list[CompanyInterviewTurn] = Field(default_factory=list)
+    current_profile: CompanyProfile
+    question_id: str = "overview"
+    finish: bool = False
+
+
+class CompanyInterviewGuide(BaseModel):
+    opening: str
+    question: CompanyInterviewQuestion
+
+
+class CompanyInterviewDraftResponse(BaseModel):
+    draft: CompanyProfile
+    reply: str
+    question: CompanyInterviewQuestion | None = None
+    complete: bool = False
+    website_used: bool = False
+    warning: str | None = None

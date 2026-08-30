@@ -274,7 +274,44 @@ export type SkillCreate = SkillDraft;
 export type SkillUpdate = Partial<Pick<SkillDefinition, "name" | "description" | "instructions">>;
 
 export type ResearchRun = { run_id: string; matter_id: string; state: "queued" | "running" | "completed" | "failed" | "interrupted"; total: number; completed: number; status: string; dossier_effect: string; useful_support: number; human_questions_left: number };
-export type CompanyProfile = { source_id: string; version: string; summary: string; business_model: string; products_services: string; jurisdictions: string; regulatory_context: string; data_practices: string; risk_posture: string };
+export type CompanyProfile = {
+  source_id: string;
+  version: string;
+  company_name: string;
+  website_url: string;
+  summary: string;
+  business_model: string;
+  products_services: string;
+  jurisdictions: string;
+  regulatory_context: string;
+  data_practices: string;
+  risk_posture: string;
+};
+
+export type CompanyInterviewQuestion = {
+  question_id: string;
+  text: string;
+  reason: string;
+};
+
+export type CompanyInterviewTurn = {
+  role: "user" | "assistant";
+  content: string;
+};
+
+export type CompanyInterview = {
+  opening: string;
+  question: CompanyInterviewQuestion;
+};
+
+export type CompanyInterviewDraft = {
+  draft: CompanyProfile;
+  reply: string;
+  question?: CompanyInterviewQuestion | null;
+  complete: boolean;
+  website_used: boolean;
+  warning?: string | null;
+};
 
 export type ChatConversationSummary = {
   conversation_id: string;

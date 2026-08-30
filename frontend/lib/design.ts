@@ -225,6 +225,11 @@ export function scheduleIsFailing(schedule: Schedule): boolean {
   return schedule.last_status === "error" || schedule.last_status === "failed";
 }
 
+/** The API sends a boolean; older vault records sent 0/1. Both mean paused. */
+export function scheduleIsPaused(schedule: Schedule): boolean {
+  return schedule.enabled === false || (schedule.enabled as unknown) === 0;
+}
+
 export function initials(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
   if (!parts.length) return "—";

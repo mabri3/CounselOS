@@ -121,10 +121,10 @@ export default function DecisionsPage() {
               {openRecommendations.map((matter) => (
                 <div className="recommendation-card" key={matter.matter_id}>
                   <div>
-                    <div style={{ font: "400 13px/1.5 var(--sans)", color: "var(--ink-2)" }}>
+                    <div className="recommendation-text">
                       <LinkifiedText text={matter.next_action || matter.title} />
                     </div>
-                    <div className="mono" style={{ fontSize: 10.5, color: "var(--ink-5)", marginTop: 4 }}>
+                    <div className="recommendation-source">
                       {matter.title} · updated {formatLongDate(matter.updated_at)}
                     </div>
                   </div>
@@ -139,7 +139,7 @@ export default function DecisionsPage() {
 
         <DecisionTable decisions={visible} matterTitles={matterTitles} packets={packets} selectedDecision={selectedDecision} />
 
-        <p style={{ font: "400 11.5px/1.5 var(--sans)", color: "var(--ink-5)", marginTop: 12, maxWidth: "90ch" }}>
+        <p style={{ font: "400 13.5px/1.5 var(--sans)", color: "var(--ink-4)", marginTop: 14, maxWidth: "90ch" }}>
           Recommendations stay separate from recorded decisions until a lawyer records the decision.
         </p>
       </main>

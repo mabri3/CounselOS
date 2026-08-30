@@ -58,7 +58,7 @@ export default function DecisionTable({
               {decision.decision_maker.trim() || "Not recorded"}
             </div>
             <div className="register-basis"><LinkifiedText text={decision.rationale || "No basis recorded"} /></div>
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <div className="register-review">
               {review.stale ? (
                 <Link
                   className="btn review tiny"
@@ -71,10 +71,10 @@ export default function DecisionTable({
                   </span>
                 </Link>
               ) : (
-                <span style={{ font: "400 11px var(--sans)", color: "var(--ink-6)" }}>Recorded</span>
+                <span className="state-label state-quiet">Recorded</span>
               )}
             </div>
-            {linkedPackets.length ? <div style={{ gridColumn: "2 / -1", font: "400 12px var(--sans)" }}>{linkedPackets.map((packet) => <Link key={packet.packet_id} href={`/decisions?packet=${encodeURIComponent(packet.packet_id)}`} style={{ marginRight: 12 }}>Review packet · {packet.status === "open" ? "Needs review" : packet.status}</Link>)}</div> : null}
+            {linkedPackets.length ? <div className="register-packets">{linkedPackets.map((packet) => <Link key={packet.packet_id} href={`/decisions?packet=${encodeURIComponent(packet.packet_id)}`} style={{ marginRight: 12 }}>Review packet · {packet.status === "open" ? "Needs review" : packet.status}</Link>)}</div> : null}
           </div>
         );
       })}

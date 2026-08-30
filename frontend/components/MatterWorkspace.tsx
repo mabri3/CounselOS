@@ -11,11 +11,19 @@ import RecordDecisionModal from "@/components/RecordDecisionModal";
 import ReviewPacketPanel from "@/components/ReviewPacketPanel";
 import { getFile, getSettings, moveMatter, performMatterAction, runResearch, uploadDocument } from "@/lib/api";
 import { useReviewAuthor } from "@/lib/reviewAuthor";
-import { dueWord, signalFor, stageLabel } from "@/lib/design";
+import { dueWord, riskLabel, signalFor, stageLabel } from "@/lib/design";
+import { controlIdForCurrentWork, currentWorkItemFor, openItemsFor } from "@/lib/matterBrief";
+import type { MatterControlId } from "@/lib/matterBrief";
 import { matterAction } from "@/lib/matterActions";
+import type { MatterActionView } from "@/lib/matterActions";
 import type { FileNode, MatterDetail } from "@/lib/types";
 import { getMatterMitigations, getReviewPackets } from "@/lib/watchApi";
 import type { Mitigation, ReviewPacket } from "@/lib/watchTypes";
+
+type MatterControl = Omit<MatterActionView, "id" | "category"> & {
+  id: MatterControlId;
+  category: MatterActionView["category"] | "Work item";
+};
 
 /**
  * Canvas 2b — question, recommendation, evidence, decision. The copilot and
@@ -96,6 +104,16 @@ export default function MatterWorkspace({
   const dossierPath = useMemo(() => findFileByName(detail.tree, "dossier.md"), [detail.tree]);
   const workProductPaths = useMemo(() => collectWorkProduct(detail.tree), [detail.tree]);
   const primaryAction = matterAction(detail, Boolean(draftPath));
+  const currentWorkItem = currentWorkItemFor(
+    detail.work_items,
+    detail.work_state.next_work_item_id,
+  );
+  const currentControlId = controlIdForCurrentWork(primaryAction.id, currentWorkItem);
+  const currentControl: MatterControl = currentControlId === primaryAction.id
+    ? primaryAction
+    : currentControlId === "run_research"
+      ? { id: "run_research", category: "Work action", label: "Run research", detail: "Run the current research work item." }
+      : { id: "open_work_item", category: "Work item", label: "Open work item", detail: "Open the saved work item and review its details." };
   const signal = signalFor(detail);
   const due = dueWord(detail);
 
@@ -201,47 +219,50 @@ export default function MatterWorkspace({
     setActivePath(path);
   }
 
-  async function runPrimaryAction() {
+  async function runCurrentControl() {
     setError("");
-    if (primaryAction.id === "review_intake") {
+    if (currentControl.id === "open_work_item" && currentWorkItem) {
+      openDocument(currentWorkItem.path);
+      return;
+    }
+    if (currentControl.id === "review_intake") {
       openDocument(defaultPath);
       return;
     }
-    if (primaryAction.id === "review_and_decide") {
+    if (currentControl.id === "review_and_decide") {
       setModalOpen(true);
       return;
     }
-    if (primaryAction.id === "draft_work_product") {
+    if (currentControl.id === "draft_work_product") {
       setChatSeed((current) => ({
         text: "Draft the work product for the chosen path and save it in this matter.",
         revision: current.revision + 1,
       }));
       return;
     }
-    if (primaryAction.id === "review_draft" && draftPath) {
+    if (currentControl.id === "review_draft" && draftPath) {
       openDocument(draftPath);
       return;
     }
-    if (primaryAction.id === "review_remaining_work") {
+    if (currentControl.id === "review_remaining_work") {
       const remainingWork = document.getElementById("remaining-work");
-      if (remainingWork instanceof HTMLDetailsElement) remainingWork.open = true;
       remainingWork?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
 
     setBusy(true);
     try {
-      if (primaryAction.id === "run_research") {
+      if (currentControl.id === "run_research") {
         const result = await runResearch(detail.matter_id);
         await reload();
         openDocument(result.path);
-      } else if (primaryAction.id === "start_work_product") {
+      } else if (currentControl.id === "start_work_product") {
         await moveMatter(detail.matter_id, "generate", "Judgment complete; starting work product");
         await reload();
-      } else if (["approve_response", "mark_as_sent", "close_matter"].includes(primaryAction.id)) {
+      } else if (["approve_response", "mark_as_sent", "close_matter"].includes(currentControl.id)) {
         await performMatterAction(
           detail.matter_id,
-          primaryAction.id as "approve_response" | "mark_as_sent" | "close_matter",
+          currentControl.id as "approve_response" | "mark_as_sent" | "close_matter",
         );
         await reload();
       }
@@ -254,13 +275,21 @@ export default function MatterWorkspace({
 
   const proposedPath = parseProposedPath(recommendation ?? "");
   const recommendationText = proposedPath || recommendationSummary(recommendation ?? "");
-  const openWorkItems = detail.work_items.filter((item) => !["done", "closed"].includes(item.status));
-  const matterQuestion = questionForMatter(detail, primaryAction.id);
-  const unresolved = Array.from(new Set([
-    ...detail.orientation.open_questions,
-    ...openWorkItems.map((item) => item.title),
-  ]));
-  const dossierStatement = buildDossierStatement(detail, matterQuestion, recommendationText, openWorkItems);
+  const openItems = openItemsFor(
+    detail.work_items,
+    detail.orientation.open_questions,
+    detail.work_state.next_work_item_id,
+    detail.work_state.next_action,
+  );
+  const requiredCount = openItems.filter((item) => item.required).length;
+  const currentTask = primaryAction.id === "none"
+    ? primaryAction.detail
+    : detail.work_state.next_action.trim() || currentWorkItem?.title || primaryAction.detail;
+  const primaryActionClass = currentControl.category === "Counsel judgment" || currentControl.category === "Approval"
+    ? "btn review"
+    : currentControl.id === "run_research" || currentControl.id === "draft_work_product"
+      ? "btn agent"
+      : "btn primary";
 
   function focusConversation() {
     setCollapsedPanes({ tree: true, overview: false, document: true });
@@ -285,23 +314,24 @@ export default function MatterWorkspace({
             ) : null}
             <div className="matter-crumb">
               <Link href="/matters" style={{ textDecoration: "underline", textUnderlineOffset: 3 }}>Matters</Link>
-              {" · "}
-              {stageLabel(detail.status).toLowerCase()}
-              {detail.risk_level ? ` · ${detail.risk_level.toLowerCase()} risk` : ""}
-              {" · "}
-              <span style={{ color: due.color }}>{due.text}</span>
             </div>
           </div>
           <h1 className="matter-title"><LinkifiedText text={detail.title} /></h1>
         </div>
-        <div style={{ flex: "none" }}>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ font: "400 13px var(--sans)", color: "var(--ink-4)" }}>Next action</div>
-            <div style={{ font: "500 15px var(--sans)", color: "var(--ink)" }}>
-              <LinkifiedText text={detail.work_state.next_action || primaryAction.detail} />
-            </div>
+        <dl className="matter-facts">
+          <div>
+            <dt>Stage</dt>
+            <dd>{stageLabel(detail.status)}</dd>
           </div>
-        </div>
+          <div>
+            <dt>Risk</dt>
+            <dd>{riskLabel(detail.risk_level)}</dd>
+          </div>
+          <div>
+            <dt>Due</dt>
+            <dd style={{ color: due.color }}>{due.text}</dd>
+          </div>
+        </dl>
       </header>
 
       {error ? <p className="error" style={{ margin: "10px 34px 0" }}>{error}</p> : null}
@@ -380,92 +410,140 @@ export default function MatterWorkspace({
           </button>
           <div className="pane-content" hidden={collapsedPanes.overview}>
             <div className="pane-head">
-              <span>Matter conversation</span>
+              <span>Matter overview</span>
               <div className="btn-row">
                 {!collapsedPanes.tree || !collapsedPanes.document ? (
                   <button className="btn quiet compact" onClick={focusConversation} type="button">Focus conversation</button>
                 ) : null}
                 <button
-                  aria-label="Collapse matter conversation"
+                  aria-label="Collapse matter overview"
                   className="pane-collapse"
                   onClick={() => togglePane("overview")}
-                  title="Collapse matter conversation"
+                  title="Collapse matter overview"
                   type="button"
                 >‹</button>
               </div>
             </div>
             <div className="brief-scroll">
-              <details className="matter-context">
-                <summary>
-                  <span className="matter-context-kicker">Matter context</span>
-                  <span className="matter-context-statement"><LinkifiedText text={dossierStatement} /></span>
-                  <span className="matter-context-toggle">Show full matter brief</span>
-                </summary>
-                <div className="matter-context-body">
-                  <section>
-                    <h2>Current question</h2>
-                    <p className="matter-context-question"><LinkifiedText text={matterQuestion} /></p>
-                  </section>
+              <div className="matter-brief">
+                <section className={`matter-call ${primaryAction.id === "none" ? "is-complete" : ""}`}>
+                  <span className="matter-call-kicker">
+                    {primaryAction.id === "none" ? "Matter status" : "Next action"}
+                  </span>
+                  <p className="matter-call-task"><LinkifiedText text={currentTask} /></p>
 
-                  <section>
-                    <h2>Working recommendation</h2>
-                    <div className="agent-note" title="Agent analysis is a suggested path. It is not a recorded human decision.">
-                      <div className="agent-label">Themis · Not reviewed</div>
-                      {recommendation === null ? (
-                        <p>Reading the matter…</p>
-                      ) : recommendationText ? (
-                        <>
-                          <p><LinkifiedText text={recommendationText} /></p>
-                          <div className="matter-record-note">This is a working recommendation. It is not an approval or recorded decision.</div>
-                        </>
-                      ) : (
-                        <p>Themis has not proposed a path yet.</p>
-                      )}
+                  {primaryAction.id !== "none" ? (
+                    <div className="matter-recommendation">
+                      <div className="matter-recommendation-label">
+                        Working recommendation · Source and review status not recorded
+                      </div>
+                    {recommendation === null ? (
+                        <p>Reading the saved recommendation…</p>
+                    ) : recommendationText ? (
+                      <>
+                        <p><LinkifiedText text={recommendationText} /></p>
+                          <div className="matter-record-note">
+                            This is a working recommendation. It is not an approval or recorded decision.
+                          </div>
+                      </>
+                    ) : (
+                        <p>No working recommendation is saved.</p>
+                    )}
                     </div>
-                  </section>
+                  ) : null}
 
-                  <section id="remaining-work">
-                    <h2>What remains unresolved</h2>
-                    {unresolved.length ? (
-                      <ul>{unresolved.map((item) => <li key={item}><LinkifiedText text={item} /></li>)}</ul>
-                    ) : <p>No unresolved questions or required work are recorded.</p>}
-                  </section>
+                  {primaryAction.id !== "none" ? (
+                    <div className="matter-call-do">
+                      <span>{currentControl.category}</span>
+                      <button
+                        aria-busy={busy}
+                        className={`${primaryActionClass} matter-call-button`}
+                        disabled={busy}
+                        onClick={() => void runCurrentControl()}
+                        title={currentControl.detail}
+                        type="button"
+                      >
+                        {busy ? "Working…" : currentControl.label}
+                      </button>
+                    </div>
+                  ) : null}
+                </section>
 
-                  <section>
-                    <h2>Matter materials</h2>
-                    <div className="evidence-list">
-                    {evidence.length ? evidence.map((node) => (
-                      <button className="evidence-row" key={node.path} onClick={() => openDocument(node.path)} type="button">
-                        <span className="evidence-kind">{node.kind}</span>
-                        <span style={{ flex: 1 }}>
-                          <span className="evidence-name"><LinkifiedText text={node.name} /></span>
-                          <span className="evidence-note"><LinkifiedText text={node.note} /></span>
-                        </span>
-                      </button>
-                    )) : <p>No source documents or research are attached yet.</p>}
-                    {dossierPath ? (
-                      <button className="matter-artifact-link" onClick={() => openDocument(dossierPath)} type="button">
-                        <span>Editable dossier</span><span>Open the full matter summary</span>
-                      </button>
+                <section className="matter-open" id="remaining-work">
+                  <div className="matter-open-head">
+                    <h2>{openItems.length ? "Also open on this matter" : "Nothing else is open"}</h2>
+                    {openItems.length ? (
+                      <span>{requiredCount} required · {openItems.length - requiredCount} optional</span>
                     ) : null}
-                    {researchPath ? <button className="matter-artifact-link" onClick={() => openDocument(researchPath)} type="button"><span>Latest research</span><span>Open the research packet</span></button> : null}
-                    {workProductPaths.map((item) => (
-                      <button className="matter-artifact-link" key={item.path} onClick={() => openDocument(item.path)} type="button">
-                        <span>{item.state} work product</span><span>{item.label}</span>
-                      </button>
-                    ))}
-                    </div>
-                  </section>
+                  </div>
+                  {openItems.length ? (
+                    <ul className="matter-open-list">
+                      {openItems.map((item) => (
+                        <li className={item.required ? "is-required" : ""} key={item.key}>
+                          <span aria-hidden="true" className="matter-open-mark" />
+                          <span className="matter-open-text"><LinkifiedText text={item.text} /></span>
+                          {item.required ? <span className="matter-open-tag">Required</span> : null}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="matter-open-empty">No other open records are saved.</p>
+                  )}
+                </section>
 
-                  <section>
-                    <h2>Recent activity</h2>
-                    {detail.orientation.recent_changes.length ? (
-                      <ul>{detail.orientation.recent_changes.map((change, index) => <li key={index}><LinkifiedText text={change} /></li>)}</ul>
-                    ) : <p>Nothing has happened on this matter yet.</p>}
-                  </section>
-                  {reviewPackets.length ? <section><h2>Decision maintenance</h2>{reviewPackets.map((packet) => <ReviewPacketPanel key={packet.packet_id} packet={packet} matterId={detail.matter_id} mitigations={mitigations} onChanged={loadAwareness} />)}</section> : mitigations.length ? <section><h2>Mitigations</h2><ul>{mitigations.map((item) => <li key={item.mitigation_id}>{item.title} — {item.status}</li>)}</ul></section> : null}
-                </div>
-              </details>
+                <details className="matter-reference">
+                  <summary>Materials, activity, and decision maintenance</summary>
+                  <div className="matter-reference-body">
+                    {primaryAction.id === "none" && recommendationText ? (
+                      <section>
+                        <h2>Saved recommendation</h2>
+                        <div className="matter-recommendation">
+                          <div className="matter-recommendation-label">
+                            Source and review status not recorded
+                          </div>
+                          <p><LinkifiedText text={recommendationText} /></p>
+                          <div className="matter-record-note">
+                            This saved recommendation is not a recorded decision.
+                          </div>
+                        </div>
+                      </section>
+                    ) : null}
+                    <section>
+                      <h2>Matter materials</h2>
+                      <div className="evidence-list">
+                        {evidence.length ? evidence.map((node) => (
+                          <button className="evidence-row" key={node.path} onClick={() => openDocument(node.path)} type="button">
+                            <span className="evidence-kind">{node.kind}</span>
+                            <span style={{ flex: 1 }}>
+                              <span className="evidence-name"><LinkifiedText text={node.name} /></span>
+                              <span className="evidence-note"><LinkifiedText text={node.note} /></span>
+                            </span>
+                          </button>
+                        )) : <p>No source documents or research are attached yet.</p>}
+                        {dossierPath ? (
+                          <button className="matter-artifact-link" onClick={() => openDocument(dossierPath)} type="button">
+                            <span>Editable dossier</span><span>Open the full matter summary</span>
+                          </button>
+                        ) : null}
+                        {researchPath ? <button className="matter-artifact-link" onClick={() => openDocument(researchPath)} type="button"><span>Latest research</span><span>Open the research packet</span></button> : null}
+                        {workProductPaths.map((item) => (
+                          <button className="matter-artifact-link" key={item.path} onClick={() => openDocument(item.path)} type="button">
+                            <span>{item.state} work product</span><span>{item.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </section>
+
+                    <section>
+                      <h2>Recent activity</h2>
+                      {detail.orientation.recent_changes.length ? (
+                        <ul>{detail.orientation.recent_changes.map((change, index) => <li key={index}><LinkifiedText text={change} /></li>)}</ul>
+                      ) : <p>Nothing has happened on this matter yet.</p>}
+                    </section>
+                    {reviewPackets.length ? <section><h2>Decision maintenance</h2>{reviewPackets.map((packet) => <ReviewPacketPanel key={packet.packet_id} packet={packet} matterId={detail.matter_id} mitigations={mitigations} onChanged={loadAwareness} />)}</section> : mitigations.length ? <section><h2>Mitigations</h2><ul>{mitigations.map((item) => <li key={item.mitigation_id}>{item.title} — {item.status}</li>)}</ul></section> : null}
+                  </div>
+                </details>
+              </div>
             </div>
 
             <ChatPanel
@@ -578,42 +656,6 @@ function recommendationSummary(markdown: string): string {
   return /^No (?:launch )?recommendation\b/i.test(normalized) ? "" : normalized;
 }
 
-function questionForMatter(detail: MatterDetail, actionId: string): string {
-  const recorded = detail.orientation.decision_question.trim();
-  if (recorded.endsWith("?")) return recorded;
-  if (actionId === "approve_response") return "Can we send this customer response as written?";
-  if (actionId === "mark_as_sent") return "Has the approved response been sent?";
-  if (actionId === "close_matter") return "Is this matter ready to close?";
-  if (actionId === "review_and_decide") return "Which path should we take?";
-  if (actionId === "run_research") return "What do we need to know before giving advice?";
-  return recorded || detail.orientation.headline || detail.description || detail.title;
-}
-
-function buildDossierStatement(
-  detail: MatterDetail,
-  question: string,
-  recommendation: string,
-  openWorkItems: MatterDetail["work_items"],
-): string {
-  const summary = detail.orientation.summary || detail.description || detail.title;
-  const remaining = openWorkItems
-    .slice(0, 2)
-    .map((item) => sentenceFragment(item.description || item.title))
-    .filter(Boolean);
-  const parts = [summary, `The current question is: ${question}`];
-  if (recommendation) parts.push(`The current working recommendation is to ${lowercaseStart(recommendation)}`);
-  if (remaining.length) parts.push(`The remaining work is to ${remaining.map(lowercaseStart).join(" and ")}`);
-  return parts.join(" ");
-}
-
-function lowercaseStart(value: string): string {
-  return value ? value[0].toLowerCase() + value.slice(1) : value;
-}
-
-function sentenceFragment(value: string): string {
-  return lowercaseStart(value.trim().replace(/[.!?]+$/, ""));
-}
-
 function stripEmphasis(value: string): string {
   return value.replace(/\*\*|__|(?<!\*)\*(?!\*)|(?<!_)_(?!_)/g, "").trim();
 }
@@ -627,7 +669,11 @@ function collectEvidence(tree: FileNode[]): EvidenceNode[] {
     "request.md": { name: "Original request", kind: "Matter record", note: "The request that started this matter" },
     "facts.md": { name: "Facts, sources & assumptions", kind: "Matter record", note: "The current factual record" },
     "issues.md": { name: "Issue map", kind: "Matter record", note: "The legal and operational questions" },
-    "recommendations.md": { name: "Working recommendation", kind: "Themis analysis", note: "Suggested path, not yet approved" },
+    "recommendations.md": {
+      name: "Working recommendation",
+      kind: "Matter record",
+      note: "Saved recommendation; source and review status are not recorded",
+    },
   };
   const walk = (nodes: FileNode[], folder: string) => {
     for (const node of nodes) {

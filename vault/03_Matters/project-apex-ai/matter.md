@@ -21,6 +21,25 @@ next_action: Choose the viable launch path and confirm the retention fact that c
   the recommendation.
 created_at: '2026-08-18T09:00:00+00:00'
 updated_at: '2026-08-25T18:20:00+00:00'
+review:
+  segments:
+  - kind: equal
+    text: '# Project Apex: AI Voice Telemetry
+
+
+      Review launch of an optional voice-telemetry feature and its retention settings.
+
+      '
+    change_id: ''
+    author_id: ''
+    author_name: ''
+    author_color: ''
+    created_at: ''
+  comments: []
+  version: 2
+  tracking: false
+  authors: []
+  comment_events: []
 ---
 # Project Apex: AI Voice Telemetry
 

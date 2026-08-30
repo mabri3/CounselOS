@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
 import AutomationPanel from "@/components/AutomationPanel";
 import { createSchedule, getAutomations, runSchedule, updateSchedule } from "@/lib/api";
-import { scheduleIsFailing } from "@/lib/design";
+import { scheduleIsFailing, scheduleIsPaused } from "@/lib/design";
 import type { AgentDefinition, Schedule } from "@/lib/types";
 
 /** Canvas 2d. */
@@ -27,25 +27,38 @@ export default function AutomationsPage() {
 
   useEffect(() => { void load(); }, [load]);
 
-  const running = schedules.filter((schedule) => schedule.enabled === 1 && !scheduleIsFailing(schedule)).length;
   const failing = schedules.filter(scheduleIsFailing).length;
+  const paused = schedules.filter((schedule) => !scheduleIsFailing(schedule) && scheduleIsPaused(schedule)).length;
+  const running = schedules.length - failing - paused;
 
   return (
     <AppShell>
       <main className="page narrow">
-        <div className="page-header">
-          <div>
-            <h1>Automations</h1>
-            <p>
-              {running} running.{" "}
-              {failing === 0 ? "No failed runs." : `${failing} failed automation${failing === 1 ? "" : "s"}.`}
+        <header className="page-header">
+          <div className="page-header-main">
+            <div className="eyebrow">Standing work</div>
+            <h1 className="headline">Automations</h1>
+            <p className="page-lede">
+              Jobs Counsel OS runs on its own, on a schedule. They watch folders, scan sources, and re-check
+              recorded decisions, then bring what they find to you.
+              <strong> An automation never sends anything and never records a decision.</strong>
             </p>
           </div>
-        </div>
+        </header>
+
+        {schedules.length ? (
+          <div className="stat-chips" style={{ marginTop: 20 }}>
+            <span className="stat-chip static"><b>{running}</b><span>running on schedule</span></span>
+            <span className="stat-chip static"><b>{paused}</b><span>paused</span></span>
+            <span className="stat-chip static" style={{ color: failing ? "var(--failure)" : undefined }}>
+              <b>{failing}</b><span>failed on the last run</span>
+            </span>
+          </div>
+        ) : null}
 
         {error ? <p className="error">{error}</p> : null}
 
-        <div style={{ marginTop: 22 }}>
+        <div style={{ marginTop: 24 }}>
           <AutomationPanel
             agents={agents}
             busySchedule={busySchedule}

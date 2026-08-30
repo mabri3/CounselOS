@@ -21,6 +21,7 @@ from app.services.briefing_research import BriefingResearchService
 from app.services.briefing_store import BriefingStore
 from app.services.chat_history import ChatHistoryService
 from app.services.company import CompanyProfileService
+from app.services.company_interview import CompanyInterviewService
 from app.services.decisions import DecisionService
 from app.services.developments import DevelopmentService
 from app.services.document_export import DocumentExportService
@@ -102,7 +103,14 @@ class AppContext:
             max_decompressed_bytes=self.settings.intelligence_max_decompressed_bytes,
             max_excerpt_characters=self.settings.intelligence_max_excerpt_characters,
         )
+        self.safe_fetch_limits = limits
         self.intelligence_fetcher = SafeHttpFetcher()
+        self.company_interview = CompanyInterviewService(
+            self.provider,
+            self.settings,
+            self.intelligence_fetcher,
+            self.safe_fetch_limits,
+        )
         self.native_intelligence = NativeIntelligenceProvider(
             self.intelligence_fetcher,
             self.search,
@@ -229,6 +237,8 @@ class AppContext:
         self.runner.provider = next_provider
         self.skill_builder.provider = next_provider
         self.skill_builder.settings = next_settings
+        self.company_interview.provider = next_provider
+        self.company_interview.settings = next_settings
         # The bound adapter uses the current runner, whose provider was refreshed above.
         self.briefing_research.bind_agent_runner(self._run_briefing_research)
 

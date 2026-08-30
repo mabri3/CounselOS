@@ -1,0 +1,10 @@
+From: Account Team, MetricsCloud
+Subject: Nimbus mobile SDK settings
+
+The MetricsCloud mobile SDK sends device identifiers, application events,
+coarse location, and diagnostic information to our service. The Product
+Improvement setting is enabled by default. When it is enabled, MetricsCloud
+may use collected information to improve and develop its products.
+
+Nimbus may disable Product Improvement in the dashboard before sending
+production traffic. The setting does not affect basic analytics reporting.

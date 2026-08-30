@@ -4,8 +4,10 @@ import Link from "next/link";
 import { formatShortDate } from "@/lib/design";
 import type { BriefingGroup, BriefingItem } from "@/lib/watchTypes";
 
-function groupNames(item: BriefingItem, group: BriefingGroup): string[] {
-  if (group === "watch") return [item.watch_id];
+const IMPACT_WORD: Record<string, string> = { low: "Low impact", medium: "Medium impact", high: "High impact" };
+
+function groupNames(item: BriefingItem, group: BriefingGroup, watchNames: Record<string, string>): string[] {
+  if (group === "watch") return [watchNames[item.watch_id] ?? item.watch_id];
   if (group === "topic") return item.topics.length ? item.topics : ["No topic"];
   if (group === "source") return item.sources.length ? item.sources.map((source) => source.publisher || source.title) : ["No source"];
   if (group === "jurisdiction") return item.jurisdictions.length ? item.jurisdictions : ["No jurisdiction"];
@@ -15,17 +17,50 @@ function groupNames(item: BriefingItem, group: BriefingGroup): string[] {
   return [""];
 }
 
-export default function BriefingItemList({ items, group, queryString }: { items: BriefingItem[]; group: BriefingGroup; queryString: string }) {
-  if (!items.length) return <div className="empty-state">No developments match this view.</div>;
+/**
+ * One row per development. Ochre is reserved for the items that actually need
+ * the lawyer; unread is emphasis, not attention.
+ */
+export default function BriefingItemList({ items, group, queryString, watchNames }: {
+  items: BriefingItem[];
+  group: BriefingGroup;
+  queryString: string;
+  watchNames: Record<string, string>;
+}) {
+  if (!items.length) {
+    return <div className="empty-state">
+      No development matches this view. Widen the search, clear the filters, or check your Watches.
+    </div>;
+  }
   const grouped = new Map<string, BriefingItem[]>();
-  for (const item of items) for (const name of groupNames(item, group)) grouped.set(name, [...(grouped.get(name) ?? []), item]);
-  return <div className="stack-list">{[...grouped].map(([name, entries]) => <section key={name || "all"} aria-label={name || "Briefing items"}>
-    {name && <h2 style={{ font: "600 14px var(--sans)", color: "var(--ink-3)", margin: "16px 2px 8px" }}>{name}</h2>}
-    <div className="card">{entries.map((item) => <Link className="row" href={`/briefing/${encodeURIComponent(item.item_id)}${queryString ? `?${queryString}` : ""}`} key={item.item_id} style={{ display: "block", padding: "16px 18px", textDecoration: "none", background: item.read ? "var(--raised)" : "var(--attention-wash)" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}><span className={item.read ? "state-label" : "state-label state-attention"}>{item.read ? "Read" : "Unread"}</span><span className="faint">{formatShortDate(item.published_at || item.created_at)}</span></div>
-      <div className="brief-title" style={{ marginTop: 9 }}>{item.title}</div>
-      <p className="brief-why" style={{ marginBottom: 0 }}>{item.summary}</p>
-      <div style={{ marginTop: 10, font: "500 12.5px var(--sans)", color: "var(--ink-4)" }}>{item.saved ? "Saved · " : ""}{item.watch_id} · {item.legal_status}</div>
-    </Link>)}</div>
+  for (const item of items) for (const name of groupNames(item, group, watchNames)) grouped.set(name, [...(grouped.get(name) ?? []), item]);
+
+  return <div>{[...grouped].map(([name, entries]) => <section className="briefing-group" key={name || "all"} aria-label={name || "Developments"}>
+    {name ? <div className="briefing-group-head">
+      <h2>{name}</h2><span>{entries.length === 1 ? "1 development" : `${entries.length} developments`}</span>
+    </div> : null}
+    <div className="card">{entries.map((item) => {
+      const needsReview = item.attention_state === "required" && Boolean(item.review_packet_id);
+      const watch = watchNames[item.watch_id] ?? item.watch_id;
+      return <Link
+        className={`briefing-item ${item.read ? "read" : "unread"}${needsReview ? " review" : ""}`}
+        href={`/briefing/${encodeURIComponent(item.item_id)}${queryString ? `?${queryString}` : ""}`}
+        key={item.item_id}
+      >
+        <div className="briefing-item-meta">
+          {formatShortDate(item.published_at || item.created_at)} · {watch}
+          {item.jurisdictions.length ? ` · ${item.jurisdictions[0]}` : ""}
+        </div>
+        <div className="briefing-item-title">{item.title}</div>
+        <p className="briefing-item-summary">{item.summary}</p>
+        <div className="briefing-item-foot">
+          {needsReview ? <span className="state-label state-attention">Needs your review</span> : null}
+          {item.read ? <span className="state-label state-quiet">Read</span> : <span className="state-label state-plain">Unread</span>}
+          {item.saved ? <span className="state-label state-quiet">Saved</span> : null}
+          {item.potential_impact ? <span className="state-label state-quiet">{IMPACT_WORD[item.potential_impact] ?? item.potential_impact}</span> : null}
+          {item.legal_status ? <span className="briefing-item-status">{item.legal_status}</span> : null}
+        </div>
+      </Link>;
+    })}</div>
   </section>)}</div>;
 }

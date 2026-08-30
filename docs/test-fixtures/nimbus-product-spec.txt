@@ -1,0 +1,12 @@
+Nimbus Teen Savings — Product Specification v0.3
+
+Launch: California only, November 15.
+Users: Parent account holder; teen profile available to ages 13–17.
+Teen permissions: View balance, savings goals, and push-notification settings.
+Teen restrictions: No transfers, withdrawals, account closure, or linked-card management.
+
+Analytics SDK data: device ID, app screen views, button clicks, crash data, coarse location, and notification-open events.
+Default vendor setting: the vendor may use received data for product improvement.
+Requested Nimbus setting: disable vendor product improvement before production data is sent.
+
+Success measure: 25 percent of eligible parent account holders create a teen profile in the first quarter.
