@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import AppShell from "@/components/AppShell";
 import BriefingList from "@/components/BriefingList";
 import NewMatterForm from "@/components/NewMatterForm";
+import PracticeRail from "@/components/PracticeRail";
 import TodayChat from "@/components/TodayChat";
 import { createMatter, getAutomations, getDecisions, getMatters } from "@/lib/api";
 import { buildBriefing } from "@/lib/briefing";
@@ -52,40 +53,49 @@ export default function TodayPage() {
     [matters, decisions, schedules, reviewPackets],
   );
 
-  const inFlight = matters.filter((matter) => matter.status !== "closed").length;
-  const working = matters.filter((matter) =>
-    matter.work_state.execution_state === "queued" || matter.work_state.execution_state === "running"
-  ).length;
   const today = formatLongDate(new Date());
 
   return (
     <AppShell>
-      <main className="page" style={{ paddingBottom: 0 }}>
-        <div style={{ maxWidth: 1040 }}>
+      <main className="page">
+        <div style={{ maxWidth: 1324 }}>
           <div className="day">{today}</div>
           {loaded ? <h1 className="headline">{briefing.headline}</h1> : <h1 className="headline">Reading the vault…</h1>}
           <p className="subhead">{loaded ? briefing.subhead : "One moment."}</p>
 
           {error ? <p className="error">{error}</p> : null}
           {!loaded && !error ? <div className="loading">Loading the briefing…</div> : null}
-          {loaded && !error ? <BriefingList items={briefing.items} /> : null}
+          {loaded && !error ? (
+            <div className="today-grid">
+              <div className="today-col">
+                <BriefingList items={briefing.items} />
 
-          {briefing.comingUp.length ? (
-            <div style={{ marginTop: 22 }}>
-              <div style={{ font: "600 15px var(--sans)", color: "var(--ink)" }}>Coming up</div>
-              <div className="quiet-list" style={{ marginTop: 8 }}>
-                {briefing.comingUp.map((item) => (
-                  <Link className="quiet-row" href={item.href} key={item.id}>
-                    <span style={{ flex: 1 }}>{item.text}</span>
-                    <span>{item.when}</span>
-                  </Link>
-                ))}
+                {briefing.comingUp.length ? (
+                  <section className="card">
+                    <div className="quiet-head">
+                      <span className="quiet-head-title">Your other matters</span>
+                      <span className="quiet-head-count">
+                        Showing {briefing.comingUp.length} of {briefing.comingUpTotal}
+                      </span>
+                      <Link className="quiet-head-link" href="/matters">All matters →</Link>
+                    </div>
+                    <div className="quiet-list quiet-inset">
+                      {briefing.comingUp.map((item) => (
+                        <Link className="quiet-row" href={item.href} key={item.id}>
+                          <span style={{ flex: 1 }}>{item.text}</span>
+                          <span>{item.when}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
               </div>
+
+              <PracticeRail decisions={decisions} matters={matters} />
             </div>
           ) : null}
 
-          <div className="today-start">
-            <TodayChat onRefresh={load} />
+          <div className="today-start" style={{ maxWidth: 1000 }}>
             <NewMatterForm
               busy={creating}
               onCreate={async (payload) => {
@@ -98,21 +108,10 @@ export default function TodayPage() {
                 }
               }}
             />
+            <TodayChat onRefresh={load} />
           </div>
         </div>
       </main>
-
-      <div className="footer-band">
-        <div style={{ maxWidth: "70ch" }}>
-          <div className="section-heading">The rest of the practice</div>
-          <p style={{ margin: "5px 0 0", font: "400 15px/1.6 var(--sans)", color: "var(--ink-3)" }}>
-            {inFlight} matter{inFlight === 1 ? "" : "s"} in flight, {working} being worked by an agent,{" "}
-            {decisions.length} decision{decisions.length === 1 ? "" : "s"} recorded. Start a new matter, move the
-            board, or see what ran overnight.
-          </p>
-        </div>
-        <Link className="btn primary" href="/workspace">Open the workspace</Link>
-      </div>
     </AppShell>
   );
 }
