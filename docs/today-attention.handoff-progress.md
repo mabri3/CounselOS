@@ -3,7 +3,7 @@
 Update this file after EACH step. Never edit any line other than your own step's.
 
 - [x] Step 1: globals.css — append the Today attention CSS block — done
-- [ ] Step 2: design.ts — export parseDisplayDate — pending
+- [x] Step 2: design.ts — export parseDisplayDate — done
 - [ ] Step 3: briefing.ts — ranking, pills, clamping, subhead, comingUpTotal — pending
 - [ ] Step 4: BriefingList.tsx — status pill, is-late spine, overflow disclosure — pending
 - [ ] Step 5: PracticeRail.tsx — new rail component — pending
