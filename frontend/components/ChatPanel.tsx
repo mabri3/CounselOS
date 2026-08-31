@@ -11,9 +11,11 @@ import SkillCommandMenu from "@/components/SkillCommandMenu";
 import LinkifiedText from "@/components/LinkifiedText";
 import UploadIntentCard from "@/components/UploadIntentCard";
 import { getChatRun, getConversation, getConversations, getSkills, retryChatRun, startChatRun, uploadDocuments } from "@/lib/api";
+import { chatAgentId, chatRunStateLabel, chatRunStorageKey, pendingChatRunId, rememberChatRun, safeChatFailureDetail, shouldShowChatRunStatus } from "@/lib/chatRunLogic";
+import { questionModeStorageKey } from "@/lib/chatCardLogic";
 import { skillBuilderGoal } from "@/lib/skills";
 import { mutationOutcome } from "@/lib/matterBrief";
-import type { AppliedSkillSummary, AttachmentReference, CardAction, ChatCard, ChatRun, ChatRunState, SkillDefinition, ToolTrace } from "@/lib/types";
+import type { AppliedSkillSummary, AttachmentReference, CardAction, ChatCard, ChatRun, QuestionMode, SkillDefinition, ToolTrace } from "@/lib/types";
 
 type Message = { message_id?: string; role: "user" | "assistant"; content: string; trace?: ToolTrace[]; cards?: ChatCard[]; attachments?: AttachmentReference[]; applied_skills?: AppliedSkillSummary[] };
 
@@ -22,33 +24,7 @@ const SUGGESTIONS = [
   "Which other matters does this touch?",
   "What would change your view?",
 ];
-
-export const chatRunStorageKey = (matterId: string, conversationId?: string | null) =>
-  `counsel-os:chat-run:${matterId}:${conversationId || "new"}`;
-
-type RunStorage = Pick<Storage, "getItem" | "setItem" | "removeItem">;
-
-export function pendingChatRunId(storage: RunStorage, matterId: string, conversationId?: string | null): string | null {
-  return storage.getItem(chatRunStorageKey(matterId, conversationId))
-    ?? storage.getItem(chatRunStorageKey(matterId));
-}
-
-export function rememberChatRun(storage: RunStorage, matterId: string, run: Pick<ChatRun, "run_id" | "conversation_id">): void {
-  const pendingKey = chatRunStorageKey(matterId);
-  const conversationKey = chatRunStorageKey(matterId, run.conversation_id);
-  storage.setItem(conversationKey, run.run_id);
-  if (run.conversation_id) storage.removeItem(pendingKey);
-  else storage.setItem(pendingKey, run.run_id);
-}
-
-export function chatRunStateLabel(state: ChatRunState): string {
-  return { queued: "Queued", running: "Working", completed: "Completed", failed: "Failed", interrupted: "Interrupted" }[state];
-}
-
-export function safeChatFailureDetail(detail?: string | null): string {
-  if (!detail || /failed to fetch/i.test(detail) || /https?:\/\//i.test(detail) || detail.length > 240) return "";
-  return detail;
-}
+const SHOW_AGENT_TRACES = process.env.NEXT_PUBLIC_SHOW_AGENT_TRACES === "true";
 
 /**
  * Canvas 2b — the copilot is a thread at the foot of the matter, not a pane of
@@ -59,6 +35,10 @@ export default function ChatPanel({
   matterId,
   matterTitle,
   activeFile,
+  activeAgentId,
+  initialConversationId,
+  initialRunId,
+  intakeActive = false,
   onRefresh,
   conversationSeed,
   onConversationChange,
@@ -71,6 +51,10 @@ export default function ChatPanel({
   matterId: string;
   matterTitle: string;
   activeFile: string | null;
+  activeAgentId?: string | null;
+  initialConversationId?: string | null;
+  initialRunId?: string | null;
+  intakeActive?: boolean;
   onRefresh: () => Promise<void>;
   conversationSeed?: { conversationId: string; revision: number };
   onConversationChange?: (conversationId: string | null) => void;
@@ -94,6 +78,7 @@ export default function ChatPanel({
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [activeRun, setActiveRun] = useState<ChatRun | null>(null);
   const [waiting, setWaiting] = useState(false);
+  const [questionMode, setQuestionMode] = useState<QuestionMode>("guided");
   const completedRuns = useRef(new Set<string>());
   const refreshedRuns = useRef(new Set<string>());
 
@@ -107,18 +92,29 @@ export default function ChatPanel({
   useEffect(() => { void getSkills().then(({ skills: saved }) => setSkills(saved)).catch(() => setSkills([])); }, []);
 
   useEffect(() => {
+    const saved = window.localStorage.getItem(questionModeStorageKey(matterId));
+    setQuestionMode(saved === "set" ? "set" : "guided");
+  }, [matterId]);
+
+  function changeQuestionMode(mode: QuestionMode) {
+    setQuestionMode(mode);
+    window.localStorage.setItem(questionModeStorageKey(matterId), mode);
+  }
+
+  useEffect(() => {
     let cancelled = false;
     setLoadingHistory(true);
     setHistoryError("");
     void getConversations(matterId)
       .then(async ({ conversations: saved }) => {
         if (cancelled) return;
-        if (!saved.length) {
+        const targetConversationId = initialConversationId || saved[0]?.conversation_id;
+        if (!targetConversationId) {
           setConversationId(null);
           setMessages([]);
           return;
         }
-        const conversation = await getConversation(matterId, saved[0].conversation_id);
+        const conversation = await getConversation(matterId, targetConversationId);
         if (!cancelled) {
           setConversationId(conversation.conversation_id);
           setMessages(conversation.messages);
@@ -130,13 +126,15 @@ export default function ChatPanel({
       })
       .finally(() => { if (!cancelled) setLoadingHistory(false); });
     return () => { cancelled = true; };
-  }, [matterId]);
+  }, [initialConversationId, matterId]);
 
   const finishRun = useCallback(async (run: ChatRun) => {
     setActiveRun(run);
     setWaiting(false);
-    setBusy(false);
-    if (run.state !== "completed" || completedRuns.current.has(run.run_id)) return;
+    if (run.state !== "completed" || completedRuns.current.has(run.run_id)) {
+      setBusy(false);
+      return;
+    }
     completedRuns.current.add(run.run_id);
     if (run.response?.review_author) onReviewAuthorChange(run.response.review_author);
     const nextConversationId = run.response?.conversation_id ?? run.conversation_id;
@@ -158,8 +156,14 @@ export default function ChatPanel({
     window.localStorage.removeItem(chatRunStorageKey(matterId));
     if (!refreshedRuns.current.has(run.run_id)) {
       refreshedRuns.current.add(run.run_id);
-      await onRefresh();
+      try {
+        await onRefresh();
+      } finally {
+        setBusy(false);
+      }
+      return;
     }
+    setBusy(false);
   }, [matterId, messages, onConversationChange, onRefresh, onReviewAuthorChange]);
 
   useEffect(() => {
@@ -192,8 +196,8 @@ export default function ChatPanel({
 
   useEffect(() => {
     if (loadingHistory) return;
-    const runId = pendingChatRunId(window.localStorage, matterId, conversationId);
-    if (!runId || activeRun?.run_id === runId) return;
+    const runId = pendingChatRunId(window.localStorage, matterId, conversationId) ?? initialRunId;
+    if (!runId || activeRun?.run_id === runId || completedRuns.current.has(runId)) return;
     setBusy(true);
     setWaiting(true);
     void getChatRun(matterId, runId).then(async (run) => {
@@ -205,7 +209,7 @@ export default function ChatPanel({
       setBusy(false);
       setWaiting(false);
     });
-  }, [activeRun?.run_id, conversationId, finishRun, loadingHistory, matterId]);
+  }, [activeRun?.run_id, conversationId, finishRun, initialRunId, loadingHistory, matterId]);
 
   async function submit(text: string, cardAction?: CardAction, actionAttachments: AttachmentReference[] = attachments) {
     const trimmed = text.trim();
@@ -224,7 +228,7 @@ export default function ChatPanel({
         message: trimmed,
         matter_id: matterId,
         active_file: activeFile,
-        agent_id: "counsel-copilot",
+        agent_id: chatAgentId(intakeActive, activeAgentId),
         conversation_id: conversationId,
         history: messages.slice(-8).map(({ role, content }) => ({ role, content })),
         card_action: cardAction,
@@ -314,12 +318,18 @@ export default function ChatPanel({
     }
   }
 
+  const readingInitialRequest = Boolean(
+    initialRunId
+      && activeRun?.run_id === initialRunId
+      && ["queued", "running"].includes(activeRun.state),
+  );
+
   return (
     <div className="chat-panel">
       {historyError ? <p className="error chat-history-status">{historyError}</p> : null}
       {loadingHistory ? <p className="chat-history-status">Loading saved chat…</p> : null}
-      {activeRun ? (
-        <section className={`chat-card ${activeRun.state === "failed" || activeRun.state === "interrupted" ? "wash-failure" : activeRun.state === "completed" ? "" : "wash-agent"}`} role="status">
+      {activeRun && shouldShowChatRunStatus(activeRun.state) ? (
+        <section className={`chat-card ${activeRun.state === "failed" || activeRun.state === "interrupted" ? "wash-failure" : "wash-agent"}`} role="status">
           <div className="chat-card-kicker">Themis · {chatRunStateLabel(activeRun.state)}</div>
           {activeRun.state === "failed" || activeRun.state === "interrupted" ? (
             <>
@@ -327,7 +337,7 @@ export default function ChatPanel({
               {safeChatFailureDetail(activeRun.failure_detail) ? <div className="chat-card-detail">{safeChatFailureDetail(activeRun.failure_detail)}</div> : null}
               {activeRun.response?.reply ? <div className="chat-card-detail"><strong>Saved response</strong><ReactMarkdown remarkPlugins={[remarkGfm]}>{activeRun.response.reply}</ReactMarkdown></div> : null}
             </>
-          ) : <div className="chat-card-summary">{activeRun.status}</div>}
+          ) : <div className="chat-card-summary">{readingInitialRequest ? "Themis is reading your request…" : activeRun.status}</div>}
           <div className="chat-card-actions">
             {["failed", "interrupted"].includes(activeRun.state) ? <button className="btn tiny quiet" disabled={busy} onClick={() => void retryRun()}>Retry</button> : null}
             {waiting && ["queued", "running"].includes(activeRun.state) ? <button className="btn tiny quiet" onClick={() => { setWaiting(false); setBusy(false); }}>Stop waiting</button> : null}
@@ -350,13 +360,13 @@ export default function ChatPanel({
                 <div className="agent-label">Themis</div>
                 <div className="bubble-agent">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
-                  <ChatCards cards={message.cards} disabled={busy} matterId={matterId} onAction={handleCardAction} onOpenDocument={onOpenDocument} onRefresh={onRefresh} />
+                  <ChatCards cards={message.cards} disabled={busy} matterId={matterId} onAction={handleCardAction} onOpenDocument={onOpenDocument} onQuestionModeChange={changeQuestionMode} onRefresh={onRefresh} questionMode={questionMode} questionsDisabled={index !== messages.length - 1} showQuestionMode={intakeActive} />
                   {mutationOutcome(messages[index - 1]?.role === "user" ? messages[index - 1].content : "", message.trace, message.cards) === "recorded" ? (
                     <div className="mutation-status recorded">Workspace state change recorded</div>
                   ) : mutationOutcome(messages[index - 1]?.role === "user" ? messages[index - 1].content : "", message.trace, message.cards) === "no_change" ? (
                     <div className="mutation-status no-change">No workspace state change recorded</div>
                   ) : null}
-                  {message.trace?.length ? (
+                  {SHOW_AGENT_TRACES && message.trace?.length ? (
                     <details className="chat-actions">
                       <summary>Actions taken ({message.trace.length})</summary>
                       <div className="trace-list">
@@ -378,7 +388,7 @@ export default function ChatPanel({
           {busy ? (
             <div className="agent-label" role="status">
               <span className="agent-mark" style={{ width: 12, height: 12 }} />
-              {elapsedSeconds < 10 ? "Working…" : "Still working…"} {elapsedSeconds}s
+              {readingInitialRequest ? "Themis is reading your request…" : elapsedSeconds < 10 ? "Working…" : "Still working…"} {elapsedSeconds}s
             </div>
           ) : null}
         </div>

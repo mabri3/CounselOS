@@ -61,6 +61,10 @@ class ChatHistoryService:
         card_action: dict[str, Any] | None = None,
         applied_skills: list[dict[str, str]] | None = None,
         run_id: str | None = None,
+        source_ids: list[str] | None = None,
+        conversation_kind: str | None = None,
+        intake_state: str | None = None,
+        active_agent_id: str | None = None,
     ) -> dict[str, Any]:
         if role not in {"user", "assistant"}:
             raise ValueError(f"Unsupported chat role: {role}")
@@ -70,6 +74,9 @@ class ChatHistoryService:
             messages = conversation["messages"]
             created_at = conversation["created_at"]
             title = conversation["title"]
+            conversation_kind = conversation.get("conversation_kind", conversation_kind)
+            intake_state = conversation.get("intake_state", intake_state)
+            active_agent_id = conversation.get("active_agent_id", active_agent_id)
         else:
             conversation_id = new_id("CONV")
             messages = []
@@ -87,6 +94,7 @@ class ChatHistoryService:
                 "card_action": card_action,
                 "applied_skills": applied_skills or [],
                 "run_id": run_id,
+                "source_ids": source_ids or [],
             }
         )
         path = self._matter_path(matter_id, conversation_id)
@@ -103,7 +111,58 @@ class ChatHistoryService:
                 "updated_at": now,
                 "immutable": True,
                 "messages": messages,
+                "conversation_kind": conversation_kind or "general",
+                "intake_state": intake_state,
+                "active_agent_id": active_agent_id or "counsel-copilot",
             },
+        )
+        return self.get(matter_id, conversation_id)
+
+    def update_state(
+        self,
+        matter_id: str,
+        conversation_id: str,
+        *,
+        intake_state: str,
+        active_agent_id: str,
+    ) -> dict[str, Any]:
+        conversation = self.get(matter_id, conversation_id)
+        document = self.vault.read_markdown(conversation["path"])
+        metadata = document["metadata"]
+        metadata.update(
+            {
+                "intake_state": intake_state,
+                "active_agent_id": active_agent_id,
+                "updated_at": iso_now(),
+            }
+        )
+        self.vault.write_markdown(conversation["path"], document["content"], metadata)
+        return self.get(matter_id, conversation_id)
+
+    def bind_run_to_message(
+        self,
+        matter_id: str,
+        conversation_id: str,
+        message_id: str,
+        run_id: str,
+    ) -> dict[str, Any]:
+        conversation = self.get(matter_id, conversation_id)
+        message = next(
+            (item for item in conversation["messages"] if item.get("message_id") == message_id),
+            None,
+        )
+        if message is None or message.get("role") != "user":
+            raise KeyError(f"User message not found: {message_id}")
+        if message.get("run_id") not in {None, run_id}:
+            raise ValueError("The message already belongs to another chat run.")
+        message["run_id"] = run_id
+        document = self.vault.read_markdown(conversation["path"])
+        metadata = document["metadata"]
+        metadata.update({"messages": conversation["messages"], "updated_at": iso_now()})
+        self.vault.write_markdown(
+            conversation["path"],
+            self._render(conversation["messages"], heading="# Matter chat"),
+            metadata,
         )
         return self.get(matter_id, conversation_id)
 
@@ -308,6 +367,9 @@ class ChatHistoryService:
             "created_at": metadata.get("created_at", ""),
             "updated_at": metadata.get("updated_at", ""),
             "message_count": len(messages),
+            "conversation_kind": metadata.get("conversation_kind", "general"),
+            "intake_state": metadata.get("intake_state"),
+            "active_agent_id": metadata.get("active_agent_id", "counsel-copilot"),
         }
 
     @staticmethod
@@ -330,6 +392,7 @@ class ChatHistoryService:
                 continue
             message = dict(raw)
             message.setdefault("applied_skills", [])
+            message.setdefault("source_ids", [])
             messages.append(message)
         return messages
 

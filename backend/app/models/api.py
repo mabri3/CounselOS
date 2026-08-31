@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated, Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from app.models.awareness import ScheduleRecurrence, WatchDraftCard, WatchScanCard
 
@@ -148,6 +148,9 @@ class AgentCreate(BaseModel):
     instructions: str
     allowed_tools: list[str] = Field(default_factory=list)
     max_steps: int = Field(default=6, ge=1, le=20)
+    provider: str | None = None
+    model: str | None = None
+    reasoning_effort: str | None = None
 
 
 class AgentUpdate(BaseModel):
@@ -158,6 +161,30 @@ class AgentUpdate(BaseModel):
     max_steps: int | None = Field(default=None, ge=1, le=20)
     audience_id: str | None = None
     audience_prompt: str | None = None
+    provider: str | None = None
+    model: str | None = None
+    reasoning_effort: str | None = None
+
+
+class ProviderModelOption(BaseModel):
+    id: str
+    label: str
+    reasoning_efforts: list[str] = Field(default_factory=list)
+
+
+class ProviderCatalogOption(BaseModel):
+    id: str
+    label: str
+    readiness: Literal["ready", "missing", "unavailable", "development_only"]
+    readiness_detail: str
+    models: list[ProviderModelOption] = Field(default_factory=list)
+
+
+class AgentRunSelection(BaseModel):
+    agent_id: str
+    provider: str
+    model: str
+    reasoning_effort: str = ""
 
 
 class SettingsUpdate(BaseModel):
@@ -264,6 +291,12 @@ class QuestionCard(BaseModel):
     allow_stop: bool = True
     conflict: bool = False
 
+    @model_validator(mode="after")
+    def make_empty_choice_question_write_in(self) -> "QuestionCard":
+        if self.selection_mode != "free_text" and not self.choices:
+            self.selection_mode = "free_text"
+        return self
+
 
 class MatterUpdateCard(BaseModel):
     type: Literal["matter_update"] = "matter_update"
@@ -305,14 +338,21 @@ class AttachmentReference(BaseModel):
     version: str = ""
 
 
+class CardAnswer(BaseModel):
+    card_id: str = Field(min_length=1)
+    action: Literal["answer", "skip"]
+    values: list[str] = Field(default_factory=list)
+
+
 class CardAction(BaseModel):
     card_id: str
     action: Literal[
-        "answer", "skip", "stop", "edit", "undo", "apply", "preview",
+        "answer", "answer_set", "skip", "stop", "edit", "undo", "apply", "preview",
         "save_draft", "scan_now", "change_something", "start_watch",
         "open_watch", "open_scan", "scan_again",
     ]
     values: list[str] = Field(default_factory=list)
+    answers: list[CardAnswer] = Field(default_factory=list, max_length=5)
 
 
 class ChatRequest(BaseModel):
@@ -328,6 +368,8 @@ class ChatRequest(BaseModel):
     skill_id: str | None = Field(default=None, exclude=True)
     review_author: str | None = None
     lawyer_author: str | None = None
+    trusted_source_id: str | None = Field(default=None, exclude=True)
+    expected_dossier_hash: str | None = Field(default=None, exclude=True)
 
 
 class ToolTrace(BaseModel):
@@ -367,6 +409,42 @@ class ChatRun(BaseModel):
     failure_detail: str | None = None
     response: ChatResponse | None = None
     path: str
+    selection: AgentRunSelection | None = None
+
+
+class IntakeReportedFact(BaseModel):
+    statement: str = Field(min_length=1)
+    status: Literal["reported", "assumption", "missing", "conflict"] = "reported"
+    materiality: str = "material"
+
+
+class IntakeTurn(BaseModel):
+    working_ask: str = Field(min_length=1)
+    reported_facts: list[IntakeReportedFact] = Field(default_factory=list)
+    issues: list[str] = Field(default_factory=list)
+    assumptions: list[str] = Field(default_factory=list)
+    material_missing_facts: list[str] = Field(default_factory=list)
+    human_questions: list[str] = Field(default_factory=list)
+    public_research_questions: list[str] = Field(default_factory=list, max_length=3)
+    next_questions: list[QuestionCard] = Field(default_factory=list, max_length=5)
+    next_question: QuestionCard | None = None
+    intake_state: Literal["active", "complete"] = "active"
+    dossier_orientation: str | None = None
+
+    @model_validator(mode="after")
+    def preserve_legacy_single_question(self) -> "IntakeTurn":
+        if not self.next_questions and self.next_question is not None:
+            self.next_questions = [self.next_question]
+        return self
+
+
+class IntakeTurnResult(BaseModel):
+    changed_paths: list[str] = Field(default_factory=list)
+    record_ids: list[str] = Field(default_factory=list)
+    questions: list[QuestionCard] = Field(default_factory=list)
+    question: QuestionCard | None = None
+    matter_update: MatterUpdateCard | None = None
+    intake_state: Literal["active", "complete"] = "active"
 
 
 class BatchActionRequest(BaseModel):

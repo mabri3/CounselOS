@@ -6,6 +6,7 @@ from typing import Any
 from app.models.api import ChatRequest, ChatResponse
 from app.models.api import ToolTrace
 from app.agents.runner import AgentExecutionError, RunnerExecutionState
+from app.providers.base import ProviderSelection
 from app.services.vault import VaultService
 from app.utils.ids import new_id
 from app.utils.time import iso_now
@@ -24,16 +25,50 @@ class ChatRunService:
     def has_active_work(self) -> bool:
         return any(not task.done() for task in self._tasks.values())
 
-    def start(self, matter_id: str, request: ChatRequest) -> dict[str, Any]:
+    def start(
+        self,
+        matter_id: str,
+        request: ChatRequest,
+        *,
+        existing_user_message_id: str | None = None,
+    ) -> dict[str, Any]:
         if request.matter_id not in {None, matter_id}:
             raise ValueError("The chat request belongs to a different matter.")
-        self.context.matters.get(matter_id)
+        matter = self.context.matters.get(matter_id)
+        conversation_id = request.conversation_id
+        if (
+            conversation_id is None
+            and request.agent_id == "intake-agent"
+            and matter.get("intake_state") == "active"
+        ):
+            conversation_id = matter.get("intake_conversation_id")
         run_id = new_id("RUN")
-        payload = request.model_copy(update={"matter_id": matter_id})
+        payload = request.model_copy(update={
+            "matter_id": matter_id,
+            "conversation_id": conversation_id,
+            "expected_dossier_hash": self.context.dossiers.content_hash(matter_id),
+        })
+        resolved = self.context.runner.resolve(payload.agent_id)
         record = self._write(
             matter_id, run_id, state="queued", status="Chat is queued.",
             request=payload.model_dump(mode="json"), conversation_id=payload.conversation_id,
+            expected_dossier_hash=payload.expected_dossier_hash,
+            selection={
+                "agent_id": resolved.selection.agent_id,
+                "provider": resolved.selection.provider,
+                "model": resolved.selection.model,
+                "reasoning_effort": resolved.selection.reasoning_effort,
+            },
         )
+        if existing_user_message_id:
+            if not payload.conversation_id:
+                raise ValueError("An existing user message needs a conversation ID.")
+            self.context.chat_history.bind_run_to_message(
+                matter_id,
+                payload.conversation_id,
+                existing_user_message_id,
+                run_id,
+            )
         self._tasks[run_id] = asyncio.create_task(self._execute(matter_id, run_id))
         return record
 
@@ -118,10 +153,20 @@ class ChatRunService:
             )
         try:
             request = ChatRequest.model_validate(current["request"])
+            request = request.model_copy(
+                update={"expected_dossier_hash": current.get("expected_dossier_hash")}
+            )
+            saved_selection = current.get("selection")
+            resolved = (
+                self.context.runner.resolve(request.agent_id)
+                if not saved_selection or saved_selection.get("provider") == "workspace_default"
+                else self.context.provider_router.resolve_selection(ProviderSelection(**saved_selection))
+            )
             response = await asyncio.wait_for(
                 execute_chat(
                     request, self.context, run_id=run_id,
                     execution_state=execution, checkpoint=checkpoint,
+                    resolved_provider=resolved,
                 ),
                 timeout=self.timeout_seconds,
             )
@@ -170,7 +215,8 @@ class ChatRunService:
                 matter_id, run_id, state="failed", status="Chat stopped after preserving useful work.",
                 conversation_id=conversation_id, response=response.model_dump(mode="json"),
                 request=request.model_copy(update={"conversation_id": conversation_id}).model_dump(mode="json"),
-                failure_detail="The model or a required tool could not finish this request.", finished_at=iso_now(),
+                failure_detail=(exc.safe_detail or "The model or a required tool could not finish this request."),
+                finished_at=iso_now(),
             )
         except Exception:
             conversation_id = self.context.chat_history.find_conversation_for_run(matter_id, run_id)
@@ -189,7 +235,13 @@ class ChatRunService:
             messages.append({"role": "user", "content": request.message})
         messages.append({"role": "system", "content": "The time limit was reached. Do not call tools. Give the best useful answer from the information already present. State remaining work."})
         try:
-            reply = await asyncio.wait_for(self.context.provider.complete(messages, None), timeout=30)
+            selection = current.get("selection")
+            provider = (
+                self.context.runner.resolve(request.agent_id).provider
+                if not selection or selection.get("provider") == "workspace_default"
+                else self.context.provider_router.resolve_selection(ProviderSelection(**selection)).provider
+            )
+            reply = await asyncio.wait_for(provider.complete(messages, None), timeout=30)
             if reply.content.strip():
                 return ChatResponse(
                     reply=reply.content.strip(), trace=execution.trace,

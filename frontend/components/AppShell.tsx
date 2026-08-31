@@ -41,8 +41,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     <div className="app-shell">
       <header className="topbar">
         <Link className="brand" href="/">
-          <span className="brand-mark" />
-          <span className="brand-name">Counsel OS</span>
+          <img alt="Themis.ai" className="brand-logo" src="/brand/themis-ai-logo-detailed-vibrant-red-v7.png" />
         </Link>
         <nav aria-label="Main navigation" className="nav">
           <span className="nav-group nav-primary"><NavLinks links={primaryLinks} pathname={pathname} /></span>

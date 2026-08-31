@@ -2,8 +2,8 @@
 
 ## Counsel OS — Product Counsel Workspace MVP
 
-**Document status:** Build-ready first-pass PRD  
-**Version:** 0.1  
+**Document status:** Build-ready MVP closure PRD
+**Version:** 0.2
 **Primary user:** In-house product counsel, solo general counsel, or a very small legal team  
 **Initial module:** Product Counsel  
 **Working product name:** Counsel OS  
@@ -182,7 +182,7 @@ Those modules are not included in the MVP. Product Counsel is the only implement
 7. A user can record and review decisions across matters.
 8. The system can flag decisions for review based on age, review date, or changes to linked internal sources.
 9. A user can create and run recurring automations through chat or a basic automation page.
-10. The entire application can run locally with a mock model and become useful with an OpenAI-compatible model endpoint by editing `.env`.
+10. The application can run locally with Mock and can route each agent through an approved configured provider and model.
 
 ### 5.2 Primary product metrics
 
@@ -221,9 +221,10 @@ A product lawyer should be able to use the application for a real product questi
 - Markdown comments, tracked changes, accept/reject review, and regenerated DOCX/PDF export.
 - Agent registry loaded from Markdown.
 - Tool registry loaded from Markdown descriptions and mapped to approved Python handlers.
-- OpenAI-compatible model adapter and no-key mock adapter.
+- Mock, OpenAI-compatible, OpenCode Go, Codex CLI, and Antigravity CLI model adapters.
+- Per-agent provider, model, and reasoning-effort selection with workspace-default inheritance.
 - Internal vault search.
-- Optional external search adapter when configured.
+- Polaris-backed public matter research plus the current optional native search path.
 - First-pass research packet generation.
 - Work items.
 - Decision register.
@@ -825,10 +826,24 @@ The MVP includes:
 
 - `mock` provider for a no-key runnable demo.
 - `openai_compatible` provider using the Chat Completions tool-calling format.
+- `opencode_go` provider using the configured OpenCode Go API.
+- `codex` provider using the existing signed-in Codex CLI session.
+- `antigravity_cli` provider using the existing signed-in Antigravity CLI session.
 
-Model name, API key, and base URL are environment variables. This permits use of an OpenAI endpoint, OpenRouter, LM Studio, vLLM, Ollama-compatible gateways, or another compatible provider without changing application code.
+Each agent definition may store optional `provider`, `model`, and
+`reasoning_effort` fields. An empty provider inherits the complete workspace
+selection. An explicit provider requires its own model; an empty effort uses
+that provider's default. Each run resolves and records one immutable selection
+snapshot. An explicit unavailable selection fails visibly and never silently
+changes provider or model.
 
-Anthropic- and Gemini-native adapters are intentionally deferred. Their addition should implement the same provider interface.
+Provider credentials and CLI sessions stay in the runtime environment. They
+are not stored in the vault or SQLite. CLI-backed providers expose only
+Counsel OS typed tools. They do not expose their own shell, file, browser, or
+plugin tools.
+
+Additional provider families are deferred. They must use the same small
+provider interface when added.
 
 ### 11.7 No hidden legal validation pipeline
 
@@ -911,7 +926,7 @@ Research provides a practical foothold, not guaranteed exhaustive legal research
 - Prior decisions.
 - Active documents.
 - Internal search results.
-- Optional external search results.
+- Polaris public-intelligence results and optional native search results.
 
 ### 13.3 Output template
 
@@ -928,9 +943,18 @@ Research provides a practical foothold, not guaranteed exhaustive legal research
 
 ### 13.4 External search
 
-The scaffold contains an optional provider boundary. The MVP may use a configured general web-search API. It does not include a commercial legal research database integration.
+Polaris is the primary public source for on-demand matter research in the MVP.
+The Intake Agent identifies researchable questions and proposes public query
+candidates. The deterministic outbound policy removes or rejects private
+company and matter data before a Polaris call. Polaris receives public intent
+only.
 
-When no external provider is configured, the system must still produce an internal research packet and clearly identify that external search was not run.
+Polaris observations and supplied citations are combined with private company
+and matter context only inside Counsel OS by the selected Research Agent.
+Polaris citations start as **Supplied** until Counsel OS retrieves and checks
+them. If Polaris or native search is unavailable, the system must still
+produce the best useful internal packet and identify the missing external
+support.
 
 ### 13.5 Research button behavior
 
@@ -1305,12 +1329,14 @@ This direction is plausible but not a committed architecture. The MVP should not
 - **FR-027:** The user shall be able to create a reusable skill through the fixed guided interview without prompt-design knowledge.
 - **FR-028:** One explicit slash command shall apply one enabled skill to one chat turn without changing agent tools.
 - **FR-029:** Applied-skill disclosure shall persist with matter and Today assistant messages.
+- **FR-029A:** Each agent shall persist an optional provider, model, and reasoning effort and shall inherit the workspace default when an override is empty.
+- **FR-029B:** An explicit unavailable agent selection shall fail visibly without silently changing provider or model.
 
 ### Research
 
 - **FR-030:** The user shall be able to trigger research from the card, workspace, or chat.
 - **FR-031:** Research shall use internal matter, playbook, company, and prior-decision context.
-- **FR-032:** Research shall use an external search provider when configured.
+- **FR-032:** Research shall use Polaris as the primary public source when available, keep private context local, and degrade to a useful labeled internal packet when external research fails.
 - **FR-033:** Research output shall be saved as a Markdown packet.
 - **FR-034:** Research completion shall update the matter and related work item.
 
@@ -1361,10 +1387,10 @@ This direction is plausible but not a committed architecture. The MVP should not
 
 1. Create a matter from the dashboard.
 2. Verify it appears in Intake.
-3. Open the matter.
-4. Verify request, metadata, work item, and next action appear.
-5. Ask “Orient me.”
-6. Receive a useful response in mock or configured model mode.
+3. Verify the new matter opens directly in Chat with Themis while the Intake Agent reads the request in a background run.
+4. Verify the first response summarizes the actual request and asks one material, request-specific question.
+5. Answer the question and verify the next question adapts to the answer.
+6. Stop intake early and verify the exact transcript, source-linked matter records, useful labeled dossier, and next counsel action remain available.
 
 ### Scenario B — Chat changes workflow state
 
@@ -1482,7 +1508,7 @@ The included scaffold implements the foundation and representative portions of W
 
 1. Whether the long-term product is cloud-native, desktop-first, or hybrid.
 2. Whether Markdown remains the canonical production store for multi-user deployments.
-3. Which commercial legal research provider should support external authority research.
+3. Which additional research providers, if any, should be added after Polaris misses a measured need.
 4. Whether company memory should be curated manually, automatically, or through a review queue.
 5. Whether later versions must preserve complex source layout and imported review objects during Word/PDF round trips.
 6. Whether each company should define its own workflow stages or select from module templates.
@@ -1507,5 +1533,7 @@ The first demo is complete when a lawyer can:
 8. Review a prior decision and see a meaningful staleness flag.
 9. Create or run an automation.
 10. Inspect the Markdown files that define the system, agents, tools, and records.
+11. Assign different provider/model/reasoning combinations to different agents and observe those selections on their runs.
+12. Submit an incomplete matter, answer contextual intake questions in Chat with Themis, and receive privacy-safe Polaris research plus a useful editable dossier.
 
 The demo does not need to prove that the assistant is always right. It needs to prove that the assistant materially reduces setup work and gets a lawyer to useful judgment faster.

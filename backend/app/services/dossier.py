@@ -29,7 +29,11 @@ class DossierService:
             return {"summary": "", "decision_question": "", "open_questions": []}
         content = dossier["content"]
         return {
-            "summary": self.section(content, "Summary") or self.section(content, "Current ask"),
+            "summary": (
+                self.section(content, "Matter summary")
+                or self.section(content, "Summary")
+                or self.section(content, "Current ask")
+            ),
             "decision_question": self.section(content, "Decision question"),
             "open_questions": self.list_section(content, "Open questions"),
         }
@@ -42,18 +46,66 @@ class DossierService:
         decision_question: str,
         open_questions: list[str],
         research_path: str,
+        research_support: str = "",
     ) -> dict[str, Any]:
         current = self.get(matter_id)
         content = current["content"] if current else "# Matter dossier\n"
-        content = self._set_section(content, "Summary", summary)
+        content = self._remove_section(content, "Summary")
+        content = self._remove_section(content, "Research")
+        content = self._set_section(content, "Matter summary", summary)
         content = self._set_section(content, "Decision question", decision_question)
         content = self._set_section(
             content,
             "Open questions",
             "\n".join(f"- {question.strip()}" for question in open_questions if question.strip()),
         )
-        content = self._set_section(content, "Research", f"Latest review: `{research_path}`")
+        support = f"Latest review: `{research_path}`"
+        if research_support.strip():
+            support += f"\n\n{research_support.strip()}"
+        content = self._set_section(content, "Research and source support", support)
         expected_hash = self._hash(current["content"]) if current else None
+        return self.propose_update(matter_id, content, expected_hash=expected_hash)
+
+    def update_from_intake(
+        self,
+        matter_id: str,
+        *,
+        working_ask: str,
+        facts: list[dict[str, Any]],
+        assumptions: list[dict[str, Any]],
+        issues: list[str],
+        open_questions: list[str],
+        orientation: str,
+        expected_hash: str | None,
+    ) -> dict[str, Any]:
+        active_facts = [
+            str(item.get("text") or "").strip()
+            for item in facts
+            if item.get("status") == "active" and not item.get("withdrawn_at")
+        ]
+        open_assumptions = [
+            str(item.get("text") or "").strip()
+            for item in assumptions
+            if item.get("status") == "open" and not item.get("withdrawn_at")
+        ]
+        current = self.get(matter_id)
+        content = current["content"] if current else "# Matter dossier\n"
+        content = self._remove_section(content, "Summary")
+        content = self._remove_section(content, "Research")
+        sections = [
+            ("Matter summary", orientation.strip() or working_ask.strip()),
+            ("Decision question", working_ask.strip()),
+            ("Material facts", _markdown_list(active_facts, "No reported facts saved yet.")),
+            ("Assumptions", _markdown_list(open_assumptions, "No open assumptions.")),
+            ("Issues and workstreams", _markdown_list(issues, "No workstreams identified yet.")),
+            ("Open questions", _markdown_list(open_questions, "No open questions recorded.")),
+            ("Research and source support", self.section(content, "Research and source support") or "Research has not been added yet."),
+            ("Options or working recommendation", self.section(content, "Options or working recommendation") or "No recommendation has been drafted yet."),
+            ("Next counsel action", "Review the working ask and answer the next material question."),
+            ("Work product links", self.section(content, "Work product links") or "No work product yet."),
+        ]
+        for heading, value in sections:
+            content = self._set_section(content, heading, value)
         return self.propose_update(matter_id, content, expected_hash=expected_hash)
 
     def propose_update(
@@ -62,7 +114,9 @@ class DossierService:
     ) -> dict[str, Any]:
         current = self.get(matter_id)
         current_hash = self._hash(current["content"]) if current else None
-        guard_failed = current is not None and expected_hash != current_hash
+        stored_hash = str(current["metadata"].get("content_hash") or "") if current else ""
+        lawyer_edited = bool(stored_hash and stored_hash != current_hash)
+        guard_failed = current is not None and (expected_hash != current_hash or lawyer_edited)
         if current is not None and not material and not force:
             return {"state": "not_required", "path": self._path(matter_id), "content_hash": current_hash}
         revision = self._write_revision(matter_id, content, current_hash, "draft" if guard_failed else "applied")
@@ -133,3 +187,13 @@ class DossierService:
         if re.search(pattern, content):
             return re.sub(pattern, replacement, content, count=1).rstrip() + "\n"
         return content.rstrip() + f"\n\n{replacement}"
+
+    @staticmethod
+    def _remove_section(content: str, heading: str) -> str:
+        pattern = rf"(?ms)^##\s+{re.escape(heading)}\s*\n+.*?(?=^##\s+|\Z)"
+        return re.sub(pattern, "", content).rstrip() + "\n"
+
+
+def _markdown_list(values: list[str], empty: str) -> str:
+    cleaned = [value for value in values if value]
+    return "\n".join(f"- {value}" for value in cleaned) if cleaned else empty

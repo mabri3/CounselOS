@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 import pytest
 
 from app.intelligence.fetch import SafeHttpFetcher, UnsafeUrlError, _Response
-from app.intelligence.outbound_policy import OutboundQueryPolicy
+from app.intelligence.outbound_policy import OutboundQueryPolicy, PublicResearchQuery
 from app.intelligence.source_support import SourceSupportService
 from app.models.awareness import (
     ForbiddenCorpus, PublicEntity, PublicWatchQuery, SafeFetchLimits, SafeFetchResult,
@@ -64,6 +64,31 @@ def test_policy_checks_public_source_urls_against_corpus():
         OutboundQueryPolicy().prepare(
             watch_with("public_source_urls", "https://private-alias.example/public"),
             ForbiddenCorpus(terms=("PRIVATE-ALIAS",)),
+        )
+
+
+def test_matter_research_uses_same_private_data_policy_as_watches():
+    policy = OutboundQueryPolicy()
+    corpus = ForbiddenCorpus(terms=("Private Product",), fragments=("MAT-PRIVATE-123",))
+
+    safe = policy.prepare_public(
+        PublicResearchQuery(
+            question="What public federal rules govern customer due diligence?",
+            jurisdictions=("United States",),
+        ),
+        corpus,
+    )
+
+    assert safe.standing_question.startswith("What public federal rules")
+    with pytest.raises(ValueError, match="private"):
+        policy.prepare_public(
+            PublicResearchQuery(question="What rules apply to MAT-PRIVATE-123?"),
+            corpus,
+        )
+    with pytest.raises(ValueError, match="private company context"):
+        policy.prepare_public(
+            PublicResearchQuery(question="What rules apply to Private Product?"),
+            corpus,
         )
 
 

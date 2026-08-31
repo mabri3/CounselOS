@@ -18,10 +18,12 @@ Requester model: [MODEL AND REASONING]
 Attorney model: [MODEL AND REASONING]
 Synthesis model: [MODEL AND REASONING; DEFAULT GPT-5.6-SOL HIGH]
 Public reference: [NONE OR COMPANY/URL]
-Final-action policy: local fictional in-app actions are allowed; real external delivery requires confirmation
+Final-action policy: local fictional Counsel OS actions are allowed; real external delivery requires confirmation
 ```
 
 Confirm that the app is available. This is environment setup, not UX evidence. Use a unique experiment name and record prefix.
+
+Run a direct-browser preflight in the company-setup actor and in every per-iteration attorney. The actor must obtain and operate a visible browser itself. Use this order: in-app browser through `browser:control-in-app-browser`, Chrome through `chrome:control-chrome`, then Safari through `computer-use:computer-use`. The order is a preference, not a hard constraint. For each surface, load and follow its skill, make one recovery attempt with changed conditions if needed, record any browser-specific environment failure, and continue to the next surface. If all permitted surfaces fail, retry with a different fresh actor when safe. Do not use the coordinator as the actor's browser operator.
 
 ## 2. Requester prompt
 
@@ -40,11 +42,11 @@ Check that the output contains exactly `N` complete requests. Ask the same actor
 ```text
 Act as [ATTORNEY ROLE] for [COMPANY]. Set up the fictional company in the live Counsel OS application at [APP URL].
 
-Load and follow browser:control-in-app-browser. Use only the visible in-app browser for application actions. Select it explicitly and keep it visible. Inspect the screen, click visible controls, type into visible fields, and inspect the visible result after each change.
+Use a directly controlled visible browser. Try the in-app browser first by loading and following `browser:control-in-app-browser`. If it cannot provide direct, visible, reliable control after one changed-condition recovery attempt, record that environment failure and try Chrome by loading and following `chrome:control-chrome`. If Chrome also fails after one changed-condition recovery attempt, record that failure and try Safari by loading and following `computer-use:computer-use`. This fallback order is explicitly authorized and is not a hard browser constraint. Select the chosen browser explicitly and keep it visible. Inspect the screen, click visible controls, type into visible fields, and inspect the visible result after each change.
 
-Do not use Chrome, curl, APIs, source code, repository docs, the database, vault files, network requests, hidden DOM mutation, or direct file writes to learn or operate the workflow.
+Do not use curl, APIs, source code, repository docs, the database, vault files, network requests, hidden DOM mutation, headless browsers, or direct file writes to learn or operate the workflow. Use Chrome only through `chrome:control-chrome` and Safari only through `computer-use:computer-use`.
 
-[If supplied: In a separate in-app browser tab, inspect only public pages of [REFERENCE]. Use its broad public business model. Do not sign in, copy text, claim affiliation, or collect unnecessary data.]
+[If supplied: In a separate tab or window in the selected browser, inspect only public pages of [REFERENCE]. Use its broad public business model. Do not sign in, copy text, claim affiliation, or collect unnecessary data.]
 
 Find the company setup area from the visible Counsel OS UI. Create or update a detailed fictional profile suited to [BUSINESS TYPE]. Include the business model, products, customers, partners, operating footprint, teams, legal topics, risk posture, operating principles, and a fictional legal owner. State that [COMPANY] is fictional and not affiliated with a reference company. Use full paragraphs where the UI permits.
 
@@ -57,7 +59,7 @@ Report:
 - browser-control errors;
 - environment failures;
 - exact labels, reproduction steps, expected result, actual result, recovery, delay, and lawyer impact for each problem;
-- visible saved result and browser-only compliance.
+- visible saved result, browser surface used, fallback attempts, and visible-browser-only compliance.
 
 Do not inspect code, propose implementation changes, or fix issues.
 ```
@@ -69,9 +71,11 @@ Create one fresh attorney actor per request. Run actors serially.
 ```text
 Run iteration [NN] of a live Counsel OS usability experiment at [APP URL]. Act as [ATTORNEY ROLE] at fictional [COMPANY]. Handle exactly one new matter.
 
-Load and follow browser:control-in-app-browser. Use only the visible in-app browser and keep it visible. Select it explicitly. Learn the workflow only from the visible UI. Inspect before acting. Click visible controls and type into visible fields. Inspect the visible result after every state-changing action.
+Use a directly controlled visible browser. Try the in-app browser first by loading and following `browser:control-in-app-browser`. If it cannot provide direct, visible, reliable control after one changed-condition recovery attempt, record that environment failure and try Chrome by loading and following `chrome:control-chrome`. If Chrome also fails after one changed-condition recovery attempt, record that failure and try Safari by loading and following `computer-use:computer-use`. This fallback order is explicitly authorized and is not a hard browser constraint. Select the chosen browser explicitly and keep it visible. Learn the workflow only from the visible UI. Inspect before acting. Click visible controls and type into visible fields. Inspect the visible result after every state-changing action.
 
-Do not use Chrome, curl, APIs, source code, repository docs, the database, vault files, network requests, hidden DOM mutation, or direct file writes to learn or operate the product. Do not change code, fix issues, delete records, or overwrite existing records.
+You own this matter from creation through the last available phase. Operate Counsel OS yourself. Do not ask the coordinator to click, type, navigate, inspect, or relay screen state. Do not pause after each action for coordinator approval. Continue autonomously until the matter is complete or a real product blocker prevents further progress. Then return one complete evidence report.
+
+Do not use curl, APIs, source code, repository docs, the database, vault files, network requests, hidden DOM mutation, headless browsers, or direct file writes to learn or operate the product. Use Chrome only through `chrome:control-chrome` and Safari only through `computer-use:computer-use`. Do not change code, fix issues, delete records, or overwrite existing records.
 
 Create one matter titled "[PREFIX][NN] — [SHORT TITLE]". Enter the complete requester text, not a summary.
 
@@ -79,7 +83,7 @@ Discover the current workflow phases and order from the visible UI. Attempt ever
 
 Create realistic legal work. The main response or memo must contain several developed sections and a useful first-pass answer. State assumptions, missing facts, and unverified leads. Keep the recommendation separate from a recorded decision. If decision recording is relevant and available, review and edit a plausible fictional decision before recording it.
 
-Inspect every save, state change, artifact, decision, send, and closure result on screen. Do not claim success without visible confirmation. Local fictional in-app changes are authorized. If a control could contact a real person or external service, stop before using it.
+Inspect every save, state change, artifact, decision, send, and closure result on screen. Do not claim success without visible confirmation. Local fictional Counsel OS changes are authorized. If a control could contact a real person or external service, stop before using it.
 
 Return these separate sections:
 
@@ -91,7 +95,7 @@ Return these separate sections:
 
 For each friction or broken item include phase, exact label, minimal reproduction steps, expected behavior, visible actual result, recovery, extra clicks or delay, lawyer impact, and a screen-state description or screenshot reference when available.
 
-Also report the question, phase labels discovered, phases attempted and reached, artifacts visibly verified, recommendation and decision status, final state, completion status, concise legal-work summary, exact blockers, and browser-only compliance.
+Also report the question, browser surface used, fallback attempts, phase labels discovered, phases attempted and reached, artifacts visibly verified, recommendation and decision status, final state, completion status, concise legal-work summary, exact blockers, and visible-browser-only compliance.
 
 Do not inspect source or prescribe implementation changes. State only the user outcome that should improve.
 
@@ -108,7 +112,7 @@ After each iteration:
 2. Require at least one working-well observation when the actor completed any phase successfully.
 3. Keep friction, broken behavior, browser-control errors, and environment failures separate.
 4. Downgrade “broken” to friction when a clear normal recovery exists.
-5. Mark browser-boundary violations or wrong-matter work as contaminated. Repeat with a fresh actor when safe.
+5. Mark coordinator-operated UI work, browser-boundary violations, or wrong-matter work as contaminated. Repeat with a fresh actor when safe.
 6. Do not give earlier findings to later attorneys.
 
 For a browser or app failure, make one recovery attempt with changed conditions. Do not repeat the same action without new information.
@@ -179,7 +183,7 @@ Lead with the overall result. Use this structure:
 
 ## Setup and method
 
-[Roles, business, company, iterations, themes, requester, attorney, and synthesis models, browser-only rule, and exceptions]
+[Roles, business, company, iterations, themes, requester, attorney, and synthesis models, visible-browser rule, browser surfaces used, and exceptions]
 
 ## Company setup result
 
@@ -227,7 +231,7 @@ Lead with the overall result. Use this structure:
 
 ## Method compliance
 
-[Browser-only statement for live actors, post-run code-inspection statement, and exceptions]
+[Visible-browser-only statement for live actors, browser surfaces and fallbacks used, post-run code-inspection statement, and exceptions]
 ```
 
 Do not omit positive findings. Do not hide failed runs. Do not combine product defects with agent automation mistakes. Do not implement the backlog in the same experiment task unless the user explicitly requests that extra work.

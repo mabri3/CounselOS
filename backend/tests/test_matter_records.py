@@ -2,7 +2,32 @@ from __future__ import annotations
 
 import pytest
 
+from app.models.api import ChatChoice, IntakeReportedFact, IntakeTurn, QuestionCard
 from app.services.matter_records import MatterRecordService
+
+
+def test_question_without_choices_becomes_write_in():
+    question = QuestionCard(question_id="Q-EMPTY", text="What happened?", selection_mode="single")
+
+    assert question.selection_mode == "free_text"
+
+
+def test_intake_question_set_keeps_model_priority_order(app_context):
+    service = MatterRecordService(app_context.vault, app_context.matters)
+    turn = IntakeTurn(
+        working_ask="Decide whether the pilot can launch.",
+        next_questions=[
+            QuestionCard(question_id="Q-HIGH", text="What fact changes the launch decision most?", selection_mode="free_text"),
+            QuestionCard(question_id="Q-NEXT", text="Who owns the control?", selection_mode="free_text"),
+        ],
+    )
+
+    result = service.apply_intake_turn("MAT-DEMO-BEACON", turn)
+
+    assert [question.question_id for question in result.questions] == ["Q-HIGH", "Q-NEXT"]
+    matter = app_context.matters.get("MAT-DEMO-BEACON")
+    matter_record = app_context.vault.read_markdown(f"{matter['path']}/matter.md")
+    assert matter_record["metadata"]["next_action"] == "What fact changes the launch decision most?"
 
 
 def test_records_keep_sources_support_and_grouped_withdrawal(app_context):
@@ -91,3 +116,101 @@ def test_existing_markdown_facts_survive_first_structured_update(app_context):
     texts = [item["text"] for item in after["facts"]]
     assert "The change applies only to the low-risk segment." in texts
     assert "The company operates in the US." in texts
+
+
+def test_intake_turn_links_request_records_and_creates_provisional_dossier(app_context):
+    service = MatterRecordService(app_context.vault, app_context.matters)
+    request = app_context.vault.read_markdown(
+        "03_Matters/beacon-instant-onboarding/request.md"
+    )
+    request_id = request["metadata"]["request_id"]
+    turn = IntakeTurn(
+        working_ask="Decide whether the limited biometric pilot can launch.",
+        reported_facts=[
+            IntakeReportedFact(statement="The pilot is limited to a low-risk segment."),
+        ],
+        issues=["Biometric notice and consent", "Retention controls"],
+        assumptions=["The pilot remains limited to the United States."],
+        material_missing_facts=["Which states are in scope?"],
+        human_questions=["Who owns the launch decision?"],
+        next_question=QuestionCard(
+            question_id="intake-jurisdictions",
+            text="Which states are in scope?",
+            reason="State law can change the notice and consent analysis.",
+            choices=[
+                ChatChoice(value="california", label="California"),
+                ChatChoice(value="other", label="Something else"),
+                ChatChoice(value="skip", label="Skip"),
+                ChatChoice(value="stop", label="No more questions"),
+            ],
+        ),
+    )
+
+    result = service.apply_intake_turn(
+        "MAT-DEMO-BEACON", turn, source_id=request_id, expected_dossier_hash=None
+    )
+
+    saved = service.get("MAT-DEMO-BEACON")
+    fact = next(
+        item for item in saved["facts"]
+        if item["text"] == "The pilot is limited to a low-risk segment."
+    )
+    assert fact["source_ids"] == [request_id]
+    assert saved["working_ask"] == turn.working_ask
+    assert saved["issues"] == turn.issues
+    assert saved["open_questions"] == [
+        "Which states are in scope?",
+        "Who owns the launch decision?",
+    ]
+    assert result.question == turn.next_question
+    assert result.matter_update is not None
+
+    dossier = app_context.dossiers.get("MAT-DEMO-BEACON")["content"]
+    for heading in (
+        "Matter summary", "Decision question", "Material facts", "Assumptions",
+        "Issues and workstreams", "Open questions", "Research and source support",
+        "Options or working recommendation", "Next counsel action", "Work product links",
+    ):
+        assert f"## {heading}" in dossier
+
+
+def test_repeated_intake_fact_adds_source_support_without_duplicate_fact(app_context):
+    service = MatterRecordService(app_context.vault, app_context.matters)
+    turn = IntakeTurn(
+        working_ask="Confirm launch timing.",
+        reported_facts=[IntakeReportedFact(statement="Launch is planned for Friday.")],
+    )
+    service.apply_intake_turn("MAT-DEMO-BEACON", turn, source_id="MSG-ONE")
+    service.apply_intake_turn("MAT-DEMO-BEACON", turn, source_id="MSG-TWO")
+
+    saved = service.get("MAT-DEMO-BEACON")
+    facts = [item for item in saved["facts"] if item["text"] == "Launch is planned for Friday."]
+    assert len(facts) == 1
+    supports = [item for item in saved["support"] if item["fact_id"] == facts[0]["fact_id"]]
+    assert {item["source_id"] for item in supports} == {"MSG-ONE", "MSG-TWO"}
+
+
+def test_intake_update_preserves_lawyer_edit_as_review_draft(app_context):
+    service = app_context.dossiers
+    matter_id = "MAT-DEMO-BEACON"
+    service.update_from_intake(
+        matter_id,
+        working_ask="Decide whether to launch.",
+        facts=[], assumptions=[], issues=[], open_questions=[], orientation="",
+        expected_hash=None,
+    )
+    current = service.get(matter_id)
+    assert current is not None
+    edited = current["content"] + "\n## Lawyer note\n\nKeep this judgment call.\n"
+    app_context.vault.update_markdown(current["path"], content=edited)
+
+    result = service.update_from_intake(
+        matter_id,
+        working_ask="Decide whether to launch Friday.",
+        facts=[], assumptions=[], issues=[], open_questions=[], orientation="",
+        expected_hash=service.content_hash(matter_id),
+    )
+
+    assert result["state"] == "review_required"
+    assert "Keep this judgment call." in service.get(matter_id)["content"]
+    assert "Keep this judgment call." in app_context.vault.read_markdown(result["revision_path"])["content"]

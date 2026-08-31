@@ -160,6 +160,19 @@ const workspaceSource = readFileSync(new URL("../components/MatterWorkspace.tsx"
 assert.equal(workspaceSource.includes("Latest research"), false);
 assert.equal(workspaceSource.includes("Agent research"), false);
 assert.equal(workspaceSource.includes("Written by Themis, unreviewed"), false);
+assert.equal(workspaceSource.includes("No working recommendation is saved."), false);
+assert.equal(workspaceSource.includes("Matter at a glance"), true);
+assert.equal(workspaceSource.includes("Question to resolve"), true);
+assert.equal(workspaceSource.includes("Things to consider"), true);
+assert.equal(workspaceSource.includes("Also open on this matter"), false);
+assert.equal(workspaceSource.includes("detail.orientation.summary"), true);
+assert.equal(workspaceSource.includes("<summary>Original request</summary>"), true);
+assert.equal(workspaceSource.includes("detail.original_request"), true);
+assert.equal(workspaceSource.includes("openDocument(requestPath)"), false);
+assert.equal(workspaceSource.includes("Complete work item"), false);
+assert.equal(workspaceSource.includes('lifecycleAction.id !== "review_intake"'), true);
+assert.equal(workspaceSource.includes('currentControl.id !== "open_work_item"'), true);
+assert.equal(workspaceSource.includes('currentControl.id !== "review_intake"'), true);
 assert.ok((workspaceSource.match(/First-pass research/g) ?? []).length >= 3, "workspace uses one research label");
 
 console.log("All checks passed.");

@@ -4,9 +4,29 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
 import LinkifiedText from "@/components/LinkifiedText";
-import { getAudiences, getAutomations, getTools, saveAgentDetail } from "@/lib/api";
+import { effortLabel, getAudiences, getAutomations, getSettings, getTools, saveAgentDetail } from "@/lib/api";
+import { role } from "@/lib/design";
 import { FIXED_AGENT_RULES, agentDetailFrom, agentStateColor } from "@/lib/stubs";
-import type { AgentDetail, Audience, ToolDefinition } from "@/lib/types";
+import type { AgentDetail, Audience, ModelCatalog, ModelCatalogProvider, ToolDefinition, WorkspaceSettings } from "@/lib/types";
+
+function providerState(provider: ModelCatalogProvider): { label: string; color: string } {
+  if (provider.readiness === "ready") return { label: "Ready", color: role.healthy };
+  if (provider.readiness === "development_only") return { label: "Development only", color: role.attentionDeep };
+  if (provider.readiness === "missing") return { label: "Missing setup", color: role.attentionDeep };
+  return { label: "Unavailable", color: role.failure };
+}
+
+function workspaceDefault(settings: WorkspaceSettings | null): string {
+  if (!settings) return "Workspace default";
+  const rows = settings.sections.flatMap((section) => section.rows);
+  const value = (key: string) => rows.find((row) => row.config_key === key)?.value ?? "";
+  const provider = settings.model_catalog.providers.find((entry) => entry.id === value("agents.provider"));
+  const model = provider?.models.find((entry) => entry.id === value("agents.reasoning_model"));
+  const effort = value("agents.reasoning_effort");
+  return [provider?.label ?? value("agents.provider"), model?.label ?? value("agents.reasoning_model"), effort ? effortLabel(effort) : ""]
+    .filter(Boolean)
+    .join(" · ") || "Workspace default";
+}
 
 /**
  * Canvas 4b — write what the agent is, how it speaks, and what it may touch.
@@ -17,6 +37,7 @@ export default function AgentsPage() {
   const [agents, setAgents] = useState<AgentDetail[]>([]);
   const [audiences, setAudiences] = useState<Audience[]>([]);
   const [tools, setTools] = useState<ToolDefinition[]>([]);
+  const [settings, setSettings] = useState<WorkspaceSettings | null>(null);
   const [draft, setDraft] = useState<AgentDetail | null>(null);
   const [dirty, setDirty] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -25,15 +46,17 @@ export default function AgentsPage() {
   const load = useCallback(async () => {
     try {
       setError("");
-      const [{ agents: definitions, schedules }, { audiences: audienceOptions }, { tools: toolOptions }] = await Promise.all([
+      const [{ agents: definitions, schedules }, { audiences: audienceOptions }, { tools: toolOptions }, workspaceSettings] = await Promise.all([
         getAutomations(),
         getAudiences(),
         getTools(),
+        getSettings(),
       ]);
       const details = definitions.map((definition) => agentDetailFrom(definition, schedules));
       setAgents(details);
       setAudiences(audienceOptions);
       setTools(toolOptions);
+      setSettings(workspaceSettings);
       setDraft((current) => details.find((agent) => agent.agent_id === (current?.agent_id ?? details[0]?.agent_id)) ?? null);
       setDirty(false);
     } catch (caught) {
@@ -98,6 +121,28 @@ export default function AgentsPage() {
     );
   }
 
+  const catalog: ModelCatalog = settings?.model_catalog ?? { providers: [] };
+  const selectedProvider = draft.provider
+    ? catalog.providers.find((provider) => provider.id === draft.provider)
+    : undefined;
+  const selectedProviderState = selectedProvider ? providerState(selectedProvider) : null;
+  const providerOptions = selectedProvider || !draft.provider
+    ? catalog.providers
+    : [...catalog.providers, {
+      id: draft.provider,
+      label: `${draft.provider} (unavailable)`,
+      readiness: "unavailable" as const,
+      readiness_detail: "The saved provider is not in the current catalog.",
+      models: [],
+    }];
+  const modelOptions = selectedProvider?.models.some((model) => model.id === draft.model) || !draft.model
+    ? selectedProvider?.models ?? []
+    : [...(selectedProvider?.models ?? []), { id: draft.model, label: `${draft.model} (unavailable)`, reasoning_efforts: [] }];
+  const selectedModel = modelOptions.find((model) => model.id === draft.model);
+  const effortOptions = selectedModel?.reasoning_efforts.includes(draft.reasoning_effort ?? "") || !draft.reasoning_effort
+    ? selectedModel?.reasoning_efforts ?? []
+    : [...(selectedModel?.reasoning_efforts ?? []), draft.reasoning_effort];
+
   return (
     <AppShell>
       <div className="admin-shell">
@@ -156,6 +201,92 @@ export default function AgentsPage() {
                 <div style={{ marginTop: 9, display: "flex", flexDirection: "column", gap: 5, font: "400 15px/1.6 var(--sans)", color: "var(--ink-2)" }}>
                   {FIXED_AGENT_RULES.map((rule) => <span key={rule}>{rule}</span>)}
                 </div>
+              </div>
+
+              <div className="field-block">
+                <div className="section-heading">Model</div>
+                <p>Choose this agent&apos;s provider, model, and reasoning effort. Empty fields use the workspace default.</p>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: 14, marginTop: 12 }}>
+                  <label>
+                    <span className="field-label">Provider</span>
+                    <select
+                      aria-label="Provider"
+                      className="select-input"
+                      onChange={(event) => {
+                        const providerId = event.target.value;
+                        if (!providerId) {
+                          patch({ provider: "", model: "", reasoning_effort: "" });
+                          return;
+                        }
+                        const provider = catalog.providers.find((entry) => entry.id === providerId);
+                        const model = provider?.models[0];
+                        patch({
+                          provider: providerId,
+                          model: model?.id ?? "",
+                          reasoning_effort: model?.reasoning_efforts[0] ?? "",
+                        });
+                      }}
+                      style={{ marginTop: 7, width: "100%" }}
+                      value={draft.provider ?? ""}
+                    >
+                      <option value="">Use workspace default</option>
+                      {providerOptions.map((provider) => (
+                        <option key={provider.id} value={provider.id}>{provider.label}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    <span className="field-label">Model</span>
+                    <select
+                      aria-label="Model"
+                      className="select-input"
+                      disabled={!draft.provider || modelOptions.length === 0}
+                      onChange={(event) => {
+                        const model = modelOptions.find((entry) => entry.id === event.target.value);
+                        patch({ model: event.target.value, reasoning_effort: model?.reasoning_efforts[0] ?? "" });
+                      }}
+                      style={{ marginTop: 7, width: "100%" }}
+                      value={draft.model ?? ""}
+                    >
+                      {!draft.provider ? <option value="">Workspace default</option> : null}
+                      {draft.provider && modelOptions.length === 0 ? <option value="">No models available</option> : null}
+                      {modelOptions.map((model) => <option key={model.id} value={model.id}>{model.label}</option>)}
+                    </select>
+                  </label>
+                  <label>
+                    <span className="field-label">Reasoning effort</span>
+                    <select
+                      aria-label="Reasoning effort"
+                      className="select-input"
+                      disabled={!draft.provider || !draft.model || effortOptions.length === 0}
+                      onChange={(event) => patch({ reasoning_effort: event.target.value })}
+                      style={{ marginTop: 7, width: "100%" }}
+                      value={draft.reasoning_effort ?? ""}
+                    >
+                      {!draft.provider ? <option value="">Workspace default</option> : null}
+                      {draft.provider && effortOptions.length === 0 ? <option value="">Not available</option> : null}
+                      {effortOptions.map((effort) => <option key={effort} value={effort}>{effortLabel(effort)}</option>)}
+                    </select>
+                  </label>
+                </div>
+                {!draft.provider ? (
+                  <div className="setting-help" style={{ marginTop: 10 }}>Uses workspace default: {workspaceDefault(settings)}</div>
+                ) : selectedProviderState ? (
+                  <div className="setting-help" style={{ color: selectedProviderState.color, marginTop: 10 }}>
+                    <span className="signal" style={{ color: selectedProviderState.color }}>
+                      <span className="dot sm" style={{ background: selectedProviderState.color }} />
+                      {selectedProviderState.label}
+                    </span>
+                    <span style={{ marginLeft: 8 }}>{selectedProvider?.readiness_detail}</span>
+                  </div>
+                ) : (
+                  <div className="setting-help" style={{ color: role.failure, marginTop: 10 }}>Unavailable · The saved provider is not in the current catalog.</div>
+                )}
+                {draft.provider === "antigravity_cli" ? (
+                  <div className="setting-help" style={{ color: role.attentionDeep, fontWeight: 500, marginTop: 7 }}>
+                    Development only — do not use confidential matter data.
+                  </div>
+                ) : null}
               </div>
 
               <details className="field-block">

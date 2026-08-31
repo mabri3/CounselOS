@@ -4,8 +4,8 @@
  * Persisted settings, tools, audiences, and agent details come from `lib/api.ts`.
  */
 
-import type { AgentDefinition, AgentDetail, Schedule, SettingsSection } from "./types";
-import { role } from "./design";
+import type { AgentDefinition, AgentDetail, Schedule, SettingsSection } from "./types.ts";
+import { role } from "./design.ts";
 
 export const DEFAULT_SETTINGS: SettingsSection[] = [
   {

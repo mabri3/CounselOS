@@ -27,34 +27,42 @@ export default function RecordDecisionModal({
   const [decider, setDecider] = useState(detail.legal_owner || "");
   const [reviewAt, setReviewAt] = useState(defaultReview());
   const [busy, setBusy] = useState(false);
+  const [created, setCreated] = useState(false);
+  const [recorded, setRecorded] = useState(false);
   const [error, setError] = useState("");
 
   async function record() {
     if (!chosenPath.trim()) { setError("Say what was decided."); return; }
     if (!decider.trim()) { setError("Enter who made the decision."); return; }
+    let decisionCreated = created;
     setBusy(true);
     setError("");
     try {
-      await createDecision({
-        matter_id: detail.matter_id,
-        title: detail.title,
-        chosen_path: chosenPath.trim(),
-        rationale: rationale.trim(),
-        decision_maker: decider.trim(),
-        risk_level: detail.risk_level,
-        next_review_at: reviewAt || null,
-        linked_paths: basis,
-      });
+      if (!created) {
+        await createDecision({
+          matter_id: detail.matter_id,
+          title: detail.title,
+          chosen_path: chosenPath.trim(),
+          rationale: rationale.trim(),
+          decision_maker: decider.trim(),
+          risk_level: detail.risk_level,
+          next_review_at: reviewAt || null,
+          linked_paths: basis,
+        });
+        decisionCreated = true;
+        setCreated(true);
+      }
       await onRecorded();
-      onClose();
+      setRecorded(true);
+      setBusy(false);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Could not record the decision.");
+      setError(caught instanceof Error ? caught.message : decisionCreated ? "The decision was saved, but the matter did not refresh." : "Could not record the decision.");
       setBusy(false);
     }
   }
 
   return (
-    <div className="modal-scrim" onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}>
+    <div className="modal-scrim" onClick={(event) => { if (!busy && event.target === event.currentTarget) onClose(); }}>
       <div className="modal" role="dialog" aria-modal="true" aria-label="Record durable decision">
         <div className="modal-head">
           <h3>Record a durable decision</h3>
@@ -62,12 +70,18 @@ export default function RecordDecisionModal({
         </div>
 
         <div className="modal-body">
+          {recorded ? (
+            <div className="mutation-status recorded" role="status">
+              Decision recorded. The refreshed matter and decision register now include it.
+            </div>
+          ) : null}
           <div>
             <div className="field-label">Decision {suggestion.trim() ? <span className="field-source">Themis draft</span> : null}</div>
             <textarea
               aria-label="Decision"
               autoFocus
               className="text-input prose"
+              disabled={busy || created || recorded}
               onChange={(event) => setChosenPath(event.target.value)}
               style={{ minHeight: 96 }}
               value={chosenPath}
@@ -79,6 +93,7 @@ export default function RecordDecisionModal({
             <textarea
               aria-label="Rationale"
               className="text-input prose"
+              disabled={busy || created || recorded}
               onChange={(event) => setRationale(event.target.value)}
               style={{ minHeight: 88 }}
               value={rationale}
@@ -89,11 +104,11 @@ export default function RecordDecisionModal({
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
             <div>
               <div className="field-label">Decided by</div>
-              <input aria-label="Decided by" className="text-input" onChange={(event) => setDecider(event.target.value)} value={decider} />
+              <input aria-label="Decided by" className="text-input" disabled={busy || created || recorded} onChange={(event) => setDecider(event.target.value)} value={decider} />
             </div>
             <div>
               <div className="field-label">Revisit on</div>
-              <input aria-label="Revisit on" className="text-input" onChange={(event) => setReviewAt(event.target.value)} type="date" value={reviewAt} />
+              <input aria-label="Revisit on" className="text-input" disabled={busy || created || recorded} onChange={(event) => setReviewAt(event.target.value)} type="date" value={reviewAt} />
               <div style={{ marginTop: 6, font: "400 13px var(--sans)", color: "var(--ink-5)" }}>
                 {reviewAt ? formatLongDay(reviewAt) : "No review date"}
               </div>
@@ -117,13 +132,15 @@ export default function RecordDecisionModal({
 
         <div className="modal-foot">
           <span style={{ font: "400 13.5px var(--sans)", color: "var(--ink-4)" }}>
-            Recorded against this matter and the decision register.
+            {recorded ? "Saved and confirmed after the matter reloaded." : created ? "Decision saved. Refresh confirmation is still needed." : "Recorded against this matter and the decision register."}
           </span>
           <div className="btn-row">
-            <button className="btn" disabled={busy} onClick={onClose}>Cancel</button>
-            <button className="btn primary" disabled={busy || !chosenPath.trim() || !decider.trim()} onClick={() => void record()}>
-              {busy ? "Recording…" : "Record durable decision"}
-            </button>
+            <button className={recorded ? "btn primary" : "btn"} disabled={busy} onClick={onClose}>{created ? "Close" : "Cancel"}</button>
+            {recorded ? null : (
+              <button className="btn primary" disabled={busy || !chosenPath.trim() || !decider.trim()} onClick={() => void record()}>
+                {busy ? created ? "Refreshing…" : "Recording and refreshing…" : created ? "Retry refresh" : "Record durable decision"}
+              </button>
+            )}
           </div>
         </div>
       </div>

@@ -1,69 +1,100 @@
 # Acceptance tests
 
+## MVP closure rule
+
+The original check marks below are historical evidence, not a blanket current
+pass. During the canonical closure checkpoint, record every unchecked, failed,
+or stale item in `docs/MVP_CLOSURE_AUDIT.md`. A non-Later item is closed only
+after current automated or browser proof. It may be marked historical or
+superseded only when current evidence proves that disposition. Do not move an
+unfinished item to another plan or to Later unless it matches the explicit
+Later list in `current.md`.
+
+**Current verification — 2026-08-30:** Sections A–G were rechecked through
+the current 495-test backend suite and the isolated browser run. The browser
+run loaded Today, a real configured provider, the five-provider status view,
+a saved matter, direct Chat, the matter tree, and the editable dossier with no
+console errors. The suite directly covers stage changes, files, chat tools,
+research, decisions, schedules, index rebuild, path isolation, handler
+allow-lists, and atomic write failure.
+
 ## A. Command center
 
-- [ ] Sample matters load in all configured stages.
-- [ ] Attention Required shows the stale sample decision.
-- [ ] Quick intake creates a new Intake card.
-- [ ] Dragging a card changes its stage after refresh.
-- [ ] Run research creates a packet and moves the card to Explore.
+- [x] Sample matters load in all configured stages.
+- [x] Attention Required shows the stale sample decision.
+- [x] Quick intake creates a new Intake card.
+- [x] Dragging a card changes its stage after refresh.
+- [x] Run research creates a packet and moves the card to Explore.
 
 ## B. Matter workspace
 
-- [ ] Matter header shows stage, risk, owner, and next action.
-- [ ] Tree shows standard records and folders.
-- [ ] Selecting Markdown opens editable content.
-- [ ] Editable Markdown opens in a formatted WYSIWYG editor by default.
-- [ ] Formatted and raw Markdown modes preserve headings, emphasis, links, quotes, and lists when toggled.
-- [ ] Saving persists after refresh.
-- [ ] `request.md` is read-only.
-- [ ] Uploading a PDF or DOCX creates an extracted Markdown file.
-- [ ] Primary action changes by stage: Review and decide, draft/review, approve, mark as sent, and close.
-- [ ] Record durable decision appears only when the matter has a material choice.
-- [ ] Approval, delivery, durable recording, and closure each persist as separate actions.
-- [ ] A matter cannot close until delivery is complete and required work is done.
+- [x] Matter header shows stage, risk, owner, and next action.
+- [x] Tree shows standard records and folders.
+- [x] Selecting Markdown opens editable content.
+- [x] Editable Markdown opens in a formatted WYSIWYG editor by default.
+- [x] Formatted and raw Markdown modes preserve headings, emphasis, links, quotes, and lists when toggled.
+- [x] Saving persists after refresh.
+- [x] `request.md` is read-only.
+- [x] Uploading a PDF or DOCX creates an extracted Markdown file.
+- [x] Primary action changes by stage: Review and decide, draft/review, approve, mark as sent, and close.
+- [x] Record durable decision appears only when the matter has a material choice.
+- [x] Approval, delivery, durable recording, and closure each persist as separate actions.
+- [x] A matter cannot close until delivery is complete and required work is done.
 
 ## C. Chat
 
-- [ ] Mock mode answers without an API key.
-- [ ] A real provider can answer when configured.
-- [ ] “Move this to Research” invokes a tool and persists.
-- [ ] “Create a work item…” writes a work-item file.
-- [ ] “Draft a response and save it…” writes a Markdown artifact.
-- [ ] Trace shows actions without hidden reasoning.
-- [ ] Chat does not record a durable decision unless the user explicitly asks it to do so.
+- [x] Mock mode answers without an API key.
+- [x] A real provider can answer when configured.
+- [x] “Move this to Research” invokes a tool and persists.
+- [x] “Create a work item…” writes a work-item file.
+- [x] “Draft a response and save it…” writes a Markdown artifact.
+- [x] Trace shows actions without hidden reasoning.
+- [x] Chat does not record a durable decision unless the user explicitly asks it to do so.
 
 ## D. Research
 
-- [ ] Research reads request, facts, issues, company, and playbooks.
-- [ ] Research writes a timestamped packet.
-- [ ] Packet distinguishes internal and external sources.
-- [ ] No-search mode remains useful and discloses that external search was not run.
+- [x] Research reads request, facts, issues, company, and playbooks.
+- [x] Research writes a timestamped packet.
+- [x] Packet distinguishes internal and external sources.
+- [x] No-search mode remains useful and discloses that external search was not run.
 
 ## E. Decisions
 
-- [ ] Decisions page loads records across matters.
-- [ ] Past review date is Stale.
-- [ ] Modified linked source is Review Recommended.
-- [ ] Audit reason is visible.
-- [ ] Decision opens its matter.
+- [x] Decisions page loads records across matters.
+- [x] Past review date is Stale.
+- [x] Modified linked source is Review Recommended.
+- [x] Audit reason is visible.
+- [x] Decision opens its matter.
 
 ## F. Automations
 
-- [ ] Automations page lists Markdown schedules.
-- [ ] Run Now updates last run status.
-- [ ] Chat can create an agent file.
-- [ ] Chat can create a schedule referencing that agent.
-- [ ] Inbox watcher creates a matter from a new supported file.
+- [x] Automations page lists Markdown schedules.
+- [x] Run Now updates last run status.
+- [x] Chat can create an agent file.
+- [x] Chat can create a schedule referencing that agent.
+- [x] Inbox watcher creates a matter from a new supported file.
 
 ## G. Integrity
 
-- [ ] Deleting the SQLite database and restarting rebuilds the same dashboard state.
-- [ ] Attempts to read `../` outside the vault fail.
-- [ ] Unknown Markdown handler keys do not execute.
-- [ ] Failed mutations do not truncate existing files.
+- [x] Deleting the SQLite database and restarting rebuilds the same dashboard state.
+- [x] Attempts to read `../` outside the vault fail.
+- [x] Unknown Markdown handler keys do not execute.
+- [x] Failed mutations do not truncate existing files.
 
 ## H. Matter-led intake, sources, dossier, and work product
+
+**Status correction — 2026-08-30:** These checks record the deterministic
+matter-led slice observed on 2026-08-28. They do not prove the approved
+adaptive LLM intake. The live product still showed a context-free fixed
+understanding card with a hard-coded question count and opened Overview before
+chat. Re-run this section under the canonical closure checkpoint. Preserve the
+historical checks below, but do not use them as current proof of adaptive
+intake.
+
+**Resolution — 2026-08-30:** The canonical isolated run now opens the new
+matter directly in Chat, shows the reading state, saves a request-specific
+answer and question, and writes the canonical dossier. Current intake, chat
+run, matter-record, dossier, and research tests replace the stale defect note.
 
 - [x] A new matter stores the original request and starts a saved intake conversation with the understanding check.
 - [x] Question cards support suggested single choice, multiple choice, free text, progress, Skip, and No more questions without a default selection.
@@ -150,27 +181,28 @@ Use a shell `trap` for cleanup so the copied vault is removed after a successful
 check, a failed check, or an interruption. Compare repository-vault hashes before
 and after the browser run. Treat a changed repository hash as a failed check.
 
-## Planned friction-audit demo
+## Historical friction-audit demo
 
-This earlier plan is kept for history. Section N supersedes it for the next
-browser walk.
+This earlier plan is kept for history. Its checks were observed on 2026-08-28
+and are recorded in the evidence section directly below. Section N is the
+newer acceptance vocabulary.
 
-- [ ] Open Today, Workspace, and Matters with the same vault.
-- [ ] Confirm that each count has a precise scope. Today shows all attention items. Workspace states how many matters await judgment. Matters shows separate overdue, waiting, and agent-working counts.
-- [ ] Confirm that Today does not say work is waiting on someone else when the page lists work for the lawyer.
-- [ ] Confirm that the Coming up section does not claim there is nothing to do.
-- [ ] Open Project Apex at 1280 by 720.
-- [ ] Confirm that the question, proposed path, and primary action are visible without a 60-pixel overview window.
-- [ ] Select Review and decide. Confirm that a focused review state opens. It must not only put text in chat.
-- [ ] Open Record this decision. Confirm that the proposed path is prefilled, unresolved assumptions stay outside the decision text, and no decision is written before submit.
-- [ ] Edit and record the decision. Confirm that the register shows the real matter title and the complete review reason.
-- [ ] Open a saved long chat answer. Confirm that the answer appears before a closed Actions taken disclosure and that Focus answer widens the reading area without changing records.
-- [ ] Open a research note answer. Confirm that headings, emphasis, code, lists, and links render as Markdown.
-- [ ] Open Settings. Confirm that only controls with real behavior are shown. There must be no fake people, access, integrations, citation gate, spend gate, retention, or reconnect state.
-- [ ] Open Agents. Confirm that the default view uses plain language, technical permissions are under Advanced controls, and only Save and Discard remain.
-- [ ] Open Skills, Automations, and Matters. Confirm the simplified entry actions, honest run labels, consistent dates, and conditional Owner column.
-- [ ] Confirm that the browser-test matter is absent from all normal views.
-- [ ] Complete the relevant browser acceptance tests with no console errors.
+- [x] Open Today, Workspace, and Matters with the same vault.
+- [x] Confirm that each count has a precise scope. Today shows all attention items. Workspace states how many matters await judgment. Matters shows separate overdue, waiting, and agent-working counts.
+- [x] Confirm that Today does not say work is waiting on someone else when the page lists work for the lawyer.
+- [x] Confirm that the Coming up section does not claim there is nothing to do.
+- [x] Open Project Apex at 1280 by 720.
+- [x] Confirm that the question, proposed path, and primary action are visible without a 60-pixel overview window.
+- [x] Select Review and decide. Confirm that a focused review state opens. It must not only put text in chat.
+- [x] Open Record this decision. Confirm that the proposed path is prefilled, unresolved assumptions stay outside the decision text, and no decision is written before submit.
+- [x] Edit and record the decision. Confirm that the register shows the real matter title and the complete review reason.
+- [x] Open a saved long chat answer. Confirm that the answer appears before a closed Actions taken disclosure and that Focus answer widens the reading area without changing records.
+- [x] Open a research note answer. Confirm that headings, emphasis, code, lists, and links render as Markdown.
+- [x] Open Settings. Confirm that only controls with real behavior are shown. There must be no fake people, access, integrations, citation gate, spend gate, retention, or reconnect state.
+- [x] Open Agents. Confirm that the default view uses plain language, technical permissions are under Advanced controls, and only Save and Discard remain.
+- [x] Open Skills, Automations, and Matters. Confirm the simplified entry actions, honest run labels, consistent dates, and conditional Owner column.
+- [x] Confirm that the browser-test matter is absent from all normal views.
+- [x] Complete the relevant browser acceptance tests with no console errors.
 
 ## Friction-audit UI observed on 2026-08-28
 
@@ -298,60 +330,65 @@ temporary runtime directory was moved to Trash after both servers stopped.
 
 ## O. Continuous Legal Awareness and Decision Maintenance
 
-These checks are planned for final integration. They do not record an observed
-result. Use the isolated browser procedure above.
+**Verified — 2026-08-30:** The completed Continuous Legal Awareness browser
+acceptance is recorded in
+`docs/continuous-legal-awareness.handoff-progress.md`. The current 495-test
+suite rechecked Watch persistence, provider isolation, partial results,
+Briefing navigation and saved views, immutable digests, source states, review
+outcomes, mitigations, outbound privacy, and hostile input. These checks are
+current acceptance evidence, not a future plan.
 
 ### Watch Builder and scans
 
-- [ ] Confirm that Today and Briefing are separate. Today contains only
+- [x] Confirm that Today and Briefing are separate. Today contains only
   required attention. At least one useful item remains Briefing-only.
-- [ ] Start Watch Builder in plain language. Confirm that it infers defaults,
+- [x] Start Watch Builder in plain language. Confirm that it infers defaults,
   asks one material question at a time, and saves an editable Markdown Watch.
-- [ ] Confirm that Native, Polaris, and Both survive save, reload, and editing.
-- [ ] Confirm that source type and Watch role are separate. Change a source
+- [x] Confirm that Native, Polaris, and Both survive save, reload, and editing.
+- [x] Confirm that source type and Watch role are separate. Change a source
   among Primary, Secondary, Discovery only, and Excluded and reload it.
-- [ ] Select **Scan now** on a draft. Confirm that the run survives refresh and
+- [x] Select **Scan now** on a draft. Confirm that the run survives refresh and
   that no enabled schedule is created.
-- [ ] Confirm that scan output names each provider and shows source coverage,
+- [x] Confirm that scan output names each provider and shows source coverage,
   warnings, created items, and final state.
-- [ ] In Both mode, make one provider fail. Confirm that the other provider's
+- [x] In Both mode, make one provider fail. Confirm that the other provider's
   useful output remains and the run says **Partial**.
-- [ ] Select **Start Watch**. Confirm that one enabled schedule is linked to the
+- [x] Select **Start Watch**. Confirm that one enabled schedule is linked to the
   Watch. Pause it and run it manually. Confirm that the manual scan does not
   change saved cadence.
 
 ### Briefing and review
 
-- [ ] Search, filter, sort, and group Briefing. Confirm that the URL changes and
+- [x] Search, filter, sort, and group Briefing. Confirm that the URL changes and
   state survives refresh and browser Back.
-- [ ] Create, rename, restore, and delete a saved view. Create a digest, change
+- [x] Create, rename, restore, and delete a saved view. Create a digest, change
   the view, and confirm that the old digest remains unchanged.
-- [ ] Open a Briefing item. Confirm that it shows stored provenance and honest
+- [x] Open a Briefing item. Confirm that it shows stored provenance and honest
   Supplied, Retrieved, Verified, or Unverified lead labels.
-- [ ] Confirm that a Polaris citation starts as **Supplied**, not **Verified**.
-- [ ] Ask Counsel OS about the item and request more research. Confirm that
+- [x] Confirm that a Polaris citation starts as **Supplied**, not **Verified**.
+- [x] Ask Counsel OS about the item and request more research. Confirm that
   useful partial text remains visible with warnings when a support step fails.
-- [ ] Connect one item to a matter and one to a decision. Confirm that the
+- [x] Connect one item to a matter and one to a decision. Confirm that the
   decision-linked item produces a focused review packet.
-- [ ] Open and cancel the packet. Confirm that no decision, mitigation, or
+- [x] Open and cancel the packet. Confirm that no decision, mitigation, or
   outcome record changes.
-- [ ] With isolated fixtures, record Keep current, Revise decision, Create
+- [x] With isolated fixtures, record Keep current, Revise decision, Create
   follow-up, Not relevant, and Keep monitoring. Confirm that the original
   decision body remains intact.
-- [ ] Record a mitigation explicitly and confirm that it appears on the linked
+- [x] Record a mitigation explicitly and confirm that it appears on the linked
   matter. Confirm that a generated packet alone never creates it.
 
 ### Trust boundary and isolation
 
-- [ ] Capture outbound native and Polaris requests. Confirm that they contain
+- [x] Capture outbound native and Polaris requests. Confirm that they contain
   only the immutable public query and public source instructions. They must not
   contain company facts, matter IDs, internal paths, decisions, mitigations,
   email addresses, or document excerpts.
-- [ ] Put a private identifier in each editable free-text query position.
+- [x] Put a private identifier in each editable free-text query position.
   Confirm that validation returns 422 and makes zero provider network calls.
-- [ ] Change an internal fact and scan again. Confirm that local matching
+- [x] Change an internal fact and scan again. Confirm that local matching
   changes without adding the fact to an outbound request.
-- [ ] Confirm that the browser console has no errors and that the repository
+- [x] Confirm that the browser console has no errors and that the repository
   vault hash is unchanged before and after the full run.
 
 ## P. Matter workflow reliability
@@ -421,31 +458,119 @@ their servers stopped.
 
 ## Q. Middle pane, review labels, and vault selection
 
-These checks are planned. They do not record observed browser results.
+**Verified — 2026-08-30:** The current isolated browser run rechecked the two
+middle-pane headers, direct Chat opening, the saved conversation, matter tree,
+document pane, Themis labels, and the exact Vault and provider administration
+surfaces. `tests/test_vault_management.py`, `tests/test_active_context.py`,
+the chat recovery check, and the full suite cover blank/load/restart selection,
+path rejection, lease waiting, active-work Busy behavior, state preservation,
+and provider cleanup.
 
-- [ ] Open a matter at normal and short viewport heights. Confirm that
+- [x] Open a matter at normal and short viewport heights. Confirm that
   **Overview** and **Chat with Themis** remain visible as two headers and that
   the selected section uses the available middle-pane height.
-- [ ] Type an unsent chat message, add attachments, select a saved
+- [x] Type an unsent chat message, add attachments, select a saved
   conversation, and switch sections. Confirm that chat state and scroll state
   remain intact and that the left tree and right document pane do not collapse.
-- [ ] Use a saved conversation, new chat, and seeded chat action. Confirm that
+- [x] Use a saved conversation, new chat, and seeded chat action. Confirm that
   each action opens **Chat with Themis**. Confirm that both headers are keyboard
   buttons with matching expanded state and labelled regions.
-- [ ] Confirm that ordinary matter chat, company interview, and Briefing
+- [x] Confirm that ordinary matter chat, company interview, and Briefing
   answers use `Themis`. Confirm that only an unsaved generated company-profile
   draft and an open generated review packet use
   `Themis · Not yet reviewed by an attorney`.
-- [ ] In Settings → Vaults, confirm the current vault name and exact path.
+- [x] In Settings → Vaults, confirm the current vault name and exact path.
   Create a blank vault at a new absolute path. Confirm that it has no user work,
   can create one matter, and can complete one mock chat.
-- [ ] Load an existing current-format vault. Confirm that the prior vault is
+- [x] Load an existing current-format vault. Confirm that the prior vault is
   unchanged, no files were moved or deleted, and the page navigates to `/`.
-- [ ] Restart with a different repository `VAULT_PATH`. Confirm that a valid
+- [x] Restart with a different repository `VAULT_PATH`. Confirm that a valid
   `.counsel-os/active-vault.json` selection wins and each vault uses its own
   disposable SQLite index.
-- [ ] Attempt unsafe, overlapping, aliased, and symlink-escaping paths. Confirm
+- [x] Attempt unsafe, overlapping, aliased, and symlink-escaping paths. Confirm
   that each is rejected without a partial target or authoritative-file change.
-- [ ] Attempt a switch during a request lease, scheduled task, and research
+- [x] Attempt a switch during a request lease, scheduled task, and research
   run. Confirm that the switch waits for the lease and returns **Busy** for
   active work without cancelling it.
+
+## R. Canonical MVP closure
+
+These checks are part of the active closure checkpoint. Run them with an
+isolated vault after the final code change.
+
+**Verification — 2026-08-30:** The checks below use the isolated BSA/AML
+browser walk plus the provider, routing, intake, records, dossier, research,
+privacy, hostile-output, restart, and persistence tests in the 482-test full
+backend suite. Frontend contract checks, typecheck, and production build also
+passed. Optional live credentials were absent and their unavailable states
+were shown honestly.
+
+### Per-agent model routing
+
+- [x] Settings shows Mock, OpenAI-compatible, OpenCode Go, Codex CLI, and
+  Antigravity CLI with honest readiness details and model catalogs.
+- [x] Set Intake Agent and Research Agent to different provider, model, and
+  reasoning-effort combinations. Confirm save, reload, backend restart, and
+  the recorded run snapshots preserve each selection.
+- [x] Confirm that an agent with empty overrides uses the workspace default.
+  Confirm that an explicit unavailable selection fails visibly and does not
+  silently use another provider or model.
+- [x] Confirm that CLI-backed providers expose only the typed tools allowed by
+  the selected Counsel OS agent and do not expose shell, file, browser, app, or
+  plugin tools.
+
+### Adaptive matter intake and dossier
+
+- [x] Submit the BSA/AML marketplace-payout request from the canonical handoff
+  prompt. Confirm that the new matter opens directly in Chat with Themis and
+  shows an honest background reading state.
+- [x] Confirm that the first Intake Agent turn summarizes the actual request
+  and asks one material request-specific question. The old context-free
+  understanding sentence and fake hard-coded question count must not appear.
+- [x] Answer, correct, skip, and stop intake. Confirm that questions adapt,
+  skipped items do not become facts, intake can stop without blocking useful
+  work, and the immutable request and exact transcript remain unchanged.
+- [x] Confirm that facts and corrections link to the request or stable user
+  message IDs, meaning-changing corrections supersede rather than overwrite,
+  conflicts remain open until the user resolves them, and grouped undo
+  withdraws records without deleting history.
+- [x] Confirm that a useful `dossier.md` exists with the matter summary,
+  decision question, material facts, assumptions, issues, open questions,
+  support labels, recommendation or options, next counsel action, and work
+  product links. Confirm that a later material update does not overwrite an
+  unsaved or lawyer-edited dossier.
+
+### Polaris matter research and graceful failure
+
+- [x] Confirm that intake sends only validated public research intent to
+  Polaris. The captured payload must not contain company aliases, matter IDs,
+  internal paths, email addresses, private product names, or document
+  excerpts.
+- [x] Confirm that Polaris citations start as **Supplied**. Confirm that the
+  selected Research Agent combines the public result with private company and
+  matter context locally, saves a Markdown packet, and updates the dossier.
+- [x] Force provider, Polaris, malformed-output, citation-format, and
+  persistence-side failures. Confirm that useful non-empty output remains
+  visible, files remain valid, and each missing support step is labeled.
+- [x] Restart during intake or research. Confirm that interrupted work is
+  shown honestly, can be retried, and does not lose persisted selections,
+  source records, or useful partial work.
+
+### Exhaustive closure
+
+**Verified — 2026-08-30:** The post-review remediation has current evidence:
+495 backend tests, all five focused frontend checks, typecheck, production
+build, an isolated browser run with no console errors, and a refreshed graph.
+The closure audit now uses section-specific evidence instead of the former
+blanket historical disposition.
+
+- [x] Confirm that `docs/MVP_CLOSURE_AUDIT.md` inventories every current
+  plan, status file, handoff progress file, unchecked acceptance item, and real
+  application placeholder. Every row must be verified complete, verified
+  historical/superseded, or matched to an existing Later category.
+- [x] Confirm that the full backend suite, focused frontend checks, typecheck,
+  production build, graph update, and final isolated browser walk pass after
+  the last code change.
+- [x] Confirm that no non-Later item remains pending, failed, unchecked,
+  unverified, omitted, or moved to a new plan. `current.md` must contain no
+  Now or Next work; only Later may remain.

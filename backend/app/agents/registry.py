@@ -20,6 +20,9 @@ class AgentDefinition:
     path: str
     audience_id: str = ""
     audience_prompt: str = ""
+    provider: str = ""
+    model: str = ""
+    reasoning_effort: str = ""
 
 
 class AgentRegistry:
@@ -45,6 +48,9 @@ class AgentRegistry:
         instructions: str,
         allowed_tools: list[str],
         max_steps: int,
+        provider: str | None = None,
+        model: str | None = None,
+        reasoning_effort: str | None = None,
     ) -> dict[str, Any]:
         clean_id = slugify(agent_id, fallback="custom-agent")
         path = f"00_System/agents/{clean_id}.md"
@@ -57,6 +63,7 @@ class AgentRegistry:
             "created_at": iso_now(),
             "enabled": True,
         }
+        metadata.update(_selection_metadata(provider, model, reasoning_effort))
         self.vault.write_markdown(path, f"# {name}\n\n{instructions}\n", metadata)
         return {**metadata, "path": path}
 
@@ -78,8 +85,20 @@ class AgentRegistry:
             "max_steps",
             "audience_id",
             "audience_prompt",
+            "provider",
+            "model",
+            "reasoning_effort",
         }
-        metadata.update({key: value for key, value in fields.items() if key in editable})
+        updates = {key: value for key, value in fields.items() if key in editable}
+        for key in ("provider", "model", "reasoning_effort"):
+            if key not in updates:
+                continue
+            normalized = str(updates.pop(key) or "").strip()
+            if normalized:
+                metadata[key] = normalized
+            else:
+                metadata.pop(key, None)
+        metadata.update(updates)
 
         content = document["content"]
         if "instructions" in fields:
@@ -118,5 +137,25 @@ class AgentRegistry:
                 path=self.vault.relative(path),
                 audience_id=str(metadata.get("audience_id") or ""),
                 audience_prompt=str(metadata.get("audience_prompt") or ""),
+                provider=str(metadata.get("provider") or "").strip(),
+                model=str(metadata.get("model") or "").strip(),
+                reasoning_effort=str(metadata.get("reasoning_effort") or "").strip(),
             )
         return agents
+
+
+def _selection_metadata(
+    provider: str | None,
+    model: str | None,
+    reasoning_effort: str | None,
+) -> dict[str, str]:
+    values = {
+        "provider": provider,
+        "model": model,
+        "reasoning_effort": reasoning_effort,
+    }
+    return {
+        key: normalized
+        for key, value in values.items()
+        if (normalized := str(value or "").strip())
+    }

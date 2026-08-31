@@ -12,7 +12,7 @@ from app.intelligence.registry import IntelligenceRegistry
 from app.intelligence.source_support import SourceSupportService
 from app.models.api import ChatRequest
 from app.models.awareness import SafeFetchLimits
-from app.providers.factory import build_provider
+from app.providers.factory import ProviderRouter, build_provider
 from app.providers.openai_compatible import OpenAICompatibleProvider
 from app.services.annotations import AnnotationService
 from app.services.awareness_matching import AwarenessMatcher
@@ -152,8 +152,13 @@ class AppContext:
             self.provider,
             self.dossiers,
         )
+        self.research.bind_polaris(
+            self.polaris_intelligence,
+            self.outbound_query_policy,
+        )
         self.annotations = AnnotationService(self.vault, self.matters)
         self.agents = AgentRegistry(self.vault, self.settings.max_agent_steps)
+        self.provider_router = ProviderRouter(self.settings, self.provider)
         self.skills = SkillRegistry(self.vault)
         self.skill_builder = SkillBuilderService(
             self.skills,
@@ -175,9 +180,15 @@ class AppContext:
             self.agent_context,
             self.skills,
             self,
+            provider_resolver=self.provider_router.resolve,
         )
         self.research.bind_agent_runner(self.runner.run)
-        self.research_runs = ResearchRunService(self.vault, self.research)
+        self.research_runs = ResearchRunService(
+            self.vault,
+            self.research,
+            resolve_agent=lambda: self.runner.resolve("research-agent"),
+            resolve_selection=self.provider_router.resolve_selection,
+        )
         if recover_interrupted:
             self.research_runs.mark_running_interrupted()
         self.chat_runs = ChatRunService(
@@ -225,41 +236,41 @@ class AppContext:
     def _load_saved_model_settings(self) -> None:
         values = self.settings_store.read()["values"]
         provider = values.get("agents.provider")
-        if provider not in {"mock", "openai_compatible"}:
+        if provider not in {"mock", "openai_compatible", "opencode_go", "codex", "antigravity_cli"}:
             return
         updates: dict[str, str | None] = {"llm_provider": provider}
-        if provider == "openai_compatible" and values.get("agents.reasoning_model"):
+        if provider != "mock" and values.get("agents.reasoning_model"):
             updates["llm_model"] = str(values["agents.reasoning_model"])
         effort = str(values.get("agents.reasoning_effort", "default"))
         updates["llm_reasoning_effort"] = (
             effort
-            if provider == "openai_compatible"
-            and effort in {"none", "minimal", "low", "medium", "high", "xhigh", "max"}
+            if provider != "mock"
+            and effort in {"none", "minimal", "low", "medium", "high", "xhigh", "max", "ultra"}
             else None
         )
         self.settings = self.settings.model_copy(update=updates)
 
-    def configure_model(self, provider: str, model: str, effort: str) -> None:
-        if provider not in {"mock", "openai_compatible"}:
+    async def configure_model(self, provider: str, model: str, effort: str) -> None:
+        if provider not in {"mock", "openai_compatible", "opencode_go", "codex", "antigravity_cli"}:
             raise ValueError(f"Unsupported model provider: {provider}")
-        if effort not in {"default", "none", "minimal", "low", "medium", "high", "xhigh", "max"}:
+        if effort not in {"default", "none", "minimal", "low", "medium", "high", "xhigh", "max", "ultra"}:
             raise ValueError(f"Unsupported reasoning effort: {effort}")
-        if provider == "openai_compatible" and not model:
-            raise ValueError("Select a model for the OpenAI-compatible provider.")
+        if provider != "mock" and not model:
+            raise ValueError("Select a model for this provider.")
 
         updates: dict[str, str | None] = {
             "llm_provider": provider,
             "llm_reasoning_effort": None if provider == "mock" or effort == "default" else effort,
         }
-        if provider == "openai_compatible":
+        if provider != "mock":
             updates["llm_model"] = model
         next_settings = self.settings.model_copy(update=updates)
         next_provider = build_provider(next_settings)
 
+        await self.provider_router.update_workspace(next_settings, next_provider)
         self.settings = next_settings
         self.provider = next_provider
         self.research.provider = next_provider
-        self.runner.provider = next_provider
         self.skill_builder.provider = next_provider
         self.skill_builder.settings = next_settings
         self.company_interview.provider = next_provider
@@ -268,44 +279,15 @@ class AppContext:
         self.briefing_research.bind_agent_runner(self._run_briefing_research)
 
     async def model_catalog(self) -> dict[str, object]:
-        compatible_models: list[dict[str, object]] = []
-        catalog_warning: str | None = None
-        if self.settings.llm_api_key:
-            try:
-                compatible_models = await OpenAICompatibleProvider.available_models(self.settings)
-            except Exception as exc:
-                catalog_warning = f"Could not refresh the provider model list: {exc}"
-        compatible_ids = {str(model["id"]) for model in compatible_models}
-        if self.settings.llm_model and self.settings.llm_model not in compatible_ids:
-            fallback_efforts = ["default"]
-            if self.settings.llm_reasoning_effort:
-                fallback_efforts.append(self.settings.llm_reasoning_effort)
-            compatible_models.append(
-                {
-                    "id": self.settings.llm_model,
-                    "label": self.settings.llm_model,
-                    "efforts": fallback_efforts,
-                }
-            )
-        compatible_models.sort(key=lambda model: str(model["id"]))
+        self.provider_router.settings = self.settings
+        saved = {
+            definition.provider: definition.model
+            for definition in (self.agents.get(item["agent_id"]) for item in self.agents.list())
+            if definition.provider and definition.model
+        }
+        if self.settings.llm_model:
+            saved.setdefault(self.settings.llm_provider, self.settings.llm_model)
+        return await self.provider_router.catalog(saved)
 
-        providers: list[dict[str, object]] = [
-            {
-                "id": "mock",
-                "label": "Mock (offline)",
-                "models": [{"id": "mock", "label": "Mock demo", "efforts": ["default"]}],
-            }
-        ]
-        if self.settings.llm_api_key and compatible_models:
-            host = self.settings.llm_base_url.split("//", 1)[-1].split("/", 1)[0]
-            label = self.settings.llm_provider_label or f"OpenAI-compatible ({host})"
-            if self.settings.llm_provider_label:
-                label = f"{label} (OpenAI-compatible)"
-            providers.append(
-                {
-                    "id": "openai_compatible",
-                    "label": label,
-                    "models": compatible_models,
-                }
-            )
-        return {"providers": providers, "warning": catalog_warning}
+    async def close_providers(self) -> None:
+        await self.provider_router.close()

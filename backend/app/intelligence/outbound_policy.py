@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl
 from app.models.awareness import (
-    ForbiddenCorpus, OutboundDateWindow, OutboundPublicEntity, OutboundWatchQuery, Watch,
+    ForbiddenCorpus, OutboundDateWindow, OutboundPublicEntity, OutboundWatchQuery, PublicWatchQuery, Watch,
 )
 
 
@@ -17,6 +18,18 @@ def _normal(value: str) -> str:
     return " ".join(value.split())
 
 
+class PublicResearchQuery(BaseModel):
+    """Allow-listed public data proposed for one matter-research request."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    question: str = Field(min_length=1, max_length=2000)
+    jurisdictions: tuple[str, ...] = Field(default_factory=tuple, max_length=20)
+    regulators: tuple[str, ...] = Field(default_factory=tuple, max_length=20)
+    courts: tuple[str, ...] = Field(default_factory=tuple, max_length=20)
+    public_entities: tuple[OutboundPublicEntity, ...] = Field(default_factory=tuple, max_length=20)
+    public_source_urls: tuple[HttpUrl, ...] = Field(default_factory=tuple, max_length=20)
+
+
 class OutboundQueryPolicy:
     """The final local authority for data sent to an intelligence provider."""
 
@@ -26,6 +39,30 @@ class OutboundQueryPolicy:
 
     def prepare(self, watch: Watch, forbidden_corpus: ForbiddenCorpus) -> OutboundWatchQuery:
         query = watch.public_query
+        return self._prepare(query, forbidden_corpus)
+
+    def prepare_public(
+        self,
+        query: PublicResearchQuery,
+        forbidden_corpus: ForbiddenCorpus,
+    ) -> OutboundWatchQuery:
+        return self._prepare(
+            OutboundWatchQuery(
+                standing_question=query.question,
+                jurisdictions=query.jurisdictions,
+                regulators=query.regulators,
+                courts=query.courts,
+                public_entities=query.public_entities,
+                public_source_urls=query.public_source_urls,
+            ),
+            forbidden_corpus,
+        )
+
+    def _prepare(
+        self,
+        query: PublicWatchQuery | OutboundWatchQuery,
+        forbidden_corpus: ForbiddenCorpus,
+    ) -> OutboundWatchQuery:
         public_names = {_normal(entity.name) for entity in query.public_entities if entity.explicitly_public}
         forbidden_terms = tuple(
             term for term in (_normal(term) for term in forbidden_corpus.terms)

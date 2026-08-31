@@ -4,7 +4,7 @@ from datetime import UTC, datetime
 from pathlib import Path, PurePosixPath
 from typing import Any
 
-from app.models.api import AgentCreate, DecisionCreate, ScheduleCreate, WorkItemCreate
+from app.models.api import AgentCreate, DecisionCreate, IntakeTurn, ScheduleCreate, WorkItemCreate
 from app.models.awareness import (
     BriefingBehavior,
     InternalScope,
@@ -42,6 +42,26 @@ def build_handlers() -> dict[str, Handler]:
         "scan_watch": scan_watch,
         "activate_watch": activate_watch,
         "append_memory": append_memory,
+        "update_matter_intake": update_matter_intake,
+    }
+
+
+async def update_matter_intake(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
+    if not context.matter_id:
+        raise ValueError("An active matter is required.")
+    turn = IntakeTurn.model_validate(arguments)
+    result = context.app.matter_records.apply_intake_turn(
+        context.matter_id,
+        turn,
+        source_id=context.trusted_source_id,
+        expected_dossier_hash=context.expected_dossier_hash,
+    )
+    payload = result.model_dump(mode="json") if hasattr(result, "model_dump") else dict(result)
+    return {
+        "summary": "Updated the matter intake record.",
+        "changed_paths": payload.get("changed_paths", []),
+        "refresh": ["matter", "tree"],
+        "data": payload,
     }
 
 
@@ -139,12 +159,46 @@ async def save_work_product(context: ToolExecutionContext, arguments: dict[str, 
     kind = str(arguments.get("kind") or "").strip()
     title = str(arguments.get("title") or "").strip()
     content = str(arguments.get("content") or "")
+    existing_draft_path = str(arguments.get("existing_draft_path") or "").strip()
     if kind not in {"recommendation", "draft", "response"}:
         raise ValueError("kind must be recommendation, draft, or response.")
     if kind == "recommendation":
+        if existing_draft_path:
+            raise ValueError("Recommendations are revised in recommendations.md, not as work-product drafts.")
         path = f"{context.app.matters.matter_path(matter_id)}/recommendations.md"
         context.app.vault.update_markdown(path, content=content, metadata_updates={"record_type": "recommendations", "matter_id": matter_id})
-        result = {"title": title or "Recommendations", "vault_path": path, "state": "draft"}
+        result = {
+            "record_type": "recommendation",
+            "title": title or "Recommendations",
+            "path": path,
+        }
+    elif existing_draft_path:
+        draft = context.app.work_products.mutable_draft(matter_id, existing_draft_path)
+        metadata = draft["metadata"]
+        path = context.app.document_reviews.propose_agent_revision(
+            existing_draft_path,
+            content,
+            author_name=context.review_author or "Themis",
+            lawyer_author=context.lawyer_author,
+        )
+        context.app.matters.append_event(
+            matter_id,
+            "work_product_revised",
+            {
+                "path": path,
+                "title": metadata.get("title", PurePosixPath(path).stem),
+                "work_product_id": metadata["work_product_id"],
+            },
+            rebuild=False,
+        )
+        result = {
+            "record_type": "work_product",
+            "work_product_id": metadata["work_product_id"],
+            "title": metadata.get("title", PurePosixPath(path).stem),
+            "vault_path": path,
+            "state": "draft",
+            "summary": metadata.get("summary", ""),
+        }
     else:
         result = context.app.work_products.create_draft(matter_id, title=title or ("Response" if kind == "response" else "Draft"), content=content)
         path = result["vault_path"]

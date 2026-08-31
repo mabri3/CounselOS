@@ -94,3 +94,30 @@ Keep entries chronological and append-only. When a decision changes, add a new e
   `backend/app/services/watch_scans.py`,
   `backend/app/services/awareness_matching.py`, and
   `backend/app/services/review_outcomes.py`.
+
+### 2026-08-30 — Decision: Exhaustive MVP closure before Later work
+
+- Status: `accepted`
+- Context: Implemented code, acceptance records, and handoff progress files no longer agree. The user directed that one execution prompt finish every buildable MVP item that is not intentionally parked for later.
+- Decision: `docs/core-intake-provider-completion.handoff-prompt.md` is the canonical active checkpoint. Completion requires an exhaustive audit of `current.md`, `docs/BUILD_PLAN.md`, `docs/ACCEPTANCE_TESTS.md`, and every handoff progress file. Each unfinished item must be implemented and verified, proven historical or superseded with current evidence, or matched to the explicit Later list. No other disposition is allowed.
+- Completion rule: The checkpoint cannot be complete while any non-Later item is pending, failed, unchecked, unverified, omitted, or moved to `Next`. At completion, `current.md` has no `Now` or `Next` work and only the explicit Later backlog remains.
+- Safeguards: Preserve historical claims with dated corrections. Do not mark work complete from old check marks alone. Do not silently relabel unfinished work as Later.
+- Supersedes: The prior split between an awareness verification goal, a separate intake Next list, and generic provider/research Later items.
+- Evidence: User direction on 2026-08-30; `current.md`; `docs/core-intake-provider-completion.handoff-plan.md`.
+
+### 2026-08-30 — Decision: Per-agent model routing and Polaris matter research are MVP scope
+
+- Status: `accepted`
+- Context: The current runtime shares one provider across agents, while the user needs each agent to select its own provider and model. Polaris already exists for public intelligence and the user selected it for matter research.
+- Decision: Each Markdown-defined agent may persist optional provider, model, and reasoning-effort fields. Empty fields inherit the workspace default. An explicit unavailable selection fails visibly and never silently falls back. The MVP provider set is Mock, OpenAI-compatible, OpenCode Go, Codex CLI, and Antigravity CLI.
+- Research decision: Polaris is the primary public source for on-demand matter research. Public collection goes through the existing outbound privacy policy. Private company and matter context is combined with the public result only inside Counsel OS by the selected Research Agent.
+- Consequences: Native provider adapters and Polaris matter research move into the active closure checkpoint. Additional research providers remain Later. Existing recommendation and decision-integrity rules do not change.
+- Supersedes: The 2026-08-27 deferral of native provider adapters and the open choice of a commercial research provider for the MVP.
+- Evidence: Existing provider boundary in `backend/app/providers/`; Polaris boundary in `backend/app/intelligence/polaris.py`; user direction on 2026-08-30.
+
+### 2026-08-30 — Implementation result: core closure routing and intake
+
+- Status: `implemented`
+- Result: Agent definitions persist optional provider, model, and reasoning effort. Each run records the resolved immutable selection. New matters start a background Intake Agent conversation, update source-linked records, protect lawyer-edited dossiers with a content hash, and can queue privacy-safe Polaris research for local Research Agent synthesis.
+- Safety boundary: CLI providers receive only the selected agent's typed Counsel OS tools. Polaris receives only validated public research intent. Missing providers fail visibly and do not silently fall back.
+- Evidence: 482 backend tests, frontend typecheck and build, and the isolated BSA/AML browser walk on 2026-08-30.

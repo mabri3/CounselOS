@@ -28,15 +28,57 @@ class WorkProductService:
             "created_at": iso_now(), "immutable": False,
         })
         self.matters.append_event(matter_id, "work_product_drafted", {"path": path, "title": title})
-        return {"title": title, "vault_path": path, "state": "draft", "summary": summary}
+        return {
+            "record_type": "work_product",
+            "work_product_id": work_product_id,
+            "title": title,
+            "vault_path": path,
+            "state": "draft",
+            "summary": summary,
+        }
+
+    def mutable_draft(self, matter_id: str, draft_path: str) -> dict[str, Any]:
+        """Load one canonical mutable draft owned by the selected matter."""
+        if "\\" in draft_path:
+            raise ValueError("The existing draft path must use forward slashes.")
+        supplied = PurePosixPath(draft_path)
+        matter_root = PurePosixPath(self.matters.matter_path(matter_id))
+        if (
+            supplied.is_absolute()
+            or ".." in supplied.parts
+            or supplied.suffix.lower() != ".md"
+            or matter_root not in supplied.parents
+            or not self.vault.exists(draft_path)
+        ):
+            raise ValueError("Only a canonical draft from this matter can be revised.")
+        relative = supplied.relative_to(matter_root)
+        if (
+            relative.parts[0] in MatterPathPolicy.PROTECTED_ROOTS
+            or not self._is_draft_location(matter_id, supplied)
+        ):
+            raise ValueError("Only a canonical draft from this matter can be revised.")
+        draft = self.vault.read_markdown(draft_path)
+        metadata = draft["metadata"]
+        if (
+            metadata.get("matter_id") != matter_id
+            or metadata.get("record_type") != "work_product"
+            or metadata.get("state") != "draft"
+            or metadata.get("immutable") is not False
+            or not metadata.get("work_product_id")
+        ):
+            raise ValueError("The selected file is not a mutable canonical draft for this matter.")
+        return draft
 
     def finalize(self, matter_id: str, draft_path: str) -> dict[str, Any]:
         base = PurePosixPath(self.matters.matter_path(matter_id))
         supplied = PurePosixPath(draft_path)
         if (
-            supplied.suffix != ".md"
+            supplied.is_absolute()
+            or ".." in supplied.parts
+            or supplied.suffix != ".md"
             or base not in supplied.parents
             or not self.vault.exists(draft_path)
+            or not self._is_draft_location(matter_id, supplied)
         ):
             raise ValueError("Only a draft from this matter can be finalized.")
         draft = self.vault.read_markdown(draft_path)
@@ -63,8 +105,23 @@ class WorkProductService:
         self.matters.append_event(matter_id, "work_product_finalized", {
             "draft_path": draft_path, "final_path": final_path, "title": draft["metadata"].get("title", supplied.stem),
         })
-        return {"title": metadata.get("title", supplied.stem), "vault_path": final_path,
-                "state": "final", "summary": metadata.get("summary", ""), "final_id": final_id}
+        return {
+            "record_type": "work_product",
+            "work_product_id": metadata.get("work_product_id", ""),
+            "title": metadata.get("title", supplied.stem),
+            "vault_path": final_path,
+            "state": "final",
+            "summary": metadata.get("summary", ""),
+            "final_id": final_id,
+        }
+
+    def _is_draft_location(self, matter_id: str, supplied: PurePosixPath) -> bool:
+        matter_root = PurePosixPath(self.matters.matter_path(matter_id))
+        configured = PurePosixPath(
+            self.matter_paths.folder(matter_id, "matter_files.draft_outputs_dir")
+        )
+        legacy = matter_root / "work-product" / "draft"
+        return configured in supplied.parents or legacy in supplied.parents
 
     def _existing_final(
         self, base: PurePosixPath, draft_path: str, content_hash: str
@@ -79,6 +136,8 @@ class WorkProductService:
                 and metadata.get("final_id")
             ):
                 return {
+                    "record_type": "work_product",
+                    "work_product_id": metadata.get("work_product_id", ""),
                     "title": metadata.get("title", PurePosixPath(draft_path).stem),
                     "vault_path": document["path"], "state": "final",
                     "summary": metadata.get("summary", ""), "final_id": metadata["final_id"],

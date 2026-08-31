@@ -1,9 +1,12 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { getChatRun, retryChatRun, startChatRun } from "../lib/api.ts";
-import { chatRunStateLabel, chatRunStorageKey, pendingChatRunId, rememberChatRun, safeChatFailureDetail } from "../components/ChatPanel.tsx";
+import { chatAgentId, chatRunStateLabel, chatRunStorageKey, pendingChatRunId, rememberChatRun, safeChatFailureDetail, shouldShowChatRunStatus } from "../lib/chatRunLogic.ts";
 import type { ChatRun } from "../lib/types.ts";
 
 const originalFetch = globalThis.fetch;
+const chatPanelSource = readFileSync(new URL("../components/ChatPanel.tsx", import.meta.url), "utf8");
+assert.match(chatPanelSource, /SHOW_AGENT_TRACES && message\.trace\?\.length/, "technical traces must be hidden unless developer tracing is enabled");
 const calls: Array<{ url: string; method: string }> = [];
 const startedRun: ChatRun = {
   run_id: "CHAT-1",
@@ -71,6 +74,9 @@ try {
   showRecoveredResult(recovered);
   showRecoveredResult(recovered);
   assert.deepEqual([...recoveredResults.values()], ["Recovered final answer"], "retry shows the recovered final answer once");
+  assert.equal(shouldShowChatRunStatus("completed"), false, "completed runs must not add a redundant status card");
+  assert.equal(shouldShowChatRunStatus("running"), true, "running work must remain visible");
+  assert.equal(shouldShowChatRunStatus("failed"), true, "failed work must remain visible for recovery");
 
   let waiting = true;
   const serverState = reconnected.state;
@@ -80,6 +86,9 @@ try {
 
   assert.equal(safeChatFailureDetail("Failed to fetch"), "");
   assert.equal(safeChatFailureDetail("Saved provider timeout"), "Saved provider timeout");
+  assert.equal(chatAgentId(true, "counsel-copilot"), "intake-agent", "active intake must use the Intake Agent");
+  assert.equal(chatAgentId(false, "counsel-copilot"), "counsel-copilot", "completed intake must use the active agent");
+  assert.equal(chatAgentId(false, null), "counsel-copilot", "ordinary chat must have a safe default agent");
   assert.deepEqual(
     ["queued", "running", "completed", "failed", "interrupted"].map((state) => chatRunStateLabel(state as Parameters<typeof chatRunStateLabel>[0])),
     ["Queued", "Working", "Completed", "Failed", "Interrupted"],

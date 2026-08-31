@@ -1,3 +1,4 @@
+import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
@@ -18,3 +19,81 @@ def test_work_item_complete_api_requires_actor_and_returns_frozen_shape(app_cont
     assert response.json()["work_item_id"] == item["work_item_id"]
     assert client.post(f"/api/matters/{matter['matter_id']}/work-items/complete", json={"work_item_id": item["work_item_id"]}).status_code == 422
 
+
+def test_create_matter_api_persists_target_date_in_matter_and_request(app_context):
+    app = FastAPI()
+    app.state.context = app_context
+    app.include_router(matters.router, prefix="/api")
+    client = TestClient(app)
+
+    response = client.post("/api/matters", json={
+        "title": "Target date transport",
+        "request_text": "Can this launch on the selected date?",
+        "target_date": "2026-09-15",
+    })
+
+    assert response.status_code == 201
+    created = response.json()
+    matter = app_context.vault.read_markdown(f"{created['path']}/matter.md")
+    request = app_context.vault.read_markdown(f"{created['path']}/request.md")
+    assert created["target_date"] == "2026-09-15"
+    assert matter["metadata"]["target_date"] == "2026-09-15"
+    assert request["metadata"]["requested_launch_date"] == "2026-09-15"
+
+
+def test_finalize_moves_generate_to_respond_and_retry_is_idempotent(app_context):
+    app = FastAPI()
+    app.state.context = app_context
+    app.include_router(matters.router, prefix="/api")
+    client = TestClient(app)
+    matter_id = "MAT-DEMO-BEACON"
+    app_context.matters.move_stage(matter_id, "generate", reason="Ready to draft")
+    draft = app_context.work_products.create_draft(
+        matter_id, title="Response", content="Ready for review"
+    )
+    stage_events_before = len([
+        event for event in app_context.matters.get(matter_id)["events"]
+        if event.get("event_type") == "stage_changed"
+    ])
+
+    first = client.post(
+        f"/api/matters/{matter_id}/work-product/finalize",
+        json={"draft_path": draft["vault_path"]},
+    )
+    retry = client.post(
+        f"/api/matters/{matter_id}/work-product/finalize",
+        json={"draft_path": draft["vault_path"]},
+    )
+
+    assert first.status_code == retry.status_code == 200
+    assert retry.json()["vault_path"] == first.json()["vault_path"]
+    assert app_context.index.get_matter(matter_id)["status"] == "respond"
+    stage_events_after = [
+        event for event in app_context.matters.get(matter_id)["events"]
+        if event.get("event_type") == "stage_changed"
+    ]
+    assert len(stage_events_after) == stage_events_before + 1
+
+
+@pytest.mark.parametrize(("matter_id", "expected_stage"), [
+    ("MAT-DEMO-BEACON", "respond"),
+    ("MAT-DEMO-MASON", "closed"),
+])
+def test_finalize_does_not_move_a_later_stage_backward(app_context, matter_id, expected_stage):
+    app = FastAPI()
+    app.state.context = app_context
+    app.include_router(matters.router, prefix="/api")
+    client = TestClient(app)
+    draft = app_context.work_products.create_draft(
+        matter_id, title="Response", content="Ready for review"
+    )
+    if expected_stage == "respond":
+        app_context.matters.move_stage(matter_id, "respond", reason="Already ready")
+
+    response = client.post(
+        f"/api/matters/{matter_id}/work-product/finalize",
+        json={"draft_path": draft["vault_path"]},
+    )
+
+    assert response.status_code == 200
+    assert app_context.index.get_matter(matter_id)["status"] == expected_stage

@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check:provider-admin": "node --experimental-strip-types scripts/check-provider-admin.ts",
+    "check:adaptive-intake": "node --experimental-strip-types scripts/check-adaptive-intake.ts",
+    "check:chat-run-recovery": "node --experimental-strip-types scripts/check-chat-run-recovery.ts",
+    "check:workspace-ux": "node --experimental-strip-types scripts/check-transport-preservation.ts && node --experimental-strip-types scripts/check-workspace-ux.ts && npm run check:provider-admin && npm run check:adaptive-intake && npm run check:chat-run-recovery"
   },
   "dependencies": {
     "@lexical/link": "^0.49.0",

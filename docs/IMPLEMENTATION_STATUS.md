@@ -1,5 +1,23 @@
 # Implementation status
 
+## Status correction — 2026-08-30
+
+This file is a historical scaffold report. Its test counts and “implemented”
+statements are not current completion proof. The authoritative active state is
+`current.md`, and the exhaustive closure evidence must be recorded in
+`docs/MVP_CLOSURE_AUDIT.md`. Any unfinished item below that is not explicitly
+in the canonical Later list must be implemented and verified by
+`docs/core-intake-provider-completion.handoff-prompt.md`.
+
+## Current correction — 2026-08-30
+
+The core closure implementation now includes adaptive background intake,
+source-linked matter updates, guarded dossier revision, privacy-safe Polaris
+matter research, per-agent provider/model/reasoning selection, and the Mock,
+OpenAI-compatible, OpenCode Go, Codex CLI, and Antigravity CLI catalogs.
+`./scripts/verify.sh` passes 482 backend tests, frontend typecheck, and the
+production build. The scaffold inventory below remains historical.
+
 ## Implemented in this scaffold
 
 - Six-stage legal-workflow command center.

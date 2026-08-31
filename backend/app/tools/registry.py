@@ -17,6 +17,8 @@ class ToolExecutionContext:
     active_file: str | None = None
     review_author: str | None = None
     lawyer_author: str | None = None
+    trusted_source_id: str | None = None
+    expected_dossier_hash: str | None = None
 
 
 @dataclass

@@ -8,21 +8,37 @@ def _client(context):
     return TestClient(app)
 
 
-def test_create_matter_starts_persisted_intake_card(app_context):
+def test_create_matter_queues_intake_with_exact_request_source(app_context):
+    request_text = "Can we launch this change for marketplace sellers in eight weeks?"
     response = _client(app_context).post("/api/matters", json={
         "title": "Card contract matter",
-        "request_text": "Can we launch this change?",
+        "request_text": request_text,
     })
     assert response.status_code == 201
-    matter_id = response.json()["matter_id"]
+    created = response.json()
+    matter_id = created["matter_id"]
+    assert created["intake_conversation_id"]
+    assert created["intake_run_id"]
     conversations = _client(app_context).get(f"/api/matters/{matter_id}/conversations").json()["conversations"]
     conversation = _client(app_context).get(
         f"/api/matters/{matter_id}/conversations/{conversations[0]['conversation_id']}"
     ).json()
-    card = conversation["messages"][0]["cards"][0]
-    assert card["type"] == "question"
-    assert card["text"] == "Here is what I understand you are asking. Is that correct?"
-    assert 3 <= len(card["choices"]) <= 7
+    first = conversation["messages"][0]
+    request = app_context.vault.read_markdown(f"{created['path']}/request.md")
+    assert conversation["conversation_kind"] == "intake"
+    assert conversation["active_agent_id"] == "intake-agent"
+    assert first["role"] == "user"
+    assert first["content"] == request_text
+    assert first["source_ids"] == [request["metadata"]["request_id"]]
+    assert first["run_id"] == created["intake_run_id"]
+    assert all(
+        message["content"] != "Here is what I understand you are asking. Is that correct?"
+        for message in conversation["messages"]
+    )
+
+    detail = _client(app_context).get(f"/api/matters/{matter_id}").json()
+    assert detail["intake_conversation_id"] == created["intake_conversation_id"]
+    assert detail["intake_run_id"] == created["intake_run_id"]
 
 
 def test_card_action_and_attachment_metadata_survive_reload(app_context):

@@ -78,6 +78,37 @@ def test_typed_save_creates_exactly_one_draft_and_one_work_product_card(app_cont
     assert cards[0]["state"] == "draft"
 
 
+def test_recommendation_save_does_not_create_a_work_product_card(app_context):
+    class RecommendationProvider:
+        def __init__(self):
+            self.calls = 0
+
+        async def complete(self, messages, tools=None):
+            self.calls += 1
+            if self.calls == 1:
+                return ProviderReply(tool_calls=[ProviderToolCall(
+                    id="recommend",
+                    name="save_work_product",
+                    arguments={
+                        "title": "Recommended launch path",
+                        "content": "Launch with a 30-day retention cap.",
+                        "kind": "recommendation",
+                    },
+                )])
+            return ProviderReply(content="Saved the recommendation.")
+
+    app_context.runner.provider = RecommendationProvider()
+    response = _client(app_context).post(
+        "/api/chat",
+        json={"message": "Save this recommendation.", "matter_id": "MAT-DEMO-BEACON"},
+    )
+
+    assert response.status_code == 200
+    assert [card for card in response.json()["cards"] if card["type"] == "work_product"] == []
+    assert "03_Matters/beacon-instant-onboarding/recommendations.md" in response.json()["changed_paths"]
+    assert not any("/work-product/" in path for path in response.json()["changed_paths"])
+
+
 @pytest.mark.parametrize("trace", [
     [],
     [ToolTrace(tool="save_work_product", status="error", summary="Save failed.")],

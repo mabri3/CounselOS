@@ -5,7 +5,7 @@
  * Nothing in the UI should hard-code these hexes; import the role instead.
  */
 
-import type { Decision, Matter, MatterSignalKind, Schedule, StageId } from "./types";
+import type { Decision, Matter, MatterSignalKind, Schedule, StageId } from "./types.ts";
 
 export const role = {
   attention: "#E0A008",

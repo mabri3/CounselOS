@@ -103,10 +103,18 @@ def test_model_settings_catalog_and_runtime_switch(app_context, monkeypatch):
     assert [provider["id"] for provider in catalog["providers"]] == [
         "mock",
         "openai_compatible",
+        "opencode_go",
+        "codex",
+        "antigravity_cli",
     ]
     assert [model["id"] for model in catalog["providers"][1]["models"]] == [
         "model-a",
         "model-b",
+    ]
+    assert catalog["providers"][0]["readiness"] == "ready"
+    assert catalog["providers"][1]["models"][1]["reasoning_efforts"] == [
+        "default",
+        "high",
     ]
 
     saved = client.put(
@@ -123,7 +131,7 @@ def test_model_settings_catalog_and_runtime_switch(app_context, monkeypatch):
     assert isinstance(app_context.provider, OpenAICompatibleProvider)
     assert app_context.settings.llm_model == "model-b"
     assert app_context.settings.llm_reasoning_effort == "high"
-    assert app_context.runner.provider is app_context.provider
+    assert app_context.runner.resolve("counsel-copilot").provider is app_context.provider
     assert app_context.research.provider is app_context.provider
 
     offline = client.put(
@@ -214,3 +222,58 @@ def test_overlapping_matter_path_settings_are_rejected(app_context):
             "matter_files.draft_outputs_dir": "outputs",
             "matter_files.final_outputs_dir": "outputs/final",
         })
+
+
+def test_model_catalog_dataclasses_are_normalized_without_provider_construction():
+    from app.providers.base import ProviderCatalogEntry, ProviderModel
+    from app.services.settings import SettingsService
+
+    result = SettingsService.normalize_model_catalog(
+        [
+            ProviderCatalogEntry(
+                id="codex",
+                label="Codex CLI",
+                readiness="ready",
+                readiness_detail="Signed in.",
+                models=(
+                    ProviderModel(
+                        id="gpt-5.6-luna",
+                        label="GPT-5.6 Luna",
+                        reasoning_efforts=("low", "medium", "high"),
+                    ),
+                ),
+            ),
+            ProviderCatalogEntry(
+                id="antigravity_cli",
+                label="Antigravity CLI",
+                readiness="development_only",
+                readiness_detail="Development only — do not use confidential matter data.",
+            ),
+        ]
+    )
+
+    assert result == {
+        "providers": [
+            {
+                "id": "codex",
+                "label": "Codex CLI",
+                "readiness": "ready",
+                "readiness_detail": "Signed in.",
+                "models": [
+                    {
+                        "id": "gpt-5.6-luna",
+                        "label": "GPT-5.6 Luna",
+                        "reasoning_efforts": ["low", "medium", "high"],
+                    }
+                ],
+            },
+            {
+                "id": "antigravity_cli",
+                "label": "Antigravity CLI",
+                "readiness": "development_only",
+                "readiness_detail": "Development only — do not use confidential matter data.",
+                "models": [],
+            },
+        ],
+        "warning": None,
+    }

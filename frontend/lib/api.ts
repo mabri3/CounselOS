@@ -20,6 +20,9 @@ import type {
   MatterActionRequest,
   MatterActionResult,
   MatterDetail,
+  ModelCatalog,
+  ModelCatalogModel,
+  ModelCatalogProvider,
   ResearchNote,
   ResearchResult,
   ResearchRun,
@@ -38,10 +41,20 @@ import type {
   VaultDocument,
   VaultInfo,
   WorkspaceSettings,
-} from "./types";
-import { DEFAULT_SETTINGS, agentDetailFrom } from "./stubs";
+} from "./types.ts";
+import { DEFAULT_SETTINGS, agentDetailFrom } from "./stubs.ts";
 
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api";
+
+export const MODEL_PROVIDER_IDS = ["mock", "openai_compatible", "opencode_go", "codex", "antigravity_cli"] as const;
+
+const MODEL_PROVIDER_LABELS: Record<(typeof MODEL_PROVIDER_IDS)[number], string> = {
+  mock: "Mock (offline)",
+  openai_compatible: "OpenAI-compatible",
+  opencode_go: "OpenCode Go",
+  codex: "Codex CLI",
+  antigravity_cli: "Antigravity CLI",
+};
 
 export function effortLabel(effort: string): string {
   return {
@@ -360,21 +373,28 @@ export function rawFileUrl(path: string): string {
 
 export async function getSettings(): Promise<WorkspaceSettings> {
   const { values, model_catalog } = await request<SettingsPayload>("/settings");
-  const catalog = model_catalog ?? { providers: [], warning: "The model catalog is unavailable." };
+  const catalog = normalizeModelCatalog(model_catalog);
   const providerValue = typeof values["agents.provider"] === "string" ? values["agents.provider"] : "mock";
   const selectedProvider = catalog.providers.find((provider) => provider.id === providerValue)
-    ?? catalog.providers[0];
+    ?? unavailableProvider(providerValue, providerValue, "The saved provider is not in the current catalog.");
+  if (!catalog.providers.some((provider) => provider.id === selectedProvider.id)) {
+    catalog.providers.push(selectedProvider);
+  }
   const requestedModel = typeof values["agents.reasoning_model"] === "string"
     ? values["agents.reasoning_model"]
     : "";
-  const selectedModel = selectedProvider?.models.find((model) => model.id === requestedModel)
-    ?? selectedProvider?.models[0];
+  let selectedModel = selectedProvider.models.find((model) => model.id === requestedModel);
+  if (!selectedModel && requestedModel) {
+    selectedModel = { id: requestedModel, label: `${requestedModel} (unavailable)`, reasoning_efforts: [] };
+    selectedProvider.models.push(selectedModel);
+  }
+  selectedModel ??= selectedProvider.models[0];
   const requestedEffort = typeof values["agents.reasoning_effort"] === "string"
     ? values["agents.reasoning_effort"]
     : "default";
-  const selectedEffort = selectedModel?.efforts.includes(requestedEffort)
+  const selectedEffort = selectedModel?.reasoning_efforts.includes(requestedEffort)
     ? requestedEffort
-    : selectedModel?.efforts[0] ?? "default";
+    : selectedModel?.reasoning_efforts[0] ?? requestedEffort;
 
   const sections = DEFAULT_SETTINGS.map((section) => ({
       ...section,
@@ -400,7 +420,9 @@ export async function getSettings(): Promise<WorkspaceSettings> {
           };
         }
         if (row.config_key === "agents.reasoning_effort") {
-          const efforts = selectedModel?.efforts ?? ["default"];
+          const efforts = selectedModel?.reasoning_efforts.length
+            ? selectedModel.reasoning_efforts
+            : [selectedEffort];
           return {
             ...row,
             value: selectedEffort,
@@ -427,6 +449,44 @@ export async function getSettings(): Promise<WorkspaceSettings> {
     }
   }
   return { model_catalog: catalog, sections };
+}
+
+type RawModelCatalogModel = Omit<ModelCatalogModel, "reasoning_efforts"> & {
+  reasoning_efforts?: string[];
+  efforts?: string[];
+};
+
+type RawModelCatalogProvider = Omit<ModelCatalogProvider, "models" | "readiness" | "readiness_detail"> & {
+  readiness?: ModelCatalogProvider["readiness"];
+  readiness_detail?: string;
+  models?: RawModelCatalogModel[];
+};
+
+function unavailableProvider(id: string, label: string, detail: string): ModelCatalogProvider {
+  return { id, label, readiness: "unavailable", readiness_detail: detail, models: [] };
+}
+
+function normalizeModelCatalog(catalog?: ModelCatalog | null): ModelCatalog {
+  const rawProviders = (catalog?.providers ?? []) as RawModelCatalogProvider[];
+  const providers = MODEL_PROVIDER_IDS.map((id) => {
+    const raw = rawProviders.find((provider) => provider.id === id);
+    if (!raw) return unavailableProvider(id, MODEL_PROVIDER_LABELS[id], "The provider was not returned by the model catalog.");
+    return {
+      id: raw.id,
+      label: raw.label || MODEL_PROVIDER_LABELS[id],
+      readiness: raw.readiness ?? (raw.models?.length ? "ready" : "missing"),
+      readiness_detail: raw.readiness_detail ?? (raw.models?.length ? "Model catalog loaded." : "No models are available."),
+      models: (raw.models ?? []).map((model) => ({
+        id: model.id,
+        label: model.label,
+        reasoning_efforts: model.reasoning_efforts ?? model.efforts ?? [],
+      })),
+    } satisfies ModelCatalogProvider;
+  });
+  return {
+    providers,
+    warning: catalog?.warning ?? (catalog ? null : "The model catalog is unavailable."),
+  };
 }
 
 export async function saveSettings(settings: WorkspaceSettings): Promise<SettingsPayload> {
@@ -471,6 +531,9 @@ export async function saveAgentDetail(agent: AgentDetail): Promise<AgentDefiniti
       max_steps: agent.max_steps,
       audience_id: agent.audience_id,
       audience_prompt: agent.audience_prompt,
+      provider: agent.provider ?? "",
+      model: agent.model ?? "",
+      reasoning_effort: agent.reasoning_effort ?? "",
     }),
   });
 }

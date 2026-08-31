@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from datetime import date
+import re
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 
-from app.models.api import ChatMessage, ChatRequest, ChatResponse, ChatRun, MatterUpdateCard, ResearchStatusCard, WorkProductCard
+from app.models.api import ChatMessage, ChatRequest, ChatResponse, ChatRun, MatterUpdateCard, WorkProductCard
 from app.routers.dependencies import get_context
 from app.runtime import AppContext
 from app.agents.runner import RunnerExecutionState
@@ -80,6 +81,7 @@ async def execute_chat(
     run_id: str | None = None,
     execution_state: RunnerExecutionState | None = None,
     checkpoint=None,
+    resolved_provider=None,
 ) -> ChatResponse:
     try:
         if not payload.message.strip() and not payload.card_action and not payload.attachments:
@@ -94,6 +96,13 @@ async def execute_chat(
             # deterministic tool-capable agent even when the slash command is absent.
             context.skills.get("watch-builder")
             skill_id = "watch-builder"
+        expected_dossier_hash = (
+            payload.expected_dossier_hash
+            if payload.expected_dossier_hash is not None
+            else context.dossiers.content_hash(payload.matter_id)
+            if payload.matter_id
+            else None
+        )
         if payload.matter_id:
             if payload.workspace_day:
                 raise ValueError("A chat cannot be both matter-scoped and day-scoped.")
@@ -108,7 +117,7 @@ async def execute_chat(
                 )
                 if not same_run_user:
                     _reject_duplicate_question_action(saved, payload)
-                history = _history(saved)
+                history = _history(saved, exclude_run_id=run_id)
             existing_user = (
                 context.chat_history.find_run_message(payload.matter_id, conversation_id, run_id, "user")
                 if run_id and conversation_id else None
@@ -123,6 +132,16 @@ async def execute_chat(
                     run_id=run_id,
                 )
             conversation_id = saved["conversation_id"]
+            conversation = context.chat_history.get(payload.matter_id, conversation_id)
+            current_user = existing_user or conversation["messages"][-1]
+            trusted_source_id = next(
+                iter(current_user.get("source_ids") or []),
+                current_user.get("message_id"),
+            )
+            intake_active = (
+                conversation.get("conversation_kind") == "intake"
+                and conversation.get("intake_state") == "active"
+            )
         else:
             if payload.conversation_id:
                 raise ValueError("Today chat continues by date, not by conversation ID.")
@@ -143,20 +162,51 @@ async def execute_chat(
                 card_action=payload.card_action.model_dump() if payload.card_action else None,
             )
             conversation_id = None
-        response = await context.runner.run(
-            payload.model_copy(
-                update={
-                    "message": model_content,
-                    "history": history,
-                    "skill_id": skill_id,
-                    "agent_id": "research-agent" if skill_id == "watch-builder" else payload.agent_id,
-                }
-            ),
-            execution_state=execution_state,
-            checkpoint=checkpoint,
+        response = (
+            _stop_intake(
+                context, payload, saved, expected_dossier_hash,
+                intake_active=intake_active,
+            )
+            if payload.matter_id else None
         )
+        if response is None:
+            response = await context.runner.run(
+                payload.model_copy(
+                    update={
+                        "message": model_content,
+                        "history": history,
+                        "skill_id": skill_id,
+                        "agent_id": (
+                            "research-agent" if skill_id == "watch-builder"
+                            else "intake-agent" if payload.matter_id and intake_active
+                            else payload.agent_id
+                        ),
+                        "trusted_source_id": trusted_source_id if payload.matter_id else None,
+                        "expected_dossier_hash": expected_dossier_hash,
+                    }
+                ),
+                execution_state=execution_state,
+                checkpoint=checkpoint,
+                resolved_provider=resolved_provider,
+            )
         if payload.matter_id:
             _apply_matter_actions(context, payload, saved, response, run_id=run_id)
+            intake_record = context.matter_records.get(payload.matter_id)
+            if conversation.get("conversation_kind") == "intake":
+                intake_state = intake_record.get("intake_state", "active")
+                context.chat_history.update_state(
+                    payload.matter_id,
+                    conversation_id,
+                    intake_state=intake_state,
+                    active_agent_id=(
+                        "intake-agent" if intake_state == "active" else "counsel-copilot"
+                    ),
+                )
+                if intake_state == "complete":
+                    _queue_intake_research(
+                        context, payload.matter_id, intake_record,
+                        cycle_id=conversation_id,
+                    )
         if payload.matter_id:
             if response.reply.strip():
                 if run_id:
@@ -189,15 +239,24 @@ async def execute_chat(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
-def _history(saved: dict) -> list[ChatMessage]:
+def _history(saved: dict, *, exclude_run_id: str | None = None) -> list[ChatMessage]:
     return [
         ChatMessage(role=message["role"], content=message["content"])
         for message in saved["messages"]
+        if not exclude_run_id
+        or message.get("run_id") != exclude_run_id
+        or message.get("role") != "user"
     ]
 
 
 def _action_text(payload: ChatRequest) -> str:
     if payload.card_action:
+        if payload.card_action.action == "answer_set":
+            lines = []
+            for answer in payload.card_action.answers:
+                detail = ", ".join(answer.values) if answer.values else "Skipped"
+                lines.append(f"- {answer.card_id}: {detail}")
+            return "Answers to the prioritized intake questions:\n" + "\n".join(lines)
         values = ", ".join(payload.card_action.values)
         return f"Card action: {payload.card_action.action}{f' — {values}' if values else ''}"
     names = ", ".join(item.name for item in payload.attachments)
@@ -206,21 +265,102 @@ def _action_text(payload: ChatRequest) -> str:
 
 def _reject_duplicate_question_action(saved: dict, payload: ChatRequest) -> None:
     action = payload.card_action
-    if not action or action.action not in {"answer", "skip", "stop"}:
+    if not action or action.action not in {"answer", "answer_set", "skip", "stop"}:
         return
     if any((message.get("card_action") or {}).get("card_id") == action.card_id for message in saved["messages"]):
         raise ValueError("This question was already answered.")
 
 
 def _watch_builder_requested(content: str, payload: ChatRequest) -> bool:
+    if payload.agent_id == "intake-agent":
+        return False
     if payload.card_action and payload.card_action.action in {
         "save_draft", "scan_now", "change_something", "start_watch", "scan_again",
     }:
         return True
     lowered = " ".join(content.lower().split())
-    monitoring = any(term in lowered for term in ("monitor", "monitoring", "watch", "recurring scan"))
-    creation = any(term in lowered for term in ("create", "start", "set up", "change", "edit"))
-    return monitoring and creation
+    command_prefix = (
+        r"^(?:(?:please|kindly),?\s+|(?:can|could|would|will)\s+you\s+|"
+        r"i(?:'d|\s+would)\s+like\s+(?:you\s+)?to\s+|"
+        r"i\s+(?:want|need)\s+(?:you\s+)?to\s+)?"
+    )
+    watch_object = r"(?:watch|recurring\s+scan)"
+    determiner = r"(?:(?:a|an|the|this|that|my|our)\s+)?"
+    explicit_watch_action = rf"(?:create|start|change|edit)\s+{determiner}{watch_object}\b"
+    explicit_monitoring_setup = rf"set\s+up\s+{determiner}(?:watch|monitoring|recurring\s+scan)\b"
+    return bool(re.match(
+        rf"{command_prefix}(?:{explicit_watch_action}|{explicit_monitoring_setup})",
+        lowered,
+    ))
+
+
+def _stop_intake(
+    context: AppContext,
+    payload: ChatRequest,
+    saved: dict,
+    expected_dossier_hash: str | None,
+    *,
+    intake_active: bool,
+) -> ChatResponse | None:
+    action = payload.card_action
+    if not intake_active or not action or action.action != "stop":
+        return None
+    matter_id = str(payload.matter_id)
+    record = context.matter_records.set_intake_state(matter_id, "complete")
+    matter = context.matters.get(matter_id)
+    dossier = context.dossiers.update_from_intake(
+        matter_id,
+        working_ask=(record.get("working_ask") or matter.get("description") or matter["title"]),
+        facts=record["facts"],
+        assumptions=record["assumptions"],
+        issues=record.get("issues", []),
+        open_questions=record.get("open_questions", []),
+        orientation="",
+        expected_hash=expected_dossier_hash,
+    )
+    context.chat_history.update_state(
+        matter_id,
+        saved["conversation_id"],
+        intake_state="complete",
+        active_agent_id="counsel-copilot",
+    )
+    _queue_intake_research(
+        context, matter_id, record, cycle_id=saved["conversation_id"]
+    )
+    return ChatResponse(
+        reply="Intake is complete. The saved facts and open questions remain available for the dossier and research.",
+        cards=[MatterUpdateCard(
+            action_id=action.card_id,
+            summary="Intake complete",
+            changed_sections=["Working ask", "Open questions"],
+            can_edit=False,
+            can_undo=False,
+        )],
+        changed_paths=[
+            record["path"],
+            str(dossier.get("path") or dossier.get("revision_path")),
+        ],
+        refresh=["matter"],
+    )
+
+
+def _queue_intake_research(
+    context: AppContext,
+    matter_id: str,
+    record: dict,
+    *,
+    cycle_id: str,
+) -> None:
+    questions = [
+        str(question).strip()
+        for question in record.get("public_research_questions", [])[:3]
+        if str(question).strip()
+    ]
+    if not questions:
+        return
+    context.research_runs.start(
+        matter_id, questions, source_action_key=f"intake:{cycle_id}"
+    )
 
 
 def _apply_matter_actions(
@@ -242,71 +382,6 @@ def _apply_matter_actions(
         )
         response.cards.append(MatterUpdateCard(action_id=action["action_id"], summary="Matter updated", changed_sections=["Facts", "Sources"]))
         response.changed_paths.append(context.matter_records.get(matter_id)["path"])
-    if payload.card_action and payload.card_action.action == "answer" and payload.card_action.values:
-        automatic_key = f"intake:{payload.card_action.card_id}"
-        source_action_key = f"{matter_id}:{saved['conversation_id']}:{payload.card_action.card_id}"
-        intake_source_id = f"{saved['conversation_id']}:{payload.card_action.card_id}"
-        checkpoint = context.chat_runs.automatic_action(matter_id, run_id, automatic_key) if run_id else None
-        if run_id and checkpoint is None:
-            context.chat_runs.checkpoint_automatic_action(
-                matter_id, run_id, automatic_key, state="planned",
-                source_action_key=source_action_key,
-            )
-        records = context.matter_records.get(matter_id)
-        expected_facts = [f"Intake response: {value}" for value in payload.card_action.values]
-        facts_already_saved = all(
-            any(
-                fact.get("status") == "active"
-                and fact.get("text") == text
-                and intake_source_id in fact.get("source_ids", [])
-                for fact in records["facts"]
-            )
-            for text in expected_facts
-        )
-        if checkpoint and checkpoint.get("state") == "completed":
-            action_id = str(checkpoint.get("action_id") or payload.card_action.card_id)
-        elif facts_already_saved:
-            matching_action = next(
-                (item for item in reversed(records.get("actions", [])) if item.get("summary") == "Saved an intake response"),
-                {},
-            )
-            action_id = str(matching_action.get("action_id") or payload.card_action.card_id)
-        else:
-            action = context.matter_records.apply_update(
-                matter_id,
-                facts=[{"text": text, "source_ids": [intake_source_id]} for text in expected_facts],
-                sources=[{"source_id": intake_source_id, "kind": "conversation", "label": "Current matter chat"}],
-                summary="Saved an intake response",
-            )
-            action_id = action["action_id"]
-        response.cards = [MatterUpdateCard(action_id=action_id, summary="Matter updated", changed_sections=["Facts", "Missing information"])]
-        if context.dossiers.get(matter_id) is None:
-            matter = context.matters.get(matter_id)
-            facts = context.matter_records.get(matter_id)["facts"]
-            content = "# Matter dossier\n\n## Current ask\n\n" + (matter.get("description") or matter["title"])
-            content += "\n\n## Known facts\n\n" + "\n".join(f"- {item['text']}" for item in facts if item.get("status") == "active")
-            content += "\n\n## Missing information\n\n- Continue focused intake as needed.\n\n## Work product\n\nNo work product yet."
-            context.dossiers.propose_update(matter_id, content, expected_hash=None)
-        model_ran_research = any(item.tool == "run_research" and item.status == "success" for item in response.trace)
-        question = f"What material source-based issues should counsel research for {context.matters.get(matter_id)['title']}?"
-        if model_ran_research:
-            packet_path = next((path for path in response.changed_paths if "/research/" in path and "/runs/" not in path), "")
-            run = context.research_runs.record_completed(
-                matter_id, question, packet_path, source_action_key=source_action_key
-            )
-        else:
-            run = context.research_runs.start(
-                matter_id,
-                [question],
-                source_action_key=source_action_key,
-            )
-        response.cards.append(ResearchStatusCard(run_id=run["run_id"], state=run["state"], total=run["total"], completed=run["completed"], status=run["status"], dossier_effect=run["dossier_effect"]))
-        if run_id:
-            context.chat_runs.checkpoint_automatic_action(
-                matter_id, run_id, automatic_key, state="completed",
-                action_id=action_id, research_run_id=run["run_id"], source_action_key=source_action_key,
-            )
-        response.refresh.append("matter")
     typed_save_succeeded = any(
         item.tool == "save_work_product" and item.status == "success"
         for item in response.trace

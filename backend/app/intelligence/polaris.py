@@ -66,6 +66,11 @@ class PolarisIntelligenceProvider:
             warnings=warnings,
         )
 
+    async def research(self, query: OutboundWatchQuery) -> ProviderScanResult:
+        """Collect one public matter-research answer without creating Watch state."""
+        result = await self.scan(query, None)
+        return result.model_copy(update={"next_checkpoint": None})
+
     async def _post(self, payload: dict[str, object]) -> object:
         headers = {"Authorization": f"Bearer {self._api_key}", "Content-Type": "application/json"}
         owns_client = self._client is None

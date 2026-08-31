@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { getSettings } from "@/lib/api";
 
 /**
  * Canvas 3b — intake is one bar for a request. The full
@@ -25,13 +26,18 @@ export default function NewMatterForm({
     event.preventDefault();
     setError("");
     try {
+      const settings = await getSettings().catch(() => null);
+      const reviewRows = settings?.sections.find((section) => section.id === "document-review")?.rows ?? [];
+      const legalOwner = reviewRows
+        .find((row) => row.config_key === "document_review.lawyer_name")
+        ?.value?.trim() ?? "";
       await onCreate({
         title: title || requestText.split("\n")[0].slice(0, 120),
         request_text: requestText,
         matter_type: matterType,
         priority,
         target_date: targetDate || null,
-        legal_owner: "Brian Harris",
+        legal_owner: legalOwner,
         requester: "Product",
         description: requestText.slice(0, 220),
       });
@@ -132,7 +138,7 @@ export default function NewMatterForm({
 
       <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
         <button className="btn primary" disabled={busy || !requestText.trim()} type="submit">
-          {busy ? "Opening…" : "Open in Just came in"}
+          {busy ? "Opening…" : "Open in Chat"}
         </button>
       </div>
     </form>

@@ -3,41 +3,33 @@
 import Link from "next/link";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { finalizeWorkProduct, getResearchRun } from "@/lib/api";
-import type { CardAction, ChatCard, ResearchRun } from "@/lib/types";
+import { choiceNeedsDetail, effectiveQuestionMode, groupedAnswerText, questionProgressLabel } from "@/lib/chatCardLogic";
+import type { CardAction, ChatCard, QuestionMode, ResearchRun } from "@/lib/types";
 
 type Props = {
   cards?: ChatCard[];
   matterId?: string;
   disabled?: boolean;
+  questionsDisabled?: boolean;
+  questionMode?: QuestionMode;
+  showQuestionMode?: boolean;
+  onQuestionModeChange?: (mode: QuestionMode) => void;
   onAction: (action: CardAction, answerText?: string) => Promise<void>;
   onOpenDocument?: (path: string) => void;
   onRefresh?: () => void | Promise<void>;
 };
 
-export default function ChatCards({ cards = [], matterId, disabled, onAction, onOpenDocument, onRefresh }: Props) {
+export default function ChatCards({ cards = [], matterId, disabled, questionsDisabled, questionMode = "guided", showQuestionMode = false, onQuestionModeChange, onAction, onOpenDocument, onRefresh }: Props) {
+  const questions = cards.filter((card): card is Extract<ChatCard, { type: "question" }> => card.type === "question");
+  const otherCards = cards.filter((card) => card.type !== "question");
   return cards.length ? (
     <div className="chat-cards">
-      {cards.map((card, index) => {
-        const key = card.type === "question" ? card.question_id
-          : card.type === "matter_update" ? card.action_id
+      {questions.length ? <QuestionSequence cards={questions} disabled={disabled || questionsDisabled} mode={showQuestionMode ? questionMode : "guided"} onAction={onAction} onModeChange={showQuestionMode ? onQuestionModeChange : undefined} showModeControl={showQuestionMode && !questionsDisabled} /> : null}
+      {otherCards.map((card, index) => {
+        const key = card.type === "matter_update" ? card.action_id
           : card.type === "research_status" ? card.run_id
           : `${card.vault_path}-${index}`;
-        if (card.type === "question") return <QuestionCard card={card} disabled={disabled} key={key} onAction={onAction} />;
-        if (card.type === "matter_update") {
-          return (
-            <section className="chat-card matter-update-card" key={key}>
-              <div className="chat-card-kicker">Matter updated</div>
-              <div className="chat-card-summary">{card.summary}</div>
-              {card.changed_sections.length ? <div className="chat-card-detail">{card.changed_sections.join(" · ")}</div> : null}
-              {card.can_edit || card.can_undo ? (
-                <div className="chat-card-actions">
-                  {card.can_edit ? <button className="btn tiny quiet" disabled={disabled} onClick={() => void onAction({ card_id: card.action_id, action: "edit" })}>Edit</button> : null}
-                  {card.can_undo ? <button className="btn tiny quiet" disabled={disabled} onClick={() => void onAction({ card_id: card.action_id, action: "undo" })}>Undo</button> : null}
-                </div>
-              ) : null}
-            </section>
-          );
-        }
+        if (card.type === "matter_update") return null;
         if (card.type === "research_status") return <ResearchCard card={card} key={key} matterId={matterId} onRefresh={onRefresh} />;
         if (card.type === "watch_draft") return <WatchCard card={card} disabled={disabled} key={key} onAction={onAction} />;
         if (card.type === "watch_scan") return <WatchCard card={card} disabled={disabled} key={key} onAction={onAction} />;
@@ -166,16 +158,119 @@ function WorkProductCard({ card, disabled, matterId, onOpenDocument, onRefresh }
   );
 }
 
-function QuestionCard({ card, disabled, onAction }: { card: Extract<ChatCard, { type: "question" }>; disabled?: boolean; onAction: Props["onAction"] }) {
-  const [selected, setSelected] = useState<string[]>([]);
-  const [freeText, setFreeText] = useState("");
-  const progress = card.progress_current && card.progress_total
-    ? `${card.progress_current} of ${card.progress_total}`
-    : "Follow-up";
+type Question = Extract<ChatCard, { type: "question" }>;
+type QuestionDraft = { selected: string[]; freeText: string; selectedDetail: string };
+type SavedAnswer = { action: "answer" | "skip"; values: string[]; text: string };
+
+const EMPTY_DRAFT: QuestionDraft = { selected: [], freeText: "", selectedDetail: "" };
+
+function QuestionSequence({ cards, disabled, mode, onModeChange, onAction, showModeControl }: {
+  cards: Question[];
+  disabled?: boolean;
+  mode: QuestionMode;
+  onModeChange?: (mode: QuestionMode) => void;
+  onAction: Props["onAction"];
+  showModeControl?: boolean;
+}) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [drafts, setDrafts] = useState<Record<string, QuestionDraft>>({});
+  const [answers, setAnswers] = useState<Record<string, SavedAnswer>>({});
+  const current = cards[Math.min(currentIndex, cards.length - 1)];
+  const draft = drafts[current.question_id] ?? EMPTY_DRAFT;
+
+  function updateDraft(next: QuestionDraft) {
+    setDrafts((saved) => ({ ...saved, [current.question_id]: next }));
+  }
+
+  async function submitSet(nextAnswers: Record<string, SavedAnswer>, stopAfterAnswers = false) {
+    const answeredQuestions = cards.filter((question) => nextAnswers[question.question_id]);
+    if (!answeredQuestions.length) {
+      await onAction({ card_id: current.question_id, action: stopAfterAnswers ? "stop" : "skip" });
+      return;
+    }
+    await onAction({
+      card_id: `intake-set:${answeredQuestions.map((question) => question.question_id).join(":")}`,
+      action: "answer_set",
+      answers: answeredQuestions.map((question) => ({
+        card_id: question.question_id,
+        action: nextAnswers[question.question_id].action,
+        values: nextAnswers[question.question_id].values,
+      })),
+    }, groupedAnswerText(answeredQuestions, nextAnswers, stopAfterAnswers));
+  }
+
+  async function handleQuestionAction(action: CardAction, answerText?: string) {
+    if (action.action === "stop") {
+      if (mode === "set" && Object.keys(answers).length) await submitSet(answers, true);
+      else await onAction(action, answerText);
+      return;
+    }
+    if (action.action !== "answer" && action.action !== "skip") return;
+    const savedAnswer: SavedAnswer = {
+      action: action.action,
+      values: action.values ?? [],
+      text: answerText ?? "",
+    };
+    const nextAnswers = { ...answers, [current.question_id]: savedAnswer };
+
+    if (mode === "guided") {
+      if (Object.keys(answers).length) await submitSet(nextAnswers);
+      else await onAction(action, answerText);
+      return;
+    }
+
+    setAnswers(nextAnswers);
+    if (currentIndex < cards.length - 1) setCurrentIndex((index) => index + 1);
+    else await submitSet(nextAnswers);
+  }
+
+  return (
+    <div className="question-sequence">
+      {showModeControl ? <div className="question-mode-control">
+        <div>
+          <strong>Question style</strong>
+          <span>{mode === "guided" ? "Discuss each answer before the next question." : `Answer this prioritized set of ${cards.length}, then send it together.`}</span>
+        </div>
+        <div className="question-mode-options" role="group" aria-label="Question style">
+          <button aria-pressed={mode === "guided"} className={mode === "guided" ? "active" : ""} disabled={disabled} onClick={() => onModeChange?.("guided")} type="button">Guided</button>
+          <button aria-pressed={mode === "set"} className={mode === "set" ? "active" : ""} disabled={disabled} onClick={() => onModeChange?.("set")} type="button">Answer a set</button>
+        </div>
+      </div> : null}
+      <QuestionCard
+        card={current}
+        current={mode === "set" ? currentIndex + 1 : undefined}
+        disabled={disabled}
+        draft={draft}
+        key={current.question_id}
+        onAction={handleQuestionAction}
+        onBack={mode === "set" && currentIndex > 0 ? () => setCurrentIndex((index) => index - 1) : undefined}
+        onDraftChange={updateDraft}
+        primaryLabel={mode === "set" ? (currentIndex === cards.length - 1 ? "Send answers" : "Next") : "Send answer"}
+        total={mode === "set" ? cards.length : undefined}
+      />
+    </div>
+  );
+}
+
+function QuestionCard({ card, current, disabled, draft, onAction, onBack, onDraftChange, primaryLabel, total }: {
+  card: Question;
+  current?: number;
+  disabled?: boolean;
+  draft: QuestionDraft;
+  onAction: Props["onAction"];
+  onBack?: () => void;
+  onDraftChange: (draft: QuestionDraft) => void;
+  primaryLabel: string;
+  total?: number;
+}) {
+  const { selected, freeText, selectedDetail } = draft;
+  const progress = questionProgressLabel(card.progress_current, card.progress_total);
+  const mode = effectiveQuestionMode(card.selection_mode, card.choices.length);
 
   function answer(values: string[], text?: string) {
-    if (!values.length || disabled) return;
-    void onAction({ card_id: card.question_id, action: "answer", values }, text);
+    const cleanValues = values.map((value) => value.trim()).filter(Boolean);
+    if (!cleanValues.length || disabled) return;
+    void onAction({ card_id: card.question_id, action: "answer", values: cleanValues }, text);
   }
 
   function freeTextKeyDown(event: KeyboardEvent<HTMLInputElement>) {
@@ -185,9 +280,32 @@ function QuestionCard({ card, disabled, onAction }: { card: Extract<ChatCard, { 
     }
   }
 
+  const selectedChoices = card.choices.filter((choice) => selected.includes(choice.value));
+  const selectedChoice = selectedChoices[0];
+  const detailRequired = selectedChoices.some((choice) => choiceNeedsDetail(choice.value, choice.label));
+
+  function submitSelection() {
+    if (!selectedChoice || (detailRequired && !selectedDetail.trim())) return;
+    const detail = selectedDetail.trim();
+    answer(
+      detail ? [selectedChoice.value, detail] : [selectedChoice.value],
+      detail ? `${selectedChoice.label}: ${detail}` : selectedChoice.label,
+    );
+  }
+
+  function submitMultiple() {
+    if (!selected.length || (detailRequired && !selectedDetail.trim())) return;
+    const detail = selectedDetail.trim();
+    const labels = selectedChoices.map((choice) => choice.label);
+    answer(
+      detail ? [...selected, detail] : selected,
+      detail ? `${labels.join(", ")}: ${detail}` : labels.join(", "),
+    );
+  }
+
   return (
     <section className={`chat-card question-card ${card.conflict ? "conflict" : ""}`} aria-labelledby={`question-${card.question_id}`}>
-      <div className="question-meta"><span>{progress}</span>{card.conflict ? <span>Factual conflict</span> : null}</div>
+      <div className="question-meta"><span>{current && total ? `${current} of ${total} · Priority order` : progress === "Follow-up" ? "Highest-priority question" : progress}</span>{card.conflict ? <span>Factual conflict</span> : null}</div>
       <div className="question-title-row">
         <div className="chat-card-summary" id={`question-${card.question_id}`}>{card.text}</div>
         {card.reason ? (
@@ -198,13 +316,13 @@ function QuestionCard({ card, disabled, onAction }: { card: Extract<ChatCard, { 
         ) : null}
       </div>
 
-      {card.selection_mode === "free_text" ? (
+      {mode === "free_text" ? (
         <div className="question-free-text">
-          <input aria-label="Answer" className="text-input" disabled={disabled} onChange={(event) => setFreeText(event.target.value)} onKeyDown={freeTextKeyDown} value={freeText} />
-          <button className="btn primary compact" disabled={disabled || !freeText.trim()} onClick={() => answer([freeText.trim()], freeText.trim())}>Send</button>
+          <input aria-label="Answer" className="text-input" disabled={disabled} onChange={(event) => onDraftChange({ ...draft, freeText: event.target.value })} onKeyDown={freeTextKeyDown} value={freeText} />
+          <button className="btn primary compact" disabled={disabled || !freeText.trim()} onClick={() => answer([freeText.trim()], freeText.trim())}>{primaryLabel}</button>
         </div>
       ) : (
-        <div className="question-choices" role={card.selection_mode === "single" ? "radiogroup" : "group"}>
+        <div className="question-choices" role={mode === "single" ? "radiogroup" : "group"}>
           {card.choices.map((choice) => {
             const active = selected.includes(choice.value);
             return (
@@ -214,10 +332,11 @@ function QuestionCard({ card, disabled, onAction }: { card: Extract<ChatCard, { 
                 disabled={disabled}
                 key={choice.value}
                 onClick={() => {
-                  if (card.selection_mode === "single") answer([choice.value], choice.label);
-                  else setSelected((current) => current.includes(choice.value) ? current.filter((value) => value !== choice.value) : [...current, choice.value]);
+                  if (mode === "single") {
+                    onDraftChange({ ...draft, selected: [choice.value], selectedDetail: "" });
+                  } else onDraftChange({ ...draft, selected: selected.includes(choice.value) ? selected.filter((value) => value !== choice.value) : [...selected, choice.value] });
                 }}
-                role={card.selection_mode === "single" ? "radio" : "checkbox"}
+                role={mode === "single" ? "radio" : "checkbox"}
                 type="button"
               >
                 <span>{choice.label}</span>{choice.suggested ? <span className="suggested-label">Suggested</span> : null}
@@ -227,10 +346,33 @@ function QuestionCard({ card, disabled, onAction }: { card: Extract<ChatCard, { 
         </div>
       )}
 
+      {mode !== "free_text" && detailRequired ? (
+        <div className="question-free-text">
+          <input
+            aria-label={`Add detail for ${selectedChoice?.label ?? "this choice"}`}
+            autoFocus
+            className="text-input"
+            disabled={disabled}
+            onChange={(event) => onDraftChange({ ...draft, selectedDetail: event.target.value })}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && !event.shiftKey && selectedDetail.trim()) {
+                event.preventDefault();
+                if (mode === "multiple") submitMultiple();
+                else submitSelection();
+              }
+            }}
+            placeholder="Add a short clarification"
+            value={selectedDetail}
+          />
+        </div>
+      ) : null}
+
       <div className="chat-card-actions">
-        {card.selection_mode === "multiple" ? <button className="btn primary compact" disabled={disabled || !selected.length} onClick={() => answer(selected)}>Continue</button> : null}
+        {onBack ? <button className="btn tiny quiet" disabled={disabled} onClick={onBack}>Back</button> : null}
+        {mode === "single" ? <button className="btn primary compact" disabled={disabled || !selected.length || (detailRequired && !selectedDetail.trim())} onClick={submitSelection}>{primaryLabel}</button> : null}
+        {mode === "multiple" ? <button className="btn primary compact" disabled={disabled || !selected.length || (detailRequired && !selectedDetail.trim())} onClick={submitMultiple}>{primaryLabel}</button> : null}
         {card.allow_skip ? <button className="btn tiny quiet" disabled={disabled} onClick={() => void onAction({ card_id: card.question_id, action: "skip" })}>Skip</button> : null}
-        {card.allow_stop ? <button className="btn tiny quiet" disabled={disabled} onClick={() => void onAction({ card_id: card.question_id, action: "stop" })}>No more questions</button> : null}
+        {card.allow_stop ? <button className="btn tiny quiet" disabled={disabled} onClick={() => void onAction({ card_id: card.question_id, action: "stop" })}>{total ? "Stop questions" : "No more questions"}</button> : null}
       </div>
     </section>
   );

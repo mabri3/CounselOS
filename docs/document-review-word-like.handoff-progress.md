@@ -1,5 +1,18 @@
 # Progress — Word-like document review
 
+## Status correction — 2026-08-30
+
+The Step 5 failure below is historical and remains unresolved by this document.
+A newer live-agent baseline reports 454 passing backend tests, but that does
+not by itself prove this exact checkpoint. The canonical MVP closure must run
+the current full suite and classify this line with direct evidence in
+`docs/MVP_CLOSURE_AUDIT.md`.
+
+**Resolution — 2026-08-30:** The historical three-fixture failure no longer
+reproduces. `./scripts/verify.sh` passes all 482 backend tests, frontend
+typecheck, and the production build. The failed line below is preserved as
+history and is not active work.
+
 Update this file after each step. Only change the line for the step being updated.
 
 - [x] Step 0: Read context and verify the baseline — done

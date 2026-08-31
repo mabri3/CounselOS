@@ -1,5 +1,22 @@
 # Matter-led MVP handoff progress
 
+## Status correction — 2026-08-30
+
+The check marks below preserve the deterministic slice that was implemented
+and observed on 2026-08-28. They are not current proof that the approved
+adaptive LLM intake is complete. Current code still creates a context-free
+fixed intake question with a hard-coded count, opens Overview before chat, and
+does not use the Intake Agent to derive the first matter-specific question.
+
+This file is historical. Current completion is tracked in
+`docs/core-intake-provider-completion.handoff-progress.md` and must be proved
+through `docs/MVP_CLOSURE_AUDIT.md`. Do not erase the original record below.
+
+**Resolution — 2026-08-30:** The replacing adaptive Intake Agent flow is now
+implemented. A fresh-vault browser walk proved direct Chat opening, a
+request-specific first response, one material question, and no fixed counter.
+The full repository verification passed with 482 backend tests.
+
 Update this file after every completed step. Write the command or browser check that proves the step. If work resumes after context loss, read this file first and continue from the first incomplete item.
 
 ## Starting state

@@ -68,6 +68,8 @@ class MatterService:
             "jurisdiction_scope": request.jurisdiction_scope,
             "privilege": request.privilege,
             "next_action": "Orient to the request and identify the first missing facts.",
+            "intake_state": "active",
+            "active_agent_id": "intake-agent",
             "durable_decision_needed": False,
             "response_approved_at": None,
             "response_sent_at": None,
@@ -171,8 +173,10 @@ class MatterService:
             "attention": [item["title"] for item in required[:4]],
             "recent_changes": [event.get("title", event.get("event_type", "Update")) for event in events],
         }
+        intake = self._intake_status(matter_id)
         return {
             **matter,
+            "original_request": self._original_request(base, matter.get("description") or ""),
             "durable_decision_needed": bool(matter_metadata.get("durable_decision_needed", False)),
             **{
                 key: matter_metadata.get(key)
@@ -193,7 +197,48 @@ class MatterService:
             "decisions": decisions,
             "tree": tree,
             "events": events,
+            **intake,
         }
+
+    def _original_request(self, base: str, fallback: str) -> str:
+        request_path = f"{base}/request.md"
+        if not self.vault.exists(request_path):
+            return fallback.strip()
+        content = self.vault.read_markdown(request_path)["content"].strip()
+        lines = content.splitlines()
+        if lines and lines[0].strip().casefold() == "# original request":
+            content = "\n".join(lines[1:]).strip()
+        return content or fallback.strip()
+
+    def _intake_status(self, matter_id: str) -> dict[str, Any]:
+        directory = self.vault.resolve(f"{self.matter_path(matter_id)}/conversations")
+        empty = {
+            "intake_conversation_id": None,
+            "intake_run_id": None,
+            "intake_state": None,
+            "active_agent_id": "counsel-copilot",
+        }
+        if not directory.exists():
+            return empty
+        for path in sorted(directory.glob("CONV-*.md")):
+            metadata = self.vault.read_markdown(self.vault.relative(path))["metadata"]
+            if metadata.get("conversation_kind") != "intake":
+                continue
+            run_id = next(
+                (
+                    message.get("run_id")
+                    for message in metadata.get("messages", [])
+                    if isinstance(message, dict) and message.get("run_id")
+                ),
+                None,
+            )
+            return {
+                "intake_conversation_id": metadata.get("conversation_id"),
+                "intake_run_id": run_id,
+                "intake_state": metadata.get("intake_state", "active"),
+                "active_agent_id": metadata.get("active_agent_id", "intake-agent"),
+            }
+        return empty
     def move_stage(self, matter_id: str, stage: str, *, reason: str = "", actor: str = "user") -> dict[str, Any]:
         matter = self._require_matter(matter_id)
         stage = self.workflow.validate(stage)

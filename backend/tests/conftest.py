@@ -33,6 +33,7 @@ def app_context(tmp_path: Path) -> AppContext:
         llm_provider="mock",
         llm_api_key=None,
         llm_model=None,
+        polaris_api_key=None,
         search_provider="disabled",
         decision_review_age_days=180,
     )

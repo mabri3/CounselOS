@@ -71,6 +71,10 @@ export type Matter = {
   open_work_items?: number;
   required_work_items?: number;
   work_state: MatterWorkState;
+  intake_conversation_id?: string | null;
+  intake_run_id?: string | null;
+  intake_state?: "active" | "complete" | null;
+  active_agent_id?: string | null;
 };
 
 export type WorkItem = {
@@ -140,6 +144,7 @@ export type FileNode = {
 };
 
 export type MatterDetail = Matter & {
+  original_request: string;
   orientation: {
     headline: string;
     summary: string;
@@ -260,7 +265,9 @@ export type ChatCard =
   | AwarenessChatCard;
 
 export type AttachmentReference = { source_id: string; path: string; name: string; version?: string };
-export type CardAction = { card_id: string; action: "answer" | "skip" | "stop" | "edit" | "undo" | "apply" | "preview" | AwarenessCardAction; values?: string[] };
+export type CardAnswer = { card_id: string; action: "answer" | "skip"; values: string[] };
+export type CardAction = { card_id: string; action: "answer" | "answer_set" | "skip" | "stop" | "edit" | "undo" | "apply" | "preview" | AwarenessCardAction; values?: string[]; answers?: CardAnswer[] };
+export type QuestionMode = "guided" | "set";
 
 export type ChatResponse = {
   reply: string;
@@ -287,6 +294,12 @@ export type ChatRun = {
   failure_detail?: string | null;
   response?: ChatResponse | null;
   path: string;
+  selection?: {
+    agent_id: string;
+    provider: string;
+    model: string;
+    reasoning_effort: string;
+  } | null;
 };
 
 export type ChatHistoryMessage = {
@@ -328,7 +341,7 @@ export type SkillSuggestionsResponse = { suggestions: SkillSuggestion[]; warning
 export type SkillCreate = SkillDraft;
 export type SkillUpdate = Partial<Pick<SkillDefinition, "name" | "description" | "instructions">>;
 
-export type ResearchRun = { run_id: string; matter_id: string; state: "queued" | "running" | "completed" | "failed" | "interrupted"; total: number; completed: number; status: string; dossier_effect: string; useful_support: number; human_questions_left: number };
+export type ResearchRun = { run_id: string; matter_id: string; state: "queued" | "running" | "completed" | "failed" | "interrupted"; total: number; completed: number; status: string; dossier_effect: string; useful_support: number; human_questions_left: number; selection?: { agent_id: string; provider: string; model: string; reasoning_effort: string } | null };
 export type CompanyProfile = {
   source_id: string;
   version: string;
@@ -411,6 +424,9 @@ export type AgentDefinition = {
   path: string;
   audience_id: string;
   audience_prompt: string;
+  provider?: string | null;
+  model?: string | null;
+  reasoning_effort?: string | null;
 };
 
 export type LegacySchedule = {
@@ -451,12 +467,16 @@ export type SettingRow = {
 export type ModelCatalogModel = {
   id: string;
   label: string;
-  efforts: string[];
+  reasoning_efforts: string[];
 };
+
+export type ProviderReadiness = "ready" | "missing" | "unavailable" | "development_only";
 
 export type ModelCatalogProvider = {
   id: string;
   label: string;
+  readiness: ProviderReadiness;
+  readiness_detail: string;
   models: ModelCatalogModel[];
 };
 

@@ -26,6 +26,7 @@ def test_create_matter_builds_structured_folder(app_context):
             request_text="Can we launch the new setting next week?",
             matter_type="product_change",
             legal_owner="Counsel",
+            target_date="2026-09-15",
         )
     )
     assert created["status"] == "intake"
@@ -34,6 +35,9 @@ def test_create_matter_builds_structured_folder(app_context):
     assert app_context.vault.exists(f"{created['path']}/work-items")
     request = app_context.vault.read_markdown(f"{created['path']}/request.md")
     assert request["metadata"]["immutable"] is True
+    assert created["target_date"] == "2026-09-15"
+    assert request["metadata"]["requested_launch_date"] == "2026-09-15"
+    assert created["original_request"] == "Can we launch the new setting next week?"
 
 
 def test_response_approval_delivery_and_closure_are_separate(app_context):

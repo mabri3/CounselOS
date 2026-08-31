@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import asyncio
+from collections.abc import Callable
 from typing import Any
 
+from app.agents.runner import ResolvedAgentProvider
+from app.providers.base import ProviderSelection
 from app.services.research import ResearchService
 from app.services.vault import VaultService
 from app.utils.ids import new_id
@@ -12,11 +15,20 @@ from app.utils.time import iso_now
 class ResearchRunService:
     """Runs small research batches in this process and records their status in Markdown."""
 
-    MAX_QUESTIONS = 5
+    MAX_QUESTIONS = 3
 
-    def __init__(self, vault: VaultService, research: ResearchService):
+    def __init__(
+        self,
+        vault: VaultService,
+        research: ResearchService,
+        *,
+        resolve_agent: Callable[[], ResolvedAgentProvider] | None = None,
+        resolve_selection: Callable[[ProviderSelection], ResolvedAgentProvider] | None = None,
+    ):
         self.vault = vault
         self.research = research
+        self.resolve_agent = resolve_agent
+        self.resolve_selection = resolve_selection
         self._tasks: dict[str, asyncio.Task[None]] = {}
 
     @property
@@ -32,6 +44,8 @@ class ResearchRunService:
             if existing:
                 return existing
         run_id = new_id("RUN")
+        resolved = self.resolve_agent() if self.resolve_agent is not None else None
+        selection = self._selection_values(resolved) if resolved is not None else None
         record = self._write(
             matter_id,
             run_id,
@@ -40,6 +54,7 @@ class ResearchRunService:
             completed=0,
             status="Research is queued.",
             source_action_key=source_action_key,
+            selection=selection,
         )
         self._tasks[run_id] = asyncio.create_task(self._execute(matter_id, run_id, clean_questions))
         return record
@@ -56,11 +71,13 @@ class ResearchRunService:
         if existing:
             return existing
         run_id = new_id("RUN")
+        resolved = self.resolve_agent() if self.resolve_agent is not None else None
         return self._write(
             matter_id, run_id, state="completed", questions=[question], completed=1,
             status="Research is complete.", results=[{"path": result_path}],
             source_action_key=source_action_key, finished_at=iso_now(),
             dossier_effect="Research support is ready for the next dossier update.",
+            selection=self._selection_values(resolved) if resolved is not None else None,
         )
 
     def list(self, matter_id: str) -> list[dict[str, Any]]:
@@ -102,8 +119,15 @@ class ResearchRunService:
         results: list[dict[str, Any]] = []
         self._write(matter_id, run_id, state="running", questions=questions, completed=0, status="Research is running.")
         try:
+            saved_selection = self.get(matter_id, run_id).get("selection")
+            resolved = self._resolve_saved_selection(saved_selection)
             for position, question in enumerate(questions, start=1):
-                result = await self.research.run(matter_id, question, change_stage=False)
+                result = await self.research.run(
+                    matter_id,
+                    question,
+                    change_stage=False,
+                    resolved_provider=resolved,
+                )
                 results.append(result)
                 self._write(
                     matter_id, run_id, state="running", questions=questions, completed=position,
@@ -156,3 +180,25 @@ class ResearchRunService:
         if not matter:
             raise KeyError(f"Matter not found: {matter_id}")
         return str(matter["path"])
+
+    @staticmethod
+    def _selection_values(resolved: ResolvedAgentProvider) -> dict[str, str]:
+        selection = resolved.selection
+        return {
+            "agent_id": selection.agent_id,
+            "provider": selection.provider,
+            "model": selection.model,
+            "reasoning_effort": selection.reasoning_effort,
+        }
+
+    def _resolve_saved_selection(
+        self, values: dict[str, Any] | None
+    ) -> ResolvedAgentProvider | None:
+        if not values:
+            return None
+        selection = ProviderSelection(**values)
+        if selection.provider == "workspace_default":
+            return self.resolve_agent() if self.resolve_agent is not None else None
+        if self.resolve_selection is None:
+            return None
+        return self.resolve_selection(selection)

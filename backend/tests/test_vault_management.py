@@ -153,6 +153,30 @@ async def test_concurrent_switches_serialize(tmp_path: Path) -> None:
 
 
 @pytest.mark.asyncio
+async def test_vault_switch_closes_old_workspace_provider(tmp_path: Path) -> None:
+    first, second = tmp_path / "first", tmp_path / "second"
+    copy_test_vault(first)
+    copy_test_vault(second)
+    manager = ActiveContextManager(
+        _settings(first), pointer_path=tmp_path / "pointer.json"
+    )
+
+    class ClosableProvider:
+        def __init__(self):
+            self.closed = False
+
+        async def close(self):
+            self.closed = True
+
+    provider = ClosableProvider()
+    manager.context.provider_router.workspace_provider = provider
+
+    await manager.activate(second)
+
+    assert provider.closed is True
+
+
+@pytest.mark.asyncio
 async def test_concurrent_full_selections_prepare_against_context_at_their_turn(tmp_path: Path) -> None:
     paths = [tmp_path / name for name in ("first", "second", "third")]
     for path in paths:

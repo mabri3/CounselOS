@@ -3,7 +3,10 @@ from __future__ import annotations
 import pytest
 
 from app.models.api import ChatResponse, WorkItemCreate
+from app.models.awareness import DevelopmentCandidate, ProviderScanResult, SourceReference
 from app.services.research_runs import ResearchRunService
+from app.agents.runner import ResolvedAgentProvider
+from app.providers.base import ProviderSelection
 
 
 @pytest.mark.asyncio
@@ -136,6 +139,42 @@ async def test_research_refreshes_precomputed_dossier_orientation(app_context):
         ],
     }
     assert "## Matter summary" in app_context.vault.read_markdown(result["path"])["content"]
+    dossier = app_context.dossiers.get("MAT-DEMO-ORBIT")["content"]
+    assert dossier.count("## Matter summary") == 1
+    assert "## Summary" not in dossier
+    assert dossier.count("## Research and source support") == 1
+    assert "## Research\n" not in dossier
+    assert f"Latest review: `{result['path']}`" in dossier
+    assert "Research has not been added yet." not in dossier
+
+
+@pytest.mark.asyncio
+async def test_research_run_reuses_saved_provider_selection(app_context):
+    provider = object()
+    selection = ProviderSelection(
+        agent_id="research-agent", provider="codex", model="saved-model",
+        reasoning_effort="high",
+    )
+    resolved = ResolvedAgentProvider(provider=provider, selection=selection)
+    seen = []
+
+    async def run_agent(_request, *, resolved_provider=None):
+        seen.append(resolved_provider)
+        return ChatResponse(reply="Saved selection analysis.")
+
+    app_context.research.bind_agent_runner(run_agent)
+    runs = ResearchRunService(
+        app_context.vault,
+        app_context.research,
+        resolve_agent=lambda: resolved,
+        resolve_selection=lambda saved: ResolvedAgentProvider(provider=provider, selection=saved),
+    )
+    started = runs.start("MAT-DEMO-BEACON", ["One", "Two"])
+    assert started["selection"]["model"] == "saved-model"
+    await runs.wait(started["run_id"])
+
+    assert len(seen) == 2
+    assert all(item is not None and item.selection == selection for item in seen)
 
 
 @pytest.mark.asyncio
@@ -151,6 +190,18 @@ async def test_automatic_research_run_is_async_persisted_and_does_not_change_sta
     assert completed["state"] == "completed"
     assert completed["completed"] == 1
     assert app_context.index.get_matter("MAT-DEMO-BEACON")["status"] == original_stage
+
+
+@pytest.mark.asyncio
+async def test_automatic_research_is_limited_to_three_questions(app_context):
+    runs = ResearchRunService(app_context.vault, app_context.research)
+
+    started = runs.start("MAT-DEMO-BEACON", ["One", "Two", "Three", "Four"])
+    await runs.wait(started["run_id"])
+    completed = runs.get("MAT-DEMO-BEACON", started["run_id"])
+
+    assert completed["questions"] == ["One", "Two", "Three"]
+    assert completed["total"] == 3
 
 
 def test_startup_marks_unfinished_research_runs_interrupted(app_context):
@@ -200,3 +251,128 @@ async def test_missing_source_keys_preserve_packet_with_citation_warning(app_con
     assert "Working Analysis" in packet["content"]
     assert packet["metadata"]["citation_warning"]
     assert "citation formatting failed" in result["warning"].lower()
+
+
+@pytest.mark.asyncio
+async def test_research_source_lines_use_clean_label_and_bounded_body_excerpt(app_context):
+    source_path = "03_Matters/beacon-instant-onboarding/documents/launch-policy.md"
+    app_context.vault.write_markdown(
+        source_path,
+        "# Launch policy\n\nThe limited pilot needs a manual review before launch. " + ("More detail. " * 80),
+        {
+            "record_type": "internal_policy",
+            "matter_id": "MAT-DEMO-BEACON",
+            "secret_internal_key": "do-not-display",
+        },
+    )
+
+    async def search(_query, *, matter_path=None):
+        return {
+            "internal": [{
+                "path": source_path,
+                "title": "Launch Policy",
+                "snippet": (
+                    "--- record_type: internal_policy matter_id: MAT-DEMO-BEACON "
+                    "secret_internal_key: do-not-display --- raw search material"
+                ),
+            }],
+            "external": [],
+        }
+
+    app_context.research.search.search = search
+    result = await app_context.research.run(
+        "MAT-DEMO-BEACON", "What applies?", change_stage=False
+    )
+    sources = app_context.vault.read_markdown(result["path"])["content"].split(
+        "## Sources surfaced\n\n", 1
+    )[1].split("\n\n## Last-mile work", 1)[0]
+
+    assert "Launch Policy" in sources
+    assert "The limited pilot needs a manual review before launch." in sources
+    assert source_path not in sources
+    assert "secret_internal_key" not in sources
+    assert "record_type:" not in sources
+    assert len(sources) <= 260
+
+
+@pytest.mark.asyncio
+async def test_polaris_public_material_is_synthesized_locally_and_labeled_supplied(app_context):
+    class Polaris:
+        def __init__(self):
+            self.queries = []
+
+        async def research(self, query):
+            self.queries.append(query)
+            return ProviderScanResult(
+                provider_id="polaris",
+                status="success",
+                candidates=[DevelopmentCandidate(
+                    title="Public CDD material",
+                    provider_observation="Public guidance discusses customer due diligence.",
+                    sources=[SourceReference(
+                        title="Agency guidance",
+                        canonical_url="https://example.com/guidance",
+                        excerpt="Public guidance excerpt.",
+                        support_state="supplied",
+                    )],
+                )],
+            )
+
+    polaris = Polaris()
+    prompts = []
+
+    async def run_agent(request):
+        prompts.append(request.message)
+        return ChatResponse(reply="Local synthesis with private matter context.")
+
+    app_context.research.bind_polaris(polaris)
+    app_context.research.bind_agent_runner(run_agent)
+    original_stage = app_context.index.get_matter("MAT-DEMO-BEACON")["status"]
+
+    result = await app_context.research.run(
+        "MAT-DEMO-BEACON",
+        "What public federal rules govern customer due diligence?",
+        change_stage=False,
+    )
+    packet = app_context.vault.read_markdown(result["path"])
+
+    assert len(polaris.queries) == 1
+    assert polaris.queries[0].standing_question == "What public federal rules govern customer due diligence?"
+    assert "Public guidance discusses customer due diligence" in prompts[0]
+    assert "Local synthesis with private matter context" in packet["content"]
+    assert "- Supplied: [Agency guidance](https://example.com/guidance)" in packet["content"]
+    assert app_context.index.get_matter("MAT-DEMO-BEACON")["status"] == original_stage
+
+
+@pytest.mark.asyncio
+async def test_private_polaris_question_is_blocked_before_network_and_kept_local(app_context):
+    class Polaris:
+        called = False
+
+        async def research(self, _query):
+            self.called = True
+            raise AssertionError("Polaris must not receive a private matter ID")
+
+    polaris = Polaris()
+    app_context.research.bind_polaris(polaris)
+    app_context.research.search.settings.search_provider = "tavily"
+    app_context.research.search.settings.tavily_api_key = "test-key"
+    external_queries = []
+
+    async def external_search(query):
+        external_queries.append(query)
+        raise AssertionError("No external provider may receive a private matter ID")
+
+    app_context.research.search.search_external = external_search
+
+    result = await app_context.research.run(
+        "MAT-DEMO-BEACON",
+        "What rules apply to MAT-DEMO-BEACON?",
+        change_stage=False,
+    )
+    packet = app_context.vault.read_markdown(result["path"])
+
+    assert not polaris.called
+    assert not external_queries
+    assert result["polaris_status"] == "privacy_blocked"
+    assert "External research privacy check blocked this question" in packet["metadata"]["warning"]

@@ -7,10 +7,11 @@ from dataclasses import dataclass, field
 from typing import Any, Callable
 
 from app.agents.context import ContextBuilder
-from app.agents.registry import AgentRegistry
+from app.agents.registry import AgentDefinition, AgentRegistry
 from app.models.api import AppliedSkillSummary, ChatChoice, ChatRequest, ChatResponse, MatterUpdateCard, QuestionCard, ToolTrace, WorkProductCard
 from app.models.awareness import WatchDraftCard, WatchScanCard
-from app.providers.base import LLMProvider
+from app.providers.base import LLMProvider, ProviderSelection
+from app.providers.catalog import ProviderAdapterError
 from app.tools.registry import ToolExecutionContext, ToolExecutionResult, ToolRegistry
 from app.skills.registry import SkillRegistry
 
@@ -27,9 +28,16 @@ class RunnerExecutionState:
 
 
 class AgentExecutionError(Exception):
-    def __init__(self, state: RunnerExecutionState):
+    def __init__(self, state: RunnerExecutionState, safe_detail: str | None = None):
         super().__init__("Agent execution did not finish.")
         self.state = state
+        self.safe_detail = safe_detail
+
+
+@dataclass(frozen=True)
+class ResolvedAgentProvider:
+    provider: LLMProvider
+    selection: ProviderSelection
 
 
 class AgentRunner:
@@ -41,13 +49,45 @@ class AgentRunner:
         context_builder: ContextBuilder,
         skills: SkillRegistry,
         app_context: Any,
+        provider_resolver: Callable[[AgentDefinition], ResolvedAgentProvider] | None = None,
     ):
-        self.provider = provider
+        self._provider = provider
         self.agents = agents
         self.tools = tools
         self.context_builder = context_builder
         self.skills = skills
         self.app_context = app_context
+        self.provider_resolver = provider_resolver
+
+    @property
+    def provider(self) -> LLMProvider:
+        return self._provider
+
+    @provider.setter
+    def provider(self, provider: LLMProvider) -> None:
+        """Replace routing with one provider, preserving the existing test seam."""
+        self._provider = provider
+        self.provider_resolver = None
+
+    def resolve(self, agent_id: str) -> ResolvedAgentProvider:
+        """Resolve one provider selection for reuse throughout a single run."""
+        return self._resolve_agent(self.agents.get(agent_id))
+
+    def _resolve_agent(self, agent: AgentDefinition) -> ResolvedAgentProvider:
+        if self.provider_resolver is not None:
+            resolved = self.provider_resolver(agent)
+            if resolved.selection.agent_id != agent.agent_id:
+                raise ValueError("The resolved provider selection does not match the agent.")
+            return resolved
+        return ResolvedAgentProvider(
+            provider=self.provider,
+            selection=ProviderSelection(
+                agent_id=agent.agent_id,
+                provider=agent.provider or "workspace_default",
+                model=agent.model,
+                reasoning_effort=agent.reasoning_effort,
+            ),
+        )
 
     async def run(
         self,
@@ -55,14 +95,21 @@ class AgentRunner:
         *,
         execution_state: RunnerExecutionState | None = None,
         checkpoint: Callable[[RunnerExecutionState], None] | None = None,
+        resolved_provider: ResolvedAgentProvider | None = None,
     ) -> ChatResponse:
         state = execution_state or RunnerExecutionState()
         try:
-            return await self._run(request, state=state, checkpoint=checkpoint)
+            return await self._run(
+                request,
+                state=state,
+                checkpoint=checkpoint,
+                resolved_provider=resolved_provider,
+            )
         except AgentExecutionError:
             raise
         except Exception as exc:
-            raise AgentExecutionError(state) from exc
+            safe_detail = str(exc) if isinstance(exc, ProviderAdapterError) else None
+            raise AgentExecutionError(state, safe_detail=safe_detail) from exc
 
     async def _run(
         self,
@@ -70,9 +117,14 @@ class AgentRunner:
         *,
         state: RunnerExecutionState,
         checkpoint: Callable[[RunnerExecutionState], None] | None,
+        resolved_provider: ResolvedAgentProvider | None,
     ) -> ChatResponse:
         review_author = _resolved_review_author(request)
         agent = self.agents.get(request.agent_id)
+        resolved = resolved_provider or self._resolve_agent(agent)
+        if resolved.selection.agent_id != agent.agent_id:
+            raise ValueError("The resolved provider selection does not match the requested agent.")
+        provider = resolved.provider
         skill = self.skills.get(request.skill_id) if request.skill_id else None
         applied_skills = (
             [AppliedSkillSummary(skill_id=skill.skill_id, name=skill.name)] if skill else []
@@ -143,9 +195,7 @@ class AgentRunner:
             trace.append(ToolTrace(tool=tool_name, status=result.status, summary=result.summary))
             changed_paths.extend(result.changed_paths)
             refresh.extend(result.refresh)
-            card = _card_from_tool_data(result.data)
-            if card:
-                cards.append(card)
+            cards.extend(_cards_from_tool_data(result.data))
             return ChatResponse(
                 reply=result.summary,
                 trace=trace, changed_paths=_unique(changed_paths), refresh=_unique(refresh),
@@ -153,7 +203,7 @@ class AgentRunner:
             )
 
         for _ in range(agent.max_steps):
-            reply = await self.provider.complete(messages, provider_tools)
+            reply = await provider.complete(messages, provider_tools)
             if not isinstance(reply.content, str) or not isinstance(reply.tool_calls, list):
                 raise ValueError("The provider returned a malformed reply.")
             if reply.content.strip():
@@ -227,6 +277,8 @@ class AgentRunner:
                             active_file=request.active_file,
                             review_author=review_author,
                             lawyer_author=request.lawyer_author,
+                            trusted_source_id=request.trusted_source_id,
+                            expected_dossier_hash=request.expected_dossier_hash,
                         ),
                         call.name,
                         call.arguments,
@@ -259,9 +311,7 @@ class AgentRunner:
                     ))
                 changed_paths.extend(result.changed_paths)
                 refresh.extend(result.refresh)
-                card = _card_from_tool_data(result.data)
-                if card:
-                    cards.append(card)
+                cards.extend(_cards_from_tool_data(result.data))
                 messages.append(
                     {
                         "role": "tool",
@@ -286,7 +336,7 @@ class AgentRunner:
                 ),
             }
         )
-        final_reply = await self.provider.complete(messages, None)
+        final_reply = await provider.complete(messages, None)
         return ChatResponse(
             reply=final_reply.content or "The available actions are complete; use the trace and updated matter state as the working result.",
             trace=trace,
@@ -373,10 +423,10 @@ def _lifecycle_permissions(message: str) -> dict[str, bool]:
 def _cards_for(request: ChatRequest) -> list[QuestionCard | MatterUpdateCard]:
     if not request.matter_id:
         return []
-    if request.card_action:
+    if request.card_action and request.card_action.card_id.startswith("intake-"):
         if request.card_action.action == "stop":
             return [MatterUpdateCard(action_id=request.card_action.card_id, summary="Intake questions stopped", changed_sections=["Working ask"], can_edit=False)]
-        if request.card_action.action in {"answer", "skip"}:
+        if request.card_action.action in {"answer", "answer_set", "skip"}:
             return [MatterUpdateCard(action_id=request.card_action.card_id, summary="Matter updated", changed_sections=["Facts", "Missing information"])]
     if request.attachments and not request.message.strip():
         count = len(request.attachments)
@@ -406,18 +456,33 @@ def _watch_id_from_card(card_id: str, values: list[str]) -> str:
     raise ValueError("The Watch card does not identify a Watch.")
 
 
-def _card_from_tool_data(data: dict[str, Any]) -> WorkProductCard | WatchDraftCard | WatchScanCard | None:
+def _cards_from_tool_data(data: dict[str, Any]) -> list[Any]:
     if (
         isinstance(data, dict)
+        and data.get("record_type") == "work_product"
         and all(data.get(key) for key in ("title", "vault_path", "state"))
         and data.get("state") in {"draft", "final"}
     ):
-        return WorkProductCard.model_validate(data)
+        return [WorkProductCard.model_validate(data)]
+    intake_cards: list[Any] = []
+    if isinstance(data, dict):
+        if isinstance(data.get("questions"), list):
+            intake_cards.extend(
+                QuestionCard.model_validate(question)
+                for question in data["questions"]
+                if isinstance(question, dict)
+            )
+        if not intake_cards and isinstance(data.get("question"), dict):
+            intake_cards.append(QuestionCard.model_validate(data["question"]))
+        if isinstance(data.get("matter_update"), dict):
+            intake_cards.append(MatterUpdateCard.model_validate(data["matter_update"]))
+    if intake_cards:
+        return intake_cards
     card = data.get("card") if isinstance(data, dict) else None
     if not isinstance(card, dict):
-        return None
+        return []
     if card.get("type") == "watch_draft":
-        return WatchDraftCard.model_validate(card)
+        return [WatchDraftCard.model_validate(card)]
     if card.get("type") == "watch_scan":
-        return WatchScanCard.model_validate(card)
-    return None
+        return [WatchScanCard.model_validate(card)]
+    return []

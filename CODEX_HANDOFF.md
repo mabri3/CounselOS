@@ -11,6 +11,25 @@ You are the senior coding agent responsible for turning this scaffold into a rel
 5. `README.md`
 6. The Markdown configuration and sample data under `vault/`
 
+## Current authoritative checkpoint
+
+The active work order is
+`docs/core-intake-provider-completion.handoff-prompt.md`. Read its plan and
+progress file before application changes. Resume at the first pending step.
+
+This checkpoint is exhaustive for the MVP. Audit every unchecked, pending, or
+failed item in `current.md`, `docs/BUILD_PLAN.md`,
+`docs/ACCEPTANCE_TESTS.md`, and every `docs/*.handoff-progress.md` file.
+Implement and verify each non-Later item. Preserve stale history with dated
+corrections. Do not create a new active or Next plan to defer unfinished work.
+At completion, only the explicit Later list in `current.md` may remain.
+
+Execution is parallel: one Sol Medium coordinator, three concurrent Sol Medium
+implementers in dependency-safe shared-tree waves, and one independent
+read-only Sol Medium reviewer. If that reviewer cannot resolve a material
+question after inspecting the code and tests, the coordinator dispatches one
+read-only Sol High agent for that exact question.
+
 ## Product objective
 
 Build a product-counsel workspace that reduces cognitive load and eliminates setup work. The lawyer should quickly understand what the matter is, what work has already happened, and what decision or action is next.
@@ -49,7 +68,10 @@ For each wave:
 6. Update documentation only when behavior changed.
 7. Leave the application in a runnable state.
 
-## Initial task order
+## Historical initial task order
+
+This order describes the original scaffold. It is not the current backlog.
+Use the authoritative checkpoint above for current work.
 
 1. Make backend tests pass.
 2. Start backend and verify `/api/health`, `/api/config`, `/api/matters`, `/api/decisions`, and `/api/automations`.

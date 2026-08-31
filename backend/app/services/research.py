@@ -1,12 +1,19 @@
 from __future__ import annotations
 
+import re
 from collections.abc import Awaitable, Callable
+from datetime import UTC, datetime
 from typing import Any
 
+from app.intelligence.outbound_policy import OutboundQueryPolicy, PublicResearchQuery
+from app.intelligence.polaris import PolarisIntelligenceProvider
 from app.models.api import ChatRequest, WorkItemCreate
+from app.models.awareness import InternalScope, OutboundWatchQuery, PublicWatchQuery, Watch
+from app.agents.runner import ResolvedAgentProvider
 from app.providers.base import LLMProvider
 from app.services.dossier import DossierService
 from app.services.index import IndexService
+from app.services.internal_knowledge import InternalKnowledgeService
 from app.services.matters import MatterService
 from app.services.search import SearchService
 from app.services.vault import VaultService
@@ -32,11 +39,23 @@ class ResearchService:
         self.search = search
         self.provider = provider
         self.dossiers = dossiers
-        self._agent_runner: Callable[[ChatRequest], Awaitable[Any]] | None = None
+        self._agent_runner: Callable[..., Awaitable[Any]] | None = None
+        self._polaris: PolarisIntelligenceProvider | None = None
+        self._outbound_policy = OutboundQueryPolicy()
 
-    def bind_agent_runner(self, runner: Callable[[ChatRequest], Awaitable[Any]]) -> None:
+    def bind_agent_runner(self, runner: Callable[..., Awaitable[Any]]) -> None:
         """Bind the configured agent runner after the application container is built."""
         self._agent_runner = runner
+
+    def bind_polaris(
+        self,
+        provider: PolarisIntelligenceProvider,
+        outbound_policy: OutboundQueryPolicy | None = None,
+    ) -> None:
+        """Bind public research after runtime construction without changing manual defaults."""
+        self._polaris = provider
+        if outbound_policy is not None:
+            self._outbound_policy = outbound_policy
 
     async def run(
         self,
@@ -45,6 +64,7 @@ class ResearchService:
         *,
         change_stage: bool = True,
         work_item_id: str | None = None,
+        resolved_provider: ResolvedAgentProvider | None = None,
     ) -> dict[str, Any]:
         matter = self.index.get_matter(matter_id)
         if not matter:
@@ -54,21 +74,56 @@ class ResearchService:
         request_path = f"{matter['path']}/request.md"
         request_text = self.vault.read_markdown(request_path)["content"] if self.vault.exists(request_path) else ""
         research_question = question.strip() or matter["title"]
-        try:
-            search_result = await self.search.search(research_question, matter_path=matter["path"])
-        except Exception as exc:
+        if (
+            self.search.settings.search_provider.lower() == "tavily"
+            and self.search.settings.tavily_api_key
+        ):
             search_result = {
                 "query": research_question,
-                "internal": [],
+                "internal": self.vault.lexical_search(
+                    research_question, relative_path=matter["path"], limit=8
+                ),
                 "external": [],
-                "warning": f"Research search failed: {exc}",
+                "warning": None,
             }
+        else:
+            try:
+                search_result = await self.search.search(
+                    research_question, matter_path=matter["path"]
+                )
+            except Exception as exc:
+                search_result = {
+                    "query": research_question,
+                    "internal": [],
+                    "external": [],
+                    "warning": f"Research search failed: {exc}",
+                }
+        polaris_status = "not_configured"
+        public_query = self._prepare_public_query(matter_id, research_question, search_result)
+        if public_query is None:
+            polaris_status = "privacy_blocked"
+        else:
+            if self._polaris is not None and getattr(self._polaris, "configured", True):
+                polaris_status = await self._add_polaris_research(public_query, search_result)
+            if polaris_status in {"not_configured", "failed"}:
+                try:
+                    native = await self.search.search_external(public_query.standing_question)
+                    search_result["external"].extend(native.get("external", []))
+                    if native.get("warning"):
+                        self._append_warning(search_result, str(native["warning"]))
+                except Exception as exc:
+                    self._append_warning(search_result, f"External research failed: {exc}")
         prompt = self._prompt(matter, request_text, research_question, search_result)
         analysis_warning: str | None = None
         try:
             if self._agent_runner is not None:
-                reply = await self._agent_runner(
-                    ChatRequest(message=prompt, matter_id=matter_id, agent_id="research-agent")
+                request = ChatRequest(
+                    message=prompt, matter_id=matter_id, agent_id="research-agent"
+                )
+                reply = (
+                    await self._agent_runner(request, resolved_provider=resolved_provider)
+                    if resolved_provider is not None
+                    else await self._agent_runner(request)
                 )
                 body = str(reply.reply).strip()
             else:
@@ -113,6 +168,7 @@ class ResearchService:
                 "warning": search_result.get("warning"),
                 "analysis_warning": analysis_warning,
                 "citation_warning": citation_warning,
+                "polaris_status": polaris_status,
             },
         )
         warnings = [warning for warning in (search_result.get("warning"), analysis_warning, citation_warning) if warning]
@@ -138,6 +194,7 @@ class ResearchService:
                 ),
                 open_questions=generated_open_questions or current_orientation["open_questions"],
                 research_path=path,
+                research_support=source_lines,
             )
         except Exception as exc:
             orientation_warning = f"Matter orientation update failed: {exc}"
@@ -190,9 +247,81 @@ class ResearchService:
             "warning": " ".join(warnings) or None,
             "internal_sources": len(search_result.get("internal", [])),
             "external_sources": len(search_result.get("external", [])),
+            "polaris_status": polaris_status,
             "analysis_warning": analysis_warning,
             "orientation_warning": orientation_warning,
         }
+
+    def _prepare_public_query(
+        self,
+        matter_id: str,
+        question: str,
+        search_result: dict[str, Any],
+    ) -> OutboundWatchQuery | None:
+        try:
+            public_query = PublicResearchQuery(question=question)
+            now = datetime.now(UTC)
+            privacy_watch = Watch(
+                watch_id="matter-research-privacy-check",
+                path="privacy-check.md",
+                title="Matter research privacy check",
+                standing_question=question,
+                public_query=PublicWatchQuery(standing_question=question),
+                purposes=["awareness"],
+                internal_scope=InternalScope(matter_ids=[matter_id]),
+                created_at=now,
+                updated_at=now,
+            )
+            corpus = InternalKnowledgeService(self.vault).forbidden_corpus(privacy_watch)
+            return self._outbound_policy.prepare_public(public_query, corpus)
+        except Exception:
+            self._append_warning(
+                search_result,
+                "External research privacy check blocked this question. It remains available for local research.",
+            )
+            return None
+
+    async def _add_polaris_research(
+        self,
+        outbound: OutboundWatchQuery,
+        search_result: dict[str, Any],
+    ) -> str:
+        assert self._polaris is not None
+        try:
+            result = await self._polaris.research(outbound)
+        except Exception:
+            self._append_warning(
+                search_result,
+                "Polaris public research failed. Local and native research were preserved.",
+            )
+            return "failed"
+        for warning in result.warnings:
+            self._append_warning(search_result, f"Polaris: {warning}")
+        for candidate in result.candidates:
+            if candidate.sources:
+                for source in candidate.sources:
+                    search_result.setdefault("external", []).append({
+                        "title": source.title,
+                        "url": str(source.canonical_url),
+                        "excerpt": source.excerpt,
+                        "support_state": "supplied",
+                        "provider": "polaris",
+                        "provider_observation": candidate.provider_observation,
+                    })
+            elif candidate.provider_observation:
+                search_result.setdefault("external", []).append({
+                    "title": candidate.title,
+                    "url": "",
+                    "excerpt": candidate.provider_observation,
+                    "support_state": "supplied",
+                    "provider": "polaris",
+                })
+        return result.status
+
+    @staticmethod
+    def _append_warning(search_result: dict[str, Any], warning: str) -> None:
+        current = str(search_result.get("warning") or "").strip()
+        search_result["warning"] = f"{current} {warning}".strip()
 
     def _complete_exact_work_item(self, matter_id: str, work_item_id: str) -> None:
         item = next(
@@ -266,16 +395,50 @@ class ResearchService:
             "last-mile verification. Keep the recommendation separate from the lawyer's decision."
         )
 
-    @staticmethod
-    def _source_lines(search_result: dict[str, Any]) -> str:
+    def _source_lines(self, search_result: dict[str, Any]) -> str:
         lines: list[str] = []
         for item in search_result.get("internal", []):
-            lines.append(f"- Internal: `{item['path']}` — {item.get('snippet', '')[:240]}")
+            path = item["path"]
+            raw_excerpt = ""
+            if self.vault.exists(path):
+                try:
+                    raw_excerpt = str(self.vault.read_markdown(path).get("content") or "")
+                except (OSError, ValueError):
+                    pass
+            label = self._source_label(item, path)
+            excerpt = self._clean_source_excerpt(raw_excerpt)
+            lines.append(f"- Internal: **{label}**{f' — {excerpt}' if excerpt else ''}")
         for item in search_result.get("external", []):
-            lines.append(f"- External: [{item.get('title', 'Source')}]({item.get('url', '')})")
+            title = str(item.get("title") or "Source")
+            url = str(item.get("url") or "")
+            support = "Supplied" if item.get("support_state") == "supplied" else "External"
+            excerpt = self._clean_source_excerpt(str(item.get("excerpt") or ""))
+            rendered = f"[{title}]({url})" if url else f"**{title}**"
+            lines.append(f"- {support}: {rendered}{f' — {excerpt}' if excerpt else ''}")
         if search_result.get("warning"):
             lines.append(f"- Research warning: {search_result['warning']}")
         return "\n".join(lines) or "- No source results were returned. The packet is an issue-spotting scaffold only."
+
+    @staticmethod
+    def _source_label(item: dict[str, Any], path: str) -> str:
+        fallback = path.rsplit("/", 1)[-1].rsplit(".", 1)[0].replace("-", " ").replace("_", " ").title()
+        label = " ".join(str(item.get("title") or fallback or "Internal source").split())
+        return label.replace("[", "").replace("]", "").replace("`", "")
+
+    @staticmethod
+    def _clean_source_excerpt(raw: str, limit: int = 200) -> str:
+        text = raw.strip()
+        if "---" in text:
+            text = text.rsplit("---", 1)[-1]
+        text = re.sub(r"```(?:[a-zA-Z0-9_-]+)?", " ", text)
+        text = re.sub(r"^\s{0,3}(?:#{1,6}|[-*+] |\d+[.)] )\s*", "", text, flags=re.MULTILINE)
+        text = re.sub(r"\[([^]]+)]\([^)]+\)", r"\1", text)
+        text = re.sub(r"[*_`>]", "", text)
+        text = " ".join(text.split())
+        if len(text) <= limit:
+            return text
+        shortened = text[: limit + 1].rsplit(" ", 1)[0].rstrip(" ,;:-")
+        return f"{shortened}…"
 
     @staticmethod
     def _fallback_packet(question: str, search_result: dict[str, Any]) -> str:

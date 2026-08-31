@@ -7,6 +7,7 @@ import pytest
 
 from app.agents.runner import _explicit_watch_activation_requested, _watch_card_tool
 from app.models.api import CardAction, ChatRequest
+from app.routers.chat import _watch_builder_requested
 from app.models.awareness import (
     ProviderScanResult,
     PublicWatchQuery,
@@ -162,3 +163,32 @@ def test_watch_activation_intent_must_be_explicit():
     assert _explicit_watch_activation_requested(ChatRequest(
         card_action=CardAction(card_id="watch-draft:WATCH-1", action="start_watch")
     )) is True
+
+
+def test_watch_builder_intent_requires_an_explicit_command():
+    request = ChatRequest(message=(
+        "The transaction monitoring review found a recipient linked to an "
+        "unlicensed currency-exchange business. What must we do now?"
+    ))
+
+    assert _watch_builder_requested(request.message, request) is False
+    generic_change = "How does this regulatory change affect transaction monitoring?"
+    assert _watch_builder_requested(
+        generic_change, ChatRequest(message=generic_change)
+    ) is False
+    incidental_watch = "The policy says we must change this Watch every quarter."
+    assert _watch_builder_requested(
+        incidental_watch, ChatRequest(message=incidental_watch)
+    ) is False
+    question = "Are we required to set up monitoring for these transfers?"
+    assert _watch_builder_requested(question, ChatRequest(message=question)) is False
+    explicit = "Create a Watch to monitor currency-exchange businesses."
+    assert _watch_builder_requested(explicit, ChatRequest(message=explicit)) is True
+    edit = "Change this Watch to cover currency-exchange businesses."
+    assert _watch_builder_requested(edit, ChatRequest(message=edit)) is True
+    setup = "Set up monitoring for currency-exchange businesses."
+    assert _watch_builder_requested(setup, ChatRequest(message=setup)) is True
+    polite = "Could you create a Watch for currency-exchange businesses?"
+    assert _watch_builder_requested(polite, ChatRequest(message=polite)) is True
+    intake = ChatRequest(message=explicit, agent_id="intake-agent")
+    assert _watch_builder_requested(intake.message, intake) is False

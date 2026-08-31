@@ -87,6 +87,7 @@ class ActiveContextManager:
                 candidate.recovery_warning = str(exc)
             if candidate.settings.scheduler_enabled:
                 candidate.scheduler.start()
+            await old.close_providers()
             return candidate
         except BaseException:
             if not committed:
@@ -110,6 +111,8 @@ class ActiveContextManager:
             await self.context.scheduler.stop()
             await self.context.scheduler.wait_for_active_work()
             await self.context.research_runs.wait_for_active_work()
+            await self.context.chat_runs.wait_for_active_work()
+            await self.context.close_providers()
 
     def _saved_vault_path(self) -> Path | None:
         try:

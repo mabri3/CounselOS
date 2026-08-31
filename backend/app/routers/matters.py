@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 
-from app.models.api import AnnotationCreate, BatchActionRequest, ChatChoice, ChatResponse, MatterActionRequest, MatterActionResult, MatterCreate, QuestionCard, ResearchRunStart, StageUpdate, WorkItemCompleteRequest, WorkProductFinalizeRequest
+from app.models.api import AnnotationCreate, BatchActionRequest, ChatRequest, ChatResponse, MatterActionRequest, MatterActionResult, MatterCreate, ResearchRunStart, StageUpdate, WorkItemCompleteRequest, WorkProductFinalizeRequest
 from app.routers.dependencies import get_context
 from app.runtime import AppContext
 from app.models.awareness import MitigationCreate, MitigationPatch
@@ -57,18 +57,29 @@ def list_matters(context: AppContext = Depends(get_context)):
 
 
 @router.post("", status_code=201)
-def create_matter(payload: MatterCreate, context: AppContext = Depends(get_context)):
+async def create_matter(payload: MatterCreate, context: AppContext = Depends(get_context)):
     matter = context.matters.create(payload)
-    _start_intake(context, matter["matter_id"])
-    return matter
+    intake = _start_intake(context, matter["matter_id"], payload.request_text)
+    return {
+        **matter,
+        "intake_conversation_id": intake["conversation"]["conversation_id"],
+        "intake_run_id": intake["run"]["run_id"],
+    }
 
 
 @router.post("/{matter_id}/intake", response_model=ChatResponse)
-def start_intake(matter_id: str, context: AppContext = Depends(get_context)):
+async def start_intake(matter_id: str, context: AppContext = Depends(get_context)):
     try:
-        conversation = _start_intake(context, matter_id)
-        message = conversation["messages"][-1]
-        return ChatResponse(reply=message["content"], conversation_id=conversation["conversation_id"], cards=message["cards"], changed_paths=[conversation["path"]], refresh=["matter"])
+        request = context.vault.read_markdown(
+            f"{context.matters.matter_path(matter_id)}/request.md"
+        )["content"].split("\n", 2)[-1].strip()
+        intake = _start_intake(context, matter_id, request)
+        return ChatResponse(
+            reply="Themis is reading your request…",
+            conversation_id=intake["conversation"]["conversation_id"],
+            changed_paths=[intake["conversation"]["path"], intake["run"]["path"]],
+            refresh=["matter"],
+        )
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
@@ -290,35 +301,67 @@ def finalize_work_product(
     context: AppContext = Depends(get_context),
 ):
     try:
-        return context.work_products.finalize(matter_id, payload.draft_path)
+        result = context.work_products.finalize(matter_id, payload.draft_path)
+        matter = context.index.get_matter(matter_id)
+        if matter and matter.get("status") == "generate":
+            context.matters.move_stage(
+                matter_id,
+                "respond",
+                reason="Canonical work product finalized",
+                actor="system",
+            )
+        return result
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except (FileNotFoundError, ValueError) as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
-def _start_intake(context: AppContext, matter_id: str) -> dict:
+def _start_intake(context: AppContext, matter_id: str, request_text: str) -> dict:
     context.matters.get(matter_id)
     existing = context.chat_history.list(matter_id)
-    if existing:
-        return context.chat_history.get(matter_id, existing[0]["conversation_id"])
-    card = QuestionCard(
-        question_id="intake-confirm-ask",
-        text="Here is what I understand you are asking. Is that correct?",
-        reason="Confirming the working ask keeps the original request unchanged.",
-        selection_mode="single",
-        choices=[
-            ChatChoice(value="yes", label="Yes", suggested=True),
-            ChatChoice(value="partly", label="Partly — I will clarify"),
-            ChatChoice(value="change", label="Something else"),
-        ],
-        progress_current=1,
-        progress_total=3,
+    existing_intake = next(
+        (item for item in existing if item.get("conversation_kind") == "intake"), None
     )
-    return context.chat_history.append(
+    if existing_intake:
+        conversation = context.chat_history.get(
+            matter_id, existing_intake["conversation_id"]
+        )
+        run_id = next(
+            (
+                message.get("run_id")
+                for message in conversation["messages"]
+                if message.get("role") == "user" and message.get("run_id")
+            ),
+            None,
+        )
+        if run_id:
+            return {"conversation": conversation, "run": context.chat_runs.get(matter_id, run_id)}
+
+    request_path = f"{context.matters.matter_path(matter_id)}/request.md"
+    request_document = context.vault.read_markdown(request_path)
+    request_id = str(request_document["metadata"].get("request_id") or "")
+    conversation = context.chat_history.append(
+        matter_id, None, role="user", content=request_text,
+        source_ids=[request_id], conversation_kind="intake", intake_state="active",
+        active_agent_id="intake-agent",
+    )
+    message_id = conversation["messages"][0]["message_id"]
+    context.matter_records.ensure_source(
         matter_id,
-        None,
-        role="assistant",
-        content="Here is what I understand you are asking. Is that correct?",
-        cards=[card.model_dump()],
+        source_id=request_id,
+        kind="immutable_request",
+        label="Original request",
+        path=request_path,
     )
+    run = context.chat_runs.start(
+        matter_id,
+        ChatRequest(
+            message=request_text,
+            matter_id=matter_id,
+            conversation_id=conversation["conversation_id"],
+            agent_id="intake-agent",
+        ),
+        existing_user_message_id=message_id,
+    )
+    return {"conversation": context.chat_history.get(matter_id, conversation["conversation_id"]), "run": run}

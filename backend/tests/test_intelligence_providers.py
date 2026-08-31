@@ -86,6 +86,19 @@ async def test_polaris_exact_payload_and_openai_content(outbound):
 
 
 @pytest.mark.asyncio
+async def test_polaris_one_shot_research_has_no_watch_checkpoint(outbound):
+    provider = PolarisIntelligenceProvider(
+        "secret",
+        client=FakeClient([FakeResponse({"choices": [{"message": {"content": "Useful answer"}}]})]),
+    )
+
+    result = await provider.research(outbound)
+
+    assert result.status == "success"
+    assert result.next_checkpoint is None
+
+
+@pytest.mark.asyncio
 async def test_polaris_segmented_plain_text_is_preserved_as_partial(outbound):
     response = FakeResponse(segments=[b"Useful plain ", b"text response"])
     result = await PolarisIntelligenceProvider(

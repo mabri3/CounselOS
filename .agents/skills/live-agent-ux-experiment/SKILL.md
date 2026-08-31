@@ -29,24 +29,34 @@ Use these defaults:
 - Synthesis and diagnosis: `gpt-5.6-sol`, high reasoning
 - Company: clearly fictional and suited to the business type
 - Matter prefix: `<Company> UX Test — NN —`
-- Final action: allow local fictional in-app state changes; stop before an action that could contact a real person or external service
+- Final action: allow local fictional Counsel OS state changes; stop before an action that could contact a real person or external service
 
 Ask one question only if a missing value would materially change the experiment. Otherwise, state the inferred setup and continue.
 
-## Browser-only experiment boundary
+## Visible-browser experiment boundary
 
-Every company-setup and attorney action must use the visible in-app browser. Each attorney actor must load and follow `browser:control-in-app-browser` before its first application action.
+Every company-setup and attorney action must use a visible browser that the assigned actor controls directly. Use this preference order:
+
+1. In-app browser through `browser:control-in-app-browser`.
+2. Chrome through `chrome:control-chrome`.
+3. Safari through `computer-use:computer-use`.
+
+The preference is not a hard browser constraint. The user authorizes the actor to move to the next browser when the preferred browser cannot provide direct, visible, reliable control. The actor must load and follow the skill for each browser surface before using it.
+
+The actor assigned to an item must operate Counsel OS directly. The coordinator must not click, type, navigate, inspect screens on the actor's behalf, or relay UI state between the actor and the application. The actor must continue autonomously through the whole matter and return one report after it finishes or reaches a real product blocker.
+
+Before company setup and before every iteration, the assigned actor must confirm that it can inspect and operate the selected browser. Start with the in-app browser. If a browser cannot provide direct, visible, reliable control, make one recovery attempt with changed conditions allowed by that browser's skill. Then record the browser-specific environment failure and try the next browser in the preference order. If all available browser surfaces fail, repeat the preflight with a different fresh actor when safe. Stop the experiment only when direct actor control cannot be recovered on any permitted browser. Do not substitute coordinator browser control.
 
 The attorney must:
 
-- select the in-app browser explicitly and keep it visible;
+- select the chosen browser explicitly and keep it visible;
 - inspect the current screen before acting;
 - click visible controls and type into visible fields;
 - inspect the visible result after every state-changing action;
 - learn current phase names and workflow order from the UI;
 - use Counsel OS chat and other visible controls when those are the normal product path.
 
-The attorney must not use `curl`, APIs, database access, vault files, source code, repository docs, browser network requests, hidden DOM mutation, Chrome, or a headless browser to learn or operate the product workflow.
+The attorney must not use `curl`, APIs, database access, vault files, source code, repository docs, browser network requests, hidden DOM mutation, or a headless browser to learn or operate the product workflow. Chrome is allowed only through `chrome:control-chrome`. Safari is allowed only through `computer-use:computer-use`.
 
 Shell commands may start or check the application before the experiment. They are environment setup, not UX evidence.
 
@@ -58,11 +68,13 @@ Use one coordinator and two actor types:
 
 1. A requester generates exactly the requested number of realistic questions.
 2. A setup attorney creates or updates the fictional company profile through the visible UI.
-3. A fresh attorney handles one question as one new matter.
-4. Repeat step 3 serially until all iterations finish or the application blocks further work.
+3. Create one fresh attorney for the first question. That attorney creates the matter, performs the legal work in Counsel OS, attempts every relevant phase, finishes as far as the product permits, and then reports the evidence it personally observed.
+4. End that attorney's run. Create a different fresh attorney for the next question. Repeat serially until every question has its own attorney and report, or direct actor control cannot be recovered.
 5. The coordinator normalizes the evidence.
 6. Only after the live runs are complete, create a fresh Sol High synthesis agent. It investigates likely causes and drafts the final assessment and repair backlog.
 7. The coordinator checks the synthesis against the raw evidence before delivery.
+
+For this skill, one iteration item means one requester question handled as one Counsel OS matter. Never split one matter across multiple attorneys, and never let one attorney handle multiple matters.
 
 Use subagents for actors when available. Do not create user-owned Codex tasks unless the user asks for separate tasks. Give each attorney clean context containing only the experiment rules, persona, fictional company facts, and its one exact requester question.
 
@@ -78,7 +90,7 @@ Do not tell later attorneys what earlier attorneys found. This preserves evidenc
 - State material assumptions, missing facts, and unverified leads.
 - Keep recommendations separate from recorded decisions.
 - Use clearly marked fictional test records. Do not overwrite unrelated data.
-- If a public reference company is requested, inspect only public pages in a separate in-app browser tab. Use the broad business model. Do not copy text or claim affiliation.
+- If a public reference company is requested, inspect only public pages in a separate tab or window in the selected browser. Use the broad business model. Do not copy text or claim affiliation.
 
 ## Current UI, not a memorized script
 
@@ -115,7 +127,7 @@ Actors can state the user outcome that should improve. They must not inspect sou
 
 After all live runs end, use a fresh `gpt-5.6-sol` agent with high reasoning for synthesis and diagnosis unless the user specifies another model. Give it the normalized actor evidence, experiment configuration, completion data, and access to the repository. Do not give it unsupported conclusions.
 
-The synthesis agent may inspect source code, tests, logs, and product documentation. This investigation is separate from the browser-only experiment and must not alter the recorded UX evidence.
+The synthesis agent may inspect source code, tests, logs, and product documentation. This investigation is separate from the visible-browser experiment and must not alter the recorded UX evidence.
 
 When `graphify-out/graph.json` exists, begin each issue group with a focused `graphify query`. Inspect the relevant implementation before naming a cause or code location.
 
@@ -159,7 +171,7 @@ Prioritize completion blockers and record-integrity failures first. Then priorit
 
 Continue through all iterations unless:
 
-- the application or in-app browser cannot be recovered;
+- the application cannot be recovered or no permitted browser can provide direct actor control;
 - continuing could alter non-test data;
 - the next action could contact a real person or service;
 - the user must make a material choice.

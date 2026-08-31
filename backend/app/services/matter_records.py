@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 from typing import Any, Iterable
 
+from app.models.api import IntakeTurn, IntakeTurnResult, MatterUpdateCard
 from app.services.matters import MatterService
 from app.services.vault import VaultService
 from app.utils.ids import new_id
@@ -130,6 +131,208 @@ class MatterRecordService:
         self._save(matter_id, record)
         self.matters.append_event(matter_id, "matter_records_updated", action)
         return action
+
+    def ensure_source(
+        self,
+        matter_id: str,
+        *,
+        source_id: str,
+        kind: str,
+        label: str,
+        path: str | None = None,
+        version: str = "",
+    ) -> dict[str, Any]:
+        if not source_id:
+            raise ValueError("A trusted source ID is required.")
+        record = self.get(matter_id)
+        existing = self._find(record["sources"], "source_id", source_id)
+        if existing is not None:
+            return existing
+        action = self.apply_update(
+            matter_id,
+            sources=[{
+                "source_id": source_id,
+                "kind": kind,
+                "label": label,
+                "path": path,
+                "version": version,
+            }],
+            summary=f"Linked {label}",
+            actor="system",
+        )
+        return self._find(self.get(matter_id)["sources"], "source_id", source_id) or action
+
+    def apply_intake_turn(
+        self,
+        matter_id: str,
+        turn: IntakeTurn,
+        *,
+        source_id: str | None = None,
+        expected_dossier_hash: str | None = None,
+    ) -> IntakeTurnResult:
+        matter = self.matters.get(matter_id)
+        questions = turn.next_questions if turn.intake_state == "active" else []
+        record = self.get(matter_id)
+        if not source_id:
+            request_path = f"{matter['path']}/request.md"
+            request = self.vault.read_markdown(request_path)
+            source_id = str(request["metadata"].get("request_id") or "")
+            self.ensure_source(
+                matter_id,
+                source_id=source_id,
+                kind="immutable_request",
+                label="Original request",
+                path=request_path,
+            )
+            record = self.get(matter_id)
+        elif self._find(record["sources"], "source_id", source_id) is None:
+            self.ensure_source(
+                matter_id,
+                source_id=source_id,
+                kind="conversation_message",
+                label="Matter intake response",
+            )
+            record = self.get(matter_id)
+
+        facts: list[dict[str, Any]] = []
+        assumptions = [{"text": text} for text in turn.assumptions if text.strip()]
+        support: list[dict[str, Any]] = []
+        record_ids: list[str] = []
+        for supplied in turn.reported_facts:
+            statement = supplied.statement.strip()
+            if supplied.status == "assumption":
+                assumptions.append({"text": statement})
+                continue
+            if supplied.status != "reported":
+                continue
+            existing = next(
+                (
+                    item for item in record["facts"]
+                    if item.get("status") == "active"
+                    and str(item.get("text", "")).casefold() == statement.casefold()
+                ),
+                None,
+            )
+            if existing:
+                support.append({
+                    "fact_id": existing["fact_id"],
+                    "source_id": source_id,
+                    "relationship": "support",
+                    "statement": statement,
+                })
+                record_ids.append(existing["fact_id"])
+            else:
+                fact_id = new_id("FACT")
+                facts.append({
+                    "fact_id": fact_id,
+                    "text": statement,
+                    "material": supplied.materiality != "minor",
+                    "source_ids": [source_id],
+                })
+                support.append({
+                    "fact_id": fact_id,
+                    "source_id": source_id,
+                    "relationship": "support",
+                    "statement": statement,
+                })
+                record_ids.append(fact_id)
+
+        action = self.apply_update(
+            matter_id,
+            facts=facts,
+            support=support,
+            assumptions=assumptions,
+            summary="Applied an Intake Agent turn",
+        )
+        record_ids.extend(action["created"]["assumptions"])
+        record = self.get(matter_id)
+        record.update(
+            {
+                "working_ask": turn.working_ask.strip(),
+                "issues": _clean_text_list(turn.issues),
+                "open_questions": _clean_text_list(
+                    [*turn.material_missing_facts, *turn.human_questions]
+                ),
+                "public_research_questions": _clean_text_list(
+                    turn.public_research_questions
+                )[:3],
+                "intake_state": turn.intake_state,
+            }
+        )
+        self._save(matter_id, record)
+
+        issues_path = f"{matter['path']}/issues.md"
+        issues = record["issues"]
+        self.vault.update_markdown(
+            issues_path,
+            content="# Issues and workstreams\n\n"
+            + ("\n".join(f"- {item}" for item in issues) or "No workstreams identified yet."),
+            metadata_updates={"matter_id": matter_id, "record_type": "issues"},
+        )
+        matter_path = f"{matter['path']}/matter.md"
+        active_agent_id = "intake-agent" if turn.intake_state == "active" else "counsel-copilot"
+        self.vault.update_markdown(
+            matter_path,
+            metadata_updates={
+                "intake_state": turn.intake_state,
+                "active_agent_id": active_agent_id,
+                "next_action": (
+                    questions[0].text
+                    if questions
+                    else "Review the dossier and continue the legal work."
+                ),
+                "updated_at": iso_now(),
+            },
+        )
+
+        dossier_result = self.matters._dossiers.update_from_intake(
+            matter_id,
+            working_ask=turn.working_ask,
+            facts=record["facts"],
+            assumptions=record["assumptions"],
+            issues=record["issues"],
+            open_questions=record["open_questions"],
+            orientation=turn.dossier_orientation or "",
+            expected_hash=expected_dossier_hash,
+        ) if self.matters._dossiers else None
+        changed_paths = [record["path"], issues_path, matter_path]
+        if dossier_result:
+            changed_paths.append(
+                str(dossier_result.get("path") or dossier_result.get("revision_path"))
+            )
+        update = MatterUpdateCard(
+            action_id=action["action_id"],
+            summary="Matter intake updated",
+            changed_sections=["Working ask", "Facts", "Issues", "Open questions"],
+            can_undo=True,
+        )
+        return IntakeTurnResult(
+            changed_paths=list(dict.fromkeys(changed_paths)),
+            record_ids=record_ids,
+            questions=questions,
+            question=questions[0] if questions else None,
+            matter_update=update,
+            intake_state=turn.intake_state,
+        )
+
+    def set_intake_state(self, matter_id: str, state: str) -> dict[str, Any]:
+        if state not in {"active", "complete"}:
+            raise ValueError("Intake state must be active or complete.")
+        record = self.get(matter_id)
+        record["intake_state"] = state
+        self._save(matter_id, record)
+        matter = self.matters.get(matter_id)
+        self.vault.update_markdown(
+            f"{matter['path']}/matter.md",
+            metadata_updates={
+                "intake_state": state,
+                "active_agent_id": (
+                    "intake-agent" if state == "active" else "counsel-copilot"
+                ),
+                "updated_at": iso_now(),
+            },
+        )
+        return self.get(matter_id)
 
     def save_facts_from_messages(
         self,
@@ -272,7 +475,14 @@ class MatterRecordService:
         return f"{self.matters.matter_path(matter_id)}/facts.md"
 
     def _save(self, matter_id: str, record: dict[str, Any]) -> None:
-        metadata = {key: record[key] for key in ("matter_id", "record_type", "facts", "sources", "support", "assumptions", "conflicts", "actions")}
+        metadata = {
+            key: record[key]
+            for key in (
+                "matter_id", "record_type", "facts", "sources", "support",
+                "assumptions", "conflicts", "actions", "working_ask", "issues",
+                "open_questions", "public_research_questions", "intake_state",
+            )
+        }
         active = [item for item in record["facts"] if item.get("status") == "active" and not item.get("withdrawn_at")]
         assumptions = [item for item in record["assumptions"] if item.get("status") == "open" and not item.get("withdrawn_at")]
         body = "# Known Facts\n\n" + ("\n".join(f"- {item['text']}" for item in active) or "No facts saved yet.")
@@ -300,8 +510,17 @@ class MatterRecordService:
             "matter_id": metadata.get("matter_id"), "record_type": "facts",
             "facts": facts,
             **{key: list(metadata.get(key) or []) for key in ("sources", "support", "assumptions", "conflicts", "actions")},
+            "working_ask": str(metadata.get("working_ask") or ""),
+            "issues": list(metadata.get("issues") or []),
+            "open_questions": list(metadata.get("open_questions") or []),
+            "public_research_questions": list(metadata.get("public_research_questions") or []),
+            "intake_state": str(metadata.get("intake_state") or "active"),
         }
 
     @staticmethod
     def _find(items: list[dict[str, Any]], key: str, value: Any) -> dict[str, Any] | None:
         return next((item for item in items if item.get(key) == value), None)
+
+
+def _clean_text_list(values: Iterable[str]) -> list[str]:
+    return list(dict.fromkeys(value.strip() for value in values if value.strip()))

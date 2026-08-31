@@ -115,15 +115,13 @@ async def get_settings(context: AppContext = Depends(get_context)):
     result["values"].update(
         {
             "agents.provider": context.settings.llm_provider,
-            "agents.reasoning_model": (
-                context.settings.llm_model
-                if context.settings.llm_provider == "openai_compatible"
-                else "mock"
-            ),
+            "agents.reasoning_model": context.settings.llm_model or "mock",
             "agents.reasoning_effort": context.settings.llm_reasoning_effort or "default",
         }
     )
-    result["model_catalog"] = await context.model_catalog()
+    result["model_catalog"] = context.settings_store.normalize_model_catalog(
+        await context.model_catalog()
+    )
     return result
 
 
@@ -136,11 +134,7 @@ async def update_settings(
         context.settings_store.validate(payload.values)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
-    current_model = (
-        context.settings.llm_model
-        if context.settings.llm_provider == "openai_compatible"
-        else "mock"
-    )
+    current_model = context.settings.llm_model or "mock"
     provider = str(payload.values.get("agents.provider", context.settings.llm_provider))
     model = str(payload.values.get("agents.reasoning_model", current_model or ""))
     effort = str(
@@ -149,7 +143,7 @@ async def update_settings(
             context.settings.llm_reasoning_effort or "default",
         )
     )
-    catalog = await context.model_catalog()
+    catalog = context.settings_store.normalize_model_catalog(await context.model_catalog())
     provider_option = next(
         (
             option
@@ -170,13 +164,13 @@ async def update_settings(
         raise HTTPException(status_code=422, detail=f"Unsupported model provider: {provider}")
     if not model_option:
         raise HTTPException(status_code=422, detail=f"Model is not available from this provider: {model}")
-    if effort not in model_option.get("efforts", []):
+    if effort not in model_option.get("reasoning_efforts", []):
         raise HTTPException(
             status_code=422,
             detail=f"Reasoning effort is not available for this model: {effort}",
         )
     try:
-        context.configure_model(provider, model, effort)
+        await context.configure_model(provider, model, effort)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     return context.settings_store.write(payload.values)

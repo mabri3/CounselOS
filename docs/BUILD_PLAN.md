@@ -6,7 +6,17 @@ A wave ends with a working application that can be demonstrated. Do not leave br
 
 ## Active checkpoint — Matter-led intake, research, and work product
 
-**Status:** Planned on 2026-08-27. Execution has not started.
+**Status correction — 2026-08-30:** Implemented and verified by the canonical
+completion checkpoint. The earlier 2026-08-28 completion claim did not prove
+adaptive LLM intake. Current evidence is recorded in
+`docs/core-intake-provider-completion.handoff-progress.md` and
+`docs/MVP_CLOSURE_AUDIT.md`.
+
+**Closure rule:** This checkpoint now also includes per-agent provider/model/
+reasoning selection, OpenCode Go, Codex CLI, Antigravity CLI, and Polaris for
+ordinary matter research. Completion requires the exhaustive audit in
+`docs/MVP_CLOSURE_AUDIT.md`. No non-Later item may remain pending, failed,
+unchecked, or moved to a new plan.
 
 ### Outcome
 
@@ -229,9 +239,8 @@ The editor can track typed or agent-proposed changes, add comments to selected t
 
 ## Backlog after validation
 
-- Native provider adapters.
+- Additional research providers beyond Polaris and the current native search path.
 - Better retrieval.
-- External legal research integrations.
 - Selection-based rewrite and diff.
 - Cloud tenancy.
 - Tauri packaging.

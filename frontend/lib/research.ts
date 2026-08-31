@@ -23,7 +23,8 @@ export function parseMemo(document: VaultDocument): ResearchMemo {
     const match = line.match(SOURCE_LINE);
     if (!match) { bodyLines.push(line); continue; }
 
-    const kind = match[1] === "External" ? "Public source" : "Vault document";
+    const external = match[1].toLowerCase() === "external";
+    const kind = external ? "Public source" : "Matter document";
     const rest = match[2];
     const [nameRaw, noteRaw] = splitOnDash(rest);
     const path = nameRaw.match(BACKTICK_PATH)?.[1];
@@ -32,10 +33,10 @@ export function parseMemo(document: VaultDocument): ResearchMemo {
     citations.push({
       id: `s${citations.length + 1}`,
       n: String(citations.length + 1),
-      name: link ? link[1] : path ? path.split("/").at(-1) ?? path : stripMarks(nameRaw),
-      kind: link ? `${kind} · ${link[2]}` : path ? `${kind} · ${path}` : kind,
-      quote: noteRaw || "No passage was captured for this source.",
-      note: path ? `Stored in the vault at ${path}.` : "Captured with the memo.",
+      name: link ? link[1] : path ? sourceLabel(path) : stripMarks(nameRaw),
+      kind: link ? `${kind} · ${link[2]}` : kind,
+      quote: cleanExcerpt(noteRaw, path),
+      note: external ? "Public link cited in this research." : "Used as internal matter support.",
     });
   }
 
@@ -136,4 +137,56 @@ function splitOnDash(value: string): [string, string] {
 
 function stripMarks(value: string): string {
   return value.replace(/[`*_]/g, "").trim();
+}
+
+function sourceLabel(path: string): string {
+  const name = path.split("/").at(-1) ?? path;
+  const fixed: Record<string, string> = {
+    "matter.md": "Matter details",
+    "request.md": "Original request",
+    "facts.md": "Facts, sources & assumptions",
+    "issues.md": "Issue map",
+    "participants.md": "People & roles",
+    "recommendations.md": "Working recommendation",
+    "dossier.md": "Matter dossier",
+  };
+  if (fixed[name]) return fixed[name];
+  if (/^CONV-/i.test(name)) return "Matter conversation";
+  if (/^RES-/i.test(name)) return "Research packet";
+  if (/^RUN-/i.test(name)) return "Research run";
+  if (/^DOS-/i.test(name)) return "Dossier revision";
+  if (/^WI-/i.test(name)) return "Work item";
+  if (/^(?:EVT-|\d{4}-\d{2}-\d{2}-EVT-)/i.test(name)) return "Matter activity";
+  return name.replace(/\.md$/i, "").replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function cleanExcerpt(raw: string, path?: string): string {
+  const value = stripMarks(raw).replace(/\s+/g, " ").trim();
+  if (!value) return "No excerpt was captured for this source.";
+  const looksLikeFrontmatter = /^---\s/.test(value)
+    || /\b(?:matter_id|record_type|created_at|updated_at|immutable|source_revision):\s/.test(value);
+  if (!looksLikeFrontmatter) return value;
+
+  const bodyHeading = value.match(/(?:^|\s)#{1,6}\s+[^#]+?(?=\s+#{1,6}\s+|$)/)?.[0]
+    ?.replace(/^\s*#{1,6}\s+/, "")
+    .trim();
+  if (bodyHeading && !/:\s/.test(bodyHeading)) return bodyHeading;
+
+  const label = path ? sourceLabel(path) : "Matter source";
+  const descriptions: Record<string, string> = {
+    "Original request": "The request that opened this matter.",
+    "Matter details": "The saved details for this matter.",
+    "Facts, sources & assumptions": "The saved facts and assumptions for this matter.",
+    "Issue map": "The saved legal and operational issues.",
+    "People & roles": "The saved people and roles for this matter.",
+    "Working recommendation": "The saved working recommendation.",
+    "Matter dossier": "The current matter summary.",
+    "Matter conversation": "A saved conversation from this matter.",
+    "Research packet": "A saved first-pass research packet.",
+    "Research run": "The saved status of a research run.",
+    "Dossier revision": "A saved revision of the matter dossier.",
+    "Work item": "A saved work item for this matter.",
+    "Matter activity": "A saved matter activity record.",
+  };
+  return descriptions[label] ?? "A saved document from this matter.";
 }

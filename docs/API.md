@@ -39,8 +39,19 @@ Base URL: `http://localhost:8000/api`
 | POST | `/automations/schedules` | Create a schedule |
 | POST | `/automations/schedules/{schedule_id}/run` | Run a schedule now |
 | POST | `/automations/agents` | Create a Markdown agent definition |
+| GET | `/automations/agents` | List agents, including provider/model/reasoning overrides and resolved defaults |
+| GET | `/automations/agents/{agent_id}` | Read one agent and its available provider catalog |
+| PUT | `/automations/agents/{agent_id}` | Save agent instructions, tools, and optional provider/model/reasoning overrides |
+| GET | `/settings` | Read workspace settings and the five-provider readiness/model catalog |
+| PUT | `/settings` | Save workspace-default provider, model, and reasoning effort after readiness validation |
 
 FastAPI also exposes interactive API documentation at `http://localhost:8000/docs` while the backend is running.
+
+Agent-backed chat and research runs record the resolved provider, model, and
+reasoning effort when the run is created. Empty agent overrides inherit the
+workspace default. An explicit unavailable selection returns a visible error;
+it does not silently use another provider. CLI providers receive only the
+typed tools declared for the selected Counsel OS agent.
 
 ## Continuous Legal Awareness
 

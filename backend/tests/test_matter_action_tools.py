@@ -17,6 +17,108 @@ async def test_typed_tools_use_context_actor_and_generic_write_is_protected(app_
 
 
 @pytest.mark.asyncio
+async def test_recommendation_save_returns_a_non_finalizable_record(app_context):
+    agent = app_context.agents.get("counsel-copilot")
+    result = await app_context.tools.execute(
+        agent,
+        ToolExecutionContext(app_context, matter_id="MAT-DEMO-BEACON"),
+        "save_work_product",
+        {"title": "Launch path", "content": "Ship with controls.", "kind": "recommendation"},
+    )
+
+    assert result.status == "success"
+    assert result.data == {
+        "record_type": "recommendation",
+        "title": "Launch path",
+        "path": "03_Matters/beacon-instant-onboarding/recommendations.md",
+    }
+
+
+@pytest.mark.asyncio
+async def test_save_work_product_revises_the_existing_canonical_draft(app_context):
+    agent = app_context.agents.get("counsel-copilot")
+    context = ToolExecutionContext(
+        app_context,
+        matter_id="MAT-DEMO-BEACON",
+        review_author="Themis",
+        lawyer_author="Counsel",
+    )
+    created = await app_context.tools.execute(
+        agent,
+        context,
+        "save_work_product",
+        {"title": "Customer answer", "content": "First version", "kind": "response"},
+    )
+    original = app_context.vault.read_markdown(created.data["vault_path"])
+
+    revised = await app_context.tools.execute(
+        agent,
+        context,
+        "save_work_product",
+        {
+            "title": "A renamed answer",
+            "content": "Second version",
+            "kind": "response",
+            "existing_draft_path": created.data["vault_path"],
+        },
+    )
+
+    updated = app_context.vault.read_markdown(created.data["vault_path"])
+    assert revised.status == "success"
+    assert revised.data["vault_path"] == created.data["vault_path"]
+    assert revised.data["title"] == "Customer answer"
+    assert updated["metadata"]["work_product_id"] == original["metadata"]["work_product_id"]
+    assert updated["metadata"]["title"] == "Customer answer"
+    assert updated["metadata"]["review"]["tracking"] is True
+    assert updated["content"].strip() == "Second version"
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("invalid_path", [
+    "03_Matters/beacon-instant-onboarding/recommendations.md",
+    "03_Matters/apex-data-retention/work-product/draft/other.md",
+    "03_Matters/beacon-instant-onboarding/work-product/draft/../final/other.md",
+])
+async def test_save_work_product_rejects_invalid_existing_draft_paths(app_context, invalid_path):
+    agent = app_context.agents.get("counsel-copilot")
+    result = await app_context.tools.execute(
+        agent,
+        ToolExecutionContext(app_context, matter_id="MAT-DEMO-BEACON"),
+        "save_work_product",
+        {
+            "title": "Answer",
+            "content": "Revision",
+            "kind": "response",
+            "existing_draft_path": invalid_path,
+        },
+    )
+
+    assert result.status == "error"
+
+
+@pytest.mark.asyncio
+async def test_save_work_product_rejects_a_final_as_an_existing_draft(app_context):
+    draft = app_context.work_products.create_draft(
+        "MAT-DEMO-BEACON", title="Final target", content="Draft"
+    )
+    final = app_context.work_products.finalize("MAT-DEMO-BEACON", draft["vault_path"])
+    agent = app_context.agents.get("counsel-copilot")
+    result = await app_context.tools.execute(
+        agent,
+        ToolExecutionContext(app_context, matter_id="MAT-DEMO-BEACON"),
+        "save_work_product",
+        {
+            "title": "Final target",
+            "content": "Changed",
+            "kind": "response",
+            "existing_draft_path": final["vault_path"],
+        },
+    )
+
+    assert result.status == "error"
+
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize("path", [
     "/tmp/note.md",
     "03_Matters/beacon-instant-onboarding/../outside.md",

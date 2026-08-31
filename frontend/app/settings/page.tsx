@@ -7,7 +7,7 @@ import LinkifiedText from "@/components/LinkifiedText";
 import { createVault, effortLabel, getActiveVault, getCompanyProfile, getSettings, loadVault, saveCompanyProfile, saveSettings } from "@/lib/api";
 import { role } from "@/lib/design";
 import { getProviderCapabilities } from "@/lib/watchApi";
-import type { CompanyProfile, SettingRow, VaultInfo, WorkspaceSettings } from "@/lib/types";
+import type { CompanyProfile, ModelCatalogProvider, SettingRow, VaultInfo, WorkspaceSettings } from "@/lib/types";
 import type { ProviderCapability } from "@/lib/watchTypes";
 
 function alignModelRows(rows: SettingRow[], settings: WorkspaceSettings): SettingRow[] {
@@ -17,19 +17,26 @@ function alignModelRows(rows: SettingRow[], settings: WorkspaceSettings): Settin
   const currentModel = rows.find((row) => row.config_key === "agents.reasoning_model")?.value;
   const model = provider?.models.find((entry) => entry.id === currentModel) ?? provider?.models[0];
   const currentEffort = rows.find((row) => row.config_key === "agents.reasoning_effort")?.value;
-  const effort = model?.efforts.includes(currentEffort ?? "") ? currentEffort : model?.efforts[0] ?? "default";
+  const effort: string = model?.reasoning_efforts.includes(currentEffort ?? "")
+    ? currentEffort ?? "default"
+    : model?.reasoning_efforts[0] ?? currentEffort ?? "default";
+  const modelOptions = provider?.models.length
+    ? provider.models
+    : currentModel
+      ? [{ id: currentModel, label: `${currentModel} (unavailable)`, reasoning_efforts: [] }]
+      : [];
 
   return rows.map((row) => {
     if (row.config_key === "agents.reasoning_model") {
       return {
         ...row,
-        value: model?.id ?? "mock",
-        options: provider?.models.map((entry) => entry.id) ?? ["mock"],
-        option_labels: Object.fromEntries(provider?.models.map((entry) => [entry.id, entry.label]) ?? []),
+        value: model?.id ?? currentModel ?? "",
+        options: modelOptions.map((entry) => entry.id),
+        option_labels: Object.fromEntries(modelOptions.map((entry) => [entry.id, entry.label])),
       };
     }
     if (row.config_key === "agents.reasoning_effort") {
-      const efforts = model?.efforts ?? ["default"];
+      const efforts = model?.reasoning_efforts.length ? model.reasoning_efforts : [effort];
       return {
         ...row,
         value: effort,
@@ -41,6 +48,13 @@ function alignModelRows(rows: SettingRow[], settings: WorkspaceSettings): Settin
     }
     return row;
   });
+}
+
+function providerState(provider: ModelCatalogProvider): { label: string; color: string } {
+  if (provider.readiness === "ready") return { label: "Ready", color: role.healthy };
+  if (provider.readiness === "development_only") return { label: "Development only", color: role.attentionDeep };
+  if (provider.readiness === "missing") return { label: "Missing setup", color: role.attentionDeep };
+  return { label: "Unavailable", color: role.failure };
 }
 
 export default function SettingsPage() {
@@ -107,9 +121,10 @@ export default function SettingsPage() {
 
   const current = settings.sections.find((entry) => entry.id === section) ?? settings.sections[0];
   const companySection = section === "company";
+  const modelProviderSection = section === "model-providers";
   const providerSection = section === "intelligence-providers";
   const vaultSection = section === "vaults";
-  const activeDirty = companySection ? companyDirty : providerSection || vaultSection ? false : settingsDirty;
+  const activeDirty = companySection ? companyDirty : modelProviderSection || providerSection || vaultSection ? false : settingsDirty;
   const selectedModelRow = current.rows.find((row) => row.config_key === "agents.reasoning_model");
   const selectedModel = selectedModelRow?.option_labels?.[selectedModelRow.value ?? ""]
     ?? selectedModelRow?.value
@@ -123,13 +138,14 @@ export default function SettingsPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {settings.sections.map((entry) => (
               <button
-                className={`admin-rail-link ${!companySection && !providerSection && entry.id === current.id ? "active" : ""}`}
+                className={`admin-rail-link ${!companySection && !modelProviderSection && !providerSection && entry.id === current.id ? "active" : ""}`}
                 key={entry.id}
                 onClick={() => setSection(entry.id)}
               >
                 {entry.label}
               </button>
             ))}
+            <button className={`admin-rail-link ${modelProviderSection ? "active" : ""}`} onClick={() => setSection("model-providers")}>Model providers</button>
             <button className={`admin-rail-link ${providerSection ? "active" : ""}`} onClick={() => setSection("intelligence-providers")}>Watch providers</button>
             <button className={`admin-rail-link ${companySection ? "active" : ""}`} onClick={() => setSection("company")}>Company</button>
             <button className={`admin-rail-link ${vaultSection ? "active" : ""}`} onClick={() => setSection("vaults")}>Vaults</button>
@@ -139,24 +155,26 @@ export default function SettingsPage() {
         <div className="admin-main">
           <div className="admin-scroll">
             <div className="admin-body" style={{ maxWidth: 760 }}>
-              <h1 style={{ fontSize: 26 }}>{vaultSection ? "Vaults" : companySection ? "Company" : providerSection ? "Watch providers" : current.title}</h1>
+              <h1 style={{ fontSize: 26 }}>{vaultSection ? "Vaults" : companySection ? "Company" : modelProviderSection ? "Model providers" : providerSection ? "Watch providers" : current.title}</h1>
               <p style={{ margin: "6px 0 24px", font: "400 15px var(--sans)", color: "var(--ink-3)" }}>
                 {vaultSection
                   ? "Create a blank workspace or load an existing Counsel OS vault."
                   : companySection
                   ? "Company context used by agents across matters."
+                  : modelProviderSection
+                    ? "See which model providers and models are available. Credentials and sign-in sessions stay outside Counsel OS."
                   : providerSection
                     ? "Public intelligence services that a Watch can use. Provider keys stay outside Counsel OS screens."
                     : current.sub}
               </p>
-              {!companySection && !providerSection && current.id === "agents" ? (
+              {!companySection && !modelProviderSection && !providerSection && current.id === "agents" ? (
                 <div className="agent-note" style={{ margin: "-12px 0 22px" }}>
                   <div className="field-label">Current model</div>
                   <div style={{ marginTop: 5, font: "500 16px var(--sans)", color: "var(--ink-2)" }}>{selectedModel}</div>
                   <p style={{ margin: "5px 0 0" }}>This model is used for new requests. Changes apply after you save.</p>
                 </div>
               ) : null}
-              {!companySection && !providerSection && current.id === "agents" && settings.model_catalog.warning ? (
+              {!companySection && !modelProviderSection && !providerSection && current.id === "agents" && settings.model_catalog.warning ? (
                 <p className="error" style={{ margin: "-12px 0 18px" }}>{settings.model_catalog.warning}</p>
               ) : null}
 
@@ -209,6 +227,35 @@ export default function SettingsPage() {
                     ))}
                   </div>
                   {error ? <p className="error">{error}</p> : null}
+                </div>
+              ) : modelProviderSection ? (
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {settings.model_catalog.warning ? <p className="error" style={{ margin: "0 0 6px" }}>{settings.model_catalog.warning}</p> : null}
+                  {settings.model_catalog.providers.map((provider) => {
+                    const state = providerState(provider);
+                    return (
+                      <div className="setting-row" key={provider.id} style={{ alignItems: "flex-start" }}>
+                        <div>
+                          <div className="setting-label">{provider.label}</div>
+                          <div className="setting-help">{provider.readiness_detail}</div>
+                          {provider.id === "antigravity_cli" ? (
+                            <div className="setting-help" style={{ color: role.attentionDeep, fontWeight: 500, marginTop: 5 }}>
+                              Development only — do not use confidential matter data.
+                            </div>
+                          ) : null}
+                          <div className="setting-help" style={{ marginTop: 7 }}>
+                            {provider.models.length
+                              ? provider.models.map((model) => `${model.label} (${model.reasoning_efforts.length ? model.reasoning_efforts.map(effortLabel).join(", ") : "effort unavailable"})`).join(" · ")
+                              : "No models available."}
+                          </div>
+                        </div>
+                        <span className="signal" style={{ color: state.color, flex: "none", fontWeight: 500 }}>
+                          <span className="dot" style={{ background: state.color }} />
+                          {state.label}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               ) : providerSection ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -354,12 +401,12 @@ export default function SettingsPage() {
 
           {!vaultSection ? <div className="admin-foot">
             <span className={error ? "error" : "stub-note"}>
-              {error || (providerSection ? "Provider status is read-only." : !activeDirty ? "Saved" : companySection ? "Company context has unsaved changes." : current.id === "agents" ? "Model settings have unsaved changes." : "Document review settings have unsaved changes.")}
+              {error || (modelProviderSection || providerSection ? "Provider status is read-only." : !activeDirty ? "Saved" : companySection ? "Company context has unsaved changes." : current.id === "agents" ? "Model settings have unsaved changes." : "Document review settings have unsaved changes.")}
             </span>
             <div className="btn-row">
               <button
                 className="btn"
-                disabled={providerSection || !activeDirty || busy}
+                disabled={modelProviderSection || providerSection || !activeDirty || busy}
                 onClick={async () => {
                   setBusy(true);
                   setError("");
@@ -382,7 +429,7 @@ export default function SettingsPage() {
               >Discard</button>
               <button
                 className="btn primary"
-                disabled={providerSection || !activeDirty || busy}
+                disabled={modelProviderSection || providerSection || !activeDirty || busy}
                 onClick={async () => {
                   setBusy(true);
                   setError("");

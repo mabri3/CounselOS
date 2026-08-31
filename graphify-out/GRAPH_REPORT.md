@@ -1,16 +1,16 @@
-# Graph Report - counsel-os-mvp  (2026-08-30)
+# Graph Report - counsel-os-mvp  (2026-08-31)
 
 ## Corpus Check
-- 1139 files · ~723,487 words
+- 1186 files · ~761,362 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 7380 nodes · 12508 edges · 1072 communities (381 shown, 691 thin omitted)
-- Extraction: 89% EXTRACTED · 11% INFERRED · 0% AMBIGUOUS · INFERRED: 1344 edges (avg confidence: 0.55)
+- 7861 nodes · 13660 edges · 1098 communities (387 shown, 711 thin omitted)
+- Extraction: 89% EXTRACTED · 11% INFERRED · 0% AMBIGUOUS · INFERRED: 1445 edges (avg confidence: 0.55)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c5b8a1b2`
+- Built from commit: `6e85a03d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -18,12 +18,12 @@
 - test_skills.py
 - AppContext
 - MatterWorkspace.tsx
-- VaultService
+- MatterService
 - Counsel OS MVP
 - dependencies
-- research/page.tsx
+- ChatHistoryService
 - compilerOptions
-- DecisionService
+- IndexService
 - design.ts
 - Clean-context implementation prompt
 - frontmatter.py
@@ -70,7 +70,7 @@
 - skills-helper.handoff-prompt.md
 - Matter-led MVP implementation handoff
 - continuous-legal-awareness.handoff-prompt.md
-- SchedulerService
+- DocumentReviewService
 - Memory
 - Product Review Playbook
 - Approve restricted analytics SDK configuration
@@ -176,7 +176,7 @@
 - WI-20260827-730594.md
 - 2026-08-27-EVT-20260827-cd5b0e.md
 - 2026-08-27-EVT-20260827-6658a6.md
-- SafeFetchLimits
+- Watch
 - Proceed only with a gated pilot after the partner map, state/product scope, authorization copy, reminder delivery, retry policy, dispute pause, cancellation cutoff, incentive terms, and evidence retention are confirmed. If any gate fails, delay that state, product, partner, or rail. [Unverified lead] The specific legal result may vary by jurisdiction and payment rail.Autopay Enrollment and Payment Authorization — Launch Advice
 - 4. Build
 - Handoff plan — Counsel OS friction-audit UI
@@ -185,12 +185,12 @@
 - Project Apex: AI Voice Telemetry — Launch Review
 - Implementation prompt — Matter work state
 - Beacon: Instant Business Onboarding — Launch Review
-- Settings
+- .__init__
 - Matter chat
 - test_ingestion.py
 - 2026-08-27-EVT-20260827-b1d3f3.md
-- FakeResponse
-- DossierService
+- SafeFetchLimits
+- BriefingQuery
 - Matter page redesign — corrected handoff plan
 - Progress — guided skills
 - friction-audit-ui.handoff-progress.md
@@ -206,42 +206,42 @@
 - Sol Medium orchestration plan — Continuous Legal Awareness
 - handlers.py
 - RevisionPlugin.tsx
-- IngestionService
+- ValueError
 - 12. Tool architecture
-- matter-work-state.handoff-progress.md
+- Progress — Matter work state
 - Handoff plan — Counsel OS attention audit and Matter Records
-- WorkItemCreate
-- .__init__
+- routers/awareness.py
+- SourceReference
 - Handoff plan — Word-like document review
 - document-review-word-like.handoff-prompt.md
-- InternalKnowledgeService
+- test_awareness_matching.py
 - Build
 - attention-audit-matter-records.handoff-progress.md
 - 2. Copy-and-paste test data
 - Watch
 - Continuous Legal Awareness and Decision Maintenance build plan
-- document-review-word-like.handoff-progress.md
-- ._write
-- WatchDraftCreate
+- Progress — Word-like document review
+- BriefingStore
+- test_research.py
 - awareness-review.handoff-prompt.md
-- _http
+- ScheduleCreate
 - .resolve
-- MatterService
+- ResearchService
 - 3. Product vocabulary
 - 17. Dependency-safe build waves
 - Today page — attention hierarchy rebuild (handoff plan)
 - Execution steps
 - 2026-08-28-EVT-20260828-796c1e.md
 - annotations.md
-- DocumentReviewService
-- AnnotationService
+- Implementation prompt — Finish core intake, Polaris research, and per-agent model routing
+- test_awareness_api.py
 - 4. Information architecture
 - 6. Provider boundary
-- IntelligenceProvider
-- CompanyInterviewService
+- .scan
+- AnnotationService
 - Analysis
 - Cedar Launch Guidance
-- ScheduleCreate
+- SchedulerService
 - Northstar Research Plan
 - Northstar v3 Model Change Summary
 - Pulse Product Brief v0.8
@@ -285,37 +285,35 @@
 - relay-open-banking/request.md
 - WI-MAT-DEMO-RELAY-1.md
 - WI-MAT-DEMO-RELAY-2.md
-- test_chat_history.py
+- Handoff plan — Live-agent UX repairs
 - Live Agent UX Experiment
 - Matter dossier
 - watchApi.ts
-- OutboundWatchQuery
-- IndexService
+- Watch
+- ChatRunService
 - BriefingReader.tsx
 - Related matters and decisions — alternative-data explanation guidance
 - Research BRIEF-RES-20260830-b88516
 - Counsel OS chat reliability and UX repair plan
 - test_settings.py
 - Research synthesis — Apex pilot vs. alternative-data explanation guidance
-- ChatRunService
+- check-workspace-ux.ts
 - WatchScanService
-- iso_now
+- ChatRequest
 - api.ts
 - Matter chat
 - Matter chat
-- PolarisIntelligenceProvider
-- document_export.py
+- New-context prompt — Sol Medium live-agent UX repair orchestrator
+- AppShell.tsx
 - Research findings — Apex pilot decision vs. alternative-data explanation guidance
-- chat.py
-- ResearchService
+- test_agent_action_permissions.py
 - today-attention.handoff-progress.md
 - briefing-chat-reliability.handoff-progress.md
 - test_company_interview.py
-- ChatHistoryService
 - Handoff plan — repair Continuous Legal Awareness defects
 - Start here if Counsel OS is new to you
 - Matter chat
-- DecisionCreate
+- VaultService
 - test_vault_management.py
 - Analysis
 - 8. Skills, agents, settings, and automations
@@ -323,12 +321,12 @@
 - .create
 - Matter chat
 - N. Planned attention-audit acceptance walk
-- .scan
+- Live-agent UX repair build plan
 - 5. Document review and export
 - .record_action
-- 1. Test setup and baseline
-- BriefingStore
-- ValueError
+- ProviderAdapterError
+- WorkItemCreate
+- .record_candidates
 - for-you.md
 - alternative-data.md
 - watch-builder.md
@@ -346,8 +344,8 @@
 - awareness-review.handoff-progress.md
 - 2. Product thesis
 - 6. MVP scope
-- SettingsService
-- test_matter_paths.py
+- ProviderReply
+- document_export.py
 - matter-page.handoff-progress.md
 - MEMORANDUM
 - Company profile
@@ -368,7 +366,6 @@
 - The recommendation remains separate from any recorded decision. It is acceptable to proceed to limited implementation planning with placeholders. It is not acceptable to enable a customer-facing decline path with a missing issuer, missing principal reason, unproven electronic-consent basis, or an unresolved counteroffer classification.Notice and Customer-Communication Package — Real-Time Decision Flow
 - Evidence: Working Legal Analysis by Topic
 - Draft Decision Record — Expanded Data Program (Tiered Launch)
-- _Response
 - # Claims Approval Memo — Northstar Pay Marketing Campaign
 - Agent Standards
 - Recommendation — Late Fees and Missed-Payment Treatment
@@ -441,7 +438,7 @@
 - Communications Memo — Servicing and Collections Contact Strategy Test (Recommended Path)
 - Matter workflow reliability build plan
 - Issues
-- ChatRequest
+- test_agents.py
 - Matter dossier
 - Matter dossier
 - Matter dossier
@@ -458,7 +455,6 @@
 - Matter dossier
 - Matter dossier
 - Matter dossier
-- test_matter_action_tools.py
 - Pay-in-4 checkout redesign — conditional approval for next-quarter launch
 - Limited Credit-Reporting Pilot — Controlled Preparation, Gated Live Furnishing
 - Recommendations — Credit Reporting Pilot Launch-Readiness (Draft)
@@ -908,8 +904,7 @@
 - fixtures/vault/05_Briefing/items/ITEM-DEMO-ALTERNATIVE-DATA-DECISION.md
 - fixtures/vault/05_Briefing/review-packets/PKT-DEMO-ALTERNATIVE-DATA.md
 - fixtures/vault/05_Briefing/scans/SCAN-DEMO-ALTERNATIVE-DATA-BOTH.md
-- routers/settings.py
-- ._select_locked
+- check-transport-preservation.ts
 - First-Pass Research Packet
 - First-Pass Research Packet
 - First-Pass Research Packet
@@ -932,7 +927,7 @@
 - Matter dossier
 - Matter dossier
 - Matter dossier
-- .record_candidates
+- test_awareness_records.py
 - Matter chat
 - Matter chat
 - Matter chat
@@ -1073,82 +1068,113 @@
 - harborline-ux-test-10-referral-campaign-and-influencer-claims-fo-53b20e/recommendations.md
 - harborline-ux-test-10-referral-campaign-and-influencer-claims-fo-53b20e/request.md
 - WI-20260830-59e12a.md
-- VaultManager
-- AppShell.tsx
-- conftest.py
-- test_fixture_isolation.py
-- .create
+- Progress — Live-agent UX repairs
+- vault2/00_System/Agents.md
+- DecisionCreate
+- test_matter_action_tools.py
+- vault2/00_System/agents/counsel-copilot.md
 - runner.py
-- BriefingResearchService
+- vault2/00_System/agents/decision-monitor.md
+- OpenCodeGoProvider
+- vault2/00_System/agents/intake-agent.md
+- vault2/00_System/agents/research-agent.md
+- vault2/00_System/Soul.md
+- vault2/00_System/tools/list_files.md
+- vault2/00_System/tools/read_file.md
+- vault2/00_System/tools/run_research.md
+- vault2/00_System/tools/search_vault.md
+- vault2/00_System/tools/write_markdown.md
+- vault2/00_System/workflows/product-counsel.md
+- Build
+- providers/base.py
+- AntigravityCLIProvider
+- ProviderRouter
+- test_matter_led_contracts.py
+- MVP closure audit
+- check-provider-admin.ts
+- research/page.tsx
+- R. Canonical MVP closure
+- Progress — Core intake, Polaris research, and per-agent model routing
+- Matter chat
+- Known Facts
+- fixtures/vault/00_System/tools/update_matter_intake.md
+- 2026-08-31-EVT-20260831-ebc365.md
+- potential-redflags-268466/issues.md
+- potential-redflags-268466/matter.md
+- potential-redflags-268466/participants.md
+- potential-redflags-268466/recommendations.md
+- potential-redflags-268466/request.md
+- WI-20260831-916c74.md
+- vault/00_System/tools/update_matter_intake.md
 
 ## God Nodes (most connected - your core abstractions)
-1. `AppContext` - 183 edges
+1. `AppContext` - 186 edges
 2. `VaultService` - 181 edges
 3. `request()` - 91 edges
-4. `BriefingStore` - 79 edges
-5. `ChatRequest` - 72 edges
-6. `iso_now()` - 72 edges
-7. `IndexService` - 68 edges
-8. `MatterService` - 67 edges
-9. `ScheduleRecurrence` - 63 edges
-10. `AwarenessModel` - 60 edges
+4. `ChatRequest` - 84 edges
+5. `BriefingStore` - 79 edges
+6. `iso_now()` - 76 edges
+7. `ScheduleRecurrence` - 70 edges
+8. `MatterService` - 69 edges
+9. `IndexService` - 68 edges
+10. `WatchDraftCard` - 65 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `VaultBusyError` --uses--> `Settings`  [INFERRED]
   backend/app/active_context.py → backend/app/config.py
 - `VaultBusyError` --uses--> `AppContext`  [INFERRED]
   backend/app/active_context.py → backend/app/runtime.py
-- `VaultBusyError` --uses--> `VaultManager`  [INFERRED]
-  backend/app/active_context.py → backend/app/vault_manager.py
 - `ActiveContextManager` --uses--> `Settings`  [INFERRED]
   backend/app/active_context.py → backend/app/config.py
 - `ActiveContextManager` --uses--> `AppContext`  [INFERRED]
   backend/app/active_context.py → backend/app/runtime.py
+- `ContextBuilder` --uses--> `IndexService`  [INFERRED]
+  backend/app/agents/context.py → backend/app/services/index.py
 
 ## Import Cycles
 - None detected.
 
-## Communities (1072 total, 691 thin omitted)
+## Communities (1098 total, 711 thin omitted)
 
 ### Community 0 - "test_skills.py"
 Cohesion: 0.07
 Nodes (37): Any, SkillBuilderService, Any, SkillDefinition, SkillRegistry, _client(), _create_launch_skill(), asyncio (+29 more)
 
 ### Community 1 - "AppContext"
-Cohesion: 0.05
-Nodes (86): create_agent(), create_schedule(), get_agent(), list_agents(), list_audiences(), list_automations(), list_tools(), get (+78 more)
+Cohesion: 0.04
+Nodes (110): lifespan(), get, root(), create_agent(), create_schedule(), get_agent(), list_agents(), list_audiences() (+102 more)
 
 ### Community 2 - "MatterWorkspace.tsx"
-Cohesion: 0.05
-Nodes (61): MatterPage(), DIRECT_ORDER, isCoreFolder(), MatterTree(), presentMatterTree(), RECORD_LABELS, treeLabel(), TreeNode() (+53 more)
+Cohesion: 0.06
+Nodes (56): DIRECT_ORDER, isCoreFolder(), MatterTree(), presentMatterTree(), RECORD_LABELS, treeLabel(), TreeNode(), collectEvidence() (+48 more)
 
-### Community 3 - "VaultService"
-Cohesion: 0.11
-Nodes (19): AgentDefinition, Digest, MatterPathPolicy, Resolve configurable user-file folders inside one selected matter., Safe, atomic access to the Markdown-first vault., VaultService, WorkProductService, Any (+11 more)
+### Community 3 - "MatterService"
+Cohesion: 0.09
+Nodes (15): MatterPathPolicy, Resolve configurable user-file folders inside one selected matter., MatterService, Any, Any, Return the stable API shape without constructing any provider., SettingsService, Any (+7 more)
 
 ### Community 4 - "Counsel OS MVP"
-Cohesion: 0.05
-Nodes (39): Counsel OS coding-agent instructions, Deliver the best available answer, Design language, Do not add legal-answer theater, Engineering rules, graphify, Product north star, Verification (+31 more)
+Cohesion: 0.04
+Nodes (42): Counsel OS coding-agent instructions, Deliver the best available answer, Design language, Do not add legal-answer theater, Engineering rules, graphify, Product north star, Verification (+34 more)
 
 ### Community 5 - "dependencies"
-Cohesion: 0.05
-Nodes (40): dependencies, lexical, @lexical/link, @lexical/list, @lexical/markdown, @lexical/react, @lexical/rich-text, next (+32 more)
+Cohesion: 0.04
+Nodes (44): dependencies, lexical, @lexical/link, @lexical/list, @lexical/markdown, @lexical/react, @lexical/rich-text, next (+36 more)
 
-### Community 6 - "research/page.tsx"
-Cohesion: 0.07
-Nodes (43): humanSourceLabel(), newestResearchPath(), ResearchPage(), safeResearchPath(), DigestReader(), CommentRail(), DocumentPanel(), DocumentReview() (+35 more)
+### Community 6 - "ChatHistoryService"
+Cohesion: 0.08
+Nodes (25): ChatHistoryService, Any, Stores matter conversations and daily workspace chats as Markdown records., IngestionService, _merge_word_replacements(), Any, UploadFile, Return read-only scan data. This method does not promote facts or change matter… (+17 more)
 
 ### Community 7 - "compilerOptions"
 Cohesion: 0.07
-Nodes (28): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+20 more)
+Nodes (29): compilerOptions, allowImportingTsExtensions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib (+21 more)
 
-### Community 8 - "DecisionService"
-Cohesion: 0.06
-Nodes (26): DecisionService, Any, Create a linked successor. The prior Markdown record is never changed., _list(), Any, BriefingItem, BriefingQuery, Path (+18 more)
+### Community 8 - "IndexService"
+Cohesion: 0.09
+Nodes (17): DecisionService, Any, Create a linked successor. The prior Markdown record is never changed., IndexService, _list(), Any, BriefingItem, BriefingQuery (+9 more)
 
 ### Community 9 - "design.ts"
 Cohesion: 0.07
-Nodes (72): DecisionsPage(), CountFilter, MattersPage(), ownerLabel(), uniqueValues(), TodayPage(), WorkspacePage(), AppShell() (+64 more)
+Nodes (71): DecisionsPage(), CountFilter, MattersPage(), ownerLabel(), uniqueValues(), TodayPage(), WorkspacePage(), BriefingList() (+63 more)
 
 ### Community 10 - "Clean-context implementation prompt"
 Cohesion: 0.09
@@ -1163,16 +1189,16 @@ Cohesion: 0.11
 Nodes (18): 10.1 Source of truth, 10.2 Record philosophy, 10.3 Vault structure, 10.4 Core records, 10.5 SQLite index, 10. Data architecture, Approval, Decision (+10 more)
 
 ### Community 13 - "test_watch_scans.py"
-Cohesion: 0.09
-Nodes (53): Development, DevelopmentCandidate, InternalRecord, MatchConnection, ProviderCheckpoint, ProviderScanResult, SourceReference, BriefingQueryService (+45 more)
+Cohesion: 0.07
+Nodes (60): Development, DevelopmentCandidate, InternalRecord, MatchConnection, ProviderScanResult, PublicWatchQuery, AwarenessMatcher, Matches public developments to private records without network access. (+52 more)
 
 ### Community 14 - "layout.tsx"
 Cohesion: 0.33
 Nodes (4): metadata, mono, sans, serif
 
 ### Community 21 - "api.py"
-Cohesion: 0.18
-Nodes (47): AgentExecutionError, Exception, RunnerExecutionState, AgentCreate, AgentUpdate, AnnotationCreate, AppliedSkillSummary, AttachmentReference (+39 more)
+Cohesion: 0.12
+Nodes (52): AgentCreate, AgentRunSelection, AgentUpdate, AnnotationCreate, AttachmentReference, BatchActionRequest, CardAnswer, ChatMessage (+44 more)
 
 ### Community 28 - "Build plan"
 Cohesion: 0.07
@@ -1200,7 +1226,7 @@ Nodes (11): 7.10 Create an automation in chat, 7.1 Open the command center, 7.2 
 
 ### Community 34 - "Acceptance tests"
 Cohesion: 0.11
-Nodes (18): A. Command center, Acceptance tests, B. Matter workspace, C. Chat, D. Research, E. Decisions, F. Automations, Friction-audit UI observed on 2026-08-28 (+10 more)
+Nodes (19): A. Command center, Acceptance tests, B. Matter workspace, C. Chat, D. Research, E. Decisions, F. Automations, Friction-audit UI observed on 2026-08-28 (+11 more)
 
 ### Community 35 - "Context Map"
 Cohesion: 0.25
@@ -1227,8 +1253,8 @@ Cohesion: 0.29
 Nodes (7): 24. Delivery plan, Wave 0 — Runnable shell, Wave 1 — Core legal workflow, Wave 2 — Agentic work loop, Wave 3 — Research and documents, Wave 4 — Decisions and automations, Wave 5 — Product polish
 
 ### Community 41 - "Decisions and Milestones"
-Cohesion: 0.20
-Nodes (9): 2026-08-25 — Markdown-first local MVP architecture, 2026-08-25 — Milestone: Mock-mode MVP acceptance complete, 2026-08-25 — Milestone: MVP scaffold documented, 2026-08-26 — Milestone: Markdown-backed WYSIWYG editing complete, 2026-08-27 — Clarification: Intake record and fact corrections, 2026-08-27 — Decision: Best-effort answers and intake-to-dossier checkpoint, 2026-08-29 — Decision: Continuous Legal Awareness trust boundary, 2026-08-29 — Decision: Shared semantic color language (+1 more)
+Cohesion: 0.15
+Nodes (12): 2026-08-25 — Markdown-first local MVP architecture, 2026-08-25 — Milestone: Mock-mode MVP acceptance complete, 2026-08-25 — Milestone: MVP scaffold documented, 2026-08-26 — Milestone: Markdown-backed WYSIWYG editing complete, 2026-08-27 — Clarification: Intake record and fact corrections, 2026-08-27 — Decision: Best-effort answers and intake-to-dossier checkpoint, 2026-08-29 — Decision: Continuous Legal Awareness trust boundary, 2026-08-29 — Decision: Shared semantic color language (+4 more)
 
 ### Community 42 - "13. Research design"
 Cohesion: 0.33
@@ -1290,9 +1316,9 @@ Nodes (24): Background research, Company settings, Coordinator — shared contra
 Cohesion: 0.05
 Nodes (40): Blocker policy, Final report, Fixed decisions, Goal, Guardrails, Intelligence boundary, Parallel policy, Polaris contract (+32 more)
 
-### Community 57 - "SchedulerService"
-Cohesion: 0.15
-Nodes (9): Any, datetime, Digest, ScheduleUpdate, Small in-process scheduler suitable for a single-user demo., SchedulerService, RuntimeError, ScheduleRecurrence (+1 more)
+### Community 57 - "DocumentReviewService"
+Cohesion: 0.28
+Nodes (6): _current(), DocumentReviewService, Any, DocumentReviewAction, review_changes(), _segment()
 
 ### Community 58 - "Memory"
 Cohesion: 0.50
@@ -1315,8 +1341,8 @@ Cohesion: 0.29
 Nodes (6): API summary, Briefing, Continuous Legal Awareness, Matter work state, Providers and Watches, Review packets and mitigations
 
 ### Community 142 - "ChatPanel.tsx"
-Cohesion: 0.06
-Nodes (52): AttachmentPicker(), ChatCards(), Props, ResearchCard(), watchActionLabel(), watchActionPendingLabel(), WatchCard(), watchStatusLabel() (+44 more)
+Cohesion: 0.05
+Nodes (65): AttachmentPicker(), ChatCards(), EMPTY_DRAFT, Props, Question, QuestionCard(), QuestionDraft, QuestionSequence() (+57 more)
 
 ### Community 143 - "4. Build"
 Cohesion: 0.09
@@ -1335,8 +1361,8 @@ Cohesion: 0.12
 Nodes (16): Blocker policy, Briefing chat reliability — Sol Medium build plan, Build, Current verified facts, Demo script, Guardrails, Parked backlog, Payoff moment (+8 more)
 
 ### Community 148 - "MatterRecordService"
-Cohesion: 0.23
-Nodes (10): MatterRecordService, Any, Maintain the matter-local factual record in Markdown., Save caller-extracted reported statements from notes, profiles, files, or chats., test_assumption_and_conflict_need_explicit_user_resolution(), test_correction_supersedes_and_undo_restores_prior_fact(), test_existing_markdown_facts_survive_first_structured_update(), test_file_source_requires_version() (+2 more)
+Cohesion: 0.19
+Nodes (12): _clean_text_list(), MatterRecordService, Any, Maintain the matter-local factual record in Markdown., Save caller-extracted reported statements from notes, profiles, files, or chats., test_assumption_and_conflict_need_explicit_user_resolution(), test_correction_supersedes_and_undo_restores_prior_fact(), test_existing_markdown_facts_survive_first_structured_update() (+4 more)
 
 ### Community 150 - "Counsel OS — connect the four UI stubs"
 Cohesion: 0.08
@@ -1347,8 +1373,8 @@ Cohesion: 0.09
 Nodes (21): Acceptance, `AgentRegistry` (`backend/app/agents/registry.py`), Backend shape, Connect the Counsel OS UI stubs to real endpoints, Corrected claims — read this before Step 1, Do NOT, Existing vault files, Frontend shape (+13 more)
 
 ### Community 152 - "models/awareness.py"
-Cohesion: 0.07
-Nodes (48): AwarenessModel, BriefingAskRequest, BriefingBehavior, BriefingChatMessage, BriefingItemPatch, BriefingResearchRequest, CompanyConnection, ConnectToDecisionAction (+40 more)
+Cohesion: 0.08
+Nodes (43): AwarenessModel, BriefingAskRequest, BriefingBehavior, BriefingChatMessage, BriefingResearchRequest, ConnectToDecisionAction, CreateFollowUpConnectAction, CreateFollowUpReviewAction (+35 more)
 
 ### Community 153 - "Written for — audience-shaped work product"
 Cohesion: 0.17
@@ -1366,9 +1392,9 @@ Nodes (4): asyncio, test_annotation_answer_is_stored(), test_annotation_answer_s
 Cohesion: 0.11
 Nodes (18): Baseline and snapshot procedure, Do not do, Full verification, Matter Records mapping, Model and review policy, New-context implementation prompt, Product decisions you must not reopen, Repository facts already checked (+10 more)
 
-### Community 165 - "SafeFetchLimits"
-Cohesion: 0.12
-Nodes (62): BriefingPage, DevelopmentBatch, Digest, ForbiddenCorpus, IndexReport, InternalScope, InternalSnapshot, ListResponse (+54 more)
+### Community 165 - "Watch"
+Cohesion: 0.19
+Nodes (50): BriefingItem, BriefingPage, DevelopmentBatch, Digest, IndexReport, InternalScope, InternalSnapshot, ListResponse (+42 more)
 
 ### Community 166 - "Proceed only with a gated pilot after the partner map, state/product scope, authorization copy, reminder delivery, retry policy, dispute pause, cancellation cutoff, incentive terms, and evidence retention are confirmed. If any gate fails, delay that state, product, partner, or rail. [Unverified lead] The specific legal result may vary by jurisdiction and payment rail.Autopay Enrollment and Payment Authorization — Launch Advice"
 Cohesion: 0.05
@@ -1402,9 +1428,9 @@ Nodes (39): Agent context, API and frontend, Architecture decision, Baseline ver
 Cohesion: 0.22
 Nodes (8): Actions, Beacon: Instant Business Onboarding — Launch Review, Material gaps (blockers to a green-light), Matter chat, Recommendation: **Go with conditions**, Themis · 2026-08-28T16:22:19+00:00, What's in place (strengths), You · 2026-08-28T16:20:07+00:00
 
-### Community 174 - "Settings"
-Cohesion: 0.10
-Nodes (17): get_settings(), Path, Runtime settings loaded from the repository-level .env file., Settings, build_provider(), OpenAICompatibleProvider, Any, Small adapter for providers exposing the OpenAI chat-completions contract. (+9 more)
+### Community 174 - ".__init__"
+Cohesion: 0.07
+Nodes (24): Replace routing with one provider, preserving the existing test seam., get_settings(), Path, Runtime settings loaded from the repository-level .env file., Settings, LLMProvider, Protocol, build_provider() (+16 more)
 
 ### Community 175 - "Matter chat"
 Cohesion: 0.06
@@ -1414,13 +1440,13 @@ Nodes (35): 1. "We're sorry the process took longer than expected" — apology /
 Cohesion: 0.39
 Nodes (8): asyncio, test_docx_upload_converts_headings_lists_and_tables_to_markdown(), test_image_upload_is_preserved_as_source_without_extraction(), test_multi_file_upload_returns_stable_attachment_refs_and_read_only_preview(), test_pdf_upload_always_creates_editable_companion(), test_same_content_has_stable_source_and_version(), test_upload_rejects_unsupported_file_before_writing(), test_upload_uses_configured_source_folder_but_batch_records_stay_fixed()
 
-### Community 178 - "FakeResponse"
-Cohesion: 0.17
-Nodes (14): _done(), FakeClient, FakeResponse, asyncio, parametrize, test_polaris_429_honors_bounded_retry_after(), test_polaris_citations_are_supplied_deduplicated_and_unsafe_removed(), test_polaris_exact_payload_and_openai_content() (+6 more)
+### Community 178 - "SafeFetchLimits"
+Cohesion: 0.06
+Nodes (48): IntelligenceProvider, Protocol, NativeIntelligenceProvider, DevelopmentCandidate, OutboundWatchQuery, ProviderCheckpoint, ProviderScanResult, PolarisIntelligenceProvider (+40 more)
 
-### Community 179 - "DossierService"
-Cohesion: 0.23
-Nodes (5): DossierService, Any, test_applying_revision_rechecks_content_hash(), test_dossier_hash_guard_preserves_lawyer_edit_for_review(), test_non_material_dossier_change_waits_unless_forced()
+### Community 179 - "BriefingQuery"
+Cohesion: 0.20
+Nodes (17): BriefingQuery, WatchSource, awareness_index(), _item(), BriefingItem, fixture, Path, test_cursor_is_stable_and_rebuild_after_database_deletion_is_reproducible() (+9 more)
 
 ### Community 180 - "Matter page redesign — corrected handoff plan"
 Cohesion: 0.08
@@ -1431,7 +1457,7 @@ Cohesion: 0.40
 Nodes (4): Implementation, Progress — guided skills, Starting state, Work log
 
 ### Community 183 - "MatterStateService"
-Cohesion: 0.20
+Cohesion: 0.19
 Nodes (25): MatterStateService, Any, Derive a matter's current work state from durable Markdown facts., _item(), _matter(), Any, Path, _service() (+17 more)
 
 ### Community 184 - "Matter chat"
@@ -1443,12 +1469,12 @@ Cohesion: 0.06
 Nodes (30): Authoritative boundary, Blocker policy, Build, Current problem, verified in the repository, Decision, Demo script, Dependency waves, Frozen derivation rules (+22 more)
 
 ### Community 188 - "Counsel OS end-to-end test kit"
-Cohesion: 0.13
-Nodes (13): 10. Negative, integrity, and recovery tests, 11. Accessibility and layout pass, 12. Final evidence and result, 3. Core journey: intake to closure, 4. Matter workspace screen checks, 6. Today, Workspace, and Matters, 7. Decisions, 9. Briefing and Watches (continuous legal awareness) (+5 more)
+Cohesion: 0.11
+Nodes (16): 10. Negative, integrity, and recovery tests, 11. Accessibility and layout pass, 12. Final evidence and result, 1.1 Isolated test data (developer-assisted formal test), 1.2 Smoke check every main screen, 1. Test setup and baseline, 3. Core journey: intake to closure, 4. Matter workspace screen checks (+8 more)
 
 ### Community 189 - "Matter-led MVP handoff progress"
-Cohesion: 0.25
-Nodes (7): Browser proof, Final proof, Implementation, Matter-led MVP handoff progress, Resume checks, Starting state, Work log
+Cohesion: 0.22
+Nodes (8): Browser proof, Final proof, Implementation, Matter-led MVP handoff progress, Resume checks, Starting state, Status correction — 2026-08-30, Work log
 
 ### Community 190 - "DocumentReviewAction"
 Cohesion: 0.21
@@ -1464,15 +1490,15 @@ Nodes (40): 10. Step 1 — contracts, 11. Step 2 — records, providers, and loc
 
 ### Community 193 - "handlers.py"
 Cohesion: 0.17
-Nodes (35): activate_watch(), append_memory(), approve_response(), audit_decisions(), build_handlers(), close_matter(), complete_work_item(), create_agent() (+27 more)
+Nodes (36): activate_watch(), append_memory(), approve_response(), audit_decisions(), build_handlers(), close_matter(), complete_work_item(), create_agent() (+28 more)
 
 ### Community 194 - "RevisionPlugin.tsx"
 Cohesion: 0.07
-Nodes (29): AUTO_LINK_MATCHERS, MARKDOWN_TRANSFORMERS, MarkdownRichEditor(), applyMark(), buildMarks(), coarseOpcodes(), composeLocalRevision(), DiffOpcode (+21 more)
+Nodes (30): AUTO_LINK_MATCHERS, MARKDOWN_TRANSFORMERS, applyMark(), buildMarks(), coarseOpcodes(), composeLocalRevision(), DiffOpcode, diffOpcodes() (+22 more)
 
-### Community 195 - "IngestionService"
-Cohesion: 0.12
-Nodes (20): IngestionService, _merge_word_replacements(), Any, UploadFile, Return read-only scan data. This method does not promote facts or change matter…, Read classic Word revisions/comments. Return None when no review data exists., Give adjacent same-reviewer delete/insert pairs one replacement ID., _review_segment() (+12 more)
+### Community 195 - "ValueError"
+Cohesion: 0.18
+Nodes (5): model_validator, Mitigation, MitigationCreate, MitigationPatch, ValueError
 
 ### Community 196 - "12. Tool architecture"
 Cohesion: 0.50
@@ -1482,13 +1508,13 @@ Nodes (4): 12.1 Design, 12.2 Initial tools, 12.3 Tool principles, 12. Tool archi
 Cohesion: 0.17
 Nodes (11): Goal, Handoff plan — Counsel OS attention audit and Matter Records, Step 1 — context and baseline, Step 2 — Wave 1, Step 3 — Wave 1 gate, Step 4 — Wave 2, Step 5 — Wave 2 gate, Step 6 — full checks (+3 more)
 
-### Community 199 - "WorkItemCreate"
-Cohesion: 0.16
-Nodes (21): WorkItemCreate, _responding_matter(), test_approval_rejects_hostile_or_different_final_and_closure_names_work(), test_approval_retry_repairs_open_exact_approval_item(), test_direct_lifecycle_calls_require_actor_and_final_artifact(), test_exact_completion_is_retry_safe_and_does_not_touch_sibling(), test_lifecycle_binds_final_and_retries_with_stable_events(), asyncio (+13 more)
+### Community 199 - "routers/awareness.py"
+Cohesion: 0.09
+Nodes (47): BriefingItemPatch, act_on_review_packet(), activate_watch(), answer_watch(), ask_briefing_item(), connect_briefing_item(), create_digest(), create_view() (+39 more)
 
-### Community 200 - ".__init__"
+### Community 200 - "SourceReference"
 Cohesion: 0.08
-Nodes (35): _approved_ip(), HTTPS fetcher with DNS pinning and redirect-by-redirect SSRF checks., _Response, SafeHttpFetcher, UnsafeUrlError, _normal(), OutboundQueryPolicy, OutboundWatchQuery (+27 more)
+Nodes (41): _approved_ip(), HTTPS fetcher with DNS pinning and redirect-by-redirect SSRF checks., _Response, SafeHttpFetcher, UnsafeUrlError, _normal(), OutboundQueryPolicy, PublicResearchQuery (+33 more)
 
 ### Community 201 - "Handoff plan — Word-like document review"
 Cohesion: 0.11
@@ -1498,9 +1524,9 @@ Nodes (17): API contract, Approved author palette, Blocker policy, Current verif
 Cohesion: 0.13
 Nodes (14): Blocker policy, Combined review, Do not, Exact worker assignments, Final instruction, Fixed product rules, Read before dispatch, Required storage and API contract (+6 more)
 
-### Community 203 - "InternalKnowledgeService"
-Cohesion: 0.11
-Nodes (17): AwarenessMatcher, Matches public developments to private records without network access., InternalKnowledgeService, Any, InternalScope, Watch, Loads private knowledge directly from the vault on every call., Build a fail-closed set of normalized private identifiers. (+9 more)
+### Community 203 - "test_awareness_matching.py"
+Cohesion: 0.50
+Nodes (6): InternalScope, test_empty_forbidden_corpus_requires_proof_and_read_errors_fail_closed(), test_forbidden_corpus_does_not_treat_product_area_as_private_identity(), test_forbidden_corpus_has_every_private_category_and_is_normalized(), test_snapshot_reloads_explicit_links_and_current_text(), _watch()
 
 ### Community 204 - "Build"
 Cohesion: 0.15
@@ -1518,21 +1544,25 @@ Nodes (7): _cursor_start(), ListResponse, ProviderCheckpoint, Scan, Watch, Watch
 Cohesion: 0.10
 Nodes (19): 10. Scheduling, 11. Queries, saved views, and digests, 12. Review packets, decisions, and mitigations, 13. API contract, 14. Security and failure behavior, 15. Service seams that must be frozen before parallel work, 16. Parallel execution policy, 18. Required hostile-output tests (+11 more)
 
-### Community 210 - "._write"
-Cohesion: 0.08
-Nodes (13): Any, BaseModel, BriefingItem, BriefingQuery, Digest, DurableResult, ListResponse, ReviewOutcome (+5 more)
+### Community 210 - "BriefingStore"
+Cohesion: 0.07
+Nodes (29): BriefingStore, Any, BaseModel, BriefingItem, BriefingQuery, Digest, DurableResult, ListResponse (+21 more)
 
-### Community 211 - "WatchDraftCreate"
-Cohesion: 0.14
-Nodes (23): CardAction, PublicWatchQuery, SourceCoverage, WatchDraftCreate, Markdown-backed Watch drafts with optimistic revision checks., WatchStore, Any, Handler (+15 more)
+### Community 211 - "test_research.py"
+Cohesion: 0.11
+Nodes (24): ProviderSelection, Any, ProviderSelection, Runs small research batches in this process and records their status in…, ResearchRunService, asyncio, parametrize, test_automatic_research_is_limited_to_three_questions() (+16 more)
 
 ### Community 212 - "awareness-review.handoff-prompt.md"
 Cohesion: 0.04
 Nodes (44): Acceptance check, Blocker policy, Check, Check, Check, Check, Check, Check (+36 more)
 
-### Community 213 - "_http"
-Cohesion: 0.08
-Nodes (39): ScheduleUpdate, act_on_review_packet(), activate_watch(), answer_watch(), ask_briefing_item(), create_digest(), create_watch(), delete_view() (+31 more)
+### Community 213 - "ScheduleCreate"
+Cohesion: 0.18
+Nodes (19): ScheduleCreate, _client(), test_agent_get_and_put(), test_audiences_endpoint(), test_schedule_create_accepts_plain_daily_and_weekly_recurrence(), test_schedule_patch_pauses_and_resumes_without_running(), test_schedule_patch_returns_404_for_missing_id(), test_tools_endpoint_lists_real_tool_ids() (+11 more)
+
+### Community 215 - "ResearchService"
+Cohesion: 0.06
+Nodes (21): IntelligenceRegistry, DossierService, _markdown_list(), Any, InternalKnowledgeService, Any, InternalScope, Watch (+13 more)
 
 ### Community 216 - "3. Product vocabulary"
 Cohesion: 0.18
@@ -1550,9 +1580,13 @@ Nodes (30): 3a. Imports, 3b. Extend the item type and add constants, 3c. Two hel
 Cohesion: 0.06
 Nodes (34): Acceptance check — isolated vault browser workflow, Agent permission pattern, Blocker policy, Chunk B: canonical artifacts, Chunk C: focused service repairs, Chunk D: matter workspace reliability, Chunk E: settings and company UI, Company interview bug (+26 more)
 
-### Community 222 - "DocumentReviewService"
-Cohesion: 0.26
-Nodes (7): _current(), DocumentReviewService, Any, DocumentReviewAction, review_changes(), review_segments(), _segment()
+### Community 222 - "Implementation prompt — Finish core intake, Polaris research, and per-agent model routing"
+Cohesion: 0.05
+Nodes (38): Antigravity CLI, Architecture and safety rules, Blocker policy, Browser demo — acceptance gate, Codex CLI, Current facts that must guide the work, Final report, Final verification (+30 more)
+
+### Community 223 - "test_awareness_api.py"
+Cohesion: 0.24
+Nodes (8): _draft_payload(), test_activate_reports_orphaned_schedule_without_creating_duplicate(), test_briefing_ask_saves_and_uses_server_history_only(), test_briefing_connections_save_title_based_exchanges(), test_follow_up_connect_uses_briefing_item_link_not_fake_packet_id(), test_missing_connection_target_saves_no_exchange(), test_watch_answers_update_public_collection_query(), test_watch_routes_keep_scan_and_activation_separate()
 
 ### Community 224 - "4. Information architecture"
 Cohesion: 0.29
@@ -1562,13 +1596,9 @@ Nodes (7): 4. Information architecture, Automations — `/automations`, Briefing
 Cohesion: 0.50
 Nodes (4): 6. Provider boundary, Both providers, CounselOS native provider, Polaris provider
 
-### Community 226 - "IntelligenceProvider"
-Cohesion: 0.29
-Nodes (5): IntelligenceProvider, OutboundWatchQuery, Protocol, ProviderCheckpoint, ProviderScanResult
-
-### Community 227 - "CompanyInterviewService"
-Cohesion: 0.15
-Nodes (7): CompanyInterviewService, _PlainTextParser, CompanyProfile, SafeHttpFetcher, CompanyInterviewQuestion, CompanyInterviewTurn, HTMLParser
+### Community 226 - ".scan"
+Cohesion: 0.50
+Nodes (3): OutboundWatchQuery, ProviderCheckpoint, ProviderScanResult
 
 ### Community 228 - "Analysis"
 Cohesion: 0.17
@@ -1578,9 +1608,9 @@ Nodes (11): 1. Migration and reauthorization, 2. Optional secondary uses, 3. Ret
 Cohesion: 0.20
 Nodes (9): Account view, Approved disclosure structure, Authority checked, Cedar Launch Guidance, Decision summary, Detail shown before enrollment, Product card, Required controls (+1 more)
 
-### Community 230 - "ScheduleCreate"
+### Community 230 - "SchedulerService"
 Cohesion: 0.16
-Nodes (24): ScheduleCreate, parse_iso(), datetime, utc_now(), _client(), test_agent_get_and_put(), test_audiences_endpoint(), test_schedule_create_accepts_plain_daily_and_weekly_recurrence() (+16 more)
+Nodes (8): Any, datetime, Digest, ScheduleUpdate, Small in-process scheduler suitable for a single-user demo., SchedulerService, ScheduleRecurrence, ZoneInfo
 
 ### Community 231 - "Northstar Research Plan"
 Cohesion: 0.33
@@ -1634,9 +1664,9 @@ Nodes (3): Decision counsel will later make, Immediate direction, Recommendation
 Cohesion: 0.50
 Nodes (3): Counsel decision needed, Recommendation, Recommended path
 
-### Community 275 - "test_chat_history.py"
-Cohesion: 0.13
-Nodes (12): ProviderReply, ProviderToolCall, Any, MockProvider, Any, Deterministic local provider so the scaffold works without an API key., _client(), test_conversation_cannot_be_read_from_another_matter() (+4 more)
+### Community 275 - "Handoff plan — Live-agent UX repairs"
+Cohesion: 0.18
+Nodes (10): A — Artifact, lifecycle, context, and tool contracts, B — Intake actions and research source hygiene, Blocker and escalation policy, C — Matter workspace behavior, Fixed model policy, Handoff plan — Live-agent UX repairs, Implemented chunks, Objective (+2 more)
 
 ### Community 276 - "Live Agent UX Experiment"
 Cohesion: 0.10
@@ -1648,19 +1678,19 @@ Nodes (6): Decision question, Matter dossier, Open questions, Research, Summary,
 
 ### Community 278 - "watchApi.ts"
 Cohesion: 0.02
-Nodes (138): WatchesPage(), BriefingItemList(), groupNames(), IMPACT_WORD, BriefingQueryBar(), groups, sorts, BriefingWorkspace() (+130 more)
+Nodes (135): BriefingItemList(), groupNames(), IMPACT_WORD, BriefingQueryBar(), groups, sorts, BriefingWorkspace(), Counts (+127 more)
 
-### Community 279 - "OutboundWatchQuery"
-Cohesion: 0.18
-Nodes (12): NativeIntelligenceProvider, IntelligenceRegistry, OutboundWatchQuery, ProviderCapability, Allow-listed provider input. Free text still requires OutboundQueryPolicy…, FakeFetcher, outbound(), fixture (+4 more)
+### Community 279 - "Watch"
+Cohesion: 0.08
+Nodes (9): Digest, ListResponse, OutboundWatchQuery, ProviderCheckpoint, SavedView, Scan, Watch, WatchDraftCreate (+1 more)
 
-### Community 280 - "IndexService"
-Cohesion: 0.10
-Nodes (29): BriefingItem, BriefingQuery, WatchSource, list_briefing_items(), IndexService, Disposable SQLite read model rebuilt atomically from Markdown., _draft_payload(), test_activate_reports_orphaned_schedule_without_creating_duplicate() (+21 more)
+### Community 280 - "ChatRunService"
+Cohesion: 0.27
+Nodes (4): ChatRunService, Any, ChatResponse, Owns durable, in-process matter chat work.
 
 ### Community 281 - "BriefingReader.tsx"
-Cohesion: 0.12
-Nodes (22): BRIEFING_PROMPTS, BriefingReader(), BriefingTurn, ConnectionPicker, IMPACT_WORD, ItemReader(), join(), message() (+14 more)
+Cohesion: 0.09
+Nodes (33): WatchesPage(), BRIEFING_PROMPTS, BriefingReader(), BriefingTurn, ConnectionPicker, DigestReader(), IMPACT_WORD, ItemReader() (+25 more)
 
 ### Community 282 - "Related matters and decisions — alternative-data explanation guidance"
 Cohesion: 0.22
@@ -1682,21 +1712,21 @@ Nodes (9): _client(), _empty_settings(), test_invalid_matter_path_setting_does_n
 Cohesion: 0.29
 Nodes (6): Practical read, Research BRIEF-RES-20260830-95a83c, Research synthesis — Apex pilot vs. alternative-data explanation guidance, Suggested next steps, The material tension (the actual question for you), The two threads being connected
 
-### Community 287 - "ChatRunService"
-Cohesion: 0.26
-Nodes (4): ChatRunService, Any, ChatResponse, Owns durable, in-process matter chat work.
+### Community 287 - "check-workspace-ux.ts"
+Cohesion: 0.22
+Nodes (8): cardLogic, cards, chat, form, memo, modal, researchSource, workspace
 
 ### Community 288 - "WatchScanService"
 Cohesion: 0.18
 Nodes (6): ProviderScanResult, Scan, ScanMode, Watch, Coordinates one privacy-safe, durable Watch run., WatchScanService
 
-### Community 289 - "iso_now"
-Cohesion: 0.28
-Nodes (4): Any, Runs small research batches in this process and records their status in…, ResearchRunService, iso_now()
+### Community 289 - "ChatRequest"
+Cohesion: 0.09
+Nodes (45): ChatRequest, _action_text(), _apply_matter_actions(), chat(), execute_chat(), get_chat_run(), get_daily_conversation(), _history() (+37 more)
 
 ### Community 290 - "api.ts"
-Cohesion: 0.04
-Nodes (101): AgentsPage(), alignModelRows(), SettingsPage(), COMPANY_PROFILE_FIELDS, CompanyInterview(), CompanyProfileField, companyReplacementMessage(), Exchange (+93 more)
+Cohesion: 0.03
+Nodes (136): AgentsPage(), providerState(), workspaceDefault(), alignModelRows(), providerState(), SettingsPage(), CommentRail(), COMPANY_PROFILE_FIELDS (+128 more)
 
 ### Community 291 - "Matter chat"
 Cohesion: 0.06
@@ -1706,33 +1736,25 @@ Nodes (34): 1. Working Recommendation for Product (separate from the memo), 2. D
 Cohesion: 0.06
 Nodes (35): 1. Response to marketing (`respond-packet.md`), 2. Draft decision for review (`decision-draft.md`), Assumptions and gaps, Bottom line, Claim-by-claim assessment, Compliance process before publication, Matter chat, Path A: Product/state-gated claims matrix (recommended) (+27 more)
 
-### Community 293 - "PolarisIntelligenceProvider"
-Cohesion: 0.15
-Nodes (12): PolarisIntelligenceProvider, OutboundWatchQuery, ProviderCheckpoint, ProviderScanResult, SourceReference, _Client, asyncio, fixture (+4 more)
+### Community 293 - "New-context prompt — Sol Medium live-agent UX repair orchestrator"
+Cohesion: 0.22
+Nodes (8): Architecture rules, Final report, New-context prompt — Sol Medium live-agent UX repair orchestrator, Parallel implementation policy, Product result, Required verification, Resume protocol, Reviewer and escalation instructions
 
-### Community 294 - "document_export.py"
-Cohesion: 0.32
-Nodes (7): _block_styles(), _comment_entries(), DocumentExportService, _integer(), markdown_to_plain(), Any, DictionaryObject
+### Community 294 - "AppShell.tsx"
+Cohesion: 0.12
+Nodes (18): AutomationsPage(), adminLinks, AppShell(), linkIsActive(), NavLinks(), primaryLinks, AutomationPanel(), effectOf() (+10 more)
 
 ### Community 295 - "Research findings — Apex pilot decision vs. alternative-data explanation guidance"
 Cohesion: 0.25
 Nodes (7): 1. The Apex decision itself, 2. Where the guidance is genuinely live (the key finding), 3. Related recorded decisions (full map), 4. Provenance and gaps, Research BRIEF-RES-20260830-3ce327, Research findings — Apex pilot decision vs. alternative-data explanation guidance, Suggested next steps
 
-### Community 296 - "chat.py"
-Cohesion: 0.25
-Nodes (14): _action_text(), _apply_matter_actions(), chat(), execute_chat(), get_chat_run(), get_daily_conversation(), _history(), list_daily_conversations() (+6 more)
-
-### Community 297 - "ResearchService"
-Cohesion: 0.18
-Nodes (7): Any, Creates a useful, inspectable first-pass research packet., Bind the configured agent runner after the application container is built., ResearchService, Any, Search only the configured public provider; never touch the vault., SearchService
+### Community 296 - "test_agent_action_permissions.py"
+Cohesion: 0.36
+Nodes (7): _lifecycle_permissions(), asyncio, parametrize, test_advice_hypothetical_and_pasted_text_do_not_grant_lifecycle_permission(), test_each_lifecycle_action_needs_separate_current_message_permission(), test_provider_sees_only_the_explicit_lifecycle_action(), test_unexpected_hidden_lifecycle_call_is_rejected()
 
 ### Community 300 - "test_company_interview.py"
-Cohesion: 0.13
-Nodes (33): CompanyProfile, CompanyProfileService, CompanyProfileVersionConflictError, CompanyProfile, Exception, The submitted profile was based on an older saved profile., _client(), FetcherFake (+25 more)
-
-### Community 301 - "ChatHistoryService"
-Cohesion: 0.26
-Nodes (3): ChatHistoryService, Any, Stores matter conversations and daily workspace chats as Markdown records.
+Cohesion: 0.16
+Nodes (27): _client(), FetcherFake, _model_result(), _payload(), _profile(), ProviderFake, asyncio, test_absent_website_phrases_are_not_stored_or_fetched() (+19 more)
 
 ### Community 302 - "Handoff plan — repair Continuous Legal Awareness defects"
 Cohesion: 0.15
@@ -1746,13 +1768,13 @@ Nodes (6): First five minutes, How to record each test, Start here if Counsel OS
 Cohesion: 0.06
 Nodes (33): Actions, Actions, Actions, Actions, Actions, Actions, Cross-cutting factors (either path), Matter chat (+25 more)
 
-### Community 305 - "DecisionCreate"
-Cohesion: 0.19
-Nodes (13): DecisionCreate, audit_decisions(), post, record_decision(), revise_decision(), parametrize, _set_decision_field(), test_decision_audit_continues_after_invalid_date_field() (+5 more)
+### Community 305 - "VaultService"
+Cohesion: 0.08
+Nodes (31): Digest, CompanyProfileService, CompanyProfileVersionConflictError, CompanyProfile, Exception, The submitted profile was based on an older saved profile., review_segments(), Any (+23 more)
 
 ### Community 306 - "test_vault_management.py"
-Cohesion: 0.24
-Nodes (29): ActiveContextManager, Serializes vault activation and keeps leased requests on one context., copy_test_vault(), Copy the committed deterministic fixture into one isolated test vault., _assert_lease_succeeds(), _hash_authoritative(), asyncio, parametrize (+21 more)
+Cohesion: 0.10
+Nodes (42): ActiveContextManager, Path, RuntimeError, Serializes vault activation and keeps leased requests on one context., Prepare and activate one selection under the full switch lock., VaultBusyError, Path, VaultManager (+34 more)
 
 ### Community 307 - "Analysis"
 Cohesion: 0.17
@@ -1778,25 +1800,25 @@ Nodes (31): Actions, Actions, Actions, Actions, Actions, Bottom line, Matter cha
 Cohesion: 0.50
 Nodes (4): Matter model and workspace, N. Planned attention-audit acceptance walk, Readability, state language, and administration, Recommendations, decisions, and generated work
 
-### Community 313 - ".scan"
-Cohesion: 0.29
-Nodes (5): DevelopmentCandidate, OutboundWatchQuery, ProviderCheckpoint, ProviderScanResult, test_unfetched_feed_entry_is_only_supplied()
+### Community 313 - "Live-agent UX repair build plan"
+Cohesion: 0.14
+Nodes (13): Architecture limits, Chunk A — Artifact, lifecycle, context, and tool contracts, Chunk B — Intake actions and research source hygiene, Chunk C — Matter workspace and browser-facing behavior, Confirmed repair scope, Done condition, Goal, Independent review and escalation (+5 more)
 
 ### Community 314 - "5. Document review and export"
 Cohesion: 0.50
 Nodes (4): 5.1 Upload-format coverage, 5.2 Review flow, 5.3 Export, 5. Document review and export
 
-### Community 316 - "1. Test setup and baseline"
-Cohesion: 0.67
-Nodes (3): 1.1 Isolated test data (developer-assisted formal test), 1.2 Smoke check every main screen, 1. Test setup and baseline
+### Community 316 - "ProviderAdapterError"
+Cohesion: 0.10
+Nodes (21): ProviderAdapterError, RuntimeError, A provider failed without exposing provider-controlled or secret data., _AppServerFailure, CodexCLIProvider, _PendingResponse, _PendingTurn, Any (+13 more)
 
-### Community 317 - "BriefingStore"
-Cohesion: 0.15
-Nodes (20): DurableResult, BriefingStore, ProviderObservation, Direct Markdown persistence for Briefing records., test_demo_items_separate_reading_from_required_decision_review(), test_demo_packet_is_recommendation_not_recorded_outcome(), test_demo_scan_and_development_preserve_provider_provenance(), test_demo_watch_and_view_parse_with_expected_scope() (+12 more)
+### Community 317 - "WorkItemCreate"
+Cohesion: 0.20
+Nodes (10): MatterCreate, WorkItemCreate, _responding_matter(), test_approval_rejects_hostile_or_different_final_and_closure_names_work(), test_approval_retry_repairs_open_exact_approval_item(), test_direct_lifecycle_calls_require_actor_and_final_artifact(), test_exact_completion_is_retry_safe_and_does_not_touch_sibling(), test_lifecycle_binds_final_and_retries_with_stable_events() (+2 more)
 
-### Community 318 - "ValueError"
-Cohesion: 0.19
-Nodes (6): ScheduleContract, Any, test_schedule_requires_target_and_manual_has_no_next_run(), model_validator, PurePosixPath, ValueError
+### Community 318 - ".record_candidates"
+Cohesion: 0.47
+Nodes (3): DevelopmentCandidate, ProviderObservation, Development
 
 ### Community 330 - "Matter chat"
 Cohesion: 0.07
@@ -1818,9 +1840,13 @@ Nodes (4): 2.1 The core problem, 2.2 The intended outcome, 2.3 Product promise, 
 Cohesion: 0.50
 Nodes (4): 6.1 Included, 6.2 Explicitly excluded from MVP, 6.3 Why these exclusions are intentional, 6. MVP scope
 
-### Community 338 - "test_matter_paths.py"
-Cohesion: 0.29
-Nodes (4): parametrize, test_duplicate_configured_folders_are_rejected(), test_hostile_relative_paths_are_rejected(), test_protected_and_reserved_paths_are_rejected()
+### Community 337 - "ProviderReply"
+Cohesion: 0.18
+Nodes (10): ProviderReply, Any, Any, _client(), test_conversation_cannot_be_read_from_another_matter(), test_matter_chat_is_saved_and_can_start_a_new_conversation(), test_recommendation_save_does_not_create_a_work_product_card(), test_today_chat_is_saved_in_one_markdown_file_per_day() (+2 more)
+
+### Community 338 - "document_export.py"
+Cohesion: 0.32
+Nodes (7): _block_styles(), _comment_entries(), DocumentExportService, _integer(), markdown_to_plain(), Any, DictionaryObject
 
 ### Community 340 - "MEMORANDUM"
 Cohesion: 0.07
@@ -2186,9 +2212,9 @@ Nodes (5): 1. Thesis, 2. Payoff moment, 3. Demo script, 5. Parked backlog, Matte
 Cohesion: 0.29
 Nodes (6): 1. Disclosure timing and content, 2. State-by-state variation, 3. Agreement delivery and e-consent, 4. UX changes needed before launch, 5. Partner and processor touchpoints, Issues
 
-### Community 432 - "ChatRequest"
-Cohesion: 0.09
-Nodes (28): _lifecycle_permissions(), ChatRequest, AgentDefinition, ToolExecutionResult, asyncio, parametrize, test_advice_hypothetical_and_pasted_text_do_not_grant_lifecycle_permission(), test_each_lifecycle_action_needs_separate_current_message_permission() (+20 more)
+### Community 432 - "test_agents.py"
+Cohesion: 0.10
+Nodes (13): Resolve one provider selection for reuse throughout a single run., asyncio, parametrize, test_agent_decision_check_does_not_change_decision_files(), test_chat_can_record_decision_after_explicit_user_request(), test_chat_cannot_record_decision_without_explicit_user_request(), test_chat_propagates_selected_review_author_and_direction_trace(), test_decision_recording_intent_must_be_explicit() (+5 more)
 
 ### Community 433 - "Matter dossier"
 Cohesion: 0.33
@@ -2253,10 +2279,6 @@ Nodes (5): Current ask, Known facts, Matter dossier, Missing information, Work p
 ### Community 448 - "Matter dossier"
 Cohesion: 0.33
 Nodes (5): Current ask, Known facts, Matter dossier, Missing information, Work product
-
-### Community 449 - "test_matter_action_tools.py"
-Cohesion: 0.53
-Nodes (5): asyncio, parametrize, test_generic_write_protects_legacy_work_product_folders_after_settings_change(), test_generic_write_rejects_absolute_traversal_and_backslash_paths(), test_typed_tools_use_context_actor_and_generic_write_is_protected()
 
 ### Community 450 - "Pay-in-4 checkout redesign — conditional approval for next-quarter launch"
 Cohesion: 0.40
@@ -2402,9 +2424,9 @@ Nodes (3): Decision counsel will later make, Immediate direction, Recommendation
 Cohesion: 0.50
 Nodes (3): Counsel decision needed, Recommendation, Recommended path
 
-### Community 900 - "routers/settings.py"
-Cohesion: 0.09
-Nodes (23): VaultBusyError, lifespan(), get, root(), MatterCreate, _activate_vault(), create_vault(), get_company_interview() (+15 more)
+### Community 901 - "check-transport-preservation.ts"
+Cohesion: 0.22
+Nodes (8): api, apiModel, editor, form, lexical, matterService, panel, transformers
 
 ### Community 902 - "First-Pass Research Packet"
 Cohesion: 0.15
@@ -2494,9 +2516,9 @@ Nodes (9): Current ask, Decision question, Known facts, Matter dossier, Missing 
 Cohesion: 0.20
 Nodes (9): Current ask, Decision question, Known facts, Matter dossier, Missing information, Open questions, Research, Summary (+1 more)
 
-### Community 924 - ".record_candidates"
-Cohesion: 0.47
-Nodes (3): DevelopmentCandidate, ProviderObservation, Development
+### Community 924 - "test_awareness_records.py"
+Cohesion: 0.16
+Nodes (17): CompanyConnection, DurableResult, MitigationService, _now(), datetime, parametrize, SourceReference, _source() (+9 more)
 
 ### Community 925 - "Matter chat"
 Cohesion: 0.22
@@ -2579,52 +2601,80 @@ Cohesion: 0.50
 Nodes (3): Matter chat, Themis · 2026-08-30T20:20:13+00:00, You · 2026-08-30T20:20:16+00:00
 
 ### Community 946 - "files"
-Cohesion: 0.12
-Nodes (16): description, files, 00_System/agents/counsel-copilot.md, 00_System/agents/decision-monitor.md, 00_System/agents/intake-agent.md, 00_System/Agents.md, 00_System/agents/research-agent.md, 00_System/Soul.md (+8 more)
+Cohesion: 0.11
+Nodes (17): description, files, 00_System/agents/counsel-copilot.md, 00_System/agents/decision-monitor.md, 00_System/agents/intake-agent.md, 00_System/Agents.md, 00_System/agents/research-agent.md, 00_System/Soul.md (+9 more)
 
-### Community 1067 - "AppShell.tsx"
-Cohesion: 0.17
-Nodes (17): AutomationsPage(), adminLinks, linkIsActive(), NavLinks(), primaryLinks, AutomationPanel(), effectOf(), KIND_LABEL (+9 more)
+### Community 1068 - "DecisionCreate"
+Cohesion: 0.26
+Nodes (9): DecisionCreate, parametrize, _set_decision_field(), test_decision_audit_continues_after_invalid_date_field(), test_decision_audit_recommends_review_for_invalid_date_field(), test_decision_audit_without_persistence_preserves_all_decision_bytes(), test_decision_keeps_legacy_conditions_separate_from_mitigation_links(), test_recording_durable_decision_does_not_close_matter() (+1 more)
 
-### Community 1068 - "conftest.py"
-Cohesion: 0.21
-Nodes (11): app_context(), awareness_client(), fixture, Path, _client(), test_card_action_and_attachment_metadata_survive_reload(), test_company_profile_is_vault_backed_and_versioned(), test_create_matter_starts_persisted_intake_card() (+3 more)
-
-### Community 1069 - "test_fixture_isolation.py"
-Cohesion: 0.40
-Nodes (3): Path, test_fake_live_sentinel_and_sqlite_journal_are_not_copied(), test_fixture_source_is_not_the_workspace_vault()
-
-### Community 1070 - ".create"
-Cohesion: 0.36
-Nodes (3): Mitigation, MitigationCreate, MitigationPatch
+### Community 1069 - "test_matter_action_tools.py"
+Cohesion: 0.38
+Nodes (9): asyncio, parametrize, test_generic_write_protects_legacy_work_product_folders_after_settings_change(), test_generic_write_rejects_absolute_traversal_and_backslash_paths(), test_recommendation_save_returns_a_non_finalizable_record(), test_save_work_product_rejects_a_final_as_an_existing_draft(), test_save_work_product_rejects_invalid_existing_draft_paths(), test_save_work_product_revises_the_existing_canonical_draft() (+1 more)
 
 ### Community 1071 - "runner.py"
-Cohesion: 0.09
-Nodes (24): ContextBuilder, AgentDefinition, AgentRegistry, Any, AgentRunner, _card_from_tool_data(), _cards_for(), _explicit_decision_recording_requested() (+16 more)
+Cohesion: 0.07
+Nodes (52): ContextBuilder, AgentDefinition, Any, AgentDefinition, AgentRegistry, Any, _selection_metadata(), AgentExecutionError (+44 more)
 
-### Community 1073 - "BriefingResearchService"
-Cohesion: 0.33
-Nodes (3): BriefingResearchService, DurableResult, Appends generated analysis without changing stored source-backed items.
+### Community 1073 - "OpenCodeGoProvider"
+Cohesion: 0.16
+Nodes (14): OpenCodeGoProvider, Any, Bounded direct adapter for the two catalog-verified OpenCode Go protocols., Client, asyncio, Response, test_cancelled_request_is_not_rewritten_as_provider_failure(), test_catalog_filters_unknown_protocols_and_has_default_effort() (+6 more)
+
+### Community 1084 - "Build"
+Cohesion: 0.08
+Nodes (24): Build, Completion standard, Core intake, Polaris research, and per-agent model routing, Demo script, Existing plans and their status, Guardrails, Parallel execution policy, Parked backlog (+16 more)
+
+### Community 1085 - "providers/base.py"
+Cohesion: 0.23
+Nodes (16): ProviderCatalogEntry, ProviderModel, ProviderToolCall, bounded_json_bytes(), normalize_tool_call(), parse_bounded_json(), prepare_tools(), Any (+8 more)
+
+### Community 1086 - "AntigravityCLIProvider"
+Cohesion: 0.18
+Nodes (13): AntigravityCLIProvider, Any, Development-only, isolated Antigravity headless adapter., factory(), Process, asyncio, test_cancellation_kills_process(), test_catalog_is_development_only_and_malformed_catalog_keeps_saved_model() (+5 more)
+
+### Community 1088 - "ProviderRouter"
+Cohesion: 0.16
+Nodes (9): ProviderRouter, Any, ProviderSelection, Constructs, catalogs, reuses, and closes Counsel OS model providers., MockProvider, Any, Deterministic local provider so the scaffold works without an API key., asyncio (+1 more)
+
+### Community 1093 - "test_matter_led_contracts.py"
+Cohesion: 0.52
+Nodes (6): _client(), test_card_action_and_attachment_metadata_survive_reload(), test_company_profile_is_vault_backed_and_versioned(), test_create_matter_queues_intake_with_exact_request_source(), test_multi_upload_batch_apply_undo_and_finalize_endpoints(), test_workspace_upload_returns_chat_attachment_references()
+
+### Community 1096 - "MVP closure audit"
+Cohesion: 0.22
+Nodes (8): Allowed dispositions, Closure gate, Independent review result — 2026-08-30, Item matrix, MVP closure audit, Post-review remediation — 2026-08-30, Purpose, Source inventory
+
+### Community 1097 - "check-provider-admin.ts"
+Cohesion: 0.29
+Nodes (6): advancedSection, agents, api, modelSection, settings, types
+
+### Community 1098 - "research/page.tsx"
+Cohesion: 0.15
+Nodes (21): MatterPage(), humanSourceLabel(), newestResearchPath(), ResearchPage(), safeResearchPath(), answerAnnotation(), createAnnotation(), getAnnotations() (+13 more)
+
+### Community 1099 - "R. Canonical MVP closure"
+Cohesion: 0.40
+Nodes (5): Adaptive matter intake and dossier, Exhaustive closure, Per-agent model routing, Polaris matter research and graceful failure, R. Canonical MVP closure
 
 ## Knowledge Gaps
-- **3547 isolated node(s):** `schema_version`, `description`, `.counsel-os-vault.json`, `00_System/Agents.md`, `00_System/Soul.md` (+3542 more)
+- **3712 isolated node(s):** `schema_version`, `description`, `.counsel-os-vault.json`, `00_System/Agents.md`, `00_System/Soul.md` (+3707 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **691 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **711 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `AppContext` connect `AppContext` to `test_skills.py`, `VaultService`, `routers/settings.py`, `._select_locked`, `DecisionService`, `test_watch_scans.py`, `MatterRecordService`, `OutboundWatchQuery`, `IndexService`, `models/awareness.py`, `test_settings.py`, `ChatRunService`, `WatchScanService`, `iso_now`, `PolarisIntelligenceProvider`, `SafeFetchLimits`, `document_export.py`, `chat.py`, `ResearchService`, `test_company_interview.py`, `ChatHistoryService`, `Settings`, `runner.py`, `ChatRequest`, `DecisionCreate`, `test_vault_management.py`, `BriefingResearchService`, `DossierService`, `conftest.py`, `MatterStateService`, `SchedulerService`, `BriefingStore`, `ValueError`, `IngestionService`, `.__init__`, `InternalKnowledgeService`, `SettingsService`, `WatchDraftCreate`, `_http`, `MatterService`, `DocumentReviewService`, `AnnotationService`, `CompanyInterviewService`?**
+- **Why does `AppContext` connect `AppContext` to `test_skills.py`, `MatterService`, `ChatHistoryService`, `IndexService`, `test_watch_scans.py`, `MatterRecordService`, `api.py`, `ChatRunService`, `test_awareness_records.py`, `test_settings.py`, `WatchScanService`, `ChatRequest`, `.__init__`, `runner.py`, `VaultService`, `test_vault_management.py`, `SafeFetchLimits`, `MatterStateService`, `DocumentReviewService`, `ProviderRouter`, `ValueError`, `routers/awareness.py`, `SourceReference`, `BriefingStore`, `document_export.py`, `test_research.py`, `ResearchService`, `AnnotationService`, `SchedulerService`?**
+  _High betweenness centrality (0.016) - this node is a cross-community bridge._
+- **Why does `VaultService` connect `VaultService` to `test_skills.py`, `AppContext`, `MatterService`, `ChatHistoryService`, `IndexService`, `test_watch_scans.py`, `MatterRecordService`, `ChatRunService`, `test_awareness_records.py`, `Watch`, `.__init__`, `runner.py`, `BriefingQuery`, `MatterStateService`, `DocumentReviewService`, `handlers.py`, `test_awareness_matching.py`, `BriefingStore`, `document_export.py`, `test_research.py`, `.resolve`, `ResearchService`, `AnnotationService`, `SchedulerService`?**
   _High betweenness centrality (0.015) - this node is a cross-community bridge._
-- **Why does `VaultService` connect `VaultService` to `test_skills.py`, `AppContext`, `DecisionService`, `test_watch_scans.py`, `MatterRecordService`, `api.py`, `IndexService`, `ChatRunService`, `iso_now`, `SafeFetchLimits`, `document_export.py`, `ResearchService`, `test_company_interview.py`, `ChatHistoryService`, `runner.py`, `ChatRequest`, `DossierService`, `MatterStateService`, `SchedulerService`, `BriefingStore`, `handlers.py`, `IngestionService`, `.__init__`, `InternalKnowledgeService`, `SettingsService`, `WatchDraftCreate`, `.resolve`, `MatterService`, `DocumentReviewService`, `AnnotationService`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
-- **Why does `IndexService` connect `IndexService` to `AppContext`, `VaultService`, `IngestionService`, `SafeFetchLimits`, `.__init__`, `DecisionService`, `ResearchService`, `test_watch_scans.py`, `runner.py`, `MatterService`, `SchedulerService`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **Are the 49 inferred relationships involving `AppContext` (e.g. with `ActiveContextManager` and `VaultBusyError`) actually correct?**
-  _`AppContext` has 49 INFERRED edges - model-reasoned connections that need verification._
+- **Why does `BriefingStore` connect `BriefingStore` to `AppContext`, `Watch`, `test_watch_scans.py`, `.__init__`, `VaultService`, `BriefingQuery`, `test_awareness_records.py`?**
+  _High betweenness centrality (0.006) - this node is a cross-community bridge._
+- **Are the 50 inferred relationships involving `AppContext` (e.g. with `ActiveContextManager` and `VaultBusyError`) actually correct?**
+  _`AppContext` has 50 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 44 inferred relationships involving `VaultService` (e.g. with `ContextBuilder` and `AgentDefinition`) actually correct?**
   _`VaultService` has 44 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 115 inferred relationships involving `ValueError` (e.g. with `.run()` and `_watch_id_from_card()`) actually correct?**
-  _`ValueError` has 115 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 20 inferred relationships involving `BriefingStore` (e.g. with `AppContext` and `BriefingItem`) actually correct?**
-  _`BriefingStore` has 20 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 127 inferred relationships involving `ValueError` (e.g. with `._resolve_agent()` and `.run()`) actually correct?**
+  _`ValueError` has 127 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 15 inferred relationships involving `ChatRequest` (e.g. with `AgentExecutionError` and `AgentRunner`) actually correct?**
+  _`ChatRequest` has 15 INFERRED edges - model-reasoned connections that need verification._
