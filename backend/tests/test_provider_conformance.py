@@ -6,6 +6,9 @@ from types import SimpleNamespace
 from app.providers.catalog import ProviderAdapterError, normalize_tool_call, prepare_tools
 from app.providers.factory import ProviderRouter
 from app.providers.mock import MockProvider
+from app.providers.openai_compatible import OpenAICompatibleProvider
+from app.intelligence.polaris import POLARIS_BASE_URL, POLARIS_MODEL
+from app.config import Settings
 
 
 TOOLS = [
@@ -33,6 +36,56 @@ def test_tool_normalization_accepts_object_and_json_arguments():
 
     assert first.arguments == {"fact": "A"}
     assert second.arguments == {"fact": "B"}
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("arguments", [
+    {"working_ask": "Ship the product", "next_questions": [{"question_id": "Q1", "text": "Where?", "choices": []}], "intake_state": "active"},
+    '{"working_ask":"Ship the product","next_questions":[{"question_id":"Q1","text":"Where?","choices":[]}],"intake_state":"active"}',
+])
+async def test_openai_compatible_normalizes_nested_tool_arguments_once(monkeypatch, arguments):
+    tool = {
+        "type": "function",
+        "function": {
+            "name": "update_matter_intake",
+            "description": "Save intake.",
+            "parameters": {"type": "object", "properties": {}, "additionalProperties": True},
+        },
+    }
+
+    class Response:
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {"choices": [{"message": {"content": "", "tool_calls": [{
+                "id": "call-1",
+                "function": {"name": "update_matter_intake", "arguments": arguments},
+            }]}}]}
+
+    class Client:
+        def __init__(self, **_kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *_args):
+            return None
+
+        async def post(self, *_args, **_kwargs):
+            return Response()
+
+    monkeypatch.setattr("app.providers.openai_compatible.httpx.AsyncClient", Client)
+    settings = Settings(
+        llm_provider="openai_compatible",
+        llm_api_key="test-key",
+        llm_model="test-model",
+    )
+
+    reply = await OpenAICompatibleProvider(settings).complete([], [tool])
+
+    assert reply.tool_calls[0].arguments["next_questions"][0]["question_id"] == "Q1"
 
 
 @pytest.mark.parametrize(
@@ -70,6 +123,22 @@ def test_explicit_provider_does_not_borrow_workspace_model(app_context):
 
     with pytest.raises(ValueError, match="no model selected"):
         app_context.provider_router.resolve(agent)
+
+
+def test_polaris_agent_provider_uses_existing_endpoint_and_key(app_context):
+    settings = app_context.settings.model_copy(update={"polaris_api_key": "polaris-key"})
+    router = ProviderRouter(settings, MockProvider())
+    agent = SimpleNamespace(
+        agent_id="research-agent", provider="polaris", model=POLARIS_MODEL,
+        reasoning_effort="default",
+    )
+
+    resolved = router.resolve(agent)
+
+    assert isinstance(resolved.provider, OpenAICompatibleProvider)
+    assert resolved.provider.settings.llm_base_url == POLARIS_BASE_URL
+    assert resolved.provider.settings.llm_api_key == "polaris-key"
+    assert resolved.selection.provider == "polaris"
 
 
 @pytest.mark.asyncio

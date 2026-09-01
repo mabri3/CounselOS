@@ -20,6 +20,10 @@ export function choiceNeedsDetail(value: string, label: string): boolean {
 }
 
 export function questionModeStorageKey(matterId: string): string {
+  return `themis.ai:question-mode:${matterId}`;
+}
+
+export function legacyQuestionModeStorageKey(matterId: string): string {
   return `counsel-os:question-mode:${matterId}`;
 }
 

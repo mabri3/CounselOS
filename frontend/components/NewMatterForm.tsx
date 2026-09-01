@@ -138,7 +138,7 @@ export default function NewMatterForm({
 
       <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
         <button className="btn primary" disabled={busy || !requestText.trim()} type="submit">
-          {busy ? "Opening…" : "Open in Chat"}
+          {busy ? "Creating matter…" : "Create matter and open Chat"}
         </button>
       </div>
     </form>

@@ -43,7 +43,7 @@ values:
   data.provider_no_training_attested_at: '2026-08-27T00:57:14+00:00'
   agents.reasoning_effort: low
   document_review.lawyer_name: Lawyer
-  document_review.default_author: Themis
+  document_review.default_author: Themis.ai
 updated_at: '2026-08-30T05:23:58+00:00'
 ---
 # Workspace settings

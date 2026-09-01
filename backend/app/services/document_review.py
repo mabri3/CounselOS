@@ -11,6 +11,8 @@ from app.utils.time import iso_now
 
 TOKEN_PATTERN = re.compile(r"\s+|[\w]+|[^\w\s]", re.UNICODE)
 AUTHOR_PALETTE = ("#2F5597", "#7030A0", "#008272", "#A64B00", "#C0006F", "#5B6573", "#7A3E00", "#006B8F")
+LEGACY_GENERATED_AUTHOR = "Themis"
+GENERATED_AUTHOR_DISPLAY = "Themis.ai"
 
 
 def _segment(kind: str, text: str, change_id: str = "", author: dict[str, str] | None = None, created_at: str = "") -> dict[str, str]:
@@ -47,7 +49,48 @@ def review_changes(segments: list[dict[str, Any]]) -> list[dict[str, str]]:
         change["old_text" if segment.get("kind") == "delete" else "new_text"] += str(segment.get("text") or "")
         if segment.get("kind") == "insert":
             change["old_text"] += str(segment.get("replaced_text") or "")
-    return list(grouped.values())
+    return [change for change in grouped.values() if _substantive_change(change)]
+
+
+def _substantive_change(change: dict[str, str]) -> bool:
+    """Keep review cards for text changes, not Markdown or punctuation noise."""
+    return any(character.isalnum() for character in change["old_text"] + change["new_text"])
+
+
+def _display_author_name(author_id: str, name: str) -> str:
+    return GENERATED_AUTHOR_DISPLAY if author_id == "author-themis" or name == LEGACY_GENERATED_AUTHOR else name
+
+
+def _display_segments(segments: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    displayed: list[dict[str, Any]] = []
+    for raw in segments:
+        segment = dict(raw)
+        segment["author_name"] = _display_author_name(
+            str(segment.get("author_id") or ""), str(segment.get("author_name") or "")
+        )
+        if isinstance(segment.get("replaced_segments"), list):
+            segment["replaced_segments"] = _display_segments(segment["replaced_segments"])
+        displayed.append(segment)
+    return displayed
+
+
+def _display_comments(comments: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    displayed: list[dict[str, Any]] = []
+    for raw in comments:
+        thread = dict(raw)
+        thread["resolved_by"] = _display_author_name("", str(thread.get("resolved_by") or ""))
+        thread["entries"] = [
+            {
+                **entry,
+                "author_name": _display_author_name(
+                    str(entry.get("author_id") or ""), str(entry.get("author_name") or "")
+                ),
+            }
+            for entry in thread.get("entries", [])
+            if isinstance(entry, dict)
+        ]
+        displayed.append(thread)
+    return displayed
 
 
 def _current(segments: list[dict[str, Any]]) -> str:
@@ -65,9 +108,13 @@ class DocumentReviewService:
             metadata = dict(document["metadata"])
             metadata["review"] = review
             self.vault.write_markdown(path, document["content"], metadata)
-        return {"path": path, "tracking": review["tracking"], "authors": review["authors"],
-                "segments": review["segments"], "changes": review_changes(review["segments"]),
-                "comments": review["comments"], "comment_events": review["comment_events"]}
+        segments = _display_segments(review["segments"])
+        authors = [{**author, "name": _display_author_name(
+            str(author.get("author_id") or ""), str(author.get("name") or ""))
+        } for author in review["authors"]]
+        return {"path": path, "tracking": review["tracking"], "authors": authors,
+                "segments": segments, "changes": review_changes(segments),
+                "comments": _display_comments(review["comments"]), "comment_events": review["comment_events"]}
 
     def apply(self, path: str, request: DocumentReviewAction) -> dict[str, Any]:
         document = self._document(path)
@@ -130,7 +177,7 @@ class DocumentReviewService:
             if not entry:
                 raise ValueError("Comment entry not found.")
             if entry.get("author_id") == "author-themis" or str(entry.get("author_id") or "").startswith("author-imported"):
-                raise ValueError("Themis and imported comment entries are immutable.")
+                raise ValueError("Generated and imported comment entries are immutable.")
             if entry.get("author_id") != actor:
                 raise ValueError("You can change only your own comment entries.")
             if action == "edit_comment":
@@ -164,7 +211,7 @@ class DocumentReviewService:
         return self.get(path)
 
     def propose_agent_revision(self, path: str, content: str, metadata_updates: dict[str, Any] | None = None, *,
-                               author_name: str = "Themis", lawyer_author: str | None = None) -> str:
+                               author_name: str = "Themis.ai", lawyer_author: str | None = None) -> str:
         document = self._document(path)
         metadata, review = dict(document["metadata"]), self._review(document)
         metadata.update(metadata_updates or {})
@@ -187,8 +234,8 @@ class DocumentReviewService:
         review = dict(raw) if isinstance(raw, dict) else {}
         if review.get("version") != 2 or not isinstance(review.get("segments"), list):
             baseline = str(review.get("baseline") or document["content"])
-            prior_author = str(review.get("last_proposed_by") or "Themis").strip() or "Themis"
-            author_id = "author-themis" if prior_author == "Themis" else "author-" + re.sub(r"[^a-z0-9]+", "-", prior_author.lower()).strip("-")
+            prior_author = str(review.get("last_proposed_by") or "Themis.ai").strip() or "Themis.ai"
+            author_id = "author-themis" if prior_author in {LEGACY_GENERATED_AUTHOR, GENERATED_AUTHOR_DISPLAY} else "author-" + re.sub(r"[^a-z0-9]+", "-", prior_author.lower()).strip("-")
             review["segments"] = review_segments(baseline, document["content"], self._author(prior_author, 0, author_id))
             review["comments"] = [self._legacy_comment(item) for item in review.get("comments", []) if isinstance(item, dict)]
         review.update({"version": 2, "tracking": bool(review.get("tracking"))})
@@ -200,7 +247,7 @@ class DocumentReviewService:
         review["comment_events"] = [dict(item) for item in review.get("comment_events", []) if isinstance(item, dict)]
         review.pop("baseline", None)
         if review["tracking"] and _current(review["segments"]) != document["content"]:
-            author = self._ensure_author(review, "Themis")
+            author = self._ensure_author(review, "Themis.ai")
             review["segments"] = self._compose_revision(review["segments"], document["content"], author)
         return review
 
@@ -220,7 +267,8 @@ class DocumentReviewService:
             raise ValueError("Choose a color from the approved author palette.")
         found = next((a for a in review["authors"] if a.get("author_id") == author_id), None)
         if found:
-            found["name"] = name
+            if author_id != "author-themis" or name not in {LEGACY_GENERATED_AUTHOR, GENERATED_AUTHOR_DISPLAY}:
+                found["name"] = name
             return found
         author = {"author_id": author_id, "name": name, "color": request.author_color or AUTHOR_PALETTE[len(review["authors"]) % len(AUTHOR_PALETTE)]}
         review["authors"].append(author)
@@ -228,7 +276,7 @@ class DocumentReviewService:
 
     def _ensure_author(self, review: dict[str, Any], name: str) -> dict[str, str]:
         name = self._required(name, "An author name is required.")
-        author_id = "author-themis" if name == "Themis" else "author-" + re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+        author_id = "author-themis" if name in {LEGACY_GENERATED_AUTHOR, GENERATED_AUTHOR_DISPLAY} else "author-" + re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
         found = next((a for a in review["authors"] if a.get("author_id") == author_id), None)
         if found:
             return found

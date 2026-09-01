@@ -3,12 +3,14 @@ from __future__ import annotations
 import json
 import re
 import hashlib
+from copy import deepcopy
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
 from app.agents.context import ContextBuilder
+from app.agents.output import clean_user_facing_reply, correct_unsupported_workspace_claims
 from app.agents.registry import AgentDefinition, AgentRegistry
-from app.models.api import AppliedSkillSummary, ChatChoice, ChatRequest, ChatResponse, MatterUpdateCard, QuestionCard, ToolTrace, WorkProductCard
+from app.models.api import AppliedSkillSummary, ChatChoice, ChatRequest, ChatResponse, MatterUpdateCard, QuestionCard, ResearchStatusCard, ToolTrace, WorkProductCard
 from app.models.awareness import WatchDraftCard, WatchScanCard
 from app.providers.base import LLMProvider, ProviderSelection
 from app.providers.catalog import ProviderAdapterError
@@ -168,6 +170,7 @@ class AgentRunner:
         cards = state.cards
         if not cards:
             cards.extend(_cards_for(request))
+        intake_structure_retry = False
 
         if request.card_action and request.card_action.action in {"save_draft", "change_something"}:
             reply = (
@@ -186,13 +189,23 @@ class AgentRunner:
         direct_action = _watch_card_tool(request)
         if direct_action:
             tool_name, arguments = direct_action
+            normalized_arguments = _normalized_tool_arguments(
+                self.tools, tool_name, arguments, matter_id=request.matter_id
+            )
+            fingerprint = _tool_fingerprint(tool_name, normalized_arguments)
             result = await self.tools.execute(
                 agent,
-                ToolExecutionContext(app=self.app_context, matter_id=request.matter_id),
+                ToolExecutionContext(
+                    app=self.app_context,
+                    matter_id=request.matter_id,
+                    source_action_key=_tool_source_action_key(
+                        request.source_action_key, fingerprint
+                    ),
+                ),
                 tool_name,
                 arguments,
             )
-            trace.append(ToolTrace(tool=tool_name, status=result.status, summary=result.summary))
+            trace.append(_tool_trace(self.tools, tool_name, result))
             changed_paths.extend(result.changed_paths)
             refresh.extend(result.refresh)
             cards.extend(_cards_from_tool_data(result.data))
@@ -206,13 +219,52 @@ class AgentRunner:
             reply = await provider.complete(messages, provider_tools)
             if not isinstance(reply.content, str) or not isinstance(reply.tool_calls, list):
                 raise ValueError("The provider returned a malformed reply.")
-            if reply.content.strip():
-                state.useful_content = reply.content.strip()
+            user_facing_content = clean_user_facing_reply(reply.content)
+            if not reply.tool_calls:
+                user_facing_content = correct_unsupported_workspace_claims(
+                    user_facing_content,
+                    _successful_mutation_tools(trace),
+                )
+            if user_facing_content:
+                state.useful_content = user_facing_content
                 if checkpoint:
                     checkpoint(state)
             if not reply.tool_calls:
+                intake_updated = any(
+                    item.tool == "update_matter_intake" and item.status == "success"
+                    for item in trace
+                )
+                intake_question_ready = any(isinstance(card, QuestionCard) for card in cards)
+                if (
+                    agent.agent_id == "intake-agent"
+                    and request.matter_id
+                    and not intake_updated
+                    and not intake_question_ready
+                ):
+                    if not intake_structure_retry:
+                        messages.append({"role": "assistant", "content": user_facing_content or None})
+                        messages.append({
+                            "role": "system",
+                            "content": (
+                                "This intake turn is not complete. Use update_matter_intake now. "
+                                "If intake remains active, include at least one structured next_questions item. "
+                                "If no material question remains, set intake_state to complete. "
+                                "Do not ask an intake question only in prose."
+                            ),
+                        })
+                        intake_structure_retry = True
+                        continue
+                    return ChatResponse(
+                        reply="The intake turn could not be saved or presented as a structured question. Please retry.",
+                        trace=trace,
+                        changed_paths=_unique(changed_paths),
+                        refresh=_unique(refresh),
+                        cards=cards,
+                        applied_skills=applied_skills,
+                        review_author=review_author,
+                    )
                 return ChatResponse(
-                    reply=reply.content or "I completed the available work but did not receive a final model response.",
+                    reply=user_facing_content or "I completed the available work but did not receive a final model response.",
                     trace=trace,
                     changed_paths=_unique(changed_paths),
                     refresh=_unique(refresh),
@@ -223,7 +275,7 @@ class AgentRunner:
             messages.append(
                 {
                     "role": "assistant",
-                    "content": reply.content or None,
+                    "content": user_facing_content or None,
                     "tool_calls": [
                         {
                             "id": call.id,
@@ -235,7 +287,10 @@ class AgentRunner:
                 }
             )
             for call in reply.tool_calls:
-                fingerprint = _tool_fingerprint(call.name, call.arguments)
+                normalized_arguments = _normalized_tool_arguments(
+                    self.tools, call.name, call.arguments, matter_id=request.matter_id
+                )
+                fingerprint = _tool_fingerprint(call.name, normalized_arguments)
                 mutation = _is_mutation_tool(self.tools, call.name)
                 completed = state.completed_mutations.get(fingerprint) if mutation else None
                 if completed:
@@ -277,19 +332,16 @@ class AgentRunner:
                             active_file=request.active_file,
                             review_author=review_author,
                             lawyer_author=request.lawyer_author,
+                            source_action_key=_tool_source_action_key(
+                                request.source_action_key, fingerprint
+                            ),
                             trusted_source_id=request.trusted_source_id,
                             expected_dossier_hash=request.expected_dossier_hash,
                         ),
                         call.name,
                         call.arguments,
                     )
-                trace.append(
-                    ToolTrace(
-                        tool=call.name,
-                        status="success" if result.status == "success" else "error",
-                        summary=result.summary,
-                    )
-                )
+                trace.append(_tool_trace(self.tools, call.name, result, completed=bool(completed)))
                 if result.status == "success" and mutation and not completed:
                     state.completed_mutations[fingerprint] = {
                         "tool": call.name,
@@ -299,7 +351,7 @@ class AgentRunner:
                         checkpoint(state)
                 if (
                     result.status == "success"
-                    and review_author != "Themis"
+                    and review_author != "Themis.ai"
                     and request.lawyer_author
                     and review_author == request.lawyer_author
                     and result.changed_paths
@@ -307,7 +359,7 @@ class AgentRunner:
                     trace.append(ToolTrace(
                         tool=call.name,
                         status="success",
-                        summary="Created by Themis at the lawyer's direction",
+                        summary="Created by Themis.ai at the lawyer's direction",
                     ))
                 changed_paths.extend(result.changed_paths)
                 refresh.extend(result.refresh)
@@ -338,7 +390,13 @@ class AgentRunner:
         )
         final_reply = await provider.complete(messages, None)
         return ChatResponse(
-            reply=final_reply.content or "The available actions are complete; use the trace and updated matter state as the working result.",
+            reply=(
+                correct_unsupported_workspace_claims(
+                    clean_user_facing_reply(final_reply.content),
+                    _successful_mutation_tools(trace),
+                )
+                or "The available actions are complete; use the trace and updated matter state as the working result."
+            ),
             trace=trace,
             changed_paths=_unique(changed_paths),
             refresh=_unique(refresh),
@@ -352,9 +410,91 @@ def _unique(values: list[str]) -> list[str]:
     return list(dict.fromkeys(values))
 
 
+def _successful_mutation_tools(trace: list[ToolTrace]) -> set[str]:
+    return {
+        item.tool
+        for item in trace
+        if item.status == "success" and item.mutation_status in {"changed", "no_change"}
+    }
+
+
 def _tool_fingerprint(name: str, arguments: dict[str, Any]) -> str:
     normalized = json.dumps(arguments, sort_keys=True, separators=(",", ":"), default=str)
     return hashlib.sha256(f"{name}:{normalized}".encode("utf-8")).hexdigest()
+
+
+_HANDLER_ARGUMENT_DEFAULTS: dict[str, dict[str, Any]] = {
+    "create_work_item": {
+        "description": "",
+        "item_type": "question",
+        "status": "open",
+        "priority": "normal",
+        "owner": "",
+        "due_at": None,
+        "required": False,
+        "issue_id": None,
+    },
+    "record_decision": {
+        "rationale": "",
+        "decision_maker": "User instructed the chat",
+        "decision_type": "legal_decision",
+        "conditions": [],
+        "linked_paths": [],
+        "next_review_at": None,
+        "risk_level": "unknown",
+    },
+    "run_research": {"question": ""},
+    "save_work_product": {"existing_draft_path": ""},
+    "update_matter_intake": {
+        "reported_facts": [],
+        "issues": [],
+        "assumptions": [],
+        "material_missing_facts": [],
+        "human_questions": [],
+        "public_research_questions": [],
+        "next_questions": [],
+        "next_question": None,
+        "intake_state": "active",
+        "dossier_orientation": None,
+    },
+}
+
+
+def _normalized_tool_arguments(
+    tools: ToolRegistry,
+    name: str,
+    arguments: dict[str, Any],
+    *,
+    matter_id: str | None,
+) -> dict[str, Any]:
+    """Return the effective arguments used to identify one retry-safe action."""
+    normalized = deepcopy(arguments)
+    for key, value in _HANDLER_ARGUMENT_DEFAULTS.get(name, {}).items():
+        normalized.setdefault(key, deepcopy(value))
+    definition = next((item for item in tools.list() if item.get("tool_id") == name), None)
+    if definition:
+        _apply_schema_defaults(normalized, definition.get("parameters", {}))
+    if matter_id and "matter_id" not in normalized:
+        normalized["matter_id"] = matter_id
+    return normalized
+
+
+def _apply_schema_defaults(values: dict[str, Any], schema: dict[str, Any]) -> None:
+    for key, property_schema in schema.get("properties", {}).items():
+        if key not in values and "default" in property_schema:
+            values[key] = deepcopy(property_schema["default"])
+        if key in values and isinstance(values[key], dict):
+            _apply_schema_defaults(values[key], property_schema)
+
+
+def _tool_source_action_key(base_key: str | None, fingerprint: str) -> str | None:
+    if not base_key:
+        return None
+    candidate = f"{base_key}:tool:{fingerprint[:24]}"
+    if len(candidate) <= 256:
+        return candidate
+    digest = hashlib.sha256(candidate.encode("utf-8")).hexdigest()
+    return f"chat-action:{digest}"
 
 
 def _is_mutation_tool(tools: ToolRegistry, name: str) -> bool:
@@ -363,16 +503,44 @@ def _is_mutation_tool(tools: ToolRegistry, name: str) -> bool:
     return bool(definition and definition.get("handler") not in read_only_handlers)
 
 
+def _tool_trace(
+    tools: ToolRegistry,
+    tool_name: str,
+    result: ToolExecutionResult,
+    *,
+    completed: bool = False,
+) -> ToolTrace:
+    mutation_status = None
+    if _is_mutation_tool(tools, tool_name):
+        if result.status != "success":
+            mutation_status = "failed"
+        elif result.changed_paths or completed:
+            mutation_status = "changed"
+        else:
+            mutation_status = "no_change"
+    return ToolTrace(
+        tool=tool_name,
+        status="success" if result.status == "success" else "error",
+        summary=result.summary,
+        mutation_status=mutation_status,
+    )
+
+
 def _resolved_review_author(request: ChatRequest) -> str:
     normalized = " ".join(request.message.lower().split())
-    if "use themis as the review author" in normalized:
-        return "Themis"
+    if any(phrase in normalized for phrase in (
+        "use themis as the review author",
+        "use themis.ai as the review author",
+    )):
+        return "Themis.ai"
     if any(phrase in normalized for phrase in (
         "make these changes in my name",
         "make these comments in my name",
     )):
-        return (request.lawyer_author or request.review_author or "Themis").strip() or "Themis"
-    return (request.review_author or "Themis").strip() or "Themis"
+        author = (request.lawyer_author or request.review_author or "Themis.ai").strip() or "Themis.ai"
+    else:
+        author = (request.review_author or "Themis.ai").strip() or "Themis.ai"
+    return "Themis.ai" if author.casefold() in {"themis", "themis.ai"} else author
 
 
 def _explicit_decision_recording_requested(message: str) -> bool:
@@ -457,6 +625,8 @@ def _watch_id_from_card(card_id: str, values: list[str]) -> str:
 
 
 def _cards_from_tool_data(data: dict[str, Any]) -> list[Any]:
+    if isinstance(data, dict) and data.get("record_type") == "research_run":
+        return [ResearchStatusCard.model_validate(data)]
     if (
         isinstance(data, dict)
         and data.get("record_type") == "work_product"

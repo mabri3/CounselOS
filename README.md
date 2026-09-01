@@ -1,6 +1,6 @@
-# Counsel OS MVP
+# Themis.ai MVP
 
-Counsel OS is a web-first, Markdown-backed product-counsel workspace. It is designed to reduce a lawyer's cognitive load by turning ambiguous intake into organized matters, research, work product, decisions, and follow-up.
+Themis.ai is a web-first, Markdown-backed product-counsel workspace. It is designed to reduce a lawyer's cognitive load by turning ambiguous intake into organized matters, research, work product, decisions, and follow-up.
 
 This repository is a runnable first-pass scaffold, not a production legal system.
 
@@ -36,7 +36,7 @@ A coding agent should read [`AGENTS.md`](AGENTS.md), [`docs/PRD.md`](docs/PRD.md
 
 ## Quick start
 
-Counsel OS requires Python 3.11 or newer and a current Node.js release.
+Themis.ai requires Python 3.11 or newer and a current Node.js release.
 
 For the standard setup, run:
 
@@ -85,6 +85,20 @@ After dependencies are installed:
 ./scripts/dev.sh
 ```
 
+The launcher checks the local commands, installed backend and frontend
+dependencies, and ports before it starts. It writes backend and frontend output
+to separate files, waits up to 60 seconds for health and readiness checks, and
+then prints the application URLs and log paths. Press `Ctrl-C` once to stop both
+services and their development child processes.
+
+The default ports are `8000` for the backend and `3000` for the frontend. You
+can change the ports, startup time limit, or log directory for one run:
+
+```bash
+BACKEND_PORT=8100 FRONTEND_PORT=3100 DEV_START_TIMEOUT_SECONDS=90 \
+  DEV_LOG_DIR=/tmp/themis-ai-logs ./scripts/dev.sh
+```
+
 ## Configure a real model
 
 Set values in `.env`:
@@ -125,8 +139,8 @@ POLARIS_API_KEY=your-key
 ```
 
 Choose **Native**, **Polaris**, or **Both** in Watch Builder. Polaris uses the
-fixed Themis Lime brain and cannot receive company, matter, decision, document,
-or other private context. Counsel OS checks the editable public query before a
+fixed Polaris service and cannot receive company, matter, decision, document,
+or other private context. Themis.ai checks the editable public query before a
 network call. Company-specific matching stays local. If one provider in Both
 mode fails, the scan keeps the other provider's useful output and shows a
 **Partial** state.

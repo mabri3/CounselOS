@@ -16,8 +16,8 @@ export function normalizeCompanyName(name: string): string {
 }
 
 export function companyReplacementMessage(savedName: string, draftName: string): string | null {
-  const saved = savedName.trim();
-  const draft = draftName.trim();
+  const saved = savedName.trim().replace(/\s+/g, " ");
+  const draft = draftName.trim().replace(/\s+/g, " ");
   if (!saved || !draft || normalizeCompanyName(saved) === normalizeCompanyName(draft)) return null;
   return `Replace the company profile for ${saved} with ${draft}?`;
 }
@@ -36,8 +36,30 @@ export const COMPANY_PROFILE_FIELDS: { key: CompanyProfileField; label: string; 
 
 type Exchange = { question: CompanyInterviewQuestion; answer: string; reply: string; websiteUsed: boolean; warning: string };
 type Props = { profile: CompanyProfile; onSaved: (profile: CompanyProfile) => void };
+type SaveState = "clean" | "dirty" | "saved";
+type CompanyProfileWithSavedAt = CompanyProfile & { saved_at?: string };
+
+function hasProfileContent(profile: CompanyProfile): boolean {
+  return Boolean(profile.version || COMPANY_PROFILE_FIELDS.some((field) => profile[field.key].trim()));
+}
+
+function emptyReplacementDraft(profile: CompanyProfile): CompanyProfile {
+  return {
+    ...Object.fromEntries(COMPANY_PROFILE_FIELDS.map((field) => [field.key, ""])),
+    source_id: profile.source_id,
+    version: profile.version,
+  } as CompanyProfile;
+}
+
+function savedAt(profile: CompanyProfile): string {
+  const value = (profile as CompanyProfileWithSavedAt).saved_at;
+  if (!value) return "Save time unavailable";
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? value : parsed.toLocaleString();
+}
 
 export default function CompanyInterview({ profile, onSaved }: Props) {
+  const existingProfile = hasProfileContent(profile);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const websiteRef = useRef<HTMLInputElement>(null);
   const [interview, setInterview] = useState<Interview | null>(null);
@@ -47,13 +69,15 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
   const [input, setInput] = useState("");
   const [websiteInput, setWebsiteInput] = useState("");
   const [draft, setDraft] = useState<CompanyProfile>(profile);
-  const [reviewing, setReviewing] = useState(false);
+  const [generatedDraft, setGeneratedDraft] = useState(!existingProfile);
+  const [draftEditedByLawyer, setDraftEditedByLawyer] = useState(false);
+  const [reviewing, setReviewing] = useState(existingProfile);
   const [warning, setWarning] = useState("");
   const [loading, setLoading] = useState(true);
   const [working, setWorking] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [saveState, setSaveState] = useState<SaveState>(existingProfile ? "clean" : "dirty");
   const [error, setError] = useState("");
 
   const loadInterview = useCallback(async () => {
@@ -99,6 +123,8 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
         ...(!finish && websiteQuestion ? { website_url: leaveWebsiteBlank ? "" : websiteInput.trim() } : {}),
       });
       setDraft(result.draft);
+      setGeneratedDraft(true);
+      setDraftEditedByLawyer(false);
       setWarning(result.warning ?? "");
       if (!finish) {
         setExchanges((current) => [...current, {
@@ -133,24 +159,29 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
     setExchanges([]);
     setInput("");
     setWebsiteInput("");
-    setDraft(profile);
+    setDraft(emptyReplacementDraft(profile));
+    setGeneratedDraft(true);
+    setDraftEditedByLawyer(false);
     setReviewing(false);
     setWarning("");
     setError("");
-    setSaved(false);
+    setSaveState("dirty");
     requestAnimationFrame(() => (websiteRef.current ?? inputRef.current)?.focus());
   }
 
   async function saveDraft() {
-    if (saving || saved) return;
+    if (saving || saveState !== "dirty") return;
     const replacementMessage = companyReplacementMessage(profile.company_name, draft.company_name);
     if (replacementMessage && !window.confirm(replacementMessage)) return;
     setSaving(true);
     setError("");
     try {
-      const nextProfile = await saveCompanyProfile(draft);
+      const payload = replacementMessage
+        ? ({ ...draft, replacement_confirmation: replacementMessage } as CompanyProfile)
+        : draft;
+      const nextProfile = await saveCompanyProfile(payload);
       setDraft(nextProfile);
-      setSaved(true);
+      setSaveState("saved");
       onSaved(nextProfile);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Could not save the company profile.");
@@ -177,7 +208,7 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
   return (
     <section className="company-interview" aria-label="Company profile interview">
       <div className="company-interview-thread" aria-live="polite">
-        <AssistantTurn>{interview.opening}</AssistantTurn>
+        {!reviewing ? <AssistantTurn>{interview.opening}</AssistantTurn> : null}
         {exchanges.map((exchange, index) => (
           <div className="company-interview-exchange" key={`${exchange.question.question_id}-${index}`}>
             <QuestionTurn question={exchange.question} />
@@ -192,11 +223,17 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
         {reviewing ? (
           <ReviewCard
             draft={draft}
+            draftEditedByLawyer={draftEditedByLawyer}
+            generatedDraft={generatedDraft}
             error={error}
-            saved={saved}
+            saveState={saveState}
             saving={saving}
             warning={warning}
-            onChange={setDraft}
+            onChange={(nextDraft) => {
+              setDraft(nextDraft);
+              setDraftEditedByLawyer(true);
+              setSaveState("dirty");
+            }}
             onSave={() => void saveDraft()}
             onStartAgain={startAgain}
           />
@@ -244,42 +281,66 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
 }
 
 function AssistantTurn({ children }: { children: string }) {
-  return <div className="assistant-message"><div className="agent-label">Themis</div><div className="bubble-agent"><p>{children}</p></div></div>;
+  return <div className="assistant-message"><div className="agent-label">Themis.ai</div><div className="bubble-agent"><p>{children}</p></div></div>;
 }
 
 function QuestionTurn({ question }: { question: CompanyInterviewQuestion }) {
   return (
     <div className="assistant-message company-question">
-      <div className="agent-label">Themis</div>
+      <div className="agent-label">Themis.ai</div>
       <div className="bubble-agent"><p>{question.text}</p></div>
       {question.reason ? <p className="company-question-reason">Why I ask: {question.reason}</p> : null}
     </div>
   );
 }
 
-function ReviewCard({ draft, error, saved, saving, warning, onChange, onSave, onStartAgain }: {
+function ReviewCard({ draft, draftEditedByLawyer, error, generatedDraft, saveState, saving, warning, onChange, onSave, onStartAgain }: {
   draft: CompanyProfile;
+  draftEditedByLawyer: boolean;
   error: string;
-  saved: boolean;
+  generatedDraft: boolean;
+  saveState: SaveState;
   saving: boolean;
   warning: string;
   onChange: (profile: CompanyProfile) => void;
   onSave: () => void;
   onStartAgain: () => void;
 }) {
+  const unchanged = saveState !== "dirty";
   return (
-    <section className={`company-review-card ${saved ? "saved" : ""}`} aria-label="Company profile draft">
-      <div className="agent-label">{saved ? "Company profile · Saved" : "Themis · Not yet reviewed by an attorney"}</div>
-      <h2>{saved ? "Company profile saved" : "Review the company profile"}</h2>
-      <p className="company-review-state">{saved ? "This profile is saved in company.md." : "Edit this draft if needed. Nothing is saved until you choose Save."}</p>
+    <section className={`company-review-card ${unchanged ? "saved" : ""}`} aria-label="Company profile draft">
+      <div className="agent-label">{saveState === "dirty"
+        ? generatedDraft && !draftEditedByLawyer
+          ? "Themis.ai · Not yet reviewed by an attorney"
+          : generatedDraft
+            ? "Unsaved lawyer edits to a Themis.ai draft"
+            : "Unsaved lawyer edits"
+        : "Company profile · Saved"}</div>
+      <h2>{draft.company_name || "Review the company profile"}</h2>
+      <p className="company-review-state">
+        {saveState === "clean"
+          ? "No unsaved changes."
+          : saveState === "saved"
+            ? "Saved. No unsaved changes."
+            : "Review and edit this profile. Nothing changes until you choose Save company profile."}
+      </p>
+      {draft.version ? (
+        <p className="record-meta">Version {draft.version} · Saved {savedAt(draft)}</p>
+      ) : null}
       <dl className="company-review-fields">
         {COMPANY_PROFILE_FIELDS.map((field) => (
           <div key={field.key}>
-            <dt>{saved ? field.label : <label htmlFor={`company-draft-${field.key}`}>{field.label}</label>}</dt>
-            <dd>{saved ? (draft[field.key] || "—") : field.key === "company_name" || field.key === "website_url" ? (
+            <dt><label htmlFor={`company-draft-${field.key}`}>{field.label}</label></dt>
+            <dd>{field.key === "company_name" || field.key === "website_url" ? (
               <input className="text-input" id={`company-draft-${field.key}`} onChange={(event) => onChange({ ...draft, [field.key]: event.target.value })} type={field.key === "website_url" ? "url" : "text"} value={draft[field.key]} />
             ) : (
-              <textarea className="text-input" id={`company-draft-${field.key}`} onChange={(event) => onChange({ ...draft, [field.key]: event.target.value })} rows={3} value={draft[field.key]} />
+              <textarea
+                className="text-input"
+                id={`company-draft-${field.key}`}
+                onChange={(event) => onChange({ ...draft, [field.key]: event.target.value })}
+                rows={field.key === "summary" || field.key === "regulatory_context" || field.key === "data_practices" ? 7 : 5}
+                value={draft[field.key]}
+              />
             )}</dd>
           </div>
         ))}
@@ -287,7 +348,9 @@ function ReviewCard({ draft, error, saved, saving, warning, onChange, onSave, on
       {warning ? <p className="company-interview-warning" role="status"><strong>Note:</strong> {warning}</p> : null}
       {error ? <p className="error">{error}</p> : null}
       <div className="company-interview-actions">
-        {!saved ? <button className="btn primary" disabled={saving} onClick={onSave} type="button">{saving ? "Saving…" : "Save company profile"}</button> : null}
+        <button className="btn primary" disabled={saving || unchanged} onClick={onSave} type="button">
+          {saving ? "Saving…" : unchanged ? "No unsaved changes" : "Save company profile"}
+        </button>
         <button className="btn" disabled={saving} onClick={onStartAgain} type="button">Start again</button>
       </div>
     </section>

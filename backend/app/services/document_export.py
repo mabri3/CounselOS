@@ -84,7 +84,7 @@ class DocumentExportService:
         styles["Normal"].font.name = "Aptos"
         styles["Normal"].font.size = Pt(11)
         document.core_properties.title = title
-        document.core_properties.author = "Counsel OS"
+        document.core_properties.author = "Themis.ai"
 
         paragraph = document.add_paragraph()
         tracked_runs: list[tuple[Any, dict[str, Any]]] = []
@@ -147,7 +147,7 @@ class DocumentExportService:
                 document.add_comment(
                     target_runs,
                     text="\n".join(lines),
-                    author=str(entries[0].get("author_name") or "Counsel OS User") if entries else "Counsel OS User",
+                    author=str(entries[0].get("author_name") or "Themis.ai User") if entries else "Themis.ai User",
                 )
 
         next_id = 1
@@ -164,7 +164,7 @@ class DocumentExportService:
             parent.remove(element)
             wrapper = OxmlElement("w:ins" if kind == "insert" else "w:del")
             wrapper.set(qn("w:id"), str(next_id))
-            wrapper.set(qn("w:author"), str(segment.get("author_name") or segment.get("author_id") or "Counsel OS"))
+            wrapper.set(qn("w:author"), str(segment.get("author_name") or segment.get("author_id") or "Themis.ai"))
             wrapper.set(qn("w:date"), str(segment.get("created_at") or timestamp))
             next_id += 1
             if kind == "delete":
@@ -260,7 +260,7 @@ class DocumentExportService:
             writer.add_annotation(mark["page"], cls._markup_annotation(
                 subtype, mark["rect"], color,
                 f"{'Inserted' if mark['kind'] == 'insert' else 'Deleted'}: {mark['text']}",
-                "Counsel OS",
+                "Themis.ai",
             ))
         for comment in comments:
             quote = str(comment.get("quote") or "")
@@ -274,13 +274,13 @@ class DocumentExportService:
             hits = [item for item in visible if item["start"] < end and item["end"] > start]
             entries = _comment_entries(comment)
             contents = "\n".join(
-                f"{entry.get('author_name') or 'Counsel OS User'}: {entry.get('body') or ''}" for entry in entries
+                f"{entry.get('author_name') or 'Themis.ai User'}: {entry.get('body') or ''}" for entry in entries
             )
             for hit in hits:
                 writer.add_annotation(hit["page"], cls._markup_annotation(
                     "/Highlight", hit["rect"], (0.96, 0.75, 0.2),
                     contents,
-                    str(entries[0].get("author_name") or "Counsel OS User") if entries else "Counsel OS User",
+                    str(entries[0].get("author_name") or "Themis.ai User") if entries else "Themis.ai User",
                 ))
         output = io.BytesIO()
         writer.write(output)
@@ -331,7 +331,7 @@ def _comment_entries(comment: dict[str, Any]) -> list[dict[str, Any]]:
     body = str(comment.get("comment") or comment.get("body") or "")
     if not body:
         return []
-    return [{"author_name": str(comment.get("author") or comment.get("author_name") or "Counsel OS User"),
+    return [{"author_name": str(comment.get("author") or comment.get("author_name") or "Themis.ai User"),
              "body": body, "created_at": str(comment.get("created_at") or "")}]
 
 

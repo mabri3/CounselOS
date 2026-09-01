@@ -10,14 +10,14 @@ import ChatCards from "@/components/ChatCards";
 import SkillCommandMenu from "@/components/SkillCommandMenu";
 import LinkifiedText from "@/components/LinkifiedText";
 import UploadIntentCard from "@/components/UploadIntentCard";
-import { getChatRun, getConversation, getConversations, getSkills, retryChatRun, startChatRun, uploadDocuments } from "@/lib/api";
-import { chatAgentId, chatRunStateLabel, chatRunStorageKey, pendingChatRunId, rememberChatRun, safeChatFailureDetail, shouldShowChatRunStatus } from "@/lib/chatRunLogic";
-import { questionModeStorageKey } from "@/lib/chatCardLogic";
+import { getChatRun, getConversation, getConversations, getSkills, recoverIntakeQuestion, retryChatRun, saveWorkProductDraft, startChatRun, uploadDocuments } from "@/lib/api";
+import { chatAgentId, chatDraftStorageKey, chatRunStateLabel, chatRunStorageKey, historicalQuestionStates, legacyChatDraftStorageKey, legacyChatRunStorageKey, mergeChatMessages, needsIntakeQuestionRecovery, pendingChatRunId, rememberChatRun, remainingComposerValue, safeChatFailureDetail, shouldShowChatRunStatus } from "@/lib/chatRunLogic";
+import { legacyQuestionModeStorageKey, questionModeStorageKey } from "@/lib/chatCardLogic";
 import { skillBuilderGoal } from "@/lib/skills";
-import { mutationOutcome } from "@/lib/matterBrief";
+import { mutationFailureMessages, mutationOutcome } from "@/lib/matterBrief";
 import type { AppliedSkillSummary, AttachmentReference, CardAction, ChatCard, ChatRun, QuestionMode, SkillDefinition, ToolTrace } from "@/lib/types";
 
-type Message = { message_id?: string; role: "user" | "assistant"; content: string; trace?: ToolTrace[]; cards?: ChatCard[]; attachments?: AttachmentReference[]; applied_skills?: AppliedSkillSummary[] };
+type Message = { message_id?: string; role: "user" | "assistant"; content: string; trace?: ToolTrace[]; cards?: ChatCard[]; attachments?: AttachmentReference[]; applied_skills?: AppliedSkillSummary[]; card_action?: CardAction | null };
 
 const SUGGESTIONS = [
   "Compare both paths",
@@ -47,6 +47,7 @@ export default function ChatPanel({
   reviewAuthor,
   lawyerAuthor,
   onReviewAuthorChange,
+  currentWorkProductDraftPath,
 }: {
   matterId: string;
   matterTitle: string;
@@ -63,6 +64,7 @@ export default function ChatPanel({
   reviewAuthor: string;
   lawyerAuthor: string;
   onReviewAuthorChange: (name: string) => void;
+  currentWorkProductDraftPath?: string | null;
 }) {
   const router = useRouter();
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -78,27 +80,53 @@ export default function ChatPanel({
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [activeRun, setActiveRun] = useState<ChatRun | null>(null);
   const [waiting, setWaiting] = useState(false);
+  const [refreshingRun, setRefreshingRun] = useState(false);
   const [questionMode, setQuestionMode] = useState<QuestionMode>("guided");
+  const [savingAnswerKey, setSavingAnswerKey] = useState<string | null>(null);
+  const [savedAnswerPaths, setSavedAnswerPaths] = useState<Record<string, string>>({});
+  const [savedAnswerNotices, setSavedAnswerNotices] = useState<Record<string, string>>({});
+  const [saveAnswerErrors, setSaveAnswerErrors] = useState<Record<string, string>>({});
   const completedRuns = useRef(new Set<string>());
   const refreshedRuns = useRef(new Set<string>());
+  const intakeRecoveryAttempts = useRef(new Set<string>());
 
   useEffect(() => {
     if (!busy) { setElapsedSeconds(0); return; }
-    const started = Date.now();
-    const timer = window.setInterval(() => setElapsedSeconds(Math.floor((Date.now() - started) / 1000)), 1000);
+    const parsed = Date.parse(activeRun?.started_at || activeRun?.created_at || "");
+    const started = Number.isFinite(parsed) ? parsed : Date.now();
+    const update = () => setElapsedSeconds(Math.max(0, Math.floor((Date.now() - started) / 1000)));
+    update();
+    const timer = window.setInterval(update, 1000);
     return () => window.clearInterval(timer);
-  }, [busy]);
+  }, [activeRun?.created_at, activeRun?.started_at, busy]);
 
   useEffect(() => { void getSkills().then(({ skills: saved }) => setSkills(saved)).catch(() => setSkills([])); }, []);
 
   useEffect(() => {
-    const saved = window.localStorage.getItem(questionModeStorageKey(matterId));
+    if (seed?.text) return;
+    const saved = window.localStorage.getItem(chatDraftStorageKey(matterId))
+      ?? window.localStorage.getItem(legacyChatDraftStorageKey(matterId));
+    if (saved) window.localStorage.setItem(chatDraftStorageKey(matterId), saved);
+    setInput(saved ?? "");
+  }, [matterId, seed?.text]);
+
+  useEffect(() => {
+    if (input) window.localStorage.setItem(chatDraftStorageKey(matterId), input);
+    else window.localStorage.removeItem(chatDraftStorageKey(matterId));
+    window.localStorage.removeItem(legacyChatDraftStorageKey(matterId));
+  }, [input, matterId]);
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem(questionModeStorageKey(matterId))
+      ?? window.localStorage.getItem(legacyQuestionModeStorageKey(matterId));
+    if (saved) window.localStorage.setItem(questionModeStorageKey(matterId), saved);
     setQuestionMode(saved === "set" ? "set" : "guided");
   }, [matterId]);
 
   function changeQuestionMode(mode: QuestionMode) {
     setQuestionMode(mode);
     window.localStorage.setItem(questionModeStorageKey(matterId), mode);
+    window.localStorage.removeItem(legacyQuestionModeStorageKey(matterId));
   }
 
   useEffect(() => {
@@ -135,14 +163,16 @@ export default function ChatPanel({
       setBusy(false);
       return;
     }
+    setBusy(false);
     completedRuns.current.add(run.run_id);
+    setRefreshingRun(true);
     if (run.response?.review_author) onReviewAuthorChange(run.response.review_author);
     const nextConversationId = run.response?.conversation_id ?? run.conversation_id;
     if (nextConversationId) {
       try {
         const saved = await getConversation(matterId, nextConversationId);
         setConversationId(saved.conversation_id);
-        setMessages(saved.messages);
+        setMessages((current) => mergeChatMessages(current, saved.messages));
         onConversationChange?.(saved.conversation_id);
       } catch {
         if (run.response) setMessages((current) => current.some((item) => item.role === "assistant" && item.content === run.response?.reply)
@@ -154,15 +184,19 @@ export default function ChatPanel({
     }
     window.localStorage.removeItem(chatRunStorageKey(matterId, run.conversation_id));
     window.localStorage.removeItem(chatRunStorageKey(matterId));
+    window.localStorage.removeItem(legacyChatRunStorageKey(matterId, run.conversation_id));
+    window.localStorage.removeItem(legacyChatRunStorageKey(matterId));
     if (!refreshedRuns.current.has(run.run_id)) {
       refreshedRuns.current.add(run.run_id);
       try {
         await onRefresh();
       } finally {
+        setRefreshingRun(false);
         setBusy(false);
       }
       return;
     }
+    setRefreshingRun(false);
     setBusy(false);
   }, [matterId, messages, onConversationChange, onRefresh, onReviewAuthorChange]);
 
@@ -176,7 +210,7 @@ export default function ChatPanel({
         setActiveRun(next);
         if (!["queued", "running"].includes(next.state)) await finishRun(next);
       } catch {
-        if (!cancelled) setHistoryError("Themis could not finish this request.");
+        if (!cancelled) setHistoryError("Themis.ai could not finish this request.");
         setWaiting(false);
         setBusy(false);
       }
@@ -187,7 +221,9 @@ export default function ChatPanel({
   }, [activeRun?.run_id, activeRun?.state, finishRun, matterId, waiting]);
 
   useEffect(() => {
-    if (seed?.text) setInput(seed.text);
+    if (!seed?.text) return;
+    setInput(seed.text);
+    requestAnimationFrame(() => inputRef.current?.focus());
   }, [seed]);
 
   useEffect(() => {
@@ -205,13 +241,44 @@ export default function ChatPanel({
       setActiveRun(run);
       if (!["queued", "running"].includes(run.state)) await finishRun(run);
     }).catch(() => {
-      setHistoryError("Themis could not finish this request.");
+      setHistoryError("Themis.ai could not finish this request.");
       setBusy(false);
       setWaiting(false);
     });
   }, [activeRun?.run_id, conversationId, finishRun, initialRunId, loadingHistory, matterId]);
 
-  async function submit(text: string, cardAction?: CardAction, actionAttachments: AttachmentReference[] = attachments) {
+  useEffect(() => {
+    if (
+      loadingHistory || busy || refreshingRun || !conversationId
+      || (initialConversationId && conversationId !== initialConversationId)
+      || !needsIntakeQuestionRecovery(intakeActive, messages)
+    ) return;
+    const latest = messages.at(-1);
+    const recoveryKey = `${conversationId}:${latest?.message_id ?? messages.length}`;
+    if (intakeRecoveryAttempts.current.has(recoveryKey)) return;
+    intakeRecoveryAttempts.current.add(recoveryKey);
+    setBusy(true);
+    setWaiting(true);
+    setHistoryError("");
+    void recoverIntakeQuestion(matterId, conversationId).then(async (run) => {
+      setActiveRun(run);
+      setWaiting(["queued", "running"].includes(run.state));
+      rememberChatRun(window.localStorage, matterId, run);
+      if (!["queued", "running"].includes(run.state)) await finishRun(run);
+    }).catch(() => {
+      setHistoryError("Themis.ai could not restore the next intake question.");
+      setBusy(false);
+      setWaiting(false);
+    });
+  }, [busy, conversationId, finishRun, initialConversationId, intakeActive, loadingHistory, matterId, messages, refreshingRun]);
+
+  async function submit(
+    text: string,
+    cardAction?: CardAction,
+    actionAttachments: AttachmentReference[] = attachments,
+    consumeInput = false,
+    consumeAttachments = actionAttachments === attachments,
+  ) {
     const trimmed = text.trim();
     if ((!trimmed && !cardAction && !actionAttachments.length) || busy) return;
     const builderGoal = !cardAction ? skillBuilderGoal(text) : null;
@@ -220,8 +287,9 @@ export default function ChatPanel({
       return;
     }
     const visibleText = trimmed || cardActionText(cardAction) || `Attached ${actionAttachments.map((item) => item.name).join(", ")}`;
-    setInput("");
-    setAttachments([]);
+    const previousInput = input;
+    const previousAttachments = attachments;
+    setMessages((current) => [...current, { role: "user", content: visibleText, attachments: actionAttachments, card_action: cardAction }]);
     setBusy(true);
     try {
       const run = await startChatRun(matterId, {
@@ -237,26 +305,26 @@ export default function ChatPanel({
         lawyer_author: lawyerAuthor,
       });
       setActiveRun(run);
+      setInput((current) => remainingComposerValue(current, previousInput, consumeInput, ""));
+      setAttachments((current) => remainingComposerValue(current, previousAttachments, consumeAttachments, []));
       setWaiting(["queued", "running"].includes(run.state));
       rememberChatRun(window.localStorage, matterId, run);
       if (run.conversation_id) {
         const saved = await getConversation(matterId, run.conversation_id);
         setConversationId(saved.conversation_id);
-        setMessages(saved.messages);
+        setMessages((current) => mergeChatMessages(current, saved.messages));
         onConversationChange?.(saved.conversation_id);
-      } else {
-        setMessages((current) => [...current, { role: "user", content: visibleText, attachments: actionAttachments }]);
       }
       if (!["queued", "running"].includes(run.state)) await finishRun(run);
     } catch (caught) {
       setBusy(false);
       setWaiting(false);
-      setHistoryError("Themis could not finish this request.");
+      setHistoryError("Themis.ai could not finish this request.");
     }
   }
 
   async function handleCardAction(action: CardAction, answerText?: string) {
-    await submit(answerText ?? "", action, []);
+    await submit(answerText ?? "", action, [], false, false);
   }
 
   async function addFiles(files: File[]) {
@@ -305,16 +373,49 @@ export default function ChatPanel({
     try {
       const next = await retryChatRun(matterId, activeRun.run_id);
       setActiveRun(next);
+      setWaiting(["queued", "running"].includes(next.state));
       rememberChatRun(window.localStorage, matterId, next);
+      if (!["queued", "running"].includes(next.state)) await finishRun(next);
     } catch {
-      setBusy(false); setWaiting(false); setHistoryError("Themis could not finish this request.");
+      setBusy(false); setWaiting(false); setHistoryError("Themis.ai could not finish this request.");
+    }
+  }
+
+  async function saveAssistantAnswer(content: string, key: string) {
+    setSavingAnswerKey(key);
+    setSaveAnswerErrors((current) => ({ ...current, [key]: "" }));
+    try {
+      const saved = await saveWorkProductDraft(matterId, `${matterTitle} response`, content, `chat-save:${matterId}:${key}`);
+      setSavedAnswerPaths((current) => ({ ...current, [key]: saved.vault_path }));
+      setSavedAnswerNotices((current) => ({
+        ...current,
+        [key]: saved.changed_paths.length
+          ? "Current draft saved."
+          : "This current draft already exists. No new save was made.",
+      }));
+      try {
+        await onRefresh();
+      } catch {
+        setSaveAnswerErrors((current) => ({
+          ...current,
+          [key]: "Draft saved, but the matter did not refresh. Open the saved draft or reload the page.",
+        }));
+      }
+      onOpenDocument?.(saved.vault_path);
+    } catch (caught) {
+      setSaveAnswerErrors((current) => ({
+        ...current,
+        [key]: caught instanceof Error ? caught.message : "Could not save this answer as work product.",
+      }));
+    } finally {
+      setSavingAnswerKey(null);
     }
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
-      void submit(input);
+      void submit(input, undefined, attachments, true, true);
     }
   }
 
@@ -330,40 +431,47 @@ export default function ChatPanel({
       {loadingHistory ? <p className="chat-history-status">Loading saved chat…</p> : null}
       {activeRun && shouldShowChatRunStatus(activeRun.state) ? (
         <section className={`chat-card ${activeRun.state === "failed" || activeRun.state === "interrupted" ? "wash-failure" : "wash-agent"}`} role="status">
-          <div className="chat-card-kicker">Themis · {chatRunStateLabel(activeRun.state)}</div>
+          <div className="chat-card-kicker">Themis.ai · {chatRunStateLabel(activeRun.state)}</div>
           {activeRun.state === "failed" || activeRun.state === "interrupted" ? (
             <>
-              <div className="chat-card-summary">Themis could not finish this request.</div>
+              <div className="chat-card-summary">Themis.ai could not finish this request.</div>
               {safeChatFailureDetail(activeRun.failure_detail) ? <div className="chat-card-detail">{safeChatFailureDetail(activeRun.failure_detail)}</div> : null}
-              {activeRun.response?.reply ? <div className="chat-card-detail"><strong>Saved response</strong><ReactMarkdown remarkPlugins={[remarkGfm]}>{activeRun.response.reply}</ReactMarkdown></div> : null}
+              {activeRun.response?.reply ? <div className="chat-card-detail">{mutationFailureMessages(activeRun.response.trace).map((summary) => <div className="error" role="alert" key={summary}><strong>Workspace change failed</strong> — {summary}</div>)}<strong>Saved response</strong><ReactMarkdown remarkPlugins={[remarkGfm]}>{activeRun.response.reply}</ReactMarkdown></div> : null}
             </>
-          ) : <div className="chat-card-summary">{readingInitialRequest ? "Themis is reading your request…" : activeRun.status}</div>}
+          ) : <div className="chat-card-summary">{readingInitialRequest ? "Themis.ai is reading your request…" : activeRun.status}</div>}
           <div className="chat-card-actions">
             {["failed", "interrupted"].includes(activeRun.state) ? <button className="btn tiny quiet" disabled={busy} onClick={() => void retryRun()}>Retry</button> : null}
-            {waiting && ["queued", "running"].includes(activeRun.state) ? <button className="btn tiny quiet" onClick={() => { setWaiting(false); setBusy(false); }}>Stop waiting</button> : null}
+            {waiting && ["queued", "running"].includes(activeRun.state) ? <button className="btn tiny quiet" onClick={() => { setWaiting(false); setBusy(false); }}>Stop showing progress</button> : null}
           </div>
           {waiting && ["queued", "running"].includes(activeRun.state) ? <div className="chat-card-detail">Server work continues if you stop waiting.</div> : null}
         </section>
       ) : null}
       {messages.length ? (
         <div className="thread">
-          {messages.map((message, index) =>
-            message.role === "user" ? (
+          {messages.map((message, index) => {
+            const messageKey = message.message_id ?? String(index);
+            const questionIds = message.cards?.flatMap((card) => card.type === "question" ? [card.question_id] : []) ?? [];
+            const questionStates = historicalQuestionStates(messages, index, questionIds, intakeActive);
+            const mutationFailures = mutationFailureMessages(message.trace);
+            const mutationResult = mutationOutcome(message.trace, message.cards);
+            return message.role === "user" ? (
               <UserMessage
                 appliedSkill={messages[index + 1]?.role === "assistant" ? messages[index + 1].applied_skills?.[0] : undefined}
                 content={message.content}
-                key={message.message_id ?? index}
+                cardAction={message.card_action}
+                key={messageKey}
               />
             ) : (
-              <div className="assistant-message" key={message.message_id ?? index}>
+              <div className="assistant-message" key={messageKey}>
                 {message.applied_skills?.map((skill) => <div className="applied-skill-label" key={skill.skill_id}>Applied skill: {skill.name}</div>)}
-                <div className="agent-label">Themis</div>
+                <div className="agent-label">Themis.ai</div>
                 <div className="bubble-agent">
+                  {mutationFailures.map((summary) => <div className="error" role="alert" key={summary}><strong>Workspace change failed</strong> — {summary}</div>)}
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
-                  <ChatCards cards={message.cards} disabled={busy} matterId={matterId} onAction={handleCardAction} onOpenDocument={onOpenDocument} onQuestionModeChange={changeQuestionMode} onRefresh={onRefresh} questionMode={questionMode} questionsDisabled={index !== messages.length - 1} showQuestionMode={intakeActive} />
-                  {mutationOutcome(messages[index - 1]?.role === "user" ? messages[index - 1].content : "", message.trace, message.cards) === "recorded" ? (
+                  <ChatCards cards={message.cards} currentWorkProductDraftPath={currentWorkProductDraftPath} disabled={busy} matterId={matterId} onAction={handleCardAction} onOpenDocument={onOpenDocument} onQuestionModeChange={changeQuestionMode} onRefresh={onRefresh} questionMode={questionMode} questionStates={questionStates} showQuestionMode={intakeActive} />
+                  {mutationResult === "recorded" ? (
                     <div className="mutation-status recorded">Workspace state change recorded</div>
-                  ) : mutationOutcome(messages[index - 1]?.role === "user" ? messages[index - 1].content : "", message.trace, message.cards) === "no_change" ? (
+                  ) : mutationResult === "no_change" && mutationFailures.length === 0 ? (
                     <div className="mutation-status no-change">No workspace state change recorded</div>
                   ) : null}
                   {SHOW_AGENT_TRACES && message.trace?.length ? (
@@ -381,21 +489,39 @@ export default function ChatPanel({
                       </div>
                     </details>
                   ) : null}
+                  {saveAnswerErrors[messageKey] ? <div className="error chat-card-detail" role="alert">{saveAnswerErrors[messageKey]}</div> : null}
+                  {savedAnswerPaths[messageKey] ? (
+                    <div className="mutation-status recorded">
+                      {savedAnswerNotices[messageKey]} <button className="text-button" onClick={() => onOpenDocument?.(savedAnswerPaths[messageKey])} type="button">Open draft</button>
+                    </div>
+                  ) : message.content.trim().length > 80 ? (
+                    <button
+                      className="btn tiny quiet"
+                      disabled={busy || savingAnswerKey !== null}
+                      onClick={() => void saveAssistantAnswer(message.content, messageKey)}
+                      type="button"
+                    >
+                      {savingAnswerKey === messageKey ? "Saving…" : "Save as work product"}
+                    </button>
+                  ) : null}
                 </div>
               </div>
-            ),
-          )}
+            );
+          })}
           {busy ? (
             <div className="agent-label" role="status">
               <span className="agent-mark" style={{ width: 12, height: 12 }} />
-              {readingInitialRequest ? "Themis is reading your request…" : elapsedSeconds < 10 ? "Working…" : "Still working…"} {elapsedSeconds}s
+              {readingInitialRequest ? "Themis.ai is reading your request…" : elapsedSeconds < 10 ? "Working…" : "Still working…"} {elapsedSeconds}s
             </div>
           ) : null}
         </div>
       ) : null}
 
       <div className="composer">
-        <UploadIntentCard attachments={attachments} busy={busy} onClear={() => setAttachments([])} onSend={(intent) => submit(intent, undefined, attachments)} />
+        {seed?.text && input === seed.text ? (
+          <div className="composer-note" role="status"><strong>Prepared request · Not sent.</strong> Review it, then select Send.</div>
+        ) : null}
+        <UploadIntentCard attachments={attachments} busy={busy} onClear={() => setAttachments([])} onSend={(intent) => submit(intent, undefined, attachments, false, true)} />
         <div className="composer-suggestions">
           {SUGGESTIONS.map((suggestion) => (
             <button className="suggestion" disabled={busy} key={suggestion} onClick={() => void submit(suggestion)}>
@@ -410,25 +536,28 @@ export default function ChatPanel({
             ref={inputRef}
             onChange={(event) => setInput(event.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={`Ask Themis about ${matterTitle}…`}
+            placeholder={`Ask Themis.ai about ${matterTitle}…`}
             rows={1}
             value={input}
           />
-          <button className="btn primary compact" disabled={busy || !input.trim()} onClick={() => void submit(input)}>
+          <button className="btn primary compact" disabled={busy || !input.trim()} onClick={() => void submit(input, undefined, attachments, true, true)}>
             {uploading ? "Uploading…" : "Send"}
           </button>
         </div>
         <div className="composer-note">
-          Themis can research, draft and move this matter. It records a decision only when you explicitly ask it to. <Link className="build-skill-link" href="/skills">Build a skill</Link>
+          Themis.ai can research, draft and move this matter. It records a decision only when you explicitly ask it to. <Link className="build-skill-link" href="/skills">Build a skill</Link>
         </div>
       </div>
     </div>
   );
 }
 
-function UserMessage({ content, appliedSkill }: { content: string; appliedSkill?: AppliedSkillSummary }) {
+function UserMessage({ content, appliedSkill, cardAction }: { content: string; appliedSkill?: AppliedSkillSummary; cardAction?: CardAction | null }) {
+  const answer = cardAction?.action === "answer" || cardAction?.action === "answer_set" ? (
+    <div className="mutation-status recorded"><strong>Answered</strong> · {(cardAction.values ?? cardAction.answers?.flatMap((item) => item.values) ?? []).join(" · ")}</div>
+  ) : null;
   if (!appliedSkill || !content.trimStart().startsWith(`/${appliedSkill.skill_id}`)) {
-    return <div className="bubble-you"><LinkifiedText text={content} /></div>;
+    return <div className="bubble-you"><LinkifiedText text={content} />{answer}</div>;
   }
   const request = content.trimStart().slice(appliedSkill.skill_id.length + 1).trim();
   return (

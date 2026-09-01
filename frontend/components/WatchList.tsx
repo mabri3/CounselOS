@@ -26,7 +26,7 @@ function cadenceWords(recurrence: Watch["recurrence"]): string {
 export default function WatchList({ error, watches }: { error: string; watches: Watch[] | null }) {
   return <>
     <div className="page-header">
-      <div className="page-header-main"><div className="eyebrow">Continuous legal awareness</div><h1 className="headline">Watches</h1><p className="page-lede">A Watch is a standing question Counsel OS re-asks of public sources on a schedule. What each one finds arrives in Briefing.</p></div>
+      <div className="page-header-main"><div className="eyebrow">Continuous legal awareness</div><h1 className="headline">Watches</h1><p className="page-lede">A Watch is a standing question Themis.ai re-asks of public sources on a schedule. What each one finds arrives in Briefing.</p></div>
       <Link className="btn primary" href="/watches/new">New Watch</Link>
     </div>
     {error ? <p className="error" role="alert">{error}</p> : null}

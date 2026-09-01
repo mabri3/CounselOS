@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+import fcntl
+import hashlib
+from contextlib import contextmanager
 from datetime import timedelta
+from pathlib import Path
 from typing import Any
 
 from app.models.api import DecisionCreate
@@ -45,54 +49,99 @@ class DecisionService:
         review_packet_ids: list[str] | None = None,
     ) -> dict[str, Any]:
         base = self.matters.matter_path(request.matter_id)
-        if revises_decision_id:
-            prior = self.get(revises_decision_id)
-            if prior["matter_id"] != request.matter_id:
-                raise ValueError("A decision revision must stay in the original matter.")
-        decision_id = new_id("DEC")
-        now = iso_now()
-        path = f"{base}/decisions/{decision_id}.md"
-        metadata = {
-            "decision_id": decision_id,
-            "matter_id": request.matter_id,
-            "title": request.title,
-            "decision_type": request.decision_type,
-            "chosen_path": request.chosen_path,
-            "rationale": request.rationale,
-            "decision_maker": request.decision_maker,
-            "conditions": request.conditions,
-            "linked_paths": request.linked_paths,
-            "mitigation_ids": list(dict.fromkeys(mitigation_ids or [])),
-            "review_packet_ids": list(dict.fromkeys(review_packet_ids or [])),
-            "revises_decision_id": revises_decision_id,
-            "decided_at": now,
-            "next_review_at": request.next_review_at,
-            "last_reviewed_at": now,
-            "risk_level": request.risk_level,
-            "review_status": "fresh",
-            "staleness_reason": "",
-            "privilege": request.privilege,
-        }
-        conditions = "\n".join(f"- {item}" for item in request.conditions) or "- None recorded"
-        self.vault.write_markdown(
-            path,
-            (
-                f"# {request.title}\n\n"
-                f"## Chosen path\n\n{request.chosen_path}\n\n"
-                f"## Rationale\n\n{request.rationale or 'No rationale recorded.'}\n\n"
-                f"## Conditions\n\n{conditions}\n"
-            ),
-            metadata,
-        )
-        self.matters.note_durable_decision_recorded(request.matter_id)
-        self.matters.append_event(
-            request.matter_id,
-            "decision_recorded",
-            {"title": request.title, "decision_id": decision_id},
-            rebuild=False,
-        )
+        with self._record_lock():
+            if request.source_action_key:
+                existing = self._find_by_source_action_key(base, request.source_action_key)
+                if existing is not None:
+                    return self._finish_record(existing["path"], existing["metadata"])
+            if revises_decision_id:
+                prior = self.get(revises_decision_id)
+                if prior["matter_id"] != request.matter_id:
+                    raise ValueError("A decision revision must stay in the original matter.")
+            decision_id = self._decision_id(request.matter_id, request.source_action_key)
+            now = iso_now()
+            path = f"{base}/decisions/{decision_id}.md"
+            metadata = {
+                "decision_id": decision_id,
+                "matter_id": request.matter_id,
+                "title": request.title,
+                "decision_type": request.decision_type,
+                "chosen_path": request.chosen_path,
+                "rationale": request.rationale,
+                "decision_maker": request.decision_maker,
+                "conditions": request.conditions,
+                "not_decided": request.not_decided,
+                "linked_paths": request.linked_paths,
+                "mitigation_ids": list(dict.fromkeys(mitigation_ids or [])),
+                "review_packet_ids": list(dict.fromkeys(review_packet_ids or [])),
+                "revises_decision_id": revises_decision_id,
+                "decided_at": now,
+                "next_review_at": request.next_review_at,
+                "last_reviewed_at": now,
+                "risk_level": request.risk_level,
+                "review_status": "fresh",
+                "staleness_reason": "",
+                "privilege": request.privilege,
+                "source_action_key": request.source_action_key,
+                "recorded_event_id": f"EVT-{decision_id}",
+                "recording_complete": False,
+            }
+            conditions = "\n".join(f"- {item}" for item in request.conditions) or "- None recorded"
+            not_decided = "\n".join(f"- {item}" for item in request.not_decided) or "- None recorded"
+            self.vault.write_markdown(
+                path,
+                (
+                    f"# {request.title}\n\n"
+                    f"## Chosen path\n\n{request.chosen_path}\n\n"
+                    f"## Rationale\n\n{request.rationale or 'No rationale recorded.'}\n\n"
+                    f"## Conditions\n\n{conditions}\n\n"
+                    f"## Not decided\n\n{not_decided}\n"
+                ),
+                metadata,
+            )
+            return self._finish_record(path, metadata)
+
+    def _finish_record(self, path: str, metadata: dict[str, Any]) -> dict[str, Any]:
+        decision_id = str(metadata["decision_id"])
+        if not metadata.get("recording_complete"):
+            self.matters.note_durable_decision_recorded(str(metadata["matter_id"]))
+            self.matters.append_event(
+                str(metadata["matter_id"]),
+                "decision_recorded",
+                {"title": metadata["title"], "decision_id": decision_id},
+                event_id=str(metadata.get("recorded_event_id") or f"EVT-{decision_id}"),
+                timestamp=str(metadata["decided_at"]),
+                rebuild=False,
+            )
+            self.vault.update_markdown(path, metadata_updates={"recording_complete": True})
         self.index.rebuild()
-        return {**metadata, "path": path}
+        return self.get(decision_id)
+
+    def _find_by_source_action_key(self, base: str, source_action_key: str) -> dict[str, Any] | None:
+        directory = self.vault.resolve(f"{base}/decisions")
+        for path in directory.glob("*.md") if directory.exists() else []:
+            document = self.vault.read_markdown(self.vault.relative(path))
+            if document["metadata"].get("source_action_key") == source_action_key:
+                return document
+        return None
+
+    @staticmethod
+    def _decision_id(matter_id: str, source_action_key: str | None) -> str:
+        if source_action_key is None:
+            return new_id("DEC")
+        digest = hashlib.sha256(f"{matter_id}\0{source_action_key}".encode()).hexdigest()[:20]
+        return f"DEC-{digest.upper()}"
+
+    @contextmanager
+    def _record_lock(self):
+        lock_path = Path(f"{self.index.db_path}.decisions.lock")
+        lock_path.parent.mkdir(parents=True, exist_ok=True)
+        with lock_path.open("a+b") as lock_file:
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
 
     def revise(self, decision_id: str, request: DecisionCreate) -> dict[str, Any]:
         """Create a linked successor. The prior Markdown record is never changed."""
@@ -147,6 +196,7 @@ class DecisionService:
         return {
             **decision,
             "conditions": list(metadata.get("conditions") or []),
+            "not_decided": list(metadata.get("not_decided") or []),
             "mitigation_ids": mitigation_ids,
             "review_packet_ids": list(metadata.get("review_packet_ids") or []),
             "revises_decision_id": metadata.get("revises_decision_id"),

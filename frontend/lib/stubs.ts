@@ -12,7 +12,7 @@ export const DEFAULT_SETTINGS: SettingsSection[] = [
     id: "agents",
     label: "Model",
     title: "Model",
-    sub: "Choose the provider and model that Themis uses.",
+    sub: "Choose the provider and model that Themis.ai uses.",
     rows: [
       { id: "h-advanced", kind: "heading", label: "Advanced model options" },
       { id: "provider", config_key: "agents.provider", kind: "select", label: "Provider", help: "Where reasoning runs. The list comes from the providers configured in the backend.", value: "mock", options: ["mock"] },
@@ -27,7 +27,7 @@ export const DEFAULT_SETTINGS: SettingsSection[] = [
     sub: "Choose the lawyer identity and the author used when a browser session starts.",
     rows: [
       { id: "lawyer-name", config_key: "document_review.lawyer_name", kind: "text", label: "Lawyer name", help: "Used for your comments, replies, and review decisions.", value: "Lawyer" },
-      { id: "default-review-author", config_key: "document_review.default_author", kind: "select", label: "Default review author", help: "New browser sessions start with Themis or the configured lawyer. A custom author is session-only.", value: "Themis", options: ["Themis", "Lawyer"] },
+      { id: "default-review-author", config_key: "document_review.default_author", kind: "select", label: "Default review author", help: "New browser sessions start with Themis.ai or the configured lawyer. A custom author is session-only.", value: "Themis.ai", options: ["Themis.ai", "Lawyer"] },
     ],
   },
   {

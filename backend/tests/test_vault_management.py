@@ -48,7 +48,7 @@ def test_create_failure_leaves_no_partial_target(tmp_path: Path, monkeypatch) ->
     with pytest.raises(ValueError, match="bad"):
         manager.create(str(target))
     assert not target.exists()
-    assert not list(tmp_path.glob(".new-vault.counsel-os-*"))
+    assert not list(tmp_path.glob(".new-vault.themis.ai-*"))
 
 
 def test_invalid_load_changes_no_authoritative_files(tmp_path: Path) -> None:
@@ -257,7 +257,7 @@ async def test_busy_create_does_not_create_final_target(tmp_path: Path, active_k
     with pytest.raises(VaultBusyError):
         await manager.select(lambda current_vault: VaultManager(current_vault).create(str(target)))
     assert not target.exists()
-    assert not list(tmp_path.glob(".new-vault.counsel-os-*"))
+    assert not list(tmp_path.glob(".new-vault.themis.ai-*"))
     if blocker is not None:
         blocker.cancel()
 
@@ -329,7 +329,7 @@ def test_post_create_activation_failure_preserves_complete_vault_and_clear_api_e
     assert "Vault created" in detail and "could not activate" in detail and "can be loaded" in detail
     assert manager.context.vault.root == current
     assert not pointer.exists()
-    assert not list(tmp_path.glob(".created-vault.counsel-os-*"))
+    assert not list(tmp_path.glob(".created-vault.themis.ai-*"))
     assert VaultManager(current).load(str(target)) == target
 
 

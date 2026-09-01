@@ -58,6 +58,7 @@ class SearchService:
                 "url": result.get("url", ""),
                 "content": result.get("content", ""),
                 "score": result.get("score"),
+                "support_state": "retrieved",
             }
             for result in data.get("results", [])
         ]

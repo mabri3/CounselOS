@@ -41,6 +41,37 @@ def test_create_matter_api_persists_target_date_in_matter_and_request(app_contex
     assert request["metadata"]["requested_launch_date"] == "2026-09-15"
 
 
+def test_research_run_api_forwards_source_action_key(app_context, monkeypatch):
+    app = FastAPI()
+    app.state.context = app_context
+    app.include_router(matters.router, prefix="/api")
+    client = TestClient(app)
+    captured = {}
+
+    def start(matter_id, questions, *, source_action_key=None):
+        captured.update({
+            "matter_id": matter_id,
+            "questions": questions,
+            "source_action_key": source_action_key,
+        })
+        return {"run_id": "RUN-1", "source_action_key": source_action_key}
+
+    monkeypatch.setattr(app_context.research_runs, "start", start)
+
+    response = client.post(
+        "/api/matters/MAT-DEMO-BEACON/research-runs",
+        json={"question": "Check the rule", "source_action_key": "chat:RUN-1:tool-2"},
+    )
+
+    assert response.status_code == 202
+    assert response.json()["source_action_key"] == "chat:RUN-1:tool-2"
+    assert captured == {
+        "matter_id": "MAT-DEMO-BEACON",
+        "questions": ["Check the rule"],
+        "source_action_key": "chat:RUN-1:tool-2",
+    }
+
+
 def test_finalize_moves_generate_to_respond_and_retry_is_idempotent(app_context):
     app = FastAPI()
     app.state.context = app_context
@@ -75,9 +106,54 @@ def test_finalize_moves_generate_to_respond_and_retry_is_idempotent(app_context)
     assert len(stage_events_after) == stage_events_before + 1
 
 
+def test_create_work_product_draft_api_persists_canonical_deliverable(app_context):
+    app = FastAPI()
+    app.state.context = app_context
+    app.include_router(matters.router, prefix="/api")
+    client = TestClient(app)
+    matter_id = "MAT-DEMO-BEACON"
+
+    response = client.post(
+        f"/api/matters/{matter_id}/work-product/draft",
+        json={"title": "Customer response", "content": "Full reviewed deliverable body."},
+    )
+
+    assert response.status_code == 201
+    result = response.json()
+    saved = app_context.vault.read_markdown(result["vault_path"])
+    matter = app_context.matters.get(matter_id)
+    assert saved["content"].strip() == "Full reviewed deliverable body."
+    assert saved["metadata"]["record_type"] == "work_product"
+    assert saved["metadata"]["state"] == "draft"
+    assert matter["current_work_product_draft_path"] == result["vault_path"]
+    assert matter["current_work_product_id"] == result["work_product_id"]
+    assert result["vault_path"] in result["changed_paths"]
+    assert f"{matter['path']}/matter.md" in result["changed_paths"]
+
+
+def test_create_work_product_draft_api_rejects_blank_content_without_writing(app_context):
+    app = FastAPI()
+    app.state.context = app_context
+    app.include_router(matters.router, prefix="/api")
+    client = TestClient(app)
+    matter_id = "MAT-DEMO-BEACON"
+    draft_folder = app_context.vault.resolve(
+        "03_Matters/beacon-instant-onboarding/work-product/draft"
+    )
+    before = list(draft_folder.glob("*.md")) if draft_folder.exists() else []
+
+    response = client.post(
+        f"/api/matters/{matter_id}/work-product/draft",
+        json={"title": "Customer response", "content": "   "},
+    )
+
+    after = list(draft_folder.glob("*.md")) if draft_folder.exists() else []
+    assert response.status_code == 422
+    assert after == before
+
+
 @pytest.mark.parametrize(("matter_id", "expected_stage"), [
     ("MAT-DEMO-BEACON", "respond"),
-    ("MAT-DEMO-MASON", "closed"),
 ])
 def test_finalize_does_not_move_a_later_stage_backward(app_context, matter_id, expected_stage):
     app = FastAPI()
@@ -97,3 +173,18 @@ def test_finalize_does_not_move_a_later_stage_backward(app_context, matter_id, e
 
     assert response.status_code == 200
     assert app_context.index.get_matter(matter_id)["status"] == expected_stage
+
+
+def test_closed_matter_requires_reopen_before_new_draft(app_context):
+    app = FastAPI()
+    app.state.context = app_context
+    app.include_router(matters.router, prefix="/api")
+    client = TestClient(app)
+
+    response = client.post(
+        "/api/matters/MAT-DEMO-MASON/work-product/draft",
+        json={"title": "Response", "content": "Ready for review"},
+    )
+
+    assert response.status_code == 400
+    assert "Reopen the matter" in response.json()["detail"]

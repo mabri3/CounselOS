@@ -16,7 +16,7 @@ class SourceSupportService:
         except Exception as exc:
             source = source_reference.model_copy(update={
                 "support_state": "unverified_lead",
-                "warning": f"CounselOS could not retrieve this source: {exc}",
+                "warning": f"Themis.ai could not retrieve this source: {exc}",
             })
             return SourceSupport(
                 source=source, state="unverified_lead", checked_at=datetime.now(timezone.utc),

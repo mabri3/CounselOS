@@ -1,7 +1,7 @@
 ---
 tool_id: update_matter_intake
 handler: update_matter_intake
-description: Save one structured Intake Agent turn and a model-prioritized set of next questions to the active matter. Source IDs are supplied by Counsel OS, never by the model.
+description: Save one structured Intake Agent turn and a model-prioritized set of next questions to the active matter. Source IDs are supplied by Themis.ai, never by the model.
 parameters:
   type: object
   additionalProperties: false
@@ -26,7 +26,7 @@ parameters:
     next_questions:
       type: array
       maxItems: 5
-      description: Questions ordered by model-assessed priority, with the most decision-changing question first.
+      description: Questions ordered by model-assessed priority, with the most decision-changing question first. Required to contain at least one item when intake_state is active; ask no intake questions only in prose.
       items:
         type: object
         additionalProperties: false
@@ -81,4 +81,4 @@ parameters:
 
 # Update matter intake
 
-Use this once per Intake Agent turn. Give a factual working summary and an ordered set of the most useful next questions. The first question must have the highest expected effect on the analysis or recommendation. Do not invent source IDs.
+Use this once per Intake Agent turn. Give a factual working summary and an ordered set of the most useful next questions. When intake remains active, next_questions must contain at least one structured question. If no material question remains, mark intake complete. The first question must have the highest expected effect on the analysis or recommendation. Do not ask intake questions only in prose. Do not invent source IDs.

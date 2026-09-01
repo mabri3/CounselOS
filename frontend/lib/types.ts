@@ -48,7 +48,7 @@ export type Matter = {
   business_owner: string;
   status: StageId;
   priority: string;
-  risk_level: string;
+  risk_level: string | null;
   target_date?: string | null;
   next_action: string;
   durable_decision_needed?: boolean;
@@ -75,6 +75,10 @@ export type Matter = {
   intake_run_id?: string | null;
   intake_state?: "active" | "complete" | null;
   active_agent_id?: string | null;
+  current_work_product_draft_path?: string | null;
+  current_work_product_id?: string | null;
+  current_work_product_final_path?: string | null;
+  latest_research_path?: string | null;
 };
 
 export type WorkItem = {
@@ -90,6 +94,13 @@ export type WorkItem = {
   due_at?: string | null;
   required: number;
   completed_at?: string | null;
+  source_action_key?: string | null;
+};
+
+export type IdentifiedOpenQuestion = {
+  id: string;
+  text: string;
+  work_item_id: string | null;
 };
 
 export type MatterActionId = "approve_response" | "mark_as_sent" | "close_matter";
@@ -107,13 +118,42 @@ export type WorkItemCompleteRequest = {
   actor: string;
 };
 
+export type WorkItemAssignRequest = {
+  work_item_id: string;
+  owner: string;
+  actor: string;
+};
+
 export type MatterActionResult = {
-  action: MatterActionId | "complete_work_item";
+  action: MatterActionId | "complete_work_item" | "assign_work_item";
   matter: MatterDetail;
   changed_paths: string[];
   event_path?: string | null;
   work_item_id?: string | null;
   already_recorded: boolean;
+};
+
+export type WorkProductLifecycleResult = {
+  type?: "work_product";
+  record_type: "work_product";
+  work_product_id: string;
+  title: string;
+  vault_path: string;
+  state: "final";
+  summary: string;
+  final_id: string;
+  changed_paths?: string[];
+};
+
+export type WorkProductDraftResult = {
+  type?: "work_product";
+  record_type: "work_product";
+  work_product_id: string;
+  title: string;
+  vault_path: string;
+  state: "draft";
+  summary: string;
+  changed_paths: string[];
 };
 
 export type Decision = {
@@ -123,6 +163,8 @@ export type Decision = {
   title: string;
   chosen_path: string;
   rationale: string;
+  conditions: string[];
+  not_decided: string[];
   decision_maker: string;
   decided_at?: string | null;
   next_review_at?: string | null;
@@ -150,6 +192,7 @@ export type MatterDetail = Matter & {
     summary: string;
     decision_question: string;
     open_questions: string[];
+    open_question_items: IdentifiedOpenQuestion[];
     why_now: string;
     next_action: string;
     attention: string[];
@@ -246,12 +289,16 @@ export type ResearchResult = {
   warning?: string | null;
   internal_sources: number;
   external_sources: number;
+  external_authority_retrieved: boolean;
+  public_research_status: "not_requested" | "retrieved" | "unavailable" | "failed";
+  research_warnings: string[];
 };
 
 export type ToolTrace = {
   tool: string;
   status: "success" | "error";
   summary: string;
+  mutation_status?: "changed" | "no_change" | "failed" | null;
 };
 
 export type AppliedSkillSummary = { skill_id: string; name: string };
@@ -341,7 +388,7 @@ export type SkillSuggestionsResponse = { suggestions: SkillSuggestion[]; warning
 export type SkillCreate = SkillDraft;
 export type SkillUpdate = Partial<Pick<SkillDefinition, "name" | "description" | "instructions">>;
 
-export type ResearchRun = { run_id: string; matter_id: string; state: "queued" | "running" | "completed" | "failed" | "interrupted"; total: number; completed: number; status: string; dossier_effect: string; useful_support: number; human_questions_left: number; selection?: { agent_id: string; provider: string; model: string; reasoning_effort: string } | null };
+export type ResearchRun = { run_id: string; matter_id: string; state: "queued" | "running" | "completed" | "failed" | "interrupted"; total: number; completed: number; status: string; dossier_effect: string; useful_support: number; human_questions_left: number; source_action_key?: string | null; selection?: { agent_id: string; provider: string; model: string; reasoning_effort: string } | null };
 export type CompanyProfile = {
   source_id: string;
   version: string;

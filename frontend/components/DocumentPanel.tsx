@@ -1,13 +1,13 @@
 "use client";
 
-import { DragEvent, useEffect, useState } from "react";
+import { DragEvent, useEffect, useRef, useState } from "react";
 import DocumentReview from "@/components/DocumentReview";
 import LinkifiedText from "@/components/LinkifiedText";
 import MarkdownRichEditor from "@/components/MarkdownRichEditor";
 import { exportFileUrl, getDocumentReview, getFile, rawFileUrl, saveFile, updateDocumentReview } from "@/lib/api";
 import { parseMemo } from "@/lib/research";
 import type { DocumentReview as ReviewState, DocumentReviewAction, VaultDocument } from "@/lib/types";
-import { authorId, REVIEW_AUTHOR_PALETTE } from "@/lib/reviewAuthor";
+import { authorId, GENERATED_REVIEW_AUTHOR, REVIEW_AUTHOR_PALETTE } from "@/lib/reviewAuthor";
 
 /**
  * Canvas 4c — the work surface. A what-you-see editor over a file that stays
@@ -17,6 +17,7 @@ export default function DocumentPanel({
   activePath,
   onUpload,
   onAskAgent,
+  onClose,
   onCollapse,
   activeReviewAuthor,
   lawyerAuthor,
@@ -25,6 +26,7 @@ export default function DocumentPanel({
   activePath: string | null;
   onUpload: (file: File) => Promise<void>;
   onAskAgent?: () => void;
+  onClose?: () => void;
   onCollapse?: () => void;
   activeReviewAuthor: string;
   lawyerAuthor: string;
@@ -36,9 +38,21 @@ export default function DocumentPanel({
   const [dirty, setDirty] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [closePromptOpen, setClosePromptOpen] = useState(false);
   const [editorVersion, setEditorVersion] = useState(0);
+  const defaultedHumanAuthor = useRef(false);
 
   useEffect(() => {
+    const lawyer = lawyerAuthor.trim();
+    if (defaultedHumanAuthor.current || !lawyer) return;
+    defaultedHumanAuthor.current = true;
+    if (!activeReviewAuthor.trim() || ["Themis", GENERATED_REVIEW_AUTHOR].includes(activeReviewAuthor)) {
+      onReviewAuthorChange(lawyer);
+    }
+  }, [activeReviewAuthor, lawyerAuthor, onReviewAuthorChange]);
+
+  useEffect(() => {
+    setClosePromptOpen(false);
     if (!activePath) { setDocument(null); return; }
     setBusy(true);
     setError("");
@@ -91,6 +105,19 @@ export default function DocumentPanel({
     finally { setBusy(false); }
   }
 
+  function requestClose() {
+    if (!onClose) return;
+    if (dirty) {
+      setClosePromptOpen(true);
+      return;
+    }
+    onClose();
+  }
+
+  async function saveAndClose() {
+    if (await save()) onClose?.();
+  }
+
   async function reviewAction(action: DocumentReviewAction) {
     if (!document) return;
     if (dirty && !await save()) return;
@@ -137,7 +164,7 @@ export default function DocumentPanel({
     await onUpload(file);
   }
 
-  if (!activePath) return <div className="doc-pane"><div className="doc-scroll"><div className="empty-state">Select a matter record or document.</div></div></div>;
+  if (!activePath) return null;
   if (busy && !document) return <div className="doc-pane"><div className="loading">Loading document…</div></div>;
   if (error && !document) return <div className="doc-pane"><div className="doc-scroll"><p className="error">{error}</p></div></div>;
   if (!document) return null;
@@ -170,9 +197,29 @@ export default function DocumentPanel({
               ) : null}
             </>
           ) : null}
+          {onClose ? <button aria-label="Close document" className="pane-close" onClick={requestClose} title="Close document" type="button">×</button> : null}
           {onCollapse ? <button aria-label="Collapse document" className="pane-collapse" onClick={onCollapse} title="Collapse document">›</button> : null}
         </div>
       </div>
+
+      {closePromptOpen ? (
+        <div className="modal-scrim" onClick={(event) => { if (!busy && event.target === event.currentTarget) setClosePromptOpen(false); }}>
+          <div aria-describedby="document-close-description" aria-labelledby="document-close-title" aria-modal="true" className="modal" onKeyDown={(event) => { if (!busy && event.key === "Escape") setClosePromptOpen(false); }} role="alertdialog">
+            <div className="modal-head">
+              <h3 id="document-close-title">Save changes before closing?</h3>
+              <p id="document-close-description">This document has unsaved changes.</p>
+            </div>
+            <div className="modal-foot">
+              <span />
+              <div className="btn-row">
+                <button autoFocus className="btn" disabled={busy} onClick={() => setClosePromptOpen(false)} type="button">Cancel</button>
+                <button className="btn" disabled={busy} onClick={onClose} type="button">Close without saving</button>
+                <button className="btn primary" disabled={busy} onClick={() => void saveAndClose()} type="button">{busy ? "Saving…" : "Save and close"}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {isResearch && mode === "sources" ? (
         <div className="doc-scroll research-sources">
@@ -198,6 +245,7 @@ export default function DocumentPanel({
           author={review.authors.find((item) => item.author_id === authorId(activeReviewAuthor)) ?? { author_id: authorId(activeReviewAuthor), name: activeReviewAuthor, color: REVIEW_AUTHOR_PALETTE[review.authors.length % REVIEW_AUTHOR_PALETTE.length] }}
           busy={busy}
           key={document.path}
+          lawyerAuthor={lawyerAuthor}
           lawyerAuthorId={authorId(lawyerAuthor)}
           onAction={reviewAction}
           onAuthorChange={onReviewAuthorChange}

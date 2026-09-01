@@ -12,18 +12,24 @@ from app.routers import awareness, automations, chat, decisions, files, matters,
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    app.state.ready = False
     manager = ActiveContextManager(get_settings())
     context = manager.context
     app.state.context_manager = manager
     app.state.context = context
-    if context.settings.scheduler_enabled:
-        context.scheduler.start()
-    yield
-    await manager.shutdown()
+    try:
+        if context.settings.scheduler_enabled:
+            context.scheduler.start()
+        app.state.ready = True
+        yield
+    finally:
+        app.state.ready = False
+        await manager.shutdown()
 
 
 settings = get_settings()
 app = FastAPI(title=settings.app_name, version="0.1.0", lifespan=lifespan)
+app.state.ready = False
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[settings.frontend_origin],

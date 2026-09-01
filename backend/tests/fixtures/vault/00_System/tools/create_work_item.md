@@ -21,7 +21,7 @@ parameters:
       type: string
       description: >-
         Use an explicitly named owner when the user or a supplied source names
-        one. Use Themis only when the user assigns the work to the agent or an
+        one. Use Themis.ai only when the user assigns the work to the agent or an
         agent run is being created for it. Leave the owner empty when it is
         unknown; do not infer a person from the matter stage or task wording.
         Ask one owner question only when ownership is needed to move the

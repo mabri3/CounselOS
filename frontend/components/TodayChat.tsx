@@ -146,9 +146,9 @@ export default function TodayChat({ onRefresh }: Props) {
       <div className="today-chat-head">
         <div>
           <div className="section-heading" id="today-chat-title">Ask about your work</div>
-          <p>Themis can search the workspace, compare matters, and take actions that you request.</p>
+          <p>Themis.ai can search the workspace, compare matters, and take actions that you request.</p>
         </div>
-        <span className="agent-label"><span className="agent-mark" />Themis</span>
+        <span className="agent-label"><span className="agent-mark" />Themis.ai</span>
       </div>
 
       <div className="today-chat-day-row">
@@ -208,7 +208,7 @@ export default function TodayChat({ onRefresh }: Props) {
             <AttachmentPicker disabled={busy || loading || uploading} onSelect={addFiles} />
             <textarea
               ref={inputRef}
-              aria-label="Ask Themis about your work"
+              aria-label="Ask Themis.ai about your work"
               disabled={busy || loading}
               onChange={(event) => setInput(event.target.value)}
               onKeyDown={handleKeyDown}

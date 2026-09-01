@@ -1,14 +1,28 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from pydantic import BaseModel, Field, field_validator
 
-from app.models.api import AnnotationCreate, BatchActionRequest, ChatRequest, ChatResponse, MatterActionRequest, MatterActionResult, MatterCreate, ResearchRunStart, StageUpdate, WorkItemCompleteRequest, WorkProductFinalizeRequest
+from app.models.api import AnnotationCreate, BatchActionRequest, ChatRequest, ChatResponse, MatterActionRequest, MatterActionResult, MatterCreate, MatterRiskUpdate, ResearchRunStart, SourceActionKey, StageUpdate, WorkItemAssignRequest, WorkItemCompleteRequest, WorkProductFinalizeRequest
 from app.routers.dependencies import get_context
 from app.runtime import AppContext
 from app.models.awareness import MitigationCreate, MitigationPatch
 
 
 router = APIRouter(prefix="/matters", tags=["matters"])
+
+
+class WorkProductDraftRequest(BaseModel):
+    title: str = Field(min_length=1, max_length=160)
+    content: str = Field(min_length=1)
+    source_action_key: SourceActionKey | None = None
+
+    @field_validator("title", "content")
+    @classmethod
+    def require_non_blank_text(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("must contain text")
+        return value
 
 
 @router.get("/{matter_id}/mitigations")
@@ -75,7 +89,7 @@ async def start_intake(matter_id: str, context: AppContext = Depends(get_context
         )["content"].split("\n", 2)[-1].strip()
         intake = _start_intake(context, matter_id, request)
         return ChatResponse(
-            reply="Themis is reading your request…",
+            reply="Themis.ai is reading your request…",
             conversation_id=intake["conversation"]["conversation_id"],
             changed_paths=[intake["conversation"]["path"], intake["run"]["path"]],
             refresh=["matter"],
@@ -124,6 +138,20 @@ def update_stage(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
+@router.patch("/{matter_id}/risk")
+def update_risk(
+    matter_id: str,
+    payload: MatterRiskUpdate,
+    context: AppContext = Depends(get_context),
+):
+    try:
+        return context.matters.update_risk(matter_id, payload.risk_level, actor=payload.actor)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
 @router.post("/{matter_id}/actions", response_model=MatterActionResult)
 def perform_action(
     matter_id: str,
@@ -152,14 +180,35 @@ def complete_work_item(
         raise HTTPException(status_code=409 if isinstance(exc, ValueError) else 404, detail=str(exc)) from exc
 
 
-@router.post("/{matter_id}/research")
-async def run_research(
+@router.post("/{matter_id}/work-items/assign", response_model=MatterActionResult)
+def assign_work_item(
+    matter_id: str,
+    payload: WorkItemAssignRequest,
+    context: AppContext = Depends(get_context),
+):
+    try:
+        return context.matters.assign_work_item(
+            matter_id,
+            payload.work_item_id,
+            owner=payload.owner,
+            actor=payload.actor,
+        )
+    except (KeyError, ValueError) as exc:
+        raise HTTPException(status_code=409 if isinstance(exc, ValueError) else 404, detail=str(exc)) from exc
+
+
+@router.post("/{matter_id}/research", status_code=202)
+def run_research(
     matter_id: str,
     question: str = "",
     context: AppContext = Depends(get_context),
 ):
     try:
-        return await context.research.run(matter_id, question)
+        matter = context.matters.get(matter_id)
+        return context.research_runs.start(
+            matter_id,
+            [question.strip() or str(matter["title"])],
+        )
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
@@ -172,7 +221,11 @@ def start_research_run(
 ):
     try:
         questions = payload.questions or ([payload.question] if payload.question.strip() else [])
-        return context.research_runs.start(matter_id, questions)
+        return context.research_runs.start(
+            matter_id,
+            questions,
+            source_action_key=payload.source_action_key,
+        )
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
@@ -302,15 +355,24 @@ def finalize_work_product(
 ):
     try:
         result = context.work_products.finalize(matter_id, payload.draft_path)
-        matter = context.index.get_matter(matter_id)
-        if matter and matter.get("status") == "generate":
-            context.matters.move_stage(
-                matter_id,
-                "respond",
-                reason="Canonical work product finalized",
-                actor="system",
-            )
         return result
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except (FileNotFoundError, ValueError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@router.post("/{matter_id}/work-product/draft", status_code=201)
+def create_work_product_draft(
+    matter_id: str,
+    payload: WorkProductDraftRequest,
+    context: AppContext = Depends(get_context),
+):
+    try:
+        return context.work_products.create_draft(
+            matter_id, title=payload.title.strip(), content=payload.content,
+            source_action_key=payload.source_action_key,
+        )
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except (FileNotFoundError, ValueError) as exc:

@@ -138,7 +138,7 @@ class CodexCLIProvider:
     @staticmethod
     def _prompt(messages: list[dict[str, Any]]) -> str:
         parts = [
-            "Return useful text or request only the supplied Counsel OS tools. "
+            "Return useful text or request only the supplied Themis.ai tools. "
             "Do not inspect files, use shell commands, browse, call apps, plugins, MCP, or other tools."
         ]
         for message in messages:
@@ -172,7 +172,7 @@ class CodexCLIProvider:
                 raise _AppServerFailure("Codex CLI provider is closed.")
             if self._process is not None and self._process.poll() is None:
                 return
-            self._directory = tempfile.TemporaryDirectory(prefix="counsel-os-codex-")
+            self._directory = tempfile.TemporaryDirectory(prefix="themis.ai-codex-")
             try:
                 self._process = self._process_factory(
                     [self.command, "app-server", "--stdio"],
@@ -189,10 +189,10 @@ class CodexCLIProvider:
                 raise _AppServerFailure("Codex app-server could not start.") from exc
             if self._process.stdin is None or self._process.stdout is None:
                 raise _AppServerFailure("Codex app-server did not provide stdio.")
-            self._reader = threading.Thread(target=self._read_loop, name="counsel-os-codex", daemon=True)
+            self._reader = threading.Thread(target=self._read_loop, name="themis.ai-codex", daemon=True)
             self._reader.start()
             self._rpc("initialize", {
-                "clientInfo": {"name": "counsel-os", "title": "Counsel OS", "version": "1"},
+                "clientInfo": {"name": "themis.ai", "title": "Themis.ai", "version": "1"},
                 "capabilities": {"experimentalApi": True},
             })
             self._write({"method": "initialized", "params": {}})
@@ -293,7 +293,7 @@ class CodexCLIProvider:
             self._write({
                 "id": message["id"],
                 "result": {
-                    "contentItems": [{"type": "inputText", "text": "Tool request captured for the Counsel OS host."}],
+                    "contentItems": [{"type": "inputText", "text": "Tool request captured for the Themis.ai host."}],
                     "success": success,
                 },
             })
@@ -392,7 +392,7 @@ class CodexCLIProvider:
             "sandbox": "read-only",
             "approvalPolicy": "never",
             "ephemeral": True,
-            "baseInstructions": "Use only supplied Counsel OS tools. Do not inspect files or use external tools.",
+            "baseInstructions": "Use only supplied Themis.ai tools. Do not inspect files or use external tools.",
             "developerInstructions": "",
             "config": _CODEX_CONFIG,
             "dynamicTools": dynamic_tools,
@@ -453,7 +453,7 @@ class CodexCLIProvider:
             "required": ["content", "tool_calls"],
             "additionalProperties": False,
         }
-        with tempfile.TemporaryDirectory(prefix="counsel-os-codex-exec-") as directory:
+        with tempfile.TemporaryDirectory(prefix="themis.ai-codex-exec-") as directory:
             schema_path = Path(directory) / "schema.json"
             output_path = Path(directory) / "output.json"
             schema_path.write_text(json.dumps(schema, separators=(",", ":")), encoding="utf-8")

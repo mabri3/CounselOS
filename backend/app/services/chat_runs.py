@@ -6,6 +6,7 @@ from typing import Any
 from app.models.api import ChatRequest, ChatResponse
 from app.models.api import ToolTrace
 from app.agents.runner import AgentExecutionError, RunnerExecutionState
+from app.agents.output import clean_user_facing_reply
 from app.providers.base import ProviderSelection
 from app.services.vault import VaultService
 from app.utils.ids import new_id
@@ -31,6 +32,7 @@ class ChatRunService:
         request: ChatRequest,
         *,
         existing_user_message_id: str | None = None,
+        persist_user_message: bool = True,
     ) -> dict[str, Any]:
         if request.matter_id not in {None, matter_id}:
             raise ValueError("The chat request belongs to a different matter.")
@@ -47,11 +49,28 @@ class ChatRunService:
             "matter_id": matter_id,
             "conversation_id": conversation_id,
             "expected_dossier_hash": self.context.dossiers.content_hash(matter_id),
+            "source_action_key": request.source_action_key or f"chat:{run_id}",
         })
         resolved = self.context.runner.resolve(payload.agent_id)
+        if not persist_user_message and not payload.conversation_id:
+            raise ValueError("An internal chat run needs an existing conversation.")
+        if existing_user_message_id is None and persist_user_message:
+            from app.routers.chat import _action_text
+
+            saved = self.context.chat_history.append(
+                matter_id,
+                payload.conversation_id,
+                role="user",
+                content=payload.message.strip() or _action_text(payload),
+                attachments=[item.model_dump() for item in payload.attachments],
+                card_action=payload.card_action.model_dump() if payload.card_action else None,
+                run_id=run_id,
+            )
+            payload = payload.model_copy(update={"conversation_id": saved["conversation_id"]})
         record = self._write(
             matter_id, run_id, state="queued", status="Chat is queued.",
             request=payload.model_dump(mode="json"), conversation_id=payload.conversation_id,
+            persist_user_message=persist_user_message,
             expected_dossier_hash=payload.expected_dossier_hash,
             selection={
                 "agent_id": resolved.selection.agent_id,
@@ -79,7 +98,15 @@ class ChatRunService:
             raise ValueError("This chat run is already queued or running.")
         if current["state"] not in {"failed", "interrupted"}:
             raise ValueError("Only failed or interrupted chat runs can be retried.")
-        record = self._write(matter_id, run_id, state="queued", status="Chat retry is queued.", failure_detail=None, finished_at=None)
+        record = self._write(
+            matter_id,
+            run_id,
+            state="queued",
+            status="Chat retry is queued.",
+            started_at=None,
+            failure_detail=None,
+            finished_at=None,
+        )
         self._tasks[run_id] = asyncio.create_task(self._execute(matter_id, run_id))
         return record
 
@@ -167,6 +194,7 @@ class ChatRunService:
                     request, self.context, run_id=run_id,
                     execution_state=execution, checkpoint=checkpoint,
                     resolved_provider=resolved,
+                    persist_user_message=bool(current.get("persist_user_message", True)),
                 ),
                 timeout=self.timeout_seconds,
             )
@@ -242,9 +270,10 @@ class ChatRunService:
                 else self.context.provider_router.resolve_selection(ProviderSelection(**selection)).provider
             )
             reply = await asyncio.wait_for(provider.complete(messages, None), timeout=30)
-            if reply.content.strip():
+            user_facing_content = clean_user_facing_reply(reply.content)
+            if user_facing_content:
                 return ChatResponse(
-                    reply=reply.content.strip(), trace=execution.trace,
+                    reply=user_facing_content, trace=execution.trace,
                     changed_paths=list(dict.fromkeys(execution.changed_paths)),
                     refresh=list(dict.fromkeys(execution.refresh)),
                 )
@@ -254,10 +283,16 @@ class ChatRunService:
 
     @staticmethod
     def _partial_result(execution: RunnerExecutionState, *, timed_out: bool = False) -> ChatResponse:
-        if execution.useful_content.strip():
-            reply = execution.useful_content.strip()
+        useful_content = clean_user_facing_reply(execution.useful_content)
+        if useful_content:
+            reply = useful_content
         else:
-            completed = [item.summary for item in execution.trace if item.status == "success"]
+            completed = [
+                cleaned
+                for item in execution.trace
+                if item.status == "success"
+                if (cleaned := clean_user_facing_reply(item.summary))
+            ]
             if completed:
                 reply = "Completed work:\n" + "\n".join(f"- {summary}" for summary in completed)
                 reply += "\n\nRemaining work:\n- The request needs a final model answer."

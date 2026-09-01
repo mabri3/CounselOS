@@ -4,6 +4,7 @@ import asyncio
 import ipaddress
 import json
 from datetime import datetime, timezone
+from time import monotonic
 from urllib.parse import urlsplit
 
 import httpx
@@ -20,14 +21,28 @@ POLARIS_MAX_RESPONSE_BYTES = 2 * 1024 * 1024
 POLARIS_STORED_TEXT_LIMIT = 12000
 
 
+class PolarisProviderResult(ProviderScanResult):
+    """Polaris result with safe, structured execution evidence."""
+
+    observability: dict[str, str | int | None]
+
+
 class PolarisIntelligenceProvider:
     provider_id = "polaris"
-    label = "Polaris — Themis Lime"
+    label = "Polaris"
 
-    def __init__(self, api_key: str | None, *, client=None, sleeper=asyncio.sleep):
+    def __init__(
+        self,
+        api_key: str | None,
+        *,
+        client=None,
+        sleeper=asyncio.sleep,
+        clock=monotonic,
+    ):
         self._api_key = api_key
         self._client = client
         self._sleep = sleeper
+        self._clock = clock
 
     @property
     def configured(self) -> bool:
@@ -35,7 +50,12 @@ class PolarisIntelligenceProvider:
 
     async def scan(self, query: OutboundWatchQuery, checkpoint: ProviderCheckpoint | None) -> ProviderScanResult:
         if not self._api_key:
-            return ProviderScanResult(provider_id="polaris", status="failed", warnings=["Polaris is not configured"])
+            return PolarisProviderResult(
+                provider_id="polaris",
+                status="failed",
+                warnings=["Polaris is not configured"],
+                observability=self._observation("configuration", 0, 0, "pending"),
+            )
         payload = {
             "model": POLARIS_MODEL,
             "messages": [
@@ -43,10 +63,17 @@ class PolarisIntelligenceProvider:
                 {"role": "user", "content": query.model_dump_json()},
             ],
         }
-        response = await self._post(payload)
+        response, attempt_count, elapsed_ms = await self._post(payload)
         text, citations, warnings = self._parse(response)
         if not text.strip():
-            return ProviderScanResult(provider_id="polaris", status="failed", warnings=warnings or ["Polaris returned no useful text"])
+            return PolarisProviderResult(
+                provider_id="polaris",
+                status="failed",
+                warnings=warnings or ["Polaris returned no useful text"],
+                observability=self._observation(
+                    "invalid_response", attempt_count, elapsed_ms, "pending"
+                ),
+            )
         bounded = text[:POLARIS_STORED_TEXT_LIMIT]
         if len(text) > POLARIS_STORED_TEXT_LIMIT:
             warnings.append("Polaris content exceeded the stored excerpt limit")
@@ -60,23 +87,42 @@ class PolarisIntelligenceProvider:
             provider_id="polaris", last_observed_at=now,
             state={"citation_count": len(sources)},
         )
-        return ProviderScanResult(
+        return PolarisProviderResult(
             provider_id="polaris", status="partial" if warnings else "success",
             next_checkpoint=next_checkpoint, candidates=[candidate], bounded_excerpt=bounded,
             warnings=warnings,
+            observability=self._observation(None, attempt_count, elapsed_ms, "not_needed"),
         )
 
     async def research(self, query: OutboundWatchQuery) -> ProviderScanResult:
         """Collect one public matter-research answer without creating Watch state."""
-        result = await self.scan(query, None)
+        try:
+            result = await self.scan(query, None)
+        except Exception as exc:
+            observation = getattr(exc, "polaris_observability", None)
+            if not isinstance(observation, dict):
+                observation = self._observation(
+                    self._failure_class(exc), 1, 0, "pending"
+                )
+            return PolarisProviderResult(
+                provider_id="polaris",
+                status="failed",
+                warnings=[
+                    f"Polaris request failed ({observation['failure_class']})."
+                ],
+                observability=observation,
+            )
         return result.model_copy(update={"next_checkpoint": None})
 
-    async def _post(self, payload: dict[str, object]) -> object:
+    async def _post(self, payload: dict[str, object]) -> tuple[object, int, int]:
         headers = {"Authorization": f"Bearer {self._api_key}", "Content-Type": "application/json"}
         owns_client = self._client is None
         client = self._client or httpx.AsyncClient(timeout=15, follow_redirects=False)
+        started_at = self._clock()
+        attempt_count = 0
         try:
             for attempt in range(3):
+                attempt_count = attempt + 1
                 try:
                     async with client.stream(
                         "POST", POLARIS_ENDPOINT, headers=headers, json=payload
@@ -93,9 +139,10 @@ class PolarisIntelligenceProvider:
                                     raise ValueError("Polaris response exceeds size limit")
                             decoded = bytes(body).decode("utf-8", errors="replace")
                             try:
-                                return json.loads(decoded)
+                                result = json.loads(decoded)
                             except json.JSONDecodeError:
-                                return decoded
+                                result = decoded
+                            return result, attempt_count, self._elapsed_ms(started_at)
                         if response.status_code == 429:
                             try:
                                 delay = min(
@@ -111,10 +158,49 @@ class PolarisIntelligenceProvider:
                         raise
                     delay = min(0.25 * (2**attempt), 1.0)
                 await self._sleep(delay)
+        except Exception as exc:
+            exc.polaris_observability = self._observation(
+                self._failure_class(exc),
+                attempt_count,
+                self._elapsed_ms(started_at),
+                "pending",
+            )
+            raise
         finally:
             if owns_client:
                 await client.aclose()
         raise RuntimeError("Polaris request failed")
+
+    def _elapsed_ms(self, started_at: float) -> int:
+        return max(0, int((self._clock() - started_at) * 1000))
+
+    @staticmethod
+    def _failure_class(exc: Exception) -> str:
+        if isinstance(exc, httpx.TimeoutException):
+            return "timeout"
+        if isinstance(exc, httpx.NetworkError):
+            return "network"
+        if isinstance(exc, httpx.HTTPStatusError):
+            return "http_status"
+        if isinstance(exc, ValueError):
+            return "response_limit"
+        if isinstance(exc, RuntimeError):
+            return "redirect_blocked"
+        return "request_failure"
+
+    @staticmethod
+    def _observation(
+        failure_class: str | None,
+        attempt_count: int,
+        elapsed_ms: int,
+        fallback_status: str,
+    ) -> dict[str, str | int | None]:
+        return {
+            "failure_class": failure_class,
+            "attempt_count": attempt_count,
+            "elapsed_ms": elapsed_ms,
+            "fallback_status": fallback_status,
+        }
 
     @classmethod
     def _parse(cls, envelope: object) -> tuple[str, list[object], list[str]]:

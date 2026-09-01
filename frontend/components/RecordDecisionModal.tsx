@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { createDecision } from "@/lib/api";
+import { useEffect, useRef, useState } from "react";
+import { createDecision, getDecisions, getFile } from "@/lib/api";
 import { formatLongDay } from "@/lib/design";
 import type { MatterDetail } from "@/lib/types";
 
@@ -13,33 +13,62 @@ export default function RecordDecisionModal({
   detail,
   suggestion,
   basis,
+  basisLabels = {},
+  lawyerAuthor,
   onClose,
   onRecorded,
 }: {
   detail: MatterDetail;
   suggestion: string;
   basis: string[];
+  basisLabels?: Record<string, string>;
+  lawyerAuthor?: string;
   onClose: () => void;
   onRecorded: () => Promise<void>;
 }) {
-  const [chosenPath, setChosenPath] = useState(suggestion);
-  const [rationale, setRationale] = useState(detail.orientation.why_now || "");
-  const [decider, setDecider] = useState(detail.legal_owner || "");
+  const initialDecision = suggestion.trim();
+  const [chosenPath, setChosenPath] = useState(initialDecision);
+  const [rationale, setRationale] = useState("");
+  const [conditions, setConditions] = useState("");
+  const [notDecided, setNotDecided] = useState("");
+  const [linkedBasis, setLinkedBasis] = useState(basis);
+  const [failedPublicResearch, setFailedPublicResearch] = useState<string[]>([]);
+  const [decider, setDecider] = useState(lawyerAuthor?.trim() || detail.legal_owner || "");
   const [reviewAt, setReviewAt] = useState(defaultReview());
   const [busy, setBusy] = useState(false);
   const [created, setCreated] = useState(false);
+  const [createdId, setCreatedId] = useState<string | null>(null);
   const [recorded, setRecorded] = useState(false);
   const [error, setError] = useState("");
+  const sourceActionKey = useRef<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    void Promise.all(
+      basis.filter((path) => path.includes("/research/")).map(async (path) => {
+        try {
+          const document = await getFile(path);
+          const status = document.metadata.public_research_status;
+          return status === "failed" || status === "unavailable" ? path : null;
+        } catch {
+          return null;
+        }
+      }),
+    ).then((paths) => { if (active) setFailedPublicResearch(paths.filter((path): path is string => Boolean(path))); });
+    return () => { active = false; };
+  }, [basis]);
 
   async function record() {
     if (!chosenPath.trim()) { setError("Say what was decided."); return; }
     if (!decider.trim()) { setError("Enter who made the decision."); return; }
     let decisionCreated = created;
+    let decisionId = createdId;
     setBusy(true);
     setError("");
     try {
       if (!created) {
-        await createDecision({
+        sourceActionKey.current ||= `decision:ui:${crypto.randomUUID()}`;
+        const saved = await createDecision({
           matter_id: detail.matter_id,
           title: detail.title,
           chosen_path: chosenPath.trim(),
@@ -47,10 +76,19 @@ export default function RecordDecisionModal({
           decision_maker: decider.trim(),
           risk_level: detail.risk_level,
           next_review_at: reviewAt || null,
-          linked_paths: basis,
+          conditions: lines(conditions),
+          not_decided: lines(notDecided),
+          linked_paths: linkedBasis,
+          source_action_key: sourceActionKey.current,
         });
         decisionCreated = true;
+        decisionId = saved.decision_id;
         setCreated(true);
+        setCreatedId(saved.decision_id);
+      }
+      const register = await getDecisions();
+      if (!decisionId || !register.decisions.some((decision) => decision.decision_id === decisionId)) {
+        throw new Error("The decision file was saved, but it is not yet visible in the decision register. Retry confirmation.");
       }
       await onRecorded();
       setRecorded(true);
@@ -76,7 +114,7 @@ export default function RecordDecisionModal({
             </div>
           ) : null}
           <div>
-            <div className="field-label">Decision {suggestion.trim() ? <span className="field-source">Themis draft</span> : null}</div>
+            <div className="field-label">Decision {initialDecision && chosenPath === initialDecision ? <span className="field-source">Themis.ai draft</span> : null}</div>
             <textarea
               aria-label="Decision"
               autoFocus
@@ -89,7 +127,7 @@ export default function RecordDecisionModal({
           </div>
 
           <div>
-            <div className="field-label">Rationale {detail.orientation.why_now.trim() ? <span className="field-source">Themis draft</span> : null}</div>
+            <div className="field-label">Rationale</div>
             <textarea
               aria-label="Rationale"
               className="text-input prose"
@@ -99,6 +137,17 @@ export default function RecordDecisionModal({
               value={rationale}
             />
             <div className="field-help">Optional. Explain why this decision was made.</div>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+            <div>
+              <div className="field-label">Conditions</div>
+              <textarea aria-label="Conditions" className="text-input prose" disabled={busy || created || recorded} onChange={(event) => setConditions(event.target.value)} placeholder="One condition per line" value={conditions} />
+            </div>
+            <div>
+              <div className="field-label">Not decided</div>
+              <textarea aria-label="Not decided" className="text-input prose" disabled={busy || created || recorded} onChange={(event) => setNotDecided(event.target.value)} placeholder="One open point per line" value={notDecided} />
+            </div>
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
@@ -118,11 +167,15 @@ export default function RecordDecisionModal({
           <div>
             <div className="field-label">What it rests on</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
-              {basis.length === 0 ? (
+              {linkedBasis.length === 0 ? (
                 <span className="faint small">Nothing linked yet.</span>
               ) : null}
-              {basis.map((path) => (
-                <span className="basis-tag" key={path}>{path.split("/").at(-1)}</span>
+              {linkedBasis.map((path) => (
+                <span className="basis-tag" key={path} title={path}>
+                  {basisLabel(path, basisLabels)}
+                  {failedPublicResearch.includes(path) ? " · Public research failed" : ""}
+                  <button aria-label={`Remove ${basisLabel(path, basisLabels)}`} disabled={busy || created || recorded} onClick={() => setLinkedBasis((current) => current.filter((item) => item !== path))} type="button">×</button>
+                </span>
               ))}
             </div>
           </div>
@@ -155,4 +208,14 @@ function defaultReview(): string {
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+}
+
+function lines(value: string): string[] {
+  return value.split("\n").map((item) => item.replace(/^[-*]\s*/, "").trim()).filter(Boolean);
+}
+
+function basisLabel(path: string, labels: Record<string, string>): string {
+  if (labels[path]?.trim()) return labels[path].trim();
+  const name = path.split("/").at(-1) || path;
+  return name.replace(/\.(?:md|pdf|docx)$/i, "").replace(/[-_]+/g, " ");
 }

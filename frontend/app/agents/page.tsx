@@ -28,6 +28,12 @@ function workspaceDefault(settings: WorkspaceSettings | null): string {
     .join(" · ") || "Workspace default";
 }
 
+function workspaceProviderId(settings: WorkspaceSettings | null): string {
+  if (!settings) return "";
+  return settings.sections.flatMap((section) => section.rows)
+    .find((row) => row.config_key === "agents.provider")?.value ?? "";
+}
+
 /**
  * Canvas 4b — write what the agent is, how it speaks, and what it may touch.
  * Anything unticked is unavailable even if you ask for it in chat, and three
@@ -99,11 +105,11 @@ export default function AgentsPage() {
   }
 
   function displayName(agent: AgentDetail) {
-    return agent.agent_id === "counsel-copilot" ? "Themis" : agent.name;
+    return agent.agent_id === "counsel-copilot" ? "Themis.ai" : agent.name;
   }
 
   function displayRole(agent: AgentDetail) {
-    return agent.agent_id === "counsel-copilot" ? "Counsel Copilot" : agent.name;
+    return agent.agent_id === "counsel-copilot" ? "Workspace assistant" : agent.name;
   }
 
   if (error && !draft) return <AppShell><main className="page"><p className="error">{error}</p></main></AppShell>;
@@ -285,6 +291,11 @@ export default function AgentsPage() {
                 {draft.provider === "antigravity_cli" ? (
                   <div className="setting-help" style={{ color: role.attentionDeep, fontWeight: 500, marginTop: 7 }}>
                     Development only — do not use confidential matter data.
+                  </div>
+                ) : null}
+                {draft.provider === "mock" && workspaceProviderId(settings) !== "mock" ? (
+                  <div className="setting-help" role="status" style={{ color: role.attentionDeep, fontWeight: 500, marginTop: 7 }}>
+                    Attention — this agent explicitly uses Mock. The workspace uses a live provider. Research runs will keep Mock until you change this selection.
                   </div>
                 ) : null}
               </div>

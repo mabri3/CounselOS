@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $createTextNode, $getRoot, $getSelection, $isRangeSelection, $isTextNode, $setSelection, BLUR_COMMAND, CLICK_COMMAND, COMMAND_PRIORITY_LOW, FOCUS_COMMAND, PASTE_COMMAND, type TextNode } from "lexical";
+import { $createTextNode, $getRoot, $getSelection, $isRangeSelection, $isTextNode, $setSelection, BLUR_COMMAND, CLICK_COMMAND, COMMAND_PRIORITY_HIGH, COMMAND_PRIORITY_LOW, FOCUS_COMMAND, KEY_DOWN_COMMAND, PASTE_COMMAND, type TextNode } from "lexical";
 import { $createRevisionTextNode, $isRevisionTextNode, type RevisionKind } from "@/components/RevisionTextNode";
 import type { DocumentComment, DocumentReviewSegment, ReviewAuthor } from "@/lib/types";
 
@@ -83,6 +83,24 @@ export default function RevisionPlugin({ segments, comments, markdown, mode, rev
     onOpenThread(threadId, editor.getRootElement());
     return true;
   }, COMMAND_PRIORITY_LOW), [editor, onOpenThread]);
+
+  useEffect(() => editor.registerCommand(KEY_DOWN_COMMAND, (event) => {
+    if (!["Home", "End"].includes(event.key) || event.altKey || event.ctrlKey || event.metaKey) return false;
+    const selection = $getSelection();
+    if (!$isRangeSelection(selection)) return false;
+    const block = selection.focus.getNode().getTopLevelElementOrThrow();
+    const textNodes = block.getAllTextNodes().filter((node) =>
+      (!$isRevisionTextNode(node) || node.getRevisionKind() !== "delete")
+      && node.getTextContent().replaceAll(REVISION_BOUNDARY, "").length > 0,
+    );
+    const target = event.key === "Home" ? textNodes[0] : textNodes.at(-1);
+    if (!target) return false;
+    const offset = event.key === "Home" ? 0 : target.getTextContentSize();
+    if (!event.shiftKey) selection.anchor.set(target.getKey(), offset, "text");
+    selection.focus.set(target.getKey(), offset, "text");
+    event.preventDefault();
+    return true;
+  }, COMMAND_PRIORITY_HIGH), [editor]);
 
   useEffect(() => editor.registerUpdateListener(({ editorState, tags }) => {
     if (tags.has(REVIEW_SYNC_TAG)) return;

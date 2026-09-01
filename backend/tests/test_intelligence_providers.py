@@ -183,6 +183,33 @@ async def test_polaris_http_400_not_retried_and_retryable_status_is_bounded(outb
 
 
 @pytest.mark.asyncio
+async def test_polaris_research_failure_returns_safe_observability(outbound):
+    private_detail = "token=private-secret request=private-matter-text"
+    failures = FakeClient([
+        httpx.ReadTimeout(private_detail),
+        httpx.ReadTimeout(private_detail),
+        httpx.ReadTimeout(private_detail),
+    ])
+
+    result = await PolarisIntelligenceProvider(
+        "secret-api-key", client=failures, sleeper=lambda _: _done()
+    ).research(outbound)
+
+    assert result.status == "failed"
+    assert result.observability == {
+        "failure_class": "timeout",
+        "attempt_count": 3,
+        "elapsed_ms": result.observability["elapsed_ms"],
+        "fallback_status": "pending",
+    }
+    assert result.observability["elapsed_ms"] >= 0
+    rendered = json.dumps(result.model_dump())
+    assert "private-secret" not in rendered
+    assert "private-matter-text" not in rendered
+    assert "secret-api-key" not in rendered
+
+
+@pytest.mark.asyncio
 async def test_polaris_redirect_is_blocked_and_response_is_closed(outbound):
     response = FakeResponse({}, 302, redirect=True)
 

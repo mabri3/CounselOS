@@ -13,6 +13,20 @@ from app.providers.codex_cli import CodexCLIProvider
 from app.providers.mock import MockProvider
 from app.providers.opencode_go import OpenCodeGoProvider
 from app.providers.openai_compatible import OpenAICompatibleProvider
+from app.intelligence.polaris import POLARIS_BASE_URL, POLARIS_MODEL
+
+
+def _polaris_settings(settings: Settings, model: str = POLARIS_MODEL, effort: str = "default") -> Settings:
+    if not settings.polaris_api_key:
+        raise ValueError("POLARIS_API_KEY is required for the Polaris model provider.")
+    return settings.model_copy(update={
+        "llm_provider": "polaris",
+        "llm_provider_label": "Polaris",
+        "llm_base_url": POLARIS_BASE_URL,
+        "llm_api_key": settings.polaris_api_key,
+        "llm_model": model or POLARIS_MODEL,
+        "llm_reasoning_effort": None if effort == "default" else effort,
+    })
 
 
 def build_provider(settings: Settings) -> LLMProvider:
@@ -21,6 +35,10 @@ def build_provider(settings: Settings) -> LLMProvider:
         return MockProvider()
     if provider in {"openai", "openai_compatible", "compatible"}:
         return OpenAICompatibleProvider(settings)
+    if provider == "polaris":
+        return OpenAICompatibleProvider(
+            _polaris_settings(settings, settings.llm_model or POLARIS_MODEL, settings.llm_reasoning_effort or "default")
+        )
     if not settings.llm_model:
         raise ValueError(f"Select a model for provider: {settings.llm_provider}")
     effort = settings.llm_reasoning_effort or "default"
@@ -34,7 +52,7 @@ def build_provider(settings: Settings) -> LLMProvider:
 
 
 class ProviderRouter:
-    """Constructs, catalogs, reuses, and closes Counsel OS model providers."""
+    """Constructs, catalogs, reuses, and closes Themis.ai model providers."""
 
     def __init__(self, settings: Settings, workspace_provider: LLMProvider):
         self.settings = settings
@@ -104,6 +122,8 @@ class ProviderRouter:
         return "mock" if provider_id == "mock" else str(self.settings.llm_model or "")
 
     def _construct(self, provider_id: str, model: str, effort: str) -> LLMProvider:
+        if provider_id == "polaris":
+            return OpenAICompatibleProvider(_polaris_settings(self.settings, model, effort))
         if provider_id == "openai_compatible":
             return OpenAICompatibleProvider(self.settings.model_copy(update={
                 "llm_provider": provider_id,
@@ -132,7 +152,18 @@ class ProviderRouter:
             readiness_detail="Always available for offline development.",
             models=(ProviderModel("mock", "Mock demo", ("default",)),),
         )
-        return {"providers": [asdict(item) for item in (mock, compatible, opencode, codex, antigravity)]}
+        polaris = ProviderCatalogEntry(
+            id="polaris",
+            label="Polaris",
+            readiness="ready" if self.settings.polaris_api_key else "missing",
+            readiness_detail=(
+                "API key is configured."
+                if self.settings.polaris_api_key
+                else "POLARIS_API_KEY is not configured."
+            ),
+            models=(ProviderModel(POLARIS_MODEL, "Polaris Advisor", ("default",)),),
+        )
+        return {"providers": [asdict(item) for item in (mock, compatible, polaris, opencode, codex, antigravity)]}
 
     async def _openai_catalog(self, saved_model: str | None) -> ProviderCatalogEntry:
         label = self.settings.llm_provider_label or "OpenAI-compatible"

@@ -2,13 +2,16 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
   completableCurrentWorkItemId,
+  countUserFacingDocuments,
   controlIdForCurrentWork,
   currentWorkItemFor,
-  explicitlyRequestsWorkspaceMutation,
   isKnownMatterArtifactPath,
   matterArtifacts,
+  mutationFailureMessages,
   mutationOutcome,
   openItemsFor,
+  userFacingMatterTree,
+  workItemOwnerLabel,
   type BriefWorkItem,
 } from "../lib/matterBrief.ts";
 import { lifecycleActionNeedsDirectMutation, matterAction } from "../lib/matterActions.ts";
@@ -30,6 +33,8 @@ assert.equal(controlIdForCurrentWork("run_research", orbitCurrent), "run_researc
 assert.equal(completableCurrentWorkItemId(orbitCurrent), "WI-ORBIT-1");
 assert.equal(completableCurrentWorkItemId(workItem("WI-DONE", "Done", "research", 1, "done")), null);
 assert.equal(completableCurrentWorkItemId(workItem("WI-OPTIONAL", "Optional", "research", 0)), null);
+assert.equal(workItemOwnerLabel({ ...orbitCurrent!, owner: " Lena Brooks " }), "Lena Brooks");
+assert.equal(workItemOwnerLabel(orbitCurrent), "Unassigned");
 assert.deepEqual(openItemsFor(orbit, ["Run adverse-action research?"], "WI-ORBIT-1", "Run adverse-action research"), []);
 
 const apex = [
@@ -102,7 +107,8 @@ const tree: FileNode[] = [{
   ],
 }, {
   name: "research", path: "matters/M-1/research", type: "folder", children: [
-    { name: "packet.md", label: "Old research label", path: "matters/M-1/research/packet.md", type: "file", extension: ".md", record_type: "research" },
+    { name: "packet.md", label: "Old research label", path: "matters/M-1/research/packet.md", type: "file", extension: ".md", record_type: "research", updated_at: 200 },
+    { name: "newer-by-tree.md", label: "Wrong tree choice", path: "matters/M-1/research/newer-by-tree.md", type: "file", extension: ".md", record_type: "research", updated_at: 300 },
     { name: "runs", path: "matters/M-1/research/runs", type: "folder", children: [
       { name: "RUN-1.md", label: "Queued", path: "matters/M-1/research/runs/RUN-1.md", type: "file", extension: ".md", record_type: "research_run" },
     ] },
@@ -118,34 +124,44 @@ const tree: FileNode[] = [{
   name: "events", path: "matters/M-1/events", type: "folder", children: [
     { name: "event.md", path: "matters/M-1/events/event.md", type: "file", extension: ".md" },
   ],
+}, {
+  name: "work-product.md", label: "Legacy work product", path: "matters/M-1/work-product.md", type: "file", extension: ".md", record_type: "work_product", state: "draft",
 }];
-const artifacts = matterArtifacts(tree);
+const canonicalDraftPath = "matters/M-1/custom-output/draft.md";
+const latestResearchPath = "matters/M-1/research/packet.md";
+const fallbackArtifacts = matterArtifacts(tree);
+assert.equal(fallbackArtifacts.find((item) => item.kind === "draft")?.path, "matters/M-1/work-product.md");
+const artifacts = matterArtifacts(tree, null, canonicalDraftPath, latestResearchPath, "matters/M-1/custom-output/newest.md");
 assert.deepEqual(artifacts.map((item) => [item.kind, item.path]), [
   ["research", "matters/M-1/research/packet.md"],
-  ["draft", "matters/M-1/custom-output/draft.md"],
+  ["draft", canonicalDraftPath],
   ["final", "matters/M-1/custom-output/newest.md"],
 ]);
-assert.equal(artifacts.find((item) => item.kind === "research")?.label, "First-pass research");
+assert.equal(artifacts.find((item) => item.kind === "draft")?.label, "Configured draft");
+assert.equal(artifacts.find((item) => item.kind === "research")?.label, "Old research label");
 assert.equal(artifacts.some((item) => item.path.includes("/research/runs/")), false);
 assert.equal(isKnownMatterArtifactPath("matters/M-1/custom-output/newest.md", artifacts), true);
-const approvedArtifacts = matterArtifacts(tree, "matters/M-1/custom-output/approved.md");
+const approvedArtifacts = matterArtifacts(tree, "matters/M-1/custom-output/approved.md", canonicalDraftPath);
 assert.equal(approvedArtifacts.find((item) => item.kind === "final")?.path, "matters/M-1/custom-output/approved.md");
 assert.equal(isKnownMatterArtifactPath("matters/M-1/events/event.md", artifacts), false);
 assert.equal(isKnownMatterArtifactPath("matters/M-1/matter.md", artifacts), false);
 assert.equal(isKnownMatterArtifactPath("matters/M-1/work-product/final/folder-only.md", artifacts), false);
+const draftWithoutFinal = matterArtifacts(tree, null, canonicalDraftPath, latestResearchPath, null);
+assert.equal(draftWithoutFinal.some((item) => item.kind === "final"), false);
 const workProductCard: ChatCard = { type: "work_product", title: "Saved advice", vault_path: "matters/M-1/other/advice.md", state: "draft", summary: "Saved" };
 assert.equal(isKnownMatterArtifactPath(workProductCard.vault_path, artifacts, [workProductCard]), true);
+assert.equal(countUserFacingDocuments(tree), 8);
+assert.equal(JSON.stringify(userFacingMatterTree(tree)).includes("RUN-1.md"), false);
+assert.equal(JSON.stringify(userFacingMatterTree(tree)).includes("event.md"), false);
 
-assert.equal(explicitlyRequestsWorkspaceMutation("Please record this decision"), true);
-assert.equal(explicitlyRequestsWorkspaceMutation("Record that it was delivered"), true);
-assert.equal(explicitlyRequestsWorkspaceMutation("Log that the response was sent"), true);
-assert.equal(explicitlyRequestsWorkspaceMutation("Finish this matter"), true);
-assert.equal(explicitlyRequestsWorkspaceMutation("What do you recommend?"), false);
-assert.equal(explicitlyRequestsWorkspaceMutation("Can you finish explaining the options?"), false);
-assert.equal(mutationOutcome("Record this decision", [{ tool: "record_decision", status: "error", summary: "failed" }]), "no_change");
-assert.equal(mutationOutcome("Record this decision", [{ tool: "record_decision", status: "success", summary: "saved" }]), "recorded");
-assert.equal(mutationOutcome("Draft and save the response", [], [workProductCard]), "recorded");
-assert.equal(mutationOutcome("What do you recommend?", []), "none");
+assert.equal(mutationOutcome([{ tool: "record_decision", status: "error", summary: "failed", mutation_status: "failed" }]), "no_change");
+assert.equal(mutationOutcome([{ tool: "record_decision", status: "success", summary: "saved", mutation_status: "changed" }]), "recorded");
+assert.equal(mutationOutcome([{ tool: "complete_work_item", status: "success", summary: "already complete", mutation_status: "no_change" }]), "no_change");
+assert.equal(mutationOutcome([], [workProductCard]), "recorded");
+assert.equal(mutationOutcome([]), "none");
+assert.deepEqual(mutationFailureMessages([
+  { tool: "record_decision", status: "error", summary: "The decision was not recorded.", mutation_status: "failed" },
+]), ["The decision was not recorded."]);
 
 const closeWithRequiredWork = matterAction({
   status: "respond",
@@ -159,7 +175,7 @@ assert.match(closeWithRequiredWork.detail, /Required work remains/);
 const workspaceSource = readFileSync(new URL("../components/MatterWorkspace.tsx", import.meta.url), "utf8");
 assert.equal(workspaceSource.includes("Latest research"), false);
 assert.equal(workspaceSource.includes("Agent research"), false);
-assert.equal(workspaceSource.includes("Written by Themis, unreviewed"), false);
+assert.equal(workspaceSource.includes("Written by Themis.ai, unreviewed"), false);
 assert.equal(workspaceSource.includes("No working recommendation is saved."), false);
 assert.equal(workspaceSource.includes("Matter at a glance"), true);
 assert.equal(workspaceSource.includes("Question to resolve"), true);
@@ -168,11 +184,37 @@ assert.equal(workspaceSource.includes("Also open on this matter"), false);
 assert.equal(workspaceSource.includes("detail.orientation.summary"), true);
 assert.equal(workspaceSource.includes("<summary>Original request</summary>"), true);
 assert.equal(workspaceSource.includes("detail.original_request"), true);
-assert.equal(workspaceSource.includes("openDocument(requestPath)"), false);
-assert.equal(workspaceSource.includes("Complete work item"), false);
-assert.equal(workspaceSource.includes('lifecycleAction.id !== "review_intake"'), true);
+assert.equal(workspaceSource.includes("openDocument(requestPath)"), true);
+assert.equal(workspaceSource.includes("completeSavedWorkItem"), true);
+assert.equal(workspaceSource.includes("Open work item"), true);
+assert.equal(workspaceSource.includes("Current work · Saved work item"), true);
+assert.equal(workspaceSource.includes("Owner: <strong>{currentWorkItemOwner}</strong>"), true);
+assert.equal(workspaceSource.includes("detail as MatterDetail & { participants?: MatterParticipant[] }"), true);
+assert.equal(workspaceSource.includes("finalizeCurrentDraft"), true);
+assert.equal(workspaceSource.includes("createManualDraft"), true);
+assert.equal(workspaceSource.includes("countUserFacingDocuments(detail.tree)"), true);
+assert.ok((workspaceSource.match(/detail\.current_work_product_draft_path,/g) ?? []).length >= 2, "artifact selection receives the canonical draft path");
+assert.equal(workspaceSource.includes("const draftPath = detail.current_work_product_draft_path"), true);
+assert.equal(workspaceSource.includes("detail.current_work_product_final_path"), true);
+assert.equal(workspaceSource.includes("detail.latest_research_path"), true);
+assert.equal(workspaceSource.includes("approvalUnavailable"), true);
+assert.equal(workspaceSource.includes("finalizeWorkProduct(detail.matter_id, draftPath)"), true);
+assert.equal(workspaceSource.includes("currentWorkProductDraftPath={draftPath}"), true);
 assert.equal(workspaceSource.includes('currentControl.id !== "open_work_item"'), true);
-assert.equal(workspaceSource.includes('currentControl.id !== "review_intake"'), true);
-assert.ok((workspaceSource.match(/First-pass research/g) ?? []).length >= 3, "workspace uses one research label");
+assert.ok((workspaceSource.match(/researchTitle/g) ?? []).length >= 3, "workspace reuses the saved research title");
+for (const message of [
+  "No research packet is saved yet.",
+  "No working recommendation is saved yet.",
+  "No current work-product draft is saved yet.",
+  "No final work product is saved yet.",
+  "No durable decision is recorded for this matter.",
+]) assert.equal(workspaceSource.includes(message), true);
+assert.equal(workspaceSource.includes("saved.changed_paths.length"), false, "chat retry state belongs to ChatPanel");
+assert.equal(workspaceSource.includes("result.changed_paths.length"), true);
+assert.equal(workspaceSource.includes("result.changed_paths?.length"), true);
+assert.equal(/no new save was made/i.test(workspaceSource), true);
+
+const decisionModalSource = readFileSync(new URL("../components/RecordDecisionModal.tsx", import.meta.url), "utf8");
+assert.equal(decisionModalSource.includes("lawyerAuthor?.trim() || detail.legal_owner"), true);
 
 console.log("All checks passed.");

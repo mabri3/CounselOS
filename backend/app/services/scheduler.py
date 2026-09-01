@@ -109,7 +109,7 @@ class SchedulerService:
 
     def start(self) -> None:
         if self._task is None or self._task.done():
-            self._task = asyncio.create_task(self._loop(), name="counsel-os-scheduler")
+            self._task = asyncio.create_task(self._loop(), name="themis.ai-scheduler")
 
     async def stop(self) -> None:
         if self._task:

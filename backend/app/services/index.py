@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import fcntl
 import json
 import os
 import sqlite3
 import tempfile
 import threading
+from contextlib import contextmanager
 from collections.abc import Callable, Iterable
 from pathlib import Path
 from typing import Any, TypeVar
@@ -89,7 +91,7 @@ class IndexService:
 
     def rebuild(self) -> IndexReport:
         """Swap in a complete cache only after every table has been built."""
-        with self._lock:
+        with self._lock, self._rebuild_lock():
             fd, name = tempfile.mkstemp(prefix=f".{self.db_path.name}.", suffix=".tmp", dir=self.db_path.parent)
             os.close(fd)
             temporary = Path(name)
@@ -106,6 +108,17 @@ class IndexService:
                 return report
             finally:
                 temporary.unlink(missing_ok=True)
+
+    @contextmanager
+    def _rebuild_lock(self):
+        """Serialize snapshot creation and replacement across service instances."""
+        lock_path = self.db_path.with_name(f".{self.db_path.name}.rebuild.lock")
+        with lock_path.open("a+b") as lock_file:
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
 
     def _retire_wal_files(self) -> None:
         """Prevent sidecars from the prior cache being applied to the new file."""
@@ -224,7 +237,8 @@ class IndexService:
                         row = (metadata.get("work_item_id") or path.stem, matter_id, self.vault.relative(path), metadata.get("title") or path.stem, metadata.get("description") or post.content[:500], metadata.get("type", "question"), metadata.get("status", "open"), metadata.get("priority", "normal"), metadata.get("owner", ""), metadata.get("due_at"), 1 if metadata.get("required") else 0, metadata.get("issue_id"), metadata.get("created_at"), metadata.get("completed_at"))
                         connection.execute("INSERT INTO work_items VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", tuple(_value(value) for value in row))
                     else:
-                        row = (metadata.get("decision_id") or path.stem, matter_id, self.vault.relative(path), metadata.get("title") or path.stem, metadata.get("chosen_path", ""), metadata.get("rationale") or post.content[:1000], metadata.get("decision_maker", ""), metadata.get("decision_type", "legal_decision"), metadata.get("decided_at"), metadata.get("next_review_at"), metadata.get("last_reviewed_at"), metadata.get("risk_level", "unknown"), metadata.get("review_status", "fresh"), metadata.get("staleness_reason", ""), json.dumps(metadata.get("linked_paths", []), default=str))
+                        rationale = metadata["rationale"] if "rationale" in metadata else post.content[:1000]
+                        row = (metadata.get("decision_id") or path.stem, matter_id, self.vault.relative(path), metadata.get("title") or path.stem, metadata.get("chosen_path", ""), rationale, metadata.get("decision_maker", ""), metadata.get("decision_type", "legal_decision"), metadata.get("decided_at"), metadata.get("next_review_at"), metadata.get("last_reviewed_at"), metadata.get("risk_level", "unknown"), metadata.get("review_status", "fresh"), metadata.get("staleness_reason", ""), json.dumps(metadata.get("linked_paths", []), default=str))
                         connection.execute("INSERT INTO decisions VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", tuple(_value(value) for value in row))
                     count += 1
                 except (OSError, ValueError, sqlite3.Error) as exc:

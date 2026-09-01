@@ -71,15 +71,15 @@ Keep entries chronological and append-only. When a decision changes, add a new e
   to private company facts without sending private context to an external
   intelligence service.
 - Decision: A Watch selects `native`, `polaris`, or `both`. Before a provider
-  call, Counsel OS converts editable public intent into a validated immutable
+  call, Themis.ai converts editable public intent into a validated immutable
   outbound query. Company aliases, internal products, matter IDs, paths,
   emails, and distinctive document excerpts stay local. Explicitly classified
   public Watch subjects are allowed. Company-specific matching runs only after
-  collection and only inside Counsel OS.
-- Provider limits: Polaris uses the fixed Themis Lime brain and
+  collection and only inside Themis.ai.
+- Provider limits: Polaris uses the fixed Polaris service and
   `polaris-advisor`. It is advisor-read-only. It has no model discovery, tools,
   function calls, embeddings, arbitrary response schema, redirects, or
-  endpoint override. A Polaris citation is Supplied until Counsel OS retrieves
+  endpoint override. A Polaris citation is Supplied until Themis.ai retrieves
   and checks it.
 - Failure behavior: `WatchScanService` coordinates Both mode, preserves useful
   output when one provider fails, reports Partial, and advances only the
@@ -110,7 +110,7 @@ Keep entries chronological and append-only. When a decision changes, add a new e
 - Status: `accepted`
 - Context: The current runtime shares one provider across agents, while the user needs each agent to select its own provider and model. Polaris already exists for public intelligence and the user selected it for matter research.
 - Decision: Each Markdown-defined agent may persist optional provider, model, and reasoning-effort fields. Empty fields inherit the workspace default. An explicit unavailable selection fails visibly and never silently falls back. The MVP provider set is Mock, OpenAI-compatible, OpenCode Go, Codex CLI, and Antigravity CLI.
-- Research decision: Polaris is the primary public source for on-demand matter research. Public collection goes through the existing outbound privacy policy. Private company and matter context is combined with the public result only inside Counsel OS by the selected Research Agent.
+- Research decision: Polaris is the primary public source for on-demand matter research. Public collection goes through the existing outbound privacy policy. Private company and matter context is combined with the public result only inside Themis.ai by the selected Research Agent.
 - Consequences: Native provider adapters and Polaris matter research move into the active closure checkpoint. Additional research providers remain Later. Existing recommendation and decision-integrity rules do not change.
 - Supersedes: The 2026-08-27 deferral of native provider adapters and the open choice of a commercial research provider for the MVP.
 - Evidence: Existing provider boundary in `backend/app/providers/`; Polaris boundary in `backend/app/intelligence/polaris.py`; user direction on 2026-08-30.
@@ -119,5 +119,15 @@ Keep entries chronological and append-only. When a decision changes, add a new e
 
 - Status: `implemented`
 - Result: Agent definitions persist optional provider, model, and reasoning effort. Each run records the resolved immutable selection. New matters start a background Intake Agent conversation, update source-linked records, protect lawyer-edited dossiers with a content hash, and can queue privacy-safe Polaris research for local Research Agent synthesis.
-- Safety boundary: CLI providers receive only the selected agent's typed Counsel OS tools. Polaris receives only validated public research intent. Missing providers fail visibly and do not silently fall back.
+- Safety boundary: CLI providers receive only the selected agent's typed Themis.ai tools. Polaris receives only validated public research intent. Missing providers fail visibly and do not silently fall back.
 - Evidence: 482 backend tests, frontend typecheck and build, and the isolated BSA/AML browser walk on 2026-08-30.
+
+### 2026-08-31 — Milestone: Themis.ai reliability build complete
+
+- Status: `implemented`
+- Result: One matter can move from durable intake and truthful research through a recorded decision, one canonical editable work product, linked finalization, approval, delivery recording, and closure. Reload preserves the same work, artifact, risk, decision, activity, and lifecycle state.
+- Integrity choices: Deterministic services own mutation evidence, work-item identity, current draft and linked final paths, lifecycle transitions, source classes, and decision records. Useful model output remains visible when a support or mutation step fails. Human edits and decisions keep human attribution.
+- Compatibility: Supported legacy drafts are adopted only when no canonical draft pointer exists. Stable stored identifiers and legacy read keys remain mapped at presentation boundaries. Visible product and active-document naming is Themis.ai.
+- Review: One independent read-only Sol High reviewer found nine issues. Sol Light corrections resolved all findings and the later revision-warning, company-attribution, and legacy-final compatibility regressions. The same reviewer reported no unresolved material finding after two rechecks.
+- Verification: 550 backend tests; every `frontend/scripts/check-*.ts` script; workspace checks; typecheck; production build; graph refresh; isolated browser lifecycle demo; unchanged repository-vault hash; and `git diff --check`.
+- Evidence: `docs/themis-ai-reliability-build.handoff-plan.md`, `docs/themis-ai-reliability-build.handoff-progress.md`, and `docs/ACCEPTANCE_TESTS.md`.

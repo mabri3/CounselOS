@@ -9,14 +9,14 @@ import LinkifiedText from "@/components/LinkifiedText";
 import MatterTree from "@/components/MatterTree";
 import RecordDecisionModal from "@/components/RecordDecisionModal";
 import ReviewPacketPanel from "@/components/ReviewPacketPanel";
-import { getFile, getSettings, moveMatter, performMatterAction, runResearch, uploadDocument } from "@/lib/api";
+import { assignWorkItem, completeWorkItem, finalizeWorkProduct, getFile, getResearchRun, getSettings, moveMatter, performMatterAction, saveWorkProductDraft, startResearchRun, updateMatterRisk, uploadDocument } from "@/lib/api";
 import { useReviewAuthor } from "@/lib/reviewAuthor";
 import { dueWord, riskLabel, signalFor, stageLabel } from "@/lib/design";
-import { controlIdForCurrentWork, currentWorkItemFor, matterArtifacts, openItemsFor } from "@/lib/matterBrief";
+import { completableCurrentWorkItemId, controlIdForCurrentWork, countUserFacingDocuments, currentWorkItemFor, matterArtifacts, openItemsFor, workItemOwnerLabel } from "@/lib/matterBrief";
 import type { MatterControlId } from "@/lib/matterBrief";
 import { lifecycleActionNeedsDirectMutation, matterAction } from "@/lib/matterActions";
 import type { MatterActionView } from "@/lib/matterActions";
-import type { FileNode, MatterDetail } from "@/lib/types";
+import type { FileNode, MatterDetail, ResearchRun } from "@/lib/types";
 import { getMatterMitigations, getReviewPackets } from "@/lib/watchApi";
 import type { Mitigation, ReviewPacket } from "@/lib/watchTypes";
 
@@ -24,6 +24,8 @@ type MatterControl = Omit<MatterActionView, "id" | "category"> & {
   id: MatterControlId;
   category: MatterActionView["category"] | "Work item";
 };
+
+type MatterParticipant = { name: string; role: string };
 
 /**
  * Canvas 2b — question, recommendation, evidence, decision. The copilot and
@@ -40,11 +42,18 @@ export default function MatterWorkspace({
   initialPath?: string | null;
   onReload: () => Promise<void>;
 }) {
-  const defaultPath = `${detail.path}/matter.md`;
-  const researchPath = findLatestResearch(detail.tree);
-  const initialFallback = focusResearch && researchPath ? researchPath : defaultPath;
-  const documentRequested = Boolean(initialPath || (focusResearch && researchPath));
+  const initialArtifacts = matterArtifacts(
+    detail.tree,
+    detail.response_approved_artifact_path,
+    detail.current_work_product_draft_path,
+    detail.latest_research_path,
+    detail.current_work_product_final_path,
+  );
+  const researchPath = initialArtifacts.find((item) => item.kind === "research")?.path ?? null;
+  const initialFallback = focusResearch && researchPath ? researchPath : null;
+  const documentRequested = Boolean(initialPath || initialFallback);
   const [activePath, setActivePath] = useState<string | null>(() => safeMatterPath(initialPath, detail.path, initialFallback));
+  const documentVisible = Boolean(activePath);
   const [treeActivePath, setTreeActivePath] = useState<string | null>(() =>
     documentRequested ? safeMatterPath(initialPath, detail.path, initialFallback) : null,
   );
@@ -58,11 +67,17 @@ export default function MatterWorkspace({
   const [uploading, setUploading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [actionNotice, setActionNotice] = useState("");
+  const [researchRun, setResearchRun] = useState<ResearchRun | null>(null);
+  const [newDraftOpen, setNewDraftOpen] = useState(false);
+  const [newDraftTitle, setNewDraftTitle] = useState(`${detail.title} response`);
+  const [newDraftContent, setNewDraftContent] = useState("");
+  const [workItemOwnerInput, setWorkItemOwnerInput] = useState("");
   const [reviewPackets, setReviewPackets] = useState<ReviewPacket[]>([]);
   const [mitigations, setMitigations] = useState<Mitigation[]>([]);
-  const [reviewSettings, setReviewSettings] = useState({ lawyer: "", defaultAuthor: "Themis" });
+  const [reviewSettings, setReviewSettings] = useState({ lawyer: "", defaultAuthor: "Themis.ai" });
   const reviewAuthor = useReviewAuthor(reviewSettings.defaultAuthor);
-  const [collapsedPanes, setCollapsedPanes] = useState({ tree: true, overview: false, document: !documentRequested });
+  const [collapsedPanes, setCollapsedPanes] = useState({ tree: true, overview: false, document: false });
   const [paneWeights, setPaneWeights] = useState({ tree: 0.24, overview: 1, document: 1.15 });
   const treePaneRef = useRef<HTMLElement>(null);
   const overviewPaneRef = useRef<HTMLDivElement>(null);
@@ -79,8 +94,30 @@ export default function MatterWorkspace({
     const requested = safeMatterPath(initialPath, detail.path, initialFallback);
     setActivePath(requested);
     setTreeActivePath(documentRequested ? requested : null);
-    setCollapsedPanes((current) => ({ ...current, document: !documentRequested }));
+    setCollapsedPanes((current) => ({ ...current, document: false }));
   }, [detail.path, documentRequested, initialFallback, initialPath]);
+
+  useEffect(() => {
+    if (!researchRun) return;
+    let cancelled = false;
+    let timer: number | undefined;
+    const check = () => void getResearchRun(detail.matter_id, researchRun.run_id)
+      .then(async (next) => {
+        if (cancelled) return;
+        setResearchRun(next);
+        if (next.state === "queued" || next.state === "running") {
+          timer = window.setTimeout(check, 2000);
+          return;
+        }
+        setActionNotice(next.status);
+        await onReload();
+      })
+      .catch((caught) => {
+        if (!cancelled) setError(caught instanceof Error ? caught.message : "Could not read the research status.");
+      });
+    check();
+    return () => { cancelled = true; window.clearTimeout(timer); };
+  }, [detail.matter_id, onReload, researchRun?.run_id]);
 
   /** The agent's standing recommendation lives in the matter's own Markdown. */
   const loadRecommendation = useCallback(() => {
@@ -93,7 +130,7 @@ export default function MatterWorkspace({
 
   useEffect(() => loadRecommendation(), [detail, loadRecommendation]);
 
-  useEffect(() => { void getSettings().then((saved) => { const rows = saved.sections.find((item) => item.id === "document-review")?.rows ?? []; setReviewSettings({ lawyer: rows.find((item) => item.config_key === "document_review.lawyer_name")?.value?.trim() || "", defaultAuthor: rows.find((item) => item.config_key === "document_review.default_author")?.value || "Themis" }); }); }, []);
+  useEffect(() => { void getSettings().then((saved) => { const rows = saved.sections.find((item) => item.id === "document-review")?.rows ?? []; setReviewSettings({ lawyer: rows.find((item) => item.config_key === "document_review.lawyer_name")?.value?.trim() || "", defaultAuthor: rows.find((item) => item.config_key === "document_review.default_author")?.value || "Themis.ai" }); }); }, []);
 
   const loadAwareness = useCallback(async () => {
     try {
@@ -106,13 +143,27 @@ export default function MatterWorkspace({
 
   const evidence = useMemo(() => collectEvidence(detail.tree), [detail.tree]);
   const artifacts = useMemo(
-    () => matterArtifacts(detail.tree, detail.response_approved_artifact_path),
-    [detail.response_approved_artifact_path, detail.tree],
+    () => matterArtifacts(
+      detail.tree,
+      detail.response_approved_artifact_path,
+      detail.current_work_product_draft_path,
+      detail.latest_research_path,
+      detail.current_work_product_final_path,
+    ),
+    [detail.current_work_product_draft_path, detail.current_work_product_final_path, detail.latest_research_path, detail.response_approved_artifact_path, detail.tree],
   );
-  const draftPath = artifacts.find((item) => item.kind === "draft")?.path ?? null;
-  const finalPath = artifacts.find((item) => item.kind === "final")?.path ?? null;
+  const draftPath = detail.current_work_product_draft_path
+    ?? artifacts.find((item) => item.kind === "draft")?.path
+    ?? null;
+  const finalPath = detail.response_approved_artifact_path ?? detail.current_work_product_final_path ?? null;
   const dossierPath = useMemo(() => findFileByName(detail.tree, "dossier.md"), [detail.tree]);
+  const requestPath = `${detail.path}/request.md`;
+  const factsPath = findFileByName(detail.tree, "facts.md");
+  const issuesPath = findFileByName(detail.tree, "issues.md");
+  const recommendationPath = findFileByName(detail.tree, "recommendations.md");
+  const researchTitle = artifacts.find((item) => item.kind === "research")?.label ?? "First-pass research";
   const lifecycleAction = matterAction(detail, Boolean(draftPath));
+  const approvalUnavailable = lifecycleAction.id === "approve_response" && !finalPath;
   const currentWorkItem = currentWorkItemFor(
     detail.work_items,
     detail.work_state.next_work_item_id,
@@ -123,12 +174,26 @@ export default function MatterWorkspace({
     : currentControlId === "run_research"
       ? { id: "run_research", category: "Work action", label: "Run research", detail: "Run the current research work item." }
       : { id: "open_work_item", category: "Work item", label: "Open work item", detail: "Open the saved work item and review its details." };
+  const currentCompletableWorkItemId = completableCurrentWorkItemId(currentWorkItem);
+  const currentWorkItemOwner = workItemOwnerLabel(currentWorkItem);
+  useEffect(() => {
+    setWorkItemOwnerInput(currentWorkItem?.owner ?? "");
+  }, [currentWorkItem?.owner, currentWorkItem?.work_item_id]);
+  const participants = (detail as MatterDetail & { participants?: MatterParticipant[] }).participants ?? [];
   const signal = signalFor(detail);
   const due = dueWord(detail);
 
   const reload = useCallback(async () => {
     await onReload();
   }, [onReload]);
+
+  async function reloadPersisted(refreshError: string) {
+    try {
+      await reload();
+    } catch {
+      setError(refreshError);
+    }
+  }
 
   async function upload(file: File) {
     setUploading(true);
@@ -233,11 +298,16 @@ export default function MatterWorkspace({
       setConversationSeed((current) => ({ conversationId, revision: current.revision + 1 }));
       return;
     }
-    setActivePath(path);
+    openDocument(path);
   }
 
   async function runControl(control: MatterControl | MatterActionView) {
     setError("");
+    setActionNotice("");
+    if (control.id === "review_intake") {
+      openDocument(requestPath);
+      return;
+    }
     if (control.id === "open_work_item" && currentWorkItem) {
       openDocument(currentWorkItem.path);
       return;
@@ -263,19 +333,20 @@ export default function MatterWorkspace({
     setBusy(true);
     try {
       if (control.id === "run_research") {
-        const result = await runResearch(detail.matter_id);
-        await reload();
-        openDocument(result.path);
+        const result = await startResearchRun(detail.matter_id);
+        setResearchRun(result);
+        setActionNotice("Research started in the background. You can continue working while it runs.");
+        await reloadPersisted("The action was recorded, but the matter did not refresh. Reload the page to see current state.");
       } else if (control.id === "start_work_product") {
         await moveMatter(detail.matter_id, "generate", "Judgment complete; starting work product");
-        await reload();
+        await reloadPersisted("The matter moved to drafting, but the workspace did not refresh. Reload the page to see current state.");
       } else if (control.id !== "open_work_item" && lifecycleActionNeedsDirectMutation(control.id)) {
         const actor = reviewSettings.lawyer.trim();
         if (!actor) throw new Error("Add the lawyer name in document review settings before you record this action.");
         if (control.id === "approve_response" && !finalPath) {
           throw new Error("A current final work product is required before approval can be recorded.");
         }
-        await performMatterAction(detail.matter_id, {
+        const result = await performMatterAction(detail.matter_id, {
           action: control.id,
           actor,
           artifact_path: control.id === "approve_response" ? finalPath : undefined,
@@ -283,10 +354,124 @@ export default function MatterWorkspace({
             ? currentWorkItem.work_item_id
             : undefined,
         });
-        await reload();
+        const recordedNotice = {
+          approve_response: "Approval recorded for the final work product.",
+          mark_as_sent: "Delivery outside the system recorded for the approved work product.",
+          close_matter: "Matter closed.",
+        }[control.id];
+        const alreadyRecordedNotice = {
+          approve_response: "Approval was already recorded.",
+          mark_as_sent: "Delivery was already recorded.",
+          close_matter: "Matter was already closed.",
+        }[control.id];
+        setActionNotice(result.already_recorded
+          ? result.changed_paths.length
+            ? `${alreadyRecordedNotice} Related saved state was repaired; no duplicate record was created.`
+            : `${alreadyRecordedNotice} No new save was made.`
+          : result.changed_paths.length
+            ? recordedNotice
+            : "No saved matter state changed.");
+        await reloadPersisted("The action was recorded, but the matter did not refresh. Reload the page to see current state.");
       }
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Could not complete the matter action.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function completeSavedWorkItem(workItemId: string) {
+    setBusy(true);
+    setError("");
+    setActionNotice("");
+    try {
+      const actor = reviewSettings.lawyer.trim() || "Lawyer";
+      const result = await completeWorkItem(detail.matter_id, workItemId, actor);
+      setActionNotice(result.changed_paths.length
+        ? "Work item completed."
+        : "Work item was already complete. No new save was made.");
+      await reloadPersisted("The work item was completed, but the matter did not refresh. Reload the page to see current state.");
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not complete the work item.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function assignSavedWorkItem(workItemId: string) {
+    const owner = workItemOwnerInput.trim();
+    if (!owner) return;
+    setBusy(true);
+    setError("");
+    setActionNotice("");
+    try {
+      const actor = reviewSettings.lawyer.trim() || "Lawyer";
+      const result = await assignWorkItem(detail.matter_id, workItemId, owner, actor);
+      setActionNotice(result.changed_paths.length
+        ? `Work item assigned to ${owner}.`
+        : `Work item is already assigned to ${owner}. No new save was made.`);
+      await reloadPersisted("The owner was saved, but the matter did not refresh. Reload the page to see current state.");
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not assign the work item.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function finalizeCurrentDraft() {
+    if (!draftPath) return;
+    setBusy(true);
+    setError("");
+    setActionNotice("");
+    try {
+      const result = await finalizeWorkProduct(detail.matter_id, draftPath);
+      setActionNotice(result.changed_paths?.length
+        ? "Final work product saved. The matter is ready for approval."
+        : "This final work product already exists. No new save was made.");
+      await reloadPersisted("The final work product was saved, but the matter did not refresh. Reload the page to see current state.");
+      openDocument(result.vault_path);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not finalize the current draft.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function createManualDraft() {
+    if (!newDraftTitle.trim() || !newDraftContent.trim()) return;
+    setBusy(true);
+    setError("");
+    setActionNotice("");
+    try {
+      const result = await saveWorkProductDraft(
+        detail.matter_id,
+        newDraftTitle.trim(),
+        newDraftContent,
+      );
+      setActionNotice(result.changed_paths.length
+        ? "New current draft saved."
+        : "This current draft already exists. No new save was made.");
+      setNewDraftContent("");
+      setNewDraftOpen(false);
+      await reloadPersisted("The draft was saved, but the matter did not refresh. Reload the page to see current state.");
+      openDocument(result.vault_path);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not create the draft.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function changeRisk(riskLevel: string) {
+    setBusy(true);
+    setError("");
+    setActionNotice("");
+    try {
+      await updateMatterRisk(detail.matter_id, riskLevel || null, reviewSettings.lawyer.trim() || "Lawyer");
+      setActionNotice(riskLevel ? `Risk set to ${riskLabel(riskLevel)}.` : "Risk is now unset.");
+      await reloadPersisted("Risk was saved, but the matter did not refresh. Reload the page to see current state.");
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not update risk.");
     } finally {
       setBusy(false);
     }
@@ -308,10 +493,9 @@ export default function MatterWorkspace({
     currentTask,
   );
   const requiredCount = openItems.filter((item) => item.required).length;
-  const visibleArtifacts = artifacts.filter((item) => item.kind !== "recommendation" || Boolean(recommendationText));
+  const visibleArtifacts = artifacts.filter((item) => item.kind !== "recommendation");
   const showCurrentControl = lifecycleAction.id !== "none"
-    && currentControl.id !== "open_work_item"
-    && currentControl.id !== "review_intake";
+    && currentControl.id !== "open_work_item";
   const showLifecycleAction = lifecycleAction.id !== "none"
     && lifecycleAction.id !== "review_intake"
     && lifecycleAction.id !== currentControl.id;
@@ -351,7 +535,22 @@ export default function MatterWorkspace({
           </div>
           <div>
             <dt>Risk</dt>
-            <dd>{riskLabel(detail.risk_level)}</dd>
+            <dd>
+              <label className="sr-only" htmlFor="matter-risk">Lawyer-set risk</label>
+              <select
+                aria-label="Lawyer-set risk"
+                className="matter-risk-select"
+                disabled={busy}
+                id="matter-risk"
+                onChange={(event) => void changeRisk(event.target.value)}
+                value={detail.risk_level && detail.risk_level !== "unknown" ? detail.risk_level : ""}
+              >
+                <option value="">Set risk</option>
+                <option value="low">Low</option>
+                <option value="moderate">Moderate</option>
+                <option value="high">High</option>
+              </select>
+            </dd>
           </div>
           <div>
             <dt>Due</dt>
@@ -360,7 +559,8 @@ export default function MatterWorkspace({
         </dl>
       </header>
 
-      {error ? <p className="error" style={{ margin: "10px 34px 0" }}>{error}</p> : null}
+      {error ? <p className="error" role="alert" style={{ margin: "10px 34px 0" }}>{error}</p> : null}
+      {actionNotice ? <p className="matter-action-notice" role="status">{actionNotice}</p> : null}
 
       <div
         className="matter-panes"
@@ -369,8 +569,10 @@ export default function MatterWorkspace({
             collapsedPanes.tree ? "44px" : `minmax(210px, ${paneWeights.tree}fr)`,
             collapsedPanes.tree || collapsedPanes.overview ? "0px" : "8px",
             collapsedPanes.overview ? "44px" : `minmax(360px, ${paneWeights.overview}fr)`,
-            collapsedPanes.overview || collapsedPanes.document ? "0px" : "8px",
-            collapsedPanes.document ? "44px" : `minmax(430px, ${paneWeights.document}fr)`,
+            ...(documentVisible ? [
+              collapsedPanes.overview || collapsedPanes.document ? "0px" : "8px",
+              collapsedPanes.document ? "44px" : `minmax(430px, ${paneWeights.document}fr)`,
+            ] : []),
           ].join(" "),
         } as CSSProperties}
       >
@@ -389,7 +591,7 @@ export default function MatterWorkspace({
             <div className="matter-tree-head">
               <span>Matter contents</span>
               <span className="matter-tree-head-actions">
-                <span className="matter-tree-count">{countFiles(detail.tree)}</span>
+                <span aria-label={`${countUserFacingDocuments(detail.tree)} documents`} className="matter-tree-count">{countUserFacingDocuments(detail.tree)}</span>
                 <button aria-label="Collapse matter contents" className="pane-collapse" onClick={() => togglePane("tree")} title="Collapse matter contents" type="button">‹</button>
               </span>
             </div>
@@ -450,6 +652,7 @@ export default function MatterWorkspace({
               <button
                 aria-controls="matter-overview-panel"
                 aria-expanded={middleSection === "overview"}
+                aria-label="Show matter Overview"
                 className="middle-section-toggle"
                 id="matter-overview-toggle"
                 onClick={() => setMiddleSection("overview")}
@@ -492,13 +695,26 @@ export default function MatterWorkspace({
                     </details>
                   ) : null}
 
+                  {participants.length ? (
+                    <div className="matter-orientation">
+                      <div className="matter-orientation-label">Participants</div>
+                      <ul>
+                        {participants.map((participant) => (
+                          <li key={`${participant.role}:${participant.name}`}>
+                            <strong>{participant.name}</strong> · {participantRoleLabel(participant.role)}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+
                   {showCurrentControl ? (
                     <div className="matter-call-do">
                       <span>{currentControl.category}</span>
                       <button
                         aria-busy={busy}
                         className={`${primaryActionClass} matter-call-button`}
-                        disabled={busy}
+                        disabled={busy || (currentControl.id === "approve_response" && approvalUnavailable)}
                         onClick={() => void runControl(currentControl)}
                         title={currentControl.detail}
                         type="button"
@@ -508,13 +724,37 @@ export default function MatterWorkspace({
                     </div>
                   ) : null}
 
+                  {currentWorkItem ? (
+                    <div className="matter-lifecycle-action">
+                      <span>Current work · Saved work item</span>
+                      <p>{currentWorkItem.title}</p>
+                      <p>Owner: <strong>{currentWorkItemOwner}</strong></p>
+                      <div className="matter-inline-actions">
+                        <label htmlFor="current-work-item-owner">Assign owner</label>
+                        <input id="current-work-item-owner" className="text-input" onChange={(event) => setWorkItemOwnerInput(event.target.value)} placeholder="Owner name" value={workItemOwnerInput} />
+                        <button className="btn quiet compact" disabled={busy || !workItemOwnerInput.trim()} onClick={() => void assignSavedWorkItem(currentWorkItem.work_item_id)} type="button">Assign owner</button>
+                        <button className="btn quiet compact" onClick={() => openDocument(currentWorkItem.path)} type="button">Open work item</button>
+                        {currentCompletableWorkItemId ? (
+                          <button
+                            className="btn quiet compact"
+                            disabled={busy}
+                            onClick={() => void completeSavedWorkItem(currentCompletableWorkItemId)}
+                            type="button"
+                          >
+                            Complete this work item
+                          </button>
+                        ) : null}
+                      </div>
+                    </div>
+                  ) : null}
+
                   {showLifecycleAction ? (
                     <div className="matter-lifecycle-action">
                       <span>{lifecycleAction.category} · Stage action</span>
                       <p>{lifecycleAction.detail}</p>
                       <button
                         className={`${lifecycleAction.category === "Approval" || lifecycleAction.category === "Counsel judgment" ? "btn review" : "btn quiet"} compact`}
-                        disabled={busy}
+                        disabled={busy || (lifecycleAction.id === "approve_response" && approvalUnavailable)}
                         onClick={() => void runControl(lifecycleAction)}
                         type="button"
                       >
@@ -523,14 +763,52 @@ export default function MatterWorkspace({
                     </div>
                   ) : null}
 
+                  {draftPath && !detail.response_approved_at ? (
+                    <div className="matter-lifecycle-action work-product-action">
+                      <span>Work product · Current draft</span>
+                      <p>Finalize the current canonical draft. This creates the final response from the reviewed content.</p>
+                      <div className="matter-inline-actions">
+                        <button className="btn quiet compact" onClick={() => openDocument(draftPath)} type="button">Open current draft</button>
+                        <button className="btn primary compact" disabled={busy} onClick={() => void finalizeCurrentDraft()} type="button">
+                          {busy ? "Working…" : "Finalize current draft"}
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
+
                   <div className="matter-artifacts compact">
                     <strong>Matter artifacts</strong>
-                    {visibleArtifacts.length ? visibleArtifacts.map((item) => (
+                    {factsPath ? <button className="matter-artifact-link" onClick={() => openDocument(factsPath)} type="button"><span>Facts</span><span>Facts, sources & assumptions</span></button> : null}
+                    {issuesPath ? <button className="matter-artifact-link" onClick={() => openDocument(issuesPath)} type="button"><span>Issue map</span><span>Current issues and questions</span></button> : null}
+                    {recommendationPath ? <button className="matter-artifact-link" onClick={() => openDocument(recommendationPath)} type="button"><span>Recommendation</span><span>Working recommendation</span></button> : null}
+                    {visibleArtifacts.map((item) => (
                       <button className="matter-artifact-link" key={`${item.kind}:${item.path}`} onClick={() => openDocument(item.path)} type="button">
-                        <span>{{ recommendation: "Working recommendation", research: "First-pass research", draft: "Current draft", final: "Approved / final response" }[item.kind]}</span>
+                        <span>{{ recommendation: "Working recommendation", research: researchTitle, draft: "Current draft", final: "Approved / final response" }[item.kind]}</span>
                         <span>{item.label}</span>
                       </button>
-                    )) : <span className="matter-artifact-empty">No user-facing artifacts are saved yet.</span>}
+                    ))}
+                    {detail.decisions.map((decision) => (
+                      <button className="matter-artifact-link" key={decision.decision_id} onClick={() => openDocument(decision.path)} type="button">
+                        <span>Recorded decision</span><span>{decision.title}</span>
+                      </button>
+                    ))}
+                    {!researchPath ? <span className="matter-artifact-empty">No research packet is saved yet.</span> : null}
+                    {!recommendationText ? <span className="matter-artifact-empty">No working recommendation is saved yet.</span> : null}
+                    {!draftPath ? <span className="matter-artifact-empty">No current work-product draft is saved yet.</span> : null}
+                    {!finalPath ? <span className="matter-artifact-empty">No final work product is saved yet.</span> : null}
+                    {!detail.decisions.length ? <span className="matter-artifact-empty">No durable decision is recorded for this matter.</span> : null}
+                    <button className="btn quiet compact matter-new-draft-toggle" onClick={() => setNewDraftOpen((open) => !open)} type="button">
+                      {newDraftOpen ? "Cancel new draft" : "New draft"}
+                    </button>
+                    {newDraftOpen ? (
+                      <div className="matter-new-draft">
+                        <label htmlFor="new-draft-title">Draft title</label>
+                        <input className="text-input" id="new-draft-title" onChange={(event) => setNewDraftTitle(event.target.value)} value={newDraftTitle} />
+                        <label htmlFor="new-draft-content">Draft content</label>
+                        <textarea className="text-input prose" id="new-draft-content" onChange={(event) => setNewDraftContent(event.target.value)} placeholder="Write or paste the deliverable here." value={newDraftContent} />
+                        <button className="btn primary compact" disabled={busy || !newDraftTitle.trim() || !newDraftContent.trim()} onClick={() => void createManualDraft()} type="button">Save current draft</button>
+                      </div>
+                    ) : null}
                   </div>
                 </section>
 
@@ -548,6 +826,9 @@ export default function MatterWorkspace({
                           <span aria-hidden="true" className="matter-open-mark" />
                           <span className="matter-open-text"><LinkifiedText text={item.text} /></span>
                           {item.required ? <span className="matter-open-tag">Required</span> : null}
+                          {item.required && item.workItemId ? (
+                            <button className="btn tiny quiet" disabled={busy} onClick={() => void completeSavedWorkItem(item.workItemId!)} type="button">Complete</button>
+                          ) : null}
                         </li>
                       ))}
                     </ul>
@@ -590,7 +871,7 @@ export default function MatterWorkspace({
                             <span>Editable dossier</span><span>Open the full matter summary</span>
                           </button>
                         ) : null}
-                        {researchPath ? <button className="matter-artifact-link" onClick={() => openDocument(researchPath)} type="button"><span>First-pass research</span><span>Open the research packet</span></button> : null}
+                        {researchPath ? <button className="matter-artifact-link" onClick={() => openDocument(researchPath)} type="button"><span>{researchTitle}</span><span>Open the research packet</span></button> : null}
                       </div>
                     </section>
 
@@ -611,12 +892,13 @@ export default function MatterWorkspace({
               <button
                 aria-controls="matter-chat-panel"
                 aria-expanded={middleSection === "chat"}
+                aria-label="Show matter Chat"
                 className="middle-section-toggle"
                 id="matter-chat-toggle"
                 onClick={() => setMiddleSection("chat")}
                 type="button"
               >
-                <span>Chat with Themis</span>
+                <span>Chat</span>
                 <span aria-hidden="true">{middleSection === "chat" ? "−" : "+"}</span>
               </button>
               <div
@@ -629,6 +911,7 @@ export default function MatterWorkspace({
                 <ChatPanel
                   activeFile={activePath}
                   activeAgentId={detail.active_agent_id}
+                  currentWorkProductDraftPath={draftPath}
                   initialConversationId={detail.intake_conversation_id}
                   initialRunId={detail.intake_run_id}
                   intakeActive={detail.intake_state === "active"}
@@ -655,51 +938,61 @@ export default function MatterWorkspace({
           </div>
         </div>
 
-        <div
-          aria-label="Resize matter overview and document"
-          aria-orientation="vertical"
-          className={`pane-resizer ${collapsedPanes.overview || collapsedPanes.document ? "hidden" : ""}`}
-          onKeyDown={(event) => resizeWithKeyboard(event, "overview", "document")}
-          onLostPointerCapture={() => { dragRef.current = null; }}
-          onPointerCancel={() => { dragRef.current = null; }}
-          onPointerDown={(event) => startResize(event, "overview", "document")}
-          onPointerMove={continueResize}
-          onPointerUp={() => { dragRef.current = null; }}
-          role="separator"
-          tabIndex={collapsedPanes.overview || collapsedPanes.document ? -1 : 0}
-        />
-
-        <div className="document-pane-shell" ref={documentPaneRef}>
-          <button
-            aria-expanded={!collapsedPanes.document}
-            className="pane-rail"
-            hidden={!collapsedPanes.document}
-            onClick={() => togglePane("document")}
-            title="Expand document"
-            type="button"
-          >
-            <span>›</span><span>Document</span>
-          </button>
-          <div className="document-pane-content" hidden={collapsedPanes.document}>
-            <DocumentPanel
-              activePath={activePath}
-              activeReviewAuthor={reviewAuthor.name}
-              lawyerAuthor={reviewSettings.lawyer}
-              onReviewAuthorChange={reviewAuthor.setName}
-              onAskAgent={() => openChatWithSeed(
-                `Propose replacement language for ${activePath?.split("/").at(-1) ?? "this document"}. Save the revision to the active file so I can accept or reject each redline.`,
-              )}
-              onCollapse={() => togglePane("document")}
-              onUpload={upload}
+        {documentVisible ? (
+          <>
+            <div
+              aria-label="Resize matter overview and document"
+              aria-orientation="vertical"
+              className={`pane-resizer ${collapsedPanes.overview || collapsedPanes.document ? "hidden" : ""}`}
+              onKeyDown={(event) => resizeWithKeyboard(event, "overview", "document")}
+              onLostPointerCapture={() => { dragRef.current = null; }}
+              onPointerCancel={() => { dragRef.current = null; }}
+              onPointerDown={(event) => startResize(event, "overview", "document")}
+              onPointerMove={continueResize}
+              onPointerUp={() => { dragRef.current = null; }}
+              role="separator"
+              tabIndex={collapsedPanes.overview || collapsedPanes.document ? -1 : 0}
             />
-          </div>
-        </div>
+
+            <div className="document-pane-shell" ref={documentPaneRef}>
+              <button
+                aria-expanded={!collapsedPanes.document}
+                className="pane-rail"
+                hidden={!collapsedPanes.document}
+                onClick={() => togglePane("document")}
+                title="Expand document"
+                type="button"
+              >
+                <span>›</span><span>Document</span>
+              </button>
+              <div className="document-pane-content" hidden={collapsedPanes.document}>
+                <DocumentPanel
+                  activePath={activePath}
+                  activeReviewAuthor={reviewAuthor.name}
+                  lawyerAuthor={reviewSettings.lawyer}
+                  onReviewAuthorChange={reviewAuthor.setName}
+                  onAskAgent={() => openChatWithSeed(
+                    `Propose replacement language for ${activePath?.split("/").at(-1) ?? "this document"}. Save the revision to the active file so I can accept or reject each redline.`,
+                  )}
+                  onClose={() => {
+                    setActivePath(null);
+                    setTreeActivePath(null);
+                  }}
+                  onCollapse={() => togglePane("document")}
+                  onUpload={upload}
+                />
+              </div>
+            </div>
+          </>
+        ) : null}
       </div>
 
       {modalOpen ? (
         <RecordDecisionModal
           basis={evidence.map((node) => node.path)}
+          basisLabels={Object.fromEntries(evidence.map((node) => [node.path, node.name]))}
           detail={detail}
+          lawyerAuthor={reviewSettings.lawyer}
           onClose={() => setModalOpen(false)}
           onRecorded={reload}
           suggestion={proposedPath}
@@ -777,19 +1070,7 @@ function collectEvidence(tree: FileNode[]): EvidenceNode[] {
   return out.slice(0, 6);
 }
 
-function countFiles(tree: FileNode[]): number {
-  let total = 0;
-  const walk = (nodes: FileNode[]) => {
-    for (const node of nodes) {
-      if (node.type === "folder") walk(node.children ?? []);
-      else total += 1;
-    }
-  };
-  walk(tree);
-  return total;
-}
-
-function safeMatterPath(requested: string | null | undefined, matterPath: string, fallback: string): string {
+function safeMatterPath(requested: string | null | undefined, matterPath: string, fallback: string | null): string | null {
   if (!requested || requested.includes("\\") || requested.split("/").includes("..")) return fallback;
   return requested.startsWith(`${matterPath}/`) ? requested : fallback;
 }
@@ -811,6 +1092,10 @@ function findLatestResearch(tree: FileNode[]): string | null {
     (node) => node.type === "file" && node.extension === ".md" && node.name !== "annotations.md",
   );
   return files.length ? files[files.length - 1].path : null;
+}
+
+function participantRoleLabel(role: string): string {
+  return role.replaceAll("_", " ").replace(/^./, (letter) => letter.toUpperCase());
 }
 
 function findFileByName(tree: FileNode[], name: string): string | null {

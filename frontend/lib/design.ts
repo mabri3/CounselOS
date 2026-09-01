@@ -53,7 +53,7 @@ export function stageLabel(stage: string): string {
 }
 
 export function matterAwaitsJudgment(matter: Matter): boolean {
-  return matter.work_state.signal.kind === "waiting_on_you";
+  return matter.status === "explore";
 }
 
 export function matterIsAgentWorking(matter: Matter): boolean {
@@ -181,6 +181,13 @@ export const RISK_DEFINITION = "Risk is the recorded level of legal or business 
 export function riskLabel(value: string | null | undefined): string {
   const clean = value?.trim() ?? "";
   return !clean || clean.toLowerCase() === "unknown" ? "Not assessed" : clean;
+}
+
+/** Legal risk is lawyer-set text. It does not use failure or overdue colours. */
+export function riskRole(value: string | null | undefined): { label: string; color: string; wash: string } | null {
+  const label = riskLabel(value);
+  if (label === "Not assessed") return null;
+  return { label, color: role.quiet, wash: role.quietWash };
 }
 
 /** Date-only vault values are calendar dates, not midnight UTC timestamps. */

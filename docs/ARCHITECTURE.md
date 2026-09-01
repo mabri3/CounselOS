@@ -2,7 +2,7 @@
 
 ## 1. Chosen shape
 
-Counsel OS is a two-process local web application:
+Themis.ai is a two-process local web application:
 
 ```text
 Browser / Next.js :3000
@@ -179,11 +179,11 @@ keywords, topics, jurisdictions, regulators, courts, industries, date window,
 public source URLs, and explicitly public entities. Before any network call,
 `OutboundQueryPolicy` rejects company aliases, internal products, matter IDs,
 paths, email addresses, and distinctive private excerpts. Company-specific
-matching happens later, inside Counsel OS.
+matching happens later, inside Themis.ai.
 
 Native collection uses `SafeHttpFetcher`, which checks DNS answers, the
 connected address, redirects, sizes, timeouts, and retry limits. Polaris uses
-the fixed Themis Lime brain and `polaris-advisor`. It is advisor-read-only and
+the fixed Polaris service and `polaris-advisor`. It is advisor-read-only and
 does not support model discovery, tools, function calls, embeddings, arbitrary
 JSON schemas, endpoint changes, or redirects. The fixed `*.ts.net` origin is a
 pinned exception for that one adapter. Polaris citations start as supplied

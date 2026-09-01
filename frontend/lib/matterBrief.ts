@@ -8,6 +8,7 @@ export type BriefWorkItem = {
   status: string;
   required: number;
   item_type: string;
+  owner?: string;
 };
 
 export type OpenItem = {
@@ -15,6 +16,7 @@ export type OpenItem = {
   text: string;
   required: boolean;
   source: "work_item" | "open_question";
+  workItemId: string | null;
 };
 
 export type MatterControlId = MatterActionId | "open_work_item";
@@ -32,6 +34,10 @@ export function currentWorkItemFor(
 export function completableCurrentWorkItemId(currentWorkItem: BriefWorkItem | undefined): string | null {
   if (!currentWorkItem || !currentWorkItem.required || ["done", "closed"].includes(currentWorkItem.status)) return null;
   return currentWorkItem.work_item_id;
+}
+
+export function workItemOwnerLabel(workItem: BriefWorkItem | undefined): string {
+  return workItem?.owner?.trim() || "Unassigned";
 }
 
 export function controlIdForCurrentWork(
@@ -61,6 +67,7 @@ export function openItemsFor(
       text: item.title,
       required: Boolean(item.required),
       source: "work_item",
+      workItemId: item.work_item_id,
     }));
   const seenQuestionKeys = new Set<string>();
   const currentActionKey = normalizeQuestion(nextAction);
@@ -74,6 +81,7 @@ export function openItemsFor(
       text: question,
       required: false,
       source: "open_question",
+      workItemId: null,
     });
   }
 
@@ -84,7 +92,13 @@ function normalizeQuestion(value: string): string {
   return value.trim().toLowerCase().replace(/\s+/g, " ").replace(/[.!?]+$/, "").trim();
 }
 
-export function matterArtifacts(tree: FileNode[], approvedArtifactPath?: string | null): MatterArtifact[] {
+export function matterArtifacts(
+  tree: FileNode[],
+  approvedArtifactPath?: string | null,
+  currentDraftPath?: string | null,
+  latestResearchPath?: string | null,
+  currentFinalPath?: string | null,
+): MatterArtifact[] {
   const files: FileNode[] = [];
   const walk = (nodes: FileNode[]) => {
     for (const node of nodes) node.type === "folder" ? walk(node.children ?? []) : files.push(node);
@@ -93,17 +107,29 @@ export function matterArtifacts(tree: FileNode[], approvedArtifactPath?: string 
 
   const markdown = files.filter((node) => node.extension === ".md" || node.name.endsWith(".md"));
   const recommendation = markdown.find((node) => node.name === "recommendations.md");
-  const research = markdown.filter((node) => (
+  const researchCandidates = markdown.filter((node) => (
     !node.path.includes("/research/runs/") && (
       node.record_type === "research" ||
       (node.path.includes("/research/") && node.name !== "annotations.md")
     )
-  )).at(-1);
+  ));
+  const research = latestResearchPath
+    ? researchCandidates.find((node) => node.path === latestResearchPath)
+    : researchCandidates.reduce<FileNode | undefined>((latest, node) => (
+      !latest || (node.updated_at ?? 0) >= (latest.updated_at ?? 0) ? node : latest
+    ), undefined);
   const workProducts = markdown.filter((node) => node.record_type === "work_product");
   const legacyDrafts = markdown.filter((node) => (
     node.path.includes("/work-product/draft/") || node.path.includes("/drafts/")
   ));
-  const draft = workProducts.filter((node) => node.state === "draft").at(-1) ?? legacyDrafts.at(-1);
+  const draftCandidates = [
+    ...workProducts.filter((node) => node.state === "draft"),
+    ...legacyDrafts.filter((node) => !workProducts.includes(node)),
+  ];
+  const canonicalDraft = currentDraftPath
+    ? draftCandidates.find((node) => node.path === currentDraftPath)
+    : undefined;
+  const draft = canonicalDraft ?? draftCandidates.at(-1);
   const metadataFinals = workProducts.filter((node) => node.state === "final");
   const newestMetadataFinal = metadataFinals.reduce<FileNode | undefined>((latest, node) => {
     if (!latest) return node;
@@ -114,14 +140,47 @@ export function matterArtifacts(tree: FileNode[], approvedArtifactPath?: string 
   const approvedFinal = approvedArtifactPath
     ? metadataFinals.find((node) => node.path === approvedArtifactPath)
     : undefined;
-  const final = approvedFinal ?? newestMetadataFinal;
+  const currentFinal = currentFinalPath
+    ? metadataFinals.find((node) => node.path === currentFinalPath)
+    : undefined;
+  const final = approvedFinal ?? currentFinal ?? (currentDraftPath ? undefined : newestMetadataFinal);
 
   return [
     recommendation && { kind: "recommendation" as const, path: recommendation.path, label: recommendation.label ?? recommendation.name },
-    research && { kind: "research" as const, path: research.path, label: "First-pass research" },
+    research && { kind: "research" as const, path: research.path, label: research.label ?? "First-pass research" },
     draft && { kind: "draft" as const, path: draft.path, label: draft.label ?? draft.name },
     final && { kind: "final" as const, path: final.path, label: final.label ?? final.name },
   ].filter((item): item is MatterArtifact => Boolean(item));
+}
+
+const OPERATIONAL_PATH_PARTS = [
+  "/events/",
+  "/research/runs/",
+  "/documents/batches/",
+  "/dossier-revisions/",
+];
+
+/** Returns the exact document tree shown to the lawyer, without runtime records. */
+export function userFacingMatterTree(tree: FileNode[]): FileNode[] {
+  return tree.flatMap((node) => {
+    const normalizedPath = `/${node.path.replace(/^\/+|\/+$/g, "")}/`;
+    if (OPERATIONAL_PATH_PARTS.some((part) => normalizedPath.includes(part))) return [];
+    if (node.type === "file") return [node];
+    return [{ ...node, children: userFacingMatterTree(node.children ?? []) }];
+  });
+}
+
+/** Counts only current document nodes that are present in the visible matter tree. */
+export function countUserFacingDocuments(tree: FileNode[]): number {
+  let total = 0;
+  const walk = (nodes: FileNode[]) => {
+    for (const node of nodes) {
+      if (node.type === "folder") walk(node.children ?? []);
+      else total += 1;
+    }
+  };
+  walk(userFacingMatterTree(tree));
+  return total;
 }
 
 export function isKnownMatterArtifactPath(path: string, artifacts: MatterArtifact[], cards: ChatCard[] = []): boolean {
@@ -130,22 +189,19 @@ export function isKnownMatterArtifactPath(path: string, artifacts: MatterArtifac
   return cards.some((card) => card.type === "work_product" && card.vault_path === path);
 }
 
-const MUTATION_TOOLS = new Set([
-  "save_work_product", "complete_work_item", "approve_response", "mark_response_sent", "close_matter",
-  "move_matter_stage", "create_work_item", "record_decision", "update_matter", "save_facts",
-]);
-
-export function explicitlyRequestsWorkspaceMutation(text: string): boolean {
-  const normalized = text.trim().toLowerCase();
-  if (!normalized) return false;
-  return /\b(record (?:this|the|a)|approve (?:this|the|response)|(?:mark|log|record) that (?:it|the response) (?:was )?(?:delivered|sent)|mark (?:this|the|response).+ sent|(?:close|finish) (?:this|the)? ?matter|complete (?:this|the|work item)|move (?:this|the)? ?matter|update (?:this|the|matter|record|file|facts)|create (?:a )?work item|draft .+ and save|save (?:this|that|the|a|draft|work product))\b/.test(normalized);
-}
-
-export function mutationOutcome(text: string, trace: ToolTrace[] = [], cards: ChatCard[] = []): "recorded" | "no_change" | "none" {
-  const mutationTrace = trace.filter((item) => MUTATION_TOOLS.has(item.tool));
-  const structuredSuccess = mutationTrace.some((item) => item.status === "success")
+export function mutationOutcome(trace: ToolTrace[] = [], cards: ChatCard[] = []): "recorded" | "no_change" | "none" {
+  const structuredSuccess = trace.some((item) => item.mutation_status === "changed")
     || cards.some((card) => card.type === "matter_update" || card.type === "work_product");
   if (structuredSuccess) return "recorded";
-  if (mutationTrace.some((item) => item.status === "error") || explicitlyRequestsWorkspaceMutation(text)) return "no_change";
+  if (trace.some((item) => item.mutation_status === "failed" || item.mutation_status === "no_change")) return "no_change";
   return "none";
+}
+
+export function mutationFailureMessages(trace: ToolTrace[] = []): string[] {
+  return [...new Set(
+    trace
+      .filter((item) => item.mutation_status === "failed")
+      .map((item) => item.summary.trim())
+      .filter(Boolean),
+  )];
 }

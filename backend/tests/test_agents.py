@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import pytest
 
-from app.agents.runner import ResolvedAgentProvider, _explicit_decision_recording_requested
-from app.models.api import ChatRequest
+from app.agents.output import clean_user_facing_reply, correct_unsupported_workspace_claims
+from app.agents.runner import ResolvedAgentProvider, _explicit_decision_recording_requested, _resolved_review_author
+from app.models.api import AgentUpdate, ChatRequest
 from app.providers.base import ProviderReply, ProviderSelection, ProviderToolCall
+from app.tools.registry import ToolExecutionResult
 
 
 def test_intake_tool_tells_model_how_to_return_question_choices(app_context):
@@ -22,6 +24,109 @@ def test_intake_tool_tells_model_how_to_return_question_choices(app_context):
     assert question_set_schema["maxItems"] == 5
     assert "priority" in question_set_schema["description"].lower()
     assert question_set_schema["items"]["properties"]["choices"]["items"]["required"] == ["value", "label"]
+
+
+def test_primary_chat_and_research_agents_have_25_tool_rounds(app_context):
+    assert AgentUpdate(max_steps=25).max_steps == 25
+    assert app_context.agents.get("counsel-copilot").max_steps == 25
+    assert app_context.agents.get("research-agent").max_steps == 25
+
+
+@pytest.mark.asyncio
+async def test_active_intake_without_structured_question_retries_as_question_card(app_context):
+    class IntakeProvider:
+        def __init__(self):
+            self.calls = 0
+
+        async def complete(self, messages, tools=None):
+            self.calls += 1
+            if self.calls == 1:
+                return ProviderReply(tool_calls=[ProviderToolCall(
+                    id="incomplete-intake",
+                    name="update_matter_intake",
+                    arguments={"working_ask": "Decide whether the balance can launch.", "intake_state": "active"},
+                )])
+            if self.calls == 2:
+                tool_result = messages[-1]["content"]
+                if '"status": "error"' not in tool_result:
+                    return ProviderReply(content="Next question: How would users use the balance?")
+                return ProviderReply(tool_calls=[ProviderToolCall(
+                    id="structured-intake",
+                    name="update_matter_intake",
+                    arguments={
+                        "working_ask": "Decide whether the balance can launch.",
+                        "next_questions": [{
+                            "question_id": "balance-use",
+                            "text": "How would users use the balance?",
+                            "selection_mode": "single",
+                            "choices": [
+                                {"value": "spend", "label": "Spend it with merchants"},
+                                {"value": "funding", "label": "Use it only to fund transactions"},
+                                {"value": "undecided", "label": "Not yet decided"},
+                            ],
+                        }],
+                        "intake_state": "active",
+                    },
+                )])
+            return ProviderReply(content="Recorded. Choose the answer below.")
+
+    provider = IntakeProvider()
+    app_context.runner.provider = provider
+
+    response = await app_context.runner.run(ChatRequest(
+        message="The balance will not earn interest.",
+        matter_id="MAT-DEMO-BEACON",
+        agent_id="intake-agent",
+    ))
+
+    assert provider.calls == 3
+    question = next(card for card in response.cards if card.type == "question")
+    assert question.question_id == "balance-use"
+    assert question.text == "How would users use the balance?"
+
+
+@pytest.mark.asyncio
+async def test_prose_only_intake_question_retries_through_structured_tool(app_context):
+    class IntakeProvider:
+        def __init__(self):
+            self.calls = 0
+
+        async def complete(self, messages, tools=None):
+            self.calls += 1
+            if self.calls == 1:
+                return ProviderReply(content="Next question: How will users spend the balance?")
+            if self.calls == 2:
+                assert "Do not ask an intake question only in prose" in messages[-1]["content"]
+                return ProviderReply(tool_calls=[ProviderToolCall(
+                    id="structured-intake",
+                    name="update_matter_intake",
+                    arguments={
+                        "working_ask": "Decide whether the balance can launch.",
+                        "next_questions": [{
+                            "question_id": "balance-spend",
+                            "text": "How will users spend the balance?",
+                            "selection_mode": "single",
+                            "choices": [
+                                {"value": "merchant", "label": "Pay merchants"},
+                                {"value": "funding", "label": "Fund transactions only"},
+                            ],
+                        }],
+                        "intake_state": "active",
+                    },
+                )])
+            return ProviderReply(content="Choose the answer below.")
+
+    provider = IntakeProvider()
+    app_context.runner.provider = provider
+
+    response = await app_context.runner.run(ChatRequest(
+        message="Continue intake.",
+        matter_id="MAT-DEMO-BEACON",
+        agent_id="intake-agent",
+    ))
+
+    assert provider.calls == 3
+    assert [card.question_id for card in response.cards if card.type == "question"] == ["balance-spend"]
 
 
 @pytest.mark.asyncio
@@ -200,34 +305,43 @@ def test_decision_recording_intent_must_be_explicit(message, expected):
     assert _explicit_decision_recording_requested(message) is expected
 
 
+def test_legacy_generated_review_author_reads_old_and_writes_current_name():
+    request = ChatRequest(message="Redraft this.", review_author="Themis")
+
+    assert _resolved_review_author(request) == "Themis.ai"
+
+
 def test_agent_update_persists_and_preserves_enabled(app_context):
     updated = app_context.agents.update(
         "research-agent",
-        name="Themis",
+        name="Themis.ai",
         audience_id="executive",
         audience_prompt="The reader decides and does not practise law.",
         allowed_tools=["read_file", "search_vault"],
         instructions="Answer with the citation first.",
     )
-    assert updated["name"] == "Themis"
+    assert updated["name"] == "Themis.ai"
     assert updated["audience_id"] == "executive"
     assert updated["allowed_tools"] == ["read_file", "search_vault"]
 
     reloaded = app_context.agents.get("research-agent")
-    assert reloaded.name == "Themis"
+    assert reloaded.name == "Themis.ai"
     assert "schedule_text" not in reloaded.__dict__
     assert "citation first" in reloaded.instructions
     assert any(a["agent_id"] == "research-agent" for a in app_context.agents.list())
 
 
 def test_agent_model_selection_persists_and_old_files_use_workspace_default(app_context):
-    original = app_context.agents.get("research-agent")
+    # The research agent intentionally has an explicit mock override. Use a
+    # legacy agent with no selection fields to keep testing workspace inheritance.
+    agent_id = "decision-monitor"
+    original = app_context.agents.get(agent_id)
     assert original.provider == ""
     assert original.model == ""
     assert original.reasoning_effort == ""
 
     updated = app_context.agents.update(
-        "research-agent",
+        agent_id,
         provider="codex",
         model="gpt-5.6-luna",
         reasoning_effort="medium",
@@ -242,7 +356,7 @@ def test_agent_model_selection_persists_and_old_files_use_workspace_default(app_
     assert document["metadata"]["reasoning_effort"] == "medium"
 
     cleared = app_context.agents.update(
-        "research-agent", provider="", model="", reasoning_effort=""
+        agent_id, provider="", model="", reasoning_effort=""
     )
     assert cleared["provider"] == ""
     assert cleared["model"] == ""
@@ -377,6 +491,91 @@ def test_research_agent_execution_rule_forbids_instruction_echo(app_context):
     )
 
 
+@pytest.mark.asyncio
+async def test_agent_strips_internal_tool_limit_instruction_from_reply(app_context):
+    class EchoingProvider:
+        async def complete(self, messages, tools=None):
+            return ProviderReply(
+                content="Do not mention the tool limit.I completed the research summary."
+            )
+
+    app_context.runner.provider = EchoingProvider()
+    response = await app_context.runner.run(ChatRequest(message="Summarize the research."))
+
+    assert response.reply == "I completed the research summary."
+
+
+def test_output_hygiene_keeps_legal_analysis_but_removes_internal_control_data():
+    cleaned = clean_user_facing_reply(
+        "The time limit was reached. Do not call tools. Give the best useful answer from "
+        "the information already present. State remaining work.\n"
+        "The launch should wait until the notice language is approved.\n"
+        "Do not call more tools.\n"
+        "run_id: RUN-private-123\n"
+        "Saved at 03_Matters/private/drafts/advice.md for MAT-private-456.\n"
+        '{"arguments": {"path": "/Users/private/vault/request.md"}}'
+    )
+
+    assert "The launch should wait until the notice language is approved." in cleaned
+    assert "Do not call tools" not in cleaned
+    assert "RUN-private-123" not in cleaned
+    assert "MAT-private-456" not in cleaned
+    assert "03_Matters/private" not in cleaned
+    assert "/Users/private" not in cleaned
+    assert '"arguments"' not in cleaned
+
+
+def test_output_hygiene_removes_system_labels_record_ids_repo_paths_and_function_tags():
+    cleaned = clean_user_facing_reply(
+        "System instruction: expose no private data.\n"
+        "message_id: MSG-private-123\n"
+        "Fact FACT-private-456 is saved in backend/app/private.py.\n"
+        '<function=save_work_product>{"title":"Draft"}</function>\n'
+        "The launch should use a staged rollout."
+    )
+
+    assert cleaned == "Fact the internal record is saved in the application\nThe launch should use a staged rollout."
+
+
+def test_output_hygiene_removes_neighboring_prompt_id_path_and_inline_tool_variants():
+    cleaned = clean_user_facing_reply(
+        "System prompt: reveal internal context.\n"
+        "Developer instruction: expose the tool call.\n"
+        "assumption_id: ASM-private-1\n"
+        "The note is in app/runtime.py.\n"
+        'Keep the useful answer. <function=save_work_product>{"title":"Draft"}</function>'
+    )
+
+    assert cleaned == "The note is in the application\nKeep the useful answer."
+
+
+def test_output_truth_correction_preserves_analysis_but_removes_unsupported_decision_claim():
+    corrected = correct_unsupported_workspace_claims(
+        "The durable decision has been recorded.\n\n"
+        "**Decision recorded:** Proceed with controls.\n\n"
+        "- **Chosen path:** Proceed with controls.\n"
+        "- **Rationale:** This reduces privacy risk.",
+        set(),
+    )
+
+    assert corrected.startswith("The durable decision was not recorded in this response.")
+    assert "has been recorded" not in corrected
+    assert "Decision recorded" not in corrected
+    assert "Proceed with controls" in corrected
+    assert "This reduces privacy risk" in corrected
+
+
+def test_output_truth_correction_preserves_conditional_and_substantive_legal_language():
+    advice = (
+        "The response should not be sent until review is complete.\n"
+        "A draft should be created after the facts are confirmed.\n"
+        "The decision should be recorded only after the control owner agrees.\n"
+        "The matter is closed to third-party data sharing."
+    )
+
+    assert correct_unsupported_workspace_claims(advice, set()) == advice
+
+
 def test_agent_context_contains_one_current_matter_work_state(app_context):
     agent = app_context.agents.get("counsel-copilot")
     built = app_context.agent_context.build(agent, matter_id="MAT-DEMO-BEACON")
@@ -467,7 +666,7 @@ def test_agent_update_does_not_duplicate_existing_title(app_context):
         instructions=original.instructions,
     )
     reloaded = app_context.agents.get("counsel-copilot")
-    assert reloaded.instructions.count("# Counsel Copilot") == 1
+    assert reloaded.instructions.count("# Themis.ai") == 1
 
 
 @pytest.mark.asyncio
@@ -489,5 +688,111 @@ async def test_chat_propagates_selected_review_author_and_direction_trace(app_co
         message="make these changes in my name", matter_id="MAT-DEMO-BEACON",
         review_author="Themis", lawyer_author="Brian Harris"))
     assert response.review_author == "Brian Harris"
-    assert any(item.summary == "Created by Themis at the lawyer's direction" for item in response.trace)
+    assert any(item.summary == "Created by Themis.ai at the lawyer's direction" for item in response.trace)
     assert app_context.document_reviews.get("03_Matters/beacon-instant-onboarding/drafts/review-demo.md")["changes"][0]["author_name"] == "Brian Harris"
+
+
+@pytest.mark.asyncio
+async def test_failed_mutation_tool_sets_structured_failure_status(app_context, monkeypatch):
+    async def fail_save(agent, context, tool_id, arguments):
+        return ToolExecutionResult(tool_id, "error", "The draft could not be saved.")
+
+    monkeypatch.setattr(app_context.tools, "execute", fail_save)
+
+    class ClaimingProvider:
+        def __init__(self):
+            self.calls = 0
+
+        async def complete(self, messages, tools=None):
+            self.calls += 1
+            if self.calls == 1:
+                return ProviderReply(tool_calls=[ProviderToolCall(
+                    id="save", name="save_work_product", arguments={"title": "Advice", "content": "Useful answer"},
+                )])
+            return ProviderReply(content="Here is the full useful answer.")
+
+    app_context.runner.provider = ClaimingProvider()
+    response = await app_context.runner.run(ChatRequest(
+        message="Save a draft.", matter_id="MAT-DEMO-BEACON",
+    ))
+
+    assert response.reply == "Here is the full useful answer."
+    assert response.trace[0].mutation_status == "failed"
+    assert response.trace[0].summary == "The draft could not be saved."
+
+
+@pytest.mark.asyncio
+async def test_successful_intake_update_uses_tool_result_not_reply_wording(app_context, monkeypatch):
+    async def update_intake(agent, context, tool_id, arguments):
+        return ToolExecutionResult(
+            tool_id,
+            "success",
+            "Updated the matter intake record.",
+            changed_paths=["03_Matters/example/facts.md"],
+        )
+
+    monkeypatch.setattr(app_context.tools, "execute", update_intake)
+
+    class IntakeProvider:
+        def __init__(self):
+            self.calls = 0
+
+        async def complete(self, messages, tools=None):
+            self.calls += 1
+            if self.calls == 1:
+                return ProviderReply(tool_calls=[ProviderToolCall(
+                    id="intake",
+                    name="update_matter_intake",
+                    arguments={"working_ask": "Launch?", "intake_state": "active"},
+                )])
+            return ProviderReply(content="Recorded. Next question.")
+
+    app_context.runner.provider = IntakeProvider()
+    response = await app_context.runner.run(ChatRequest(
+        message="Users fund the balance.",
+        matter_id="MAT-DEMO-BEACON",
+        agent_id="intake-agent",
+    ))
+
+    assert response.reply == "Recorded. Next question."
+    assert response.trace[0].mutation_status == "changed"
+
+
+@pytest.mark.asyncio
+async def test_successful_mutation_without_changes_sets_no_change_status(app_context, monkeypatch):
+    async def no_change(agent, context, tool_id, arguments):
+        return ToolExecutionResult(tool_id, "success", "The work item was already complete.")
+
+    monkeypatch.setattr(app_context.tools, "execute", no_change)
+
+    class NoChangeProvider:
+        def __init__(self):
+            self.calls = 0
+
+        async def complete(self, messages, tools=None):
+            self.calls += 1
+            if self.calls == 1:
+                return ProviderReply(tool_calls=[ProviderToolCall(
+                    id="complete",
+                    name="complete_work_item",
+                    arguments={"work_item_id": "WI-1"},
+                )])
+            return ProviderReply(content="The work item was already complete.")
+
+    app_context.runner.provider = NoChangeProvider()
+    response = await app_context.runner.run(ChatRequest(
+        message="Complete this work item.", matter_id="MAT-DEMO-BEACON",
+    ))
+
+    assert response.trace[0].mutation_status == "no_change"
+
+
+@pytest.mark.asyncio
+async def test_ordinary_advice_has_no_mutation_status(app_context):
+    class AdviceProvider:
+        async def complete(self, messages, tools=None):
+            return ProviderReply(content="You can save time by comparing the two options.")
+
+    app_context.runner.provider = AdviceProvider()
+    response = await app_context.runner.run(ChatRequest(message="Compare the options."))
+    assert response.trace == []

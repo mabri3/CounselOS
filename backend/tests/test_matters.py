@@ -82,6 +82,42 @@ def test_response_approval_delivery_and_closure_are_separate(app_context):
     assert closed["matter"]["closed_at"]
 
 
+def test_approval_requires_final_linked_to_current_draft(app_context):
+    created = app_context.matters.create(
+        MatterCreate(title="Current final", request_text="Prepare the response.")
+    )
+    matter_id = created["matter_id"]
+    app_context.matters.move_stage(matter_id, "respond")
+    draft_a = app_context.work_products.create_draft(matter_id, title="Final A", content="A")
+    final_a = app_context.work_products.finalize(matter_id, draft_a["vault_path"])
+    assert app_context.matters.get(matter_id)["current_work_product_final_path"] == final_a["vault_path"]
+
+    draft_b = app_context.work_products.create_draft(matter_id, title="Draft B", content="B")
+    detail = app_context.matters.get(matter_id)
+    assert detail["current_work_product_draft_path"] == draft_b["vault_path"]
+    assert detail["current_work_product_final_path"] is None
+    with pytest.raises(ValueError, match="current work-product draft"):
+        app_context.matters.perform_action(
+            matter_id, "approve_response", actor="Counsel", artifact_path=final_a["vault_path"]
+        )
+
+
+def test_latest_research_fallback_uses_metadata_time(app_context):
+    created = app_context.matters.create(
+        MatterCreate(title="Research order", request_text="Research the issue.")
+    )
+    base = created["path"]
+    newer = f"{base}/research/a-newer.md"
+    older = f"{base}/research/z-older.md"
+    app_context.vault.write_markdown(newer, "# Newer", {
+        "research_id": "RES-NEW", "matter_id": created["matter_id"], "created_at": "2026-08-31T12:00:00Z",
+    })
+    app_context.vault.write_markdown(older, "# Older", {
+        "research_id": "RES-OLD", "matter_id": created["matter_id"], "created_at": "2026-08-30T12:00:00Z",
+    })
+    assert app_context.matters.get(created["matter_id"])["latest_research_path"] == newer
+
+
 def test_stage_move_cannot_bypass_matter_closure(app_context):
     with pytest.raises(ValueError, match="close matter action"):
         app_context.matters.move_stage("MAT-DEMO-HARBOR", "closed")
@@ -143,3 +179,56 @@ def test_stage_move_uses_matter_state_default_next_action(app_context):
     record = app_context.vault.read_markdown(f"{updated['path']}/matter.md")
 
     assert record["metadata"]["next_action"] == app_context.matter_state.default_next_action("generate")
+
+
+def test_completed_intake_neutralizes_generic_orientation_work(app_context):
+    created = app_context.matters.create(
+        MatterCreate(title="Orientation cleanup", request_text="Can this launch?")
+    )
+    matter_path = f"{created['path']}/matter.md"
+    app_context.vault.update_markdown(
+        matter_path,
+        metadata_updates={"intake_state": "complete", "next_action": "Review the dossier."},
+    )
+
+    detail = app_context.matters.get(created["matter_id"])
+
+    orientation = next(item for item in detail["work_items"] if item["title"] == "Orient to the request")
+    assert orientation["status"] == "done"
+    assert detail["work_state"]["next_action"] == "Review the dossier."
+    assert detail["orientation"]["headline"] == "Review the dossier."
+
+
+def test_risk_update_is_persisted_and_can_be_cleared(app_context):
+    matter_id = "MAT-DEMO-BEACON"
+
+    updated = app_context.matters.update_risk(matter_id, "High", actor="Brian Harris")
+    assert updated["risk_level"] == "High"
+    metadata = app_context.vault.read_markdown(f"{updated['path']}/matter.md")["metadata"]
+    assert metadata["risk_updated_by"] == "Brian Harris"
+
+    cleared = app_context.matters.update_risk(matter_id, None, actor="Brian Harris")
+    assert cleared["risk_level"] is None
+
+
+def test_recent_activity_sorts_by_event_timestamp_and_uses_human_title(app_context):
+    matter_id = "MAT-DEMO-BEACON"
+    app_context.matters.append_event(
+        matter_id,
+        "decision_recorded",
+        {"title": "Decision recorded"},
+        event_id="EVT-ZZZ",
+        timestamp="2026-08-31T09:00:00+00:00",
+    )
+    app_context.matters.append_event(
+        matter_id,
+        "risk_updated",
+        {"title": "Risk assessment updated"},
+        event_id="EVT-AAA",
+        timestamp="2026-08-31T10:00:00+00:00",
+    )
+
+    events = app_context.matters.get(matter_id)["events"]
+
+    assert events[0]["event_id"] == "EVT-AAA"
+    assert events[0]["title"] == "Risk assessment updated"

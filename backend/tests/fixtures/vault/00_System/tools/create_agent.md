@@ -20,7 +20,7 @@ parameters:
     max_steps:
       type: integer
       minimum: 1
-      maximum: 20
+      maximum: 25
   required:
   - agent_id
   - name

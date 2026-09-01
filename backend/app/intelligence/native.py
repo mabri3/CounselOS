@@ -21,7 +21,7 @@ _TAG = re.compile(r"(?s)<[^>]+>")
 
 class NativeIntelligenceProvider:
     provider_id = "native"
-    label = "CounselOS native"
+    label = "Themis.ai native"
 
     def __init__(self, fetcher, search_service=None, *, limits: SafeFetchLimits | None = None,
                  max_discovery_urls: int = 50, max_candidates: int = 100, clock=time.monotonic):

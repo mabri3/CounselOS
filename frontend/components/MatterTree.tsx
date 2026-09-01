@@ -1,6 +1,7 @@
 "use client";
 
 import { ChangeEvent, DragEvent, useState } from "react";
+import { userFacingMatterTree } from "@/lib/matterBrief";
 import type { FileNode } from "@/lib/types";
 
 function TreeNode({
@@ -22,7 +23,13 @@ function TreeNode({
     return (
       <div>
         <div className="tree-folder-row">
-          <button className="tree-row" onClick={() => setOpen((value) => !value)} type="button">
+          <button
+            aria-expanded={open}
+            aria-label={`${open ? "Collapse" : "Expand"} ${folderLabel}`}
+            className="tree-row"
+            onClick={() => setOpen((value) => !value)}
+            type="button"
+          >
             <span className="tree-folder">{open ? "▾" : "▸"} {folderLabel}</span>
           </button>
           {node.name === "conversations" ? (
@@ -134,7 +141,7 @@ export default function MatterTree({
   uploading: boolean;
 }) {
   const [dragging, setDragging] = useState(false);
-  const visibleTree = presentMatterTree(tree);
+  const visibleTree = presentMatterTree(userFacingMatterTree(tree));
 
   async function uploadFromInput(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];

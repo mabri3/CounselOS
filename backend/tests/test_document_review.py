@@ -152,10 +152,64 @@ def test_agent_revision_preserves_metadata_and_becomes_a_redline(app_context):
     document = app_context.vault.read_markdown(PATH)
     assert document["metadata"]["matter_id"] == "MAT-DEMO-BEACON"
     assert document["metadata"]["purpose"] == "response"
-    assert document["metadata"]["review"]["last_proposed_by"] == "Themis"
+    assert document["metadata"]["review"]["last_proposed_by"] == "Themis.ai"
     change = app_context.document_reviews.get(PATH)["changes"][0]
     assert change["old_text"] == "old"
     assert change["new_text"] == "new"
+
+
+def test_legacy_generated_author_is_aliased_without_rewriting_review_metadata(app_context):
+    _write(app_context, "Use the new clause.", {"record_type": "draft", "review": {
+        "version": 2,
+        "tracking": True,
+        "authors": [{"author_id": "author-themis", "name": "Themis", "color": "#2F5597"}],
+        "segments": [
+            {"kind": "delete", "text": "old", "change_id": "CHG-1", "author_id": "author-themis",
+             "author_name": "Themis", "author_color": "#2F5597", "created_at": "now"},
+            {"kind": "insert", "text": "new", "change_id": "CHG-1", "author_id": "author-themis",
+             "author_name": "Themis", "author_color": "#2F5597", "created_at": "now"},
+        ],
+        "comments": [{"thread_id": "COM-1", "quote": "new", "anchor_start": 8, "anchor_end": 11,
+                      "resolved": False, "resolved_at": "", "resolved_by": "", "entries": [{
+                          "comment_id": "MSG-1", "author_id": "author-themis", "author_name": "Themis",
+                          "body": "Generated note", "created_at": "now"}]}],
+        "comment_events": [],
+    }})
+
+    review = app_context.document_reviews.get(PATH)
+
+    assert review["authors"][0]["name"] == "Themis.ai"
+    assert review["changes"][0]["author_name"] == "Themis.ai"
+    assert review["comments"][0]["entries"][0]["author_name"] == "Themis.ai"
+    stored = app_context.vault.read_markdown(PATH)["metadata"]["review"]
+    assert stored["authors"][0]["name"] == "Themis"
+    assert stored["segments"][0]["author_name"] == "Themis"
+    assert stored["comments"][0]["entries"][0]["author_name"] == "Themis"
+
+
+def test_review_cards_hide_non_substantive_noise_but_keep_segments(app_context):
+    _write(app_context, "!!!\n", {"record_type": "draft", "review": {
+        "version": 2,
+        "tracking": True,
+        "authors": [{"author_id": "author-alex", "name": "Alex Chen", "color": "#2F5597"}],
+        "segments": [
+            {"kind": "delete", "text": "***", "change_id": "CHG-SEPARATOR", "author_id": "author-alex",
+             "author_name": "Alex Chen", "author_color": "#2F5597", "created_at": "now"},
+            {"kind": "insert", "text": "!!!", "change_id": "CHG-SEPARATOR", "author_id": "author-alex",
+             "author_name": "Alex Chen", "author_color": "#2F5597", "created_at": "now"},
+            {"kind": "insert", "text": "\n", "change_id": "CHG-WHITESPACE", "author_id": "author-alex",
+             "author_name": "Alex Chen", "author_color": "#2F5597", "created_at": "now"},
+        ],
+        "comments": [],
+        "comment_events": [],
+    }})
+
+    review = app_context.document_reviews.get(PATH)
+
+    assert review["changes"] == []
+    assert {segment["change_id"] for segment in review["segments"]} == {"CHG-SEPARATOR", "CHG-WHITESPACE"}
+    stored = app_context.vault.read_markdown(PATH)["metadata"]["review"]
+    assert len(stored["segments"]) == 3
 
 
 def test_v2_migration_and_revision_ids_are_stable(app_context):

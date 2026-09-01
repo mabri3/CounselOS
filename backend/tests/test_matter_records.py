@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from app.models.api import ChatChoice, IntakeReportedFact, IntakeTurn, QuestionCard
+from app.models.api import ChatChoice, IntakeReportedFact, IntakeTurn, MatterCreate, QuestionCard
 from app.services.matter_records import MatterRecordService
 
 
@@ -10,6 +10,119 @@ def test_question_without_choices_becomes_write_in():
     question = QuestionCard(question_id="Q-EMPTY", text="What happened?", selection_mode="single")
 
     assert question.selection_mode == "free_text"
+
+
+def test_stopping_intake_on_new_matter_replaces_orientation_action(app_context):
+    matter = app_context.matters.create(
+        MatterCreate(title="Stop intake regression", request_text="Can this launch?")
+    )
+
+    app_context.matter_records.set_intake_state(matter["matter_id"], "complete")
+    detail = app_context.matters.get(matter["matter_id"])
+
+    assert detail["work_state"]["next_action"] == "Review the dossier and continue the legal work."
+    orientation = next(
+        item for item in detail["work_items"] if item["title"] == "Orient to the request"
+    )
+    assert orientation["status"] == "done"
+
+
+def test_completed_intake_rejects_stale_card_action_without_mutating_chat(app_context):
+    conversation = app_context.chat_history.append(
+        "MAT-DEMO-BEACON",
+        None,
+        role="assistant",
+        content="One last question.",
+        cards=[{
+            "type": "question",
+            "question_id": "Q-STALE",
+            "text": "Who owns the launch?",
+            "selection_mode": "free_text",
+            "choices": [],
+        }],
+        conversation_kind="intake",
+        intake_state="active",
+        active_agent_id="intake-agent",
+    )
+    app_context.chat_history.update_state(
+        "MAT-DEMO-BEACON",
+        conversation["conversation_id"],
+        intake_state="complete",
+        active_agent_id="counsel-copilot",
+    )
+
+    with pytest.raises(ValueError, match="Intake is complete"):
+        app_context.chat_history.append(
+            "MAT-DEMO-BEACON",
+            conversation["conversation_id"],
+            role="user",
+            content="Legal owns it.",
+            card_action={"card_id": "Q-STALE", "action": "answer", "values": ["Legal"]},
+        )
+
+    saved = app_context.chat_history.get(
+        "MAT-DEMO-BEACON", conversation["conversation_id"]
+    )
+    assert len(saved["messages"]) == 1
+
+
+def test_final_intake_is_monotonic_and_retry_key_is_idempotent(app_context):
+    service = app_context.matter_records
+    final = IntakeTurn(
+        working_ask="Decide whether the launch can proceed.",
+        reported_facts=[IntakeReportedFact(statement="The launch is Friday.")],
+        intake_state="complete",
+        source_action_key="chat:RUN-1:tool-1",
+    )
+
+    first = service.apply_intake_turn("MAT-DEMO-BEACON", final, source_id="MSG-FINAL")
+    retry = service.apply_intake_turn("MAT-DEMO-BEACON", final, source_id="MSG-FINAL")
+    stale = service.apply_intake_turn(
+        "MAT-DEMO-BEACON",
+        IntakeTurn(
+            working_ask="Reopen intake.",
+            next_questions=[QuestionCard(
+                question_id="Q-STALE",
+                text="Can this old question become active again?",
+                selection_mode="free_text",
+            )],
+            intake_state="active",
+            source_action_key="chat:RUN-OLD:tool-1",
+        ),
+        source_id="MSG-STALE",
+    )
+
+    saved = service.get("MAT-DEMO-BEACON")
+    assert first.intake_state == retry.intake_state == stale.intake_state == "complete"
+    assert retry.changed_paths == []
+    assert stale.changed_paths == []
+    assert stale.questions == []
+    assert len([item for item in saved["facts"] if item["text"] == "The launch is Friday."]) == 1
+    assert len([
+        action for action in saved["actions"]
+        if action.get("source_action_key") == "chat:RUN-1:tool-1"
+    ]) == 1
+    with pytest.raises(ValueError, match="cannot become active"):
+        service.set_intake_state("MAT-DEMO-BEACON", "active")
+
+
+def test_new_matter_has_structured_participants(app_context):
+    matter = app_context.matters.create(MatterCreate(
+        title="Participant structure",
+        request_text="Assess the launch.",
+        requester="Avery Requester",
+        legal_owner="Lee Lawyer",
+        business_owner="Bailey Business",
+    ))
+
+    assert matter["participants"] == [
+        {"name": "Avery Requester", "role": "requester"},
+        {"name": "Lee Lawyer", "role": "legal_owner"},
+        {"name": "Bailey Business", "role": "business_owner"},
+    ]
+    saved = app_context.vault.read_markdown(f"{matter['path']}/participants.md")
+    assert saved["metadata"]["record_type"] == "participants"
+    assert saved["metadata"]["participants"] == matter["participants"]
 
 
 def test_intake_question_set_keeps_model_priority_order(app_context):
@@ -188,6 +301,18 @@ def test_repeated_intake_fact_adds_source_support_without_duplicate_fact(app_con
     assert len(facts) == 1
     supports = [item for item in saved["support"] if item["fact_id"] == facts[0]["fact_id"]]
     assert {item["source_id"] for item in supports} == {"MSG-ONE", "MSG-TWO"}
+
+
+def test_required_open_questions_include_exact_work_item_identity(app_context):
+    matter = app_context.matters.get("MAT-DEMO-BEACON")
+    identified = matter["orientation"]["open_question_items"]
+
+    assert identified
+    assert [item["text"] for item in identified] == matter["orientation"]["open_questions"][:4]
+    for item in identified:
+        if item["work_item_id"]:
+            assert item["id"] == item["work_item_id"]
+            assert any(work["work_item_id"] == item["work_item_id"] for work in matter["work_items"])
 
 
 def test_intake_update_preserves_lawyer_edit_as_review_draft(app_context):

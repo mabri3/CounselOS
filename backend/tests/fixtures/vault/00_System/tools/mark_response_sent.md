@@ -1,7 +1,7 @@
 ---
 tool_id: mark_response_sent
 handler: mark_response_sent
-description: Record that the approved response was delivered outside Counsel OS. Use only after an explicit delivery request in the current message.
+description: Record that the approved response was delivered outside Themis.ai. Use only after an explicit delivery request in the current message.
 parameters:
   type: object
   properties:

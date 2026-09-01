@@ -149,7 +149,7 @@ function EditorToolbar({
       {onAddComment ? <ToolbarButton label="Comment" title="Add a comment to the selected text" onClick={addComment} /> : null}
       <span className="rich-toolbar-spacer" />
       {onAskAgent ? (
-        <button className="btn agent tiny" type="button" onClick={onAskAgent}>Ask Themis to redraft</button>
+        <button className="btn agent tiny" type="button" onClick={onAskAgent}>Ask Themis.ai to redraft</button>
       ) : null}
     </div>
   );
@@ -185,7 +185,7 @@ export default function MarkdownRichEditor({
   onSelectionContext?: (context: { quote: string; anchorStart?: number; anchorEnd?: number; returnFocus: HTMLElement | null; rect: DOMRect | null }) => void;
 }) {
   const initialConfig = {
-    namespace: "CounselOsMarkdownEditor",
+    namespace: "ThemisAiMarkdownEditor",
     nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, LinkNode, AutoLinkNode, RevisionTextNode],
     theme: {
       heading: {

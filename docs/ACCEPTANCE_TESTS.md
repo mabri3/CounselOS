@@ -227,7 +227,7 @@ repository-vault guard reported no hash mismatch when the backend stopped.
 - Settings showed only Company and model controls. Reasoning effort changed
   from `default` to `high`, survived reload, and was restored to `default`.
   Provider `openai_compatible` and model `deepseek-v4-flash` were unchanged.
-- Agents showed Themis as the user-facing name and Counsel Copilot as the role.
+- Agents showed Themis.ai as the user-facing name and Workspace assistant as the role.
   Skills showed one Build a skill action and one Find repeated work action.
   Automations used Run once for the paused schedule. The test matter was absent.
 - Today, Workspace, Matters, Decisions, Agents, Skills, Automations, Settings,
@@ -238,10 +238,10 @@ repository-vault guard reported no hash mismatch when the backend stopped.
 ## M. Derived matter work state
 
 - [x] Create a matter with no target date. Confirm that its first required work item is assigned to Brian Harris.
-- [x] Move the matter to Research. Confirm that it stays in the Research column and says **Waiting on Brian Harris**, not **Themis is working**.
+- [x] Move the matter to Research. Confirm that it stays in the Research column and says **Waiting on Brian Harris**, not **Themis.ai is working**.
 - [x] Confirm that the matter card, table, matter header, Today summary, and agent context use the same `next_action` and `work_state` result.
 - [x] Confirm that the displayed next owner comes from the selected required work item.
-- [x] Add a saved research-run record with `state: running`. Confirm through the API that `execution_state` is `running` and the signal says **Themis is working**.
+- [x] Add a saved research-run record with `state: running`. Confirm through the API that `execution_state` is `running` and the signal says **Themis.ai is working**.
 - [x] Change the saved research-run record to `completed`. Confirm that the signal returns to the work-item owner or **Needs assignment**.
 - [x] Delete the disposable SQLite index and restart. Confirm that the same `work_state` is derived from Markdown.
 - [x] Confirm that the browser console has no errors and that the repository vault hash is unchanged.
@@ -280,12 +280,12 @@ isolated browser session as described above.
 
 - [x] Confirm that a recommendation is not shown as a recorded decision and does not enter the decision register without an explicit user action or instruction.
 - [x] Select the primary decision action. Confirm that it opens the record modal directly, without a separate focused-review step.
-- [x] Confirm that the modal labels the prefilled decision as a Themis draft and lets the lawyer edit it.
+- [x] Confirm that the modal labels the prefilled decision as a Themis.ai draft and lets the lawyer edit it.
 - [x] Confirm that the rationale is visible and editable before recording. It can be empty, but it must not store a hidden orientation value.
 - [x] Confirm that the decider defaults only from the matter legal owner. Decision and decider are required before submit.
 - [x] Open and cancel the modal. Confirm that no decision is written. Then use the final explicit record action and confirm that exactly one decision is written.
-- [x] Open a full assistant answer. Confirm that the full block, not only a small icon, uses the dashed iris agent treatment and is labelled `Themis`.
-- [x] Confirm that `Themis · Not yet reviewed by an attorney` appears only on qualifying generated work product with an explicit current unreviewed state.
+- [x] Open a full assistant answer. Confirm that the full block, not only a small icon, uses the dashed iris agent treatment and is labelled `Themis.ai`.
+- [x] Confirm that `Themis.ai · Not yet reviewed by an attorney` appears only on qualifying generated work product with an explicit current unreviewed state.
 - [x] Confirm that `Actions taken (N)` follows the answer in a closed disclosure.
 
 ### Readability, state language, and administration
@@ -295,7 +295,7 @@ isolated browser session as described above.
 - [x] Pause a schedule and then select `Resume schedule`. Confirm that it becomes active, keeps its saved interval and last-run state, and receives a future `next_run_at` without running immediately.
 - [x] Confirm that active schedules show `Pause schedule` and `Run it now`; paused schedules show `Resume schedule` and `Run it now`; failed runs use `Retry now`.
 - [x] Open Settings. Confirm that the current model has a simple summary and that provider, exact model, and reasoning effort are under `Advanced model options`. Confirm that saved hidden keys remain unchanged.
-- [x] Open Agents. Confirm that Themis appears as the name, Counsel Copilot as the role, and purpose appears before technical details. Confirm that standing Markdown instructions, tool permissions, and file paths are under `Advanced controls`.
+- [x] Open Agents. Confirm that Themis.ai appears as the name, Workspace assistant as the role, and purpose appears before technical details. Confirm that standing Markdown instructions, tool permissions, and file paths are under `Advanced controls`.
 - [x] Open Skills. Confirm that it says `A skill is reusable guidance for one chat request.` Confirm that the primary action builds a skill, the secondary action finds repeated work, and a saved skill shows its name, purpose, and use. Confirm that the requested raw prompt remains available under a clear label or Advanced details.
 - [x] Open one research note with no citations. Confirm that it says `No cited sources` once, does not say `unreviewed`, and still shows the useful answer.
 - [x] Confirm that research shows source provenance only when supported and never invents or implies verification of a source.
@@ -366,7 +366,7 @@ current acceptance evidence, not a future plan.
 - [x] Open a Briefing item. Confirm that it shows stored provenance and honest
   Supplied, Retrieved, Verified, or Unverified lead labels.
 - [x] Confirm that a Polaris citation starts as **Supplied**, not **Verified**.
-- [x] Ask Counsel OS about the item and request more research. Confirm that
+- [x] Ask Themis.ai about the item and request more research. Confirm that
   useful partial text remains visible with warnings when a support step fails.
 - [x] Connect one item to a matter and one to a decision. Confirm that the
   decision-linked item produces a focused review packet.
@@ -460,25 +460,25 @@ their servers stopped.
 
 **Verified — 2026-08-30:** The current isolated browser run rechecked the two
 middle-pane headers, direct Chat opening, the saved conversation, matter tree,
-document pane, Themis labels, and the exact Vault and provider administration
+document pane, Themis.ai labels, and the exact Vault and provider administration
 surfaces. `tests/test_vault_management.py`, `tests/test_active_context.py`,
 the chat recovery check, and the full suite cover blank/load/restart selection,
 path rejection, lease waiting, active-work Busy behavior, state preservation,
 and provider cleanup.
 
 - [x] Open a matter at normal and short viewport heights. Confirm that
-  **Overview** and **Chat with Themis** remain visible as two headers and that
+  **Overview** and **Chat with Themis.ai** remain visible as two headers and that
   the selected section uses the available middle-pane height.
 - [x] Type an unsent chat message, add attachments, select a saved
   conversation, and switch sections. Confirm that chat state and scroll state
   remain intact and that the left tree and right document pane do not collapse.
 - [x] Use a saved conversation, new chat, and seeded chat action. Confirm that
-  each action opens **Chat with Themis**. Confirm that both headers are keyboard
+  each action opens **Chat with Themis.ai**. Confirm that both headers are keyboard
   buttons with matching expanded state and labelled regions.
 - [x] Confirm that ordinary matter chat, company interview, and Briefing
-  answers use `Themis`. Confirm that only an unsaved generated company-profile
+  answers use `Themis.ai`. Confirm that only an unsaved generated company-profile
   draft and an open generated review packet use
-  `Themis · Not yet reviewed by an attorney`.
+  `Themis.ai · Not yet reviewed by an attorney`.
 - [x] In Settings → Vaults, confirm the current vault name and exact path.
   Create a blank vault at a new absolute path. Confirm that it has no user work,
   can create one matter, and can complete one mock chat.
@@ -516,13 +516,13 @@ were shown honestly.
   Confirm that an explicit unavailable selection fails visibly and does not
   silently use another provider or model.
 - [x] Confirm that CLI-backed providers expose only the typed tools allowed by
-  the selected Counsel OS agent and do not expose shell, file, browser, app, or
+  the selected Themis.ai agent and do not expose shell, file, browser, app, or
   plugin tools.
 
 ### Adaptive matter intake and dossier
 
 - [x] Submit the BSA/AML marketplace-payout request from the canonical handoff
-  prompt. Confirm that the new matter opens directly in Chat with Themis and
+  prompt. Confirm that the new matter opens directly in Chat with Themis.ai and
   shows an honest background reading state.
 - [x] Confirm that the first Intake Agent turn summarizes the actual request
   and asks one material request-specific question. The old context-free
@@ -574,3 +574,68 @@ blanket historical disposition.
 - [x] Confirm that no non-Later item remains pending, failed, unchecked,
   unverified, omitted, or moved to a new plan. `current.md` must contain no
   Now or Next work; only Later may remain.
+
+## Themis.ai reliability build
+
+**Verified — 2026-08-31:** The isolated browser lifecycle used a copied vault.
+It created and reviewed the canonical draft, finalized it, approved it,
+recorded outside delivery, closed the matter, and preserved Closed state,
+moderate lawyer-set risk, and artifact identity after visible navigation away
+and back. Safari physical-key input confirmed Home, End, and Shift+ArrowLeft
+selection in the editor. The repository vault hash was unchanged.
+
+After the browser run, the final correction tree passed 550 backend tests,
+every `frontend/scripts/check-*.ts` script, workspace checks, typecheck,
+production build, graph refresh, and `git diff --check`. One independent
+read-only Sol High reviewer found nine issues. Sol Light workers corrected
+them. The same reviewer completed two correction rechecks and reported no
+unresolved material finding.
+
+### Truthful intake, chat, and research
+
+- [x] Confirm that the submitted user turn is durable before background work,
+  appears immediately, merges without duplicates, and restores or preserves
+  unrelated composer text and attachments after failure or card actions.
+- [x] Confirm that answered intake cards are inert saved records with labelled
+  native controls and qualified free text. Completing intake must remove the
+  stale orientation action.
+- [x] Force a failed mutation tool call. Confirm that useful text remains
+  visible below a durable, action-specific failure notice. Confirm that
+  successful and no-change mutation tool results show the matching workspace
+  status without inspecting the assistant's prose.
+- [x] Confirm that research uses the saved latest-packet pointer, distinct
+  question-based titles, explicit public-research status, and fail-closed
+  source classes. Missing or failed public research must not look verified or
+  fully successful.
+
+### Canonical work product and matter lifecycle
+
+- [x] Confirm that Chat save, manual draft creation, document review,
+  finalization, and Overview use one persisted current draft path. No new loose
+  root `work-product.md` may be created.
+- [x] Finalize Draft A, then create Draft B. Confirm that approval is disabled
+  until a final linked to Draft B exists and cannot approve Final A by mistake.
+- [x] Finalize a supported legacy draft when no canonical pointer exists.
+  Confirm that it is safely adopted and can be approved. Confirm that it cannot
+  replace an existing canonical draft.
+- [x] Confirm the normal guided path reaches Being drafted, Ready to send,
+  approved, sent outside the system, and Closed with visible saved outcomes.
+- [x] Confirm that Today, Matters, the matter header, and Overview agree on
+  required work, next action, owner, risk, research state, and lifecycle state
+  after reload.
+
+### Decisions, company profile, review, and naming
+
+- [x] Confirm that the decision form supports removable basis records,
+  Conditions, Not decided, and revisit date. The configured lawyer must be the
+  default decision maker, and the saved decision must appear in the register
+  and newest Recent activity.
+- [x] Confirm that an existing company profile is visible, stale replacement
+  is rejected, settled fields are not asked twice, and direct lawyer edits use
+  neutral or mixed human attribution instead of generated-only attribution.
+- [x] Confirm Overview and Chat remain mutually exclusive, hidden controls are
+  absent from the accessibility tree, and editor review does not create
+  punctuation-only change cards.
+- [x] Confirm all live product surfaces and active help text use `Themis.ai`.
+  Remaining old names must match the compatibility exceptions in
+  `docs/themis-ai-reliability-build.handoff-progress.md`.

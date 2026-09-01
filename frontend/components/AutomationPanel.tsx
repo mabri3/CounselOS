@@ -86,7 +86,7 @@ export default function AutomationPanel({
     <>
       {schedules.length === 0 ? (
         <div className="empty-state">
-          Nothing runs on a schedule yet. Describe the job below and Counsel OS will run it for you.
+          Nothing runs on a schedule yet. Describe the job below and Themis.ai will run it for you.
         </div>
       ) : null}
 
@@ -198,7 +198,7 @@ export default function AutomationPanel({
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 20, marginBottom: 18 }}>
               <div>
                 <h2 className="form-heading">Describe it in plain language</h2>
-                <p className="form-heading-help">Say what you want done and how often. Counsel OS turns it into a standing job you can pause at any time.</p>
+                <p className="form-heading-help">Say what you want done and how often. Themis.ai turns it into a standing job you can pause at any time.</p>
               </div>
               <button className="btn compact quiet" type="button" onClick={() => setOpen(false)}>Close</button>
             </div>

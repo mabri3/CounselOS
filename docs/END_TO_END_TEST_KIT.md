@@ -1,22 +1,22 @@
-# Counsel OS end-to-end test kit
+# Themis.ai end-to-end test kit
 
-Use this guide to test Counsel OS as one product lawyer would use it. You do
+Use this guide to test Themis.ai as one product lawyer would use it. You do
 not need legal, product, or software-testing experience to use the core
 journey. Follow the steps in their listed order.
 
 This is a manual acceptance test, not a legal-quality scorecard. Check that
-Counsel OS saves the right work, shows the right next action, and lets the
+Themis.ai saves the right work, shows the right next action, and lets the
 lawyer move from an incoming request to a delivered result.
 
-## Start here if Counsel OS is new to you
+## Start here if Themis.ai is new to you
 
-Counsel OS is a workspace for legal work. It helps a lawyer turn an incoming
+Themis.ai is a workspace for legal work. It helps a lawyer turn an incoming
 request into organized research, a draft, a decision record, and a delivered
 answer. It does not make the final legal decision for the lawyer.
 
 ### First five minutes
 
-1. Open Counsel OS in your web browser. If this is a local installation, the
+1. Open Themis.ai in your web browser. If this is a local installation, the
    normal address is `http://localhost:3000`.
 2. Look at the navigation at the top. Select **Today**. This is the daily
    work list.
@@ -26,10 +26,10 @@ answer. It does not make the final legal decision for the lawyer.
 5. Return to **Today**. This is where the main test begins.
 
 If the page does not open, stop here and send this message to the person who
-set up Counsel OS:
+set up Themis.ai:
 
 ```text
-I cannot start the Counsel OS end-to-end test because the app does not open at
+I cannot start the Themis.ai end-to-end test because the app does not open at
 http://localhost:3000. Please start the test environment and send me the app URL.
 ```
 
@@ -41,8 +41,8 @@ http://localhost:3000. Please start the test environment and send me the app URL
 | Today | The daily work list. It shows what needs attention now. |
 | Workspace | The board view. It shows matters moving through their work stages. |
 | Stage | The current place in the work cycle. A matter moves from Just came in to Being researched, Waiting on your judgment, Being drafted, Ready to send, and Closed. |
-| Themis | The name used for Counsel OS agent work. It can research, draft, organize, and take only the actions you ask it to take. |
-| Chat | The place where you ask Themis to answer, research, draft, or make a requested record change. |
+| Themis.ai | The name used for Themis.ai agent work. It can research, draft, organize, and take only the actions you ask it to take. |
+| Chat | The place where you ask Themis.ai to answer, research, draft, or make a requested record change. |
 | Trace or Actions taken | The short list that says what the agent changed. It does not show hidden reasoning. |
 | Source | A file you upload, such as an email, a product specification, or marketing copy. |
 | Work item | A tracked task that must be done by a named person. |
@@ -56,7 +56,7 @@ http://localhost:3000. Please start the test environment and send me the app URL
 | Markdown | A simple text file that can use headings, lists, and links. You can read it as ordinary text. |
 | Mock mode | A built-in test assistant. It works without an API key. |
 | Configured provider | A connected AI service. It is optional for this test kit. |
-| Vault | The local folder where Counsel OS stores its Markdown records and uploaded files. |
+| Vault | The local folder where Themis.ai stores its Markdown records and uploaded files. |
 
 ### How to record each test
 
@@ -75,7 +75,7 @@ understand the technical cause.
 ### Test files you can upload now
 
 You do not need to create the three text files by hand. Download or drag these
-files into Counsel OS when the guide tells you to upload them:
+files into Themis.ai when the guide tells you to upload them:
 
 - [`nimbus-product-spec.txt`](test-fixtures/nimbus-product-spec.txt)
 - [`nimbus-marketing-copy.txt`](test-fixtures/nimbus-marketing-copy.txt)
@@ -130,7 +130,7 @@ At the end, you should have one matter that has:
 - separate approval, delivery, decision, and closure actions;
 - a visible history in the matter, Today, Workspace, Matters, and Decisions.
 
-Counsel OS does not need to give a legally final answer to pass this test. It
+Themis.ai does not need to give a legally final answer to pass this test. It
 does need to give useful first-pass work, state material assumptions, and keep
 the lawyer in control of recorded decisions.
 
@@ -141,7 +141,7 @@ the lawyer in control of recorded decisions.
 This step is not required for a first learning pass. It is required if you
 need a clean, repeatable result or you want to test deletion and recovery.
 
-Ask the developer who runs Counsel OS to create a temporary test vault and
+Ask the developer who runs Themis.ai to create a temporary test vault and
 start the frontend and backend against it. The technical steps are in
 [`docs/ACCEPTANCE_TESTS.md`](ACCEPTANCE_TESTS.md), under **Isolated browser
 testing**. Do not delete files or databases yourself unless you know that you
@@ -150,7 +150,7 @@ are in the temporary test vault.
 Use this message if needed:
 
 ```text
-Please start Counsel OS with a temporary test vault for the end-to-end test
+Please start Themis.ai with a temporary test vault for the end-to-end test
 kit. I need the browser URL and confirmation that I can safely create, edit,
 and delete test records there.
 ```
@@ -373,7 +373,7 @@ label with the same meaning and record the difference in your test note.
 | E2E-09 | Ask for orientation. | First prompt in section 2.6. | The answer is useful and matter-specific. It names assumptions or open questions. It does not change records. |
 | E2E-10 | Inspect chat history. | Reload the page, then open saved chat. | The question and answer remain. The answer renders Markdown correctly. Any actions are in a closed Actions taken or trace control. |
 | E2E-11 | Create work through chat. | Second prompt in section 2.6. | A work item is saved with the requested title and owner. The trace names the action. The stage is unchanged. |
-| E2E-12 | Test single-file upload. | Upload `nimbus-product-spec.txt`. | The source is saved with a stable source reference. An intent card asks what Themis should do. No fact is silently promoted yet. |
+| E2E-12 | Test single-file upload. | Upload `nimbus-product-spec.txt`. | The source is saved with a stable source reference. An intent card asks what Themis.ai should do. No fact is silently promoted yet. |
 | E2E-13 | Give file intent. | `Extract material facts and add only supported facts to the matter. Flag any assumptions.` | The file intent is part of the saved message. Any extracted work identifies its source. The original source remains available. |
 | E2E-14 | Test a document set. | Attach the marketing and vendor files together. | The UI identifies a set of two files and asks for one intent. Preview does not apply changes automatically. |
 | E2E-15 | Preview and apply a document set. | `Compare these documents to the matter. Propose factual updates and marketing risks.` Then use Preview, Apply once, and Undo. | Preview is read-only. Apply has one grouped, visible result. Undo reverses the grouped applied result but keeps uploaded files. |
@@ -475,7 +475,7 @@ These screens should give the lawyer orientation before details.
 | NAV-06 | Matters | Switch Table and Stages. | The same Nimbus state is visible in both views. |
 | NAV-07 | Matters | Filter by owner, product area, risk, and each count chip. | Filters narrow results accurately. Clear filters restores all records. |
 | NAV-08 | Matters | Expand/collapse a stage group and use drag-and-drop. | Group state works. A valid drag persists after refresh. Closed cannot be reached by board drag. |
-| NAV-09 | Matters | Inspect words beside state colors. | There is a state word, not color alone: for example Overdue, Waiting, Themis is working, Needs assignment, or No action needed. |
+| NAV-09 | Matters | Inspect words beside state colors. | There is a state word, not color alone: for example Overdue, Waiting, Themis.ai is working, Needs assignment, or No action needed. |
 
 ## 7. Decisions
 
@@ -508,7 +508,7 @@ Create the explicit Nimbus decision in E2E-23 before these checks.
 
 | ID | Action | Expected result |
 | --- | --- | --- |
-| AGT-01 | Open Agents and select Counsel Copilot. | User-facing name, role, purpose, available context, and start behavior are understandable. |
+| AGT-01 | Open Agents and select Themis.ai. | User-facing name, role, purpose, available context, and start behavior are understandable. |
 | AGT-02 | Change one non-sensitive description field, save, reload, and restore it. | Save persists. Discard removes unsaved changes. |
 | AGT-03 | Open Advanced controls. | Tool permissions and file path are visible only here. Unselected tools are unavailable to the agent. |
 | AGT-04 | Follow Manage automations. | It opens Automations, not a fake scheduling control in Agents. |
@@ -549,7 +549,7 @@ briefing sample data or a configured public-intelligence provider.
 
 ## 10. Negative, integrity, and recovery tests
 
-These tests are important because Counsel OS holds the lawyer’s work records.
+These tests are important because Themis.ai holds the lawyer’s work records.
 
 | ID | Action | Expected result |
 | --- | --- | --- |

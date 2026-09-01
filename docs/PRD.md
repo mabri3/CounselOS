@@ -1,19 +1,19 @@
 # Product Requirements Document
 
-## Counsel OS — Product Counsel Workspace MVP
+## Themis.ai — Product Counsel Workspace MVP
 
 **Document status:** Build-ready MVP closure PRD
 **Version:** 0.2
 **Primary user:** In-house product counsel, solo general counsel, or a very small legal team  
 **Initial module:** Product Counsel  
-**Working product name:** Counsel OS  
+**Working product name:** Themis.ai
 **Implementation target:** Local web application for rapid iteration; cloud-native and desktop packaging are future deployment options, not MVP commitments
 
 ---
 
 ## 1. Executive summary
 
-Counsel OS is an agentic legal workspace designed to reduce the cognitive load of product counsel. It takes scattered requests, documents, company knowledge, legal research, tasks, recommendations, decisions, and follow-up work and organizes them into a predictable legal workflow.
+Themis.ai is an agentic legal workspace designed to reduce the cognitive load of product counsel. It takes scattered requests, documents, company knowledge, legal research, tasks, recommendations, decisions, and follow-up work and organizes them into a predictable legal workflow.
 
 The product is not intended to replace the lawyer’s judgment or to produce legally perfect answers. It is a leverage tool. Its job is to get the lawyer from an unstructured starting point to a useful, organized foothold from which the lawyer can perform the last mile of legal work.
 
@@ -51,7 +51,7 @@ Most tools either store documents, manage tasks, or answer isolated questions. T
 
 ### 2.2 The intended outcome
 
-When the lawyer opens Counsel OS, the system should answer three questions within seconds:
+When the lawyer opens Themis.ai, the system should answer three questions within seconds:
 
 1. What requires my attention?
 2. What work has already been done for me?
@@ -69,7 +69,7 @@ When the lawyer opens a matter, the system should immediately provide:
 
 ### 2.3 Product promise
 
-Counsel OS reduces the lawyer’s grunt work and context-switching so the lawyer can spend more time doing what the lawyer does best: exercising judgment and making decisions.
+Themis.ai reduces the lawyer’s grunt work and context-switching so the lawyer can spend more time doing what the lawyer does best: exercising judgment and making decisions.
 
 ---
 
@@ -757,7 +757,7 @@ For the MVP, a full rebuild is preferred over complex incremental synchronizatio
 
 ### 11.2 Initial agents
 
-#### Counsel Copilot
+#### Workspace assistant
 
 Default interactive agent. It orients, answers, drafts, searches, and invokes tools.
 
@@ -839,7 +839,7 @@ changes provider or model.
 
 Provider credentials and CLI sessions stay in the runtime environment. They
 are not stored in the vault or SQLite. CLI-backed providers expose only
-Counsel OS typed tools. They do not expose their own shell, file, browser, or
+Themis.ai typed tools. They do not expose their own shell, file, browser, or
 plugin tools.
 
 Additional provider families are deferred. They must use the same small
@@ -950,8 +950,8 @@ company and matter data before a Polaris call. Polaris receives public intent
 only.
 
 Polaris observations and supplied citations are combined with private company
-and matter context only inside Counsel OS by the selected Research Agent.
-Polaris citations start as **Supplied** until Counsel OS retrieves and checks
+and matter context only inside Themis.ai by the selected Research Agent.
+Polaris citations start as **Supplied** until Themis.ai retrieves and checks
 them. If Polaris or native search is unavailable, the system must still
 produce the best useful internal packet and identify the missing external
 support.
@@ -1035,10 +1035,10 @@ Otherwise, the decision is **Fresh**.
 ### 15.3 External legal-change monitoring
 
 The MVP includes Continuous Legal Awareness. A lawyer can create an editable
-Watch, select Counsel OS native collection, Polaris, or both, run a one-time
+Watch, select Themis.ai native collection, Polaris, or both, run a one-time
 scan, and start or pause a schedule. A scan stores supported public
 developments, Briefing items, provider warnings, and source coverage. It then
-reloads current company knowledge inside Counsel OS to find links to matters,
+reloads current company knowledge inside Themis.ai to find links to matters,
 decisions, and mitigations.
 
 Briefing is a separate reading surface. Today contains only work that requires
@@ -1056,7 +1056,7 @@ Each source has two separate labels:
 - A Watch-specific role: primary, secondary, discovery-only, or excluded.
 
 Polaris supplies public intelligence only. Its citations remain **Supplied**
-until Counsel OS retrieves and checks the cited material. A provider failure
+until Themis.ai retrieves and checks the cited material. A provider failure
 does not erase useful output from another provider. The run is shown as
 **Partial**, with its warning and successful results preserved.
 
@@ -1387,7 +1387,7 @@ This direction is plausible but not a committed architecture. The MVP should not
 
 1. Create a matter from the dashboard.
 2. Verify it appears in Intake.
-3. Verify the new matter opens directly in Chat with Themis while the Intake Agent reads the request in a background run.
+3. Verify the new matter opens directly in Chat with Themis.ai while the Intake Agent reads the request in a background run.
 4. Verify the first response summarizes the actual request and asks one material, request-specific question.
 5. Answer the question and verify the next question adapts to the answer.
 6. Stop intake early and verify the exact transcript, source-linked matter records, useful labeled dossier, and next counsel action remain available.
@@ -1534,6 +1534,6 @@ The first demo is complete when a lawyer can:
 9. Create or run an automation.
 10. Inspect the Markdown files that define the system, agents, tools, and records.
 11. Assign different provider/model/reasoning combinations to different agents and observe those selections on their runs.
-12. Submit an incomplete matter, answer contextual intake questions in Chat with Themis, and receive privacy-safe Polaris research plus a useful editable dossier.
+12. Submit an incomplete matter, answer contextual intake questions in Chat with Themis.ai, and receive privacy-safe Polaris research plus a useful editable dossier.
 
 The demo does not need to prove that the assistant is always right. It needs to prove that the assistant materially reduces setup work and gets a lawyer to useful judgment faster.

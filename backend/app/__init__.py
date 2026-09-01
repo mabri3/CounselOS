@@ -1,1 +1,1 @@
-"""Counsel OS backend package."""
+"""Themis.ai backend package."""

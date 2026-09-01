@@ -85,6 +85,26 @@ def test_non_required_and_closed_items_do_not_replace_fallback_action(tmp_path: 
     assert result["next_actor"] == "none"
 
 
+def test_completed_intake_ignores_stale_orientation_item(tmp_path: Path) -> None:
+    result = _service(tmp_path).resolve(
+        _matter(intake_state="complete", next_action="Review the dossier."),
+        [_item("ORIENT", title="Orient to the request")],
+    )
+
+    assert result["next_work_item_id"] is None
+    assert result["next_action"] == "Review the dossier."
+
+
+def test_stopped_intake_ignores_stale_orientation_item(tmp_path: Path) -> None:
+    result = _service(tmp_path).resolve(
+        _matter(intake_state="stopped", next_action="Review the dossier."),
+        [_item("ORIENT", title="Orient to the request")],
+    )
+
+    assert result["next_work_item_id"] is None
+    assert result["next_action"] == "Review the dossier."
+
+
 def test_stage_default_is_used_when_no_item_or_saved_action_exists(tmp_path: Path) -> None:
     service = _service(tmp_path)
 
@@ -125,13 +145,28 @@ def test_named_owner_preserves_spelling(tmp_path: Path) -> None:
     }
 
 
+def test_configured_lawyer_is_mapped_to_you(tmp_path: Path) -> None:
+    service = _service(tmp_path)
+    service.vault.write_markdown(
+        "00_System/settings.md",
+        "# Settings\n",
+        {"values": {"document_review.lawyer_name": "Brian Harris"}},
+    )
+
+    result = service.resolve(_matter(), [_item("WI-1", owner="brian harris")])
+
+    assert result["next_owner"] == "brian harris"
+    assert result["next_actor"] == "you"
+    assert result["signal"] == {"kind": "waiting_on_you", "label": "Waiting on you"}
+
+
 def test_themis_without_active_run_is_ready(tmp_path: Path) -> None:
     result = _service(tmp_path).resolve(_matter(), [_item("WI-1", owner="theMIS")])
 
     assert result["next_owner"] == "theMIS"
     assert result["next_actor"] == "themis"
     assert result["execution_state"] == "not_running"
-    assert result["signal"] == {"kind": "ready_for_themis", "label": "Ready for Themis"}
+    assert result["signal"] == {"kind": "ready_for_themis", "label": "Ready for Themis.ai"}
 
 
 def test_newest_active_queued_or_running_run_reports_agent_working(tmp_path: Path) -> None:
@@ -143,7 +178,7 @@ def test_newest_active_queued_or_running_run_reports_agent_working(tmp_path: Pat
 
     assert result["execution_state"] == "running"
     assert result["active_run_id"] == "RUN-NEW"
-    assert result["signal"] == {"kind": "agent_working", "label": "Themis is working"}
+    assert result["signal"] == {"kind": "agent_working", "label": "Themis.ai is working"}
 
 
 def test_queued_run_reports_agent_working(tmp_path: Path) -> None:

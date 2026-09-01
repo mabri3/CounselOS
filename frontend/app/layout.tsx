@@ -24,7 +24,7 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Counsel OS",
+  title: "Themis.ai",
   description: "An agentic product-counsel workspace",
 };
 

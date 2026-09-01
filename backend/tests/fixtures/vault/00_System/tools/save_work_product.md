@@ -15,4 +15,4 @@ parameters:
 ---
 # Tool: save_work_product
 
-Save a working recommendation, or create a canonical draft. To revise an existing canonical draft, pass its `existing_draft_path`. Revision preserves the draft path, identity, and title and records tracked changes. A final, protected record, invalid path, or draft from another matter is rejected. Use finalization to create an immutable final.
+Save a working recommendation, or create or revise the current canonical draft. Put the full deliverable body in `content`; do not put a description or summary there. When a current canonical draft exists, omitting `existing_draft_path` revises that draft. Passing `existing_draft_path` must name that same current draft. Revision preserves the draft path, identity, and title and records tracked changes. A legacy root work product is read-only. A final, protected record, invalid path, or draft from another matter is rejected. Use finalization to create an immutable final.

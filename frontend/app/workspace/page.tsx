@@ -99,7 +99,7 @@ export default function WorkspacePage() {
             <span style={{ font: "400 14px var(--sans)", color: "var(--ink-4)" }}>Drag to move active work. Close a matter from its page after delivery.</span>
             <span className="legend-item"><span className="dot" style={{ background: role.failure }} />Overdue</span>
             <span className="legend-item"><span className="dot" style={{ background: role.attention }} />Waiting on you</span>
-            <span className="legend-item"><span className="dot" style={{ background: role.agent }} />Themis is working</span>
+            <span className="legend-item"><span className="dot" style={{ background: role.agent }} />Themis.ai is working</span>
             <span className="legend-item"><span className="dot" style={{ background: "#d6d1c7" }} />No action needed</span>
           </div>
           {loaded ? (

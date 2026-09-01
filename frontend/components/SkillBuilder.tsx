@@ -138,26 +138,26 @@ export default function SkillBuilder({ initialGoal }: { initialGoal: string }) {
                 <h1>Skills</h1>
                 <p className="skill-intro">
                   A skill is reusable guidance for one chat request. Save the way you want a recurring
-                  kind of work handled once, then type its command in chat and Counsel OS follows that
+                  kind of work handled once, then type its command in chat and Themis.ai follows that
                   guidance for that one message.
                 </p>
 
                 <div className="skill-start-grid">
                   <div className="skill-start-card lead">
                     <h2>Start from work you repeat</h2>
-                    <p>Say what you want to make easier. Counsel OS asks five short questions, writes the guidance, and lets you edit every word before it is saved.</p>
+                    <p>Say what you want to make easier. Themis.ai asks five short questions, writes the guidance, and lets you edit every word before it is saved.</p>
                     <div className="btn-row"><button className="btn primary" onClick={() => startGuided()} type="button">Build a skill</button></div>
                   </div>
                   <div className="skill-start-card">
-                    <h2>Let Counsel OS spot the pattern</h2>
-                    <p>Counsel OS reads your recent chat messages and proposes up to three skills worth saving, each with the messages that suggested it. Nothing is created until you choose to build it.</p>
+                    <h2>Let Themis.ai spot the pattern</h2>
+                    <p>Themis.ai reads your recent chat messages and proposes up to three skills worth saving, each with the messages that suggested it. Nothing is created until you choose to build it.</p>
                     <div className="btn-row"><button className="btn" disabled={busy} onClick={() => void findRepeatedWork()} type="button">{findingSuggestions ? "Reviewing…" : "Find repeated work"}</button></div>
                   </div>
                 </div>
 
                 <div className="skill-example">
                   <strong>How you use one:</strong> in any chat, type <span className="mono">/product-launch-review</span> and
-                  your request. The skill shapes that answer only. It never changes what Counsel OS is allowed to do.
+                  your request. The skill shapes that answer only. It never changes what Themis.ai is allowed to do.
                 </div>
 
                 <section className="skill-section">
@@ -233,7 +233,7 @@ export default function SkillBuilder({ initialGoal }: { initialGoal: string }) {
                     ? "This skill is saved. Type its command in any chat to apply it to one request."
                     : view === "edit"
                       ? "Change anything here, then save. Existing chats that already used this skill are unchanged."
-                      : "Counsel OS wrote this from your answers. Nothing is saved until you choose Create skill."}
+                      : "Themis.ai wrote this from your answers. Nothing is saved until you choose Create skill."}
                 </p>
                 {warning ? <p className="skill-warning">{warning}</p> : null}
                 {view === "saved" ? <div className="agent-note" style={{ marginTop: 18, borderStyle: "solid", background: "var(--healthy-wash)", borderColor: "var(--line)" }}>
@@ -250,7 +250,7 @@ export default function SkillBuilder({ initialGoal }: { initialGoal: string }) {
                 <label className="field-block"><span className="field-label">Purpose</span><input className="text-input" value={draft.description} onChange={(event) => setDraft({ ...draft, description: event.target.value })} /><span className="skill-field-help">One line saying when to reach for this skill.</span></label>
                 <details className="field-block" open={view !== "saved"}>
                   <summary className="section-heading" style={{ cursor: "pointer" }}>Requested guidance (Markdown)</summary>
-                  <p>This is the full guidance created from your request. It is what Counsel OS reads when you use the command. You can edit it before or after saving.</p>
+                  <p>This is the full guidance created from your request. It is what Themis.ai reads when you use the command. You can edit it before or after saving.</p>
                   <textarea aria-label="Requested guidance" className="text-input prose" rows={12} value={draft.instructions} onChange={(event) => setDraft({ ...draft, instructions: event.target.value })} />
                 </details>
               </>
@@ -273,7 +273,7 @@ export default function SkillBuilder({ initialGoal }: { initialGoal: string }) {
             </section> : null}
           </div>
         </div>
-        {(view === "draft" || view === "edit" || view === "saved") && draft ? <div className="admin-foot"><span className="stub-note">A skill guides one chat request. It cannot change what Counsel OS is allowed to do.</span><div className="btn-row"><button className="btn" onClick={() => startGuided()} type="button">Start over</button><button className="btn primary" disabled={busy || !draft.skill_id || !draft.name || !draft.description || !draft.instructions} onClick={() => void save()} type="button">{busy ? "Saving…" : editingId ? "Save changes" : "Create skill"}</button></div></div> : null}
+        {(view === "draft" || view === "edit" || view === "saved") && draft ? <div className="admin-foot"><span className="stub-note">A skill guides one chat request. It cannot change what Themis.ai is allowed to do.</span><div className="btn-row"><button className="btn" onClick={() => startGuided()} type="button">Start over</button><button className="btn primary" disabled={busy || !draft.skill_id || !draft.name || !draft.description || !draft.instructions} onClick={() => void save()} type="button">{busy ? "Saving…" : editingId ? "Save changes" : "Create skill"}</button></div></div> : null}
       </div>
     </div>
   );

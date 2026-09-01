@@ -33,8 +33,19 @@ class MatterRecordService:
         assumptions: Iterable[dict[str, Any]] = (),
         summary: str = "Matter facts updated",
         actor: str = "assistant",
+        source_action_key: str | None = None,
     ) -> dict[str, Any]:
         record = self.get(matter_id)
+        if source_action_key:
+            existing = next(
+                (
+                    action for action in record["actions"]
+                    if action.get("source_action_key") == source_action_key
+                ),
+                None,
+            )
+            if existing is not None:
+                return existing
         action_id = new_id("ACT")
         now = iso_now()
         created: dict[str, list[str]] = {key: [] for key in ("facts", "sources", "support", "assumptions")}
@@ -126,6 +137,7 @@ class MatterRecordService:
             "created_at": now,
             "status": "applied",
             "created": created,
+            "source_action_key": source_action_key,
         }
         record["actions"].append(action)
         self._save(matter_id, record)
@@ -171,8 +183,19 @@ class MatterRecordService:
         expected_dossier_hash: str | None = None,
     ) -> IntakeTurnResult:
         matter = self.matters.get(matter_id)
-        questions = turn.next_questions if turn.intake_state == "active" else []
         record = self.get(matter_id)
+        if record.get("intake_state") == "complete" and turn.intake_state == "active":
+            return self._unchanged_intake_result(turn, record, intake_state="complete")
+        if turn.source_action_key and any(
+            action.get("source_action_key") == turn.source_action_key
+            for action in record["actions"]
+        ):
+            return self._unchanged_intake_result(
+                turn,
+                record,
+                intake_state=str(record.get("intake_state") or turn.intake_state),
+            )
+        questions = turn.next_questions if turn.intake_state == "active" else []
         if not source_id:
             request_path = f"{matter['path']}/request.md"
             request = self.vault.read_markdown(request_path)
@@ -243,6 +266,7 @@ class MatterRecordService:
             support=support,
             assumptions=assumptions,
             summary="Applied an Intake Agent turn",
+            source_action_key=turn.source_action_key,
         )
         record_ids.extend(action["created"]["assumptions"])
         record = self.get(matter_id)
@@ -315,10 +339,47 @@ class MatterRecordService:
             intake_state=turn.intake_state,
         )
 
+    @staticmethod
+    def _unchanged_intake_result(
+        turn: IntakeTurn,
+        record: dict[str, Any],
+        *,
+        intake_state: str,
+    ) -> IntakeTurnResult:
+        questions = turn.next_questions if intake_state == "active" else []
+        action = next(
+            (
+                item for item in record["actions"]
+                if turn.source_action_key
+                and item.get("source_action_key") == turn.source_action_key
+            ),
+            None,
+        )
+        return IntakeTurnResult(
+            changed_paths=[],
+            record_ids=[],
+            questions=questions,
+            question=questions[0] if questions else None,
+            matter_update=(
+                MatterUpdateCard(
+                    action_id=action["action_id"],
+                    summary="Matter intake already updated",
+                    changed_sections=[],
+                    can_edit=False,
+                    can_undo=False,
+                )
+                if action
+                else None
+            ),
+            intake_state=intake_state,
+        )
+
     def set_intake_state(self, matter_id: str, state: str) -> dict[str, Any]:
         if state not in {"active", "complete"}:
             raise ValueError("Intake state must be active or complete.")
         record = self.get(matter_id)
+        if record.get("intake_state") == "complete" and state == "active":
+            raise ValueError("Completed intake cannot become active again.")
         record["intake_state"] = state
         self._save(matter_id, record)
         matter = self.matters.get(matter_id)
@@ -328,6 +389,11 @@ class MatterRecordService:
                 "intake_state": state,
                 "active_agent_id": (
                     "intake-agent" if state == "active" else "counsel-copilot"
+                ),
+                "next_action": (
+                    "Orient to the request and identify the first missing facts."
+                    if state == "active"
+                    else "Review the dossier and continue the legal work."
                 ),
                 "updated_at": iso_now(),
             },

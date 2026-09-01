@@ -4,6 +4,7 @@ from datetime import date
 import re
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from pydantic import BaseModel
 
 from app.models.api import ChatMessage, ChatRequest, ChatResponse, ChatRun, MatterUpdateCard, WorkProductCard
 from app.routers.dependencies import get_context
@@ -12,6 +13,10 @@ from app.agents.runner import RunnerExecutionState
 
 
 router = APIRouter(tags=["chat"])
+
+
+class IntakeQuestionRecoveryRequest(BaseModel):
+    conversation_id: str
 
 
 @router.post("/daily-uploads", status_code=201)
@@ -56,6 +61,42 @@ async def start_chat_run(matter_id: str, payload: ChatRequest, context: AppConte
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
+@router.post("/matters/{matter_id}/intake-question-recovery", response_model=ChatRun, status_code=202)
+async def recover_intake_question(
+    matter_id: str,
+    payload: IntakeQuestionRecoveryRequest,
+    context: AppContext = Depends(get_context),
+):
+    try:
+        conversation = context.chat_history.get(matter_id, payload.conversation_id)
+        if conversation.get("conversation_kind") != "intake" or conversation.get("intake_state") != "active":
+            raise ValueError("Only an active intake conversation can recover a question.")
+        latest = conversation["messages"][-1] if conversation["messages"] else None
+        if not latest or latest.get("role") != "assistant":
+            raise ValueError("The active intake is waiting for its current turn to finish.")
+        if any(card.get("type") == "question" for card in latest.get("cards") or []):
+            raise ValueError("The active intake already has a structured question.")
+        run = context.chat_runs.start(
+            matter_id,
+            ChatRequest(
+                message=(
+                    "Continue the active intake from the saved conversation. Reassess the current matter record. "
+                    "Use update_matter_intake to return the next material question as a structured question card, "
+                    "or mark intake complete if no material question remains. Do not repeat an answered question."
+                ),
+                matter_id=matter_id,
+                conversation_id=payload.conversation_id,
+                agent_id="intake-agent",
+            ),
+            persist_user_message=False,
+        )
+        return ChatRun.model_validate(run)
+    except (KeyError, FileNotFoundError) as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+
 @router.get("/matters/{matter_id}/chat-runs/{run_id}", response_model=ChatRun)
 async def get_chat_run(matter_id: str, run_id: str, context: AppContext = Depends(get_context)):
     try:
@@ -82,6 +123,7 @@ async def execute_chat(
     execution_state: RunnerExecutionState | None = None,
     checkpoint=None,
     resolved_provider=None,
+    persist_user_message: bool = True,
 ) -> ChatResponse:
     try:
         if not payload.message.strip() and not payload.card_action and not payload.attachments:
@@ -124,19 +166,21 @@ async def execute_chat(
             )
             if existing_user:
                 saved = context.chat_history.get(payload.matter_id, conversation_id)
-            else:
+            elif persist_user_message:
                 saved = context.chat_history.append(
                     payload.matter_id, conversation_id, role="user", content=user_content,
                     attachments=[item.model_dump() for item in payload.attachments],
                     card_action=payload.card_action.model_dump() if payload.card_action else None,
                     run_id=run_id,
                 )
+            elif not conversation_id:
+                raise ValueError("An internal recovery needs an existing conversation.")
             conversation_id = saved["conversation_id"]
             conversation = context.chat_history.get(payload.matter_id, conversation_id)
-            current_user = existing_user or conversation["messages"][-1]
-            trusted_source_id = next(
-                iter(current_user.get("source_ids") or []),
-                current_user.get("message_id"),
+            current_user = existing_user or (conversation["messages"][-1] if persist_user_message else None)
+            trusted_source_id = (
+                next(iter(current_user.get("source_ids") or []), current_user.get("message_id"))
+                if current_user else None
             )
             intake_active = (
                 conversation.get("conversation_kind") == "intake"
@@ -396,6 +440,7 @@ def _apply_matter_actions(
             title=f"{matter['title']} advice",
             content=f"# {matter['title']} advice\n\n## Working answer\n\n{response.reply}\n\n## Assumptions and open items\n\nConfirm material facts before finalizing.",
             summary="Editable first-pass advice",
+            source_action_key=f"{payload.source_action_key or run_id or saved['conversation_id']}:fallback-work-product",
         )
         response.cards.append(WorkProductCard(**draft))
         response.changed_paths.append(draft["vault_path"])

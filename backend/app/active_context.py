@@ -71,7 +71,7 @@ class ActiveContextManager:
             await old.scheduler.stop()
             if old.has_active_work():
                 raise VaultBusyError(
-                    "Counsel OS is running scheduled or research work. Try again after it finishes."
+                    "Themis.ai is running scheduled or research work. Try again after it finishes."
                 )
             vault_path = prepare(old.vault.root)
             candidate = AppContext(

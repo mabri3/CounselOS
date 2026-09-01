@@ -6,7 +6,7 @@ const agents = readFileSync(new URL("../app/agents/page.tsx", import.meta.url), 
 const api = readFileSync(new URL("../lib/api.ts", import.meta.url), "utf8");
 const types = readFileSync(new URL("../lib/types.ts", import.meta.url), "utf8");
 
-for (const provider of ["mock", "openai_compatible", "opencode_go", "codex", "antigravity_cli"]) {
+for (const provider of ["mock", "openai_compatible", "polaris", "opencode_go", "codex", "antigravity_cli"]) {
   assert.match(api, new RegExp(`MODEL_PROVIDER_IDS[^;]+["']${provider}["']`), `the catalog must include ${provider}`);
 }
 

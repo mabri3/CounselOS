@@ -103,6 +103,7 @@ def test_model_settings_catalog_and_runtime_switch(app_context, monkeypatch):
     assert [provider["id"] for provider in catalog["providers"]] == [
         "mock",
         "openai_compatible",
+        "polaris",
         "opencode_go",
         "codex",
         "antigravity_cli",
@@ -112,6 +113,7 @@ def test_model_settings_catalog_and_runtime_switch(app_context, monkeypatch):
         "model-b",
     ]
     assert catalog["providers"][0]["readiness"] == "ready"
+    assert catalog["providers"][2]["readiness"] == "missing"
     assert catalog["providers"][1]["models"][1]["reasoning_efforts"] == [
         "default",
         "high",
@@ -147,6 +149,24 @@ def test_model_settings_catalog_and_runtime_switch(app_context, monkeypatch):
     assert offline.status_code == 200
     assert isinstance(app_context.provider, MockProvider)
     assert app_context.settings.llm_reasoning_effort is None
+
+    app_context.settings = app_context.settings.model_copy(
+        update={"polaris_api_key": "polaris-key"}
+    )
+    app_context.provider_router.settings = app_context.settings
+    polaris = client.put(
+        "/api/settings",
+        json={
+            "values": {
+                "agents.provider": "polaris",
+                "agents.reasoning_model": "polaris-advisor",
+                "agents.reasoning_effort": "default",
+            }
+        },
+    )
+    assert polaris.status_code == 200
+    assert isinstance(app_context.provider, OpenAICompatibleProvider)
+    assert app_context.provider.settings.llm_provider == "polaris"
 
 
 def test_invalid_model_setting_does_not_change_runtime(app_context):

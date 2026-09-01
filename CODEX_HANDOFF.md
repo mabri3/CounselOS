@@ -1,6 +1,6 @@
 # Codex handoff prompt
 
-You are the senior coding agent responsible for turning this scaffold into a reliable MVP of Counsel OS.
+You are the senior coding agent responsible for turning this scaffold into a reliable MVP of Themis.ai.
 
 ## Read first
 
@@ -13,22 +13,21 @@ You are the senior coding agent responsible for turning this scaffold into a rel
 
 ## Current authoritative checkpoint
 
-The active work order is
-`docs/core-intake-provider-completion.handoff-prompt.md`. Read its plan and
-progress file before application changes. Resume at the first pending step.
+The Themis.ai reliability build is complete. Its authoritative plan, execution
+record, and reusable prompt are:
 
-This checkpoint is exhaustive for the MVP. Audit every unchecked, pending, or
-failed item in `current.md`, `docs/BUILD_PLAN.md`,
-`docs/ACCEPTANCE_TESTS.md`, and every `docs/*.handoff-progress.md` file.
-Implement and verify each non-Later item. Preserve stale history with dated
-corrections. Do not create a new active or Next plan to defer unfinished work.
-At completion, only the explicit Later list in `current.md` may remain.
+- `docs/themis-ai-reliability-build.handoff-plan.md`
+- `docs/themis-ai-reliability-build.handoff-progress.md`
+- `docs/themis-ai-reliability-build.handoff-prompt.md`
 
-Execution is parallel: one Sol Medium coordinator, three concurrent Sol Medium
-implementers in dependency-safe shared-tree waves, and one independent
-read-only Sol Medium reviewer. If that reviewer cannot resolve a material
-question after inspecting the code and tests, the coordinator dispatches one
-read-only Sol High agent for that exact question.
+The full backend suite passes 550 tests. Every standalone frontend check,
+workspace check, typecheck, production build, graph refresh, isolated browser
+demo, and repository-vault guard passed. One independent Sol High reviewer
+found nine issues. Sol Light corrections resolved them, and the same reviewer
+reported no unresolved material finding after two rechecks.
+
+There is no active or Next checkpoint. Read `current.md` before new work. Start
+only from an explicit Later item or a new user request.
 
 ## Product objective
 

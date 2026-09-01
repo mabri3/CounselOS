@@ -16,11 +16,22 @@ from app.models.api import (
 from app.active_context import VaultBusyError
 from app.routers.dependencies import get_context
 from app.runtime import AppContext
-from app.services.company import CompanyProfileVersionConflictError
+from app.services.company import (
+    CompanyProfileReplacementConfirmationError,
+    CompanyProfileVersionConflictError,
+)
 from app.vault_manager import VaultManager
 
 
 router = APIRouter(prefix="/settings", tags=["settings"])
+
+
+class CompanyProfileUpdate(CompanyProfile):
+    replacement_confirmation: str = ""
+
+
+class CompanyProfileResponse(CompanyProfile):
+    saved_at: str = ""
 
 
 @router.get("/vault", response_model=VaultInfo)
@@ -51,7 +62,7 @@ async def _activate_vault(request: Request, path: str, *, create: bool) -> dict[
             raise HTTPException(
                 status_code=500,
                 detail=(
-                    f"Vault created at {selected}, but Counsel OS could not activate it: {exc}. "
+                    f"Vault created at {selected}, but Themis.ai could not activate it: {exc}. "
                     "The completed vault was preserved and can be loaded from that path."
                 ),
             ) from exc
@@ -70,20 +81,36 @@ async def load_vault(payload: VaultPathRequest, request: Request):
     return await _activate_vault(request, payload.path, create=False)
 
 
-@router.get("/company", response_model=CompanyProfile)
+def _company_response(context: AppContext, profile: CompanyProfile) -> dict[str, str]:
+    return {**profile.model_dump(), "saved_at": context.company.saved_at()}
+
+
+@router.get("/company", response_model=CompanyProfileResponse)
 def get_company_profile(context: AppContext = Depends(get_context)):
-    return context.company.read()
+    return _company_response(context, context.company.read())
 
 
-@router.put("/company", response_model=CompanyProfile)
-def update_company_profile(payload: CompanyProfile, context: AppContext = Depends(get_context)):
+@router.put("/company", response_model=CompanyProfileResponse)
+def update_company_profile(
+    payload: CompanyProfileUpdate,
+    context: AppContext = Depends(get_context),
+):
+    profile = CompanyProfile.model_validate(
+        payload.model_dump(exclude={"replacement_confirmation"})
+    )
     try:
-        return context.company.write(payload)
+        saved = context.company.write(
+            profile,
+            replacement_confirmation=payload.replacement_confirmation,
+        )
+        return _company_response(context, saved)
     except CompanyProfileVersionConflictError as exc:
         raise HTTPException(
             status_code=409,
             detail="The company profile changed. Reload it and try again.",
         ) from exc
+    except CompanyProfileReplacementConfirmationError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
 
 
 @router.get("/company/interview", response_model=CompanyInterviewGuide)

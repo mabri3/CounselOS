@@ -46,6 +46,8 @@ class ResearchRunService:
         run_id = new_id("RUN")
         resolved = self.resolve_agent() if self.resolve_agent is not None else None
         selection = self._selection_values(resolved) if resolved is not None else None
+        matter = self.research.index.get_matter(matter_id)
+        original_stage = str(matter.get("status") or "") if matter else ""
         record = self._write(
             matter_id,
             run_id,
@@ -55,7 +57,12 @@ class ResearchRunService:
             status="Research is queued.",
             source_action_key=source_action_key,
             selection=selection,
+            return_stage="explore" if original_stage in {"intake", "research", "explore"} else original_stage,
         )
+        if original_stage in {"intake", "explore"}:
+            self.research.matters.move_stage(
+                matter_id, "research", reason="Research run started", actor="research-agent"
+            )
         self._tasks[run_id] = asyncio.create_task(self._execute(matter_id, run_id, clean_questions))
         return record
 
@@ -88,12 +95,17 @@ class ResearchRunService:
 
     def mark_running_interrupted(self) -> int:
         count = 0
+        interrupted: list[tuple[str, str]] = []
         for path in self.vault.iter_files("03_Matters", {".md"}):
             if path.parent.name != "runs":
                 continue
             relative = self.vault.relative(path)
             document = self.vault.read_markdown(relative)
-            if document["metadata"].get("state") in {"queued", "running"}:
+            metadata = document["metadata"]
+            if (
+                metadata.get("record_type") == "research_run"
+                and metadata.get("state") in {"queued", "running"}
+            ):
                 self.vault.update_markdown(
                     relative,
                     metadata_updates={
@@ -103,6 +115,10 @@ class ResearchRunService:
                     },
                 )
                 count += 1
+                interrupted.append((str(metadata.get("matter_id") or ""), str(metadata.get("run_id") or path.stem)))
+        for matter_id, run_id in interrupted:
+            if matter_id:
+                self._restore_stage(matter_id, run_id, reason="Research was interrupted; review the matter")
         return count
 
     async def wait(self, run_id: str) -> None:
@@ -133,17 +149,34 @@ class ResearchRunService:
                     matter_id, run_id, state="running", questions=questions, completed=position,
                     status=f"Completed {position} of {len(questions)} research items.", results=results,
                 )
+            public_statuses = {str(item.get("public_research_status") or "unavailable") for item in results}
+            has_public = "retrieved" in public_statuses
+            provider_observability = [
+                dict(observation)
+                for item in results
+                if isinstance((observation := item.get("polaris_observability")), dict)
+                and observation.get("failure_class")
+            ]
             self._write(
                 matter_id, run_id, state="completed", questions=questions, completed=len(questions),
-                status="Research is complete.", results=results, finished_at=iso_now(),
+                status=(
+                    "Research is complete."
+                    if has_public
+                    else "Partial research is saved; no public source was retrieved."
+                ),
+                results=results, finished_at=iso_now(),
                 useful_support=sum(int(item.get("internal_sources", 0)) + int(item.get("external_sources", 0)) for item in results),
                 dossier_effect="Research support is ready for the next dossier update.",
+                public_research_status=("retrieved" if has_public else "failed" if "failed" in public_statuses else "unavailable"),
+                provider_observability=provider_observability,
             )
+            self._restore_stage(matter_id, run_id, reason="Research results are ready for counsel exploration")
         except asyncio.CancelledError:
             self._write(
                 matter_id, run_id, state="interrupted", questions=questions, completed=len(results),
                 status="Research was interrupted.", results=results, finished_at=iso_now(),
             )
+            self._restore_stage(matter_id, run_id, reason="Research was interrupted; review the matter")
             raise
         except Exception:
             self._write(
@@ -151,8 +184,30 @@ class ResearchRunService:
                 status=f"Research stopped after preserving {len(results)} useful result(s).",
                 results=results, finished_at=iso_now(),
             )
+            self._restore_stage(matter_id, run_id, reason="Research stopped; review the saved results")
         finally:
             self._tasks.pop(run_id, None)
+
+    def _restore_stage(self, matter_id: str, run_id: str, *, reason: str) -> None:
+        current = self.research.index.get_matter(matter_id)
+        if not current or current.get("status") != "research":
+            return
+        active_other = any(
+            run.get("run_id") != run_id and run.get("state") in {"queued", "running"}
+            for run in self.list(matter_id)
+        )
+        if active_other:
+            return
+        run = self.get(matter_id, run_id)
+        return_stage = str(run.get("return_stage") or "explore")
+        if return_stage == "research":
+            return_stage = "explore"
+        self.research.matters.move_stage(
+            matter_id,
+            return_stage,
+            reason=reason,
+            actor="research-agent",
+        )
 
     def _write(self, matter_id: str, run_id: str, **metadata: Any) -> dict[str, Any]:
         path = self._path(matter_id, run_id)

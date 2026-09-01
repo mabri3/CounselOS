@@ -39,7 +39,7 @@ export default function AutomationsPage() {
             <div className="eyebrow">Standing work</div>
             <h1 className="headline">Automations</h1>
             <p className="page-lede">
-              Jobs Counsel OS runs on its own, on a schedule. They watch folders, scan sources, and re-check
+              Jobs Themis.ai runs on its own, on a schedule. They watch folders, scan sources, and re-check
               recorded decisions, then bring what they find to you.
               <strong> An automation never sends anything and never records a decision.</strong>
             </p>

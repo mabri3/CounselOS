@@ -10,11 +10,13 @@
 import type { Citation, MemoBlock, ResearchMemo, VaultDocument } from "./types";
 import { formatDateTime } from "./design";
 
-const SOURCE_LINE = /^[-*]\s+(Internal|External|Source)\s*:\s*(.+)$/i;
+const SOURCE_LINE = /^[-*]\s+(Internal(?: support)?|External(?: authority)?|Supplied(?: source)?|Source)\s*:\s*(.+)$/i;
 const BACKTICK_PATH = /`([^`]+)`/;
 const MARKDOWN_LINK = /\[([^\]]+)\]\(([^)]+)\)/;
 
-export function parseMemo(document: VaultDocument): ResearchMemo {
+export function parseMemo(document: VaultDocument): ResearchMemo & {
+  publicResearchStatus?: "not_requested" | "retrieved" | "unavailable" | "failed";
+} {
   const lines = document.content.split("\n");
   const citations: Citation[] = [];
   const bodyLines: string[] = [];
@@ -23,8 +25,10 @@ export function parseMemo(document: VaultDocument): ResearchMemo {
     const match = line.match(SOURCE_LINE);
     if (!match) { bodyLines.push(line); continue; }
 
-    const external = match[1].toLowerCase() === "external";
-    const kind = external ? "Public source" : "Matter document";
+    const sourceClass = match[1].toLowerCase();
+    const external = sourceClass.startsWith("external") || sourceClass.startsWith("supplied");
+    const supplied = sourceClass.startsWith("supplied");
+    const kind = supplied ? "Supplied public source" : external ? "External authority" : "Internal matter support";
     const rest = match[2];
     const [nameRaw, noteRaw] = splitOnDash(rest);
     const path = nameRaw.match(BACKTICK_PATH)?.[1];
@@ -40,12 +44,14 @@ export function parseMemo(document: VaultDocument): ResearchMemo {
     });
   }
 
-  const title = lines.find((line) => line.startsWith("# "))?.slice(2).trim()
-    || String(document.metadata.title ?? document.name);
+  const savedTitle = lines.find((line) => line.startsWith("# "))?.slice(2).trim();
+  const title = !savedTitle || /^First-Pass Research Packet$/i.test(savedTitle)
+    ? String(document.metadata.title ?? document.metadata.question ?? document.name)
+    : savedTitle;
 
   const blocks = toBlocks(bodyLines);
 
-  const author = String(document.metadata.author ?? document.metadata.agent_id ?? "Themis");
+  const author = String(document.metadata.author ?? document.metadata.agent_id ?? "Themis.ai");
   const created = String(document.metadata.created_at ?? document.metadata.updated_at ?? "");
 
   return {
@@ -60,7 +66,16 @@ export function parseMemo(document: VaultDocument): ResearchMemo {
       .join(" · "),
     blocks,
     citations,
+    publicResearchStatus: isPublicResearchStatus(document.metadata.public_research_status)
+      ? document.metadata.public_research_status
+      : undefined,
   };
+}
+
+function isPublicResearchStatus(
+  value: unknown,
+): value is "not_requested" | "retrieved" | "unavailable" | "failed" {
+  return ["not_requested", "retrieved", "unavailable", "failed"].includes(String(value));
 }
 
 /**

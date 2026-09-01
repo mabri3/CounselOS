@@ -4,6 +4,7 @@ import Link from "next/link";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { finalizeWorkProduct, getResearchRun } from "@/lib/api";
 import { choiceNeedsDetail, effectiveQuestionMode, groupedAnswerText, questionProgressLabel } from "@/lib/chatCardLogic";
+import type { HistoricalQuestionState } from "@/lib/chatRunLogic";
 import type { CardAction, ChatCard, QuestionMode, ResearchRun } from "@/lib/types";
 
 type Props = {
@@ -11,20 +12,25 @@ type Props = {
   matterId?: string;
   disabled?: boolean;
   questionsDisabled?: boolean;
+  questionStates?: Record<string, HistoricalQuestionState>;
   questionMode?: QuestionMode;
   showQuestionMode?: boolean;
   onQuestionModeChange?: (mode: QuestionMode) => void;
   onAction: (action: CardAction, answerText?: string) => Promise<void>;
   onOpenDocument?: (path: string) => void;
   onRefresh?: () => void | Promise<void>;
+  currentWorkProductDraftPath?: string | null;
 };
 
-export default function ChatCards({ cards = [], matterId, disabled, questionsDisabled, questionMode = "guided", showQuestionMode = false, onQuestionModeChange, onAction, onOpenDocument, onRefresh }: Props) {
+export default function ChatCards({ cards = [], matterId, disabled, questionsDisabled, questionStates, questionMode = "guided", showQuestionMode = false, onQuestionModeChange, onAction, onOpenDocument, onRefresh, currentWorkProductDraftPath }: Props) {
   const questions = cards.filter((card): card is Extract<ChatCard, { type: "question" }> => card.type === "question");
+  const activeQuestions = questions.filter((card) => (questionStates?.[card.question_id]?.state ?? "active") === "active");
+  const historicalQuestions = questions.filter((card) => (questionStates?.[card.question_id]?.state ?? "active") !== "active");
   const otherCards = cards.filter((card) => card.type !== "question");
   return cards.length ? (
     <div className="chat-cards">
-      {questions.length ? <QuestionSequence cards={questions} disabled={disabled || questionsDisabled} mode={showQuestionMode ? questionMode : "guided"} onAction={onAction} onModeChange={showQuestionMode ? onQuestionModeChange : undefined} showModeControl={showQuestionMode && !questionsDisabled} /> : null}
+      {historicalQuestions.map((card) => <QuestionHistoryCard card={card} key={card.question_id} status={questionStates![card.question_id]} />)}
+      {activeQuestions.length ? <QuestionSequence cards={activeQuestions} disabled={disabled || questionsDisabled} mode={showQuestionMode ? questionMode : "guided"} onAction={onAction} onModeChange={showQuestionMode ? onQuestionModeChange : undefined} showModeControl={showQuestionMode && !questionsDisabled} /> : null}
       {otherCards.map((card, index) => {
         const key = card.type === "matter_update" ? card.action_id
           : card.type === "research_status" ? card.run_id
@@ -33,7 +39,7 @@ export default function ChatCards({ cards = [], matterId, disabled, questionsDis
         if (card.type === "research_status") return <ResearchCard card={card} key={key} matterId={matterId} onRefresh={onRefresh} />;
         if (card.type === "watch_draft") return <WatchCard card={card} disabled={disabled} key={key} onAction={onAction} />;
         if (card.type === "watch_scan") return <WatchCard card={card} disabled={disabled} key={key} onAction={onAction} />;
-        return <WorkProductCard card={card} disabled={disabled} key={key} matterId={matterId} onOpenDocument={onOpenDocument} onRefresh={onRefresh} />;
+        return <WorkProductCard card={card} currentWorkProductDraftPath={currentWorkProductDraftPath} disabled={disabled} key={key} matterId={matterId} onOpenDocument={onOpenDocument} onRefresh={onRefresh} />;
       })}
     </div>
   ) : null;
@@ -124,16 +130,20 @@ function watchActionPendingLabel(action: string): string {
   return "Updating…";
 }
 
-function WorkProductCard({ card, disabled, matterId, onOpenDocument, onRefresh }: {
+function WorkProductCard({ card, disabled, matterId, onOpenDocument, onRefresh, currentWorkProductDraftPath }: {
   card: Extract<ChatCard, { type: "work_product" }>;
   disabled?: boolean;
   matterId?: string;
   onOpenDocument?: (path: string) => void;
   onRefresh?: () => void | Promise<void>;
+  currentWorkProductDraftPath?: string | null;
 }) {
   const [current, setCurrent] = useState(card);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const targetPath = current.state === "draft" && currentWorkProductDraftPath
+    ? currentWorkProductDraftPath
+    : current.vault_path;
   return (
     <section className="chat-card work-product-card">
       <div className="chat-card-kicker">Work Product · {current.state === "final" ? "Final" : "Draft"}</div>
@@ -141,14 +151,18 @@ function WorkProductCard({ card, disabled, matterId, onOpenDocument, onRefresh }
       {current.summary ? <div className="chat-card-detail">{current.summary}</div> : null}
       {error ? <div className="error chat-card-detail">{error}</div> : null}
       <div className="chat-card-actions">
-        {onOpenDocument ? <button className="btn tiny quiet" onClick={() => onOpenDocument(current.vault_path)} type="button">Open artifact</button> : null}
+        {onOpenDocument ? <button className="btn tiny quiet" onClick={() => onOpenDocument(targetPath)} type="button">Open artifact</button> : null}
         {current.state === "draft" && matterId ? (
           <button className="btn primary compact" disabled={disabled || busy} onClick={async () => {
             setBusy(true); setError("");
             try {
-              const result = await finalizeWorkProduct(matterId, current.vault_path) as typeof current;
+              const result = await finalizeWorkProduct(matterId, targetPath) as typeof current;
               setCurrent(result);
-              await onRefresh?.();
+              try {
+                await onRefresh?.();
+              } catch {
+                setError("Final work product saved, but the matter did not refresh. Reload the page to see current state.");
+              }
             } catch (caught) { setError(caught instanceof Error ? caught.message : "Could not finalize the work product."); }
             finally { setBusy(false); }
           }}>{busy ? "Finalizing…" : "Finalize"}</button>
@@ -163,6 +177,27 @@ type QuestionDraft = { selected: string[]; freeText: string; selectedDetail: str
 type SavedAnswer = { action: "answer" | "skip"; values: string[]; text: string };
 
 const EMPTY_DRAFT: QuestionDraft = { selected: [], freeText: "", selectedDetail: "" };
+
+function QuestionHistoryCard({ card, status }: { card: Question; status: HistoricalQuestionState }) {
+  const labels = status.values.map((value) => (
+    card.choices.find((choice) => choice.value === value)?.label ?? value
+  )).filter((value, index, values) => value && values.indexOf(value) === index);
+  const stateLabel = status.state === "answered" ? "Answered"
+    : status.state === "stopped" ? "Stopped"
+    : "Superseded";
+  const detail = status.state === "answered"
+    ? labels.join(" · ") || "Answer saved"
+    : status.state === "stopped"
+      ? "Intake stopped before this question was answered."
+      : "This question was skipped or replaced by later intake work.";
+  return (
+    <section className="chat-card question-card" aria-label={`${stateLabel}: ${card.text}`}>
+      <div className="question-meta"><span>{stateLabel}</span></div>
+      <div className="chat-card-summary">{card.text}</div>
+      <div className="chat-card-detail">{detail}</div>
+    </section>
+  );
+}
 
 function QuestionSequence({ cards, disabled, mode, onModeChange, onAction, showModeControl }: {
   cards: Question[];
@@ -322,28 +357,28 @@ function QuestionCard({ card, current, disabled, draft, onAction, onBack, onDraf
           <button className="btn primary compact" disabled={disabled || !freeText.trim()} onClick={() => answer([freeText.trim()], freeText.trim())}>{primaryLabel}</button>
         </div>
       ) : (
-        <div className="question-choices" role={mode === "single" ? "radiogroup" : "group"}>
+        <fieldset className="question-choices">
+          <legend className="sr-only">{card.text}</legend>
           {card.choices.map((choice) => {
             const active = selected.includes(choice.value);
             return (
-              <button
-                aria-checked={active}
-                className={`question-choice ${active ? "active" : ""}`}
-                disabled={disabled}
-                key={choice.value}
-                onClick={() => {
-                  if (mode === "single") {
-                    onDraftChange({ ...draft, selected: [choice.value], selectedDetail: "" });
-                  } else onDraftChange({ ...draft, selected: selected.includes(choice.value) ? selected.filter((value) => value !== choice.value) : [...selected, choice.value] });
-                }}
-                role={mode === "single" ? "radio" : "checkbox"}
-                type="button"
-              >
+              <label className={`question-choice ${active ? "active" : ""}`} key={choice.value}>
+                <input
+                  checked={active}
+                  disabled={disabled}
+                  name={`question-${card.question_id}`}
+                  onChange={() => {
+                    if (mode === "single") onDraftChange({ ...draft, selected: [choice.value], selectedDetail: "" });
+                    else onDraftChange({ ...draft, selected: active ? selected.filter((value) => value !== choice.value) : [...selected, choice.value] });
+                  }}
+                  type={mode === "single" ? "radio" : "checkbox"}
+                  value={choice.value}
+                />
                 <span>{choice.label}</span>{choice.suggested ? <span className="suggested-label">Suggested</span> : null}
-              </button>
+              </label>
             );
           })}
-        </div>
+        </fieldset>
       )}
 
       {mode !== "free_text" && detailRequired ? (

@@ -31,7 +31,10 @@ class MatterStateService:
         work_items: list[dict[str, Any]],
     ) -> dict[str, Any]:
         stage = self._text(matter.get("status")).lower()
-        next_item = self._next_work_item(work_items)
+        next_item = self._next_work_item(
+            work_items,
+            intake_complete=self._text(matter.get("intake_state")).casefold() in {"complete", "stopped"},
+        )
         next_owner, next_actor = self._next_actor(next_item, stage)
         execution_state, active_run_id, execution_note = self._execution_state(matter)
 
@@ -66,11 +69,20 @@ class MatterStateService:
         normalized = self._text(stage).lower()
         return self._NEXT_ACTIONS.get(normalized, self._NEXT_ACTIONS["intake"])
 
-    def _next_work_item(self, work_items: list[dict[str, Any]]) -> dict[str, Any] | None:
+    def _next_work_item(
+        self,
+        work_items: list[dict[str, Any]],
+        *,
+        intake_complete: bool = False,
+    ) -> dict[str, Any] | None:
         candidates = [
             item
             for item in work_items
             if item.get("required") and self._text(item.get("status")).lower() not in {"done", "closed"}
+            and not (
+                intake_complete
+                and self._text(item.get("title")).casefold() == "orient to the request"
+            )
         ]
         return min(candidates, key=self._work_item_sort_key, default=None)
 
@@ -96,7 +108,18 @@ class MatterStateService:
         owner = self._text(next_item.get("owner"))
         if not owner:
             return None, "unassigned"
-        return owner, "themis" if owner.lower() == "themis" else "named_owner"
+        if owner.casefold() == self._configured_lawyer().casefold():
+            return owner, "you"
+        return owner, "themis" if owner.casefold() in {"themis", "themis.ai"} else "named_owner"
+
+    def _configured_lawyer(self) -> str:
+        path = "00_System/settings.md"
+        if not self.vault.exists(path):
+            return ""
+        values = self.vault.read_markdown(path)["metadata"].get("values", {})
+        if not isinstance(values, dict):
+            return ""
+        return self._text(values.get("document_review.lawyer_name"))
 
     def _execution_state(self, matter: dict[str, Any]) -> tuple[str, str | None, str]:
         matter_path = self._text(matter.get("path"))
@@ -146,7 +169,7 @@ class MatterStateService:
         if self._is_overdue(due_at):
             return {"kind": "overdue", "label": "Overdue"}
         if execution_state in {"queued", "running"}:
-            return {"kind": "agent_working", "label": "Themis is working"}
+            return {"kind": "agent_working", "label": "Themis.ai is working"}
         if execution_state == "unknown":
             return {"kind": "execution_unknown", "label": "Agent status unavailable"}
         if item_status == "blocked":
@@ -154,7 +177,7 @@ class MatterStateService:
         if next_actor == "unassigned":
             return {"kind": "needs_assignment", "label": "Needs assignment"}
         if next_actor == "themis":
-            return {"kind": "ready_for_themis", "label": "Ready for Themis"}
+            return {"kind": "ready_for_themis", "label": "Ready for Themis.ai"}
         if next_actor == "named_owner":
             return {"kind": "waiting_on_owner", "label": f"Waiting on {next_owner}"}
         if next_actor == "you":

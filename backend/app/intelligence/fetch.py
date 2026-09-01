@@ -142,7 +142,7 @@ class SafeHttpFetcher:
             request = (
                 f"GET {target} HTTP/1.1\r\nHost: {parsed.hostname}\r\n"
                 "Accept: text/html,text/plain,application/rss+xml,application/atom+xml,application/json\r\n"
-                "Accept-Encoding: gzip, deflate\r\nConnection: close\r\nUser-Agent: CounselOS/1\r\n\r\n"
+                "Accept-Encoding: gzip, deflate\r\nConnection: close\r\nUser-Agent: Themis.ai/1\r\n\r\n"
             )
             writer.write(request.encode("ascii"))
             await writer.drain()

@@ -74,6 +74,13 @@ export default function DecisionTable({
                 <span className="state-label state-quiet">Recorded</span>
               )}
             </div>
+            {(decision.conditions.length || decision.not_decided.length || decision.next_review_at) ? (
+              <div className="register-packets">
+                {decision.conditions.length ? <span><strong>Conditions:</strong> {decision.conditions.join("; ")}</span> : null}
+                {decision.not_decided.length ? <span style={{ marginLeft: 12 }}><strong>Not decided:</strong> {decision.not_decided.join("; ")}</span> : null}
+                {decision.next_review_at ? <span style={{ marginLeft: 12 }}><strong>Revisit:</strong> {formatLongDate(decision.next_review_at)}</span> : null}
+              </div>
+            ) : null}
             {linkedPackets.length ? <div className="register-packets">{linkedPackets.map((packet) => <Link key={packet.packet_id} href={`/decisions?packet=${encodeURIComponent(packet.packet_id)}`} style={{ marginRight: 12 }}>Review packet · {packet.status === "open" ? "Needs review" : packet.status}</Link>)}</div> : null}
           </div>
         );

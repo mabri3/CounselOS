@@ -15,7 +15,7 @@ export default function UploadIntentCard({ attachments, busy, onSend, onClear }:
   const title = count === 1 ? `Added ${attachments[0].name}`
     : count <= 3 ? `Added ${count} files`
     : `Added a set of ${count} files`;
-  const prompt = count === 1 ? "What should Themis do with this file?" : "What should Themis do with this set?";
+  const prompt = count === 1 ? "What should Themis.ai do with this file?" : "What should Themis.ai do with this set?";
 
   function submit() {
     if (intent.trim() && !busy) void onSend(intent.trim());

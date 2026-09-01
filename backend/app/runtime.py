@@ -236,7 +236,7 @@ class AppContext:
     def _load_saved_model_settings(self) -> None:
         values = self.settings_store.read()["values"]
         provider = values.get("agents.provider")
-        if provider not in {"mock", "openai_compatible", "opencode_go", "codex", "antigravity_cli"}:
+        if provider not in {"mock", "openai_compatible", "polaris", "opencode_go", "codex", "antigravity_cli"}:
             return
         updates: dict[str, str | None] = {"llm_provider": provider}
         if provider != "mock" and values.get("agents.reasoning_model"):
@@ -251,7 +251,7 @@ class AppContext:
         self.settings = self.settings.model_copy(update=updates)
 
     async def configure_model(self, provider: str, model: str, effort: str) -> None:
-        if provider not in {"mock", "openai_compatible", "opencode_go", "codex", "antigravity_cli"}:
+        if provider not in {"mock", "openai_compatible", "polaris", "opencode_go", "codex", "antigravity_cli"}:
             raise ValueError(f"Unsupported model provider: {provider}")
         if effort not in {"default", "none", "minimal", "low", "medium", "high", "xhigh", "max", "ultra"}:
             raise ValueError(f"Unsupported reasoning effort: {effort}")

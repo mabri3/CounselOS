@@ -1,8 +1,8 @@
-# Counsel OS design language
+# Themis.ai design language
 
 This file is the source of truth for visual and interaction decisions. It was
-first imported from the `Counsel OS` design canvas
-(`claude.ai/design/p/df618af1-323e-4c96-ab86-0feb13fb166e`, file `Counsel OS.dc.html`).
+first imported from the `Themis.ai` design canvas
+(`claude.ai/design/p/df618af1-323e-4c96-ab86-0feb13fb166e`, file `Themis.ai.dc.html`).
 All screens use the shared tokens in `frontend/lib/design.ts` and
 `frontend/app/globals.css`.
 
@@ -69,9 +69,9 @@ Base UI text is `15px`. Grey is dark enough to read (`#55524b`, not `#8a857c`).
 
 This is the one rule that never bends.
 
-- Agent output keeps the **dashed** iris border and iris tint. Ordinary Themis
-  conversation is labelled **Themis**.
-- **Themis · Not yet reviewed by an attorney** appears only on qualifying
+- Agent output keeps the **dashed** iris border and iris tint. Ordinary Themis.ai
+  conversation is labelled **Themis.ai**.
+- **Themis.ai · Not yet reviewed by an attorney** appears only on qualifying
   generated work product with an explicit current unreviewed state, such as an
   unsaved company-profile draft or an open generated review packet.
 - Saved company profiles use **Company profile · Saved**. Resolved or
@@ -84,7 +84,7 @@ This is the one rule that never bends.
   recommendation into a recorded decision on its own. An agent can draft a
   reply and can never send one. These are locked settings, not defaults.
 - The full assistant block uses the dashed iris treatment and the label
-  **Themis**. A small icon alone is not enough.
+  **Themis.ai**. A small icon alone is not enough.
 - Source support and attorney review are separate states. Do not infer either
   state from a folder, file name, or missing metadata.
 - Show source or action provenance only when the stored data supports it. Never
@@ -122,7 +122,7 @@ One primary (`--ink` on `--paper` text) per region. Secondary is `--raised` with
 a `#d6d1c7` border. Ochre `#FDEEC0`/`#F0D896` is the "review now" affordance.
 Agent actions are dashed iris on transparent.
 
-Decision recording always ends with an explicit submit action. A Themis draft
+Decision recording always ends with an explicit submit action. A Themis.ai draft
 can prefill the modal, but the lawyer can edit both the decision and its visible
 rationale before recording it. Opening or cancelling the modal changes no
 record.
@@ -151,7 +151,7 @@ record.
 - The editable document is the review surface. Do not place redlines in a separate preview.
 - Use **All Markup**, **No Markup**, and **Original** as local display modes. A display mode never changes saved review data.
 - Insertions are underlined. Deletions use a strike-through. Both use the saved document author color and show the author name.
-- Author colors come only from the Counsel OS review palette. Color is not an identity by itself.
+- Author colors come only from the Themis.ai review palette. Color is not an identity by itself.
 - Each tracked change has individual **Accept**, **Reject**, **Accept and next**, and **Reject and next** actions. There are no bulk review actions.
 - Comments open from selected text. Show the same thread in a contextual popover and the document comment rail.
 - Resolved comments remain visible until the lawyer explicitly deletes them.

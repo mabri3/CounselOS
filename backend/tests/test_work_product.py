@@ -15,6 +15,93 @@ def test_create_draft_and_finalize_immutable_copy(app_context):
     assert app_context.vault.read_markdown(final["vault_path"])["content"] == app_context.vault.read_markdown(draft["vault_path"])["content"]
     assert draft["record_type"] == final["record_type"] == "work_product"
     assert draft["work_product_id"] == app_context.vault.read_markdown(draft["vault_path"])["metadata"]["work_product_id"]
+    assert draft["vault_path"] in draft["changed_paths"]
+    assert final["vault_path"] in final["changed_paths"]
+
+
+def test_create_draft_records_one_current_canonical_draft(app_context):
+    first = app_context.work_products.create_draft(
+        "MAT-DEMO-BEACON", title="First answer", content="First body"
+    )
+    second = app_context.work_products.create_draft(
+        "MAT-DEMO-BEACON", title="Replacement answer", content="Replacement body"
+    )
+
+    current = app_context.work_products.current_draft("MAT-DEMO-BEACON")
+    matter = app_context.vault.read_markdown(
+        "03_Matters/beacon-instant-onboarding/matter.md"
+    )
+
+    assert current is not None
+    assert current["path"] == second["vault_path"]
+    assert current["path"] != first["vault_path"]
+    assert matter["metadata"]["current_work_product_draft_path"] == second["vault_path"]
+    assert matter["metadata"]["current_work_product_id"] == second["work_product_id"]
+    detail = app_context.matters.get("MAT-DEMO-BEACON")
+    assert detail["current_work_product_draft_path"] == second["vault_path"]
+    assert detail["current_work_product_id"] == second["work_product_id"]
+    with pytest.raises(ValueError, match="current canonical draft"):
+        app_context.work_products.finalize("MAT-DEMO-BEACON", first["vault_path"])
+
+
+def test_create_draft_source_action_key_preserves_first_useful_text(app_context):
+    first = app_context.work_products.create_draft(
+        "MAT-DEMO-BEACON",
+        title="Useful answer",
+        content="Exact useful text.\n\nKeep this ending.\n",
+        source_action_key="chat:RUN-3:tool-2",
+    )
+    retry = app_context.work_products.create_draft(
+        "MAT-DEMO-BEACON",
+        title="Retry must not replace it",
+        content="Different retry output",
+        source_action_key="chat:RUN-3:tool-2",
+    )
+
+    assert retry["work_product_id"] == first["work_product_id"]
+    assert retry["vault_path"] == first["vault_path"]
+    assert first["source_action_key"] == retry["source_action_key"] == "chat:RUN-3:tool-2"
+    assert retry["changed_paths"] == []
+    saved = app_context.vault.read_markdown(first["vault_path"])
+    assert saved["content"] == "Exact useful text.\n\nKeep this ending.\n"
+    assert saved["metadata"]["source_action_key"] == "chat:RUN-3:tool-2"
+
+
+def test_current_draft_fallback_sorts_iso_metadata_without_pointer(app_context, monkeypatch):
+    first = app_context.work_products.create_draft(
+        "MAT-DEMO-BEACON", title="Earlier answer", content="Earlier body"
+    )
+    second = app_context.work_products.create_draft(
+        "MAT-DEMO-BEACON", title="Later answer", content="Later body"
+    )
+    app_context.vault.update_markdown(
+        first["vault_path"], metadata_updates={"updated_at": "2026-08-30T10:00:00Z"}
+    )
+    app_context.vault.update_markdown(
+        second["vault_path"], metadata_updates={"updated_at": "2026-08-31T10:00:00Z"}
+    )
+    matter_path = "03_Matters/beacon-instant-onboarding/matter.md"
+    app_context.vault.update_markdown(
+        matter_path,
+        metadata_updates={
+            "current_work_product_draft_path": None,
+            "current_work_product_id": None,
+        },
+    )
+    read_markdown = app_context.vault.read_markdown
+
+    def read_with_iso_updated_at(path):
+        document = read_markdown(path)
+        if document["metadata"].get("record_type") == "work_product":
+            document["updated_at"] = document["metadata"]["updated_at"]
+        return document
+
+    monkeypatch.setattr(app_context.vault, "read_markdown", read_with_iso_updated_at)
+
+    current = app_context.work_products.current_draft("MAT-DEMO-BEACON")
+
+    assert current is not None
+    assert current["path"] == second["vault_path"]
 
 
 def test_finalize_rejects_paths_outside_matter_draft_folder(app_context):
@@ -79,3 +166,64 @@ def test_legacy_default_path_draft_can_still_be_finalized(app_context):
     })
     final = app_context.work_products.finalize("MAT-DEMO-BEACON", path)
     assert "/new-finals/" in final["vault_path"]
+    detail = app_context.matters.get("MAT-DEMO-BEACON")
+    assert detail["current_work_product_draft_path"] == path
+    assert detail["current_work_product_final_path"] == final["vault_path"]
+    app_context.matters.move_stage("MAT-DEMO-BEACON", "respond")
+    approved = app_context.matters.perform_action(
+        "MAT-DEMO-BEACON",
+        "approve_response",
+        actor="Counsel",
+        artifact_path=final["vault_path"],
+    )
+    assert approved["matter"]["response_approved_artifact_path"] == final["vault_path"]
+
+
+def test_legacy_draft_does_not_replace_existing_canonical_pointer(app_context):
+    canonical = app_context.work_products.create_draft(
+        "MAT-DEMO-BEACON", title="Canonical", content="Canonical draft"
+    )
+    legacy_path = "03_Matters/beacon-instant-onboarding/work-product/draft/legacy-other.md"
+    app_context.vault.write_markdown(legacy_path, "Legacy draft", {
+        "matter_id": "MAT-DEMO-BEACON", "state": "draft", "title": "Legacy other"
+    })
+
+    with pytest.raises(ValueError, match="current canonical draft"):
+        app_context.work_products.finalize("MAT-DEMO-BEACON", legacy_path)
+
+    detail = app_context.matters.get("MAT-DEMO-BEACON")
+    assert detail["current_work_product_draft_path"] == canonical["vault_path"]
+    assert detail["current_work_product_final_path"] is None
+
+
+def test_legacy_root_work_product_is_read_only_fallback(app_context):
+    root_path = "03_Matters/beacon-instant-onboarding/work-product.md"
+    app_context.vault.write_markdown(root_path, "Legacy answer", {})
+
+    fallback = app_context.work_products.current_draft("MAT-DEMO-BEACON")
+
+    assert fallback is not None
+    assert fallback["path"] == root_path
+    assert fallback["read_only"] is True
+    tree = app_context.matters.get("MAT-DEMO-BEACON")["tree"]
+    node = next(item for item in tree if item["path"] == root_path)
+    assert node["record_type"] == "work_product"
+    assert node["state"] == "draft"
+    assert node["read_only"] is True
+    with pytest.raises(ValueError, match="Only a draft"):
+        app_context.work_products.finalize("MAT-DEMO-BEACON", root_path)
+
+
+def test_finalize_service_moves_generate_to_respond_once(app_context):
+    matter_id = "MAT-DEMO-BEACON"
+    app_context.matters.move_stage(matter_id, "generate", reason="Ready to draft")
+    draft = app_context.work_products.create_draft(
+        matter_id, title="Direct finalization", content="Reviewed body"
+    )
+
+    first = app_context.work_products.finalize(matter_id, draft["vault_path"])
+    retry = app_context.work_products.finalize(matter_id, draft["vault_path"])
+
+    assert app_context.index.get_matter(matter_id)["status"] == "respond"
+    assert first["vault_path"] == retry["vault_path"]
+    assert retry["changed_paths"] == []

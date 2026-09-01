@@ -9,7 +9,7 @@ import { getMatters, moveMatter } from "@/lib/api";
 import { RISK_DEFINITION, STAGES, dueWord, isWaitingSignal, matterNextAction, matterNextOwner, riskLabel, role, signalCellTint, signalFor } from "@/lib/design";
 import type { Matter, StageId } from "@/lib/types";
 
-type CountFilter = "" | "Overdue" | "Waiting" | "With Themis" | "Needs assignment" | "No action needed";
+type CountFilter = "" | "Overdue" | "Waiting" | "With Themis.ai" | "Needs assignment" | "No action needed";
 
 /**
  * Canvas 5a. Five counts that are also filters, a coloured spine and a
@@ -41,7 +41,7 @@ export default function MattersPage() {
     return [
       { key: "Overdue" as const, n: matters.filter((matter) => matter.work_state.signal.kind === "overdue").length, label: "overdue", color: role.failure, tint: role.failureWash },
       { key: "Waiting" as const, n: matters.filter((matter) => isWaitingSignal(matter.work_state.signal.kind)).length, label: "waiting", color: role.attentionDeep, tint: role.attentionWash },
-      { key: "With Themis" as const, n: matters.filter((matter) => ["queued", "running"].includes(matter.work_state.execution_state) || matter.work_state.next_actor === "themis").length, label: "with Themis", color: role.agent, tint: role.agentWash },
+      { key: "With Themis.ai" as const, n: matters.filter((matter) => ["queued", "running"].includes(matter.work_state.execution_state) || matter.work_state.next_actor === "themis").length, label: "with Themis.ai", color: role.agent, tint: role.agentWash },
       { key: "Needs assignment" as const, n: matters.filter((matter) => matter.work_state.next_actor === "unassigned").length, label: "needs assignment", color: role.attentionDeep, tint: role.attentionWash },
       { key: "No action needed" as const, n: matters.filter((matter) => matter.status !== "closed" && matter.work_state.signal.kind === "none").length, label: "no action needed", color: role.quiet, tint: role.quietWash },
     ];
@@ -56,7 +56,7 @@ export default function MattersPage() {
       const { next_actor: actor, execution_state: execution, signal } = matter.work_state;
       if (countFilter === "Overdue" && signal.kind !== "overdue") return false;
       if (countFilter === "Waiting" && !isWaitingSignal(signal.kind)) return false;
-      if (countFilter === "With Themis" && !(["queued", "running"].includes(execution) || actor === "themis")) return false;
+      if (countFilter === "With Themis.ai" && !(["queued", "running"].includes(execution) || actor === "themis")) return false;
       if (countFilter === "Needs assignment" && actor !== "unassigned") return false;
       if (countFilter === "No action needed" && (matter.status === "closed" || signal.kind !== "none")) return false;
       if (ownerFilter && ownerLabel(matter.legal_owner) !== ownerFilter) return false;

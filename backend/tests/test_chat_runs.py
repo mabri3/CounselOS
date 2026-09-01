@@ -4,11 +4,12 @@ import asyncio
 
 import pytest
 
-from app.models.api import ChatRequest, MatterCreate
+from app.agents.runner import RunnerExecutionState
+from app.models.api import ChatRequest, ChatResponse, MatterCreate, ToolTrace
 from app.providers.base import ProviderReply, ProviderToolCall
 from app.providers.catalog import ProviderAdapterError
-from app.routers.chat import execute_chat
-from app.routers.chat import _queue_intake_research
+from app.routers.chat import IntakeQuestionRecoveryRequest, execute_chat, recover_intake_question
+from app.routers.chat import _apply_matter_actions, _queue_intake_research
 from app.routers.matters import create_matter
 from app.tools.registry import ToolExecutionResult
 from app.runtime import AppContext
@@ -101,6 +102,56 @@ def test_intake_research_deduplicates_only_within_one_intake_cycle():
 
 
 @pytest.mark.asyncio
+async def test_active_intake_recovers_prose_question_without_fake_user_message(app_context):
+    conversation = app_context.chat_history.append(
+        "MAT-DEMO-BEACON", None, role="assistant",
+        content="Next question: How will users spend the balance?",
+        conversation_kind="intake", intake_state="active", active_agent_id="intake-agent",
+    )
+
+    class RecoveryProvider:
+        def __init__(self):
+            self.calls = 0
+
+        async def complete(self, messages, tools=None):
+            self.calls += 1
+            if self.calls == 1:
+                return ProviderReply(tool_calls=[ProviderToolCall(
+                    id="recovery-question",
+                    name="update_matter_intake",
+                    arguments={
+                        "working_ask": "Decide whether the balance can launch.",
+                        "next_questions": [{
+                            "question_id": "balance-use",
+                            "text": "How will users spend the balance?",
+                            "selection_mode": "single",
+                            "choices": [
+                                {"value": "merchant", "label": "Pay merchants"},
+                                {"value": "funding", "label": "Fund transactions only"},
+                            ],
+                        }],
+                        "intake_state": "active",
+                    },
+                )])
+            return ProviderReply(content="Choose the answer below.")
+
+    app_context.runner.provider = RecoveryProvider()
+    started = await recover_intake_question(
+        "MAT-DEMO-BEACON",
+        IntakeQuestionRecoveryRequest(conversation_id=conversation["conversation_id"]),
+        app_context,
+    )
+    before = app_context.chat_history.get("MAT-DEMO-BEACON", conversation["conversation_id"])
+    assert [message["role"] for message in before["messages"]] == ["assistant"]
+
+    await app_context.chat_runs.wait(started.run_id)
+    saved = app_context.chat_history.get("MAT-DEMO-BEACON", conversation["conversation_id"])
+    assert [message["role"] for message in saved["messages"]] == ["assistant", "assistant"]
+    assert saved["messages"][-1]["cards"][0]["type"] == "question"
+    assert saved["messages"][-1]["cards"][0]["question_id"] == "balance-use"
+
+
+@pytest.mark.asyncio
 async def test_provider_failure_is_durable_and_retry_reuses_turn(app_context):
     class FailingProvider:
         async def complete(self, messages, tools=None):
@@ -126,6 +177,20 @@ async def test_provider_failure_is_durable_and_retry_reuses_turn(app_context):
     conversation = app_context.chat_history.get("MAT-DEMO-BEACON", completed["conversation_id"])
     assert [message["role"] for message in conversation["messages"]] == ["user", "assistant"]
     assert conversation["messages"][1]["content"] == "Recovered answer."
+
+
+@pytest.mark.asyncio
+async def test_start_persists_user_turn_before_queued_response(app_context):
+    started = app_context.chat_runs.start(
+        "MAT-DEMO-BEACON", ChatRequest(message="Keep this turn.", matter_id="MAT-DEMO-BEACON")
+    )
+
+    assert started["conversation_id"]
+    conversation = app_context.chat_history.get("MAT-DEMO-BEACON", started["conversation_id"])
+    assert [(item["role"], item["content"]) for item in conversation["messages"]] == [
+        ("user", "Keep this turn.")
+    ]
+    await app_context.chat_runs.wait(started["run_id"])
 
 
 @pytest.mark.asyncio
@@ -160,7 +225,7 @@ async def test_retry_does_not_repeat_completed_tool_mutation(app_context, monkey
     mutations = []
 
     async def execute(agent, context, tool_id, arguments):
-        mutations.append((tool_id, arguments))
+        mutations.append((context, tool_id, arguments))
         return ToolExecutionResult(tool_id, "success", "Created the requested work item.")
 
     monkeypatch.setattr(app_context.tools, "execute", execute)
@@ -196,7 +261,19 @@ async def test_retry_does_not_repeat_completed_tool_mutation(app_context, monkey
             self.observations = messages
             if self.calls == 1:
                 return ProviderReply(tool_calls=[ProviderToolCall(
-                    id="again", name="create_work_item", arguments={"title": "Review launch"},
+                    id="again",
+                    name="create_work_item",
+                    arguments={
+                        "title": "Review launch",
+                        "description": "",
+                        "item_type": "question",
+                        "status": "open",
+                        "priority": "normal",
+                        "owner": "",
+                        "due_at": None,
+                        "required": False,
+                        "issue_id": None,
+                    },
                 )])
             return ProviderReply(content="The review task is ready.")
 
@@ -205,12 +282,70 @@ async def test_retry_does_not_repeat_completed_tool_mutation(app_context, monkey
     app_context.chat_runs.retry("MAT-DEMO-BEACON", started["run_id"])
     await app_context.chat_runs.wait(started["run_id"])
     assert len(mutations) == 1
+    assert mutations[0][0].source_action_key.startswith(
+        f"chat:{started['run_id']}:tool:"
+    )
     assert any("Already completed in this chat run" in str(message.get("content")) for message in retry_provider.observations)
     completed = app_context.chat_runs.get("MAT-DEMO-BEACON", started["run_id"])
     conversation = app_context.chat_history.get("MAT-DEMO-BEACON", completed["conversation_id"])
     assistants = [item for item in conversation["messages"] if item["role"] == "assistant"]
     assert len(assistants) == 1
     assert assistants[0]["content"] == "The review task is ready."
+
+
+@pytest.mark.asyncio
+async def test_retry_resets_attempt_timing_before_new_attempt(app_context):
+    gate = asyncio.Event()
+
+    class FailingProvider:
+        async def complete(self, messages, tools=None):
+            raise RuntimeError("stop")
+
+    app_context.runner.provider = FailingProvider()
+    started = app_context.chat_runs.start(
+        "MAT-DEMO-BEACON",
+        ChatRequest(message="Retry timing.", matter_id="MAT-DEMO-BEACON"),
+    )
+    await app_context.chat_runs.wait(started["run_id"])
+    app_context.vault.update_markdown(
+        app_context.chat_runs.get("MAT-DEMO-BEACON", started["run_id"])["path"],
+        metadata_updates={"started_at": "2000-01-01T00:00:00Z"},
+    )
+
+    class SlowProvider:
+        async def complete(self, messages, tools=None):
+            await gate.wait()
+            return ProviderReply(content="Recovered.")
+
+    app_context.runner.provider = SlowProvider()
+    queued = app_context.chat_runs.retry("MAT-DEMO-BEACON", started["run_id"])
+    assert queued["started_at"] is None
+    await asyncio.sleep(0)
+    running = app_context.chat_runs.get("MAT-DEMO-BEACON", started["run_id"])
+    assert running["state"] == "running"
+    assert running["started_at"] not in {None, "2000-01-01T00:00:00Z"}
+    gate.set()
+    await app_context.chat_runs.wait(started["run_id"])
+
+
+def test_partial_fallback_hides_internal_references_and_keeps_legal_analysis(app_context):
+    partial = RunnerExecutionState(
+        useful_content="run_id: RUN-private-only",
+        trace=[ToolTrace(
+            tool="save_work_product",
+            status="success",
+            summary=(
+                "Saved the analysis at 03_Matters/private/drafts/advice.md under RUN-secret. "
+                "The launch should wait until the notice is approved."
+            ),
+        )],
+    )
+
+    result = app_context.chat_runs._partial_result(partial)
+
+    assert "The launch should wait until the notice is approved." in result.reply
+    assert "03_Matters/private" not in result.reply
+    assert "RUN-secret" not in result.reply
 
 
 @pytest.mark.asyncio
@@ -280,6 +415,117 @@ async def test_timeout_fallback_summarizes_completed_work(app_context, monkeypat
 
 
 @pytest.mark.asyncio
+async def test_timeout_does_not_persist_internal_tool_limit_instruction(app_context, monkeypatch):
+    async def execute(agent, context, tool_id, arguments):
+        return ToolExecutionResult(
+            tool_id,
+            "success",
+            "A partial research packet is saved; no public source was retrieved.",
+            changed_paths=["research/partial.md"],
+        )
+
+    monkeypatch.setattr(app_context.tools, "execute", execute)
+
+    class TimeoutProvider:
+        def __init__(self):
+            self.calls = 0
+
+        async def complete(self, messages, tools=None):
+            if tools is None:
+                return ProviderReply(content="Do not mention the tool limit.")
+            self.calls += 1
+            if self.calls == 1:
+                return ProviderReply(tool_calls=[ProviderToolCall(
+                    id="research", name="run_research", arguments={"question": "Research this."},
+                )])
+            await asyncio.sleep(1)
+            return ProviderReply(content="late")
+
+    app_context.runner.provider = TimeoutProvider()
+    app_context.chat_runs.timeout_seconds = 0.02
+    started = app_context.chat_runs.start(
+        "MAT-DEMO-BEACON",
+        ChatRequest(message="Redo the research.", matter_id="MAT-DEMO-BEACON"),
+    )
+    await app_context.chat_runs.wait(started["run_id"])
+
+    completed = app_context.chat_runs.get("MAT-DEMO-BEACON", started["run_id"])
+    reply = completed["response"]["reply"]
+    assert "Do not mention the tool limit" not in reply
+    assert "A partial research packet is saved" in reply
+
+
+@pytest.mark.asyncio
+async def test_timeout_persists_failed_mutation_trace_on_assistant_message(app_context, monkeypatch):
+    async def fail_create(agent, context, tool_id, arguments):
+        return ToolExecutionResult(tool_id, "error", "The work item was not created.")
+
+    monkeypatch.setattr(app_context.tools, "execute", fail_create)
+
+    class TimeoutAfterClaimProvider:
+        def __init__(self):
+            self.calls = 0
+
+        async def complete(self, messages, tools=None):
+            if tools is None:
+                return ProviderReply(content="")
+            self.calls += 1
+            if self.calls == 1:
+                return ProviderReply(content="I created the work item.", tool_calls=[ProviderToolCall(
+                    id="work", name="create_work_item", arguments={"title": "Launch checklist"},
+                )])
+            await asyncio.sleep(1)
+            return ProviderReply(content="late")
+
+    app_context.runner.provider = TimeoutAfterClaimProvider()
+    app_context.chat_runs.timeout_seconds = 0.02
+    started = app_context.chat_runs.start(
+        "MAT-DEMO-BEACON", ChatRequest(message="Create launch work.", matter_id="MAT-DEMO-BEACON")
+    )
+    await app_context.chat_runs.wait(started["run_id"])
+
+    run = app_context.chat_runs.get("MAT-DEMO-BEACON", started["run_id"])
+    conversation = app_context.chat_history.get("MAT-DEMO-BEACON", run["conversation_id"])
+    assistant = next(item for item in conversation["messages"] if item["role"] == "assistant")
+    failed = next(item for item in run["response"]["trace"] if item["tool"] == "create_work_item")
+    assert failed["mutation_status"] == "failed"
+    assert assistant["trace"] == run["response"]["trace"]
+
+
+@pytest.mark.asyncio
+async def test_agent_execution_error_persists_failed_mutation_trace_on_assistant_message(app_context, monkeypatch):
+    async def fail_update(agent, context, tool_id, arguments):
+        return ToolExecutionResult(tool_id, "error", "The intake was not updated.")
+
+    monkeypatch.setattr(app_context.tools, "execute", fail_update)
+
+    class ErrorAfterClaimProvider:
+        def __init__(self):
+            self.calls = 0
+
+        async def complete(self, messages, tools=None):
+            self.calls += 1
+            if self.calls == 1:
+                return ProviderReply(content="I updated the intake.", tool_calls=[ProviderToolCall(
+                    id="intake", name="update_matter_intake", arguments={"working_ask": "Launch?"},
+                )])
+            return ProviderReply(content={"malformed": True})
+
+    app_context.runner.provider = ErrorAfterClaimProvider()
+    started = app_context.chat_runs.start(
+        "MAT-DEMO-BEACON", ChatRequest(message="Update intake.", matter_id="MAT-DEMO-BEACON")
+    )
+    await app_context.chat_runs.wait(started["run_id"])
+
+    run = app_context.chat_runs.get("MAT-DEMO-BEACON", started["run_id"])
+    conversation = app_context.chat_history.get("MAT-DEMO-BEACON", run["conversation_id"])
+    assistant = next(item for item in conversation["messages"] if item["role"] == "assistant")
+    failed = next(item for item in run["response"]["trace"] if item["tool"] == "update_matter_intake")
+    assert failed["mutation_status"] == "failed"
+    assert assistant["trace"] == run["response"]["trace"]
+
+
+@pytest.mark.asyncio
 async def test_useful_partial_assistant_is_replaced_by_retry_result(app_context, monkeypatch):
     async def execute(agent, context, tool_id, arguments):
         return ToolExecutionResult(tool_id, "success", "Saved an intermediate draft.")
@@ -316,6 +562,24 @@ async def test_useful_partial_assistant_is_replaced_by_retry_result(app_context,
     assistants = [item for item in conversation["messages"] if item["role"] == "assistant"]
     assert len(assistants) == 1
     assert assistants[0]["content"] == "Recovered final answer."
+
+
+def test_phrase_fallback_work_product_is_idempotent_on_retry(app_context):
+    payload = ChatRequest(
+        message="Draft the work product.",
+        matter_id="MAT-DEMO-BEACON",
+        source_action_key="chat:RUN-1",
+    )
+    first = ChatResponse(reply="Useful first-pass advice.")
+    retried = ChatResponse(reply="Useful first-pass advice.")
+    saved = {"conversation_id": "CONV-1", "messages": []}
+
+    _apply_matter_actions(app_context, payload, saved, first, run_id="RUN-1")
+    _apply_matter_actions(app_context, payload, saved, retried, run_id="RUN-1")
+
+    assert retried.cards[0].vault_path == first.cards[0].vault_path
+    folder = app_context.matter_paths.folder("MAT-DEMO-BEACON", "matter_files.draft_outputs_dir")
+    assert len(list(app_context.vault.iter_files(folder, {".md"}))) == 1
 
 
 @pytest.mark.asyncio

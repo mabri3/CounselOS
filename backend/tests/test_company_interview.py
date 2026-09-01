@@ -28,6 +28,10 @@ def _profile(**updates):
     return values
 
 
+def _clear_company(context):
+    context.vault.resolve("00_System/company.md").unlink(missing_ok=True)
+
+
 def _payload(message="Acme makes payment tools for shops.", **updates):
     payload = {"message": message, "website_url": None, "history": [], "current_profile": _profile(), "question_id": "overview", "finish": False}
     payload.update(updates)
@@ -249,6 +253,7 @@ def test_review_now_returns_editable_draft_without_write(app_context):
 
 
 def test_put_persists_profile(app_context):
+    _clear_company(app_context)
     response = _client(app_context).put("/api/settings/company", json=_profile(company_name="Acme", website_url="https://acme.example"))
     assert response.status_code == 200
     saved = app_context.vault.read_markdown("00_System/company.md")
@@ -256,6 +261,7 @@ def test_put_persists_profile(app_context):
 
 
 def test_same_company_edit_saves_with_current_version(app_context):
+    _clear_company(app_context)
     client = _client(app_context)
     current = client.put(
         "/api/settings/company",
@@ -271,7 +277,113 @@ def test_same_company_edit_saves_with_current_version(app_context):
     assert response.json()["summary"] == "Updated summary"
 
 
+def test_saved_profile_returns_version_and_save_time(app_context):
+    _clear_company(app_context)
+    client = _client(app_context)
+
+    saved = client.put(
+        "/api/settings/company",
+        json=_profile(company_name="Acme"),
+    ).json()
+    loaded = client.get("/api/settings/company").json()
+
+    assert loaded["version"] == saved["version"]
+    assert loaded["saved_at"] == saved["saved_at"]
+    assert loaded["saved_at"]
+
+
+def test_replacing_a_different_company_requires_exact_named_confirmation(app_context):
+    _clear_company(app_context)
+    client = _client(app_context)
+    current = client.put(
+        "/api/settings/company",
+        json=_profile(company_name="Acme", summary="Original profile"),
+    ).json()
+    path = app_context.vault.resolve("00_System/company.md")
+    before = path.read_bytes()
+
+    rejected = client.put(
+        "/api/settings/company",
+        json={**current, "company_name": "Beta", "summary": "Replacement profile"},
+    )
+
+    assert rejected.status_code == 409
+    assert rejected.json()["detail"] == "Confirm replacement of Acme with Beta."
+    assert path.read_bytes() == before
+
+    accepted = client.put(
+        "/api/settings/company",
+        json={
+            **current,
+            "company_name": "Beta",
+            "summary": "Replacement profile",
+            "replacement_confirmation": "Replace the company profile for Acme with Beta?",
+        },
+    )
+
+    assert accepted.status_code == 200
+    assert accepted.json()["company_name"] == "Beta"
+
+
+def test_later_distinct_answer_is_merged_into_populated_topic(app_context):
+    response = _client(app_context).post(
+        "/api/settings/company/interview",
+        json=_payload(
+            message="Federal money-transmission registration also applies.",
+            question_id="regulatory_context",
+            current_profile=_profile(
+                company_name="Acme",
+                regulatory_context="State lending licenses apply.",
+            ),
+        ),
+    )
+
+    assert response.status_code == 200
+    regulatory_context = response.json()["draft"]["regulatory_context"]
+    assert "State lending licenses apply." in regulatory_context
+    assert "Federal money-transmission registration also applies." in regulatory_context
+
+
+def test_unrelated_later_answer_does_not_replace_settled_licensing_fact(app_context):
+    provider = ProviderFake(
+        _model_result(
+            profile={
+                "regulatory_context": "Card-network rules apply.",
+                "data_practices": "Payment-card and device data.",
+            },
+            focus_field="regulatory_context",
+            next_question="Which licenses apply?",
+            next_question_reason="Licensing affects the analysis.",
+        )
+    )
+    _use_model(app_context, provider)
+    response = _client(app_context).post(
+        "/api/settings/company/interview",
+        json=_payload(
+            message="We process payment-card and device data.",
+            question_id="data_practices",
+            current_profile=_profile(
+                company_name="Acme",
+                website_url="https://acme.example",
+                summary="Payment tools.",
+                business_model="Merchant subscriptions.",
+                products_services="Payment tools.",
+                jurisdictions="United States.",
+                regulatory_context="State lending licenses apply.",
+                risk_posture="Balanced.",
+            ),
+        ),
+    )
+
+    assert response.status_code == 200
+    result = response.json()
+    assert result["draft"]["regulatory_context"] == "State lending licenses apply."
+    assert result["question"] is None
+    assert result["complete"] is True
+
+
 def test_stale_version_returns_conflict_without_changing_company_file(app_context):
+    _clear_company(app_context)
     client = _client(app_context)
     first = client.put(
         "/api/settings/company",
@@ -309,6 +421,7 @@ def test_empty_first_run_profile_saves_without_version(app_context):
 
 
 def test_external_markdown_edit_invalidates_saved_version(app_context):
+    _clear_company(app_context)
     client = _client(app_context)
     current = client.put(
         "/api/settings/company",
@@ -332,6 +445,7 @@ def test_external_markdown_edit_invalidates_saved_version(app_context):
 
 
 def test_concurrent_company_writes_allow_only_one_matching_version(app_context):
+    _clear_company(app_context)
     current = app_context.company.write(
         CompanyProfile(**_profile(company_name="Acme", summary="Original summary"))
     )

@@ -34,8 +34,8 @@ export default function PracticeRail({ matters, decisions }: { matters: Matter[]
         <span className="dot" style={{ background: withThemis ? role.agent : role.quiet }} />
         <span>
           {withThemis === 0
-            ? "Nothing is with Themis right now."
-            : `${withThemis} ${withThemis === 1 ? "matter is" : "matters are"} with Themis.`}
+            ? "Nothing is with Themis.ai right now."
+            : `${withThemis} ${withThemis === 1 ? "matter is" : "matters are"} with Themis.ai.`}
         </span>
       </div>
 

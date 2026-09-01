@@ -86,7 +86,7 @@ class AntigravityCLIProvider:
         ]
         if self.reasoning_effort:
             command.extend(["--effort", self.reasoning_effort])
-        with tempfile.TemporaryDirectory(prefix="counsel-os-antigravity-") as directory:
+        with tempfile.TemporaryDirectory(prefix="themis.ai-antigravity-") as directory:
             try:
                 process = await self._process_factory(
                     *command,
@@ -128,10 +128,10 @@ class AntigravityCLIProvider:
     def _prompt(messages: list[dict[str, Any]], tools: list[dict[str, Any]]) -> str:
         parts = [
             "Do not use terminal, file, browser, app, plugin, MCP, or slash-command tools. "
-            "Return useful text in content, or exactly one request for a supplied Counsel OS tool."
+            "Return useful text in content, or exactly one request for a supplied Themis.ai tool."
         ]
         if tools:
-            parts.append("COUNSEL OS TOOLS:\n" + json.dumps(tools, ensure_ascii=False, separators=(",", ":")))
+            parts.append("THEMIS.AI TOOLS:\n" + json.dumps(tools, ensure_ascii=False, separators=(",", ":")))
         for message in messages:
             content = message.get("content", "")
             if not isinstance(content, str):

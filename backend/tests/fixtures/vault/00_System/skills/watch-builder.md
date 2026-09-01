@@ -12,7 +12,7 @@ Build the draft in this order: standing question and outcome; purposes; topics a
 
 Keep public collection terms separate from private company context. Never put internal paths, matter content, decisions, mitigations, private product names, email addresses, or document excerpts in `public_query`.
 
-Use these defaults when the lawyer does not specify them: awareness purpose; CounselOS native provider; daily at 08:00 in the user's stated time zone or UTC; create Briefing items; review matching enabled with Monitor attention; 90-day internal lookback.
+Use these defaults when the lawyer does not specify them: awareness purpose; Themis.ai native provider; daily at 08:00 in the user's stated time zone or UTC; create Briefing items; review matching enabled with Monitor attention; 90-day internal lookback.
 
 Use `create_watch_draft` to save the editable draft. Show a Watch draft card after it is saved. Keep recommendations separate from recorded decisions.
 

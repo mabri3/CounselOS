@@ -24,7 +24,6 @@ import type {
   ModelCatalogModel,
   ModelCatalogProvider,
   ResearchNote,
-  ResearchResult,
   ResearchRun,
   Schedule,
   ScheduleUpdate,
@@ -41,16 +40,19 @@ import type {
   VaultDocument,
   VaultInfo,
   WorkspaceSettings,
+  WorkProductDraftResult,
+  WorkProductLifecycleResult,
 } from "./types.ts";
 import { DEFAULT_SETTINGS, agentDetailFrom } from "./stubs.ts";
 
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api";
 
-export const MODEL_PROVIDER_IDS = ["mock", "openai_compatible", "opencode_go", "codex", "antigravity_cli"] as const;
+export const MODEL_PROVIDER_IDS = ["mock", "openai_compatible", "polaris", "opencode_go", "codex", "antigravity_cli"] as const;
 
 const MODEL_PROVIDER_LABELS: Record<(typeof MODEL_PROVIDER_IDS)[number], string> = {
   mock: "Mock (offline)",
   openai_compatible: "OpenAI-compatible",
+  polaris: "Polaris",
   opencode_go: "OpenCode Go",
   codex: "Codex CLI",
   antigravity_cli: "Antigravity CLI",
@@ -118,6 +120,17 @@ export async function moveMatter(matterId: string, stage: string, reason = ""): 
   });
 }
 
+export async function updateMatterRisk(
+  matterId: string,
+  riskLevel: string | null,
+  actor: string,
+): Promise<MatterDetail> {
+  return request(`/matters/${encodeURIComponent(matterId)}/risk`, {
+    method: "PATCH",
+    body: JSON.stringify({ risk_level: riskLevel, actor }),
+  });
+}
+
 export async function performMatterAction(
   matterId: string,
   payload: MatterActionRequest,
@@ -139,9 +152,16 @@ export async function completeWorkItem(
   });
 }
 
-export async function runResearch(matterId: string, question = ""): Promise<ResearchResult> {
-  const query = question ? `?question=${encodeURIComponent(question)}` : "";
-  return request(`/matters/${encodeURIComponent(matterId)}/research${query}`, { method: "POST" });
+export async function assignWorkItem(
+  matterId: string,
+  workItemId: string,
+  owner: string,
+  actor: string,
+): Promise<MatterActionResult> {
+  return request(`/matters/${encodeURIComponent(matterId)}/work-items/assign`, {
+    method: "POST",
+    body: JSON.stringify({ work_item_id: workItemId, owner, actor }),
+  });
 }
 
 export async function getAnnotations(matterId: string): Promise<{ annotations: ResearchNote[] }> {
@@ -187,10 +207,14 @@ export async function startIntake(matterId: string): Promise<ChatResponse> {
   return request(`/matters/${encodeURIComponent(matterId)}/intake`, { method: "POST" });
 }
 
-export async function startResearchRun(matterId: string, question = ""): Promise<ResearchRun> {
+export async function startResearchRun(
+  matterId: string,
+  question = "",
+  sourceActionKey?: string,
+): Promise<ResearchRun> {
   return request(`/matters/${encodeURIComponent(matterId)}/research-runs`, {
     method: "POST",
-    body: JSON.stringify({ question }),
+    body: JSON.stringify({ question, source_action_key: sourceActionKey }),
   });
 }
 
@@ -205,10 +229,22 @@ export async function applyBatchAction(matterId: string, batchId: string, action
   });
 }
 
-export async function finalizeWorkProduct(matterId: string, draftPath: string): Promise<Record<string, unknown>> {
+export async function finalizeWorkProduct(matterId: string, draftPath: string): Promise<WorkProductLifecycleResult> {
   return request(`/matters/${encodeURIComponent(matterId)}/work-product/finalize`, {
     method: "POST",
     body: JSON.stringify({ draft_path: draftPath }),
+  });
+}
+
+export async function saveWorkProductDraft(
+  matterId: string,
+  title: string,
+  content: string,
+  sourceActionKey?: string,
+): Promise<WorkProductDraftResult> {
+  return request(`/matters/${encodeURIComponent(matterId)}/work-product/draft`, {
+    method: "POST",
+    body: JSON.stringify({ title, content, source_action_key: sourceActionKey }),
   });
 }
 
@@ -272,6 +308,13 @@ export async function startChatRun(matterId: string, payload: Record<string, unk
   return request(`/matters/${encodeURIComponent(matterId)}/chat-runs`, {
     method: "POST",
     body: JSON.stringify(payload),
+  });
+}
+
+export async function recoverIntakeQuestion(matterId: string, conversationId: string): Promise<ChatRun> {
+  return request(`/matters/${encodeURIComponent(matterId)}/intake-question-recovery`, {
+    method: "POST",
+    body: JSON.stringify({ conversation_id: conversationId }),
   });
 }
 
@@ -444,8 +487,9 @@ export async function getSettings(): Promise<WorkspaceSettings> {
     const lawyer = reviewRows.find((row) => row.config_key === "document_review.lawyer_name")?.value?.trim() || "Lawyer";
     const defaultAuthor = reviewRows.find((row) => row.config_key === "document_review.default_author");
     if (defaultAuthor) {
-      defaultAuthor.options = ["Themis", lawyer];
-      if (!["Themis", lawyer].includes(defaultAuthor.value ?? "")) defaultAuthor.value = "Themis";
+      defaultAuthor.options = ["Themis.ai", lawyer];
+      if (defaultAuthor.value === "Themis") defaultAuthor.value = "Themis.ai";
+      if (!["Themis.ai", lawyer].includes(defaultAuthor.value ?? "")) defaultAuthor.value = "Themis.ai";
     }
   }
   return { model_catalog: catalog, sections };

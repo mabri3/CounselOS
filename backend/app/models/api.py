@@ -9,6 +9,10 @@ from app.models.awareness import ScheduleRecurrence, WatchDraftCard, WatchScanCa
 
 Stage = Literal["intake", "research", "explore", "generate", "respond", "closed"]
 MatterAction = Literal["approve_response", "mark_as_sent", "close_matter"]
+SourceActionKey = Annotated[
+    str,
+    Field(min_length=1, max_length=256, pattern=r"^[A-Za-z0-9][A-Za-z0-9._:/-]*$"),
+]
 
 
 class MatterCreate(BaseModel):
@@ -33,6 +37,11 @@ class StageUpdate(BaseModel):
     reason: str = ""
 
 
+class MatterRiskUpdate(BaseModel):
+    risk_level: str | None = Field(default=None, max_length=80)
+    actor: str = Field(min_length=1)
+
+
 class MatterActionRequest(BaseModel):
     action: MatterAction
     actor: str = Field(min_length=1)
@@ -46,8 +55,14 @@ class WorkItemCompleteRequest(BaseModel):
     actor: str = Field(min_length=1)
 
 
+class WorkItemAssignRequest(BaseModel):
+    work_item_id: str = Field(min_length=1)
+    owner: str = Field(min_length=1)
+    actor: str = Field(min_length=1)
+
+
 class MatterActionResult(BaseModel):
-    action: MatterAction | Literal["complete_work_item"]
+    action: MatterAction | Literal["complete_work_item", "assign_work_item"]
     matter: dict[str, Any]
     changed_paths: list[str] = Field(default_factory=list)
     event_path: str | None = None
@@ -103,6 +118,7 @@ class WorkItemCreate(BaseModel):
     due_at: str | None = None
     required: bool = False
     issue_id: str | None = None
+    source_action_key: SourceActionKey | None = None
 
 
 class DecisionCreate(BaseModel):
@@ -113,10 +129,12 @@ class DecisionCreate(BaseModel):
     decision_maker: str = ""
     decision_type: str = "legal_decision"
     conditions: list[str] = Field(default_factory=list)
+    not_decided: list[str] = Field(default_factory=list)
     linked_paths: list[str] = Field(default_factory=list)
     next_review_at: str | None = None
     risk_level: str = "unknown"
     privilege: str = "privileged_and_confidential"
+    source_action_key: SourceActionKey | None = None
 
 
 class ScheduleCreate(BaseModel):
@@ -147,7 +165,7 @@ class AgentCreate(BaseModel):
     description: str
     instructions: str
     allowed_tools: list[str] = Field(default_factory=list)
-    max_steps: int = Field(default=6, ge=1, le=20)
+    max_steps: int = Field(default=6, ge=1, le=25)
     provider: str | None = None
     model: str | None = None
     reasoning_effort: str | None = None
@@ -158,7 +176,7 @@ class AgentUpdate(BaseModel):
     description: str | None = None
     instructions: str | None = None
     allowed_tools: list[str] | None = None
-    max_steps: int | None = Field(default=None, ge=1, le=20)
+    max_steps: int | None = Field(default=None, ge=1, le=25)
     audience_id: str | None = None
     audience_prompt: str | None = None
     provider: str | None = None
@@ -368,6 +386,7 @@ class ChatRequest(BaseModel):
     skill_id: str | None = Field(default=None, exclude=True)
     review_author: str | None = None
     lawyer_author: str | None = None
+    source_action_key: SourceActionKey | None = None
     trusted_source_id: str | None = Field(default=None, exclude=True)
     expected_dossier_hash: str | None = Field(default=None, exclude=True)
 
@@ -376,6 +395,7 @@ class ToolTrace(BaseModel):
     tool: str
     status: Literal["success", "error"]
     summary: str
+    mutation_status: Literal["changed", "no_change", "failed"] | None = None
 
 
 class AppliedSkillSummary(BaseModel):
@@ -430,6 +450,7 @@ class IntakeTurn(BaseModel):
     next_question: QuestionCard | None = None
     intake_state: Literal["active", "complete"] = "active"
     dossier_orientation: str | None = None
+    source_action_key: SourceActionKey | None = None
 
     @model_validator(mode="after")
     def preserve_legacy_single_question(self) -> "IntakeTurn":
@@ -459,6 +480,7 @@ class WorkProductFinalizeRequest(BaseModel):
 class ResearchRunStart(BaseModel):
     questions: list[str] = Field(default_factory=list)
     question: str = ""
+    source_action_key: SourceActionKey | None = None
 
 
 class CompanyProfile(BaseModel):

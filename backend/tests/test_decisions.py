@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import threading
+
 import pytest
 
 from app.models.api import DecisionCreate
+from app.services.index import IndexService
 
 
 APEX_DECISION_ID = "DEC-DEMO-APEX-RETENTION"
@@ -135,3 +138,150 @@ def test_decision_keeps_legacy_conditions_separate_from_mitigation_links(app_con
     assert loaded["conditions"] == ["Escalate exceptions."]
     assert loaded["mitigation_ids"] == ["MIT-EXPLICIT"]
     assert loaded["review_packet_ids"] == ["PKT-1"]
+
+
+def test_decision_persists_conditions_and_not_decided(app_context):
+    decision = app_context.decisions.record(
+        DecisionCreate(
+            matter_id="MAT-DEMO-HARBOR",
+            title="Notice scope",
+            chosen_path="Give notice before holds.",
+            conditions=["Product confirms the notice channel."],
+            not_decided=["The wording of the notice."],
+        )
+    )
+
+    loaded = app_context.decisions.get(decision["decision_id"])
+    assert loaded["conditions"] == ["Product confirms the notice channel."]
+    assert loaded["not_decided"] == ["The wording of the notice."]
+    body = app_context.vault.read_markdown(decision["path"])["content"]
+    assert "## Not decided" in body
+
+
+def test_decision_retry_with_same_action_key_returns_one_canonical_record(app_context):
+    action_key = "chat:RUN-DECISION:tool-1"
+    first = app_context.decisions.record(
+        DecisionCreate(
+            matter_id="MAT-DEMO-HARBOR",
+            title="Hold notice decision",
+            chosen_path="Give notice before holds.",
+            rationale="Customers need a clear warning.",
+            decision_maker="Counsel",
+            source_action_key=action_key,
+        )
+    )
+
+    retried = app_context.decisions.record(
+        DecisionCreate(
+            matter_id="MAT-DEMO-HARBOR",
+            title="A retry must not replace the title",
+            chosen_path="A retry must not replace the chosen path.",
+            source_action_key=action_key,
+        )
+    )
+    app_context.index.rebuild()
+
+    matching = [
+        item for item in app_context.decisions.list()
+        if item["matter_id"] == "MAT-DEMO-HARBOR" and item["decision_id"] == first["decision_id"]
+    ]
+    matter = app_context.matters.get("MAT-DEMO-HARBOR")
+    events = [
+        event for event in matter["events"]
+        if event.get("event_type") == "decision_recorded"
+        and event.get("title") == "Hold notice decision"
+    ]
+    assert retried["decision_id"] == first["decision_id"]
+    assert retried["path"] == first["path"]
+    assert retried["title"] == "Hold notice decision"
+    assert len(matching) == 1
+    assert len([item for item in matter["decisions"] if item["decision_id"] == first["decision_id"]]) == 1
+    assert len(events) == 1
+    assert app_context.vault.read_markdown(first["path"])["metadata"]["source_action_key"] == action_key
+
+
+def test_lost_response_retry_returns_saved_decision(app_context):
+    request = DecisionCreate(
+        matter_id="MAT-DEMO-HARBOR",
+        title="Retry after response loss",
+        chosen_path="Keep the saved decision.",
+        source_action_key="chat:RUN-LOST:tool-2",
+    )
+    saved_before_response_loss = app_context.decisions.record(request)
+
+    returned_by_retry = app_context.decisions.record(request)
+
+    assert returned_by_retry["decision_id"] == saved_before_response_loss["decision_id"]
+    assert returned_by_retry["decided_at"] == saved_before_response_loss["decided_at"]
+
+
+def test_empty_rationale_survives_reload_and_index_rebuild(app_context):
+    decision = app_context.decisions.record(
+        DecisionCreate(
+            matter_id="MAT-DEMO-HARBOR",
+            title="No rationale supplied",
+            chosen_path="Record the choice without a rationale.",
+            rationale="",
+            source_action_key="decision:empty-rationale",
+        )
+    )
+
+    app_context.index.rebuild()
+    reloaded = app_context.decisions.get(decision["decision_id"])
+
+    assert reloaded["rationale"] == ""
+    assert "## Chosen path" not in reloaded["rationale"]
+    assert app_context.vault.read_markdown(decision["path"])["metadata"]["rationale"] == ""
+
+
+def test_concurrent_rebuild_cannot_replace_newer_snapshot_with_stale_one(app_context, monkeypatch):
+    first = IndexService(app_context.index.db_path, app_context.vault)
+    second = IndexService(app_context.index.db_path, app_context.vault)
+    stale_built = threading.Event()
+    release_stale = threading.Event()
+    rebuild_errors: list[BaseException] = []
+    original_build = first._build
+
+    def pause_after_stale_build(connection):
+        report = original_build(connection)
+        stale_built.set()
+        assert release_stale.wait(timeout=5)
+        return report
+
+    monkeypatch.setattr(first, "_build", pause_after_stale_build)
+
+    def rebuild(service):
+        try:
+            service.rebuild()
+        except BaseException as exc:
+            rebuild_errors.append(exc)
+
+    stale_thread = threading.Thread(target=rebuild, args=(first,))
+    stale_thread.start()
+    assert stale_built.wait(timeout=5)
+
+    decision_id = "DEC-RACE-PROBE"
+    decision_path = f"{app_context.matters.matter_path('MAT-DEMO-HARBOR')}/decisions/{decision_id}.md"
+    app_context.vault.write_markdown(
+        decision_path,
+        "# Race probe\n\n## Chosen path\n\nKeep the Markdown decision visible.\n",
+        {
+            "decision_id": decision_id,
+            "matter_id": "MAT-DEMO-HARBOR",
+            "title": "Race probe",
+            "chosen_path": "Keep the Markdown decision visible.",
+            "decision_maker": "Counsel",
+            "decided_at": "2026-08-31T12:00:00+00:00",
+        },
+    )
+    newer_thread = threading.Thread(target=rebuild, args=(second,))
+    newer_thread.start()
+    release_stale.set()
+    stale_thread.join(timeout=5)
+    newer_thread.join(timeout=5)
+
+    assert not stale_thread.is_alive()
+    assert not newer_thread.is_alive()
+    assert rebuild_errors == []
+    assert app_context.vault.exists(decision_path)
+    assert any(item["decision_id"] == decision_id for item in second.list_decisions())

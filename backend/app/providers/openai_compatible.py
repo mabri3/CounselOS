@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import json
 from typing import Any
 
 import httpx
 
 from app.config import Settings
 from app.providers.base import ProviderReply, ProviderToolCall
+from app.providers.catalog import ProviderAdapterError, normalize_tool_call, prepare_tools
 
 
 class OpenAICompatibleProvider:
@@ -61,8 +61,9 @@ class OpenAICompatibleProvider:
             "messages": messages,
             "temperature": 0.2,
         }
-        if tools:
-            payload["tools"] = tools
+        prepared_tools, allowed = prepare_tools(tools)
+        if prepared_tools:
+            payload["tools"] = prepared_tools
             payload["tool_choice"] = "auto"
         if self.settings.llm_reasoning_effort:
             payload["reasoning_effort"] = self.settings.llm_reasoning_effort
@@ -75,19 +76,24 @@ class OpenAICompatibleProvider:
             response = await client.post(url, headers=headers, json=payload)
             response.raise_for_status()
             data = response.json()
-        message = data["choices"][0]["message"]
+        try:
+            message = data["choices"][0]["message"]
+        except (KeyError, IndexError, TypeError) as exc:
+            raise ProviderAdapterError("OpenAI-compatible response is malformed.") from exc
+        if not isinstance(message, dict):
+            raise ProviderAdapterError("OpenAI-compatible response is malformed.")
         calls: list[ProviderToolCall] = []
         for call in message.get("tool_calls") or []:
-            raw_arguments = call.get("function", {}).get("arguments") or "{}"
-            try:
-                arguments = json.loads(raw_arguments)
-            except json.JSONDecodeError:
-                arguments = {"raw": raw_arguments}
-            calls.append(
-                ProviderToolCall(
-                    id=call.get("id", "tool-call"),
-                    name=call.get("function", {}).get("name", ""),
-                    arguments=arguments,
-                )
-            )
-        return ProviderReply(content=message.get("content") or "", tool_calls=calls)
+            if not isinstance(call, dict) or not isinstance(call.get("function"), dict):
+                raise ProviderAdapterError("OpenAI-compatible tool call is malformed.")
+            function = call["function"]
+            calls.append(normalize_tool_call(
+                call_id=call.get("id"),
+                name=function.get("name"),
+                arguments=function.get("arguments", {}),
+                allowed=allowed,
+            ))
+        content = message.get("content") or ""
+        if not isinstance(content, str):
+            raise ProviderAdapterError("OpenAI-compatible response is malformed.")
+        return ProviderReply(content=content, tool_calls=calls)

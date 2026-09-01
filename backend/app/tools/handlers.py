@@ -49,7 +49,16 @@ def build_handlers() -> dict[str, Handler]:
 async def update_matter_intake(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
     if not context.matter_id:
         raise ValueError("An active matter is required.")
-    turn = IntakeTurn.model_validate(arguments)
+    turn = IntakeTurn.model_validate({
+        **arguments,
+        "source_action_key": context.source_action_key,
+    })
+    if turn.intake_state == "active" and not turn.next_questions:
+        raise ValueError(
+            "Active intake must include at least one structured next_questions item. "
+            "If there are no more questions, set intake_state to complete. "
+            "Do not ask a follow-up question only in prose."
+        )
     result = context.app.matter_records.apply_intake_turn(
         context.matter_id,
         turn,
@@ -109,7 +118,7 @@ async def write_markdown(context: ToolExecutionContext, arguments: dict[str, Any
             raw_path,
             content,
             metadata,
-            author_name=context.review_author or "Themis",
+            author_name=context.review_author or "Themis.ai",
             lawyer_author=context.lawyer_author,
         )
     else:
@@ -146,7 +155,8 @@ def _validate_generic_write_path(context: ToolExecutionContext, raw_path: str) -
         for key in ("matter_files.draft_outputs_dir", "matter_files.final_outputs_dir")
     }
     if (
-        relative in protected_files
+        relative.casefold() == "work-product.md"
+        or relative in protected_files
         or any(relative == root or relative.startswith(f"{root}/") for root in protected_roots | configured)
     ):
         raise ValueError("Use a typed tool for protected matter records and work products.")
@@ -162,6 +172,8 @@ async def save_work_product(context: ToolExecutionContext, arguments: dict[str, 
     existing_draft_path = str(arguments.get("existing_draft_path") or "").strip()
     if kind not in {"recommendation", "draft", "response"}:
         raise ValueError("kind must be recommendation, draft, or response.")
+    if not content.strip():
+        raise ValueError("The deliverable body is required.")
     if kind == "recommendation":
         if existing_draft_path:
             raise ValueError("Recommendations are revised in recommendations.md, not as work-product drafts.")
@@ -172,38 +184,88 @@ async def save_work_product(context: ToolExecutionContext, arguments: dict[str, 
             "title": title or "Recommendations",
             "path": path,
         }
-    elif existing_draft_path:
-        draft = context.app.work_products.mutable_draft(matter_id, existing_draft_path)
-        metadata = draft["metadata"]
-        path = context.app.document_reviews.propose_agent_revision(
-            existing_draft_path,
-            content,
-            author_name=context.review_author or "Themis",
-            lawyer_author=context.lawyer_author,
-        )
-        context.app.matters.append_event(
-            matter_id,
-            "work_product_revised",
-            {
-                "path": path,
-                "title": metadata.get("title", PurePosixPath(path).stem),
-                "work_product_id": metadata["work_product_id"],
-            },
-            rebuild=False,
-        )
-        result = {
-            "record_type": "work_product",
-            "work_product_id": metadata["work_product_id"],
-            "title": metadata.get("title", PurePosixPath(path).stem),
-            "vault_path": path,
-            "state": "draft",
-            "summary": metadata.get("summary", ""),
-        }
     else:
-        result = context.app.work_products.create_draft(matter_id, title=title or ("Response" if kind == "response" else "Draft"), content=content)
+        current = context.app.work_products.current_draft(
+            matter_id, legacy_fallback=False
+        )
+        if existing_draft_path:
+            draft_path = existing_draft_path
+        elif current:
+            draft_path = current["path"]
+        else:
+            draft_path = ""
+    if kind != "recommendation" and draft_path:
+        draft = context.app.work_products.mutable_draft(matter_id, draft_path)
+        metadata = draft["metadata"]
+        if context.source_action_key and context.source_action_key in {
+            metadata.get("source_action_key"),
+            metadata.get("last_source_action_key"),
+        }:
+            result = {
+                "record_type": "work_product",
+                "work_product_id": metadata["work_product_id"],
+                "title": metadata.get("title", PurePosixPath(draft_path).stem),
+                "vault_path": draft_path,
+                "state": "draft",
+                "summary": metadata.get("summary", ""),
+            }
+            path = draft_path
+            changed_paths = []
+        else:
+            now = iso_now()
+            lifecycle_updates = context.app.work_products.draft_change_updates(matter_id)
+            path = context.app.document_reviews.propose_agent_revision(
+                draft_path,
+                content,
+                {
+                    "updated_at": now,
+                    "last_source_action_key": context.source_action_key,
+                },
+                author_name=context.review_author or "Themis.ai",
+                lawyer_author=context.lawyer_author,
+            )
+            matter_path = f"{context.app.matters.matter_path(matter_id)}/matter.md"
+            context.app.vault.update_markdown(
+                matter_path,
+                metadata_updates={
+                    **lifecycle_updates,
+                    "current_work_product_draft_path": path,
+                    "current_work_product_id": metadata["work_product_id"],
+                    "updated_at": now,
+                },
+            )
+            event_path = context.app.matters.append_event(
+                matter_id,
+                "work_product_revised",
+                {
+                    "path": path,
+                    "title": metadata.get("title", PurePosixPath(path).stem),
+                    "work_product_id": metadata["work_product_id"],
+                },
+                rebuild=False,
+            )
+            result = {
+                "record_type": "work_product",
+                "work_product_id": metadata["work_product_id"],
+                "title": metadata.get("title", PurePosixPath(path).stem),
+                "vault_path": path,
+                "state": "draft",
+                "summary": metadata.get("summary", ""),
+            }
+            changed_paths = [path, matter_path, event_path]
+    elif kind != "recommendation":
+        result = context.app.work_products.create_draft(
+            matter_id,
+            title=title or ("Response" if kind == "response" else "Draft"),
+            content=content,
+            source_action_key=context.source_action_key,
+        )
         path = result["vault_path"]
+        changed_paths = result["changed_paths"]
     context.app.index.rebuild()
-    return {"summary": f"Saved {kind}: {result['title']}.", "changed_paths": [path], "refresh": ["tree", "matter"], "data": result}
+    if kind == "recommendation":
+        changed_paths = [path]
+    return {"summary": f"Saved {kind}: {result['title']}.", "changed_paths": changed_paths, "refresh": ["tree", "matter"], "data": result}
 
 
 def _lawyer_actor(context: ToolExecutionContext) -> str:
@@ -282,6 +344,7 @@ async def create_work_item(context: ToolExecutionContext, arguments: dict[str, A
         due_at=arguments.get("due_at"),
         required=bool(arguments.get("required", False)),
         issue_id=arguments.get("issue_id"),
+        source_action_key=context.source_action_key,
     )
     item = context.app.matters.create_work_item(request)
     return {
@@ -296,12 +359,19 @@ async def run_research(context: ToolExecutionContext, arguments: dict[str, Any])
     matter_id = str(arguments.get("matter_id") or context.matter_id or "")
     if not matter_id:
         raise ValueError("An active matter is required.")
-    result = await context.app.research.run(matter_id, str(arguments.get("question") or ""))
+    started = context.app.research_runs.start(
+        matter_id,
+        [str(arguments.get("question") or context.app.matters.get(matter_id)["title"])],
+        source_action_key=context.source_action_key,
+    )
     return {
-        "summary": result["summary"],
-        "changed_paths": [result["path"]],
+        "summary": (
+            f"Research started in the background as {started['run_id']}. "
+            "The saved run status will update when it finishes."
+        ),
+        "changed_paths": [str(started["path"])],
         "refresh": ["matter", "kanban", "tree"],
-        "data": result,
+        "data": started,
     }
 
 
@@ -320,6 +390,7 @@ async def record_decision(context: ToolExecutionContext, arguments: dict[str, An
         linked_paths=[str(item) for item in arguments.get("linked_paths", [])],
         next_review_at=arguments.get("next_review_at"),
         risk_level=str(arguments.get("risk_level") or "unknown"),
+        source_action_key=context.source_action_key,
     )
     decision = context.app.decisions.record(request)
     return {

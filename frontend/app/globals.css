@@ -1,4 +1,4 @@
-/* Counsel OS design language — see docs/DESIGN_LANGUAGE.md */
+/* Themis.ai design language — see docs/DESIGN_LANGUAGE.md */
 
 :root {
   /* Surfaces */
@@ -493,6 +493,19 @@ textarea.text-input.prose { font: 400 15.5px/1.7 var(--serif); padding: 14px 16p
 }
 .matter-tree-head-actions { display: flex; align-items: center; gap: 8px; }
 .matter-tree-count { font: 500 11px var(--mono); color: var(--ink-6); }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+.matter-risk-select {
+  max-width: 112px; border: 1px solid var(--control); border-radius: 6px;
+  background: var(--raised); color: var(--ink); padding: 4px 7px; font: 500 12px var(--sans);
+}
+.matter-action-notice {
+  margin: 10px 34px 0; border: 1px solid var(--healthy); border-radius: 7px;
+  background: var(--healthy-tint); color: var(--healthy); padding: 9px 12px;
+  font: 600 13px/1.4 var(--sans);
+}
 .matter-tree-scroll { flex: 1; min-height: 0; overflow-y: auto; }
 .brief-pane {
   --matter-gutter: max(34px, calc((100% - 920px) / 2));
@@ -827,10 +840,11 @@ textarea.text-input.prose { font: 400 15.5px/1.7 var(--serif); padding: 14px 16p
 .question-title-row .chat-card-summary { flex: 1; }
 .question-choices { display: grid; gap: 6px; margin-top: 11px; }
 .question-choice {
-  display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%;
+  display: flex; justify-content: flex-start; align-items: center; gap: 10px; width: 100%;
   border: 1px solid var(--control); border-radius: 7px; background: transparent; color: var(--ink-2);
   padding: 8px 10px; text-align: left; font: 400 13.5px var(--sans); cursor: pointer;
 }
+.question-choice .suggested-label { margin-left: auto; }
 .question-choice:hover, .question-choice:focus-visible { border-color: var(--agent-dash); outline: none; }
 .question-choice.active { border-color: var(--ink); background: var(--sunken); }
 .suggested-label { flex: none; border-radius: 10px; background: var(--agent-wash); color: var(--agent); padding: 2px 7px; font-size: 11px; }
@@ -882,6 +896,17 @@ textarea.text-input.prose { font: 400 15.5px/1.7 var(--serif); padding: 14px 16p
 .matter-lifecycle-action { margin-top: 14px; padding: 12px; border: 1px solid var(--line-soft); border-radius: 8px; background: var(--raised); }
 .matter-lifecycle-action > span { font: 600 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-4); }
 .matter-lifecycle-action p { margin: 5px 0 10px; font: 400 13.5px/1.45 var(--sans); color: var(--ink-3); }
+.matter-inline-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.matter-new-draft-toggle { align-self: flex-start; margin-top: 4px; }
+.matter-new-draft {
+  display: grid; gap: 8px; padding: 12px; border: 1px dashed var(--agent-edge);
+  border-radius: 8px; background: var(--agent-wash);
+}
+.matter-new-draft label { font: 600 12px var(--sans); color: var(--ink-3); }
+.text-button {
+  border: 0; background: transparent; color: inherit; padding: 0; cursor: pointer;
+  font: inherit; text-decoration: underline; text-underline-offset: 2px;
+}
 .mutation-status { width: fit-content; margin-top: 10px; border-radius: 12px; padding: 4px 9px; font: 600 12px var(--sans); }
 .mutation-status.recorded { background: var(--healthy-tint); color: var(--healthy); }
 .mutation-status.no-change { background: var(--failure-tint); color: var(--failure); }
@@ -913,6 +938,7 @@ textarea.text-input.prose { font: 400 15.5px/1.7 var(--serif); padding: 14px 16p
 }
 .doc-mode button.active { background: var(--sunken); color: var(--ink); }
 .doc-mode .pane-collapse { width: 28px; height: 32px; padding: 0; font-size: 20px; }
+.doc-mode .pane-close { width: 28px; height: 32px; padding: 0; font-size: 18px; }
 .research-sources { padding: 28px 34px; }
 .research-source-card {
   max-width: 68ch; margin: 0 auto 16px; padding: 18px 20px;

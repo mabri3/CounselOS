@@ -26,6 +26,47 @@ def test_exact_completion_is_retry_safe_and_does_not_touch_sibling(app_context):
     assert app_context.vault.read_markdown(sibling["path"])["metadata"]["status"] == "open"
 
 
+def test_work_item_source_action_key_returns_one_durable_item(app_context):
+    request = WorkItemCreate(
+        matter_id="MAT-DEMO-BEACON",
+        title="Confirm product owner",
+        owner="Counsel",
+        required=True,
+        source_action_key="chat:RUN-2:tool-1",
+    )
+
+    first = app_context.matters.create_work_item(request)
+    retry = app_context.matters.create_work_item(request)
+
+    assert retry["work_item_id"] == first["work_item_id"]
+    assert retry["path"] == first["path"]
+    assert retry["source_action_key"] == "chat:RUN-2:tool-1"
+    assert len([
+        item for item in app_context.index.list_work_items("MAT-DEMO-BEACON")
+        if item["title"] == "Confirm product owner"
+    ]) == 1
+
+
+def test_work_item_owner_assignment_is_visible_and_retry_safe(app_context):
+    item = app_context.matters.create_work_item(WorkItemCreate(
+        matter_id="MAT-DEMO-BEACON", title="Assign this", owner=""
+    ))
+    first = app_context.matters.assign_work_item(
+        "MAT-DEMO-BEACON", item["work_item_id"], owner="Product Counsel", actor="Lawyer"
+    )
+    retry = app_context.matters.assign_work_item(
+        "MAT-DEMO-BEACON", item["work_item_id"], owner="Product Counsel", actor="Lawyer"
+    )
+
+    assert first["changed_paths"] == [item["path"]]
+    assert retry["already_recorded"] is True
+    assert retry["changed_paths"] == []
+    assert next(
+        work for work in app_context.index.list_work_items("MAT-DEMO-BEACON")
+        if work["work_item_id"] == item["work_item_id"]
+    )["owner"] == "Product Counsel"
+
+
 def test_direct_lifecycle_calls_require_actor_and_final_artifact(app_context):
     matter_id, final = _responding_matter(app_context)
     with pytest.raises(TypeError):
@@ -52,6 +93,60 @@ def test_lifecycle_binds_final_and_retries_with_stable_events(app_context):
     assert app_context.vault.exists(approved["event_path"])
 
 
+def test_delivered_or_closed_matter_rejects_a_replacement_draft(app_context):
+    matter_id, final = _responding_matter(app_context)
+    app_context.matters.perform_action(
+        matter_id, "approve_response", actor="Counsel", artifact_path=final["vault_path"]
+    )
+    app_context.matters.perform_action(matter_id, "mark_as_sent", actor="Counsel")
+
+    with pytest.raises(ValueError, match="Reopen the delivered response"):
+        app_context.work_products.create_draft(
+            matter_id, title="Replacement", content="Replacement answer"
+        )
+
+    for item in app_context.index.list_work_items(matter_id):
+        if item["required"] and item["status"] not in {"done", "closed"}:
+            app_context.matters.complete_work_item(
+                matter_id, item["work_item_id"], actor="Counsel"
+            )
+    app_context.matters.perform_action(matter_id, "close_matter", actor="Counsel")
+    with pytest.raises(ValueError, match="Reopen the matter"):
+        app_context.work_products.create_draft(
+            matter_id, title="Closed replacement", content="Replacement answer"
+        )
+
+
+def test_delivery_rejects_an_approved_final_after_direct_draft_change(app_context):
+    matter_id, final = _responding_matter(app_context)
+    app_context.matters.perform_action(
+        matter_id, "approve_response", actor="Counsel", artifact_path=final["vault_path"]
+    )
+    final_document = app_context.vault.read_markdown(final["vault_path"])
+    draft_path = final_document["metadata"]["source_draft"]
+    app_context.vault.update_markdown(draft_path, content="Changed after approval")
+
+    with pytest.raises(ValueError, match="no longer matches"):
+        app_context.matters.perform_action(matter_id, "mark_as_sent", actor="Counsel")
+
+
+def test_finalize_is_noop_after_delivery_only_for_identical_existing_final(app_context):
+    matter_id, final = _responding_matter(app_context)
+    draft_path = app_context.vault.read_markdown(final["vault_path"])["metadata"]["source_draft"]
+    app_context.matters.perform_action(
+        matter_id, "approve_response", actor="Counsel", artifact_path=final["vault_path"]
+    )
+    app_context.matters.perform_action(matter_id, "mark_as_sent", actor="Counsel")
+
+    identical = app_context.work_products.finalize(matter_id, draft_path)
+    assert identical["vault_path"] == final["vault_path"]
+    assert identical["changed_paths"] == []
+
+    app_context.vault.update_markdown(draft_path, content="Changed after delivery")
+    with pytest.raises(ValueError, match="Reopen the delivered response"):
+        app_context.work_products.finalize(matter_id, draft_path)
+
+
 def test_approval_retry_repairs_open_exact_approval_item(app_context):
     matter_id, final = _responding_matter(app_context)
     item = app_context.matters.create_work_item(
@@ -76,10 +171,19 @@ def test_approval_rejects_hostile_or_different_final_and_closure_names_work(app_
         app_context.matters.perform_action(matter_id, "approve_response", actor="Counsel", artifact_path="00_System/identity.md")
     app_context.matters.perform_action(matter_id, "approve_response", actor="Counsel", artifact_path=final["vault_path"])
     other = app_context.work_products.create_draft(matter_id, title="Other", content="Other answer")
+    assert app_context.matters.get(matter_id)["response_approved_at"] is None
+    with pytest.raises(ValueError, match="approved before"):
+        app_context.matters.perform_action(matter_id, "mark_as_sent", actor="Counsel")
     other_final = app_context.work_products.finalize(matter_id, other["vault_path"])
-    with pytest.raises(ValueError, match="different final"):
-        app_context.matters.perform_action(matter_id, "approve_response", actor="Counsel", artifact_path=other_final["vault_path"])
-    app_context.matters.perform_action(matter_id, "mark_as_sent", actor="Counsel", note="Sent by email")
+    with pytest.raises(ValueError, match="current work-product draft"):
+        app_context.matters.perform_action(
+            matter_id,
+            "approve_response",
+            actor="Counsel",
+            artifact_path=final["vault_path"],
+        )
+    app_context.matters.perform_action(matter_id, "approve_response", actor="Counsel", artifact_path=other_final["vault_path"])
+    app_context.matters.perform_action(matter_id, "mark_as_sent", actor="Counsel", artifact_path=other_final["vault_path"], note="Sent by email")
     item = app_context.matters.create_work_item(WorkItemCreate(matter_id=matter_id, title="Archive signed copy", required=True))
     with pytest.raises(ValueError, match="Archive signed copy"):
         app_context.matters.perform_action(matter_id, "close_matter", actor="Counsel")

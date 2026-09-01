@@ -29,7 +29,7 @@ class VaultManager:
 
     def create(self, requested: str) -> Path:
         target = self._new_target(requested)
-        staging = Path(tempfile.mkdtemp(prefix=f".{target.name}.counsel-os-", dir=target.parent))
+        staging = Path(tempfile.mkdtemp(prefix=f".{target.name}.themis.ai-", dir=target.parent))
         try:
             self._populate(staging)
             self.validate(staging)
@@ -59,7 +59,7 @@ class VaultManager:
             except (OSError, ValueError, TypeError):
                 pass
         if not (marked or current_format):
-            raise ValueError("This directory is not a current Counsel OS vault.")
+            raise ValueError("This directory is not a current Themis.ai vault.")
         for relative in (*CORE_FILES, *CORE_TREES):
             item = canonical / relative
             if not item.exists():
@@ -105,8 +105,37 @@ class VaultManager:
         for relative, content in files.items():
             if not isinstance(relative, str) or not isinstance(content, str):
                 raise ValueError("The blank-vault template contains an invalid file.")
-            destination = staging / relative
+            destination = self._template_destination(staging, relative)
             destination.parent.mkdir(parents=True, exist_ok=True)
             destination.write_text(content, encoding="utf-8")
+        bundled_trees = manifest.get("bundled_trees", [])
+        if not isinstance(bundled_trees, list):
+            raise ValueError("The blank-vault template contains invalid bundled trees.")
+        for relative in bundled_trees:
+            if not isinstance(relative, str):
+                raise ValueError("The blank-vault template contains an invalid bundled tree.")
+            source = TEMPLATE_ROOT / relative
+            if not source.is_dir() or source.is_symlink():
+                raise ValueError(f"The blank-vault template is missing {relative}.")
+            for source_file in sorted(source.rglob("*")):
+                if source_file.is_symlink():
+                    raise ValueError("The blank-vault template cannot contain symbolic links.")
+                if not source_file.is_file():
+                    continue
+                bundled_relative = source_file.relative_to(TEMPLATE_ROOT).as_posix()
+                destination = self._template_destination(staging, bundled_relative)
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source_file, destination)
         for relative in EMPTY_DIRS:
-            (staging / relative).mkdir(parents=True, exist_ok=True)
+            self._template_destination(staging, relative).mkdir(parents=True, exist_ok=True)
+
+    @staticmethod
+    def _template_destination(staging: Path, relative: str) -> Path:
+        supplied = Path(relative)
+        if supplied.is_absolute() or ".." in supplied.parts:
+            raise ValueError("The blank-vault template path must stay inside the vault.")
+        destination = (staging / supplied).resolve(strict=False)
+        canonical_staging = staging.resolve()
+        if destination == canonical_staging or canonical_staging not in destination.parents:
+            raise ValueError("The blank-vault template path must stay inside the vault.")
+        return destination

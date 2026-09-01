@@ -2,7 +2,7 @@
 
 ## UI design language (imported from Claude Design)
 
-The interface follows the `Counsel OS` design canvas
+The interface follows the `Themis.ai` design canvas
 (`claude.ai/design/p/df618af1-323e-4c96-ab86-0feb13fb166e`). Read
 `docs/DESIGN_LANGUAGE.md` before touching anything under `frontend/`.
 

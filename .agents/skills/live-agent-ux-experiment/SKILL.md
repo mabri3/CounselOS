@@ -64,6 +64,8 @@ If an actor breaks this boundary, mark the affected run as contaminated. Repeat 
 
 ## Experiment structure
 
+Create a new, dedicated vault for every experiment before company setup or any live matter work begins. Use that vault for all fictional company, matter, and experiment records. Never reuse a vault from an earlier experiment or write into unrelated user data. Record the new vault and its intended test-only scope in the experiment configuration.
+
 Use one coordinator and two actor types:
 
 1. A requester generates exactly the requested number of realistic questions.

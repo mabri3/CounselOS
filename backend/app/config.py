@@ -14,7 +14,7 @@ ACTIVE_VAULT_POINTER = PROJECT_ROOT / ".counsel-os" / "active-vault.json"
 class Settings(BaseSettings):
     """Runtime settings loaded from the repository-level .env file."""
 
-    app_name: str = Field("Counsel OS", alias="APP_NAME")
+    app_name: str = Field("Themis.ai", alias="APP_NAME")
     frontend_origin: str = Field("http://localhost:3000", alias="FRONTEND_ORIGIN")
     vault_path: str = Field("./vault", alias="VAULT_PATH")
 

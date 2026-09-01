@@ -12,12 +12,16 @@ import { formatDateTime } from "@/lib/design";
 import { parseMemo, splitCitations } from "@/lib/research";
 import type { FileNode, MatterDetail, ResearchMemo, ResearchNote } from "@/lib/types";
 
+type DisplayResearchMemo = ResearchMemo & {
+  publicResearchStatus?: "not_requested" | "retrieved" | "unavailable" | "failed";
+};
+
 /**
  * Canvas 6a — reading research. Click a citation and the source opens in the
  * right pane with the passage it was drawn from; the Notes tab holds the
  * passages the lawyer questioned, with the agent's answer under each.
  *
- * Highlights are amber (yours). The memo's own claims stay iris (Themis's).
+ * Highlights are amber (yours). The memo's own claims stay iris (Themis.ai's).
  */
 export default function ResearchPage() {
   const params = useParams<{ matterId: string }>();
@@ -26,7 +30,7 @@ export default function ResearchPage() {
   const requestedFile = searchParams.get("file");
 
   const [detail, setDetail] = useState<MatterDetail | null>(null);
-  const [memo, setMemo] = useState<ResearchMemo | null>(null);
+  const [memo, setMemo] = useState<DisplayResearchMemo | null>(null);
   const [openSource, setOpenSource] = useState<string>("s1");
   const [rail, setRail] = useState<"source" | "notes">("source");
   const [notes, setNotes] = useState<ResearchNote[]>([]);
@@ -95,11 +99,16 @@ export default function ResearchPage() {
               {" · research"}
             </div>
             <div style={{ font: "600 18px var(--serif)", color: "var(--ink)", marginTop: 2 }}>{memo.title}</div>
+            {memo.publicResearchStatus && memo.publicResearchStatus !== "retrieved" ? (
+              <div className="setting-help" style={{ color: "var(--attention-deep)", marginTop: 5 }}>
+                Public research {memo.publicResearchStatus === "failed" ? "failed" : "is unavailable"}. The saved analysis and internal support remain available.
+              </div>
+            ) : null}
           </div>
           <div style={{ flex: "none", display: "flex", alignItems: "center", gap: 14 }}>
             <span className="agent-label" style={{ fontWeight: 500 }}>
               <span className="agent-mark" style={{ width: 10, height: 10 }} />
-              Themis wrote this · {memo.citations.length
+              Themis.ai wrote this · {memo.citations.length
                 ? `${memo.citations.length} cited source${memo.citations.length === 1 ? "" : "s"}`
                 : "No cited sources"}
             </span>
@@ -229,7 +238,7 @@ export default function ResearchPage() {
                         <div className="note-answer">
                           <div className="agent-label" style={{ marginBottom: 6, fontSize: 13 }}>
                             <span className="agent-mark" />
-                            Themis
+                            Themis.ai
                           </div>
                           <div className="reading">
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>{note.answer}</ReactMarkdown>
@@ -240,7 +249,7 @@ export default function ResearchPage() {
                           {answeringId === note.annotation_id ? (
                             <span className="agent-label">
                               <span className="agent-mark" />
-                              Themis is working…
+                              Themis.ai is working…
                             </span>
                           ) : (
                             <button
@@ -259,7 +268,7 @@ export default function ResearchPage() {
                                 }
                               }}
                             >
-                              Ask Themis
+                              Ask Themis.ai
                             </button>
                           )}
                         </div>

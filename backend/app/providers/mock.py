@@ -9,6 +9,7 @@ from app.providers.base import ProviderReply, ProviderToolCall
 
 
 STAGES = "intake|research|explore|generate|respond|closed"
+MOCK_RESEARCH_UNAVAILABLE = "[mock-research-unavailable]"
 
 
 class MockProvider:
@@ -36,6 +37,9 @@ class MockProvider:
 
         if lowered.startswith("[scheduled task]"):
             return ProviderReply(content="Scheduled task completed in mock mode.")
+
+        if "begin with these exact markdown sections" in lowered and "research question:" in lowered:
+            return ProviderReply(content=MOCK_RESEARCH_UNAVAILABLE)
 
         stage_match = re.search(rf"(?:move|push|advance).+?\bto\s+({STAGES})\b", lowered)
         if stage_match and "move_matter_stage" in available:

@@ -71,6 +71,16 @@ class ChatHistoryService:
         now = iso_now()
         if conversation_id:
             conversation = self.get(matter_id, conversation_id)
+            if (
+                conversation.get("conversation_kind") == "intake"
+                and (
+                    conversation.get("intake_state") != "active"
+                    or self.matters.get(matter_id).get("intake_state") == "complete"
+                )
+                and (card_action or {}).get("action")
+                in {"answer", "answer_set", "skip", "stop"}
+            ):
+                raise ValueError("Intake is complete. Historical questions cannot be changed.")
             messages = conversation["messages"]
             created_at = conversation["created_at"]
             title = conversation["title"]
@@ -127,6 +137,8 @@ class ChatHistoryService:
         active_agent_id: str,
     ) -> dict[str, Any]:
         conversation = self.get(matter_id, conversation_id)
+        if conversation.get("intake_state") == "complete" and intake_state == "active":
+            raise ValueError("Completed intake cannot become active again.")
         document = self.vault.read_markdown(conversation["path"])
         metadata = document["metadata"]
         metadata.update(
@@ -199,7 +211,8 @@ class ChatHistoryService:
         if existing is None:
             return self.append(
                 matter_id, conversation_id, role="assistant", content=content,
-                trace=trace, cards=cards, applied_skills=applied_skills, run_id=run_id,
+                trace=trace, cards=cards, applied_skills=applied_skills,
+                run_id=run_id,
             )
         existing.update({
             "content": content,
@@ -405,7 +418,7 @@ class ChatHistoryService:
     def _render(messages: list[dict[str, Any]], *, heading: str) -> str:
         sections = [heading]
         for message in messages:
-            speaker = "You" if message["role"] == "user" else "Themis"
+            speaker = "You" if message["role"] == "user" else "Themis.ai"
             sections.append(f"## {speaker} · {message['created_at']}\n\n{message['content']}")
             trace = message.get("trace") or []
             if trace:
