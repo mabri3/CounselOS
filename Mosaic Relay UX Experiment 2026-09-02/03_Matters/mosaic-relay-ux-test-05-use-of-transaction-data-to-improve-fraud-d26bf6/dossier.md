@@ -1,0 +1,324 @@
+---
+matter_id: MAT-20260902-d26bf6
+record_type: dossier
+editable: true
+source_revision: 03_Matters/mosaic-relay-ux-test-05-use-of-transaction-data-to-improve-fraud-d26bf6/dossier-revisions/DOS-20260902-ea9c39.md
+updated_at: '2026-09-02T15:15:00+00:00'
+content_hash: e36b192dd47d001d2110c1296811fe0086bc4f8413d2b1594c7713e72bbaa293
+review:
+  segments:
+  - kind: equal
+    text: '# Matter dossier
+
+
+      ## Matter summary
+
+
+      Mosaic Relay, a B2B payment-infrastructure provider, wants to combine transaction
+      metadata from multiple merchants to train a fraud-detection model that will
+      drive real-time authorization and payout decisions. The data includes device
+      signals, payment method details, transaction amounts, merchant category, broad
+      regional location, dispute outcomes, and account events; direct identifiers
+      would be removed and the training set retained for seven years. Counsel is involved
+      because the business needs a legal answer before a planned launch, and the proposal
+      raises unresolved questions about lawful basis, controller/processor roles,
+      de-identification sufficiency, retention, automated decision-making, cross-border
+      transfers, and consumer rights across multiple jurisdictions (primarily North
+      America and Europe).
+
+
+      ## Decision question
+
+
+      Can Mosaic Relay lawfully aggregate transaction metadata across merchants to
+      train a fraud-detection model used in real-time authorization and payout decisions,
+      and if so, what contractual, notice, retention, de-identification, and human-review
+      conditions must be in place before launch to satisfy GDPR, CCPA/CPRA, and other
+      applicable US state privacy laws?
+
+
+      ## Material facts
+
+
+      - Data is collected while Mosaic Relay provides payment and fraud services to
+      merchants.
+
+      - Mosaic Relay would not sell the data.
+
+      - The proposed operation would remove direct identifiers and combine data across
+      customers.
+
+      - The training set would be retained for seven years.
+
+      - Model training would occur monthly, with outputs used in real-time authorization
+      and payout decisions.
+
+      - Data categories include device signals, payment method details, transaction
+      amounts, merchant category, broad regional location, dispute outcomes, and account
+      events.
+
+      - Actors include Mosaic Relay, merchants, payers, recipients, fraud vendors,
+      cloud providers, and model-governance staff.
+
+      - Mosaic Relay believes aggregation and pseudonymization reduce privacy risk.
+
+      - Which jurisdictions are in scope for the merchants, payers, and recipients,
+      and where will the data be processed and stored? — Multiple/global — need to
+      map
+
+      - Which exact identifiers are retained after de-identification (e.g., device
+      IDs, IP addresses, account IDs, email hashes)? — Not sure — need to confirm
+      with engineering
+
+      - What do current merchant contracts say about use of transaction data, and
+      do they permit cross-merchant aggregation? — Unknown. Current merchant agreements
+      and data-use schedules have not been reviewed. Working assumption for analysis:
+      no cross-merchant aggregation or secondary fraud-model training right should
+      be assumed unless the contracts, DPAs, and service terms expressly permit it,
+      including purpose, sharing with fraud vendors/cloud providers, retention, and
+      deletion limits.
+
+      - When does the business need the legal answer? — Before a planned launch
+
+      - Jurisdiction scope is multiple/global and needs to be mapped.
+
+      - Legal answer is needed before a planned launch.
+
+      - Are the model''s authorization and payout decisions subject to human review
+      today, and do consumers currently receive notice or have opt-out rights regarding
+      this data use? — Not sure — need to confirm with product/risk teams
+
+      - Where will the data be processed and stored, and are cross-border transfers
+      involved? — Not sure — need to confirm with engineering
+
+      - Is device data (device signals, device IDs, IP addresses) treated as personal
+      information in the relevant locations where merchants, payers, and recipients
+      are based? — Mixed — it varies by jurisdiction
+
+
+      ## Assumptions
+
+
+      - Mosaic Relay acts as a processor or controller depending on the data flow
+      and jurisdiction; roles need mapping per data category.
+
+      - The matter spans multiple jurisdictions (North America and Europe), so GDPR
+      and US state privacy laws are likely relevant.
+
+      - No cross-merchant aggregation or secondary fraud-model training right should
+      be assumed unless merchant contracts, DPAs, and service terms expressly permit
+      it.
+
+      - Merchant contracts have not been reviewed; working assumption is no cross-merchant
+      aggregation or secondary fraud-model training right unless contracts, DPAs,
+      and service terms expressly permit it.
+
+      - No cross-merchant aggregation or secondary fraud-model training right should
+      be assumed unless merchant contracts, DPAs, and service terms expressly permit
+      it (purpose, sharing with fraud vendors/cloud providers, retention, deletion).
+
+      - GDPR and US state privacy laws are likely in scope given the global/multi-jurisdiction
+      footprint; exact regimes need mapping.
+
+      - Mosaic Relay''s controller/processor role likely varies by data flow and jurisdiction.
+
+      - No cross-merchant aggregation or secondary fraud-model training right should
+      be assumed unless merchant contracts, DPAs, and service terms expressly permit
+      it (including purpose, sharing with fraud vendors/cloud providers, retention,
+      and deletion limits).
+
+      - Aggregation and pseudonymization alone may not be sufficient to avoid personal-data
+      obligations; de-identification standard depends on identifiers retained.
+
+      - Merchant contracts and data-use schedules have not been reviewed; working
+      assumption is no cross-merchant aggregation or secondary fraud-model training
+      right unless contracts, DPAs, and service terms expressly permit it.
+
+      - Device data is personal information in at least some in-scope jurisdictions,
+      so the analysis must be jurisdiction-specific.
+
+
+      ## Issues and workstreams
+
+
+      - Lawful basis for cross-merchant aggregation and model training
+
+      - Controller vs processor role allocation across Mosaic Relay, merchants, and
+      vendors
+
+      - Whether de-identification/pseudonymization is sufficient to avoid personal-data
+      obligations, given device data is personal in some jurisdictions
+
+      - Seven-year retention justification and deletion procedures
+
+      - Automated decision-making and human-review requirements for authorization/payout
+      decisions
+
+      - Cross-border transfer compliance
+
+      - Contract language with merchants and vendors
+
+
+      ## Open questions
+
+
+      - Which exact identifiers are retained after de-identification (e.g., device
+      IDs, IP addresses, account IDs, email hashes)? — Not yet confirmed with engineering.
+
+      - What do current merchant contracts and data-use schedules say about cross-merchant
+      aggregation and secondary fraud-model training? — Not yet reviewed; working
+      assumption is no such right exists unless expressly granted.
+
+      - Are the model''s authorization and payout decisions subject to human review
+      today, and do consumers currently receive notice or have opt-out rights regarding
+      this data use? — Not yet confirmed with product/risk teams.
+
+      - Where will the data be processed and stored, and are cross-border transfers
+      involved? — Not yet confirmed with engineering.
+
+      - Is device data (device signals, device IDs, IP addresses) treated as personal
+      information in each relevant jurisdiction? — Mixed; varies by jurisdiction and
+      needs mapping.
+
+
+      ## Research and source support
+
+
+      Latest review: `03_Matters/mosaic-relay-ux-test-05-use-of-transaction-data-to-improve-fraud-d26bf6/research/RES-20260902-d8b179.md`
+
+
+      - Internal support: **Privacy Review Cross Merchant Transaction Data For Fraud
+      Model T 9Ebfa3 C57895** — This is a first-pass analysis for review. It is not
+      a final legal opinion and does not constitute a decision. Recommendations are
+      kept separate from any recorded decision.
+
+      - Internal support: **Privacy Review Cross Merchant Transaction Data For Fraud
+      Model T 9Ebfa3** — This is a first-pass developed response for review. It is
+      not a final legal opinion and does not constitute a decision. Recommendations
+      are kept separate from any recorded decision.
+
+      - Internal support: **Facts** — Known Facts Data is collected while Mosaic Relay
+      provides payment and fraud services to merchants. Mosaic Relay would not sell
+      the data. The proposed operation would remove direct identifiers and…
+
+
+      ## Options or working recommendation
+
+
+      # Recommendations
+
+
+      No recommendation has been drafted yet.
+
+
+      ## Next counsel action
+
+
+      Approve the final response.
+
+
+      ## Work product links
+
+
+      - Draft: [Privacy Review — Cross-Merchant Transaction Data for Fraud-Model Training
+      (First-Pass Legal Analysis)](03_Matters/mosaic-relay-ux-test-05-use-of-transaction-data-to-improve-fraud-d26bf6/work-product/draft/privacy-review-cross-merchant-transaction-data-for-fraud-model-t-9ebfa3.md)
+
+      - Final: [Privacy Review — Cross-Merchant Transaction Data for Fraud-Model Training
+      (First-Pass Legal Analysis)](03_Matters/mosaic-relay-ux-test-05-use-of-transaction-data-to-improve-fraud-d26bf6/work-product/final/privacy-review-cross-merchant-transaction-data-for-fraud-model-t-9ebfa3-c57895.md)
+
+      '
+    change_id: ''
+    author_id: ''
+    author_name: ''
+    author_color: ''
+    created_at: ''
+  comments: []
+  version: 2
+  tracking: false
+  authors: []
+  comment_events: []
+---
+# Matter dossier
+
+## Matter summary
+
+Mosaic Relay, a B2B payment-infrastructure provider, wants to combine transaction metadata from multiple merchants to train a fraud-detection model that will drive real-time authorization and payout decisions. The data includes device signals, payment method details, transaction amounts, merchant category, broad regional location, dispute outcomes, and account events; direct identifiers would be removed and the training set retained for seven years. Counsel is involved because the business needs a legal answer before a planned launch, and the proposal raises unresolved questions about lawful basis, controller/processor roles, de-identification sufficiency, retention, automated decision-making, cross-border transfers, and consumer rights across multiple jurisdictions (primarily North America and Europe).
+
+## Decision question
+
+Can Mosaic Relay lawfully aggregate transaction metadata across merchants to train a fraud-detection model used in real-time authorization and payout decisions, and if so, what contractual, notice, retention, de-identification, and human-review conditions must be in place before launch to satisfy GDPR, CCPA/CPRA, and other applicable US state privacy laws?
+
+## Material facts
+
+- Data is collected while Mosaic Relay provides payment and fraud services to merchants.
+- Mosaic Relay would not sell the data.
+- The proposed operation would remove direct identifiers and combine data across customers.
+- The training set would be retained for seven years.
+- Model training would occur monthly, with outputs used in real-time authorization and payout decisions.
+- Data categories include device signals, payment method details, transaction amounts, merchant category, broad regional location, dispute outcomes, and account events.
+- Actors include Mosaic Relay, merchants, payers, recipients, fraud vendors, cloud providers, and model-governance staff.
+- Mosaic Relay believes aggregation and pseudonymization reduce privacy risk.
+- Which jurisdictions are in scope for the merchants, payers, and recipients, and where will the data be processed and stored? — Multiple/global — need to map
+- Which exact identifiers are retained after de-identification (e.g., device IDs, IP addresses, account IDs, email hashes)? — Not sure — need to confirm with engineering
+- What do current merchant contracts say about use of transaction data, and do they permit cross-merchant aggregation? — Unknown. Current merchant agreements and data-use schedules have not been reviewed. Working assumption for analysis: no cross-merchant aggregation or secondary fraud-model training right should be assumed unless the contracts, DPAs, and service terms expressly permit it, including purpose, sharing with fraud vendors/cloud providers, retention, and deletion limits.
+- When does the business need the legal answer? — Before a planned launch
+- Jurisdiction scope is multiple/global and needs to be mapped.
+- Legal answer is needed before a planned launch.
+- Are the model's authorization and payout decisions subject to human review today, and do consumers currently receive notice or have opt-out rights regarding this data use? — Not sure — need to confirm with product/risk teams
+- Where will the data be processed and stored, and are cross-border transfers involved? — Not sure — need to confirm with engineering
+- Is device data (device signals, device IDs, IP addresses) treated as personal information in the relevant locations where merchants, payers, and recipients are based? — Mixed — it varies by jurisdiction
+
+## Assumptions
+
+- Mosaic Relay acts as a processor or controller depending on the data flow and jurisdiction; roles need mapping per data category.
+- The matter spans multiple jurisdictions (North America and Europe), so GDPR and US state privacy laws are likely relevant.
+- No cross-merchant aggregation or secondary fraud-model training right should be assumed unless merchant contracts, DPAs, and service terms expressly permit it.
+- Merchant contracts have not been reviewed; working assumption is no cross-merchant aggregation or secondary fraud-model training right unless contracts, DPAs, and service terms expressly permit it.
+- No cross-merchant aggregation or secondary fraud-model training right should be assumed unless merchant contracts, DPAs, and service terms expressly permit it (purpose, sharing with fraud vendors/cloud providers, retention, deletion).
+- GDPR and US state privacy laws are likely in scope given the global/multi-jurisdiction footprint; exact regimes need mapping.
+- Mosaic Relay's controller/processor role likely varies by data flow and jurisdiction.
+- No cross-merchant aggregation or secondary fraud-model training right should be assumed unless merchant contracts, DPAs, and service terms expressly permit it (including purpose, sharing with fraud vendors/cloud providers, retention, and deletion limits).
+- Aggregation and pseudonymization alone may not be sufficient to avoid personal-data obligations; de-identification standard depends on identifiers retained.
+- Merchant contracts and data-use schedules have not been reviewed; working assumption is no cross-merchant aggregation or secondary fraud-model training right unless contracts, DPAs, and service terms expressly permit it.
+- Device data is personal information in at least some in-scope jurisdictions, so the analysis must be jurisdiction-specific.
+
+## Issues and workstreams
+
+- Lawful basis for cross-merchant aggregation and model training
+- Controller vs processor role allocation across Mosaic Relay, merchants, and vendors
+- Whether de-identification/pseudonymization is sufficient to avoid personal-data obligations, given device data is personal in some jurisdictions
+- Seven-year retention justification and deletion procedures
+- Automated decision-making and human-review requirements for authorization/payout decisions
+- Cross-border transfer compliance
+- Contract language with merchants and vendors
+
+## Open questions
+
+- Which exact identifiers are retained after de-identification (e.g., device IDs, IP addresses, account IDs, email hashes)? — Not yet confirmed with engineering.
+- What do current merchant contracts and data-use schedules say about cross-merchant aggregation and secondary fraud-model training? — Not yet reviewed; working assumption is no such right exists unless expressly granted.
+- Are the model's authorization and payout decisions subject to human review today, and do consumers currently receive notice or have opt-out rights regarding this data use? — Not yet confirmed with product/risk teams.
+- Where will the data be processed and stored, and are cross-border transfers involved? — Not yet confirmed with engineering.
+- Is device data (device signals, device IDs, IP addresses) treated as personal information in each relevant jurisdiction? — Mixed; varies by jurisdiction and needs mapping.
+
+## Research and source support
+
+Latest review: `03_Matters/mosaic-relay-ux-test-05-use-of-transaction-data-to-improve-fraud-d26bf6/research/RES-20260902-d8b179.md`
+
+- Internal support: **Privacy Review Cross Merchant Transaction Data For Fraud Model T 9Ebfa3 C57895** — This is a first-pass analysis for review. It is not a final legal opinion and does not constitute a decision. Recommendations are kept separate from any recorded decision.
+- Internal support: **Privacy Review Cross Merchant Transaction Data For Fraud Model T 9Ebfa3** — This is a first-pass developed response for review. It is not a final legal opinion and does not constitute a decision. Recommendations are kept separate from any recorded decision.
+- Internal support: **Facts** — Known Facts Data is collected while Mosaic Relay provides payment and fraud services to merchants. Mosaic Relay would not sell the data. The proposed operation would remove direct identifiers and…
+
+## Options or working recommendation
+
+# Recommendations
+
+No recommendation has been drafted yet.
+
+## Next counsel action
+
+Approve the final response.
+
+## Work product links
+
+- Draft: [Privacy Review — Cross-Merchant Transaction Data for Fraud-Model Training (First-Pass Legal Analysis)](03_Matters/mosaic-relay-ux-test-05-use-of-transaction-data-to-improve-fraud-d26bf6/work-product/draft/privacy-review-cross-merchant-transaction-data-for-fraud-model-t-9ebfa3.md)
+- Final: [Privacy Review — Cross-Merchant Transaction Data for Fraud-Model Training (First-Pass Legal Analysis)](03_Matters/mosaic-relay-ux-test-05-use-of-transaction-data-to-improve-fraud-d26bf6/work-product/final/privacy-review-cross-merchant-transaction-data-for-fraud-model-t-9ebfa3-c57895.md)

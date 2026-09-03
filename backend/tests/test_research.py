@@ -30,6 +30,45 @@ async def test_research_writes_packet_and_moves_to_explore(app_context):
     matter = app_context.vault.read_markdown(f"{matter_path}/matter.md")["metadata"]
     assert matter["public_research_status"] == "unavailable"
     assert matter["latest_research_path"] == result["path"]
+    assert result["dossier_projection"]["state"] in {"applied", "not_required"}
+
+
+@pytest.mark.asyncio
+async def test_research_projection_failure_preserves_packet_without_fake_revision(
+    app_context, monkeypatch,
+):
+    def fail_projection(*_args, **_kwargs):
+        raise RuntimeError("projection offline")
+
+    monkeypatch.setattr(app_context.dossiers, "project_current_work_state", fail_projection)
+    result = await app_context.research.run(
+        "MAT-DEMO-BEACON", "Which rules control?", change_stage=False,
+    )
+
+    assert app_context.vault.exists(result["path"])
+    assert result["dossier_projection"]["state"] == "failed"
+    assert "path" not in result["dossier_projection"]
+    assert "revision_path" not in result["dossier_projection"]
+    assert "dossier did not refresh" in result["warning"]
+
+
+@pytest.mark.asyncio
+async def test_research_uses_the_disposable_index_for_internal_sources(app_context, monkeypatch):
+    calls = []
+
+    def lexical_search(query, *, relative_path="", limit=10):
+        calls.append((query, relative_path, limit))
+        return []
+
+    monkeypatch.setattr(app_context.index, "lexical_search", lexical_search)
+
+    await app_context.research.run(
+        "MAT-DEMO-BEACON", "Which rules control?", change_stage=False
+    )
+
+    assert calls == [
+        ("Which rules control?", "03_Matters/beacon-instant-onboarding", 8)
+    ]
 
 
 @pytest.mark.asyncio
@@ -99,6 +138,62 @@ async def test_research_preserves_later_workflow_stages(app_context, stage):
     app_context.matters.move_stage("MAT-DEMO-ORBIT", stage)
     await app_context.research.run("MAT-DEMO-ORBIT", "A later-stage question")
     assert app_context.index.get_matter("MAT-DEMO-ORBIT")["status"] == stage
+
+
+@pytest.mark.asyncio
+async def test_external_provider_hang_uses_one_total_budget_and_saves_partial_packet(app_context):
+    entered = asyncio.Event()
+
+    async def hanging_search(*args, **kwargs):
+        entered.set()
+        await asyncio.Event().wait()
+
+    app_context.research.search.search_external = hanging_search
+    app_context.research.configure({
+        "primary_external_provider": "tavily",
+        "fallback_external_provider": "none",
+        "external_timeout_seconds": 0.02,
+    })
+
+    result = await asyncio.wait_for(
+        app_context.research.run(
+            "MAT-DEMO-ORBIT", "Which rules control?", change_stage=False
+        ),
+        timeout=0.3,
+    )
+
+    assert entered.is_set()
+    assert result["public_research_status"] != "retrieved"
+    assert any(leg["status"] == "timeout" for leg in result["provider_legs"])
+    assert any("total external research budget" in warning for warning in result["research_warnings"])
+    packet = app_context.vault.read_markdown(result["path"])
+    assert packet["metadata"]["status"] == "first_pass_partial"
+    assert packet["metadata"]["provider_legs"][-1]["status"] == "timeout"
+    assert "## Working Analysis" in packet["content"]
+
+
+@pytest.mark.asyncio
+async def test_timeout_research_run_finishes_and_does_not_move_respond_backward(app_context):
+    app_context.matters.move_stage("MAT-DEMO-BEACON", "respond")
+
+    async def hanging_search(*args, **kwargs):
+        await asyncio.Event().wait()
+
+    app_context.research.search.search_external = hanging_search
+    app_context.research.configure({
+        "primary_external_provider": "tavily",
+        "fallback_external_provider": "polaris",
+        "external_timeout_seconds": 0.02,
+    })
+    runs = ResearchRunService(app_context.vault, app_context.research)
+    started = runs.start("MAT-DEMO-BEACON", ["Which rules control?"])
+
+    await asyncio.wait_for(runs.wait(started["run_id"]), timeout=0.4)
+    completed = runs.get("MAT-DEMO-BEACON", started["run_id"])
+
+    assert completed["state"] == "completed"
+    assert completed["results"][0]["path"]
+    assert app_context.index.get_matter("MAT-DEMO-BEACON")["status"] == "respond"
 
 
 @pytest.mark.asyncio
@@ -201,7 +296,7 @@ async def test_research_run_reuses_saved_provider_selection(app_context):
     )
     started = runs.start("MAT-DEMO-BEACON", ["One", "Two"])
     assert started["selection"]["model"] == "saved-model"
-    await runs.wait(started["run_id"])
+    await runs.wait_for_active_work()
 
     assert len(seen) == 2
     assert all(item is not None and item.selection == selection for item in seen)
@@ -360,12 +455,301 @@ def test_research_provider_resolution_failure_leaves_intake_without_run(app_cont
 async def test_automatic_research_is_limited_to_three_questions(app_context):
     runs = ResearchRunService(app_context.vault, app_context.research)
 
-    started = runs.start("MAT-DEMO-BEACON", ["One", "Two", "Three", "Four"])
-    await runs.wait(started["run_id"])
-    completed = runs.get("MAT-DEMO-BEACON", started["run_id"])
+    runs.start("MAT-DEMO-BEACON", ["One", "Two", "Three", "Four"])
+    await runs.wait_for_active_work()
+    completed = runs.list("MAT-DEMO-BEACON")
 
-    assert completed["questions"] == ["One", "Two", "Three"]
-    assert completed["total"] == 3
+    assert sorted(item["question"] for item in completed) == ["One", "Three", "Two"]
+    assert len(completed) == 3
+    assert all(item["questions"] == [item["question"]] and item["total"] == 1 for item in completed)
+
+
+@pytest.mark.asyncio
+async def test_research_queue_adds_while_running_and_continues_in_order(app_context):
+    entered = asyncio.Event()
+    release = asyncio.Event()
+    seen = []
+
+    async def controlled(_request, *, resolved_provider=None):
+        seen.append(_request.message)
+        if len(seen) == 1:
+            entered.set()
+            await release.wait()
+        return ChatResponse(reply="Useful analysis.")
+
+    app_context.research.bind_agent_runner(controlled)
+    runs = ResearchRunService(app_context.vault, app_context.research)
+    first = runs.start("MAT-DEMO-BEACON", ["First question"])
+    await entered.wait()
+    second = runs.start("MAT-DEMO-BEACON", ["Second question"])
+    assert runs.get("MAT-DEMO-BEACON", second["run_id"])["state"] == "queued"
+    assert sum(item["state"] == "running" for item in runs.list("MAT-DEMO-BEACON")) == 1
+
+    release.set()
+    await runs.wait(first["run_id"])
+    await runs.wait(second["run_id"])
+    assert runs.get("MAT-DEMO-BEACON", second["run_id"])["state"] == "completed"
+    assert len(seen) == 2
+
+
+def test_research_queue_reorders_only_pending_items(app_context):
+    runs = ResearchRunService(app_context.vault, app_context.research)
+    one = runs._write("MAT-DEMO-BEACON", "RUN-ONE", state="running", questions=["Active"], status="Research is running.", queue_order=1)
+    two = runs._write("MAT-DEMO-BEACON", "RUN-TWO", state="queued", questions=["Two"], status="Research is queued.", queue_order=2)
+    three = runs._write("MAT-DEMO-BEACON", "RUN-THREE", state="queued", questions=["Three"], status="Research is queued.", queue_order=3)
+
+    reordered = runs.reorder("MAT-DEMO-BEACON", [three["run_id"], two["run_id"]])
+    assert next(item for item in reordered if item["run_id"] == one["run_id"])["state"] == "running"
+    assert [item["run_id"] for item in reordered if item["state"] == "queued"] == ["RUN-THREE", "RUN-TWO"]
+
+
+@pytest.mark.asyncio
+async def test_three_question_batch_is_independent_reorderable_and_idempotent(app_context):
+    entered = asyncio.Event()
+    release = asyncio.Event()
+    seen = []
+
+    async def controlled(_matter_id, question, **_kwargs):
+        seen.append(question)
+        if len(seen) == 1:
+            entered.set()
+            await release.wait()
+        return {
+            "path": f"research/{question}.md", "public_research_status": "unavailable",
+            "internal_sources": 1, "external_sources": 0,
+        }
+
+    app_context.research.run = controlled
+    runs = ResearchRunService(app_context.vault, app_context.research)
+    first = runs.start(
+        "MAT-DEMO-BEACON", ["Question one", "Question two", "Question three"],
+        source_action_key="batch-action",
+    )
+    await entered.wait()
+    items = runs.list("MAT-DEMO-BEACON")
+    assert len(items) == 3
+    assert len({item["question_id"] for item in items}) == 3
+    assert len({item["run_id"] for item in items}) == 3
+    assert len({item["source_action_key"] for item in items}) == 3
+    assert {item["batch_source_action_key"] for item in items} == {"batch-action"}
+    assert all(len(item["questions"]) == 1 for item in items)
+    assert [item["question"] for item in items if item["state"] == "queued"] == [
+        "Question two", "Question three",
+    ]
+
+    retry = runs.start(
+        "MAT-DEMO-BEACON", ["Question one", "Question two", "Question three"],
+        source_action_key="batch-action",
+    )
+    assert retry["run_id"] == first["run_id"]
+    assert len(runs.list("MAT-DEMO-BEACON")) == 3
+    pending = [item for item in items if item["state"] == "queued"]
+    runs.reorder("MAT-DEMO-BEACON", [pending[1]["run_id"], pending[0]["run_id"]])
+
+    release.set()
+    await runs.wait_for_active_work()
+    assert seen == ["Question one", "Question three", "Question two"]
+    assert all(item["state"] == "completed" for item in runs.list("MAT-DEMO-BEACON"))
+
+
+@pytest.mark.asyncio
+async def test_legacy_multi_question_record_still_executes_once(app_context):
+    seen = []
+
+    async def completed(_matter_id, question, **_kwargs):
+        seen.append(question)
+        return {
+            "path": f"research/{question}.md", "public_research_status": "unavailable",
+            "internal_sources": 0, "external_sources": 0,
+        }
+
+    app_context.research.run = completed
+    runs = ResearchRunService(app_context.vault, app_context.research)
+    runs._write(
+        "MAT-DEMO-BEACON", "RUN-LEGACY", state="interrupted",
+        questions=["Legacy one", "Legacy two"], completed=0,
+        resumed_from_restart=True, queue_order=1,
+        status="Research is queued to resume after restart.", return_stage="explore",
+    )
+
+    runs.resume("MAT-DEMO-BEACON")
+    await runs.wait_for_active_work()
+    assert seen == ["Legacy one", "Legacy two"]
+    assert len(runs.list("MAT-DEMO-BEACON")) == 1
+
+
+@pytest.mark.asyncio
+async def test_restart_resumes_independent_items_without_duplicates(app_context):
+    seen = []
+
+    async def completed(_matter_id, question, **_kwargs):
+        seen.append(question)
+        return {
+            "path": f"research/{question}.md", "public_research_status": "unavailable",
+            "internal_sources": 0, "external_sources": 0,
+        }
+
+    app_context.research.run = completed
+    runs = ResearchRunService(app_context.vault, app_context.research)
+    app_context.matters.move_stage("MAT-DEMO-BEACON", "research")
+    for position, state in enumerate(("running", "queued", "queued"), start=1):
+        runs._write(
+            "MAT-DEMO-BEACON", f"RUN-RESTART-{position}", state=state,
+            questions=[f"Restart {position}"], question=f"Restart {position}",
+            question_id=f"RQ-RESTART-{position}", queue_item_version=1,
+            queue_order=position, priority=position, completed=0,
+            status="Research is running." if state == "running" else "Research is queued.",
+            return_stage="explore",
+        )
+
+    assert runs.mark_running_interrupted() == 3
+    assert len(runs.list("MAT-DEMO-BEACON")) == 3
+    assert runs.resume("MAT-DEMO-BEACON")["run_id"] == "RUN-RESTART-1"
+    await runs.wait_for_active_work()
+    assert seen == ["Restart 1", "Restart 2", "Restart 3"]
+    assert len(runs.list("MAT-DEMO-BEACON")) == 3
+    assert all(item["state"] == "completed" for item in runs.list("MAT-DEMO-BEACON"))
+
+
+@pytest.mark.asyncio
+async def test_cancelling_research_does_not_start_queued_tail(app_context):
+    entered = asyncio.Event()
+    seen = []
+
+    async def blocked(_matter_id, question, **_kwargs):
+        seen.append(question)
+        entered.set()
+        await asyncio.Event().wait()
+
+    app_context.research.run = blocked
+    runs = ResearchRunService(app_context.vault, app_context.research)
+    first = runs.start("MAT-DEMO-BEACON", ["First"])
+    await entered.wait()
+    second = runs.start("MAT-DEMO-BEACON", ["Second"])
+
+    runs._tasks[first["run_id"]].cancel()
+    with pytest.raises(asyncio.CancelledError):
+        await runs.wait(first["run_id"])
+
+    assert runs.get("MAT-DEMO-BEACON", first["run_id"])["state"] == "interrupted"
+    assert runs.get("MAT-DEMO-BEACON", second["run_id"])["state"] == "queued"
+    assert second["run_id"] not in runs._tasks
+    assert seen == ["First"]
+
+
+@pytest.mark.asyncio
+async def test_stop_research_interrupts_running_and_queued_items_without_losing_results(app_context):
+    entered = asyncio.Event()
+
+    async def blocked(_matter_id, _question, **_kwargs):
+        entered.set()
+        await asyncio.Event().wait()
+
+    app_context.research.run = blocked
+    runs = ResearchRunService(app_context.vault, app_context.research)
+    first = runs.start("MAT-DEMO-BEACON", ["First", "Second"])
+    await entered.wait()
+    runs._write(
+        "MAT-DEMO-BEACON", first["run_id"],
+        results=[{"path": "research/saved.md"}], completed=1,
+    )
+
+    stopped = await runs.stop("MAT-DEMO-BEACON")
+
+    assert {item["state"] for item in stopped} == {"interrupted"}
+    assert next(item for item in stopped if item["run_id"] == first["run_id"])["results"] == [
+        {"path": "research/saved.md"}
+    ]
+    assert all(item.get("stop_reason") == "Stopped by the lawyer." for item in stopped)
+    assert not runs.has_active_work
+
+
+@pytest.mark.asyncio
+async def test_user_stopped_research_can_resume_without_starting_the_interrupted_tail(app_context):
+    seen = []
+
+    async def complete(_matter_id, question, **_kwargs):
+        seen.append(question)
+        return {"path": f"research/{question}.md", "public_research_status": "unavailable"}
+
+    app_context.research.run = complete
+    runs = ResearchRunService(app_context.vault, app_context.research)
+    for position, question in enumerate(("First", "Second"), start=1):
+        runs._write(
+            "MAT-DEMO-BEACON", f"RUN-STOP-{position}", state="interrupted",
+            questions=[question], question=question, completed=0,
+            queue_item_version=1, queue_order=position,
+            status="Research was stopped by the lawyer.", resumed_from_restart=False,
+        )
+
+    resumed = runs.resume("MAT-DEMO-BEACON")
+    await runs.wait_for_active_work()
+
+    assert resumed["run_id"] == "RUN-STOP-1"
+    assert seen == ["First"]
+    assert runs.get("MAT-DEMO-BEACON", "RUN-STOP-2")["state"] == "interrupted"
+
+
+@pytest.mark.asyncio
+async def test_failed_research_retry_keeps_identity_selection_and_increments_attempt(app_context):
+    seen = []
+
+    async def complete(_matter_id, question, **_kwargs):
+        seen.append(question)
+        return {"path": "research/retried.md", "public_research_status": "unavailable"}
+
+    app_context.research.run = complete
+    runs = ResearchRunService(app_context.vault, app_context.research)
+    selection = {"agent_id": "research-agent", "provider": "workspace_default", "model": "", "reasoning_effort": ""}
+    runs._write(
+        "MAT-DEMO-BEACON", "RUN-FAILED", state="failed", questions=["Retry me"],
+        question="Retry me", completed=0, queue_item_version=1, queue_order=1,
+        status="Research failed.", selection=selection, attempt_count=1,
+    )
+
+    retried = runs.retry("MAT-DEMO-BEACON", "RUN-FAILED")
+    await runs.wait_for_active_work()
+
+    completed = runs.get("MAT-DEMO-BEACON", "RUN-FAILED")
+    assert retried["run_id"] == "RUN-FAILED"
+    assert completed["state"] == "completed"
+    assert completed["selection"] == selection
+    assert completed["attempt_count"] == 2
+    assert seen == ["Retry me"]
+
+
+@pytest.mark.asyncio
+async def test_resumed_research_keeps_completed_results_and_runs_only_remainder(app_context):
+    seen = []
+    first_result = {
+        "path": "research/first.md", "public_research_status": "unavailable",
+        "internal_sources": 1, "external_sources": 0, "provenance": "saved-first",
+    }
+
+    async def complete(_matter_id, question, **_kwargs):
+        seen.append(question)
+        return {
+            "path": f"research/{question}.md", "public_research_status": "unavailable",
+            "internal_sources": 0, "external_sources": 0,
+        }
+
+    app_context.research.run = complete
+    runs = ResearchRunService(app_context.vault, app_context.research)
+    runs._write(
+        "MAT-DEMO-BEACON", "RUN-PARTIAL-RESTART", state="interrupted",
+        questions=["First", "Second"], completed=1, results=[first_result],
+        resumed_from_restart=True, queue_order=1,
+        status="Research is queued to resume after restart.", return_stage="explore",
+    )
+
+    runs.resume("MAT-DEMO-BEACON")
+    await runs.wait_for_active_work()
+
+    completed = runs.get("MAT-DEMO-BEACON", "RUN-PARTIAL-RESTART")
+    assert seen == ["Second"]
+    assert completed["completed"] == 2
+    assert completed["results"][0] == first_result
+    assert completed["results"][1]["path"] == "research/Second.md"
 
 
 def test_startup_marks_unfinished_research_runs_interrupted(app_context):
@@ -387,6 +771,25 @@ def test_startup_marks_unfinished_research_runs_interrupted(app_context):
     assert runs.mark_running_interrupted() == 1
     assert app_context.vault.read_markdown(path)["metadata"]["state"] == "interrupted"
     assert app_context.index.get_matter("MAT-DEMO-BEACON")["status"] == "explore"
+
+
+def test_restart_interruption_is_terminal_until_resume_and_resume_clears_finish_time(app_context):
+    runs = ResearchRunService(app_context.vault, app_context.research)
+    run = runs._write(
+        "MAT-DEMO-BEACON", "RUN-RESTART-FINISH", state="running", questions=["What applies?"],
+        completed=0, status="Research is running.", return_stage="explore",
+    )
+
+    assert runs.mark_running_interrupted() == 1
+    interrupted = runs.get("MAT-DEMO-BEACON", run["run_id"])
+    assert interrupted["state"] == "interrupted"
+    assert interrupted["finished_at"]
+
+    # This check exercises the durable queued transition without leaving a task running.
+    runs._write("MAT-DEMO-BEACON", run["run_id"], state="queued", status="Research is queued to resume.", finished_at=None)
+    queued = runs.get("MAT-DEMO-BEACON", run["run_id"])
+    assert queued["state"] == "queued"
+    assert queued["finished_at"] is None
 
 
 @pytest.mark.asyncio
@@ -550,7 +953,7 @@ async def test_polaris_public_material_is_synthesized_locally_and_labeled_suppli
 
 
 @pytest.mark.asyncio
-async def test_polaris_failure_observability_is_shown_and_persisted_with_fallback(app_context):
+async def test_provider_diagnostics_stay_in_metadata_not_lawyer_packet(app_context):
     class Polaris:
         configured = True
 
@@ -560,10 +963,11 @@ async def test_polaris_failure_observability_is_shown_and_persisted_with_fallbac
                 status="failed",
                 warnings=["Polaris request failed (timeout)."],
                 observability={
-                    "failure_class": "timeout",
+                    "failure_class": "http_status",
                     "attempt_count": 3,
                     "elapsed_ms": 1250,
                     "fallback_status": "pending",
+                    "http_status": 503,
                 },
             )
 
@@ -585,19 +989,21 @@ async def test_polaris_failure_observability_is_shown_and_persisted_with_fallbac
     result = run["results"][0]
     packet = app_context.vault.read_markdown(result["path"])
     expected = {
-        "failure_class": "timeout",
+        "failure_class": "http_status",
         "attempt_count": 3,
         "elapsed_ms": 1250,
         "fallback_status": "analysis_preserved",
+        "http_status": 503,
     }
     assert result["polaris_observability"] == expected
     assert run["provider_observability"] == [expected]
     assert packet["metadata"]["polaris_observability"] == expected
+    assert packet["metadata"]["provider_legs"]
+    assert packet["metadata"]["correlation_id"].startswith("RC-")
     assert "Useful local fallback analysis remains available." in packet["content"]
-    assert (
-        "Polaris status: failed; class: timeout; attempts: 3; elapsed: 1250 ms; "
-        "fallback: analysis_preserved."
-    ) in packet["content"]
+    assert "No external authority retrieved" in packet["content"]
+    for diagnostic in ("Technical details", "Polaris", "attempts:", "elapsed:", "correlation:", "http_status", "503"):
+        assert diagnostic not in packet["content"]
 
 
 def test_only_explicit_retrieved_or_verified_sources_count_as_external_authority(app_context):
@@ -646,3 +1052,37 @@ async def test_private_polaris_question_is_blocked_before_network_and_kept_local
     assert not external_queries
     assert result["polaris_status"] == "privacy_blocked"
     assert "External research privacy check blocked this question" in packet["metadata"]["warning"]
+
+
+@pytest.mark.asyncio
+async def test_research_uses_one_async_rebuild_after_its_compound_mutations(app_context, monkeypatch):
+    rebuilds = []
+
+    async def rebuild_async():
+        rebuilds.append("async")
+
+    monkeypatch.setattr(app_context.index, "rebuild_async", rebuild_async)
+    monkeypatch.setattr(app_context.index, "rebuild", lambda: (_ for _ in ()).throw(AssertionError("sync rebuild")))
+
+    await app_context.research.run("MAT-DEMO-BEACON", "What should counsel assess?")
+
+    assert rebuilds == ["async"]
+
+
+@pytest.mark.asyncio
+async def test_research_rebuilds_after_warning_metadata_is_finalized(app_context, monkeypatch):
+    async def failed_analysis(*_args, **_kwargs):
+        raise RuntimeError("analysis unavailable")
+
+    captured_warnings = []
+
+    async def rebuild_async():
+        packet = next(app_context.vault.iter_files("03_Matters/beacon-instant-onboarding/research", {".md"}))
+        captured_warnings.append(app_context.vault.read_markdown(app_context.vault.relative(packet))["metadata"].get("warnings"))
+
+    app_context.research.bind_agent_runner(failed_analysis)
+    monkeypatch.setattr(app_context.index, "rebuild_async", rebuild_async)
+
+    result = await app_context.research.run("MAT-DEMO-BEACON", "What should counsel assess?", change_stage=False)
+
+    assert captured_warnings == [app_context.vault.read_markdown(result["path"])["metadata"]["warnings"]]

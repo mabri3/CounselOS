@@ -5,6 +5,9 @@ from datetime import UTC, datetime
 import pytest
 
 from app.models.api import MatterCreate
+from app.services.matter_lifecycle import MatterLifecycleService
+from app.services.matter_participants import MatterParticipantService
+from app.services.matter_work_items import MatterWorkItemService
 
 
 def test_sample_matters_index_and_stage_move(app_context):
@@ -38,6 +41,94 @@ def test_create_matter_builds_structured_folder(app_context):
     assert created["target_date"] == "2026-09-15"
     assert request["metadata"]["requested_launch_date"] == "2026-09-15"
     assert created["original_request"] == "Can we launch the new setting next week?"
+
+
+def test_create_without_rebuild_returns_the_new_durable_matter(app_context, monkeypatch):
+    rebuilds = []
+    monkeypatch.setattr(app_context.index, "rebuild", lambda: rebuilds.append("rebuild"))
+
+    created = app_context.matters.create(
+        MatterCreate(title="Scheduled intake", request_text="Create this from one batch."), rebuild=False,
+    )
+
+    assert rebuilds == []
+    assert created["matter_id"]
+    assert app_context.vault.exists(f"{created['path']}/matter.md")
+
+
+def test_batch_create_retry_does_not_rebuild_the_index(app_context, monkeypatch):
+    rebuilds = []
+    monkeypatch.setattr(app_context.index, "rebuild", lambda: rebuilds.append("rebuild"))
+    request = MatterCreate(
+        title="Idempotent scheduled intake", request_text="Create once.", source_action_key="schedule:batch:1",
+    )
+
+    first = app_context.matters.create(request, rebuild=False)
+    retry = app_context.matters.create(request, rebuild=False)
+
+    assert rebuilds == []
+    assert retry["matter_id"] == first["matter_id"]
+    assert retry["creation_already_recorded"] is True
+
+
+def test_matter_facade_uses_focused_services_and_backfills_a_legacy_final_pointer(app_context):
+    assert isinstance(app_context.matters._work_items, MatterWorkItemService)
+    assert isinstance(app_context.matters._participants_service, MatterParticipantService)
+    assert isinstance(app_context.matters._lifecycle, MatterLifecycleService)
+
+    draft = app_context.work_products.create_draft(
+        "MAT-DEMO-BEACON", title="Legacy final", content="Final body"
+    )
+    final = app_context.work_products.finalize("MAT-DEMO-BEACON", draft["vault_path"])
+    matter_path = "03_Matters/beacon-instant-onboarding/matter.md"
+    app_context.vault.update_markdown(matter_path, metadata_updates={
+        "current_work_product_final_path": None, "current_work_product_final_id": None,
+    })
+    app_context.index.rebuild()
+
+    detail = app_context.matters.get("MAT-DEMO-BEACON")
+    saved = app_context.vault.read_markdown(matter_path)["metadata"]
+
+    assert detail["current_work_product_final_path"] == final["vault_path"]
+    assert saved["current_work_product_final_path"] == final["vault_path"]
+    assert saved["current_work_product_final_id"] == final["final_id"]
+
+
+def test_detail_keeps_complete_matter_frontmatter_after_index_rebuild(app_context):
+    created = app_context.matters.create(
+        MatterCreate(
+            title="Jurisdiction persistence",
+            request_text="Can this launch in the United States?",
+            jurisdiction_scope=["United States"],
+        )
+    )
+
+    app_context.index.rebuild()
+    detail = app_context.matters.get(created["matter_id"])
+
+    assert detail["jurisdiction_scope"] == ["United States"]
+
+
+def test_active_intake_saved_question_is_the_resolved_next_action(app_context):
+    matter = app_context.matters.get("MAT-DEMO-BEACON")
+    matter_path = f'{matter["path"]}/matter.md'
+    app_context.vault.update_markdown(
+        matter_path,
+        metadata_updates={
+            "intake_state": "active",
+            "next_action": "Which countries are in scope?",
+        },
+    )
+    app_context.index.rebuild()
+
+    detail = app_context.matters.get("MAT-DEMO-BEACON")
+    listed = next(
+        item for item in app_context.matters.list()
+        if item["matter_id"] == "MAT-DEMO-BEACON"
+    )
+
+    assert detail["work_state"]["next_action"] == "Which countries are in scope?"
+    assert listed["work_state"]["next_action"] == "Which countries are in scope?"
 
 
 def test_response_approval_delivery_and_closure_are_separate(app_context):
@@ -121,6 +212,18 @@ def test_latest_research_fallback_uses_metadata_time(app_context):
 def test_stage_move_cannot_bypass_matter_closure(app_context):
     with pytest.raises(ValueError, match="close matter action"):
         app_context.matters.move_stage("MAT-DEMO-HARBOR", "closed")
+
+
+def test_respond_without_current_final_does_not_claim_approval_is_available(app_context):
+    matter = app_context.matters.create(
+        MatterCreate(title="Respond without final", request_text="Prepare the response.")
+    )
+    app_context.matters.move_stage(matter["matter_id"], "respond")
+
+    detail = app_context.matters.get(matter["matter_id"])
+
+    assert detail["current_work_product_final_path"] is None
+    assert detail["work_state"]["next_action"] != "Approve the final response."
 
 
 def test_matter_orientation_uses_dossier_and_has_safe_fallbacks(app_context):

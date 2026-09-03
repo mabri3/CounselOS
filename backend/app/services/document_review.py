@@ -13,6 +13,7 @@ TOKEN_PATTERN = re.compile(r"\s+|[\w]+|[^\w\s]", re.UNICODE)
 AUTHOR_PALETTE = ("#2F5597", "#7030A0", "#008272", "#A64B00", "#C0006F", "#5B6573", "#7A3E00", "#006B8F")
 LEGACY_GENERATED_AUTHOR = "Themis"
 GENERATED_AUTHOR_DISPLAY = "Themis.ai"
+GRANULAR_REVIEW_CHANGE_LIMIT = 100
 
 
 def _segment(kind: str, text: str, change_id: str = "", author: dict[str, str] | None = None, created_at: str = "") -> dict[str, str]:
@@ -218,7 +219,16 @@ class DocumentReviewService:
         author = self._ensure_author(review, author_name)
         content = self._normalize_content(content, document["content"])
         review["tracking"] = True
-        review["segments"] = self._compose_revision(review["segments"], content, author)
+        had_open_changes = bool(review_changes(review["segments"]))
+        proposed_segments = self._compose_revision(review["segments"], content, author)
+        if (
+            not had_open_changes
+            and len(review_changes(proposed_segments)) > GRANULAR_REVIEW_CHANGE_LIMIT
+        ):
+            proposed_segments = self._whole_document_revision(
+                document["content"], content, author
+            )
+        review["segments"] = proposed_segments
         review["last_proposed_by"], review["last_proposed_at"] = author_name, iso_now()
         metadata["review"] = review
         return self.vault.write_markdown(path, content, metadata)
@@ -440,6 +450,18 @@ class DocumentReviewService:
         for position in sorted(hidden_by_position):
             output.extend(hidden_by_position[position])
         return output
+
+    @staticmethod
+    def _whole_document_revision(old: str, new: str, author: dict[str, str]) -> list[dict[str, Any]]:
+        if old == new:
+            return [_segment("equal", new)] if new else []
+        change_id, created_at = new_id("CHG"), iso_now()
+        result: list[dict[str, Any]] = []
+        if old:
+            result.append(_segment("delete", old, change_id, author, created_at))
+        if new:
+            result.append(_segment("insert", new, change_id, author, created_at))
+        return result
 
     @staticmethod
     def _compose_untracked(segments: list[dict[str, Any]], content: str) -> list[dict[str, Any]]:

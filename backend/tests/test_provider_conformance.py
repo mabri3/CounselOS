@@ -161,3 +161,47 @@ async def test_workspace_update_closes_workspace_and_cached_providers(app_contex
     assert workspace.closed == 1
     assert cached.closed == 1
     assert router.workspace_provider is replacement
+
+
+@pytest.mark.asyncio
+async def test_router_closes_openai_client_and_configuration_swap_uses_a_new_one(monkeypatch):
+    class Response:
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {"choices": [{"message": {"content": "done"}}]}
+
+    class Client:
+        created: list["Client"] = []
+
+        def __init__(self, **_kwargs):
+            self.closed = 0
+            type(self).created.append(self)
+
+        async def post(self, *_args, **_kwargs):
+            return Response()
+
+        async def aclose(self):
+            self.closed += 1
+
+    monkeypatch.setattr("app.providers.openai_compatible.httpx.AsyncClient", Client)
+    settings = Settings(
+        llm_provider="openai_compatible", llm_api_key="test-key", llm_model="model-a",
+    )
+    original = OpenAICompatibleProvider(settings)
+    router = ProviderRouter(settings, original)
+    await original.complete([])
+
+    replacement_settings = settings.model_copy(update={"llm_model": "model-b"})
+    replacement = OpenAICompatibleProvider(replacement_settings)
+    await router.update_workspace(replacement_settings, replacement)
+    await replacement.complete([])
+
+    assert len(Client.created) == 2
+    assert Client.created[0] is not Client.created[1]
+    assert Client.created[0].closed == 1
+    assert Client.created[1].closed == 0
+
+    await router.close()
+    assert Client.created[1].closed == 1

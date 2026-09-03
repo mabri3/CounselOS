@@ -4,11 +4,15 @@ import { readFileSync } from "node:fs";
 const settings = readFileSync(new URL("../app/settings/page.tsx", import.meta.url), "utf8");
 const agents = readFileSync(new URL("../app/agents/page.tsx", import.meta.url), "utf8");
 const api = readFileSync(new URL("../lib/api.ts", import.meta.url), "utf8");
+const stubs = readFileSync(new URL("../lib/stubs.ts", import.meta.url), "utf8");
 const types = readFileSync(new URL("../lib/types.ts", import.meta.url), "utf8");
 
-for (const provider of ["mock", "openai_compatible", "polaris", "opencode_go", "codex", "antigravity_cli"]) {
+for (const provider of ["mock", "openai_compatible", "opencode_go", "codex", "antigravity_cli"]) {
   assert.match(api, new RegExp(`MODEL_PROVIDER_IDS[^;]+["']${provider}["']`), `the catalog must include ${provider}`);
 }
+assert.doesNotMatch(api, /MODEL_PROVIDER_IDS[^;]+["']polaris["']/, "Polaris must not appear as an agent model provider");
+assert.match(stubs, /research\.primary_external_provider[^\n]+["']polaris["']/, "Polaris must remain available for public research");
+assert.match(settings, /provider\.provider_id === ["']polaris["']/, "Watch provider status must still identify Polaris");
 
 assert.match(types, /readiness:\s*ProviderReadiness/, "provider readiness must be typed");
 assert.match(types, /readiness_detail:\s*string/, "provider readiness detail must be typed");

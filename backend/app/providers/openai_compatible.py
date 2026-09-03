@@ -16,6 +16,7 @@ class OpenAICompatibleProvider:
         if not settings.llm_api_key or not settings.llm_model:
             raise ValueError("LLM_API_KEY and LLM_MODEL are required for an OpenAI-compatible provider.")
         self.settings = settings
+        self._client = httpx.AsyncClient(timeout=settings.llm_timeout_seconds)
 
     @staticmethod
     async def available_models(settings: Settings) -> list[dict[str, Any]]:
@@ -72,10 +73,9 @@ class OpenAICompatibleProvider:
             "Content-Type": "application/json",
         }
         url = self.settings.llm_base_url.rstrip("/") + "/chat/completions"
-        async with httpx.AsyncClient(timeout=self.settings.llm_timeout_seconds) as client:
-            response = await client.post(url, headers=headers, json=payload)
-            response.raise_for_status()
-            data = response.json()
+        response = await self._client.post(url, headers=headers, json=payload)
+        response.raise_for_status()
+        data = response.json()
         try:
             message = data["choices"][0]["message"]
         except (KeyError, IndexError, TypeError) as exc:
@@ -97,3 +97,6 @@ class OpenAICompatibleProvider:
         if not isinstance(content, str):
             raise ProviderAdapterError("OpenAI-compatible response is malformed.")
         return ProviderReply(content=content, tool_calls=calls)
+
+    async def close(self) -> None:
+        await self._client.aclose()

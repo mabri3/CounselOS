@@ -131,3 +131,35 @@ Keep entries chronological and append-only. When a decision changes, add a new e
 - Review: One independent read-only Sol High reviewer found nine issues. Sol Light corrections resolved all findings and the later revision-warning, company-attribution, and legacy-final compatibility regressions. The same reviewer reported no unresolved material finding after two rechecks.
 - Verification: 550 backend tests; every `frontend/scripts/check-*.ts` script; workspace checks; typecheck; production build; graph refresh; isolated browser lifecycle demo; unchanged repository-vault hash; and `git diff --check`.
 - Evidence: `docs/themis-ai-reliability-build.handoff-plan.md`, `docs/themis-ai-reliability-build.handoff-progress.md`, and `docs/ACCEPTANCE_TESTS.md`.
+
+### 2026-09-01 — Milestone: Workflow reconciliation complete
+
+- Status: `implemented`
+- Result: One matter now moves from immediate visible intake through a durable serial research queue, one canonical draft, a versioned recommendation, explicit lawyer proposal acceptance or direct edit, a disposition-linked durable decision, finalization, approval, manual delivery, required-work completion, and closure.
+- Integrity choices: Chat prepares material actions but does not perform them. Approval, durable decision recording, manual delivery, and closure require direct controls. Recommendation proposals do not replace the current version until accepted. SQLite remains disposable and rebuilds from Markdown.
+- Provider choices: Research Agent uses exact model ID `kimi-k3-fast`. Matter research supports Polaris, Tavily, or no public provider and preserves useful local/model output with truthful support labels when a public step fails.
+- Repair choice: List and board surfaces report durable lifecycle contradictions. Only the derived final-before-Respond mismatch has an automatic repair control. Material approval, delivery, closure, and decision facts are not inferred.
+- Verification: 629 backend tests; all focused frontend checks; the older lifecycle check; typecheck; production build; `git diff --check`; fresh visible vault D workflow; disposable SQLite deletion and rebuild; unchanged protected repository-vault hash; and a combined Sol Medium PASS for all 12 review groups.
+- Evidence: `docs/themis-ai-workflow-reconciliation-build.handoff-plan.md`, `docs/themis-ai-workflow-reconciliation-build.handoff-progress.md`, and `docs/ACCEPTANCE_TESTS.md`.
+
+### 2026-09-02 — Decision: One authority per matter concept
+
+- Status: `implemented`
+- Decision: Use one durable Markdown authority for each matter concept. `matter.md` owns lifecycle data, `facts.md` owns facts and assumptions, `issues.md` owns issues, `participants.md` owns people and roles, conversation records own answered intake cards, and `MatterStateService` owns the resolved next action. SQLite remains a disposable index.
+- Read rule: The UI, agents, and deterministic recovery use the resolved matter projection. The projection must not drop frontmatter fields that SQLite does not index.
+- Edit rule: Reconcile only the defined structured list forms at the file-write boundary. Keep history and provenance. Do not infer typed facts from arbitrary prose and do not add a general bidirectional synchronization engine.
+- Chat rule: Reject a duplicate card answer before queueing or appending it. Create success UI only from a successful typed mutation. Keep internal failed attempts in the trace instead of the main chat card stack.
+- Repair: Added complete frontmatter projection, early duplicate-answer validation, answered-card-aware intake recovery, structured record edit reconciliation, and truthful chat-card rendering.
+- Verification: 658 backend tests; frontend typecheck and production build; live reload of `MAT-20260902-23c0d3` with zero failed workspace-action cards, zero synthetic `Matter updated` cards, one resolved jurisdiction value, and the saved intake question equal to the resolved next action; graph refresh; and `git diff --check`.
+- Evidence: Focused regressions in `backend/tests/test_matters.py`, `backend/tests/test_chat_runs.py`, `backend/tests/test_matter_records.py`, and `backend/tests/test_matter_led_contracts.py`.
+
+### 2026-09-02 — Decision: Runtime-owned built-in contracts and durable card answers
+
+- Status: `implemented`
+- Context: An older vault could supply stale built-in agent instructions while the application supplied current tool schemas. A valid question-card answer remained only in the transcript when the model did not call `update_matter_intake`. The same question could then return, while the UI presented an unsupported save claim or an unhelpful priority label.
+- Decision: The application owns the current contract, permissions, schemas, and step limit for each built-in agent. Vault agent text remains editable workspace guidance. Each built-in turn receives both, and the current contract wins on conflict. Custom agents remain fully vault-managed.
+- Answer rule: Resolve and validate card actions against the saved active question. Save the exact question, explicit answer, source message, and answer status before model analysis. Close the matching open question. Create a source-linked fact. Project a named `record_target` only when the question explicitly declares that target.
+- Failure rule: A missing model tool call cannot erase the user's answer. The provider can still add analysis and the next question. Duplicate grouped answers fail before transcript append. Recovery does not present a sole **Continue with assumptions** choice. The UI says **Follow-up question** unless true priority metadata exists.
+- Scope limit: Do not infer typed state from arbitrary chat prose. Do not add a general semantic synchronization engine or a vault migration framework.
+- Verification: 665 backend tests; frontend typecheck and production build; graph refresh; and a visible old-vault browser check that showed current app-managed tools, removed the resolved CIP card, removed generic no-change text, and recovered a new exception question with three useful choices.
+- Evidence: `backend/app/agents/registry.py`, `backend/app/agents/context.py`, `backend/app/routers/chat.py`, `backend/app/services/matter_records.py`, `backend/app/agents/runner.py`, `frontend/components/ChatCards.tsx`, and focused fail-then-pass tests.

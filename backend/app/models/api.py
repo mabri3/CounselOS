@@ -9,16 +9,31 @@ from app.models.awareness import ScheduleRecurrence, WatchDraftCard, WatchScanCa
 
 Stage = Literal["intake", "research", "explore", "generate", "respond", "closed"]
 MatterAction = Literal["approve_response", "mark_as_sent", "close_matter"]
+OperationStatus = Literal[
+    "changed", "no_change", "failed", "proposed", "confirmation_required"
+]
 SourceActionKey = Annotated[
     str,
     Field(min_length=1, max_length=256, pattern=r"^[A-Za-z0-9][A-Za-z0-9._:/-]*$"),
 ]
 
+MAX_CHAT_MESSAGE_CHARS = 50_000
+MAX_CHAT_HISTORY_MESSAGES = 50
+MAX_FILE_CONTENT_CHARS = 1_000_000
+MAX_MATTER_REQUEST_CHARS = 100_000
+MAX_MATTER_DESCRIPTION_CHARS = 50_000
+MAX_RECOMMENDATION_CONTENT_CHARS = 100_000
+MAX_DOCUMENT_REVIEW_CONTENT_CHARS = 1_000_000
+MAX_DOCUMENT_REVIEW_BODY_CHARS = 50_000
+MAX_DOCUMENT_REVIEW_QUOTE_CHARS = 10_000
+MAX_DOCUMENT_REVIEW_AUTHOR_CHARS = 160
+MAX_DOCUMENT_REVIEW_ID_CHARS = 256
+
 
 class MatterCreate(BaseModel):
     title: str = Field(min_length=2, max_length=160)
-    request_text: str = Field(min_length=2)
-    description: str = ""
+    request_text: str = Field(min_length=2, max_length=MAX_MATTER_REQUEST_CHARS)
+    description: str = Field(default="", max_length=MAX_MATTER_DESCRIPTION_CHARS)
     matter_type: str = "general_advice"
     product_area: str = ""
     business_team: str = ""
@@ -30,6 +45,7 @@ class MatterCreate(BaseModel):
     target_date: str | None = None
     jurisdiction_scope: list[str] = Field(default_factory=list)
     privilege: str = "privileged_and_confidential"
+    source_action_key: SourceActionKey | None = None
 
 
 class StageUpdate(BaseModel):
@@ -61,17 +77,71 @@ class WorkItemAssignRequest(BaseModel):
     actor: str = Field(min_length=1)
 
 
+class WorkItemPriorityRequest(BaseModel):
+    work_item_id: str = Field(min_length=1)
+    priority: Literal["low", "normal", "high", "urgent"]
+    actor: str = Field(min_length=1)
+
+
+class ParticipantUpdateRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=160)
+    role: str = Field(min_length=1, max_length=80)
+    actor: str = Field(min_length=1)
+
+
+class RecommendationUpdateRequest(BaseModel):
+    content: str = Field(min_length=1, max_length=MAX_RECOMMENDATION_CONTENT_CHARS)
+    actor: str = Field(min_length=1)
+
+
+class RecommendationAcceptRequest(BaseModel):
+    actor: str = Field(min_length=1)
+
+
+class MatterConsistencyRepairRequest(BaseModel):
+    actor: str = Field(min_length=1)
+
+
 class MatterActionResult(BaseModel):
-    action: MatterAction | Literal["complete_work_item", "assign_work_item"]
+    action: str
+    operation: str
+    status: OperationStatus
+    summary: str
+    matter_id: str
+    source_action_key: str | None = None
+    entity_refs: list[dict[str, str]] = Field(default_factory=list)
     matter: dict[str, Any]
     changed_paths: list[str] = Field(default_factory=list)
+    resulting_matter_state: dict[str, Any] = Field(default_factory=dict)
+    available_next_actions: list[str] = Field(default_factory=list)
+    required_user_action: str | None = None
+    error: str | None = None
+    recovery: str | None = None
     event_path: str | None = None
     work_item_id: str | None = None
     already_recorded: bool = False
 
 
+class TypedOperationResult(BaseModel):
+    action: str
+    source_action_key: str | None = None
+    operation: str
+    status: OperationStatus
+    summary: str
+    matter_id: str
+    entity_refs: list[dict[str, str]] = Field(default_factory=list)
+    changed_paths: list[str] = Field(default_factory=list)
+    resulting_matter_state: dict[str, Any] = Field(default_factory=dict)
+    available_next_actions: list[str] = Field(default_factory=list)
+    required_user_action: str | None = None
+    error: str | None = None
+    recovery: str | None = None
+    dossier_projection: dict[str, Any] | None = None
+    data: dict[str, Any]
+
+
 class FileUpdate(BaseModel):
-    content: str
+    content: str = Field(max_length=MAX_FILE_CONTENT_CHARS)
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
@@ -92,17 +162,17 @@ class DocumentReviewAction(BaseModel):
         "accept_change",
         "reject_change",
     ]
-    content: str | None = None
-    author_id: str | None = None
-    author_name: str | None = None
-    author_color: str | None = None
-    thread_id: str | None = None
-    body: str | None = None
+    content: str | None = Field(default=None, max_length=MAX_DOCUMENT_REVIEW_CONTENT_CHARS)
+    author_id: str | None = Field(default=None, max_length=MAX_DOCUMENT_REVIEW_AUTHOR_CHARS)
+    author_name: str | None = Field(default=None, max_length=MAX_DOCUMENT_REVIEW_AUTHOR_CHARS)
+    author_color: str | None = Field(default=None, max_length=MAX_DOCUMENT_REVIEW_AUTHOR_CHARS)
+    thread_id: str | None = Field(default=None, max_length=MAX_DOCUMENT_REVIEW_ID_CHARS)
+    body: str | None = Field(default=None, max_length=MAX_DOCUMENT_REVIEW_BODY_CHARS)
     color: str | None = None
     enabled: bool | None = None
-    change_id: str | None = None
-    comment_id: str | None = None
-    quote: str | None = None
+    change_id: str | None = Field(default=None, max_length=MAX_DOCUMENT_REVIEW_ID_CHARS)
+    comment_id: str | None = Field(default=None, max_length=MAX_DOCUMENT_REVIEW_ID_CHARS)
+    quote: str | None = Field(default=None, max_length=MAX_DOCUMENT_REVIEW_QUOTE_CHARS)
     anchor_start: int | None = None
     anchor_end: int | None = None
 
@@ -135,6 +205,17 @@ class DecisionCreate(BaseModel):
     risk_level: str = "unknown"
     privilege: str = "privileged_and_confidential"
     source_action_key: SourceActionKey | None = None
+    recommendation_disposition: Literal[
+        "followed", "modified", "not_followed", "not_applicable"
+    ] = "not_applicable"
+    recommendation_disposition_reason: str = Field(default="", max_length=500)
+    recommendation_version_id: str | None = None
+
+    @model_validator(mode="after")
+    def require_departure_reason(self):
+        if self.recommendation_disposition in {"modified", "not_followed"} and not self.recommendation_disposition_reason.strip():
+            raise ValueError("A short reason is required when the recommendation was modified or not followed.")
+        return self
 
 
 class ScheduleCreate(BaseModel):
@@ -207,6 +288,19 @@ class AgentRunSelection(BaseModel):
 
 class SettingsUpdate(BaseModel):
     values: dict[str, Any] = Field(default_factory=dict)
+
+
+class AnswerContractUpdate(BaseModel):
+    content: str
+
+
+class AnswerContractResponse(BaseModel):
+    path: str
+    content: str
+    metadata: dict[str, Any]
+    updated_at: float
+    is_default: bool
+    max_content_chars: int
 
 
 class VaultPathRequest(BaseModel):
@@ -287,7 +381,7 @@ class SkillSuggestionsResponse(BaseModel):
 
 class ChatMessage(BaseModel):
     role: Literal["system", "user", "assistant", "tool"]
-    content: str
+    content: str = Field(max_length=MAX_CHAT_MESSAGE_CHARS)
 
 
 class ChatChoice(BaseModel):
@@ -308,6 +402,10 @@ class QuestionCard(BaseModel):
     allow_skip: bool = True
     allow_stop: bool = True
     conflict: bool = False
+    record_target: Literal[
+        "fact", "jurisdiction_scope", "product_area", "business_team",
+        "matter_type", "target_date", "requester", "business_owner", "risk_level",
+    ] = "fact"
 
     @model_validator(mode="after")
     def make_empty_choice_question_write_in(self) -> "QuestionCard":
@@ -374,13 +472,13 @@ class CardAction(BaseModel):
 
 
 class ChatRequest(BaseModel):
-    message: str = ""
+    message: str = Field(default="", max_length=MAX_CHAT_MESSAGE_CHARS)
     matter_id: str | None = None
     active_file: str | None = None
     agent_id: str = "counsel-copilot"
     conversation_id: str | None = None
     workspace_day: str | None = Field(default=None, pattern=r"^\d{4}-\d{2}-\d{2}$")
-    history: list[ChatMessage] = Field(default_factory=list)
+    history: list[ChatMessage] = Field(default_factory=list, max_length=MAX_CHAT_HISTORY_MESSAGES)
     card_action: CardAction | None = None
     attachments: list[AttachmentReference] = Field(default_factory=list)
     skill_id: str | None = Field(default=None, exclude=True)
@@ -389,6 +487,7 @@ class ChatRequest(BaseModel):
     source_action_key: SourceActionKey | None = None
     trusted_source_id: str | None = Field(default=None, exclude=True)
     expected_dossier_hash: str | None = Field(default=None, exclude=True)
+    intake_recovery: bool = False
 
 
 class ToolTrace(BaseModel):
@@ -412,9 +511,14 @@ class ChatResponse(BaseModel):
     cards: list[ChatCard] = Field(default_factory=list)
     applied_skills: list[AppliedSkillSummary] = Field(default_factory=list)
     review_author: str | None = None
+    operation_results: list[dict[str, Any]] = Field(default_factory=list)
 
 
 ChatRunState = Literal["queued", "running", "completed", "failed", "interrupted"]
+ChatRunFailureClass = Literal[
+    "provider", "timeout", "output_shape", "tool_validation", "tool_execution",
+    "interrupted", "unknown",
+]
 
 
 class ChatRun(BaseModel):
@@ -427,6 +531,9 @@ class ChatRun(BaseModel):
     started_at: str | None = None
     finished_at: str | None = None
     failure_detail: str | None = None
+    failure_class: ChatRunFailureClass | None = None
+    correlation_id: str | None = None
+    milestone: str | None = None
     response: ChatResponse | None = None
     path: str
     selection: AgentRunSelection | None = None

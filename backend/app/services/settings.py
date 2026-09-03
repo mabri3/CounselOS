@@ -4,6 +4,7 @@ from dataclasses import asdict, is_dataclass
 from typing import Any
 
 from app.services.vault import VaultService
+from app.services.provider_settings_policy import ProviderSettingsPolicy
 from app.utils.time import iso_now
 
 
@@ -33,6 +34,8 @@ class SettingsService:
 
         validated = MatterPathPolicy.validate_values(merged)
         merged.update(validated)
+        ProviderSettingsPolicy.saved_agent_selection(merged)
+        ProviderSettingsPolicy.validate_research_values(merged)
         now = iso_now()
 
         if (
@@ -57,6 +60,9 @@ class SettingsService:
         from app.services.matter_paths import MatterPathPolicy
 
         MatterPathPolicy.validate_values({**self.read()["values"], **values})
+        merged = {**self.read()["values"], **values}
+        ProviderSettingsPolicy.saved_agent_selection(merged)
+        ProviderSettingsPolicy.validate_research_values(merged)
 
     @staticmethod
     def normalize_model_catalog(catalog: Any) -> dict[str, Any]:
@@ -91,6 +97,8 @@ class SettingsService:
                     }
                 )
             provider_id = str(provider.get("id") or "")
+            if not ProviderSettingsPolicy.is_agent_provider(provider_id):
+                continue
             providers.append(
                 {
                     "id": provider_id,

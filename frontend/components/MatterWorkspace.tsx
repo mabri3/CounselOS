@@ -4,19 +4,25 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties, KeyboardEvent, PointerEvent } from "react";
 import ChatPanel from "@/components/ChatPanel";
+import ConfirmationDialog from "@/components/ConfirmationDialog";
 import DocumentPanel from "@/components/DocumentPanel";
 import LinkifiedText from "@/components/LinkifiedText";
 import MatterTree from "@/components/MatterTree";
 import RecordDecisionModal from "@/components/RecordDecisionModal";
+import RecommendationPanel from "@/components/RecommendationPanel";
+import ResearchQueuePanel from "@/components/ResearchQueuePanel";
 import ReviewPacketPanel from "@/components/ReviewPacketPanel";
-import { assignWorkItem, completeWorkItem, finalizeWorkProduct, getFile, getResearchRun, getSettings, moveMatter, performMatterAction, saveWorkProductDraft, startResearchRun, updateMatterRisk, uploadDocument } from "@/lib/api";
+import { addMatterParticipant, assignWorkItem, completeWorkItem, finalizeWorkProduct, getRecommendation, getResearchQueue, getSettings, moveMatter, performMatterAction, prioritizeWorkItem, resumeResearchQueue, retryResearchItem, saveWorkProductDraft, startResearchRun, stopResearchQueue, updateMatterRisk, uploadDocument } from "@/lib/api";
 import { useReviewAuthor } from "@/lib/reviewAuthor";
+import { shouldPollResearchQueue } from "@/lib/researchQueue";
 import { dueWord, riskLabel, signalFor, stageLabel } from "@/lib/design";
 import { completableCurrentWorkItemId, controlIdForCurrentWork, countUserFacingDocuments, currentWorkItemFor, matterArtifacts, openItemsFor, workItemOwnerLabel } from "@/lib/matterBrief";
 import type { MatterControlId } from "@/lib/matterBrief";
-import { lifecycleActionNeedsDirectMutation, matterAction } from "@/lib/matterActions";
+import { lifecycleActionNeedsDirectMutation, matterAction, workflowStateExplanation } from "@/lib/matterActions";
+import { collectEvidence, conversationIdFromPath, findConversationPath, findFileByName, isMatchingRecommendationSupplement, parseProposedPath, participantRoleLabel, recommendationIdentity, recommendationSummary, safeMatterPath, shouldApplyCanonicalRecommendation } from "@/lib/matter-workspace";
+import { beginPendingAction, endPendingAction } from "@/lib/pendingActions";
 import type { MatterActionView } from "@/lib/matterActions";
-import type { FileNode, MatterDetail, ResearchRun } from "@/lib/types";
+import type { DossierProjection, MatterDetail, RecommendationState, ResearchRun } from "@/lib/types";
 import { getMatterMitigations, getReviewPackets } from "@/lib/watchApi";
 import type { Mitigation, ReviewPacket } from "@/lib/watchTypes";
 
@@ -26,7 +32,6 @@ type MatterControl = Omit<MatterActionView, "id" | "category"> & {
 };
 
 type MatterParticipant = { name: string; role: string };
-
 /**
  * Canvas 2b — question, recommendation, evidence, decision. The copilot and
  * the file tree are collapsed behind buttons; the document sits on the right.
@@ -57,7 +62,17 @@ export default function MatterWorkspace({
   const [treeActivePath, setTreeActivePath] = useState<string | null>(() =>
     documentRequested ? safeMatterPath(initialPath, detail.path, initialFallback) : null,
   );
-  const [recommendation, setRecommendation] = useState<string | null>(null);
+  const [recommendation, setRecommendation] = useState<string>(() => detail.recommendation?.content.trim() ?? "");
+  const [recommendationState, setRecommendationState] = useState<RecommendationState | null>(detail.recommendation ?? null);
+  const recommendationStateRef = useRef<RecommendationState | null>(detail.recommendation ?? null);
+  const recommendationIdentityRef = useRef(recommendationIdentity(detail.matter_id, detail.recommendation));
+  const [participantName, setParticipantName] = useState("");
+  const [participantRole, setParticipantRole] = useState("participant");
+  const [visibleParticipants, setVisibleParticipants] = useState<MatterParticipant[]>(
+    () => (detail as MatterDetail & { participants?: MatterParticipant[] }).participants ?? [],
+  );
+  const [ownerOverrides, setOwnerOverrides] = useState<Record<string, string>>({});
+  const [pendingActions, setPendingActions] = useState<string[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [chatSeed, setChatSeed] = useState({ text: "", revision: 0 });
   const [conversationSeed, setConversationSeed] = useState({ conversationId: "", revision: 0 });
@@ -68,7 +83,10 @@ export default function MatterWorkspace({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [actionNotice, setActionNotice] = useState("");
-  const [researchRun, setResearchRun] = useState<ResearchRun | null>(null);
+  const [dossierReviewPath, setDossierReviewPath] = useState<string | null>(null);
+  const [dossierRefreshFailed, setDossierRefreshFailed] = useState(false);
+  const [researchQueue, setResearchQueue] = useState<ResearchRun[]>([]);
+  const [manualDeliveryConfirmation, setManualDeliveryConfirmation] = useState<MatterControl | MatterActionView | null>(null);
   const [newDraftOpen, setNewDraftOpen] = useState(false);
   const [newDraftTitle, setNewDraftTitle] = useState(`${detail.title} response`);
   const [newDraftContent, setNewDraftContent] = useState("");
@@ -97,38 +115,80 @@ export default function MatterWorkspace({
     setCollapsedPanes((current) => ({ ...current, document: false }));
   }, [detail.path, documentRequested, initialFallback, initialPath]);
 
+  const loadResearchQueue = useCallback(async () => {
+    const queue = await getResearchQueue(detail.matter_id);
+    setResearchQueue(queue.items);
+    return queue.items;
+  }, [detail.matter_id]);
+
   useEffect(() => {
-    if (!researchRun) return;
+    void loadResearchQueue().catch((caught) => {
+      setError(caught instanceof Error ? caught.message : "Could not read the research queue.");
+    });
+  }, [loadResearchQueue]);
+
+  // The gate is a boolean, not the queue itself: depending on the array would
+  // restart this effect on every poll and turn the 2s interval into a hot loop.
+  const researchQueueActive = shouldPollResearchQueue(researchQueue);
+
+  useEffect(() => {
+    if (!researchQueueActive) return;
     let cancelled = false;
     let timer: number | undefined;
-    const check = () => void getResearchRun(detail.matter_id, researchRun.run_id)
+    const check = () => void loadResearchQueue()
       .then(async (next) => {
         if (cancelled) return;
-        setResearchRun(next);
-        if (next.state === "queued" || next.state === "running") {
+        if (shouldPollResearchQueue(next)) {
           timer = window.setTimeout(check, 2000);
           return;
         }
-        setActionNotice(next.status);
+        setActionNotice("Research queue updated.");
         await onReload();
       })
       .catch((caught) => {
-        if (!cancelled) setError(caught instanceof Error ? caught.message : "Could not read the research status.");
+        if (cancelled) return;
+        setError(caught instanceof Error ? caught.message : "Could not read the research status.");
+        timer = window.setTimeout(check, 2000);
       });
-    check();
+    timer = window.setTimeout(check, 2000);
     return () => { cancelled = true; window.clearTimeout(timer); };
-  }, [detail.matter_id, onReload, researchRun?.run_id]);
+  }, [loadResearchQueue, onReload, researchQueueActive]);
 
-  /** The agent's standing recommendation lives in the matter's own Markdown. */
-  const loadRecommendation = useCallback(() => {
+  /** Matter detail is canonical. The separate read only enriches its version history. */
+  useEffect(() => {
+    const canonical = detail.recommendation ?? null;
+    const identity = recommendationIdentity(detail.matter_id, canonical);
+    recommendationIdentityRef.current = identity;
+    if (shouldApplyCanonicalRecommendation(recommendationStateRef.current, canonical)) {
+      recommendationStateRef.current = canonical;
+      setRecommendation(canonical?.content.trim() ?? "");
+      setRecommendationState(canonical);
+    }
+
     let cancelled = false;
-    void getFile(`${detail.path}/recommendations.md`)
-      .then((document) => { if (!cancelled) setRecommendation(document.content.trim()); })
-      .catch(() => { if (!cancelled) setRecommendation(""); });
+    void getRecommendation(detail.matter_id)
+      .then((saved) => {
+        if (
+          cancelled
+          || recommendationIdentityRef.current !== identity
+          || !isMatchingRecommendationSupplement(
+            detail.matter_id,
+            canonical?.current_version_id ?? null,
+            saved,
+          )
+        ) return;
+        recommendationStateRef.current = saved;
+        setRecommendationState(saved);
+        setRecommendation(saved.content.trim());
+      })
+      .catch(() => { /* Keep the canonical detail value when history cannot load. */ });
     return () => { cancelled = true; };
-  }, [detail.path]);
-
-  useEffect(() => loadRecommendation(), [detail, loadRecommendation]);
+  }, [
+    detail.matter_id,
+    detail.recommendation?.content,
+    detail.recommendation?.current_version_id,
+    detail.recommendation?.current_version_number,
+  ]);
 
   useEffect(() => { void getSettings().then((saved) => { const rows = saved.sections.find((item) => item.id === "document-review")?.rows ?? []; setReviewSettings({ lawyer: rows.find((item) => item.config_key === "document_review.lawyer_name")?.value?.trim() || "", defaultAuthor: rows.find((item) => item.config_key === "document_review.default_author")?.value || "Themis.ai" }); }); }, []);
 
@@ -160,7 +220,7 @@ export default function MatterWorkspace({
   const requestPath = `${detail.path}/request.md`;
   const factsPath = findFileByName(detail.tree, "facts.md");
   const issuesPath = findFileByName(detail.tree, "issues.md");
-  const recommendationPath = findFileByName(detail.tree, "recommendations.md");
+  const recommendationPath = recommendationState?.path || detail.recommendation?.path || findFileByName(detail.tree, "recommendations.md");
   const researchTitle = artifacts.find((item) => item.kind === "research")?.label ?? "First-pass research";
   const lifecycleAction = matterAction(detail, Boolean(draftPath));
   const approvalUnavailable = lifecycleAction.id === "approve_response" && !finalPath;
@@ -176,10 +236,24 @@ export default function MatterWorkspace({
       : { id: "open_work_item", category: "Work item", label: "Open work item", detail: "Open the saved work item and review its details." };
   const currentCompletableWorkItemId = completableCurrentWorkItemId(currentWorkItem);
   const currentWorkItemOwner = workItemOwnerLabel(currentWorkItem);
+  const currentResearchWorkItem = detail.work_items.find(
+    (item) => item.work_item_id === currentWorkItem?.work_item_id && item.item_type === "research",
+  );
+  const directResearchQuestion = [
+    currentResearchWorkItem?.description ?? "",
+    currentResearchWorkItem?.title ?? "",
+    detail.orientation.decision_question,
+    detail.orientation.summary,
+    detail.title,
+  ].map((value) => value.trim()).find(Boolean) ?? detail.title;
   useEffect(() => {
     setWorkItemOwnerInput(currentWorkItem?.owner ?? "");
   }, [currentWorkItem?.owner, currentWorkItem?.work_item_id]);
-  const participants = (detail as MatterDetail & { participants?: MatterParticipant[] }).participants ?? [];
+  useEffect(() => {
+    setVisibleParticipants((detail as MatterDetail & { participants?: MatterParticipant[] }).participants ?? []);
+    setOwnerOverrides({});
+  }, [detail.matter_id, (detail as MatterDetail & { participants?: MatterParticipant[] }).participants, detail.work_items]);
+  const participants = visibleParticipants;
   const signal = signalFor(detail);
   const due = dueWord(detail);
 
@@ -187,12 +261,27 @@ export default function MatterWorkspace({
     await onReload();
   }, [onReload]);
 
+  const refreshAfterChatRun = useCallback(async () => {
+    await Promise.all([reload(), loadResearchQueue()]);
+  }, [loadResearchQueue, reload]);
+
   async function reloadPersisted(refreshError: string) {
     try {
       await reload();
     } catch {
       setError(refreshError);
     }
+  }
+
+  function reconcileDossierProjection(projection?: DossierProjection) {
+    if (!projection) return;
+    if (projection.state === "review_required" && projection.revision_path) {
+      setDossierReviewPath(projection.revision_path);
+      setDossierRefreshFailed(false);
+      return;
+    }
+    setDossierReviewPath(null);
+    setDossierRefreshFailed(projection.state === "failed");
   }
 
   async function upload(file: File) {
@@ -301,7 +390,11 @@ export default function MatterWorkspace({
     openDocument(path);
   }
 
-  async function runControl(control: MatterControl | MatterActionView) {
+  async function runControl(control: MatterControl | MatterActionView, confirmed = false, throwOnError = false) {
+    if (control.id === "mark_as_sent" && !confirmed) {
+      setManualDeliveryConfirmation(control);
+      return;
+    }
     setError("");
     setActionNotice("");
     if (control.id === "review_intake") {
@@ -333,8 +426,17 @@ export default function MatterWorkspace({
     setBusy(true);
     try {
       if (control.id === "run_research") {
-        const result = await startResearchRun(detail.matter_id);
-        setResearchRun(result);
+        const startedResearchRun = await startResearchRun(detail.matter_id, directResearchQuestion);
+        try {
+          await loadResearchQueue();
+        } catch (caught) {
+          setResearchQueue((current) => current.some((item) => item.run_id === startedResearchRun.run_id)
+            ? current
+            : [startedResearchRun, ...current]);
+          setActionNotice("Research started in the background. Server work continues while Themis.ai reconnects to the research queue.");
+          setError(caught instanceof Error ? caught.message : "The research queue could not reload yet. Another research request is blocked until it reconnects.");
+          return;
+        }
         setActionNotice("Research started in the background. You can continue working while it runs.");
         await reloadPersisted("The action was recorded, but the matter did not refresh. Reload the page to see current state.");
       } else if (control.id === "start_work_product") {
@@ -356,7 +458,7 @@ export default function MatterWorkspace({
         });
         const recordedNotice = {
           approve_response: "Approval recorded for the final work product.",
-          mark_as_sent: "Delivery outside the system recorded for the approved work product.",
+          mark_as_sent: "Manual delivery outside Themis.ai recorded for the approved work product.",
           close_matter: "Matter closed.",
         }[control.id];
         const alreadyRecordedNotice = {
@@ -374,7 +476,9 @@ export default function MatterWorkspace({
         await reloadPersisted("The action was recorded, but the matter did not refresh. Reload the page to see current state.");
       }
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Could not complete the matter action.");
+      const message = caught instanceof Error ? caught.message : "Could not complete the matter action.";
+      setError(message);
+      if (throwOnError) throw new Error(message);
     } finally {
       setBusy(false);
     }
@@ -400,13 +504,16 @@ export default function MatterWorkspace({
 
   async function assignSavedWorkItem(workItemId: string) {
     const owner = workItemOwnerInput.trim();
-    if (!owner) return;
-    setBusy(true);
+    const pendingKey = `assign_owner:${workItemId}`;
+    if (!owner || pendingActions.includes(pendingKey)) return;
+    setPendingActions((current) => beginPendingAction(current, pendingKey));
     setError("");
     setActionNotice("");
     try {
       const actor = reviewSettings.lawyer.trim() || "Lawyer";
       const result = await assignWorkItem(detail.matter_id, workItemId, owner, actor);
+      const saved = result.matter.work_items.find((item) => item.work_item_id === workItemId);
+      setOwnerOverrides((current) => ({ ...current, [workItemId]: saved?.owner?.trim() || owner }));
       setActionNotice(result.changed_paths.length
         ? `Work item assigned to ${owner}.`
         : `Work item is already assigned to ${owner}. No new save was made.`);
@@ -414,8 +521,32 @@ export default function MatterWorkspace({
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Could not assign the work item.");
     } finally {
-      setBusy(false);
+      setPendingActions((current) => endPendingAction(current, pendingKey));
     }
+  }
+
+  async function assignWorkItemTo(workItemId: string, owner: string) {
+    const pendingKey = `assign_owner:${workItemId}`;
+    if (!owner.trim() || pendingActions.includes(pendingKey)) return;
+    setPendingActions((current) => beginPendingAction(current, pendingKey)); setError("");
+    try {
+      const result = await assignWorkItem(detail.matter_id, workItemId, owner.trim(), reviewSettings.lawyer.trim() || "Lawyer");
+      const saved = result.matter.work_items.find((item) => item.work_item_id === workItemId);
+      setOwnerOverrides((current) => ({ ...current, [workItemId]: saved?.owner?.trim() || owner.trim() }));
+      setActionNotice(`Work item assigned to ${owner.trim()}.`);
+      await reloadPersisted("The owner was saved, but the matter did not refresh.");
+    } catch (caught) { setError(caught instanceof Error ? caught.message : "Could not assign the work item."); }
+    finally { setPendingActions((current) => endPendingAction(current, pendingKey)); }
+  }
+
+  async function changeWorkItemPriority(workItemId: string, priority: string) {
+    setBusy(true); setError("");
+    try {
+      await prioritizeWorkItem(detail.matter_id, workItemId, priority, reviewSettings.lawyer.trim() || "Lawyer");
+      setActionNotice("Work item priority updated.");
+      await reloadPersisted("The priority was saved, but the matter did not refresh.");
+    } catch (caught) { setError(caught instanceof Error ? caught.message : "Could not update the priority."); }
+    finally { setBusy(false); }
   }
 
   async function finalizeCurrentDraft() {
@@ -425,6 +556,7 @@ export default function MatterWorkspace({
     setActionNotice("");
     try {
       const result = await finalizeWorkProduct(detail.matter_id, draftPath);
+      reconcileDossierProjection(result.dossier_projection);
       setActionNotice(result.changed_paths?.length
         ? "Final work product saved. The matter is ready for approval."
         : "This final work product already exists. No new save was made.");
@@ -448,6 +580,7 @@ export default function MatterWorkspace({
         newDraftTitle.trim(),
         newDraftContent,
       );
+      reconcileDossierProjection(result.dossier_projection);
       setActionNotice(result.changed_paths.length
         ? "New current draft saved."
         : "This current draft already exists. No new save was made.");
@@ -477,15 +610,39 @@ export default function MatterWorkspace({
     }
   }
 
+  async function addParticipant() {
+    const pendingKey = "add_participant";
+    if (!participantName.trim() || pendingActions.includes(pendingKey)) return;
+    setPendingActions((current) => beginPendingAction(current, pendingKey)); setError("");
+    try {
+      const result = await addMatterParticipant(detail.matter_id, participantName, participantRole, reviewSettings.lawyer.trim() || "Lawyer");
+      setVisibleParticipants(result.data.participants);
+      setParticipantName(""); setActionNotice("Participant added.");
+      await reloadPersisted("The participant was saved, but the matter did not refresh.");
+    } catch (caught) { setError(caught instanceof Error ? caught.message : "Could not add the participant."); }
+    finally { setPendingActions((current) => endPendingAction(current, pendingKey)); }
+  }
+
+  async function recommendationChanged(saved: RecommendationState) {
+    recommendationIdentityRef.current = recommendationIdentity(detail.matter_id, saved);
+    recommendationStateRef.current = saved;
+    setRecommendationState(saved);
+    setRecommendation(saved.content.trim());
+    reconcileDossierProjection(saved.dossier_projection);
+    setActionNotice("Working recommendation saved.");
+    await reloadPersisted("The recommendation was saved, but the matter did not refresh.");
+  }
+
   const proposedPath = parseProposedPath(recommendation ?? "");
   const recommendationText = proposedPath || recommendationSummary(recommendation ?? "");
   const orientationSummary = detail.orientation.summary.trim() || detail.description.trim();
   const decisionQuestion = detail.orientation.decision_question.trim();
   const currentTask = detail.status === "intake"
-    ? detail.next_action.trim() || detail.orientation.headline.trim() || lifecycleAction.detail
+    ? detail.work_state.next_action.trim() || detail.orientation.headline.trim() || lifecycleAction.detail
     : lifecycleAction.id === "none"
       ? lifecycleAction.detail
       : detail.work_state.next_action.trim() || currentWorkItem?.title || lifecycleAction.detail;
+  const workflowState = workflowStateExplanation(detail);
   const openItems = openItemsFor(
     detail.work_items,
     detail.orientation.open_questions,
@@ -493,6 +650,13 @@ export default function MatterWorkspace({
     currentTask,
   );
   const requiredCount = openItems.filter((item) => item.required).length;
+  const requiredOpenWorkItems = detail.work_items.filter(
+    (item) => Boolean(item.required) && !["done", "closed"].includes(item.status),
+  );
+  const optionalOpenWorkItems = detail.work_items.filter(
+    (item) => !Boolean(item.required) && !["done", "closed"].includes(item.status),
+  );
+  const recommendationSelected = Boolean(activePath && [recommendationPath, recommendationState?.path].filter(Boolean).includes(activePath));
   const visibleArtifacts = artifacts.filter((item) => item.kind !== "recommendation");
   const showCurrentControl = lifecycleAction.id !== "none"
     && currentControl.id !== "open_work_item";
@@ -674,6 +838,7 @@ export default function MatterWorkspace({
                     {lifecycleAction.id === "none" ? "Matter status" : "Required work"}
                   </span>
                   <p className="matter-call-task"><LinkifiedText text={currentTask} /></p>
+                  <p className="matter-call-detail" role="status"><LinkifiedText text={workflowState} /></p>
 
                   <div className="matter-orientation">
                     <div className="matter-orientation-label">Matter at a glance</div>
@@ -695,16 +860,33 @@ export default function MatterWorkspace({
                     </details>
                   ) : null}
 
-                  {participants.length ? (
-                    <div className="matter-orientation">
+                  <div className="matter-orientation">
                       <div className="matter-orientation-label">Participants</div>
-                      <ul>
+                      {participants.length ? <ul>
                         {participants.map((participant) => (
                           <li key={`${participant.role}:${participant.name}`}>
                             <strong>{participant.name}</strong> · {participantRoleLabel(participant.role)}
                           </li>
                         ))}
-                      </ul>
+                      </ul> : <p>No participants are saved.</p>}
+                      <div className="matter-inline-actions">
+                        <input aria-label="Participant name" className="text-input" onChange={(event) => setParticipantName(event.target.value)} placeholder="Participant name" value={participantName} />
+                        <input aria-label="Participant role" className="text-input" onChange={(event) => setParticipantRole(event.target.value)} placeholder="Role" value={participantRole} />
+                        <button
+                          className="btn quiet compact"
+                          disabled={pendingActions.includes("add_participant") || !participantName.trim() || !participantRole.trim()}
+                          onClick={() => void addParticipant()}
+                          type="button"
+                        >
+                          {pendingActions.includes("add_participant") ? "Adding participant…" : "Add participant"}
+                        </button>
+                      </div>
+                    </div>
+
+                  {lifecycleAction.id === "close_matter" && requiredOpenWorkItems.length ? (
+                    <div className="matter-lifecycle-action" role="status">
+                      <span>Closure blocked · Required work remains</span>
+                      <p>{requiredOpenWorkItems.map((item) => item.title).join("; ")}</p>
                     </div>
                   ) : null}
 
@@ -714,13 +896,14 @@ export default function MatterWorkspace({
                       <button
                         aria-busy={busy}
                         className={`${primaryActionClass} matter-call-button`}
-                        disabled={busy || (currentControl.id === "approve_response" && approvalUnavailable)}
+                        disabled={busy || (currentControl.id === "run_research" && researchQueueActive) || (currentControl.id === "approve_response" && approvalUnavailable) || (currentControl.id === "close_matter" && Boolean(requiredOpenWorkItems.length))}
                         onClick={() => void runControl(currentControl)}
                         title={currentControl.detail}
                         type="button"
                       >
-                        {busy ? "Working…" : currentControl.label}
+                        {busy ? "Working…" : currentControl.id === "run_research" && researchQueueActive ? "Research is running" : currentControl.id === "mark_as_sent" ? "Record manual delivery" : currentControl.label}
                       </button>
+                      {currentControl.id === "mark_as_sent" ? <button className="btn quiet compact" disabled title="Direct sending is not available in the MVP." type="button">Send directly — coming later</button> : null}
                     </div>
                   ) : null}
 
@@ -728,11 +911,18 @@ export default function MatterWorkspace({
                     <div className="matter-lifecycle-action">
                       <span>Current work · Saved work item</span>
                       <p>{currentWorkItem.title}</p>
-                      <p>Owner: <strong>{currentWorkItemOwner}</strong></p>
+                      <p>Owner: <strong>{ownerOverrides[currentWorkItem.work_item_id] || currentWorkItemOwner}</strong></p>
                       <div className="matter-inline-actions">
                         <label htmlFor="current-work-item-owner">Assign owner</label>
                         <input id="current-work-item-owner" className="text-input" onChange={(event) => setWorkItemOwnerInput(event.target.value)} placeholder="Owner name" value={workItemOwnerInput} />
-                        <button className="btn quiet compact" disabled={busy || !workItemOwnerInput.trim()} onClick={() => void assignSavedWorkItem(currentWorkItem.work_item_id)} type="button">Assign owner</button>
+                        <button
+                          className="btn quiet compact"
+                          disabled={!workItemOwnerInput.trim() || pendingActions.includes(`assign_owner:${currentWorkItem.work_item_id}`)}
+                          onClick={() => void assignSavedWorkItem(currentWorkItem.work_item_id)}
+                          type="button"
+                        >
+                          {pendingActions.includes(`assign_owner:${currentWorkItem.work_item_id}`) ? "Assigning owner…" : "Assign owner"}
+                        </button>
                         <button className="btn quiet compact" onClick={() => openDocument(currentWorkItem.path)} type="button">Open work item</button>
                         {currentCompletableWorkItemId ? (
                           <button
@@ -754,12 +944,36 @@ export default function MatterWorkspace({
                       <p>{lifecycleAction.detail}</p>
                       <button
                         className={`${lifecycleAction.category === "Approval" || lifecycleAction.category === "Counsel judgment" ? "btn review" : "btn quiet"} compact`}
-                        disabled={busy || (lifecycleAction.id === "approve_response" && approvalUnavailable)}
+                        disabled={busy || (lifecycleAction.id === "approve_response" && approvalUnavailable) || (lifecycleAction.id === "close_matter" && Boolean(requiredOpenWorkItems.length))}
                         onClick={() => void runControl(lifecycleAction)}
                         type="button"
                       >
-                        {lifecycleAction.label}
+                        {lifecycleAction.id === "mark_as_sent" ? "Record manual delivery" : lifecycleAction.label}
                       </button>
+                      {lifecycleAction.id === "mark_as_sent" ? <button className="btn quiet compact" disabled title="Direct sending is not available in the MVP." type="button">Send directly — coming later</button> : null}
+                    </div>
+                  ) : null}
+
+                  {detail.response_approved_at && lifecycleAction.id !== "close_matter" && requiredOpenWorkItems.length ? (
+                    <div className="matter-lifecycle-action" role="status">
+                      <span>Approved — required work remains</span>
+                      <p>{requiredOpenWorkItems.length} required {requiredOpenWorkItems.length === 1 ? "item is" : "items are"} still open: {requiredOpenWorkItems.map((item) => item.title).join("; ")}</p>
+                    </div>
+                  ) : null}
+
+                  {dossierReviewPath ? (
+                    <div className="matter-lifecycle-action" role="status">
+                      <span>Dossier · Review required</span>
+                      <p>The main save completed. Review the proposed dossier update before you use it.</p>
+                      <button className="btn review compact" onClick={() => openDocument(dossierReviewPath)} type="button">Review dossier update</button>
+                    </div>
+                  ) : null}
+
+                  {dossierRefreshFailed ? (
+                    <div className="matter-lifecycle-action" role="status">
+                      <span>Dossier · Refresh failed</span>
+                      <p>Work saved; dossier did not refresh.</p>
+                      <button className="btn quiet compact" onClick={() => void reloadPersisted("Work is saved, but the matter did not refresh.")} type="button">Reload matter</button>
                     </div>
                   ) : null}
 
@@ -780,7 +994,7 @@ export default function MatterWorkspace({
                     <strong>Matter artifacts</strong>
                     {factsPath ? <button className="matter-artifact-link" onClick={() => openDocument(factsPath)} type="button"><span>Facts</span><span>Facts, sources & assumptions</span></button> : null}
                     {issuesPath ? <button className="matter-artifact-link" onClick={() => openDocument(issuesPath)} type="button"><span>Issue map</span><span>Current issues and questions</span></button> : null}
-                    {recommendationPath ? <button className="matter-artifact-link" onClick={() => openDocument(recommendationPath)} type="button"><span>Recommendation</span><span>Working recommendation</span></button> : null}
+                    {recommendationPath ? <button className="matter-artifact-link" onClick={() => openDocument(recommendationPath)} type="button"><span>Recommendation</span><span>Open recommendation</span></button> : null}
                     {visibleArtifacts.map((item) => (
                       <button className="matter-artifact-link" key={`${item.kind}:${item.path}`} onClick={() => openDocument(item.path)} type="button">
                         <span>{{ recommendation: "Working recommendation", research: researchTitle, draft: "Current draft", final: "Approved / final response" }[item.kind]}</span>
@@ -792,6 +1006,11 @@ export default function MatterWorkspace({
                         <span>Recorded decision</span><span>{decision.title}</span>
                       </button>
                     ))}
+                    {detail.status !== "closed" ? (
+                      <button className="matter-artifact-link" onClick={() => setModalOpen(true)} type="button">
+                        <span>Record durable decision</span><span>Open the decision form</span>
+                      </button>
+                    ) : null}
                     {!researchPath ? <span className="matter-artifact-empty">No research packet is saved yet.</span> : null}
                     {!recommendationText ? <span className="matter-artifact-empty">No working recommendation is saved yet.</span> : null}
                     {!draftPath ? <span className="matter-artifact-empty">No current work-product draft is saved yet.</span> : null}
@@ -825,7 +1044,7 @@ export default function MatterWorkspace({
                         <li className={item.required ? "is-required" : ""} key={item.key}>
                           <span aria-hidden="true" className="matter-open-mark" />
                           <span className="matter-open-text"><LinkifiedText text={item.text} /></span>
-                          {item.required ? <span className="matter-open-tag">Required</span> : null}
+                          <span className="matter-open-tag">{item.required ? "Required" : "Optional"}</span>
                           {item.required && item.workItemId ? (
                             <button className="btn tiny quiet" disabled={busy} onClick={() => void completeSavedWorkItem(item.workItemId!)} type="button">Complete</button>
                           ) : null}
@@ -837,6 +1056,47 @@ export default function MatterWorkspace({
                   )}
                 </section>
 
+                <ResearchQueuePanel
+                  items={researchQueue}
+                  mode="summary"
+                  busy={busy}
+                  onResume={async () => { setBusy(true); try { await resumeResearchQueue(detail.matter_id); await loadResearchQueue(); } finally { setBusy(false); } }}
+                  onStop={async () => { setBusy(true); try { await stopResearchQueue(detail.matter_id); await loadResearchQueue(); } finally { setBusy(false); } }}
+                  onRetry={async (runId) => { setBusy(true); try { await retryResearchItem(detail.matter_id, runId); await loadResearchQueue(); } finally { setBusy(false); } }}
+                  onContinueFromPartial={(item) => openChatWithSeed(
+                    `Draft the work product using the saved partial research packet for: ${item.question ?? item.questions?.[0] ?? detail.title}`,
+                  )}
+                />
+
+                <section className="matter-open" aria-label="Open work queue">
+                  <div className="matter-open-head"><h2>Open work queue</h2><span>{requiredOpenWorkItems.length} required open · {optionalOpenWorkItems.length} optional open</span></div>
+                  <div className="stack-list">
+                    {detail.work_items.filter((item) => !["done", "closed"].includes(item.status)).map((item) => (
+                      <div className="matter-lifecycle-action" key={item.work_item_id}>
+                        <span>
+                          {Boolean(item.required) ? "Required" : "Optional"}
+                          {detail.status === "closed" && !Boolean(item.required) ? " · Open after closure" : ""}
+                          {item.work_item_id === detail.work_state.next_work_item_id ? " · Current next action" : " · Open work"} · {item.priority}
+                        </span>
+                        <p><strong>{item.title}</strong></p>
+                        <p>Owner: <strong>{ownerOverrides[item.work_item_id] || item.owner?.trim() || "Unassigned"}</strong></p>
+                        <div className="matter-inline-actions">
+                          <select aria-label={`Priority for ${item.title}`} className="text-input" disabled={busy} onChange={(event) => void changeWorkItemPriority(item.work_item_id, event.target.value)} value={item.priority || "normal"}>
+                            <option value="low">Low</option><option value="normal">Normal</option><option value="high">High</option><option value="urgent">Urgent</option>
+                          </select>
+                          {[...new Set([reviewSettings.lawyer, ...participants.map((participant) => participant.name)].filter(Boolean))].map((owner) => (
+                            <button className="btn tiny quiet" disabled={pendingActions.includes(`assign_owner:${item.work_item_id}`)} key={owner} onClick={() => void assignWorkItemTo(item.work_item_id, owner)} type="button">
+                              {pendingActions.includes(`assign_owner:${item.work_item_id}`) ? "Assigning owner…" : owner}
+                            </button>
+                          ))}
+                          <input aria-label={`Owner for ${item.title}`} className="text-input" defaultValue={item.owner} disabled={pendingActions.includes(`assign_owner:${item.work_item_id}`)} onKeyDown={(event) => { if (event.key === "Enter") void assignWorkItemTo(item.work_item_id, event.currentTarget.value); }} placeholder="Owner name" />
+                          <button className="btn tiny quiet" disabled={busy} onClick={() => void completeSavedWorkItem(item.work_item_id)} type="button">Complete</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
                 <details className="matter-reference">
                   <summary>Materials, activity, and decision maintenance</summary>
                   <div className="matter-reference-body">
@@ -844,13 +1104,11 @@ export default function MatterWorkspace({
                       <section>
                         <h2>Saved recommendation</h2>
                         <div className="matter-recommendation">
-                          <div className="matter-recommendation-label">
-                            Source and review status not recorded
-                          </div>
                           <p><LinkifiedText text={recommendationText} /></p>
                           <div className="matter-record-note">
                             This saved recommendation is not a recorded decision.
                           </div>
+                          {recommendationPath ? <button className="btn review compact" onClick={() => openDocument(recommendationPath)} type="button">Open recommendation</button> : null}
                         </div>
                       </section>
                     ) : null}
@@ -912,12 +1170,13 @@ export default function MatterWorkspace({
                   activeFile={activePath}
                   activeAgentId={detail.active_agent_id}
                   currentWorkProductDraftPath={draftPath}
+                  decisionOptions={detail.orientation.options}
                   initialConversationId={detail.intake_conversation_id}
                   initialRunId={detail.intake_run_id}
                   intakeActive={detail.intake_state === "active"}
                   matterId={detail.matter_id}
                   matterTitle={detail.title}
-                  onRefresh={reload}
+                  onRefresh={refreshAfterChatRun}
                   onOpenDocument={openDocument}
                   conversationSeed={conversationSeed}
                   onConversationChange={(conversationId) => {
@@ -966,7 +1225,13 @@ export default function MatterWorkspace({
                 <span>›</span><span>Document</span>
               </button>
               <div className="document-pane-content" hidden={collapsedPanes.document}>
-                <DocumentPanel
+                {recommendationSelected ? recommendationState ? <RecommendationPanel
+                  disabled={busy}
+                  lawyerActor={reviewSettings.lawyer}
+                  matterId={detail.matter_id}
+                  onChanged={recommendationChanged}
+                  recommendation={recommendationState}
+                /> : <div className="loading">Loading working recommendation…</div> : <DocumentPanel
                   activePath={activePath}
                   activeReviewAuthor={reviewAuthor.name}
                   lawyerAuthor={reviewSettings.lawyer}
@@ -980,7 +1245,7 @@ export default function MatterWorkspace({
                   }}
                   onCollapse={() => togglePane("document")}
                   onUpload={upload}
-                />
+                />}
               </div>
             </div>
           </>
@@ -998,113 +1263,15 @@ export default function MatterWorkspace({
           suggestion={proposedPath}
         />
       ) : null}
+      {manualDeliveryConfirmation ? (
+        <ConfirmationDialog
+          confirmLabel="Record manual delivery"
+          description="This records delivery outside Themis.ai. It does not send or contact anyone."
+          onCancel={() => setManualDeliveryConfirmation(null)}
+          onConfirm={() => runControl(manualDeliveryConfirmation, true, true)}
+          title="Record manual delivery?"
+        />
+      ) : null}
     </div>
   );
-}
-
-/** A proposal exists only when the recommendation record labels it on one line. */
-function parseProposedPath(markdown: string): string {
-  const body = markdown.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, "");
-  const paragraphs = body.split(/\n\s*\n/).map((paragraph) => paragraph.trim()).filter(Boolean);
-  const firstSubstantive = paragraphs.find((paragraph) => !paragraph.startsWith("#"));
-  const firstForMatching = stripEmphasis(firstSubstantive ?? "");
-  if (/^No (?:launch )?recommendation\b/i.test(firstForMatching)) return "";
-
-  for (const rawLine of body.split("\n")) {
-    const matchLine = stripEmphasis(rawLine.trim());
-    const match = matchLine.match(/^(?:Working path|Recommended path):\s*(.+)$/i);
-    if (!match) continue;
-    return match[1]
-      .split(/(?<=[.!?])\s+/)
-      .filter((sentence) => !/^(?:Counsel must confirm|Confirm|Pending|Open question)\b/i.test(sentence.trim()))
-      .join(" ")
-      .trim();
-  }
-  return "";
-}
-
-/** Falls back to the first recommendation paragraph when older records lack a path label. */
-function recommendationSummary(markdown: string): string {
-  const body = markdown.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, "");
-  const paragraph = body
-    .split(/\n\s*\n/)
-    .map((value) => value.trim())
-    .find((value) => value && !value.startsWith("#"));
-  const normalized = stripEmphasis(paragraph ?? "");
-  return /^No (?:launch )?recommendation\b/i.test(normalized) ? "" : normalized;
-}
-
-function stripEmphasis(value: string): string {
-  return value.replace(/\*\*|__|(?<!\*)\*(?!\*)|(?<!_)_(?!_)/g, "").trim();
-}
-
-type EvidenceNode = { path: string; name: string; kind: string; note: string };
-
-/** Flattens the matter tree into the two things the lawyer actually cites. */
-function collectEvidence(tree: FileNode[]): EvidenceNode[] {
-  const out: EvidenceNode[] = [];
-  const matterRecordLabels: Record<string, { name: string; kind: string; note: string }> = {
-    "request.md": { name: "Original request", kind: "Matter record", note: "The request that started this matter" },
-    "facts.md": { name: "Facts, sources & assumptions", kind: "Matter record", note: "The current factual record" },
-    "issues.md": { name: "Issue map", kind: "Matter record", note: "The legal and operational questions" },
-    "recommendations.md": {
-      name: "Working recommendation",
-      kind: "Matter record",
-      note: "Saved recommendation; source and review status are not recorded",
-    },
-  };
-  const walk = (nodes: FileNode[], folder: string) => {
-    for (const node of nodes) {
-      if (node.type === "folder") { walk(node.children ?? [], node.name); continue; }
-      const matterRecord = matterRecordLabels[node.name];
-      if (matterRecord) {
-        out.push({ path: node.path, ...matterRecord });
-      } else if (folder === "documents") {
-        out.push({ path: node.path, name: node.label ?? node.name, kind: "Source document", note: "Attached to the matter" });
-      } else if (folder === "research" && !node.path.includes("/research/runs/")) {
-        out.push({ path: node.path, name: node.label ?? node.name, kind: "First-pass research", note: "Saved research packet" });
-      }
-    }
-  };
-  walk(tree, "");
-  return out.slice(0, 6);
-}
-
-function safeMatterPath(requested: string | null | undefined, matterPath: string, fallback: string | null): string | null {
-  if (!requested || requested.includes("\\") || requested.split("/").includes("..")) return fallback;
-  return requested.startsWith(`${matterPath}/`) ? requested : fallback;
-}
-
-function conversationIdFromPath(path: string): string | null {
-  if (!path.includes("/conversations/")) return null;
-  const match = path.split("/").at(-1)?.match(/^(CONV-\d{8}-[a-f0-9]{6})\.md$/);
-  return match?.[1] ?? null;
-}
-
-function findConversationPath(tree: FileNode[], conversationId: string): string | null {
-  const folder = tree.find((node) => node.type === "folder" && node.name === "conversations");
-  return (folder?.children ?? []).find((node) => node.path.endsWith(`/${conversationId}.md`))?.path ?? null;
-}
-
-function findLatestResearch(tree: FileNode[]): string | null {
-  const folder = tree.find((node) => node.type === "folder" && node.name === "research");
-  const files = (folder?.children ?? []).filter(
-    (node) => node.type === "file" && node.extension === ".md" && node.name !== "annotations.md",
-  );
-  return files.length ? files[files.length - 1].path : null;
-}
-
-function participantRoleLabel(role: string): string {
-  return role.replaceAll("_", " ").replace(/^./, (letter) => letter.toUpperCase());
-}
-
-function findFileByName(tree: FileNode[], name: string): string | null {
-  for (const node of tree) {
-    if (node.type === "file" && node.name === name) return node.path;
-    if (node.type === "folder") {
-      const found = findFileByName(node.children ?? [], name);
-      if (found) return found;
-    }
-  }
-  return null;
 }

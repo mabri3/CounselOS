@@ -12,6 +12,7 @@ import httpx
 from app.models.awareness import (
     DevelopmentCandidate, OutboundWatchQuery, ProviderCheckpoint, ProviderScanResult, SourceReference,
 )
+from app.services.provider_settings_policy import ProviderSettingsPolicy
 
 
 POLARIS_BASE_URL = "https://polaris-themis-lime.tail8cee6e.ts.net/v1/brains/themis_lime"
@@ -38,15 +39,26 @@ class PolarisIntelligenceProvider:
         client=None,
         sleeper=asyncio.sleep,
         clock=monotonic,
+        timeout_seconds: int = 90,
+        retry_count: int = 2,
     ):
         self._api_key = api_key
         self._client = client
         self._sleep = sleeper
         self._clock = clock
+        self._timeout_seconds = 90
+        self._retry_count = 2
+        self.configure(timeout_seconds=timeout_seconds, retry_count=retry_count)
 
     @property
     def configured(self) -> bool:
         return bool(self._api_key)
+
+    def configure(self, *, timeout_seconds: int, retry_count: int) -> None:
+        """Apply validated transport settings without exposing internal fields."""
+        self._timeout_seconds, self._retry_count = ProviderSettingsPolicy.polaris_transport(
+            timeout_seconds, retry_count
+        )
 
     async def scan(self, query: OutboundWatchQuery, checkpoint: ProviderCheckpoint | None) -> ProviderScanResult:
         if not self._api_key:
@@ -117,11 +129,12 @@ class PolarisIntelligenceProvider:
     async def _post(self, payload: dict[str, object]) -> tuple[object, int, int]:
         headers = {"Authorization": f"Bearer {self._api_key}", "Content-Type": "application/json"}
         owns_client = self._client is None
-        client = self._client or httpx.AsyncClient(timeout=15, follow_redirects=False)
+        client = self._client or httpx.AsyncClient(timeout=self._timeout_seconds, follow_redirects=False)
         started_at = self._clock()
         attempt_count = 0
         try:
-            for attempt in range(3):
+            attempts = self._retry_count + 1
+            for attempt in range(attempts):
                 attempt_count = attempt + 1
                 try:
                     async with client.stream(
@@ -130,7 +143,7 @@ class PolarisIntelligenceProvider:
                         if response.is_redirect:
                             raise RuntimeError("Polaris redirects are blocked")
                         retryable = response.status_code in {429, 500, 502, 503, 504}
-                        if not retryable or attempt == 2:
+                        if not retryable or attempt == attempts - 1:
                             response.raise_for_status()
                             body = bytearray()
                             async for chunk in response.aiter_bytes():
@@ -154,7 +167,7 @@ class PolarisIntelligenceProvider:
                         else:
                             delay = min(0.25 * (2**attempt), 1.0)
                 except (httpx.TimeoutException, httpx.NetworkError):
-                    if attempt == 2:
+                    if attempt == attempts - 1:
                         raise
                     delay = min(0.25 * (2**attempt), 1.0)
                 await self._sleep(delay)
@@ -164,6 +177,7 @@ class PolarisIntelligenceProvider:
                 attempt_count,
                 self._elapsed_ms(started_at),
                 "pending",
+                http_status=self._http_status(exc),
             )
             raise
         finally:
@@ -189,18 +203,30 @@ class PolarisIntelligenceProvider:
         return "request_failure"
 
     @staticmethod
+    def _http_status(exc: Exception) -> int | None:
+        if not isinstance(exc, httpx.HTTPStatusError):
+            return None
+        status = getattr(getattr(exc, "response", None), "status_code", None)
+        return status if isinstance(status, int) and not isinstance(status, bool) else None
+
+    @staticmethod
     def _observation(
         failure_class: str | None,
         attempt_count: int,
         elapsed_ms: int,
         fallback_status: str,
+        *,
+        http_status: int | None = None,
     ) -> dict[str, str | int | None]:
-        return {
+        observation: dict[str, str | int | None] = {
             "failure_class": failure_class,
             "attempt_count": attempt_count,
             "elapsed_ms": elapsed_ms,
             "fallback_status": fallback_status,
         }
+        if http_status is not None:
+            observation["http_status"] = http_status
+        return observation
 
     @classmethod
     def _parse(cls, envelope: object) -> tuple[str, list[object], list[str]]:

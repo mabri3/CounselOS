@@ -79,6 +79,9 @@ This is the one rule that never bends.
 - Recorded decisions: solid border, serif, a real date, a named human.
 - Recommendations never appear inside the decision table. They sit outside it,
   and the only path from one to the other is the act of recording.
+- The first saved recommendation becomes the working recommendation. Later
+  agent changes appear as **Proposed · Agent work** and require **Accept
+  recommendation update**. A direct lawyer edit creates a separate version.
 - An agent can recommend a decision. It records a durable decision only after
   the user explicitly instructs it to record that decision. It never converts a
   recommendation into a recorded decision on its own. An agent can draft a
@@ -126,6 +129,15 @@ Decision recording always ends with an explicit submit action. A Themis.ai draft
 can prefill the modal, but the lawyer can edit both the decision and its visible
 rationale before recording it. Opening or cancelling the modal changes no
 record.
+
+Approval, durable decision recording, manual delivery, and closure always end
+with a direct lawyer control. Chat can prepare the action only. **Record manual
+delivery** must say that the action happened outside Themis.ai. **Send directly
+— coming later** stays disabled until real delivery is intentionally built.
+
+Research queue rows use clear state words such as **queued**, **running**,
+**completed**, **failed**, and **interrupted**. Reorder controls change saved
+queue order only. They do not imply parallel execution.
 
 ## Tables and state words
 

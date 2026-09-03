@@ -1,0 +1,76 @@
+---
+matter_id: MAT-20260903-bad495
+record_type: dossier
+editable: true
+source_revision: 03_Matters/mosaic-relay-ux-test-05-refunds-for-split-payments-bad495/dossier-revisions/DOS-20260903-382033.md
+updated_at: '2026-09-03T17:22:42+00:00'
+content_hash: 0249afbfcfd46398ae91426e9915cad8e0090cb74caf50a33ea650be7d34434c
+---
+# Matter dossier
+
+## Matter summary
+
+A marketplace customer of Mosaic Relay wants to launch a tool that lets its operators issue partial refunds on orders paid with multiple payment methods (card and ACH) and split among multiple sellers, with automated allocation, platform-fee reversal, and status updates to buyers and sellers. Mosaic Relay would provide the refund API and ledger infrastructure; the marketplace operator makes refund decisions; sellers receive adjusted payouts. Counsel is involved because the tool touches funds flow, consumer refund timing, seller contract terms (currently silent), chargeback interaction, and ledger integrity — and seller terms must be amended before the behavior is contractually supported. Product wants to ship in one quarter.
+
+## Decision question
+
+What refund rules, buyer-facing disclosures, timing commitments, ledger controls, seller notice requirements, and support-override approval gates must legal require before Mosaic Relay ships a US-only split-payment partial-refund tool in one quarter — given that seller terms are currently silent on refunds and fee reversal, and that a wrong allocation or double-recovery between refunds and chargebacks creates direct financial exposure for Mosaic Relay and its marketplace customer?
+
+## Material facts
+
+- A marketplace wants to issue partial refunds for orders funded by several payment methods and distributed among multiple sellers.
+- The proposed tool lets a marketplace operator select line items, calculate each seller's share, reverse the platform fee, and send status updates to the buyer and sellers.
+- Actors are the marketplace operator, buyer, sellers, Mosaic Relay, and payment partners.
+- Product wants to release the tool in one quarter.
+- Known facts include the allocation rules, refund API, and a requirement to support card and ACH transactions.
+- Missing facts include refund deadlines, seller contract terms, tax treatment, negative seller balances, chargeback interaction, customer-support overrides, and the source of truth for disputed allocations.
+- What refund timing promise does the marketplace intend to make to buyers (e.g., how quickly a refund must be issued and credited back to the original payment method)? — Within standard card-network/ACH refund windows (e.g., 5-7 business days)
+- On a partial refund, is the platform fee reversed to the buyer, and who absorbs the cost? — Fee is prorated to the refunded amount
+- How should a partial refund be handled when it would drive a seller's balance negative (e.g., refund exceeds the seller's available funds)? — Allow negative but hold future payouts until recovered
+- Does a partial refund close or reduce an existing chargeback/dispute, or are refunds and disputes handled independently? — A refund reduces or closes the dispute amount
+- Which countries or regions are in scope? — United States only
+- Whether a partial refund closes or reduces a chargeback/dispute, or runs independently — Use the immutable order ledger and its versioned allocation snapshot at capture as the source of truth. Every refund and chargeback must reference that snapshot and append an auditable event. A dispute adjustment may only be made by an approved reconciliation record; no support edit may overwrite the original allocation.
+- Can customer-support staff override the calculated allocation, and who approves exceptions? — Override allowed only with a named approver (e.g., manager/legal)
+- What do the seller agreements say about refunds, fee reversal, and notice? — Seller terms are silent; need to add/amend terms
+
+## Assumptions
+
+- Mosaic Relay is a technology/payments-infrastructure provider, not a bank, and does not hold deposits; funds flow through regulated partners.
+- The marketplace operator, not Mosaic Relay, holds the direct relationship with buyers and sellers for refund decisions.
+- US-centric regulatory framing applies unless a specific jurisdiction is identified.
+- US-centric regulatory framing applies (jurisdiction scope confirmed as United States only).
+
+## Issues and workstreams
+
+- Seller contract terms are silent on refunds, fee reversal, and notice - the tool's behavior is not currently contractually supported and terms must be amended
+- Double-recovery risk between partial refunds and chargebacks/disputes - mitigated by the immutable order ledger source-of-truth rule
+- Tax treatment of refunds and fee reversals is unaddressed
+- Ledger controls for negative seller balances and held payouts need build-out
+- Customer-support override requires a named-approver control and audit trail
+
+## Open questions
+
+- **Tax treatment of refunded amounts and reversed platform fees** — no intake answer addresses whether refund events trigger corrected tax documents (1099-K adjustments for sellers, sales-tax refund mechanics). This could change ledger design and seller notice content.
+- **Whether Mosaic Relay's money-transmission characterization shifts** when it calculates and directs multi-seller refund allocations rather than merely passing through a single merchant refund instruction. This is a perimeter question that could change licensing analysis.
+- **ACH return windows versus refund windows** — the intake answer says "5–7 business days" for refunds, but ACH returns (unauthorized debit claims) operate on a different timeline (60 days from statement for consumers under NACHA rules). Whether the tool must distinguish between a voluntary refund and an ACH return is unresolved.
+- **What happens when a partial refund is issued but the chargeback was already filed for the full amount** — the intake answer says "a refund reduces or closes the dispute amount," but the operational mechanics of notifying the card network and preventing double-recovery are not yet specified.
+- **Whether the marketplace's buyer-facing refund policy** (deadlines, conditions, method-of-refund rules) already exists and complies with applicable state refund-disclosure statutes, or whether legal must draft it as part of this launch.
+
+## Research and source support
+
+Latest review: `03_Matters/mosaic-relay-ux-test-05-refunds-for-split-payments-bad495/research/RES-20260903-f59c6c.md`
+
+- Internal support: **Facts** — Known Facts A marketplace wants to issue partial refunds for orders funded by several payment methods and distributed among multiple sellers. The proposed tool lets a marketplace operator select line…
+
+## Options or working recommendation
+
+Proceed with the split-payment partial-refund tool, but do not launch until seller term amendments are drafted and effective and all launch conditions below are met. Required rules: refund only selected line items and never exceed the remaining refundable amount; allocate each refund back to the original card or ACH tender and seller allocation snapshot; prorate the platform fee using the approved formula and state who absorbs or credits it; distinguish refund issuance from bank posting and do not promise one uniform window until card-network and ACH rules are verified; show buyer amount, tender, seller allocation, status, and timing caveat; notify each affected seller of amount, fee treatment, timing, negative balance, and dispute effect; use append-only ledger events with versioned snapshots and a refunded-plus-disputed-not-greater-than-funded invariant; allow a negative seller balance only with a contractual payout hold, notice, recovery rule, and write-off approval; link refund and chargeback records to one snapshot and stop duplicate recovery; permit support overrides only with a named approver, reason, evidence, and audit trail; confirm tax treatment and record retention before launch. Owners: Legal—seller terms, buyer/seller notices, timing and disclosure review; Product—policy and fee-absorption choice; Engineering—ledger invariants, idempotency, reconciliation, and dispute links; Payments Ops—card/ACH network validation and exception runbook; Risk—chargeback and negative-balance controls; Tax/Finance—tax treatment and accounting. This is a working recommendation, not a recorded decision.
+
+## Next counsel action
+
+Approve the final response.
+
+## Work product links
+
+- Draft: [US Launch Analysis — Refunds for Split Payments](03_Matters/mosaic-relay-ux-test-05-refunds-for-split-payments-bad495/work-product/draft/us-launch-review-refunds-for-split-payments-6a7e31.md)
+- Final: [US Launch Analysis — Refunds for Split Payments](03_Matters/mosaic-relay-ux-test-05-refunds-for-split-payments-bad495/work-product/final/us-launch-review-refunds-for-split-payments-6a7e31-3e93b3.md)

@@ -7,6 +7,8 @@ from fastapi import UploadFile
 from docx import Document
 from pypdf import PdfWriter
 
+from app.services import ingestion
+
 
 @pytest.mark.asyncio
 async def test_pdf_upload_always_creates_editable_companion(app_context):
@@ -103,6 +105,46 @@ async def test_docx_upload_converts_headings_lists_and_tables_to_markdown(app_co
     assert "- Notify customers" in markdown
     assert "| Term | Value |" in markdown
     assert "| --- | --- |" in markdown
+
+
+@pytest.mark.asyncio
+async def test_docx_extraction_runs_off_the_event_loop(app_context, monkeypatch):
+    source = io.BytesIO()
+    document = Document()
+    document.add_paragraph("Off event loop")
+    document.save(source)
+    calls = []
+
+    async def to_thread(function, *args):
+        calls.append(function)
+        return function(*args)
+
+    monkeypatch.setattr(ingestion.asyncio, "to_thread", to_thread)
+    await app_context.ingestion.upload_to_matter(
+        "MAT-DEMO-BEACON", UploadFile(file=io.BytesIO(source.getvalue()), filename="thread.docx")
+    )
+
+    assert calls[0] == app_context.ingestion._extract
+
+
+@pytest.mark.asyncio
+async def test_pdf_extraction_runs_off_the_event_loop(app_context, monkeypatch):
+    source = io.BytesIO()
+    writer = PdfWriter()
+    writer.add_blank_page(width=300, height=200)
+    writer.write(source)
+    calls = []
+
+    async def to_thread(function, *args):
+        calls.append(function)
+        return function(*args)
+
+    monkeypatch.setattr(ingestion.asyncio, "to_thread", to_thread)
+    await app_context.ingestion.upload_to_matter(
+        "MAT-DEMO-BEACON", UploadFile(file=io.BytesIO(source.getvalue()), filename="thread.pdf")
+    )
+
+    assert calls[0] == app_context.ingestion._extract
 
 
 @pytest.mark.asyncio

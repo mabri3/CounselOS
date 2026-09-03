@@ -30,6 +30,7 @@ Keep recommendations separate from explicitly recorded decisions. That is record
 - Preserve Markdown as the source of truth and SQLite as a disposable index.
 - Keep providers, agents, tools, workflows, and schedules modular.
 - Markdown tool files are declarative; never execute embedded Markdown code.
+- `backend/frontmatter.py` is the intentional local compatibility shim. Do not install `python-frontmatter` or rewrite its imports to use that package.
 - Keep all file operations inside `VAULT_PATH`.
 - Prefer focused files and boring, testable code.
 - Do not introduce auth, cloud tenancy, a queue, embeddings, Tauri, native Word redlining, or a plugin marketplace before the core acceptance tests pass.

@@ -1,0 +1,77 @@
+---
+matter_id: MAT-20260903-776ac1
+record_type: dossier
+editable: true
+source_revision: 03_Matters/mosaic-relay-ux-test-07-ach-authorization-and-consumer-refunds-776ac1/dossier-revisions/DOS-20260903-887424.md
+updated_at: '2026-09-03T09:55:54+00:00'
+content_hash: e32b29d77106ef16eb01d48a5488d2bb624dddb0bbdab960ed7f2f5ec0cb88b2
+---
+# Matter dossier
+
+## Matter summary
+
+A Mosaic Relay merchant wants to accept recurring ACH debits from consumers for a monthly-renewing subscription service, with Mosaic Relay submitting debits through its payment partners and managing returns and refunds through its dashboard. Counsel is involved because recurring consumer ACH debits trigger NACHA Operating Rules and Regulation E obligations around authorization, return handling, dispute resolution, and evidence retention. The merchant wants to launch in nine weeks (target 2026-11-05), but the return-handling process, unauthorized-debit claim routing, and Mosaic Relay's NACHA role are not yet decided.
+
+## Decision question
+
+Before the 2026-11-05 launch, can Mosaic Relay structure its ACH return and dispute-handling process — covering return codes R07/R08/R10/R11/R29/R51, WSOD production, return-rate monitoring, reinitiation limits, and the allocation of responsibilities among the merchant (Originator), the ODFI, and Mosaic Relay as a third-party service provider — so that unauthorized-debit claims are resolved within NACHA and Reg E timelines without breaching ODFI return-rate thresholds?
+
+## Material facts
+
+- The merchant wants to accept recurring ACH payments from consumers for a subscription service.
+- The proposed checkout asks the consumer to enter bank details, agree to recurring debit terms, and receive an email confirmation.
+- Mosaic Relay would submit debits through its payment partners, show pending and returned status in the dashboard, and initiate refunds when the customer cancels.
+- The merchant's subscriptions can renew monthly.
+- Some consumers may use the service for digital goods.
+- The customer wants to release the feature in nine weeks (target 2026-11-05).
+- The authorization language, evidence format, cancellation process, prenotification practice, return handling, debit timing, and consumer support responsibilities are not yet finalized.
+- It is not yet known whether the merchant will use variable amounts, how it will handle unauthorized-debit claims, or whether Mosaic Relay's dashboard will be the system of record.
+- Will the merchant use variable or fixed recurring debit amounts? — Both / not yet decided
+- Will Mosaic Relay's dashboard be the system of record for authorization evidence, and who retains and produces it when a consumer's financial institution requests proof of authorization? — Not yet decided
+- How will consumers cancel or stop recurring payments, and what is the merchant's cancellation and refund process? — Not yet decided. Recommend a clear in-product cancellation and stop-payment path plus support escalation, with the merchant responsible for honoring cancellations and Mosaic Relay enforcing the stop before the next debit when technically possible. Define cutoffs, confirmation, audit trail, and refund to the original payment method, with timing and exceptions disclosed.
+- Will the merchant use prenotification (prenotes) before the first debit? — Not yet decided
+- How will unauthorized-debit claims be handled, and who responds to the consumer's financial institution? — Not yet decided
+
+## Assumptions
+
+- Mosaic Relay acts as a third-party service provider / ODFI agent submitting debits through payment partners, not as the originating bank.
+- The consumer-facing recurring-debit authorization is governed by NACHA Rules and, for consumer accounts, Reg E (EFTA) protections.
+- U.S. scope only, consistent with the company profile.
+
+## Issues and workstreams
+
+- ACH authorization and recordkeeping requirements (NACHA Rules, Reg E)
+- Recurring-debit disclosures to consumers
+- Cancellation and refund obligations
+- Return and dispute handling (unauthorized-debit claims, return codes)
+- Allocation of responsibilities between Mosaic Relay and the merchant
+- Limits on the proposed checkout user experience
+
+## Open questions
+
+- **Mosaic Relay's NACHA role** — Is Mosaic Relay a Third-Party Service Provider, a Third-Party Sender, or an ODFI agent? Each carries different registration, warranty, and risk-assessment obligations that change the return-handling allocation.
+- **Unauthorized-debit claim routing** — Who responds to the consumer's financial institution when an R07 or R10 return arrives, and who bears the loss? Not yet decided.
+- **System of record for authorization evidence** — If the dashboard is not the system of record, who produces proof of authorization to the RDFI within NACHA timeframes?
+- **ODFI/processor agreement terms** — Return-rate thresholds, evidence-production SLAs, and prohibited practices in the ODFI agreement are often stricter than NACHA baseline and have not been reviewed.
+- **Variable vs. fixed amounts** — Determines whether R11 (customer advises entry not in accordance with authorization) returns become a material risk category.
+
+## Research and source support
+
+Latest review: `03_Matters/mosaic-relay-ux-test-07-ach-authorization-and-consumer-refunds-776ac1/research/RES-20260903-75e6a3.md`
+
+- Internal support: **Nacha Rules Requirements For Recurring Standing Authorization Ac 068E2D** — What would change this Working assumption — Mosaic Relay's NACHA role. I assumed Mosaic Relay acts as a Third-Party Service Provider/Third-Party Sender submitting through partner ODFIs. If it is…
+- Internal support: **Recommendations** — What would change this Working assumption — Mosaic Relay's NACHA role. Assumed Mosaic Relay acts as a Third-Party Service Provider/Third-Party Sender submitting through partner ODFIs. If Mosaic Relay…
+
+## Options or working recommendation
+
+# Recommendations
+
+No recommendation has been drafted yet.
+
+## Next counsel action
+
+Run or supervise first-pass research.
+
+## Work product links
+
+- Draft: [NACHA Rules Requirements for Recurring (Standing Authorization) ACH Debits — Authorization Format, Evidence Retention, and Variable-Amount Notification](03_Matters/mosaic-relay-ux-test-07-ach-authorization-and-consumer-refunds-776ac1/work-product/draft/nacha-rules-requirements-for-recurring-standing-authorization-ac-068e2d.md)

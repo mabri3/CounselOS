@@ -1,0 +1,85 @@
+---
+matter_id: MAT-20260903-3a5500
+record_type: dossier
+editable: true
+source_revision: 03_Matters/mosaic-relay-ux-test-10-promotion-of-new-local-payment-methods-3a5500/dossier-revisions/DOS-20260903-844cc6.md
+updated_at: '2026-09-03T10:22:47+00:00'
+content_hash: 2d05730578425bcedd3e38136d9b6aa08b3199063a8a87fd971e24b6b91221f2
+---
+# Matter dossier
+
+## Matter summary
+
+Mosaic Relay (Product, Marketing, Sales) plans a seven-week campaign promoting local payment methods in Latin America and Europe using three claims: “accept local payments everywhere,” “lower-cost payments,” and “fewer failed transactions.” The campaign targets merchants via country-specific landing pages and sales emails, with transactions routed through local processors and acquiring banks. Counsel is involved because the factual record shows no validated comparative evidence for the cost and performance claims, unknown FX/fee inclusions, and unconfirmed country-specific disclosure requirements across multiple jurisdictions. Launch is targeted for the start of the next regional sales cycle in seven weeks.
+
+## Decision question
+
+Can Mosaic Relay launch the LATAM/EU campaign in seven weeks using qualified versions of the three proposed claims, or must it limit the campaign to factual availability statements for named countries and payment methods until Product and Finance produce a validated cost study, defined benchmark, and confirmed country-specific disclosure requirements?
+
+## Material facts
+
+- Mosaic Relay plans to promote support for several local payment methods in Latin America and Europe.
+- The campaign would use the statements 'accept local payments everywhere,' 'lower-cost payments,' and 'fewer failed transactions.'
+- The campaign would use country-specific landing pages and sales emails.
+- Product expects to route transactions through local processors and show merchants a comparison of payment-method fees, refund support, and expected approval rates.
+- The launch target is the start of the next regional sales campaign in seven weeks.
+- Support, fees, settlement timing, refund behavior, and consumer protections differ by payment method and country.
+- Some payment methods may require local disclosures or restrictions.
+- Some approval-rate data is based only on a small internal pilot.
+- Not confirmed: permitted wording in each jurisdiction, evidence for cost and performance claims, whether fees include processor and foreign-exchange charges, and how the campaign will describe exclusions.
+- Which specific countries/markets are in scope for this campaign? — Both LATAM and Europe
+- Can the three claims be qualified with conditions and exclusions, or must they remain absolute? — Claims can be qualified with conditions/exclusions
+- What evidence exists for the 'lower-cost' and 'fewer failed transactions' claims? — Only a small internal pilot is currently available for approval-rate data; no validated comparative evidence or complete cost study has been confirmed.
+- What benchmark are the cost and approval-rate claims compared against? — No validated benchmark has been confirmed. The proposed comparison would need a defined baseline, time period, countries, methods, and like-for-like fee and approval-rate measures.
+- Do the fee figures include processor and foreign-exchange charges? — Unknown — need to confirm
+- How will the campaign describe exclusions and country-specific limitations? — The exclusion list and country-specific limitations are not yet confirmed. Landing pages and sales emails should identify each supported country and method, eligibility, unavailable methods, fees and FX treatment, settlement/refund limits, and any material consumer-protection or processor conditions.
+- Is there a path to obtain validated comparative evidence (a real cost study and a defined benchmark) before the seven-week launch, or should the campaign be scoped to claims that can be substantiated from what exists? — Partial - some claims can be substantiated, others cannot
+- Which specific claims does Product believe can be substantiated today, and which cannot? — Based on the current dossier, no comparative claim is substantiated today. A narrower factual claim may be supportable only for named countries and methods that Operations confirms are live. “Accept local payments everywhere” is not supportable as written; “lower-cost” and “fewer failed transactions” require the missing study and benchmark. Treat the split as a work item for Product and Finance.
+
+## Assumptions
+
+- U.S. FTC Section 5 substantiation principles inform the analysis, but the campaign markets are governed by their own regimes (EU Unfair Commercial Practices Directive and national advertising laws; LATAM consumer-protection and advertising rules), so separate local review is required.
+- The three statements are treated as express claims subject to substantiation, not puffery.
+- The 'lower-cost' and 'fewer failed' statements are comparative claims requiring a defined benchmark and supporting data.
+- The three statements are express claims, not puffery, and therefore require substantiation.
+- 'Lower-cost' and 'fewer failed transactions' are comparative claims that require a defined, disclosed benchmark.
+
+## Issues and workstreams
+
+- Advertising and comparative-claim substantiation for 'lower-cost payments' and 'fewer failed transactions' (no validated cost study or benchmark; only a small internal pilot for approval rates; only some claims can be substantiated)
+- Country-specific disclosures and permitted wording in each LATAM/EU jurisdiction
+- Pricing transparency - whether fee figures include processor and foreign-exchange charges (unknown)
+- Consumer-protection issues across the campaign markets
+- Required approval or partner review (local processors, acquiring banks, networks)
+- Exact language legal can approve for the campaign
+
+## Open questions
+
+- Which specific countries in LATAM and Europe are in scope, and what are the local advertising disclosure requirements for each (e.g., Brazil CDC, Mexico PROFECO, EU member-state implementations of the UCPD)?
+- Will Finance confirm whether the fee figures include processor markups and foreign-exchange charges, and can they produce a like-for-like cost comparison against a defined baseline (e.g., card processing) within the seven-week window?
+- Can Product validate the “fewer failed transactions” claim with data beyond the small internal pilot, or will they accept a qualified claim limited to the pilot’s scope and duration?
+- Which local processors and acquiring banks require pre-launch review or approval of marketing materials under their network rules or contractual terms?
+- Does “everywhere” in the current claim refer to geographic coverage, merchant eligibility, or consumer accessibility, and can Product live with a claim limited to specific named countries?
+
+## Research and source support
+
+Latest review: `03_Matters/mosaic-relay-ux-test-10-promotion-of-new-local-payment-methods-3a5500/research/RES-20260903-6172d8.md`
+
+- Internal support: **First Pass Legal Response Promotion Of New Local Payment Methods 2956A6 5F5Cd8** — 7. Next steps Product + Finance: Confirm the claim-by-claim substantiation split and fee composition (open work item). Operations: Confirm which countries/methods are live. Local counsel review…
+- Internal support: **First Pass Legal Response Promotion Of New Local Payment Methods 2956A6** — 7. Next steps Product + Finance: Confirm the claim-by-claim substantiation split and fee composition (open work item). Operations: Confirm which countries/methods are live. Local counsel review…
+- Internal support: **Facts** — Known Facts Mosaic Relay plans to promote support for several local payment methods in Latin America and Europe. The campaign would use the statements 'accept local payments everywhere,' 'lower-cost…
+
+## Options or working recommendation
+
+# Recommendations
+
+No recommendation has been drafted yet.
+
+## Next counsel action
+
+Approve the final response.
+
+## Work product links
+
+- Draft: [First-Pass Legal Response — Promotion of New Local Payment Methods (LATAM/Europe)](03_Matters/mosaic-relay-ux-test-10-promotion-of-new-local-payment-methods-3a5500/work-product/draft/first-pass-legal-response-promotion-of-new-local-payment-methods-2956a6.md)
+- Final: [First-Pass Legal Response — Promotion of New Local Payment Methods (LATAM/Europe)](03_Matters/mosaic-relay-ux-test-10-promotion-of-new-local-payment-methods-3a5500/work-product/final/first-pass-legal-response-promotion-of-new-local-payment-methods-2956a6-5f5cd8.md)

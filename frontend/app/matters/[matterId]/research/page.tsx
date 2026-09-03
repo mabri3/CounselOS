@@ -7,10 +7,12 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import AppShell from "@/components/AppShell";
 import LinkifiedText from "@/components/LinkifiedText";
-import { answerAnnotation, createAnnotation, getAnnotations, getFile, getMatter } from "@/lib/api";
+import ResearchQueuePanel from "@/components/ResearchQueuePanel";
+import { answerAnnotation, createAnnotation, getAnnotations, getFile, getMatter, getResearchQueue, reorderResearchQueue, resumeResearchQueue, retryResearchItem, startResearchRun, stopResearchQueue } from "@/lib/api";
 import { formatDateTime } from "@/lib/design";
 import { parseMemo, splitCitations } from "@/lib/research";
-import type { FileNode, MatterDetail, ResearchMemo, ResearchNote } from "@/lib/types";
+import type { FileNode, MatterDetail, ResearchMemo, ResearchNote, ResearchRun } from "@/lib/types";
+import { movePending, researchQuestion, shouldPollResearchQueue } from "@/lib/researchQueue";
 
 type DisplayResearchMemo = ResearchMemo & {
   publicResearchStatus?: "not_requested" | "retrieved" | "unavailable" | "failed";
@@ -38,16 +40,22 @@ export default function ResearchPage() {
   const [addingNote, setAddingNote] = useState(false);
   const [answeringId, setAnsweringId] = useState("");
   const [error, setError] = useState("");
+  const [queue, setQueue] = useState<ResearchRun[]>([]);
+  const [enteredQuestion, setEnteredQuestion] = useState("");
+  const [selectedQuestion, setSelectedQuestion] = useState("");
+  const [queueBusy, setQueueBusy] = useState(false);
 
   const load = useCallback(async () => {
     try {
       setError("");
-      const [matter, { annotations }] = await Promise.all([
+      const [matter, { annotations }, queueResult] = await Promise.all([
         getMatter(matterId),
         getAnnotations(matterId),
+        getResearchQueue(matterId),
       ]);
       setDetail(matter);
       setNotes(annotations);
+      setQueue(queueResult.items);
       const path = safeResearchPath(requestedFile, matter.path) ?? newestResearchPath(matter.tree);
       if (!path) { setMemo(null); return; }
       setMemo(parseMemo(await getFile(path)));
@@ -57,6 +65,41 @@ export default function ResearchPage() {
   }, [matterId, requestedFile]);
 
   useEffect(() => { void load(); }, [load]);
+  useEffect(() => {
+    if (!shouldPollResearchQueue(queue)) return;
+    const timer = window.setInterval(() => { void load(); }, 1800);
+    return () => window.clearInterval(timer);
+  }, [load, queue]);
+
+  const queuePanel = detail ? (
+    <ResearchQueuePanel
+      busy={queueBusy}
+      enteredQuestion={enteredQuestion}
+      items={queue}
+      savedQuestions={detail.orientation.open_question_items ?? []}
+      onEnteredQuestion={setEnteredQuestion}
+      onMove={async (runId, direction) => {
+        setQueueBusy(true);
+        try { setQueue((await reorderResearchQueue(matterId, movePending(queue, runId, direction))).data.items); }
+        catch (caught) { setError(caught instanceof Error ? caught.message : "Could not reorder research."); }
+        finally { setQueueBusy(false); }
+      }}
+      onResume={async () => { setQueueBusy(true); try { await resumeResearchQueue(matterId); await load(); } finally { setQueueBusy(false); } }}
+      onStop={async () => { setQueueBusy(true); try { await stopResearchQueue(matterId); await load(); } finally { setQueueBusy(false); } }}
+      onRetry={async (runId) => { setQueueBusy(true); try { await retryResearchItem(matterId, runId); await load(); } finally { setQueueBusy(false); } }}
+      onRun={async () => {
+        const question = researchQuestion(selectedQuestion, enteredQuestion, detail.title);
+        setQueueBusy(true);
+        try {
+          await startResearchRun(matterId, question, `research-ui:${Date.now()}`);
+          setEnteredQuestion(""); setSelectedQuestion(""); await load();
+        } catch (caught) { setError(caught instanceof Error ? caught.message : "Could not queue research."); }
+        finally { setQueueBusy(false); }
+      }}
+      onSelectedQuestion={setSelectedQuestion}
+      selectedQuestion={selectedQuestion}
+    />
+  ) : null;
 
   const source = useMemo(
     () => memo?.citations.find((citation) => citation.id === openSource) ?? memo?.citations[0] ?? null,
@@ -78,6 +121,7 @@ export default function ResearchPage() {
                 Open the matter
               </Link>{" "}
               and run first-pass research.
+              {queuePanel}
             </div>
           ) : (
             <div className="loading">Opening the research…</div>
@@ -117,12 +161,21 @@ export default function ResearchPage() {
             </Link>
           </div>
         </header>
+        {queuePanel}
 
         <div className="research-panes">
           <div className="memo-scroll">
             <article className="memo-sheet">
               <h1>{memo.title}</h1>
               <p className="memo-byline">{memoByline}</p>
+              {memo.technicalDetails ? (
+                <details style={{ margin: "12px 0 20px" }}>
+                  <summary className="setting-help" style={{ cursor: "pointer", fontWeight: 600 }}>Technical details</summary>
+                  <pre style={{ marginTop: 10, overflowX: "auto", whiteSpace: "pre-wrap", fontSize: 12 }}>
+                    {JSON.stringify(memo.technicalDetails, null, 2)}
+                  </pre>
+                </details>
+              ) : null}
 
               <div className="memo-body reading">
                 {memo.blocks.map((block, index) => {

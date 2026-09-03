@@ -76,3 +76,24 @@ def test_old_or_missing_sqlite_rebuilds_all_awareness_views_from_markdown(app_co
         assert not connection.execute(
             "SELECT 1 FROM sqlite_master WHERE type='table' AND name='obsolete_cache'"
         ).fetchone()
+
+
+def test_app_context_rebuilds_the_index_once_when_starting_with_an_outdated_cache(tmp_path, monkeypatch):
+    from app.config import Settings
+    from app.runtime import AppContext
+
+    vault = tmp_path / "vault"
+    from tests.conftest import copy_test_vault
+    copy_test_vault(vault)
+    calls = []
+    original_rebuild = IndexService.rebuild
+
+    def counted_rebuild(self):
+        calls.append(self)
+        return original_rebuild(self)
+
+    monkeypatch.setattr(IndexService, "rebuild", counted_rebuild)
+
+    AppContext(Settings(vault_path=str(vault), scheduler_enabled=False, search_provider="disabled"))
+
+    assert len(calls) == 1

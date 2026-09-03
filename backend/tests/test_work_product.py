@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import pytest
 
+from app.models.api import MatterCreate
+from app.services.recommendations import RecommendationService
+
 def test_create_draft_and_finalize_immutable_copy(app_context):
     service = app_context.work_products
     draft = service.create_draft("MAT-DEMO-BEACON", title="Launch advice", content="# Advice\n\nShip with conditions.", summary="Draft advice")
@@ -17,6 +20,40 @@ def test_create_draft_and_finalize_immutable_copy(app_context):
     assert draft["work_product_id"] == app_context.vault.read_markdown(draft["vault_path"])["metadata"]["work_product_id"]
     assert draft["vault_path"] in draft["changed_paths"]
     assert final["vault_path"] in final["changed_paths"]
+    dossier = app_context.dossiers.get("MAT-DEMO-BEACON")["content"]
+    assert f"- Draft: [Launch advice]({draft['vault_path']})" in dossier
+    assert f"- Final: [Launch advice]({final['vault_path']})" in dossier
+    assert "## Next counsel action\n\nApprove the final response." in dossier
+
+
+def test_draft_projects_accepted_recommendation_and_dossier_failure_is_best_effort(
+    app_context, monkeypatch
+):
+    RecommendationService(app_context.vault, app_context.matters).set_working(
+        "MAT-DEMO-BEACON",
+        "Use the notice-first path.",
+        actor="Counsel",
+        origin="lawyer_edit",
+    )
+    projected = app_context.work_products.create_draft(
+        "MAT-DEMO-BEACON", title="Projected advice", content="Draft body"
+    )
+    dossier = app_context.dossiers.get("MAT-DEMO-BEACON")["content"]
+    assert "## Options or working recommendation\n\nUse the notice-first path." in dossier
+    assert app_context.dossiers.get("MAT-DEMO-BEACON")["path"] in projected["changed_paths"]
+    assert projected["dossier_projection"]["state"] == "applied"
+
+    def fail_projection(*args, **kwargs):
+        raise RuntimeError("dossier unavailable")
+
+    monkeypatch.setattr(app_context.dossiers, "update_work_state", fail_projection)
+    saved = app_context.work_products.create_draft(
+        "MAT-DEMO-BEACON", title="Still saved", content="Useful saved body"
+    )
+    assert saved["dossier_projection"]["state"] == "failed"
+    assert "path" not in saved["dossier_projection"]
+    assert "revision_path" not in saved["dossier_projection"]
+    assert app_context.vault.read_markdown(saved["vault_path"])["content"] == "Useful saved body\n"
 
 
 def test_create_draft_records_one_current_canonical_draft(app_context):
@@ -227,3 +264,66 @@ def test_finalize_service_moves_generate_to_respond_once(app_context):
     assert app_context.index.get_matter(matter_id)["status"] == "respond"
     assert first["vault_path"] == retry["vault_path"]
     assert retry["changed_paths"] == []
+
+
+def test_finalize_rebuilds_the_compound_lifecycle_once(app_context, monkeypatch):
+    matter_id = "MAT-DEMO-BEACON"
+    app_context.matters.move_stage(matter_id, "generate")
+    draft = app_context.work_products.create_draft(matter_id, title="Single rebuild", content="Reviewed body")
+    rebuilds = []
+    real_rebuild = app_context.index.rebuild
+
+    def count_rebuild():
+        rebuilds.append("rebuild")
+        return real_rebuild()
+
+    monkeypatch.setattr(app_context.index, "rebuild", count_rebuild)
+    app_context.work_products.finalize(matter_id, draft["vault_path"])
+
+    assert rebuilds == ["rebuild"]
+
+
+def test_finalize_rebuild_happens_after_final_dossier_projection(app_context, monkeypatch):
+    matter_id = "MAT-DEMO-BEACON"
+    draft = app_context.work_products.create_draft(
+        matter_id, title="Dossier final", content="Reviewed body"
+    )
+    observed_dossiers = []
+    real_rebuild = app_context.index.rebuild
+
+    def rebuild_after_projection():
+        observed_dossiers.append(app_context.dossiers.get(matter_id)["content"])
+        return real_rebuild()
+
+    monkeypatch.setattr(app_context.index, "rebuild", rebuild_after_projection)
+    final = app_context.work_products.finalize(matter_id, draft["vault_path"])
+
+    assert len(observed_dossiers) == 1
+    assert f"- Final: [Dossier final]({final['vault_path']})" in observed_dossiers[0]
+
+
+@pytest.mark.parametrize("starting_stage", ["intake", "research", "explore", "generate", "respond"])
+def test_finalize_reconciles_every_pre_closed_stage_and_returns_actual_state(
+    app_context, starting_stage
+):
+    matter = app_context.matters.create(
+        MatterCreate(title=f"Finalize from {starting_stage}", request_text="Prepare an answer.")
+    )
+    matter_id = matter["matter_id"]
+    if starting_stage != "intake":
+        app_context.matters.move_stage(matter_id, starting_stage)
+    draft = app_context.work_products.create_draft(
+        matter_id, title="Response", content="Reviewed response"
+    )
+
+    final = app_context.work_products.finalize(matter_id, draft["vault_path"])
+    saved_matter = app_context.vault.read_markdown(f"{matter['path']}/matter.md")["metadata"]
+
+    assert final["operation"] == "finalize_work_product"
+    assert final["status"] == "changed"
+    assert final["resulting_matter_state"]["stage"] == "respond"
+    assert final["resulting_matter_state"]["next_action"] == "Approve the final response."
+    assert final["available_next_actions"] == ["approve_response"]
+    assert saved_matter["status"] == "respond"
+    assert saved_matter["current_work_product_final_path"] == final["vault_path"]
+    assert saved_matter["current_work_product_final_id"] == final["final_id"]

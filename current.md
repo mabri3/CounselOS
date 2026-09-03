@@ -1,13 +1,14 @@
 # Current Project State
 
-Last updated: 2026-08-31
+Last updated: 2026-09-01
 
 ## Active Goal
 
-The Themis.ai reliability build is complete. The normal matter workflow now
-preserves truthful chat and research state, one canonical work product,
-decision integrity, lawyer authorship, and the full approval, delivery, and
-closure lifecycle. Only the explicit Later backlog remains.
+The Themis.ai workflow reconciliation build is complete. The normal matter
+workflow now adds durable research queues, versioned recommendations,
+recommendation disposition, participant and work-queue controls, target dates,
+typed confirmation actions, and safe lifecycle repair to the prior reliability
+baseline. Only the explicit Later backlog remains.
 
 ## Why This Goal Now
 
@@ -56,8 +57,14 @@ finishing one matter without reconstructing state by hand.
 
 ## Verified Evidence
 
-- The post-review full backend suite passes 550 tests with one existing Starlette deprecation warning.
-- Every `frontend/scripts/check-*.ts` script passes. Workspace checks, typecheck, and the production build pass.
+- The Mosaic Relay R2 UX repair passes 838 backend tests, the full frontend UX check, frontend typecheck and production build, graph refresh, and a visible existing-matter browser check. The browser showed split required/optional work, compact superseded intake turns, matching recommendation presence, scoped participant/owner controls, and no console warnings or errors.
+- The final Sol High review found two dossier/reload P1 contracts and one stale-failure race. The corrections reserve dossier review links for real revision records, preserve successful work when dossier projection fails, and make only the latest matter refresh able to update state or report failure. The focused recheck found no remaining material defect.
+- The runtime-contract and durable-card-answer repair passes 665 backend tests, frontend typecheck and production build, graph refresh, and a visible old-vault browser check. The affected matter now shows CIP as answered and asks the CIP-exception question with three useful choices.
+- The matter-authority repair passes 658 backend tests, frontend typecheck and production build, graph refresh, `git diff --check`, and a live reload of the affected matter with no failed or synthetic update cards.
+- The post-review full backend suite passes 629 tests with one existing Starlette deprecation warning.
+- All focused frontend checks, the older lifecycle check, workspace checks, typecheck, and the production build pass.
+- Fresh vault D completed visible intake, research, recommendation proposal and acceptance, lawyer edit, decision disposition, finalization, approval, manual delivery, required-work completion, closure, safe repair, and SQLite rebuild.
+- The protected repository-vault hash remains `4e7ead57bd49e00a37dbd144ef227593ffe15032fb7803b8c262a16b1baeec3e`.
 - The isolated browser demo completed canonical draft creation, editor review, finalization, approval, delivery recording, closure, and visible navigation away and back.
 - The browser demo preserved Closed state, moderate lawyer-set risk, the canonical draft, the linked final, and Themis.ai naming after reload.
 - The repository vault hash remained `1f758e0a835e704490a3e4815ab98fb9523cec0a674be0229718f5b48c26380d` during the isolated run.
@@ -70,6 +77,16 @@ finishing one matter without reconstructing state by hand.
 
 ## Recent Changes
 
+- Repaired modified-End placement and canonical save read-back, typed lifecycle wording and close recovery, safe chat failure classes and durable progress, saved-state intake recovery, canonical recommendation precedence, shared dossier work-state projection, required/optional work labels, scoped mutation feedback, and compact guided-intake history.
+- Added a runtime-owned contract for built-in agents, while preserving old-vault workspace guidance and custom-agent permissions.
+- Made active intake-card answers durable before model analysis. Saved answers now close their question, retain source links, and can project an explicitly named matter field.
+- Made question-card validation cover grouped duplicates and active saved choices. Changed the generic priority label to **Follow-up question** and removed the sole **Continue with assumptions** fallback.
+- Repaired matter record authority: complete frontmatter now reaches the resolved API, answered intake cards prevent repeated fallback questions, duplicate answers fail before queueing, structured file edits reconcile typed state, and internal tool failures stay out of the primary chat cards.
+- Added one durable serial research queue record per question with stable keys, reorder, retry, and restart recovery.
+- Added versioned working recommendations, agent proposals that require lawyer acceptance, and direct lawyer versions.
+- Added recommendation version, disposition, and reason to durable decisions.
+- Added visible participant, work-item priority and owner, target-date, consistency warning, and safe repair controls.
+- Made matter creation return before retained intake startup completes. Kept approval, delivery, decision recording, and closure behind direct controls.
 - Made user turns, composer drafts, answered intake cards, long-run state, and unsupported mutation warnings durable and truthful.
 - Added one canonical draft pointer and linked final pointer. Guided actions now use the same artifact, including safe legacy-draft adoption.
 - Made research stages, source classes, packet titles, saved pointers, and partial public-research failures explicit.
@@ -89,7 +106,7 @@ finishing one matter without reconstructing state by hand.
 - [x] Matter work, research, decisions, activity, risk, and company-profile state remain truthful after reload.
 - [x] Useful research survives public-source failure without overstating support.
 - [x] Human edits and decisions use human attribution; generated drafts remain clearly labeled.
-- [x] Full backend, all frontend checks, typecheck, build, graph update, isolated browser demo, and vault guard pass.
+- [x] Full backend, all frontend checks, typecheck, build, graph update, fresh browser demo, SQLite rebuild, and vault guard pass.
 - [x] The independent Sol High reviewer has no unresolved material finding after the correction rechecks.
 - [x] `Now`, `Next`, and `Blocked` contain no remaining work.
 

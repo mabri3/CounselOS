@@ -190,6 +190,19 @@ research.external_retry_count
 
 `research.fallback_external_provider` can be `none`. Provider options must come from supported configured adapters. The model fallback provider and model must come from the existing model catalog.
 
+For this build, the supported external research choices are `polaris`, `tavily`, and `none`. The native intelligence scanner is a separate component. It is not an external legal-research fallback and is outside this change.
+
+Use NeuralWatt through the existing OpenAI-compatible provider and its live model catalog. Do not create a NeuralWatt-specific adapter.
+
+Keep the configuration boundary explicit:
+
+- Environment configuration owns credentials, provider base URLs, and hard safety limits.
+- Markdown settings own non-secret provider choices, model choices, timeout preferences, and retry preferences.
+- Runtime code combines the two and bounds user preferences by backend safety limits.
+- Never write credentials or secret values to Markdown.
+
+`SettingsService.write` remains the existing free-form Markdown persistence seam. Do not add validation there unless a focused test proves that it is necessary. If it becomes necessary, stop and report the coordinator seam before editing `backend/app/services/settings.py`.
+
 Before changing timeout behavior, diagnose Polaris configuration with one focused request. Separate credential/configuration, network, provider, and timeout causes. A legal research request can validly take longer than 46 seconds. Use operation-specific settings and honest elapsed state. Do not use one universal short timeout to classify all longer research as stalled.
 
 Fallback sequence:
@@ -257,7 +270,9 @@ Target dates:
 
 - Instrument one visible create request from date input through request payload, API model, `request.md`, `matter.md`, response, index, and reload.
 - Fix the first proven break only.
-- Add one regression test for the full chain.
+- C0 adds backend regression coverage for request model, API persistence, Markdown, index, and reload.
+- C4 adds a frontend script that proves the date input reaches the create request.
+- The visible-browser verification proves the complete end-to-end chain.
 
 Creation feedback:
 
@@ -297,20 +312,31 @@ parallel:
 
 Use one combined Sol Medium review after the accepted implementation waves. Do not make the Sol Medium reviewer serialize independent implementation chunks. The Sol High reviewer is read-only and is used only under the escalation rule below.
 
-Workers may read any repository file. They may write only their assigned paths. They must use the existing dirty tree, preserve user changes, and report any needed out-of-scope file instead of editing it.
+Workers may read any repository file. They may write only their assigned paths. They must use the current tree state, preserve user changes, and report any needed out-of-scope file instead of editing it.
+
+Before each worker or wave, the coordinator records an exact baseline path snapshot. After each worker or wave, compare every changed path to that snapshot and the accepted write scopes. For parallel C1 and C2, use one shared Wave 1 baseline and require each worker to report its exact changed paths. Never assign an unexpected path to a worker by guess.
 
 ### 4.12 Wave 0 — coordinator baseline and diagnosis
 
 Before dispatch:
 
 1. Read `AGENTS.md`, `docs/PRD.md`, `CODEX_HANDOFF.md`, this plan, the Harborline rerun report, and the live experiment skill.
-2. Record branch, commit, full `git status --short`, active vault path, and a hash of repository `vault/`. Do not print secrets.
-3. Create `docs/themis-ai-workflow-reconciliation-build.handoff-progress.md` from the supplied template if it does not exist.
-4. Run focused Graphify queries for lifecycle/action results, intake, research/provider settings, recommendation/decision, and board/create flow.
-5. Run the current backend suite and frontend checks once. Record exact baseline failures. Do not erase or reclassify pre-existing failures.
-6. Use temporary isolated vaults for reproduction. Do not write test data to repository `vault/`.
-7. Diagnose the target-date chain and one Polaris request before code changes.
-8. Record the exact model catalog ID for NeuralWatt Kimi K3 Fast or record that it is unavailable. Do not substitute another model without user approval.
+2. Record branch, commit, full `git status --short`, active vault path, and an exact changed-path snapshot. Do not print secrets.
+3. Record both a full hash of repository `vault/` and a protected hash or manifest that excludes only these three allowed prompt files:
+
+   ```text
+   vault/00_System/agents/counsel-copilot.md
+   vault/00_System/agents/intake-agent.md
+   vault/00_System/agents/research-agent.md
+   ```
+
+   Only these three repository-vault prompt files may change during implementation. All other repository `vault/` paths must continue to match the protected baseline.
+4. Create `docs/themis-ai-workflow-reconciliation-build.handoff-progress.md` from the supplied template if it does not exist.
+5. Run focused Graphify queries for lifecycle/action results, intake, research/provider settings, recommendation/decision, and board/create flow.
+6. Run the current backend suite and frontend checks once. Record exact baseline failures. Do not erase or reclassify pre-existing failures.
+7. Use temporary isolated vaults for reproduction. Do not write test data to repository `vault/`.
+8. Diagnose the target-date chain and one Polaris request before code changes.
+9. Query the configured live model catalog without printing environment values or secrets. Record the exact catalog ID for NeuralWatt Kimi K3 Fast. If it is absent, stop before implementation and report an environment-configuration blocker. Do not add a new adapter or silently substitute another model.
 
 ### 4.13 Chunk C0 — shared result and lifecycle foundation
 
@@ -413,8 +439,9 @@ cd /Users/bharris/Programs/counsel-os-mvp/frontend
 node --experimental-strip-types scripts/check-adaptive-intake.ts
 node --experimental-strip-types scripts/check-chat-run-recovery.ts
 node --experimental-strip-types scripts/check-transport-preservation.ts
-npm run typecheck
 ```
+
+The two allowed repository-vault files in this chunk must stay in parity with their blank-vault-template and fixture mirrors.
 
 #### Chunk C2 — research queue, provider fallback, and usefulness
 
@@ -427,8 +454,6 @@ Exclusive write scope:
 ```text
 backend/app/config.py
 backend/app/intelligence/polaris.py
-backend/app/intelligence/native.py
-backend/app/intelligence/fetch.py
 backend/app/services/research.py
 backend/app/services/research_runs.py
 backend/app/services/search.py
@@ -440,6 +465,9 @@ backend/tests/test_research.py
 backend/tests/test_settings.py
 frontend/app/settings/page.tsx
 frontend/app/matters/[matterId]/research/page.tsx
+frontend/lib/types.ts
+frontend/lib/api.ts
+frontend/lib/stubs.ts
 frontend/lib/research.ts
 frontend/lib/researchQueue.ts
 frontend/scripts/check-research-queue.ts
@@ -450,7 +478,9 @@ backend/tests/fixtures/vault/00_System/agents/research-agent.md
 
 Implement the small durable queue, pending reorder, restart-safe visibility/resume, non-empty visible action, provider chain, Kimi K3 Fast model-only fallback, useful status, technical diagnostics separation, and stronger researcher prompt.
 
-If the exact Kimi K3 Fast catalog model is unavailable, leave the saved setting unset, show a truthful configuration error, and report the blocker. Do not substitute Polaris or another model.
+Ownership of `frontend/lib/types.ts` and `frontend/lib/api.ts` transfers from C0 after C0 acceptance. C2 may extend the frozen contracts for settings and research, but must preserve backward compatibility. C2 owns `frontend/lib/stubs.ts` because it contains the default settings. `backend/app/services/settings.py` is read-only for this chunk unless the coordinator accepts a test-proven seam.
+
+Wave 0 must prove that the exact Kimi K3 Fast catalog model exists before C2 starts. If the configured catalog later becomes unavailable, fail truthfully and stop the gate. Do not save an unset fallback, build a new provider adapter, or substitute Polaris or another model.
 
 Focused check:
 
@@ -458,13 +488,22 @@ Focused check:
 cd /Users/bharris/Programs/counsel-os-mvp/backend
 .venv/bin/python -m pytest -q tests/test_intelligence_providers.py tests/test_research.py tests/test_settings.py
 cd /Users/bharris/Programs/counsel-os-mvp/frontend
-test ! -f scripts/check-research-queue.ts || node --experimental-strip-types scripts/check-research-queue.ts
-npm run typecheck
+node --experimental-strip-types scripts/check-research-queue.ts
+node --experimental-strip-types scripts/check-provider-admin.ts
 ```
 
 ### 4.15 Wave 1 gate
 
-Wait for C1 and C2. Inspect every changed path against ownership. Run both focused checks. Resolve contract mismatches centrally only when the edit is small and clearly belongs to the frozen C0 seam. Record each integration edit in progress.
+Wait for C1 and C2. Compare every changed path to the shared Wave 1 baseline and each worker's exact ownership report. Run both focused checks. Then run the cross-chunk gates once:
+
+```bash
+cd /Users/bharris/Programs/counsel-os-mvp/backend
+.venv/bin/python -m pytest -q tests/test_blank_vault_parity.py
+cd /Users/bharris/Programs/counsel-os-mvp/frontend
+npm run typecheck
+```
+
+Confirm that the three allowed repository-vault prompt files match their mirrors and that every other repository-vault path still matches the protected baseline. Resolve contract mismatches centrally only when the edit is small and clearly belongs to the frozen C0 seam. Record each integration edit in progress.
 
 Do not start Wave 2 until C1 and C2 are accepted.
 
@@ -476,21 +515,25 @@ Dependencies: C0, C1, and C2.
 
 Outcome: recommendations are versioned and synchronized by explicit origin rules, decisions record disposition, and all work remains visible and assignable.
 
-Exclusive write scope transfers after C0 acceptance:
+Exclusive write scope transfers after Wave 1 acceptance:
 
 ```text
 backend/app/services/recommendations.py
 backend/app/models/api.py
+backend/app/agents/context.py
 backend/app/services/work_product.py
 backend/app/services/matters.py
+backend/app/services/matter_paths.py
 backend/app/services/decisions.py
 backend/app/services/document_review.py
 backend/app/tools/handlers.py
 backend/app/routers/matters.py
 backend/app/routers/decisions.py
 backend/tests/test_recommendations.py
+backend/tests/test_demo_content.py
 backend/tests/test_work_product.py
 backend/tests/test_matters.py
+backend/tests/test_matter_paths.py
 backend/tests/test_decisions.py
 backend/tests/test_document_review.py
 frontend/components/MatterWorkspace.tsx
@@ -500,13 +543,15 @@ frontend/components/RevisionPlugin.tsx
 frontend/components/RevisionTextNode.tsx
 frontend/lib/types.ts
 frontend/lib/api.ts
+frontend/lib/reviewAuthor.ts
 frontend/lib/recommendations.ts
+frontend/app/globals.css
 frontend/scripts/check-recommendation-integrity.ts
 ```
 
-Ownership of `backend/app/models/api.py`, `frontend/lib/types.ts`, and `frontend/lib/api.ts` transfers from C0 only after C0 acceptance. Extend them for recommendation versions, decision disposition, participant maintenance, and work-item controls. Do not weaken or incompatibly replace the accepted C0 operation-result contract.
+Ownership of `backend/app/models/api.py` transfers from C0 after Wave 1. Ownership of `frontend/lib/types.ts` and `frontend/lib/api.ts` transfers through C0 to C2 and then to C3. Extend them for recommendation versions, decision disposition, participant maintenance, and work-item controls. Do not weaken or incompatibly replace the accepted C0 operation-result contract or C2 research/settings contracts.
 
-Implement atomic initial save, working and proposed recommendation versions, direct-lawyer version updates, accept-proposal click, work-product version references, decision disposition/reason, all-item queue controls, participant maintenance, clickable owner suggestions, manual-delivery wording and buttons, and revision-author output cleanup.
+Implement atomic initial save, working and proposed recommendation versions, direct-lawyer version updates, accept-proposal click, work-product version references, decision disposition/reason, all-item queue controls, participant maintenance, clickable owner suggestions, manual-delivery wording and buttons, and revision-author output cleanup. Remove malformed author suffixes at their source, including CSS pseudo-element output, instead of trimming valid revision text.
 
 Material actions must remain explicit clicks. Background work can create proposals and non-substantive work items.
 
@@ -514,9 +559,9 @@ Focused check:
 
 ```bash
 cd /Users/bharris/Programs/counsel-os-mvp/backend
-.venv/bin/python -m pytest -q tests/test_recommendations.py tests/test_work_product.py tests/test_matters.py tests/test_decisions.py tests/test_document_review.py
+.venv/bin/python -m pytest -q tests/test_recommendations.py tests/test_demo_content.py tests/test_work_product.py tests/test_matters.py tests/test_matter_paths.py tests/test_decisions.py tests/test_document_review.py
 cd /Users/bharris/Programs/counsel-os-mvp/frontend
-test ! -f scripts/check-recommendation-integrity.ts || node --experimental-strip-types scripts/check-recommendation-integrity.ts
+node --experimental-strip-types scripts/check-recommendation-integrity.ts
 npm run typecheck
 ```
 
@@ -526,7 +571,7 @@ Run C4 after C3 is accepted so it reads the final shared frontend types and API 
 
 #### Chunk C4 — board audit, dates, and creation feedback
 
-Dependencies: C0.
+Dependencies: C0 and C3.
 
 Outcome: creation has immediate durable feedback, target dates survive the full path, and the board shows truthful consistency issues and safe repair controls.
 
@@ -538,11 +583,13 @@ frontend/components/StageBoard.tsx
 frontend/components/MattersTable.tsx
 frontend/app/matters/page.tsx
 frontend/lib/design.ts
+frontend/lib/types.ts
+frontend/lib/api.ts
 frontend/scripts/check-matter-creation.ts
 frontend/scripts/check-workspace-ux.ts
 ```
 
-Use the C0 API contract. Add immediate created/pending-intake feedback, repeat-click protection, target-date UI regression coverage, audit issue labels, review links, and the explicit safe repair control. Keep color semantic and always pair color with a state word.
+Ownership of `frontend/lib/types.ts` and `frontend/lib/api.ts` transfers from C3 only after C3 acceptance. Use the final shared API contract. Add immediate created/pending-intake feedback, repeat-click protection, a date-input-to-request regression script, audit issue labels, review links, and the explicit safe repair control. Keep color semantic and always pair color with a state word.
 
 If the proven target-date break requires a backend file outside this scope, report it to the coordinator. The original C0 implementer makes the narrow correction after C4 stops.
 
@@ -550,14 +597,14 @@ Focused check:
 
 ```bash
 cd /Users/bharris/Programs/counsel-os-mvp/frontend
-test ! -f scripts/check-matter-creation.ts || node --experimental-strip-types scripts/check-matter-creation.ts
-npm run check:workspace-ux
+node --experimental-strip-types scripts/check-matter-creation.ts
+node --experimental-strip-types scripts/check-workspace-ux.ts
 npm run typecheck
 ```
 
 ### 4.18 Wave 3 gate and integration
 
-After C3, inspect ownership and run its focused checks before starting C4. After C4, inspect ownership and run its focused checks. The coordinator owns only these final seams:
+After C3, inspect ownership and run its focused checks before starting C4. After C4, inspect ownership and run its focused checks. Compare every wave against its exact baseline path snapshot. The coordinator owns only these final seams:
 
 ```text
 docs/ACCEPTANCE_TESTS.md
@@ -640,9 +687,9 @@ cd /Users/bharris/Programs/counsel-os-mvp/backend
 
 cd /Users/bharris/Programs/counsel-os-mvp/frontend
 npm run check:workspace-ux
-test ! -f scripts/check-research-queue.ts || node --experimental-strip-types scripts/check-research-queue.ts
-test ! -f scripts/check-recommendation-integrity.ts || node --experimental-strip-types scripts/check-recommendation-integrity.ts
-test ! -f scripts/check-matter-creation.ts || node --experimental-strip-types scripts/check-matter-creation.ts
+node --experimental-strip-types scripts/check-research-queue.ts
+node --experimental-strip-types scripts/check-recommendation-integrity.ts
+node --experimental-strip-types scripts/check-matter-creation.ts
 npm run typecheck
 npm run build
 
@@ -650,7 +697,7 @@ cd /Users/bharris/Programs/counsel-os-mvp
 graphify update .
 ```
 
-Then create a new isolated verification vault through the normal UI. Walk the demo script in a visible browser. Verify matching Markdown after every material mutation. Delete only that verification vault's disposable SQLite index, rebuild it through the supported path, restart locally, and confirm the same state. Re-hash repository `vault/` and prove it did not change.
+After implementation, prove that only the three allowed repository-vault prompts differ from the baseline protected manifest. Record a new full post-build repository-vault hash. Then create a new isolated verification vault through the normal UI. Walk the demo script in a visible browser. Verify matching Markdown after every material mutation. Delete only that verification vault's disposable SQLite index, rebuild it through the supported path, restart locally, and confirm the same state. Re-hash repository `vault/` and prove that the full hash still matches the post-build hash.
 
 Do not classify the expected new-vault confirmation dialog as a stall. For tests, use the existing test-only bypass or click **OK** when it appears.
 
@@ -666,6 +713,7 @@ After engineering verification passes, use `$live-agent-ux-experiment`.
 - Treat new-vault update confirmation dialogs as expected test setup. Use the test-only bypass or click **OK**. Do not count them as a product stall.
 - Actors should control their own visible browser first. If an actor cannot see or control the in-app browser, and Chrome or Safari is also unavailable or broken, the coordinator may open the in-app browser and provide the minimum navigation or click assistance needed to continue, as the user explicitly authorized. Mark the run **assisted**. Keep product-state evidence, but exclude assisted navigation from independent discoverability claims. Repeat unaided later only when a strict discoverability measure is required.
 - No real external contact or delivery is allowed.
+- After the experiment, re-hash repository `vault/` and prove that it still matches the full post-build hash.
 
 Use the same before/after measures, plus:
 
@@ -692,7 +740,8 @@ The one-shot build is complete only when:
 - all focused and full checks pass, or a pre-existing failure is proved and reported without being hidden;
 - the visible demo passes in a new verification vault;
 - SQLite rebuild and restart preserve Markdown-backed state;
-- the repository vault hash is unchanged;
+- only the three allowed repository-vault prompt files differ from the pre-build protected baseline;
+- the full post-build repository-vault hash remains unchanged through visible verification and the recurrence experiment;
 - a separate new Harborline experiment vault exists;
 - the ten-matter recurrence experiment and checked synthesis report are complete, unless a documented safety or environment stop applies;
 - no commit, push, deployment, destructive cleanup, or real external contact occurred;

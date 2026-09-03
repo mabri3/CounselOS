@@ -1,18 +1,25 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Awaitable, Callable
+import logging
+from pathlib import Path
+from typing import Any, Awaitable, Callable, FrozenSet
+
+import yaml
 
 from app.agents.registry import AgentDefinition
 from app.services.vault import VaultService
+from app.tools.capabilities import ToolCapabilities
 
 
 Handler = Callable[["ToolExecutionContext", dict[str, Any]], Awaitable[dict[str, Any]]]
+APP_CONTRACT_ROOT = Path(__file__).resolve().parents[1] / "blank_vault_template"
+logger = logging.getLogger(__name__)
 
 
 @dataclass
 class ToolExecutionContext:
-    app: Any
+    app: ToolCapabilities
     matter_id: str | None = None
     active_file: str | None = None
     review_author: str | None = None
@@ -20,6 +27,7 @@ class ToolExecutionContext:
     source_action_key: str | None = None
     trusted_source_id: str | None = None
     expected_dossier_hash: str | None = None
+    allowed_tools: FrozenSet[str] = frozenset()
 
 
 @dataclass
@@ -30,6 +38,7 @@ class ToolExecutionResult:
     data: dict[str, Any] = field(default_factory=dict)
     changed_paths: list[str] = field(default_factory=list)
     refresh: list[str] = field(default_factory=list)
+    operation_result: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -45,6 +54,9 @@ class ToolRegistry:
     def __init__(self, vault: VaultService, handlers: dict[str, Handler]):
         self.vault = vault
         self.handlers = handlers
+        self.app_contract = VaultService(APP_CONTRACT_ROOT)
+        self._cached_definitions: dict[str, ToolDefinition] | None = None
+        self._cached_fingerprint: tuple[tuple[str, str, int, int], ...] | None = None
 
     def list(self) -> list[dict[str, Any]]:
         return [definition.__dict__ for definition in self._load().values()]
@@ -52,7 +64,7 @@ class ToolRegistry:
     def provider_tools(self, agent: AgentDefinition) -> list[dict[str, Any]]:
         definitions = self._load()
         tools: list[dict[str, Any]] = []
-        for tool_id in agent.allowed_tools:
+        for tool_id in self.allowed_tools(agent):
             definition = definitions.get(tool_id)
             if not definition:
                 continue
@@ -75,48 +87,164 @@ class ToolRegistry:
         tool_id: str,
         arguments: dict[str, Any],
     ) -> ToolExecutionResult:
-        if tool_id not in agent.allowed_tools:
-            return ToolExecutionResult(tool_id, "error", f"Agent is not allowed to use {tool_id}.")
+        if tool_id not in self.allowed_tools(agent):
+            return _failed_tool_result(
+                tool_id, context, f"Agent is not allowed to use {tool_id}."
+            )
         definition = self._load().get(tool_id)
         if not definition:
-            return ToolExecutionResult(tool_id, "error", f"Tool is not registered: {tool_id}.")
+            return _failed_tool_result(
+                tool_id, context, f"Tool is not registered: {tool_id}."
+            )
         handler = self.handlers.get(definition.handler)
         if not handler:
-            return ToolExecutionResult(
+            return _failed_tool_result(
                 tool_id,
-                "error",
+                context,
                 f"Tool specification points to an unknown handler: {definition.handler}.",
             )
         try:
             payload = await handler(context, arguments)
+            changed_paths = [str(path) for path in payload.get("changed_paths", [])]
+            operation_status = str(
+                payload.get("operation_status")
+                or ("changed" if changed_paths else "no_change")
+            )
+            matter_state: dict[str, Any] = {}
+            available_next_actions: list[str] = []
+            if context.matter_id:
+                try:
+                    matter = context.app.matters.get(context.matter_id)
+                    matter_state = {
+                        "stage": matter["status"],
+                        "next_action": matter["work_state"]["next_action"],
+                        "work_state": matter["work_state"],
+                        "consistency_issues": matter.get("consistency_issues", []),
+                    }
+                    available_next_actions = context.app.matters.available_next_actions(matter)
+                except (KeyError, ValueError):
+                    pass
+            operation_result = {
+                "action": context.source_action_key or tool_id,
+                "source_action_key": context.source_action_key,
+                "operation": tool_id,
+                "status": operation_status,
+                "summary": str(payload.get("summary") or f"{tool_id} completed."),
+                "matter_id": context.matter_id,
+                "entity_refs": list(payload.get("entity_refs", [])),
+                "changed_paths": changed_paths,
+                "resulting_matter_state": matter_state,
+                "available_next_actions": available_next_actions,
+                "required_user_action": payload.get("required_user_action"),
+                "error": payload.get("error"),
+                "recovery": payload.get("recovery"),
+            }
             return ToolExecutionResult(
                 tool=tool_id,
                 status="success",
-                summary=str(payload.get("summary") or f"{tool_id} completed."),
+                summary=operation_result["summary"],
                 data=payload.get("data", payload),
-                changed_paths=[str(path) for path in payload.get("changed_paths", [])],
+                changed_paths=changed_paths,
                 refresh=[str(item) for item in payload.get("refresh", [])],
+                operation_result=operation_result,
             )
         except Exception as exc:
-            return ToolExecutionResult(tool_id, "error", f"{tool_id} failed: {exc}")
+            logger.warning("Tool handler failed: %s", type(exc).__name__)
+            summary = f"{tool_id} failed: {exc}"
+            return _failed_tool_result(tool_id, context, summary)
 
     def _load(self) -> dict[str, ToolDefinition]:
-        root = self.vault.resolve("00_System/tools")
+        fingerprint = self._fingerprint()
+        if self._cached_definitions is not None and fingerprint == self._cached_fingerprint:
+            return self._cached_definitions
+        # The running application owns executable tool capabilities. A vault is
+        # content and may contain an older snapshot, so bundled declarations
+        # win. Vault-only declarations remain available for registered custom
+        # aliases without replacing current built-in schemas.
+        definitions = self._load_from(self.app_contract)
+        for tool_id, definition in self._load_from(self.vault).items():
+            definitions.setdefault(tool_id, definition)
+        self._cached_fingerprint = fingerprint
+        self._cached_definitions = definitions
+        return definitions
+
+    def _fingerprint(self) -> tuple[tuple[str, str, int, int], ...]:
+        entries: list[tuple[str, str, int, int]] = []
+        for label, source in (("bundled", self.app_contract), ("vault", self.vault)):
+            root = source.resolve("00_System/tools")
+            if not root.exists():
+                entries.append((label, str(source.root), -1, -1))
+                continue
+            for path in sorted(root.glob("*.md")):
+                try:
+                    stat = path.stat()
+                except OSError:
+                    continue
+                entries.append((label, source.relative(path), stat.st_mtime_ns, stat.st_size))
+            entries.append((label, str(source.root), 0, 0))
+        return tuple(entries)
+
+    def allowed_tools(self, agent: AgentDefinition) -> list[str]:
+        """Return current app permissions for built-ins and vault permissions for custom agents."""
+        path = f"00_System/agents/{agent.agent_id}.md"
+        if self.app_contract.exists(path):
+            metadata = self.app_contract.read_markdown(path)["metadata"]
+            return [str(item) for item in metadata.get("allowed_tools", [])]
+        return list(agent.allowed_tools)
+
+    @staticmethod
+    def _load_from(source: VaultService) -> dict[str, ToolDefinition]:
+        root = source.resolve("00_System/tools")
         definitions: dict[str, ToolDefinition] = {}
         if not root.exists():
             return definitions
         for path in sorted(root.glob("*.md")):
-            document = self.vault.read_markdown(self.vault.relative(path))
-            metadata = document["metadata"]
-            tool_id = str(metadata.get("tool_id") or path.stem)
-            parameters = metadata.get("parameters")
-            if not isinstance(parameters, dict):
-                parameters = {"type": "object", "properties": {}, "additionalProperties": True}
-            definitions[tool_id] = ToolDefinition(
-                tool_id=tool_id,
-                description=str(metadata.get("description") or document["content"][:400]),
-                parameters=parameters,
-                handler=str(metadata.get("handler") or tool_id),
-                path=self.vault.relative(path),
-            )
+            try:
+                relative_path = source.relative(path)
+                document = source.read_markdown(relative_path)
+                metadata = document["metadata"]
+                if not isinstance(metadata, dict):
+                    raise ValueError("Tool metadata is not a mapping")
+                tool_id = str(metadata.get("tool_id") or path.stem).strip()
+                if not tool_id:
+                    raise ValueError("Tool ID is empty")
+                parameters = metadata.get("parameters")
+                if not isinstance(parameters, dict):
+                    parameters = {"type": "object", "properties": {}, "additionalProperties": True}
+                definitions[tool_id] = ToolDefinition(
+                    tool_id=tool_id,
+                    description=str(metadata.get("description") or document["content"][:400]),
+                    parameters=parameters,
+                    handler=str(metadata.get("handler") or tool_id),
+                    path=relative_path,
+                )
+            except (OSError, UnicodeError, ValueError, TypeError, KeyError, yaml.YAMLError):
+                logger.warning("Skipped malformed tool registry entry")
         return definitions
+
+
+def _failed_tool_result(
+    tool_id: str,
+    context: ToolExecutionContext,
+    error: str,
+) -> ToolExecutionResult:
+    return ToolExecutionResult(
+        tool_id,
+        "error",
+        error,
+        operation_result={
+            "action": context.source_action_key or tool_id,
+            "source_action_key": context.source_action_key,
+            "operation": tool_id,
+            "status": "failed",
+            "summary": "No workspace change recorded.",
+            "matter_id": context.matter_id,
+            "entity_refs": [],
+            "changed_paths": [],
+            "resulting_matter_state": {},
+            "available_next_actions": [],
+            "required_user_action": None,
+            "error": error,
+            "recovery": "Review the input and try the action again.",
+        },
+    )

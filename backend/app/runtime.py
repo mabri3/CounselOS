@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import asyncio
+from collections.abc import Awaitable, Callable
+
 from app.agents.context import ContextBuilder
 from app.agents.registry import AgentRegistry
 from app.agents.runner import AgentRunner
@@ -13,8 +16,10 @@ from app.intelligence.source_support import SourceSupportService
 from app.models.api import ChatRequest
 from app.models.awareness import SafeFetchLimits
 from app.providers.factory import ProviderRouter, build_provider
+from app.providers.base import ProviderSelection
 from app.providers.openai_compatible import OpenAICompatibleProvider
 from app.services.annotations import AnnotationService
+from app.services.answer_contract import AnswerContractService
 from app.services.awareness_matching import AwarenessMatcher
 from app.services.briefing_query import BriefingQueryService
 from app.services.briefing_research import BriefingResearchService
@@ -43,6 +48,7 @@ from app.services.review_packets import ReviewPacketService
 from app.services.scheduler import SchedulerService
 from app.services.search import SearchService
 from app.services.settings import SettingsService
+from app.services.provider_settings_policy import ProviderSettingsPolicy
 from app.services.skill_builder import SkillBuilderService
 from app.services.vault import VaultService
 from app.services.watch_scans import WatchScanService
@@ -58,13 +64,15 @@ class AppContext:
     """Explicit service container; keeps the MVP modular without a DI framework."""
 
     def __init__(self, settings: Settings | None = None, *, recover_interrupted: bool = True):
+        self._intake_start_tasks: set[asyncio.Task[None]] = set()
         self.settings = settings or get_settings()
         self.vault = VaultService(self.settings.resolved_vault_path)
         self.settings_store = SettingsService(self.vault)
+        self.answer_contract = AnswerContractService(self.vault)
         self._load_saved_model_settings()
+        self.research_settings = self._load_research_settings()
         self.index = IndexService(self.settings.cache_db_path, self.vault)
         self.workflow = WorkflowService(self.vault)
-        self.index.rebuild()
 
         self.matter_state = MatterStateService(self.vault)
         self.matters = MatterService(self.vault, self.index, self.workflow, self.matter_state)
@@ -91,7 +99,7 @@ class AppContext:
             review_age_days=self.settings.decision_review_age_days,
         )
         self.provider = build_provider(self.settings)
-        self.search = SearchService(self.settings, self.vault)
+        self.search = SearchService(self.settings, self.vault, self.index)
         self.watches = WatchStore(self.vault)
         self.briefing = BriefingStore(self.vault)
         self.developments = DevelopmentService(self.vault)
@@ -122,7 +130,11 @@ class AppContext:
             max_discovery_urls=self.settings.intelligence_max_discovery_urls,
             max_candidates=self.settings.intelligence_max_candidates,
         )
-        self.polaris_intelligence = PolarisIntelligenceProvider(self.settings.polaris_api_key)
+        self.polaris_intelligence = PolarisIntelligenceProvider(
+            self.settings.polaris_api_key,
+            timeout_seconds=self.research_settings["external_timeout_seconds"],
+            retry_count=self.research_settings["external_retry_count"],
+        )
         self.intelligence = IntelligenceRegistry(
             self.native_intelligence, self.polaris_intelligence
         )
@@ -156,6 +168,7 @@ class AppContext:
             self.polaris_intelligence,
             self.outbound_query_policy,
         )
+        self.research.configure(self.research_settings)
         self.annotations = AnnotationService(self.vault, self.matters)
         self.agents = AgentRegistry(self.vault, self.settings.max_agent_steps)
         self.provider_router = ProviderRouter(self.settings, self.provider)
@@ -167,7 +180,13 @@ class AppContext:
             self.settings,
         )
         self.tools = ToolRegistry(self.vault, build_handlers())
-        self.agent_context = ContextBuilder(self.vault, self.index, self.agents, self.matter_state)
+        self.agent_context = ContextBuilder(
+            self.vault,
+            self.index,
+            self.agents,
+            self.matter_state,
+            self.answer_contract,
+        )
         self.scheduler = SchedulerService(
             self.vault,
             self.index,
@@ -186,7 +205,7 @@ class AppContext:
         self.research_runs = ResearchRunService(
             self.vault,
             self.research,
-            resolve_agent=lambda: self.runner.resolve("research-agent"),
+            resolve_agent=self._resolve_research_model,
             resolve_selection=self.provider_router.resolve_selection,
         )
         if recover_interrupted:
@@ -213,7 +232,33 @@ class AppContext:
         self.chat_runs.mark_running_interrupted()
 
     def has_active_work(self) -> bool:
-        return self.scheduler.has_active_work or self.research_runs.has_active_work or self.chat_runs.has_active_work
+        return (
+            any(not task.done() for task in self._intake_start_tasks)
+            or self.scheduler.has_active_work
+            or self.research_runs.has_active_work
+            or self.chat_runs.has_active_work
+        )
+
+    def schedule_intake_start(
+        self, startup: Callable[[], Awaitable[None]]
+    ) -> asyncio.Task[None]:
+        """Retain one deferred intake startup without delaying matter creation."""
+        task = asyncio.create_task(self._run_deferred_intake_start(startup))
+        self._intake_start_tasks.add(task)
+        task.add_done_callback(self._intake_start_tasks.discard)
+        return task
+
+    async def wait_for_intake_starts(self) -> None:
+        tasks = [task for task in self._intake_start_tasks if not task.done()]
+        if tasks:
+            await asyncio.gather(*tasks, return_exceptions=True)
+
+    @staticmethod
+    async def _run_deferred_intake_start(
+        startup: Callable[[], Awaitable[None]],
+    ) -> None:
+        await asyncio.sleep(0)
+        await startup()
 
     def validate_runtime(self) -> None:
         if not self.workflow.stages():
@@ -235,35 +280,73 @@ class AppContext:
 
     def _load_saved_model_settings(self) -> None:
         values = self.settings_store.read()["values"]
-        provider = values.get("agents.provider")
-        if provider not in {"mock", "openai_compatible", "polaris", "opencode_go", "codex", "antigravity_cli"}:
+        selection = ProviderSettingsPolicy.saved_agent_selection(values)
+        if selection is None:
             return
-        updates: dict[str, str | None] = {"llm_provider": provider}
-        if provider != "mock" and values.get("agents.reasoning_model"):
-            updates["llm_model"] = str(values["agents.reasoning_model"])
-        effort = str(values.get("agents.reasoning_effort", "default"))
+        updates: dict[str, str | None] = {"llm_provider": selection.provider}
+        if selection.provider != "mock":
+            updates["llm_model"] = selection.model
         updates["llm_reasoning_effort"] = (
-            effort
-            if provider != "mock"
-            and effort in {"none", "minimal", "low", "medium", "high", "xhigh", "max", "ultra"}
+            selection.reasoning_effort
+            if selection.provider != "mock" and selection.reasoning_effort != "default"
             else None
         )
         self.settings = self.settings.model_copy(update=updates)
 
+    def _load_research_settings(self) -> dict[str, object]:
+        values = self.settings_store.read()["values"]
+        ProviderSettingsPolicy.validate_research_values(values)
+
+        configured_timeout, configured_retries = ProviderSettingsPolicy.polaris_transport(
+            values.get("research.external_timeout_seconds", 90),
+            values.get("research.external_retry_count", 2),
+        )
+        timeout = min(
+            self.settings.research_external_timeout_max_seconds,
+            configured_timeout,
+        )
+        retries = min(
+            self.settings.research_external_retry_max_count,
+            configured_retries,
+        )
+        return {
+            "primary_external_provider": str(values.get("research.primary_external_provider", "polaris")),
+            "fallback_external_provider": str(values.get("research.fallback_external_provider", "tavily")),
+            "model_fallback_enabled": bool(values.get("research.model_fallback_enabled", True)),
+            "model_fallback_provider": str(values.get("research.model_fallback_provider", "openai_compatible")),
+            "model_fallback_model": str(values.get("research.model_fallback_model", "kimi-k3-fast")),
+            "external_timeout_seconds": timeout,
+            "external_retry_count": retries,
+        }
+
+    def _resolve_research_model(self):
+        if not self.research_settings.get("model_fallback_enabled"):
+            return self.runner.resolve("research-agent")
+        if (
+            self.research_settings.get("model_fallback_provider") == "openai_compatible"
+            and not self.settings.llm_api_key
+        ):
+            return self.runner.resolve("research-agent")
+        return self.provider_router.resolve_selection(ProviderSelection(
+            agent_id="research-agent",
+            provider=str(self.research_settings["model_fallback_provider"]),
+            model=str(self.research_settings["model_fallback_model"]),
+            reasoning_effort="default",
+        ))
+
     async def configure_model(self, provider: str, model: str, effort: str) -> None:
-        if provider not in {"mock", "openai_compatible", "polaris", "opencode_go", "codex", "antigravity_cli"}:
-            raise ValueError(f"Unsupported model provider: {provider}")
-        if effort not in {"default", "none", "minimal", "low", "medium", "high", "xhigh", "max", "ultra"}:
-            raise ValueError(f"Unsupported reasoning effort: {effort}")
-        if provider != "mock" and not model:
-            raise ValueError("Select a model for this provider.")
+        selection = ProviderSettingsPolicy.agent_selection(provider, model, effort)
 
         updates: dict[str, str | None] = {
-            "llm_provider": provider,
-            "llm_reasoning_effort": None if provider == "mock" or effort == "default" else effort,
+            "llm_provider": selection.provider,
+            "llm_reasoning_effort": (
+                None
+                if selection.provider == "mock" or selection.reasoning_effort == "default"
+                else selection.reasoning_effort
+            ),
         }
-        if provider != "mock":
-            updates["llm_model"] = model
+        if selection.provider != "mock":
+            updates["llm_model"] = selection.model
         next_settings = self.settings.model_copy(update=updates)
         next_provider = build_provider(next_settings)
 

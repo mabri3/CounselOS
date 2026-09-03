@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
+import ConfirmationDialog from "@/components/ConfirmationDialog";
 import LinkifiedText from "@/components/LinkifiedText";
 import { effortLabel, getAudiences, getAutomations, getSettings, getTools, saveAgentDetail } from "@/lib/api";
 import { role } from "@/lib/design";
@@ -48,6 +49,7 @@ export default function AgentsPage() {
   const [dirty, setDirty] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [pendingAgent, setPendingAgent] = useState<AgentDetail | null>(null);
 
   const load = useCallback(async () => {
     try {
@@ -98,8 +100,18 @@ export default function AgentsPage() {
 
   function selectAgent(agent: AgentDetail) {
     if (agent.agent_id === draft?.agent_id) return;
-    if (dirty && !window.confirm("Discard unsaved changes and switch agents?")) return;
+    if (dirty) {
+      setPendingAgent(agent);
+      return;
+    }
     setDraft(agent);
+    setDirty(false);
+    setError("");
+  }
+
+  function confirmAgentSwitch() {
+    if (!pendingAgent) return;
+    setDraft(pendingAgent);
     setDirty(false);
     setError("");
   }
@@ -343,14 +355,16 @@ export default function AgentsPage() {
                   />
                 </div>
                 <div className="section-heading">Tool permissions</div>
-                <p>Anything not selected is unavailable to this agent.</p>
+                <p>{draft.runtime_managed
+                  ? "The current application manages these built-in tool permissions. Workspace instructions can still guide how the agent uses them."
+                  : "Anything not selected is unavailable to this agent."}</p>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 24px" }}>
                   {tools.map((tool) => {
                     const checked = draft.allowed_tools.includes(tool.tool_id);
                     const label = tool.description.match(/^.*?[.!?](?:\s|$)/)?.[0].trim() || tool.description || tool.tool_id;
                     return (
                       <label className="checkbox-row" key={tool.tool_id}>
-                        <input checked={checked} onChange={() => toggleTool(tool.tool_id)} type="checkbox" />
+                        <input checked={checked} disabled={draft.runtime_managed} onChange={() => toggleTool(tool.tool_id)} type="checkbox" />
                         <span>{label}</span>
                       </label>
                     );
@@ -401,6 +415,13 @@ export default function AgentsPage() {
           </div>
         </div>
       </div>
+      {pendingAgent ? <ConfirmationDialog
+        confirmLabel="Discard changes and switch"
+        description="Discard unsaved changes and switch agents?"
+        onCancel={() => setPendingAgent(null)}
+        onConfirm={confirmAgentSwitch}
+        title="Discard unsaved changes?"
+      /> : null}
     </AppShell>
   );
 }

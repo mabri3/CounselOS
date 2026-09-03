@@ -4,9 +4,11 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from app.config import get_settings
 from app.active_context import ActiveContextManager
+from app.observability import configure_logging
 from app.routers import awareness, automations, chat, decisions, files, matters, settings as settings_router, skills, system
 
 
@@ -27,9 +29,14 @@ async def lifespan(app: FastAPI):
         await manager.shutdown()
 
 
+configure_logging()
 settings = get_settings()
 app = FastAPI(title=settings.app_name, version="0.1.0", lifespan=lifespan)
 app.state.ready = False
+app.add_middleware(
+    TrustedHostMiddleware,
+    allowed_hosts=["localhost", "127.0.0.1", "testserver"],
+)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[settings.frontend_origin],

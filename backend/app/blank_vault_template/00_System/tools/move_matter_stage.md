@@ -15,7 +15,6 @@ parameters:
       - explore
       - generate
       - respond
-      - closed
     reason:
       type: string
   required:
@@ -25,5 +24,8 @@ parameters:
 # Tool: move_matter_stage
 
 Move the active matter to a legal-workflow stage.
+
+Closure is a separate guarded action. Use `close_matter` when the lawyer
+explicitly asks to close a matter.
 
 This Markdown file is a declarative specification. The runtime maps `handler: move_matter_stage` to an allow-listed Python function; it does not execute Markdown code.

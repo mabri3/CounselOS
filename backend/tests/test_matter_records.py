@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import pytest
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
 
 from app.models.api import ChatChoice, IntakeReportedFact, IntakeTurn, MatterCreate, QuestionCard
+from app.routers import files
 from app.services.matter_records import MatterRecordService
 
 
@@ -64,6 +67,105 @@ def test_completed_intake_rejects_stale_card_action_without_mutating_chat(app_co
         "MAT-DEMO-BEACON", conversation["conversation_id"]
     )
     assert len(saved["messages"]) == 1
+
+
+def test_explicit_intake_answer_projects_its_named_matter_field(app_context):
+    result = app_context.matter_records.record_intake_answers(
+        "MAT-DEMO-BEACON",
+        [{
+            "question_id": "intake-recovery-jurisdiction",
+            "question": "Which countries or regions are in scope?",
+            "answer": "United States only",
+            "values": ["United States only"],
+            "status": "answered",
+            "record_target": "jurisdiction_scope",
+        }],
+        source_id="MSG-JURISDICTION",
+        source_action_key="chat:jurisdiction",
+    )
+
+    assert result["changed"] is True
+    assert app_context.matters.get("MAT-DEMO-BEACON")["jurisdiction_scope"] == [
+        "United States only"
+    ]
+    assert app_context.matter_records.get("MAT-DEMO-BEACON")["intake_answers"][-1][
+        "record_target"
+    ] == "jurisdiction_scope"
+
+
+def test_intake_turn_does_not_save_model_paraphrase_for_saved_answer_source(app_context):
+    source_id = "MSG-EXACT-ANSWER"
+    app_context.matter_records.record_intake_answers(
+        "MAT-DEMO-BEACON",
+        [{
+            "question_id": "Q-TIMING",
+            "question": "When is the launch?",
+            "answer": "Friday",
+            "values": ["Friday"],
+            "status": "answered",
+            "record_target": "fact",
+        }],
+        source_id=source_id,
+        source_action_key="chat:exact-answer",
+    )
+
+    app_context.matter_records.apply_intake_turn(
+        "MAT-DEMO-BEACON",
+        IntakeTurn(
+            working_ask="Assess the launch.",
+            reported_facts=[IntakeReportedFact(
+                statement="The launch will definitely occur on Friday."
+            )],
+            intake_state="active",
+            source_action_key="chat:model-follow-up",
+        ),
+        source_id=source_id,
+    )
+
+    record = app_context.matter_records.get("MAT-DEMO-BEACON")
+    assert any(
+        answer["question"] == "When is the launch?" and answer["answer"] == "Friday"
+        for answer in record["intake_answers"]
+    )
+    assert "The launch will definitely occur on Friday." not in {
+        fact["text"] for fact in record["facts"]
+    }
+
+
+def test_intake_repair_merges_semantic_question_and_exact_assumption_duplicates(app_context):
+    record = app_context.matter_records.get("MAT-DEMO-BEACON")
+    first_assumption = {
+        "assumption_id": "ASM-FIRST",
+        "text": "The provider can process the last four digits.",
+        "reason": "Needed to continue",
+        "material": True,
+        "status": "open",
+        "created_at": None,
+        "resolved_at": None,
+        "withdrawn_at": None,
+        "action_id": None,
+    }
+    record["assumptions"].extend([
+        first_assumption,
+        {**first_assumption, "assumption_id": "ASM-DUPLICATE"},
+    ])
+    record["open_questions"] = [
+        "Whether the account is subject to a Customer Identification Program under the BSA and whether the entity is a bank, broker-dealer, FCM, mutual fund, or money services business.",
+        "Is the account subject to a Customer Identification Program under the BSA and is the entity a bank, broker-dealer, futures commission merchant, mutual fund, or money services business?",
+    ]
+    app_context.matter_records._save("MAT-DEMO-BEACON", record)
+
+    changed = app_context.matter_records.deduplicate_intake_record("MAT-DEMO-BEACON")
+    saved = app_context.matter_records.get("MAT-DEMO-BEACON")
+
+    assert changed
+    assert len(saved["open_questions"]) == 1
+    active_matches = [
+        item for item in saved["assumptions"]
+        if item.get("status") == "open"
+        and item.get("text") == first_assumption["text"]
+    ]
+    assert len(active_matches) == 1
 
 
 def test_final_intake_is_monotonic_and_retry_key_is_idempotent(app_context):
@@ -301,6 +403,68 @@ def test_repeated_intake_fact_adds_source_support_without_duplicate_fact(app_con
     assert len(facts) == 1
     supports = [item for item in saved["support"] if item["fact_id"] == facts[0]["fact_id"]]
     assert {item["source_id"] for item in supports} == {"MSG-ONE", "MSG-TWO"}
+
+
+def test_direct_structured_record_edits_reconcile_visible_and_typed_state(app_context):
+    matter = app_context.matters.get("MAT-DEMO-BEACON")
+    facts_path = f'{matter["path"]}/facts.md'
+    issues_path = f'{matter["path"]}/issues.md'
+    participants_path = f'{matter["path"]}/participants.md'
+
+    facts_content = "# Known Facts\n\n- New visible lawyer fact.\n\n## Assumptions\n\n- [Assumption] Launch stays in the US.\n"
+    app_context.vault.update_markdown(facts_path, content=facts_content)
+    app_context.matter_records.reconcile_edited_document(facts_path, actor="Brian Harris")
+    facts = app_context.matter_records.get("MAT-DEMO-BEACON")
+    assert [item["text"] for item in facts["facts"] if item["status"] == "active"] == ["New visible lawyer fact."]
+    assert [item["text"] for item in facts["assumptions"] if item["status"] == "open"] == ["Launch stays in the US."]
+
+    app_context.vault.update_markdown(issues_path, content="# Issues and workstreams\n\n- Privacy notice\n- Retention\n")
+    app_context.matter_records.reconcile_edited_document(issues_path, actor="Brian Harris")
+    assert app_context.matter_records.get("MAT-DEMO-BEACON")["issues"] == ["Privacy notice", "Retention"]
+
+    app_context.vault.update_markdown(participants_path, content="# Participants\n\n- **Alex Kim** — product owner\n")
+    app_context.matter_records.reconcile_edited_document(participants_path, actor="Brian Harris")
+    assert app_context.matters.get("MAT-DEMO-BEACON")["participants"] == [
+        {"name": "Alex Kim", "role": "product_owner"}
+    ]
+
+
+def test_generic_file_api_reconciles_a_structured_fact_edit(app_context):
+    app = FastAPI()
+    app.state.context = app_context
+    app.include_router(files.router, prefix="/api")
+    client = TestClient(app)
+    path = "03_Matters/beacon-instant-onboarding/facts.md"
+    loaded = client.get("/api/files", params={"path": path}).json()
+
+    response = client.put("/api/files", params={"path": path}, json={
+        "content": "# Known Facts\n\n- API-edited fact.\n\n## Assumptions\n\nNo open assumptions.\n",
+        "metadata": loaded["metadata"],
+    })
+
+    assert response.status_code == 200
+    record = app_context.matter_records.get("MAT-DEMO-BEACON")
+    assert [item["text"] for item in record["facts"] if item["status"] == "active"] == [
+        "API-edited fact."
+    ]
+
+
+def test_direct_filesystem_fact_edit_is_the_resolved_read_value(app_context):
+    service = app_context.matter_records
+    service.apply_update(
+        "MAT-DEMO-BEACON", facts=[{"text": "Old structured fact."}], actor="assistant"
+    )
+    path = "03_Matters/beacon-instant-onboarding/facts.md"
+    app_context.vault.update_markdown(
+        path,
+        content="# Known Facts\n\n- New filesystem fact.\n\n## Assumptions\n\nNo open assumptions.\n",
+    )
+
+    record = service.get("MAT-DEMO-BEACON")
+
+    assert [item["text"] for item in record["facts"] if item["status"] == "active"] == [
+        "New filesystem fact."
+    ]
 
 
 def test_required_open_questions_include_exact_work_item_identity(app_context):

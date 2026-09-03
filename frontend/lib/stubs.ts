@@ -21,6 +21,13 @@ export const DEFAULT_SETTINGS: SettingsSection[] = [
     ],
   },
   {
+    id: "answer-contract",
+    label: "Answer contract",
+    title: "Answer contract",
+    sub: "The required shape of a finished answer. Changes apply to the next message.",
+    rows: [],
+  },
+  {
     id: "document-review",
     label: "Document review",
     title: "Document review",
@@ -28,6 +35,21 @@ export const DEFAULT_SETTINGS: SettingsSection[] = [
     rows: [
       { id: "lawyer-name", config_key: "document_review.lawyer_name", kind: "text", label: "Lawyer name", help: "Used for your comments, replies, and review decisions.", value: "Lawyer" },
       { id: "default-review-author", config_key: "document_review.default_author", kind: "select", label: "Default review author", help: "New browser sessions start with Themis.ai or the configured lawyer. A custom author is session-only.", value: "Themis.ai", options: ["Themis.ai", "Lawyer"] },
+    ],
+  },
+  {
+    id: "research",
+    label: "Research",
+    title: "Research fallback",
+    sub: "Choose the app-wide public research chain. Credentials and base URLs stay in the environment.",
+    rows: [
+      { id: "research-primary", config_key: "research.primary_external_provider", kind: "select", label: "Primary external provider", value: "polaris", options: ["polaris", "tavily", "none"] },
+      { id: "research-fallback", config_key: "research.fallback_external_provider", kind: "select", label: "External fallback provider", value: "tavily", options: ["polaris", "tavily", "none"] },
+      { id: "research-model-enabled", config_key: "research.model_fallback_enabled", kind: "toggle", label: "Use model-only fallback", help: "Preserve useful analysis when no external authority is retrieved.", on: true },
+      { id: "research-model-provider", config_key: "research.model_fallback_provider", kind: "select", label: "Model fallback provider", value: "openai_compatible", options: ["openai_compatible"] },
+      { id: "research-model", config_key: "research.model_fallback_model", kind: "select", label: "Model fallback model", value: "kimi-k3-fast", options: ["kimi-k3-fast"] },
+      { id: "research-timeout", config_key: "research.external_timeout_seconds", kind: "text", label: "External timeout (seconds)", value: "90" },
+      { id: "research-retries", config_key: "research.external_retry_count", kind: "text", label: "External retry count", value: "2" },
     ],
   },
   {

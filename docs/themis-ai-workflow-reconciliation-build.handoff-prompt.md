@@ -40,6 +40,9 @@ These decisions are final:
 - Research uses a durable per-matter background queue. The first item starts automatically. The user can reprioritize pending items without interrupting the running item.
 - Research provider fallback is an app-wide setting for the MVP.
 - Kimi K3 Fast on NeuralWatt is the initial model-only fallback. Resolve the exact catalog ID. Do not silently substitute a model.
+- Use NeuralWatt through the existing OpenAI-compatible provider. Do not create a NeuralWatt-specific adapter.
+- External research provider choices are Polaris, Tavily, and None. The native intelligence scanner is not an external fallback.
+- Environment configuration owns credentials, provider base URLs, and hard safety caps. Markdown owns non-secret choices and user timeout or retry preferences. Runtime combines them and bounds preferences by backend limits. Never write credentials to Markdown.
 - Another language model does not count as external source retrieval. Label model-only work **No external authority retrieved**.
 - The board must show deterministic state inconsistencies and provide only safe explicit repair.
 - Target-date persistence must be fixed.
@@ -76,7 +79,7 @@ parallel:
       max_concurrent: 1
 ```
 
-Run C0 alone. Run C1 and C2 in parallel after C0. Run C3 after Wave 1. Run C4 after C3 is accepted. Use the exact write ownership in the plan. Workers may read other files but may not edit outside their scope. Workers may not spawn agents.
+Run C0 alone. Run C1 and C2 in parallel after C0. Run C3 after Wave 1. Run C4 after C3 is accepted. Use the exact write ownership and sequential transfers in the plan, including `frontend/lib/types.ts` and `frontend/lib/api.ts` through C0, C2, C3, and C4. Workers may read other files but may not edit outside their scope. Workers may not spawn agents.
 
 Use one fresh read-only Sol Medium reviewer on the combined accepted implementation. The reviewer must return PASS, FIX, or ESCALATE for every review group in the plan. A FIX returns to the original Sol Medium implementer when possible.
 
@@ -86,16 +89,19 @@ Do not silently change the provider, model, effort, role, or ownership assignmen
 
 ## Baseline and safety
 
-The worktree is already dirty with user-owned implementation and experiment changes. Preserve all of them.
+Preserve the current worktree baseline and all user-owned changes. Do not assume that the tree is clean or dirty.
 
 Before dispatch:
 
-- record branch, commit, `git status --short`, active vault, and repository `vault/` hash;
+- record branch, commit, `git status --short`, active vault, an exact changed-path snapshot, the full repository `vault/` hash, and the protected repository-vault hash or manifest that excludes only the three allowed agent prompt files named in the plan;
 - create or update the progress file;
 - run the baseline checks once;
 - run focused Graphify queries before source diagnosis;
 - diagnose one target-date create chain and one Polaris request;
+- query the configured live catalog without printing environment values or secrets and prove that the exact Kimi K3 Fast model ID exists. If it does not, stop before implementation with an environment-configuration blocker. Do not build a new adapter or substitute a model;
 - use only temporary isolated vaults for mutation tests.
+
+Before every worker or wave, capture an exact baseline path snapshot. After it stops, compare all changed paths to that snapshot and the accepted scope. For parallel C1 and C2, use one Wave 1 baseline and each worker's exact changed-path report. Never infer ownership for an unexpected path.
 
 Do not write test data to repository `vault/`. Do not overwrite any earlier experiment vault or evidence. Do not reveal secrets. Do not commit, push, deploy, reset, clean, stash, or delete user data.
 
@@ -125,9 +131,9 @@ cd /Users/bharris/Programs/counsel-os-mvp/backend
 
 cd /Users/bharris/Programs/counsel-os-mvp/frontend
 npm run check:workspace-ux
-test ! -f scripts/check-research-queue.ts || node --experimental-strip-types scripts/check-research-queue.ts
-test ! -f scripts/check-recommendation-integrity.ts || node --experimental-strip-types scripts/check-recommendation-integrity.ts
-test ! -f scripts/check-matter-creation.ts || node --experimental-strip-types scripts/check-matter-creation.ts
+node --experimental-strip-types scripts/check-research-queue.ts
+node --experimental-strip-types scripts/check-recommendation-integrity.ts
+node --experimental-strip-types scripts/check-matter-creation.ts
 npm run typecheck
 npm run build
 
@@ -135,7 +141,7 @@ cd /Users/bharris/Programs/counsel-os-mvp
 graphify update .
 ```
 
-Create a new verification vault through the normal visible UI. Walk the complete demo script. Verify Markdown after material actions. Rebuild only that vault's SQLite index, restart locally, and confirm the same visible state. Prove the repository vault hash did not change.
+Before browser verification, prove that only the three allowed repository-vault prompt files differ from the protected baseline and record the full post-build repository-vault hash. Create a new verification vault through the normal visible UI. Walk the complete demo script. Verify Markdown after material actions. Rebuild only that vault's SQLite index, restart locally, and confirm the same visible state. Prove the full repository-vault hash still matches the post-build hash.
 
 The new-vault confirmation popup is expected test setup. Use the existing test-only bypass or click **OK**. Do not classify it as a stall.
 
@@ -152,6 +158,7 @@ After the engineering and visible-demo gates pass, run a new ten-matter Harborli
 - Use the test-only popup bypass or click **OK** for the expected vault confirmation. Do not call it a product stall.
 - Actors control their own browser first. If an actor cannot see or control the in-app browser and Chrome or Safari is also unavailable or broken, the coordinator may provide the minimum in-app navigation or click assistance needed to continue. Mark that run **assisted**. Preserve product-state evidence but exclude assisted navigation from independent discoverability claims.
 - Create new timestamped raw evidence and a new dated report. Do not overwrite the September 1 report.
+- Re-hash repository `vault/` after the experiment and prove that it still matches the full post-build hash.
 
 Use a fresh Sol High synthesis agent after all live runs, as required by the experiment skill. This synthesis role is separate from the optional Sol High engineering escalation reviewer.
 
@@ -166,7 +173,7 @@ Lead the final report with the actual result. Include:
 - any Sol High escalation and why it met the rule;
 - focused and full checks actually run;
 - visible verification-vault result;
-- repository-vault hash result;
+- protected-vault allowlist result and post-build, post-verification, and post-experiment full hashes;
 - ten-matter before/after metrics;
 - assisted browser runs, if any;
 - unresolved failures or risks;

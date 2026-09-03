@@ -60,6 +60,7 @@ class ChatHistoryService:
         attachments: list[dict[str, Any]] | None = None,
         card_action: dict[str, Any] | None = None,
         applied_skills: list[dict[str, str]] | None = None,
+        operation_results: list[dict[str, Any]] | None = None,
         run_id: str | None = None,
         source_ids: list[str] | None = None,
         conversation_kind: str | None = None,
@@ -103,6 +104,7 @@ class ChatHistoryService:
                 "attachments": attachments or [],
                 "card_action": card_action,
                 "applied_skills": applied_skills or [],
+                "operation_results": operation_results or [],
                 "run_id": run_id,
                 "source_ids": source_ids or [],
             }
@@ -202,6 +204,7 @@ class ChatHistoryService:
         trace: list[dict[str, Any]] | None = None,
         cards: list[dict[str, Any]] | None = None,
         applied_skills: list[dict[str, str]] | None = None,
+        operation_results: list[dict[str, Any]] | None = None,
     ) -> dict[str, Any]:
         conversation = self.get(matter_id, conversation_id)
         existing = next(
@@ -212,6 +215,7 @@ class ChatHistoryService:
             return self.append(
                 matter_id, conversation_id, role="assistant", content=content,
                 trace=trace, cards=cards, applied_skills=applied_skills,
+                operation_results=operation_results,
                 run_id=run_id,
             )
         existing.update({
@@ -219,6 +223,7 @@ class ChatHistoryService:
             "trace": trace or [],
             "cards": cards or [],
             "applied_skills": applied_skills or [],
+            "operation_results": operation_results or [],
             "updated_at": iso_now(),
         })
         document = self.vault.read_markdown(conversation["path"])
@@ -268,6 +273,7 @@ class ChatHistoryService:
         attachments: list[dict[str, Any]] | None = None,
         card_action: dict[str, Any] | None = None,
         applied_skills: list[dict[str, str]] | None = None,
+        operation_results: list[dict[str, Any]] | None = None,
     ) -> dict[str, Any]:
         if role not in {"user", "assistant"}:
             raise ValueError(f"Unsupported chat role: {role}")
@@ -291,6 +297,7 @@ class ChatHistoryService:
                 "attachments": attachments or [],
                 "card_action": card_action,
                 "applied_skills": applied_skills or [],
+                "operation_results": operation_results or [],
             }
         )
         path = self._daily_path(day)
@@ -406,6 +413,7 @@ class ChatHistoryService:
             message = dict(raw)
             message.setdefault("applied_skills", [])
             message.setdefault("source_ids", [])
+            message.setdefault("operation_results", [])
             messages.append(message)
         return messages
 

@@ -5,8 +5,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import AppShell from "@/components/AppShell";
 import LinkifiedText from "@/components/LinkifiedText";
 import MattersTable from "@/components/MattersTable";
-import { getMatters, moveMatter } from "@/lib/api";
-import { RISK_DEFINITION, STAGES, dueWord, isWaitingSignal, matterNextAction, matterNextOwner, riskLabel, role, signalCellTint, signalFor } from "@/lib/design";
+import { getMatters, moveMatter, repairMatterConsistency } from "@/lib/api";
+import { RISK_DEFINITION, STAGES, consistencyIssueIsSafelyRepairable, consistencyIssueLabel, dueWord, isWaitingSignal, matterNextAction, matterNextOwner, riskLabel, role, signalCellTint, signalFor } from "@/lib/design";
 import type { Matter, StageId } from "@/lib/types";
 
 type CountFilter = "" | "Overdue" | "Waiting" | "With Themis.ai" | "Needs assignment" | "No action needed";
@@ -28,6 +28,7 @@ export default function MattersPage() {
   const [overGroup, setOverGroup] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState("");
+  const [repairingMatterId, setRepairingMatterId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     try { setError(""); setMatters((await getMatters()).matters); }
@@ -87,6 +88,19 @@ export default function MattersPage() {
       await load();
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Could not move the matter.");
+    }
+  }
+
+  async function repair(matterId: string) {
+    setError("");
+    setRepairingMatterId(matterId);
+    try {
+      await repairMatterConsistency(matterId, "Lawyer");
+      await load();
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not repair the lifecycle stage.");
+    } finally {
+      setRepairingMatterId(null);
     }
   }
 
@@ -264,6 +278,20 @@ export default function MattersPage() {
                           </div>
                           <span className="matter-row-owner">{matterNextOwner(matter)}</span>
                           <span className="matter-row-due" style={{ color: due.color }}>{due.text}</span>
+                          {(matter.consistency_issues ?? []).map((issue) => (
+                            <div key={issue.code} style={{ flexBasis: "100%", margin: "0 12px 10px", padding: 8, background: role.attentionTint, color: role.attentionDeep }}>
+                              <strong>Consistency issue: {consistencyIssueLabel(issue)}</strong>
+                              <span style={{ display: "block", marginTop: 3 }}>{issue.summary}</span>
+                              <span style={{ display: "flex", gap: 8, marginTop: 5, flexWrap: "wrap" }}>
+                                <Link href={`/matters/${encodeURIComponent(matter.matter_id)}`}>Review matter</Link>
+                                {consistencyIssueIsSafelyRepairable(issue) ? (
+                                  <button className="btn compact" disabled={repairingMatterId === matter.matter_id} onClick={() => void repair(matter.matter_id)} type="button">
+                                    {repairingMatterId === matter.matter_id ? "Repairing…" : "Repair safe stage mismatch"}
+                                  </button>
+                                ) : null}
+                              </span>
+                            </div>
+                          ))}
                         </div>
                       );
                     })}
@@ -274,7 +302,9 @@ export default function MattersPage() {
             })}
           </div>
         ) : loaded ? (
-          <div style={{ marginTop: 24 }}><MattersTable matters={visible} /></div>
+          <div style={{ marginTop: 24 }}>
+            <MattersTable matters={visible} onRepair={repair} repairingMatterId={repairingMatterId} />
+          </div>
         ) : null}
       </main>
     </AppShell>

@@ -111,6 +111,7 @@ class ActiveContextManager:
             await self.context.scheduler.stop()
             await self.context.scheduler.wait_for_active_work()
             await self.context.research_runs.wait_for_active_work()
+            await self.context.wait_for_intake_starts()
             await self.context.chat_runs.wait_for_active_work()
             await self.context.close_providers()
 

@@ -54,6 +54,7 @@ class DecisionService:
                 existing = self._find_by_source_action_key(base, request.source_action_key)
                 if existing is not None:
                     return self._finish_record(existing["path"], existing["metadata"])
+            self._validate_recommendation_version(base, request.recommendation_version_id)
             if revises_decision_id:
                 prior = self.get(revises_decision_id)
                 if prior["matter_id"] != request.matter_id:
@@ -85,6 +86,9 @@ class DecisionService:
                 "source_action_key": request.source_action_key,
                 "recorded_event_id": f"EVT-{decision_id}",
                 "recording_complete": False,
+                "recommendation_disposition": request.recommendation_disposition,
+                "recommendation_disposition_reason": request.recommendation_disposition_reason.strip(),
+                "recommendation_version_id": request.recommendation_version_id,
             }
             conditions = "\n".join(f"- {item}" for item in request.conditions) or "- None recorded"
             not_decided = "\n".join(f"- {item}" for item in request.not_decided) or "- None recorded"
@@ -94,12 +98,31 @@ class DecisionService:
                     f"# {request.title}\n\n"
                     f"## Chosen path\n\n{request.chosen_path}\n\n"
                     f"## Rationale\n\n{request.rationale or 'No rationale recorded.'}\n\n"
+                    f"## Recommendation disposition\n\n{request.recommendation_disposition.replace('_', ' ').title()}"
+                    f"{f': {request.recommendation_disposition_reason.strip()}' if request.recommendation_disposition_reason.strip() else ''}\n\n"
                     f"## Conditions\n\n{conditions}\n\n"
                     f"## Not decided\n\n{not_decided}\n"
                 ),
                 metadata,
             )
             return self._finish_record(path, metadata)
+
+    def _validate_recommendation_version(
+        self, matter_path: str, recommendation_version_id: str | None
+    ) -> None:
+        if recommendation_version_id is None:
+            return
+        path = f"{matter_path}/recommendations.md"
+        if not self.vault.exists(path):
+            raise ValueError("The referenced recommendation version does not belong to this matter.")
+        metadata = self.vault.read_markdown(path)["metadata"]
+        versions = metadata.get("recommendation_versions")
+        known_ids = {
+            str(item.get("version_id"))
+            for item in versions if isinstance(item, dict) and item.get("version_id")
+        } if isinstance(versions, list) else set()
+        if recommendation_version_id not in known_ids:
+            raise ValueError("The referenced recommendation version does not belong to this matter.")
 
     def _finish_record(self, path: str, metadata: dict[str, Any]) -> dict[str, Any]:
         decision_id = str(metadata["decision_id"])
@@ -200,6 +223,9 @@ class DecisionService:
             "mitigation_ids": mitigation_ids,
             "review_packet_ids": list(metadata.get("review_packet_ids") or []),
             "revises_decision_id": metadata.get("revises_decision_id"),
+            "recommendation_disposition": metadata.get("recommendation_disposition", "not_applicable"),
+            "recommendation_disposition_reason": metadata.get("recommendation_disposition_reason", ""),
+            "recommendation_version_id": metadata.get("recommendation_version_id"),
         }
 
     def audit(self, *, persist: bool = True) -> dict[str, Any]:

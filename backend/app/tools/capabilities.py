@@ -1,0 +1,84 @@
+from __future__ import annotations
+
+from typing import Any, Awaitable, Protocol
+
+from app.services.vault import VaultService
+
+
+class IndexCapabilities(Protocol):
+    async def rebuild_async(self) -> object: ...
+    def list_work_items(self, matter_id: str | None = None) -> list[dict[str, Any]]: ...
+
+
+class MatterCapabilities(Protocol):
+    def matter_path(self, matter_id: str) -> str: ...
+    def get(self, matter_id: str) -> dict[str, Any]: ...
+    def available_next_actions(self, matter: dict[str, Any]) -> list[str]: ...
+    def append_event(self, matter_id: str, event_type: str, data: dict[str, Any], *, rebuild: bool) -> str: ...
+    def complete_work_item(self, matter_id: str, work_item_id: str, *, actor: str) -> dict[str, Any]: ...
+    def move_stage(self, matter_id: str, stage: str, *, reason: str, actor: str) -> dict[str, Any]: ...
+    def create_work_item(self, request: Any) -> dict[str, Any]: ...
+
+
+class MatterPathCapabilities(Protocol):
+    def folder(self, matter_id: str, key: str) -> str: ...
+
+
+class MatterRecordCapabilities(Protocol):
+    def apply_intake_turn(self, matter_id: str, turn: Any, *, source_id: str | None, expected_dossier_hash: str | None) -> Any: ...
+
+
+class DocumentReviewCapabilities(Protocol):
+    def propose_agent_revision(self, path: str, content: str, metadata: dict[str, Any], *, author_name: str, lawyer_author: str | None) -> str: ...
+
+
+class WorkProductCapabilities(Protocol):
+    def current_draft(self, matter_id: str, *, legacy_fallback: bool) -> dict[str, Any] | None: ...
+    def mutable_draft(self, matter_id: str, draft_path: str) -> dict[str, Any]: ...
+    def draft_change_updates(self, matter_id: str) -> dict[str, Any]: ...
+    def create_draft(self, matter_id: str, *, title: str, content: str, source_action_key: str | None, recommendation_content: str | None, recommendation_actor: str) -> dict[str, Any]: ...
+
+
+class AgentCapabilities(Protocol):
+    def create(self, **fields: Any) -> dict[str, Any]: ...
+
+
+class SchedulerCapabilities(Protocol):
+    def create(self, request: Any) -> dict[str, Any]: ...
+
+
+class WatchCapabilities(Protocol):
+    def create_draft(self, request: Any) -> Any: ...
+    def update(self, watch_id: str, request: Any, revision: int) -> Any: ...
+    def get(self, watch_id: str) -> Any: ...
+    def _write(self, watch: Any) -> None: ...
+
+
+class WatchScanCapabilities(Protocol):
+    def run_watch(self, watch_id: str, mode: str) -> Awaitable[Any]: ...
+
+
+class ResearchRunCapabilities(Protocol):
+    def start(self, matter_id: str, questions: list[str], *, source_action_key: str | None) -> dict[str, Any]: ...
+
+
+class DecisionCapabilities(Protocol):
+    def audit(self, *, persist: bool) -> dict[str, Any]: ...
+
+
+class ToolCapabilities(Protocol):
+    """The application services used by allow-listed tool handlers."""
+
+    vault: VaultService
+    index: IndexCapabilities
+    matters: MatterCapabilities
+    matter_paths: MatterPathCapabilities
+    matter_records: MatterRecordCapabilities
+    document_reviews: DocumentReviewCapabilities
+    work_products: WorkProductCapabilities
+    agents: AgentCapabilities
+    scheduler: SchedulerCapabilities
+    watches: WatchCapabilities
+    watch_scans: WatchScanCapabilities
+    research_runs: ResearchRunCapabilities
+    decisions: DecisionCapabilities

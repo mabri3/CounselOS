@@ -40,10 +40,12 @@ not store matter, company, chat, decision, briefing, or agent content.
 - `IndexService`: rebuilds and queries matters, work items, decisions, schedules, and document metadata.
 - `MatterStateService`: derives one current work-state projection from saved matter, work-item, and research-run facts.
 - `MatterService`: creates matters, moves stages, and owns matter mutations and events.
+- `RecommendationService`: stores one current recommendation, immutable version metadata, one pending agent proposal, and explicit lawyer acceptance.
 - `IngestionService`: stores uploads and extracts PDF/DOCX text.
 - `DocumentReviewService`: stores a review baseline and comments in Markdown frontmatter and applies accept/reject actions.
 - `DocumentExportService`: regenerates DOCX files with native Word review objects and PDFs with standard review annotations.
 - `ResearchService`: creates first-pass research packets.
+- `ResearchRunService`: stores one Markdown queue record per research question and runs each matter queue serially with stable batch and item keys.
 - `DecisionMonitor`: deterministic staleness checks.
 - `AgentRegistry`: hot-loads agent Markdown.
 - `SkillRegistry`: hot-loads enabled declarative skill Markdown and validates one slash invocation.
@@ -77,6 +79,47 @@ from a matter stage or select another next work item. The agent receives the
 same projection in its context. `MatterService` still owns all mutations,
 including stage changes, approval, delivery, closure, and event writes.
 
+Approval, manual delivery, durable decision recording, and closure use typed
+confirmation results. Chat can prepare these actions, but the mutation occurs
+only after the lawyer uses the direct UI control. Manual delivery records an
+action that happened outside Themis.ai. The app does not send the response.
+
+Matter creation writes the request, target date, and first records before it
+returns. Intake startup is a retained application task. This lets the matter
+page open while intake is visibly running without losing shutdown tracking.
+
+### Matter record authority and reconciliation
+
+Each matter concept has one durable Markdown authority. `matter.md` owns
+lifecycle fields and artifact pointers. `facts.md` owns facts, assumptions,
+and their source history. `issues.md` owns the issue list. `participants.md`
+owns people and roles. Conversation records own the exact intake transcript
+and the answered state of question cards. `MatterStateService` owns the
+resolved next action. SQLite is only a rebuildable index.
+
+`MatterService.get()` is the resolved read boundary for the UI and agents. It
+combines the complete `matter.md` frontmatter with structured records and
+derived work state. A lawyer edit to a structured record is reconciled at the
+file-write boundary: defined list items update the matching typed frontmatter
+while source history and inactive records remain durable. The system does not
+infer typed facts from arbitrary prose and does not run bidirectional semantic
+synchronization.
+
+An answered intake card is durable progress before the model runs. The exact
+question, selected label or write-in answer, source message, answer status, and
+optional `record_target` are stored in `facts.md`. An answered question is
+removed from the open-question set. The answer also creates a source-linked
+reported fact. A declared `record_target` projects the same explicit answer to
+its named authority, such as `jurisdiction_scope` in `matter.md`; the system
+does not infer targets from ordinary chat prose.
+
+Model analysis may add issues, assumptions, and the next question. It is not
+the only write path for the user's answer. Intake updates filter out questions
+that the durable answer record already resolved. Deterministic recovery reads
+the same record before it asks a fallback question. UI success cards come only
+from successful typed mutations. Internal failed tool attempts remain in the
+trace and do not appear as primary workspace-action cards.
+
 ## 5. Provider boundary
 
 `LLMProvider.complete()` accepts messages and tool schemas and returns text and/or tool calls. The scaffold includes mock and OpenAI-compatible implementations.
@@ -94,11 +137,27 @@ Tool Markdown defines:
 
 Python defines the executable handler. The registry refuses unknown handler keys. This is the MVP compromise between hot-editable tools and safe/reliable execution.
 
+### Built-in agent runtime contract
+
+The selected vault stores workspace guidance, provider choices, and custom
+agents. The running application owns the current contract for built-in agents:
+required tool workflow, tool permissions, schemas, and step limits. Each
+built-in turn receives both the vault guidance and the bundled current
+contract. The current contract wins if an old vault conflicts with it.
+
+The Agents page marks built-in tool permissions as app-managed and shows the
+effective permissions. Custom-agent permissions remain vault-managed and
+editable. Loading an old vault does not rewrite its agent files and does not
+require a vault migration.
+
 ## 7. Request flow: chat
 
 ```text
 POST /api/chat
   -> load selected agent
+  -> add the current built-in runtime contract
+  -> resolve and validate any saved question-card action
+  -> persist an intake answer before model analysis
   -> validate and remove one optional leading skill command
   -> build system + matter + active file context
   -> insert the skill after active-agent instructions for this turn only

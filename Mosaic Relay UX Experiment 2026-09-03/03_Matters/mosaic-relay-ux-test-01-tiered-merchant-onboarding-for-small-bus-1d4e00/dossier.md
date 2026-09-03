@@ -1,0 +1,78 @@
+---
+matter_id: MAT-20260903-1d4e00
+record_type: dossier
+editable: true
+source_revision: 03_Matters/mosaic-relay-ux-test-01-tiered-merchant-onboarding-for-small-bus-1d4e00/dossier-revisions/DOS-20260903-325787.md
+updated_at: '2026-09-03T08:44:08+00:00'
+content_hash: d51fe009394934e59d84d4c8bd1021569bcb4499bb33c8c73f8eb2915a9da497
+---
+# Matter dossier
+
+## Matter summary
+
+Mosaic Relay, a U.S. payments infrastructure provider, is proposing a tiered merchant onboarding flow to reduce onboarding time for small online businesses. Product wants to launch in six weeks before the holiday sales period. The proposed flow would collect business and owner information, run KYB, identity verification, sanctions screening, and risk scoring, and issue API credentials within minutes to low-risk applicants while routing higher-risk or incomplete applications to manual review. Counsel is involved because the tiered flow raises unresolved questions about KYB/KYC, sanctions, BSA/AML, recordkeeping, customer notices, transaction limits, and partner acceptance.
+
+## Decision question
+
+Can Mosaic Relay launch the proposed tiered merchant onboarding flow in six weeks for U.S. small businesses, and if so, what onboarding checks, transaction limits, recordkeeping, and customer notices must be in place before launch to make the flow legally acceptable?
+
+## Material facts
+
+- Mosaic Relay provides payment infrastructure and does not hold deposits or operate as a bank.
+- Product proposes a tiered onboarding flow: business provides legal name, registration details, owners, expected volume, countries, and payment methods; Mosaic Relay runs KYB, identity verification, sanctions screening, and risk scoring.
+- Low-risk applicants would receive API credentials within minutes; higher-risk or incomplete applications move to a manual review queue.
+- Product expects to apply lower verification requirements to businesses below a proposed monthly volume threshold.
+- The monthly volume threshold has not been confirmed as suitable for all payment methods or jurisdictions.
+- Beneficial-owner information to collect, refresh cadence, and whether merchants may process limited transactions while review is pending have not been settled.
+- Target launch is in six weeks before the holiday sales period.
+- Which payment methods and jurisdictions will the tiered onboarding flow cover? This determines whether a single volume threshold can apply uniformly. — Not yet decided
+- What is the proposed monthly volume threshold for the lower-verification tier, and what is the basis for setting it? — The proposed monthly volume threshold has not been set. Product has not documented a risk-based basis, and suitability across payment methods or jurisdictions is unconfirmed.
+- Should a merchant be allowed to process limited transactions while their application is in manual review? — Not yet decided
+- Which beneficial-owner information does Product plan to collect, and how often should it be refreshed? — Product has not settled the beneficial-owner data set or refresh cycle. The legal name, registration details, owners, and identity verification are proposed inputs, but required ownership percentages, control-person details, supporting documents, and refresh triggers or frequency remain open.
+- not yet confirmed.
+
+## Assumptions
+
+- Mosaic Relay operates primarily in the United States in this scenario; any non-US expansion is subject to separate legal review.
+- The tiered flow applies to Mosaic Relay's standard card, ACH, and local payment methods unless otherwise specified.
+- Mosaic Relay's acquiring partners and processors impose their own onboarding and underwriting requirements that must be reconciled with the tiered flow.
+
+## Issues and workstreams
+
+- Tiering based on a monthly volume threshold may not be permissible uniformly across payment methods (card vs ACH vs local) and jurisdictions.
+- Lower verification for low-volume businesses must still satisfy KYB/KYC, sanctions screening, and BSA/AML baseline requirements.
+- Beneficial-owner data collection and refresh cadence are undefined.
+- Whether a merchant may process limited transactions during pending manual review is unresolved.
+- Recordkeeping and customer notice obligations for the tiered flow are not yet mapped.
+- Payment methods and jurisdictions in scope remain undecided, so a single volume threshold cannot yet be validated.
+- The proposed monthly volume threshold is unset and has no documented risk-based basis, so the tiering structure cannot yet be validated.
+- Whether acquiring partners and processors will accept the tiered verification levels and lower threshold is unconfirmed.
+
+## Open questions
+
+- Which payment methods and jurisdictions will the tiered onboarding flow cover, and can a single volume threshold apply uniformly across them?
+- What is the proposed monthly volume threshold for the lower-verification tier, and what is the documented risk-based basis for setting it?
+- Which beneficial-owner information will be collected, how often will it be refreshed, and what supporting documents will be required?
+- Should a merchant be allowed to process limited transactions while their application is in manual review, and if so, under what caps, controls, and monitoring?
+- Will acquiring partners and processors accept the tiered verification levels and lower threshold, and what are their contractual onboarding requirements?
+
+## Research and source support
+
+Latest review: `03_Matters/mosaic-relay-ux-test-01-tiered-merchant-onboarding-for-small-bus-1d4e00/research/RES-20260903-08fc1e.md`
+
+- Internal support: **Baseline Kyb Kyc Sanctions Screening And Bsa Aml Onboarding Requ 72602A** — 10. What would change this Working assumption (A3 — MSB classification): If Mosaic Relay is not an MSB (e.g., it qualifies for an exemption or operates solely as an agent of another MSB), the BSA/AML…
+
+## Options or working recommendation
+
+# Recommendations
+
+No recommendation has been drafted yet.
+
+## Next counsel action
+
+Approve the final response.
+
+## Work product links
+
+- Draft: [Baseline KYB/KYC, Sanctions Screening, and BSA/AML Onboarding Requirements for a U.S. Payments Infrastructure Provider](03_Matters/mosaic-relay-ux-test-01-tiered-merchant-onboarding-for-small-bus-1d4e00/work-product/draft/baseline-kyb-kyc-sanctions-screening-and-bsa-aml-onboarding-requ-72602a.md)
+- Final: [Baseline KYB/KYC, Sanctions Screening, and BSA/AML Onboarding Requirements for a U.S. Payments Infrastructure Provider](03_Matters/mosaic-relay-ux-test-01-tiered-merchant-onboarding-for-small-bus-1d4e00/work-product/final/baseline-kyb-kyc-sanctions-screening-and-bsa-aml-onboarding-requ-72602a-6406ff.md)

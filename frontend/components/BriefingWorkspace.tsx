@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import AppShell from "@/components/AppShell";
 import BriefingItemList from "@/components/BriefingItemList";
 import BriefingQueryBar from "@/components/BriefingQueryBar";
+import ConfirmationDialog from "@/components/ConfirmationDialog";
 import { formatDateTime } from "@/lib/design";
 import { createSavedView, createSavedViewDigest, deleteSavedView, getBriefingItems, getDigests, getSavedViews, getWatches, scheduleSavedViewDigest, updateSavedView } from "@/lib/watchApi";
 import type { BriefingQuery, Digest, SavedView } from "@/lib/watchTypes";
@@ -63,6 +64,7 @@ export default function BriefingWorkspace({ initialSearchParams }: { initialSear
   const [counts, setCounts] = useState<Counts | null>(null);
   const [error, setError] = useState(""); const [notice, setNotice] = useState(""); const [busy, setBusy] = useState(false);
   const [viewEditor, setViewEditor] = useState<{ mode: "save" | "rename"; name: string; viewId?: string } | null>(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<SavedView | null>(null);
   const queryString = useMemo(() => toParams(query).toString(), [query]);
   const activeView = views.find((view) => view.view_id === query.view) ?? null;
 
@@ -101,7 +103,19 @@ export default function BriefingWorkspace({ initialSearchParams }: { initialSear
   function apply(next = query) { router.push(`/briefing?${toParams({ ...next, cursor: null }).toString()}`); }
   async function saveView(name: string) { await act(async () => { const view = await createSavedView({ name, query: { ...query, view: null, cursor: null }, display: {} }); setViews((current) => [...current, view]); setViewEditor(null); apply({ ...view.query, view: view.view_id }); }); }
   async function rename(view: SavedView, name: string) { await act(async () => { const updated = await updateSavedView(view.view_id, { expected_revision: view.revision, name }); setViews((current) => current.map((entry) => entry.view_id === updated.view_id ? updated : entry)); setViewEditor(null); }); }
-  async function remove(view: SavedView) { if (!window.confirm(`Delete saved view “${view.name}”? Past digests will stay available.`)) return; await act(async () => { await deleteSavedView(view.view_id, view.revision); setViews((current) => current.filter((entry) => entry.view_id !== view.view_id)); if (query.view === view.view_id) apply({ ...defaults }); }); }
+  function remove(view: SavedView) { setDeleteConfirmation(view); }
+  async function confirmRemove(view: SavedView) {
+    setBusy(true); setError(""); setNotice("");
+    try {
+      await deleteSavedView(view.view_id, view.revision);
+      setViews((current) => current.filter((entry) => entry.view_id !== view.view_id));
+      if (query.view === view.view_id) apply({ ...defaults });
+    } catch (reason) {
+      const failure = message(reason);
+      setError(failure);
+      throw new Error(failure);
+    } finally { setBusy(false); }
+  }
   async function digestNow(view: SavedView) { await act(async () => { const digest = await createSavedViewDigest(view.view_id); setDigests((current) => [digest, ...current]); router.push(`/briefing/digests/${encodeURIComponent(digest.digest_id)}`); }); }
   async function schedule(view: SavedView) { await act(async () => { await scheduleSavedViewDigest(view.view_id, { enabled: true, expected_revision: view.revision, recurrence: { kind: "daily", local_time: "08:00", time_zone: Intl.DateTimeFormat().resolvedOptions().timeZone, weekdays: [] } }); setNotice(`“${view.name}” will make a digest every day at 8:00 AM. Manage it on Automations.`); }); }
 
@@ -206,7 +220,13 @@ export default function BriefingWorkspace({ initialSearchParams }: { initialSear
         </section>
       </aside>
     </div>
-  </main></AppShell>;
+  </main>{deleteConfirmation ? <ConfirmationDialog
+    confirmLabel="Delete saved view"
+    description={`Delete saved view “${deleteConfirmation.name}”? Past digests will stay available.`}
+    onCancel={() => setDeleteConfirmation(null)}
+    onConfirm={() => confirmRemove(deleteConfirmation)}
+    title="Delete saved view?"
+  /> : null}</AppShell>;
 }
 
 function ViewNameForm({ busy, help, label, name, onCancel, onChange, onSave }: { busy: boolean; help?: string; label: string; name: string; onCancel: () => void; onChange: (name: string) => void; onSave: (name: string) => Promise<void> }) {

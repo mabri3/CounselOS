@@ -36,6 +36,45 @@ def test_agent_get_and_put(app_context):
     assert reread["audience_prompt"] == "The reader decides."
 
 
+def test_agent_create_and_update_reject_unknown_tool_ids(app_context):
+    client = _client(app_context)
+    create = client.post(
+        "/api/automations/agents",
+        json={
+            "agent_id": "unknown-tool-agent",
+            "name": "Unknown tool agent",
+            "description": "Must fail.",
+            "instructions": "Do useful work.",
+            "allowed_tools": ["not_a_real_tool"],
+        },
+    )
+    update = client.put(
+        "/api/automations/agents/research-agent",
+        json={"allowed_tools": ["not_a_real_tool"]},
+    )
+
+    assert create.status_code == 400
+    assert update.status_code == 400
+    assert "Unknown tool IDs" in create.json()["detail"]
+    assert "Unknown tool IDs" in update.json()["detail"]
+
+
+def test_agent_create_rejects_existing_runtime_managed_id(app_context):
+    response = _client(app_context).post(
+        "/api/automations/agents",
+        json={
+            "agent_id": "research-agent",
+            "name": "Replacement",
+            "description": "Must not replace a built-in.",
+            "instructions": "Read one file.",
+            "allowed_tools": ["read_file"],
+        },
+    )
+
+    assert response.status_code == 400
+    assert "already exists" in response.json()["detail"]
+
+
 def test_audiences_endpoint(app_context):
     body = _client(app_context).get("/api/automations/audiences")
     assert body.status_code == 200

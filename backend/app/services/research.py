@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import asyncio
+import logging
 import re
 from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
@@ -20,6 +22,9 @@ from app.services.search import SearchService
 from app.services.vault import VaultService
 from app.utils.ids import new_id
 from app.utils.time import iso_now
+
+
+logger = logging.getLogger(__name__)
 
 
 class ResearchService:
@@ -43,6 +48,16 @@ class ResearchService:
         self._agent_runner: Callable[..., Awaitable[Any]] | None = None
         self._polaris: PolarisIntelligenceProvider | None = None
         self._outbound_policy = OutboundQueryPolicy()
+        self._settings: dict[str, object] = {
+            "primary_external_provider": "polaris",
+            "fallback_external_provider": "tavily",
+            "model_fallback_enabled": True,
+            "external_timeout_seconds": 90,
+            "external_retry_count": 2,
+        }
+
+    def configure(self, values: dict[str, object]) -> None:
+        self._settings = {**self._settings, **values}
 
     def bind_agent_runner(self, runner: Callable[..., Awaitable[Any]]) -> None:
         """Bind the configured agent runner after the application container is built."""
@@ -75,52 +90,79 @@ class ResearchService:
         request_path = f"{matter['path']}/request.md"
         request_text = self.vault.read_markdown(request_path)["content"] if self.vault.exists(request_path) else ""
         research_question = question.strip() or matter["title"]
-        if (
-            self.search.settings.search_provider.lower() == "tavily"
-            and self.search.settings.tavily_api_key
-        ):
+        correlation_id = new_id("RC")
+        if self.search.settings.search_provider.lower() == "tavily":
             search_result = {
                 "query": research_question,
-                "internal": self.vault.lexical_search(
-                    research_question, relative_path=matter["path"], limit=8
+                "internal": self.search.search_internal(
+                    research_question, matter_path=matter["path"], limit=8
                 ),
-                "external": [],
-                "warning": None,
+                "external": [], "warning": None,
             }
         else:
             try:
-                search_result = await self.search.search(
-                    research_question, matter_path=matter["path"]
-                )
-            except Exception:
-                search_result = {
-                    "query": research_question,
-                    "internal": [],
-                    "external": [],
-                    "warning": "Research search failed.",
-                }
+                search_result = await self.search.search(research_question, matter_path=matter["path"])
+                search_result["external"] = []
+            except Exception as exc:
+                logger.warning("Research search failed: %s", type(exc).__name__)
+                search_result = {"query": research_question, "internal": [], "external": [], "warning": "Research search failed."}
+        search_result["provider_legs"] = []
+        search_result["correlation_id"] = correlation_id
         if search_result.get("warning"):
             search_result["warning"] = self._safe_public_warning(
                 str(search_result["warning"])
             )
-        polaris_status = "not_configured"
+        polaris_status = "not_requested"
         public_query = self._prepare_public_query(matter_id, research_question, search_result)
         if public_query is None:
             polaris_status = "privacy_blocked"
         else:
-            if self._polaris is not None and getattr(self._polaris, "configured", True):
-                polaris_status = await self._add_polaris_research(public_query, search_result)
-            if polaris_status in {"not_configured", "failed"}:
-                try:
-                    native = await self.search.search_external(public_query.standing_question)
-                    search_result["external"].extend(native.get("external", []))
-                    if native.get("warning"):
-                        self._append_warning(
-                            search_result,
-                            self._safe_public_warning(str(native["warning"])),
+            providers = [
+                str(self._settings.get("primary_external_provider") or "none"),
+                str(self._settings.get("fallback_external_provider") or "none"),
+            ]
+            active_provider = ""
+            try:
+                async with asyncio.timeout(
+                    float(self._settings["external_timeout_seconds"])
+                ):
+                    for provider_id in dict.fromkeys(providers):
+                        has_authority = any(
+                            item.get("support_state") in {"retrieved", "verified"}
+                            for item in search_result["external"]
                         )
-                except Exception:
-                    self._append_warning(search_result, "External research failed.")
+                        if provider_id == "none" or has_authority:
+                            continue
+                        active_provider = provider_id
+                        status = await self._run_external_provider(
+                            provider_id, public_query, search_result
+                        )
+                        if provider_id == "polaris":
+                            polaris_status = status
+                        active_provider = ""
+            except TimeoutError:
+                warning = (
+                    f"{active_provider.title() or 'External'} research timed out within the "
+                    "total external research budget. Local and model research continued."
+                )
+                self._append_warning(search_result, warning)
+                search_result.setdefault("provider_legs", []).append({
+                    "provider": active_provider or "external",
+                    "status": "timeout",
+                    "authority_retrieved": any(
+                        item.get("support_state") in {"retrieved", "verified"}
+                        for item in search_result.get("external", [])
+                    ),
+                    "attempt_count": None,
+                    "elapsed_ms": int(
+                        float(self._settings["external_timeout_seconds"]) * 1000
+                    ),
+                    "timeout_seconds": self._settings.get("external_timeout_seconds"),
+                    "correlation_id": search_result.get("correlation_id"),
+                    "warning": warning,
+                })
+                if active_provider == "polaris":
+                    polaris_status = "timeout"
         search_result["internal"] = self._eligible_internal_sources(
             search_result.get("internal", []), matter["path"]
         )
@@ -137,9 +179,14 @@ class ResearchService:
                 request = ChatRequest(
                     message=prompt, matter_id=matter_id, agent_id="research-agent"
                 )
+                use_fallback_model = (
+                    not external_authority_retrieved
+                    and bool(self._settings.get("model_fallback_enabled"))
+                    and resolved_provider is not None
+                )
                 reply = (
                     await self._agent_runner(request, resolved_provider=resolved_provider)
-                    if resolved_provider is not None
+                    if use_fallback_model
                     else await self._agent_runner(request)
                 )
                 body = str(reply.reply).strip()
@@ -148,7 +195,8 @@ class ResearchService:
                     [{"role": "user", "content": prompt}]
                 )
                 body = reply.content.strip()
-        except Exception:
+        except Exception as exc:
+            logger.warning("Research analysis failed: %s", type(exc).__name__)
             body = ""
             analysis_warning = (
                 "Research analysis failed. Useful source material and fallback work were preserved."
@@ -158,6 +206,8 @@ class ResearchService:
             analysis_warning = (
                 "The Research Agent used Mock. No model-generated research analysis was filed."
             )
+        question_answered = bool(body)
+        model_only = question_answered and not external_authority_retrieved
         fallback_status = "analysis_preserved" if body else "scaffold_saved"
         if not body:
             body = self._fallback_packet(research_question, search_result)
@@ -168,6 +218,8 @@ class ResearchService:
                 "fallback_status": fallback_status,
             }
             search_result["polaris_observability"] = polaris_observability
+        if model_only:
+            body = f"**No external authority retrieved**\n\n{body}"
         if analysis_warning:
             body = f"**Generated analysis warning.** {analysis_warning}\n\n{body}"
         packet_id = new_id("RES")
@@ -176,6 +228,7 @@ class ResearchService:
         try:
             source_lines = self._source_lines(search_result)
         except Exception as exc:
+            logger.warning("Research citation formatting failed: %s", type(exc).__name__)
             citation_warning = f"Research citation formatting failed: {exc}"
             source_lines = "- Source details could not be formatted. Review the research warning metadata."
         packet_title = self._packet_title(research_question)
@@ -190,7 +243,14 @@ class ResearchService:
                 f"## Last-mile work for counsel\n\n"
                 "- Confirm the facts that could change the recommendation.\n"
                 "- Verify any authority that will carry the final answer.\n"
-                "- Decide the acceptable risk and the business path.\n"
+                "- Decide the acceptable risk and the business path.\n\n"
+                "## Research status\n\n"
+                f"- Question answered: {'Yes' if question_answered else 'No'}\n"
+                f"- External authority retrieved: {'Yes' if external_authority_retrieved else 'No'}\n"
+                f"- Internal support used: {'Yes' if search_result.get('internal') else 'No'}\n"
+                f"- Model-only: {'Yes' if model_only else 'No'}\n"
+                "- Assumptions: See the Working Analysis.\n"
+                "- Remaining gaps: Verify material facts and any authority used for the final answer.\n"
             ),
             {
                 "research_id": packet_id,
@@ -207,6 +267,14 @@ class ResearchService:
                 "polaris_observability": polaris_observability,
                 "public_research_status": public_status,
                 "external_authority_retrieved": external_authority_retrieved,
+                "question_answered": question_answered,
+                "supplied_sources_used": sum(1 for item in search_result.get("external", []) if item.get("support_state") == "supplied"),
+                "internal_support_used": bool(search_result.get("internal")),
+                "assumptions_used": "See Working Analysis.",
+                "remaining_gaps": "Verify authority and facts identified in the packet.",
+                "model_only": model_only,
+                "provider_legs": search_result.get("provider_legs", []),
+                "correlation_id": correlation_id,
             },
         )
         warnings = [warning for warning in (search_result.get("warning"), analysis_warning, citation_warning) if warning]
@@ -235,6 +303,7 @@ class ResearchService:
                 research_support=source_lines,
             )
         except Exception as exc:
+            logger.warning("Research orientation update failed: %s", type(exc).__name__)
             orientation_warning = f"Matter orientation update failed: {exc}"
             warnings.append(orientation_warning)
             try:
@@ -248,6 +317,7 @@ class ResearchService:
                 if public_status == "retrieved":
                     self._upsert_research_review(matter, packet_id, path)
             except Exception as exc:
+                logger.warning("Research work-item update failed: %s", type(exc).__name__)
                 warnings.append(f"Research review work item update failed: {exc}")
         try:
             self.vault.update_markdown(
@@ -264,8 +334,8 @@ class ResearchService:
                 {"title": "Research packet saved", "path": path, "public_research_status": public_status},
                 rebuild=False,
             )
-            self.index.rebuild()
         except Exception as exc:
+            logger.warning("Research completion record update failed: %s", type(exc).__name__)
             warnings.append(f"Research completion record update failed: {exc}")
         moved_to_explore = False
         if change_stage and original_stage in {"intake", "research"}:
@@ -275,15 +345,35 @@ class ResearchService:
                     "explore",
                     reason="First-pass research packet is ready for counsel exploration",
                     actor="research-agent",
+                    rebuild=False,
                 )
                 moved_to_explore = True
             except Exception as exc:
+                logger.warning("Research stage update failed: %s", type(exc).__name__)
                 warnings.append(f"Matter stage update failed: {exc}")
+        dossier_projection: dict[str, Any] = {"state": "not_required"}
+        expected_work_state_hash = self.dossiers.content_hash(matter_id)
+        try:
+            dossier_projection = self.dossiers.project_current_work_state(
+                matter_id, expected_hash=expected_work_state_hash,
+            )
+        except Exception as exc:
+            logger.warning("Research dossier projection failed: %s", type(exc).__name__)
+            dossier_projection = {
+                "state": "failed",
+                "error": f"Dossier projection failed: {type(exc).__name__}",
+            }
+            warnings.append("The research packet was saved, but the dossier did not refresh.")
         if warnings:
             try:
                 self.vault.update_markdown(path, metadata_updates={"warnings": warnings})
             except Exception:
                 pass
+        try:
+            await self.index.rebuild_async()
+        except Exception as exc:
+            logger.warning("Research index rebuild failed: %s", type(exc).__name__)
+            warnings.append("Research index rebuild failed.")
         return {
             "summary": (
                 "A partial research packet is saved; no public source was retrieved."
@@ -305,7 +395,62 @@ class ResearchService:
             "polaris_observability": polaris_observability,
             "analysis_warning": analysis_warning,
             "orientation_warning": orientation_warning,
+            "question_answered": question_answered,
+            "supplied_sources_used": sum(1 for item in search_result.get("external", []) if item.get("support_state") == "supplied"),
+            "internal_support_used": bool(search_result.get("internal")),
+            "assumptions_used": "See Working Analysis.",
+            "remaining_gaps": "Verify authority and facts identified in the packet.",
+            "model_only": model_only,
+            "provider_legs": search_result.get("provider_legs", []),
+            "correlation_id": correlation_id,
+            "dossier_projection": dossier_projection,
         }
+
+    async def _run_external_provider(
+        self, provider_id: str, outbound: OutboundWatchQuery,
+        search_result: dict[str, Any],
+    ) -> str:
+        if provider_id == "polaris":
+            if self._polaris is None or not getattr(self._polaris, "configured", True):
+                status = "not_configured"
+            else:
+                status = await self._add_polaris_research(outbound, search_result)
+        elif provider_id == "tavily":
+            try:
+                try:
+                    result = await self.search.search_external(
+                        outbound.standing_question, provider="tavily",
+                        timeout_seconds=int(self._settings["external_timeout_seconds"]),
+                        retry_count=int(self._settings["external_retry_count"]),
+                    )
+                except TypeError:  # Preserve narrow test and extension seams.
+                    result = await self.search.search_external(outbound.standing_question)
+                search_result["external"].extend(result.get("external", []))
+                if result.get("warning") and "not configured" not in str(result["warning"]).lower():
+                    self._append_warning(search_result, self._safe_public_warning(str(result["warning"])))
+                status = "retrieved" if result.get("external") else "failed"
+            except Exception as exc:
+                logger.warning("Native external research failed: %s", type(exc).__name__)
+                status = "failed"
+                self._append_warning(search_result, "External research failed.")
+        else:
+            status = "not_configured"
+        observation = (
+            search_result.get("polaris_observability")
+            if provider_id == "polaris" else locals().get("result", {}).get("observability")
+        )
+        search_result.setdefault("provider_legs", []).append({
+            "provider": provider_id, "status": status,
+            "authority_retrieved": any(
+                item.get("support_state") in {"retrieved", "verified"}
+                for item in search_result.get("external", [])
+            ),
+            "attempt_count": (observation or {}).get("attempt_count"),
+            "elapsed_ms": (observation or {}).get("elapsed_ms"),
+            "timeout_seconds": self._settings.get("external_timeout_seconds"),
+            "correlation_id": search_result.get("correlation_id"),
+        })
+        return status
 
     def _prepare_public_query(
         self,
@@ -344,7 +489,8 @@ class ResearchService:
         assert self._polaris is not None
         try:
             result = await self._polaris.research(outbound)
-        except Exception:
+        except Exception as exc:
+            logger.warning("Polaris research failed: %s", type(exc).__name__)
             self._append_warning(
                 search_result,
                 "Polaris public research failed. Local and native research were preserved.",
@@ -371,10 +517,11 @@ class ResearchService:
                         "support_state": "supplied",
                         "provider": "polaris",
                         "provider_observation": candidate.provider_observation,
+                        "content": candidate.provider_observation,
                     })
             elif candidate.provider_observation:
                 search_result.setdefault("external", []).append({
-                    "title": candidate.title,
+                    "title": "Supplied public legal research",
                     "url": "",
                     "excerpt": candidate.provider_observation,
                     "support_state": "supplied",
@@ -454,7 +601,10 @@ class ResearchService:
             f"Business objective / original request:\n{request_text[:10000]}\n\n"
             f"Research question:\n{question}\n\n"
             f"Internal search results:\n{search_result.get('internal', [])}\n\n"
-            f"External search results:\n{search_result.get('external', [])}\n\n"
+            f"External search results:\n{ResearchService._prompt_external_sources(search_result)}\n\n"
+            "Deliver the strongest useful first-pass answer. Separate retrieved external authority, supplied public sources, "
+            "internal support, assumptions, and remaining gaps. Generated analysis is not retrieved authority. If no external "
+            "authority was retrieved, say exactly: No external authority retrieved.\n\n"
             "Begin with these exact Markdown sections:\n\n"
             "## Matter summary\n"
             "Write 2–4 short sentences explaining who is involved, what is happening, why counsel is involved, "
@@ -495,18 +645,16 @@ class ResearchService:
             excerpt = self._clean_source_excerpt(str(item.get("excerpt") or ""))
             rendered = f"[{title}]({url})" if url else f"**{title}**"
             lines.append(f"- {support}: {rendered}{f' — {excerpt}' if excerpt else ''}")
-        if search_result.get("warning"):
-            lines.append(f"- Research warning: {search_result['warning']}")
-        observation = search_result.get("polaris_observability")
-        if isinstance(observation, dict) and observation.get("failure_class"):
-            lines.append(
-                "- Polaris status: failed; "
-                f"class: {observation.get('failure_class')}; "
-                f"attempts: {observation.get('attempt_count')}; "
-                f"elapsed: {observation.get('elapsed_ms')} ms; "
-                f"fallback: {observation.get('fallback_status')}."
-            )
         return "\n".join(lines) or "- No source results were returned. The packet is an issue-spotting scaffold only."
+
+    @staticmethod
+    def _prompt_external_sources(search_result: dict[str, Any]) -> list[dict[str, Any]]:
+        allowed = ("title", "url", "excerpt", "content", "support_state")
+        return [
+            {key: item[key] for key in allowed if key in item}
+            for item in search_result.get("external", [])
+            if isinstance(item, dict)
+        ]
 
     def _eligible_internal_sources(
         self, items: list[dict[str, Any]], matter_path: str

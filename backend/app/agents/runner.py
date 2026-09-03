@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 from typing import Any, Callable
 
 from app.agents.context import ContextBuilder
-from app.agents.output import clean_user_facing_reply, correct_unsupported_workspace_claims
+from app.agents.output import clean_user_facing_reply
 from app.agents.registry import AgentDefinition, AgentRegistry
 from app.models.api import AppliedSkillSummary, ChatChoice, ChatRequest, ChatResponse, MatterUpdateCard, QuestionCard, ResearchStatusCard, ToolTrace, WorkProductCard
 from app.models.awareness import WatchDraftCard, WatchScanCard
@@ -25,15 +25,22 @@ class RunnerExecutionState:
     changed_paths: list[str] = field(default_factory=list)
     refresh: list[str] = field(default_factory=list)
     cards: list[Any] = field(default_factory=list)
-    completed_mutations: dict[str, dict[str, str]] = field(default_factory=dict)
+    completed_mutations: dict[str, dict[str, Any]] = field(default_factory=dict)
+    operation_results: list[dict[str, Any]] = field(default_factory=list)
     useful_content: str = ""
 
 
 class AgentExecutionError(Exception):
-    def __init__(self, state: RunnerExecutionState, safe_detail: str | None = None):
+    def __init__(
+        self,
+        state: RunnerExecutionState,
+        safe_detail: str | None = None,
+        failure_class: str = "unknown",
+    ):
         super().__init__("Agent execution did not finish.")
         self.state = state
         self.safe_detail = safe_detail
+        self.failure_class = failure_class
 
 
 @dataclass(frozen=True)
@@ -101,17 +108,19 @@ class AgentRunner:
     ) -> ChatResponse:
         state = execution_state or RunnerExecutionState()
         try:
-            return await self._run(
+            response = await self._run(
                 request,
                 state=state,
                 checkpoint=checkpoint,
                 resolved_provider=resolved_provider,
             )
+            _record_missing_mutation_result(state, request)
+            response.operation_results = deepcopy(state.operation_results)
+            return response
         except AgentExecutionError:
             raise
         except Exception as exc:
-            safe_detail = str(exc) if isinstance(exc, ProviderAdapterError) else None
-            raise AgentExecutionError(state, safe_detail=safe_detail) from exc
+            raise AgentExecutionError(state, failure_class="unknown") from exc
 
     async def _run(
         self,
@@ -134,14 +143,16 @@ class AgentRunner:
         messages: list[dict[str, Any]] = [
             {
                 "role": "system",
-                "content": self.context_builder.build(
-                    agent,
-                    matter_id=request.matter_id,
-                    active_file=request.active_file,
-                    skill=skill,
-                ),
+                "content": self.context_builder.build_system(agent, skill=skill),
             }
         ]
+        user_context = self.context_builder.build_user_context(
+            agent,
+            matter_id=request.matter_id,
+            active_file=request.active_file,
+        )
+        if user_context:
+            messages.append({"role": "user", "content": user_context})
         messages.extend(message.model_dump() for message in request.history[-12:])
         messages.append({"role": "user", "content": request.message})
         state.messages = messages
@@ -170,7 +181,7 @@ class AgentRunner:
         cards = state.cards
         if not cards:
             cards.extend(_cards_for(request))
-        intake_structure_retry = False
+        intake_structure_failures = 0
 
         if request.card_action and request.card_action.action in {"save_draft", "change_something"}:
             reply = (
@@ -198,6 +209,7 @@ class AgentRunner:
                 ToolExecutionContext(
                     app=self.app_context,
                     matter_id=request.matter_id,
+                    allowed_tools=frozenset(self.tools.allowed_tools(agent)),
                     source_action_key=_tool_source_action_key(
                         request.source_action_key, fingerprint
                     ),
@@ -206,9 +218,13 @@ class AgentRunner:
                 arguments,
             )
             trace.append(_tool_trace(self.tools, tool_name, result))
+            _record_operation_result(
+                state, result, tool_name, request=request,
+                mutation=_is_mutation_tool(self.tools, tool_name),
+            )
             changed_paths.extend(result.changed_paths)
             refresh.extend(result.refresh)
-            cards.extend(_cards_from_tool_data(result.data))
+            _merge_projected_cards(cards, _cards_from_tool_data(result.data))
             return ChatResponse(
                 reply=result.summary,
                 trace=trace, changed_paths=_unique(changed_paths), refresh=_unique(refresh),
@@ -216,32 +232,43 @@ class AgentRunner:
             )
 
         for _ in range(agent.max_steps):
-            reply = await provider.complete(messages, provider_tools)
-            if not isinstance(reply.content, str) or not isinstance(reply.tool_calls, list):
-                raise ValueError("The provider returned a malformed reply.")
-            user_facing_content = clean_user_facing_reply(reply.content)
-            if not reply.tool_calls:
-                user_facing_content = correct_unsupported_workspace_claims(
-                    user_facing_content,
-                    _successful_mutation_tools(trace),
+            try:
+                reply = await provider.complete(messages, provider_tools)
+            except Exception as exc:
+                safe_detail = (
+                    str(exc) if isinstance(exc, ProviderAdapterError)
+                    else "The model service did not finish."
                 )
+                raise AgentExecutionError(
+                    state, safe_detail=safe_detail, failure_class="provider"
+                ) from exc
+            if not isinstance(reply.content, str) or not isinstance(reply.tool_calls, list):
+                raise AgentExecutionError(
+                    state,
+                    safe_detail="The response could not be turned into the required structure.",
+                    failure_class="output_shape",
+                )
+            user_facing_content = clean_user_facing_reply(reply.content)
             if user_facing_content:
                 state.useful_content = user_facing_content
                 if checkpoint:
                     checkpoint(state)
             if not reply.tool_calls:
-                intake_updated = any(
-                    item.tool == "update_matter_intake" and item.status == "success"
-                    for item in trace
-                )
                 intake_question_ready = any(isinstance(card, QuestionCard) for card in cards)
+                intake_complete = (
+                    self.app_context.matter_records.get(request.matter_id).get("intake_state")
+                    == "complete"
+                    if agent.agent_id == "intake-agent" and request.matter_id
+                    else False
+                )
                 if (
                     agent.agent_id == "intake-agent"
                     and request.matter_id
-                    and not intake_updated
+                    and not intake_complete
                     and not intake_question_ready
                 ):
-                    if not intake_structure_retry:
+                    intake_structure_failures += 1
+                    if intake_structure_failures < 2:
                         messages.append({"role": "assistant", "content": user_facing_content or None})
                         messages.append({
                             "role": "system",
@@ -252,10 +279,19 @@ class AgentRunner:
                                 "Do not ask an intake question only in prose."
                             ),
                         })
-                        intake_structure_retry = True
                         continue
+                    fallback = _deterministic_intake_question(
+                        self.app_context, request.matter_id
+                    )
+                    cards[:] = [
+                        card for card in cards if not isinstance(card, QuestionCard)
+                    ]
+                    cards.append(fallback)
                     return ChatResponse(
-                        reply="The intake turn could not be saved or presented as a structured question. Please retry.",
+                        reply=(
+                            state.useful_content
+                            or "I preserved the useful intake work. Please answer the next material question."
+                        ),
                         trace=trace,
                         changed_paths=_unique(changed_paths),
                         refresh=_unique(refresh),
@@ -263,6 +299,7 @@ class AgentRunner:
                         applied_skills=applied_skills,
                         review_author=review_author,
                     )
+                _record_missing_mutation_result(state, request)
                 return ChatResponse(
                     reply=user_facing_content or "I completed the available work but did not receive a final model response.",
                     trace=trace,
@@ -287,9 +324,16 @@ class AgentRunner:
                 }
             )
             for call in reply.tool_calls:
-                normalized_arguments = _normalized_tool_arguments(
-                    self.tools, call.name, call.arguments, matter_id=request.matter_id
-                )
+                try:
+                    normalized_arguments = _normalized_tool_arguments(
+                        self.tools, call.name, call.arguments, matter_id=request.matter_id
+                    )
+                except (TypeError, ValueError) as exc:
+                    raise AgentExecutionError(
+                        state,
+                        safe_detail="The requested action needs corrected input.",
+                        failure_class="tool_validation",
+                    ) from exc
                 fingerprint = _tool_fingerprint(call.name, normalized_arguments)
                 mutation = _is_mutation_tool(self.tools, call.name)
                 completed = state.completed_mutations.get(fingerprint) if mutation else None
@@ -298,6 +342,21 @@ class AgentRunner:
                         tool=call.name,
                         status="success",
                         summary=f"Already completed in this chat run: {completed['summary']}",
+                        operation_result={
+                            "action": request.source_action_key or call.name,
+                            "source_action_key": request.source_action_key,
+                            "operation": call.name,
+                            "status": "no_change",
+                            "summary": f"Already completed in this chat run: {completed['summary']}",
+                            "matter_id": request.matter_id,
+                            "entity_refs": list(completed.get("entity_refs", [])),
+                            "changed_paths": [],
+                            "resulting_matter_state": {},
+                            "available_next_actions": [],
+                            "required_user_action": None,
+                            "error": None,
+                            "recovery": None,
+                        },
                     )
                 elif call.name in lifecycle_permissions and not lifecycle_permissions[call.name]:
                     result = ToolExecutionResult(
@@ -329,6 +388,7 @@ class AgentRunner:
                         ToolExecutionContext(
                             app=self.app_context,
                             matter_id=request.matter_id,
+                            allowed_tools=frozenset(self.tools.allowed_tools(agent)),
                             active_file=request.active_file,
                             review_author=review_author,
                             lawyer_author=request.lawyer_author,
@@ -342,10 +402,14 @@ class AgentRunner:
                         call.arguments,
                     )
                 trace.append(_tool_trace(self.tools, call.name, result, completed=bool(completed)))
+                _record_operation_result(
+                    state, result, call.name, request=request, mutation=mutation
+                )
                 if result.status == "success" and mutation and not completed:
                     state.completed_mutations[fingerprint] = {
                         "tool": call.name,
                         "summary": result.summary,
+                        "entity_refs": list(result.operation_result.get("entity_refs", [])),
                     }
                     if checkpoint:
                         checkpoint(state)
@@ -363,7 +427,15 @@ class AgentRunner:
                     ))
                 changed_paths.extend(result.changed_paths)
                 refresh.extend(result.refresh)
-                cards.extend(_cards_from_tool_data(result.data))
+                _merge_projected_cards(cards, _cards_from_tool_data(result.data))
+                if (
+                    agent.agent_id == "intake-agent"
+                    and request.matter_id
+                    and call.name == "update_matter_intake"
+                    and not any(isinstance(card, QuestionCard) for card in cards)
+                    and self.app_context.matter_records.get(request.matter_id).get("intake_state") != "complete"
+                ):
+                    intake_structure_failures += 1
                 messages.append(
                     {
                         "role": "tool",
@@ -388,13 +460,20 @@ class AgentRunner:
                 ),
             }
         )
-        final_reply = await provider.complete(messages, None)
+        try:
+            final_reply = await provider.complete(messages, None)
+        except Exception as exc:
+            safe_detail = (
+                str(exc) if isinstance(exc, ProviderAdapterError)
+                else "The model service did not finish."
+            )
+            raise AgentExecutionError(
+                state, safe_detail=safe_detail, failure_class="provider"
+            ) from exc
+        _record_missing_mutation_result(state, request)
         return ChatResponse(
             reply=(
-                correct_unsupported_workspace_claims(
-                    clean_user_facing_reply(final_reply.content),
-                    _successful_mutation_tools(trace),
-                )
+                clean_user_facing_reply(final_reply.content)
                 or "The available actions are complete; use the trace and updated matter state as the working result."
             ),
             trace=trace,
@@ -410,12 +489,273 @@ def _unique(values: list[str]) -> list[str]:
     return list(dict.fromkeys(values))
 
 
-def _successful_mutation_tools(trace: list[ToolTrace]) -> set[str]:
-    return {
-        item.tool
-        for item in trace
-        if item.status == "success" and item.mutation_status in {"changed", "no_change"}
+def _merge_projected_cards(cards: list[Any], incoming: list[Any]) -> None:
+    """Keep only the latest visible state for one work product in a turn."""
+    for card in incoming:
+        if isinstance(card, WorkProductCard):
+            cards[:] = [
+                existing for existing in cards
+                if not (
+                    isinstance(existing, WorkProductCard)
+                    and existing.vault_path == card.vault_path
+                )
+            ]
+        cards.append(card)
+
+
+def _record_operation_result(
+    state: RunnerExecutionState,
+    result: ToolExecutionResult,
+    operation: str,
+    *,
+    request: ChatRequest,
+    mutation: bool,
+) -> None:
+    if not result.operation_result and not mutation:
+        return
+    projected = deepcopy(result.operation_result) if result.operation_result else {
+        "action": request.source_action_key or operation,
+        "source_action_key": request.source_action_key,
+        "operation": operation,
+        "status": "failed" if result.status != "success" else (
+            "changed" if result.changed_paths else "no_change"
+        ),
+        "summary": result.summary if result.status == "success" else "No workspace change recorded.",
+        "matter_id": request.matter_id,
+        "entity_refs": [],
+        "changed_paths": list(result.changed_paths),
+        "resulting_matter_state": {},
+        "available_next_actions": [],
+        "required_user_action": None,
+        "error": result.summary if result.status != "success" else None,
+        "recovery": "Review the input and try the action again." if result.status != "success" else None,
     }
+    proposal = result.data.get("proposal") if isinstance(result.data, dict) else None
+    if isinstance(proposal, dict):
+        projected["proposal"] = proposal
+    projected.setdefault("operation", operation)
+    key = (
+        projected.get("action"), projected.get("operation"), projected.get("status")
+    )
+    if any(
+        (item.get("action"), item.get("operation"), item.get("status")) == key
+        for item in state.operation_results
+    ):
+        return
+    state.operation_results.append(projected)
+
+
+def _record_missing_mutation_result(
+    state: RunnerExecutionState, request: ChatRequest
+) -> None:
+    if state.operation_results or not request.matter_id:
+        return
+    state.operation_results.append({
+        "action": request.source_action_key or "chat_turn",
+        "source_action_key": request.source_action_key,
+        "operation": "chat_turn",
+        "status": "no_change",
+        "summary": "No workspace change recorded.",
+        "matter_id": request.matter_id,
+        "entity_refs": [],
+        "changed_paths": [],
+        "resulting_matter_state": {},
+        "available_next_actions": [],
+        "required_user_action": None,
+        "error": None,
+        "recovery": None,
+    })
+
+
+def _deterministic_intake_question(app: Any, matter_id: str) -> QuestionCard:
+    matter = app.matters.get(matter_id)
+    record = app.matter_records.get(matter_id)
+    answered_topics = _answered_intake_topics(app, matter)
+    active_facts = [
+        str(item.get("text") or "").strip()
+        for item in record.get("facts", [])
+        if item.get("status") == "active" and str(item.get("text") or "").strip()
+    ]
+    working_ask = str(record.get("working_ask") or "").strip()
+    issues = [str(item).strip() for item in record.get("issues", []) if str(item).strip()]
+    open_questions = [
+        str(item).strip() for item in record.get("open_questions", []) if str(item).strip()
+    ]
+    title = str(matter.get("title") or "this request").strip()
+    participants = matter.get("participants") or []
+    requester = next((str(item.get("name") or "").strip() for item in participants if item.get("role") == "requester"), "")
+    owner = next((str(item.get("name") or "").strip() for item in participants if item.get("role") == "business_owner"), "")
+    target_date = str(matter.get("target_date") or "").strip()
+    raw_jurisdictions = matter.get("jurisdiction_scope", [])
+    if isinstance(raw_jurisdictions, str):
+        raw_jurisdictions = [raw_jurisdictions] if raw_jurisdictions.strip() else []
+    jurisdictions = [
+        str(item).strip()
+        for item in raw_jurisdictions
+        if str(item).strip()
+    ]
+
+    if not working_ask and "business-objective" not in answered_topics:
+        category, text, reason = (
+            "business-objective",
+            f"What business result should {title} achieve?",
+            "The business objective changes which legal options are useful.",
+        )
+        grounded = [f"Proceed with {title}", "Change the proposed plan", "Assess whether to proceed"]
+    elif not issues and "requested-output" not in answered_topics:
+        category, text, reason = (
+            "requested-output",
+            "What legal output would be most useful?",
+            "The requested output sets the next useful work product.",
+        )
+        grounded = ["A recommendation", "A risk and options summary", "A response for the business team"]
+    elif "actors-flow" not in answered_topics and not requester and not owner and not any(
+        re.search(r"\b(user|customer|vendor|partner|employee|team|system|processor)\b", fact, re.I)
+        for fact in active_facts
+    ):
+        category, text, reason = (
+            "actors-flow",
+            "Who are the key people or systems in the proposed flow?",
+            "The actors and flow determine which duties and controls apply.",
+        )
+        grounded = []
+    elif not target_date and "timing" not in answered_topics:
+        category, text, reason = (
+            "timing",
+            "When does the business need the legal answer?",
+            "Timing can change the practical options and next action.",
+        )
+        grounded = ["Before a planned launch", "This week", "No fixed deadline"]
+    elif not jurisdictions and "jurisdiction" not in answered_topics:
+        category, text, reason = (
+            "jurisdiction",
+            "Which countries or regions are in scope?",
+            "The jurisdictions determine which legal rules need review.",
+        )
+        grounded = ["United States only", "United States and European Union", "Multiple regions"]
+    elif not active_facts and "material-fact" not in answered_topics:
+        category, text, reason = (
+            "material-fact",
+            "What is the most important known fact that should guide the analysis?",
+            "One material fact can change the issue map and recommendation.",
+        )
+        grounded = [item for item in (requester and f"Use the request reported by {requester}", owner and f"Confirm with {owner}") if item]
+    elif open_questions:
+        category, text, reason = (
+            f"missing-fact-{hashlib.sha256(open_questions[0].encode('utf-8')).hexdigest()[:10]}",
+            open_questions[0],
+            "This is the next unresolved question in the saved intake record.",
+        )
+        grounded = []
+    else:
+        category, text, reason = (
+            "finish",
+            "Is there any other fact that would materially change the advice?",
+            "The saved intake already covers the main categories.",
+        )
+        grounded = []
+
+    labels = list(dict.fromkeys([
+        *grounded,
+        *(["Continue with assumptions"] if grounded else []),
+    ]))[:6]
+    choices = [
+        ChatChoice(
+            value=("continue_with_assumptions" if label == "Continue with assumptions" else f"choice_{index + 1}"),
+            label=label,
+            suggested=index == 0 and label != "Continue with assumptions",
+        )
+        for index, label in enumerate(labels)
+    ]
+    return QuestionCard(
+        question_id=f"intake-recovery-{category}",
+        text=text,
+        reason=reason,
+        selection_mode="single" if choices else "free_text",
+        choices=choices,
+        allow_skip=False,
+        allow_stop=True,
+        record_target=("jurisdiction_scope" if category == "jurisdiction" else "fact"),
+    )
+
+
+def saved_intake_recovery_card(app: Any, matter_id: str) -> QuestionCard:
+    """Return only a question grounded in durable unresolved intake state."""
+    record = app.matter_records.get(matter_id)
+    for raw_question in record.get("open_questions", []):
+        question = str(raw_question or "").strip()
+        if not question:
+            continue
+        question_id = (
+            "intake-recovery-saved-"
+            f"{hashlib.sha256(question.encode('utf-8')).hexdigest()[:10]}"
+        )
+        if app.matter_records.is_answered_question(matter_id, question_id, question):
+            continue
+        return QuestionCard(
+            question_id=question_id,
+            text=question,
+            reason="This is the next unresolved question in the saved intake record.",
+            selection_mode="free_text",
+            allow_skip=False,
+            allow_stop=True,
+            record_target="fact",
+        )
+    return QuestionCard(
+        question_id="intake-recovery-finish",
+        text="No unresolved saved intake question remains. Review the saved intake or finish intake.",
+        reason="The recovery did not invent a new legal question.",
+        selection_mode="free_text",
+        allow_skip=False,
+        allow_stop=True,
+        record_target="fact",
+    )
+
+
+def _answered_intake_topics(app: Any, matter: dict[str, Any]) -> set[str]:
+    conversation_id = str(matter.get("intake_conversation_id") or "")
+    if not conversation_id:
+        return set()
+    try:
+        conversation = app.chat_history.get(str(matter["matter_id"]), conversation_id)
+    except (KeyError, FileNotFoundError):
+        return set()
+    answered_ids: set[str] = {
+        str(item.get("question_id"))
+        for item in app.matter_records.get(str(matter["matter_id"])).get("intake_answers", [])
+        if item.get("question_id")
+    }
+    cards: dict[str, str] = {}
+    for message in conversation.get("messages", []):
+        action = message.get("card_action") or {}
+        if action.get("action") in {"answer", "skip", "stop"} and action.get("card_id"):
+            answered_ids.add(str(action["card_id"]))
+        if action.get("action") == "answer_set":
+            answered_ids.update(
+                str(item.get("card_id"))
+                for item in action.get("answers", [])
+                if item.get("card_id")
+            )
+        for card in message.get("cards", []):
+            card_id = str(card.get("question_id") or card.get("card_id") or "")
+            if card_id:
+                cards[card_id] = f"{card_id} {card.get('text') or ''}".casefold()
+    topics: set[str] = set()
+    for card_id in answered_ids:
+        text = cards.get(card_id, card_id.casefold())
+        topic_patterns = {
+            "business-objective": r"\b(business[- ]objective|business result|achieve)\b",
+            "requested-output": r"\b(requested[- ]output|legal output|work product)\b",
+            "actors-flow": r"\b(actors?[- ]flow|key people|systems? in the proposed flow|participants?)\b",
+            "timing": r"\b(timing|deadline|planned launch|need the legal answer|this week)\b",
+            "jurisdiction": r"\b(jurisdiction|countries|country|regions?)\b",
+            "material-fact": r"\b(material[- ]fact|important known fact)\b",
+            "finish": r"\b(intake-recovery-finish|other fact.*materially change)\b",
+        }
+        for topic, pattern in topic_patterns.items():
+            if re.search(pattern, text):
+                topics.add(topic)
+    return topics
 
 
 def _tool_fingerprint(name: str, arguments: dict[str, Any]) -> str:
@@ -512,7 +852,12 @@ def _tool_trace(
 ) -> ToolTrace:
     mutation_status = None
     if _is_mutation_tool(tools, tool_name):
-        if result.status != "success":
+        operation_status = result.operation_result.get("status")
+        if operation_status in {"changed", "no_change", "failed"}:
+            mutation_status = operation_status
+        elif operation_status in {"proposed", "confirmation_required"}:
+            mutation_status = "no_change"
+        elif result.status != "success":
             mutation_status = "failed"
         elif result.changed_paths or completed:
             mutation_status = "changed"
@@ -537,9 +882,9 @@ def _resolved_review_author(request: ChatRequest) -> str:
         "make these changes in my name",
         "make these comments in my name",
     )):
-        author = (request.lawyer_author or request.review_author or "Themis.ai").strip() or "Themis.ai"
+        author = (request.lawyer_author or "Themis.ai").strip() or "Themis.ai"
     else:
-        author = (request.review_author or "Themis.ai").strip() or "Themis.ai"
+        author = "Themis.ai"
     return "Themis.ai" if author.casefold() in {"themis", "themis.ai"} else author
 
 
@@ -591,11 +936,6 @@ def _lifecycle_permissions(message: str) -> dict[str, bool]:
 def _cards_for(request: ChatRequest) -> list[QuestionCard | MatterUpdateCard]:
     if not request.matter_id:
         return []
-    if request.card_action and request.card_action.card_id.startswith("intake-"):
-        if request.card_action.action == "stop":
-            return [MatterUpdateCard(action_id=request.card_action.card_id, summary="Intake questions stopped", changed_sections=["Working ask"], can_edit=False)]
-        if request.card_action.action in {"answer", "answer_set", "skip"}:
-            return [MatterUpdateCard(action_id=request.card_action.card_id, summary="Matter updated", changed_sections=["Facts", "Missing information"])]
     if request.attachments and not request.message.strip():
         count = len(request.attachments)
         label = "this file" if count == 1 else ("these files" if count <= 3 else "this document set")

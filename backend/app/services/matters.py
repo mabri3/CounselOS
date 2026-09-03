@@ -1,13 +1,15 @@
 from __future__ import annotations
 
-import hashlib
 from datetime import datetime
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from app.models.api import MatterCreate, WorkItemCreate
 from app.services.index import IndexService
+from app.services.matter_lifecycle import MatterLifecycleService
+from app.services.matter_participants import MatterParticipantService
 from app.services.matter_state import MatterStateService
+from app.services.matter_work_items import MatterWorkItemService
 from app.services.vault import VaultService
 from app.services.workflow import WorkflowService
 from app.utils.ids import new_id, slugify
@@ -30,6 +32,9 @@ class MatterService:
         self.workflow = workflow
         self.matter_state = matter_state
         self._dossiers: DossierService | None = None
+        self._work_items = MatterWorkItemService(self)
+        self._participants_service = MatterParticipantService(self)
+        self._lifecycle = MatterLifecycleService(self)
 
     def bind_dossiers(self, dossiers: DossierService) -> None:
         self._dossiers = dossiers
@@ -42,13 +47,42 @@ class MatterService:
             by_matter.setdefault(item["matter_id"], []).append(item)
         for matter in matters:
             items = by_matter.get(matter["matter_id"], [])
+            metadata = self._matter_metadata(matter)
+            durable_matter = {**matter, **metadata}
+            matter.update(metadata)
+            current_final_path = self._lifecycle.current_final_path(
+                durable_matter, metadata, backfill=False,
+            )
             matter["open_work_items"] = sum(item["status"] not in {"done", "closed"} for item in items)
             matter["required_work_items"] = sum(
                 item["required"] and item["status"] not in {"done", "closed"} for item in items
             )
-            matter["work_state"] = self.matter_state.resolve(matter, items)
+            matter.update({
+                "current_work_product_final_path": current_final_path,
+                "response_approved_at": metadata.get("response_approved_at"),
+                "response_sent_at": metadata.get("response_sent_at"),
+                "closed_at": metadata.get("closed_at"),
+            })
+            matter["work_state"] = self.matter_state.resolve(durable_matter, items)
+            if current_final_path or metadata.get("response_approved_at"):
+                matter["work_state"]["next_action"] = self.matter_state.lifecycle_next_action(
+                    durable_matter,
+                    current_final_path=current_final_path,
+                    required_open_count=matter["required_work_items"],
+                )
+            matter["consistency_issues"] = self.matter_state.consistency_issues(
+                durable_matter,
+                current_final_path=current_final_path,
+                required_open_count=matter["required_work_items"],
+                execution_state=matter["work_state"]["execution_state"],
+            )
         return matters
-    def create(self, request: MatterCreate) -> dict[str, Any]:
+    def create(self, request: MatterCreate, *, rebuild: bool = True) -> dict[str, Any]:
+        source_action_key = str(request.source_action_key or "") or None
+        if source_action_key:
+            existing = self._matter_for_source_action(source_action_key, rebuild=rebuild)
+            if existing is not None:
+                return {**existing, "creation_already_recorded": True}
         matter_id = new_id("MAT")
         folder_name = f"{slugify(request.title)}-{matter_id[-6:]}"
         base = Path("03_Matters") / folder_name
@@ -76,6 +110,7 @@ class MatterService:
             "response_approved_at": None,
             "response_sent_at": None,
             "closed_at": None,
+            "source_action_key": source_action_key,
             "created_at": now,
             "updated_at": now,
         }
@@ -104,7 +139,7 @@ class MatterService:
                 "requester": request.requester,
                 "legal_owner": request.legal_owner,
                 "business_owner": request.business_owner,
-                "participants": self._structured_participants(
+                "participants": self._participants_service.structured(
                     requester=request.requester,
                     legal_owner=request.legal_owner,
                     business_owner=request.business_owner,
@@ -149,8 +184,15 @@ class MatterService:
             {"title": request.title, "source": "manual_intake"},
             rebuild=False,
         )
-        self.index.rebuild()
-        return self.get(matter_id)
+        if rebuild:
+            self.index.rebuild()
+            return {**self.get(matter_id), "creation_already_recorded": False}
+        return {
+            **matter_metadata,
+            "path": str(base),
+            "participants": self._participants_service.list(str(base)),
+            "creation_already_recorded": False,
+        }
     def get(self, matter_id: str) -> dict[str, Any]:
         matter = self._require_matter(matter_id)
         base = matter["path"]
@@ -162,16 +204,37 @@ class MatterService:
         self._label_conversations(tree)
         self._label_internal_records(tree, legacy_root_path=f"{base}/work-product.md")
         work_items = self.index.list_work_items(matter_id)
-        decisions = [item for item in self.index.list_decisions() if item["matter_id"] == matter_id]
+        decisions = self.index.list_decisions(matter_id=matter_id)
         events = self._recent_events(base)
         required = [
             item for item in work_items if item["required"] and item["status"] not in {"done", "closed"}
         ]
-        work_state = self.matter_state.resolve(matter, work_items)
+        durable_matter = {**matter, **matter_metadata}
         current_draft_path = str(matter_metadata.get("current_work_product_draft_path") or "") or None
-        current_final_path = self._current_final_path(base, current_draft_path)
+        current_final_path = self._lifecycle.current_final_path(
+            durable_matter, matter_metadata, backfill=True,
+        )
+        if current_final_path and matter_metadata.get("current_work_product_final_path") != current_final_path:
+            matter_metadata = self.vault.read_markdown(f"{base}/matter.md")["metadata"]
+            self.index.rebuild()
+        durable_matter["current_work_product_final_path"] = current_final_path
+        required_open_count = len(required)
+        work_state = self.matter_state.resolve(durable_matter, work_items)
+        if current_final_path or matter_metadata.get("response_approved_at"):
+            work_state["next_action"] = self.matter_state.lifecycle_next_action(
+                durable_matter,
+                current_final_path=current_final_path,
+                required_open_count=required_open_count,
+            )
+        consistency_issues = self.matter_state.consistency_issues(
+            durable_matter,
+            current_final_path=current_final_path,
+            required_open_count=required_open_count,
+            execution_state=work_state["execution_state"],
+        )
         latest_research_path = self._latest_research_path(base, matter_metadata)
-        participants = self._participants(base)
+        participants = self._participants_service.list(base)
+        recommendation = self._recommendation_state(base)
         dossier_orientation = self._dossiers.orientation(matter_id) if self._dossiers else {
             "summary": "",
             "decision_question": "",
@@ -200,8 +263,17 @@ class MatterService:
             "recent_changes": [event.get("title", event.get("event_type", "Update")) for event in events],
         }
         intake = self._intake_status(matter_id)
+        participant_roles = {
+            item["role"]: item["name"]
+            for item in participants
+            if item.get("role") in {"requester", "legal_owner", "business_owner"}
+        }
         return {
-            **matter,
+            **durable_matter,
+            **{
+                key: participant_roles.get(key, durable_matter.get(key, ""))
+                for key in ("requester", "legal_owner", "business_owner")
+            },
             "original_request": self._original_request(base, matter.get("description") or ""),
             "durable_decision_needed": bool(matter_metadata.get("durable_decision_needed", False)),
             **{
@@ -216,11 +288,21 @@ class MatterService:
                     "response_delivery_method", "response_delivery_note",
                     "response_delivery_event_path", "closed_at", "closed_by",
                     "closure_event_path",
+                    "current_work_product_final_path", "current_work_product_final_id",
                 )
             },
             "current_work_product_final_path": current_final_path,
+            "consistency_issues": consistency_issues,
             "latest_research_path": latest_research_path,
             "participants": participants,
+            "recommendation": recommendation,
+            "recommendation_review_needed": bool(
+                recommendation.get("current_version_id")
+                and current_draft_path
+                and self.vault.exists(current_draft_path)
+                and self.vault.read_markdown(current_draft_path)["metadata"].get("recommendation_version_id")
+                != recommendation.get("current_version_id")
+            ),
             "work_state": work_state,
             "orientation": orientation,
             "work_items": work_items,
@@ -308,394 +390,20 @@ class MatterService:
                 "active_agent_id": metadata.get("active_agent_id", "intake-agent"),
             }
         return empty
-    def move_stage(self, matter_id: str, stage: str, *, reason: str = "", actor: str = "user") -> dict[str, Any]:
-        matter = self._require_matter(matter_id)
-        stage = self.workflow.validate(stage)
-        if stage == "closed" and matter["status"] != "closed":
-            raise ValueError("Use the close matter action so delivery and required work are checked.")
-        path = f"{matter['path']}/matter.md"
-        self.vault.update_markdown(
-            path,
-            metadata_updates={
-                "status": stage,
-                "next_action": self.matter_state.default_next_action(stage),
-                "closed_at": None if matter["status"] == "closed" else self._matter_metadata(matter).get("closed_at"),
-                "updated_at": iso_now(),
-            },
-        )
-        event_path = self.append_event(
-            matter_id,
-            "stage_changed",
-            {"from": matter["status"], "to": stage, "reason": reason, "actor": actor},
-            rebuild=False,
-        )
-        self.index.rebuild()
-        return {
-            **self.get(matter_id),
-            "changed_paths": [path, event_path],
-            "event_path": event_path,
-        }
-
-    def perform_action(
-        self,
-        matter_id: str,
-        action: str,
-        *,
-        actor: str,
-        artifact_path: str | None = None,
-        work_item_id: str | None = None,
-        note: str | None = None,
-    ) -> dict[str, Any]:
-        actor = actor.strip()
-        if not actor:
-            raise ValueError("actor is required.")
-        matter = self._require_matter(matter_id)
-        metadata = self._matter_metadata(matter)
-        if matter["status"] != "respond":
-            recorded_field = {
-                "approve_response": "response_approved_at",
-                "mark_as_sent": "response_sent_at",
-                "close_matter": "closed_at",
-            }.get(action)
-            if not recorded_field or not metadata.get(recorded_field):
-                raise ValueError("Response actions are available only in Respond.")
-        now = iso_now()
-        changed_paths: list[str] = []
-        already_recorded = False
-        event_path: str | None = None
-
-        if action == "approve_response":
-            if metadata.get("response_approved_at"):
-                if not artifact_path:
-                    raise ValueError("A final Markdown response artifact is required for approval.")
-                if artifact_path != metadata.get("response_approved_artifact_path"):
-                    raise ValueError("A different final response is already approved for this matter.")
-                if work_item_id:
-                    approval_item = self._find_work_item(matter_id, work_item_id)
-                    if approval_item["item_type"] != "approval":
-                        raise ValueError("The selected work item is not an approval work item.")
-                already_recorded = True
-                event_missing = not metadata.get("response_approval_event_path") or not self.vault.exists(metadata["response_approval_event_path"])
-                event_path = self._repair_lifecycle_event(
-                    matter_id, metadata, "response_approval_event_path", "response_approved",
-                    "Response approved", metadata["response_approved_at"],
-                    metadata.get("response_approved_by") or actor,
-                )
-                if event_missing:
-                    self.vault.update_markdown(f"{matter['path']}/matter.md", metadata_updates={"response_approval_event_path": event_path})
-                    changed_paths.extend([f"{matter['path']}/matter.md", event_path])
-                if work_item_id and approval_item["status"] not in {"done", "closed"}:
-                    completed = self.complete_work_item(matter_id, work_item_id, actor=actor)
-                    changed_paths.extend(completed["changed_paths"])
-                return self._action_result(action, matter_id, changed_paths, event_path, work_item_id, True)
-            if not artifact_path:
-                raise ValueError("A final Markdown response artifact is required for approval.")
-            final = self._validate_final_artifact(matter_id, artifact_path)
-            if work_item_id:
-                approval_item = self._find_work_item(matter_id, work_item_id)
-                if approval_item["item_type"] != "approval":
-                    raise ValueError("The selected work item is not an approval work item.")
-            event_path = self.append_event(
-                matter_id, "response_approved", {"title": "Response approved", "actor": actor, "artifact_path": final["path"]},
-                event_id=self._lifecycle_event_id(matter_id, "approval"), timestamp=now,
-            )
-            updates = {
-                "response_approved_at": now,
-                "response_approved_by": actor,
-                "response_approved_artifact_path": final["path"],
-                "response_approved_artifact_id": final["final_id"],
-                "response_approved_final_id": final["final_id"],
-                "response_approval_event_path": event_path,
-                "next_action": "Send the approved response.",
-                "updated_at": now,
-            }
-        elif action == "mark_as_sent":
-            if not metadata.get("response_approved_at"):
-                raise ValueError("The response must be approved before it is marked as sent.")
-            self._validate_final_artifact(
-                matter_id, str(metadata.get("response_approved_artifact_path") or "")
-            )
-            if artifact_path and artifact_path != metadata.get("response_approved_artifact_path"):
-                raise ValueError("Delivery can record only the approved final artifact.")
-            if metadata.get("response_sent_at"):
-                already_recorded = True
-                event_missing = not metadata.get("response_delivery_event_path") or not self.vault.exists(metadata["response_delivery_event_path"])
-                event_path = self._repair_lifecycle_event(
-                    matter_id, metadata, "response_delivery_event_path", "response_sent",
-                    "Response marked as sent", metadata["response_sent_at"],
-                    metadata.get("response_sent_by") or actor,
-                )
-                if event_missing:
-                    self.vault.update_markdown(f"{matter['path']}/matter.md", metadata_updates={"response_delivery_event_path": event_path})
-                    changed_paths.extend([f"{matter['path']}/matter.md", event_path])
-                return self._action_result(action, matter_id, changed_paths, event_path, None, True)
-            event_path = self.append_event(
-                matter_id, "response_sent", {"title": "Response marked as sent", "actor": actor, "artifact_path": metadata.get("response_approved_artifact_path")},
-                event_id=self._lifecycle_event_id(matter_id, "delivery"), timestamp=now,
-            )
-            updates = {
-                "response_sent_at": now,
-                "response_sent_by": actor,
-                "response_sent_artifact_path": metadata.get("response_approved_artifact_path"),
-                "response_sent_artifact_id": metadata.get("response_approved_artifact_id"),
-                "response_delivery_method": "outside_counsel_os",
-                "response_delivery_note": note,
-                "response_delivery_event_path": event_path,
-                "next_action": "Complete required work, then close the matter.",
-                "updated_at": now,
-            }
-        elif action == "close_matter":
-            if metadata.get("closed_at"):
-                already_recorded = True
-                event_missing = not metadata.get("closure_event_path") or not self.vault.exists(metadata["closure_event_path"])
-                event_path = self._repair_lifecycle_event(
-                    matter_id, metadata, "closure_event_path", "matter_closed", "Matter closed",
-                    metadata["closed_at"], metadata.get("closed_by") or actor,
-                )
-                if event_missing:
-                    self.vault.update_markdown(f"{matter['path']}/matter.md", metadata_updates={"closure_event_path": event_path})
-                    changed_paths.extend([f"{matter['path']}/matter.md", event_path])
-                return self._action_result(action, matter_id, changed_paths, event_path, None, True)
-            if not metadata.get("response_sent_at"):
-                raise ValueError("The response must be sent before the matter can close.")
-            required = [
-                item for item in self.index.list_work_items(matter_id)
-                if item["required"] and item["status"] not in {"done", "closed"}
-            ]
-            if required:
-                titles = ", ".join(str(item["title"]) for item in required)
-                raise ValueError(f"Complete required work before closing the matter: {titles}.")
-            event_path = self.append_event(
-                matter_id, "matter_closed", {"title": "Matter closed", "actor": actor},
-                event_id=self._lifecycle_event_id(matter_id, "closure"), timestamp=now,
-            )
-            updates = {
-                "status": "closed",
-                "closed_at": now,
-                "closed_by": actor,
-                "closure_event_path": event_path,
-                "next_action": "No active action. Reopen if facts, law, or policy change.",
-                "updated_at": now,
-            }
-        else:
-            raise ValueError(f"Unknown matter action: {action}")
-
-        matter_path = f"{matter['path']}/matter.md"
-        self.vault.update_markdown(matter_path, metadata_updates=updates)
-        changed_paths.extend([matter_path, event_path])
-        if action == "approve_response" and work_item_id:
-            completed = self.complete_work_item(matter_id, work_item_id, actor=actor, rebuild=False)
-            changed_paths.extend(completed["changed_paths"])
-        self.index.rebuild()
-        return self._action_result(action, matter_id, changed_paths, event_path, work_item_id, already_recorded)
-
-    def note_durable_decision_recorded(self, matter_id: str) -> None:
-        matter = self._require_matter(matter_id)
-        metadata = self._matter_metadata(matter)
-        next_action = str(metadata.get("next_action") or matter.get("next_action") or "")
-        if matter["status"] == "respond" and not metadata.get("response_approved_at"):
-            next_action = "Approve the response."
-        elif matter["status"] == "respond":
-            next_action = "Send the approved response."
-        elif matter["status"] == "explore":
-            next_action = "Create work product based on the chosen path."
-        self.vault.update_markdown(
-            f"{matter['path']}/matter.md",
-            metadata_updates={
-                "durable_decision_needed": False,
-                "next_action": next_action,
-                "updated_at": iso_now(),
-            },
-        )
-        self.index.rebuild()
-    def create_work_item(self, request: WorkItemCreate, *, rebuild: bool = True) -> dict[str, Any]:
-        matter = self._require_matter(request.matter_id, allow_unindexed=True)
-        source_action_key = str(request.source_action_key or "") or None
-        if source_action_key:
-            existing = self._work_item_for_source_action(matter["path"], source_action_key)
-            if existing is not None:
-                return existing
-            digest = hashlib.sha256(
-                f"{request.matter_id}\0{source_action_key}".encode("utf-8")
-            ).hexdigest()[:12]
-            work_item_id = f"WI-{digest}"
-        else:
-            work_item_id = new_id("WI")
-        path = f"{matter['path']}/work-items/{work_item_id}.md"
-        if self.vault.exists(path):
-            raise ValueError("The work-item retry key conflicts with an existing record.")
-        now = iso_now()
-        metadata = {
-            "work_item_id": work_item_id,
-            "matter_id": request.matter_id,
-            "issue_id": request.issue_id,
-            "type": request.item_type,
-            "title": request.title,
-            "description": request.description,
-            "status": request.status,
-            "priority": request.priority,
-            "owner": request.owner,
-            "due_at": request.due_at,
-            "required": request.required,
-            "created_at": now,
-            "completed_at": None,
-            "source_action_key": source_action_key,
-        }
-        self.vault.write_markdown(path, f"# {request.title}\n\n{request.description}\n", metadata)
-        if rebuild:
-            self.append_event(
-                request.matter_id,
-                "work_item_created",
-                {"work_item_id": work_item_id, "title": request.title},
-                rebuild=False,
-            )
-            self.index.rebuild()
-        return {**metadata, "path": path}
-
-    def _work_item_for_source_action(
-        self, matter_path: str, source_action_key: str
-    ) -> dict[str, Any] | None:
-        for path in self.vault.iter_files(f"{matter_path}/work-items", {".md"}):
-            document = self.vault.read_markdown(self.vault.relative(path))
-            metadata = document["metadata"]
-            if metadata.get("source_action_key") == source_action_key:
-                return {**metadata, "path": document["path"]}
-        return None
-
-    def _participants(self, matter_path: str) -> list[dict[str, str]]:
-        path = f"{matter_path}/participants.md"
+    def _recommendation_state(self, matter_path: str) -> dict[str, Any]:
+        path = f"{matter_path}/recommendations.md"
         if not self.vault.exists(path):
-            return []
-        metadata = self.vault.read_markdown(path)["metadata"]
-        structured = metadata.get("participants")
-        if isinstance(structured, list):
-            return [
-                {"name": str(item["name"]), "role": str(item["role"])}
-                for item in structured
-                if isinstance(item, dict) and item.get("name") and item.get("role")
-            ]
-        return self._structured_participants(
-            requester=metadata.get("requester"),
-            legal_owner=metadata.get("legal_owner"),
-            business_owner=metadata.get("business_owner"),
-        )
-
-    @staticmethod
-    def _structured_participants(
-        *, requester: Any, legal_owner: Any, business_owner: Any
-    ) -> list[dict[str, str]]:
-        return [
-            {"name": name, "role": role}
-            for role, raw_name in (
-                ("requester", requester),
-                ("legal_owner", legal_owner),
-                ("business_owner", business_owner),
-            )
-            if (name := str(raw_name or "").strip())
-        ]
-
-    def create_review_work_item(
-        self,
-        request: WorkItemCreate,
-        *,
-        review_packet_id: str,
-        decision_id: str | None = None,
-        rebuild: bool = True,
-    ) -> dict[str, Any]:
-        item = self.create_work_item(request, rebuild=False)
-        self.vault.update_markdown(
-            item["path"],
-            metadata_updates={
-                "review_packet_id": review_packet_id,
-                "decision_id": decision_id,
-            },
-        )
-        self.append_event(
-            request.matter_id,
-            "review_work_created",
-            {
-                "title": request.title,
-                "work_item_id": item["work_item_id"],
-                "review_packet_id": review_packet_id,
-                "decision_id": decision_id,
-            },
-            rebuild=False,
-        )
-        if rebuild:
-            self.index.rebuild()
-        return {**item, "review_packet_id": review_packet_id, "decision_id": decision_id}
-    def complete_open_work_items(self, matter_id: str, *, item_type: str | None = None) -> list[str]:
-        completed = self._complete_open_work_items(matter_id, item_type=item_type)
-        if completed:
-            self.index.rebuild()
-        return completed
-
-    def complete_work_item(
-        self, matter_id: str, work_item_id: str, *, actor: str, rebuild: bool = True
-    ) -> dict[str, Any]:
-        self._require_matter(matter_id)
-        actor = actor.strip()
-        if not actor:
-            raise ValueError("actor is required.")
-        item = self._find_work_item(matter_id, work_item_id)
-        already = item["status"] in {"done", "closed"}
-        changed_paths: list[str] = []
-        if not already:
-            completed_at = iso_now()
-            self.vault.update_markdown(item["path"], metadata_updates={"status": "done", "completed_at": completed_at, "completed_by": actor})
-            changed_paths.append(item["path"])
-        if rebuild and changed_paths:
-            self.index.rebuild()
+            return {"path": path, "content": "", "current_version_id": None, "proposal": None}
+        document = self.vault.read_markdown(path)
+        metadata = document["metadata"]
+        proposal = metadata.get("proposed_recommendation")
         return {
-            "action": "complete_work_item", "matter": self.get(matter_id),
-            "changed_paths": changed_paths, "event_path": None,
-            "work_item_id": work_item_id, "already_recorded": already,
+            "path": path,
+            "content": document["content"].strip(),
+            "current_version_id": metadata.get("current_recommendation_version_id"),
+            "proposal": dict(proposal) if isinstance(proposal, dict) else None,
         }
 
-    def assign_work_item(
-        self, matter_id: str, work_item_id: str, *, owner: str, actor: str
-    ) -> dict[str, Any]:
-        self._require_matter(matter_id)
-        owner = owner.strip()
-        actor = actor.strip()
-        if not owner or not actor:
-            raise ValueError("owner and actor are required.")
-        item = self._find_work_item(matter_id, work_item_id)
-        already = str(item.get("owner") or "").strip() == owner
-        changed_paths: list[str] = []
-        if not already:
-            self.vault.update_markdown(
-                item["path"],
-                metadata_updates={
-                    "owner": owner,
-                    "assigned_by": actor,
-                    "assigned_at": iso_now(),
-                },
-            )
-            changed_paths.append(item["path"])
-            self.index.rebuild()
-        return {
-            "action": "assign_work_item",
-            "matter": self.get(matter_id),
-            "changed_paths": changed_paths,
-            "event_path": None,
-            "work_item_id": work_item_id,
-            "already_recorded": already,
-        }
-
-    def _complete_open_work_items(self, matter_id: str, *, item_type: str | None = None) -> list[str]:
-        completed: list[str] = []
-        for item in self.index.list_work_items(matter_id):
-            if item["status"] in {"done", "closed"}:
-                continue
-            if item_type and item["item_type"] != item_type:
-                continue
-            self.vault.update_markdown(
-                item["path"],
-                metadata_updates={"status": "done", "completed_at": iso_now()},
-            )
-            completed.append(item["work_item_id"])
-        return completed
     def append_event(
         self,
         matter_id: str,
@@ -732,6 +440,25 @@ class MatterService:
         return self._require_matter(matter_id)["path"]
     def _matter_metadata(self, matter: dict[str, Any]) -> dict[str, Any]:
         return self.vault.read_markdown(f"{matter['path']}/matter.md")["metadata"]
+
+    def _matter_for_source_action(
+        self, source_action_key: str, *, rebuild: bool = True,
+    ) -> dict[str, Any] | None:
+        root = self.vault.resolve("03_Matters")
+        for path in root.glob("*/matter.md") if root.exists() else []:
+            document = self.vault.read_markdown(self.vault.relative(path))
+            if document["metadata"].get("source_action_key") == source_action_key:
+                matter_id = str(document["metadata"].get("matter_id") or "")
+                if matter_id:
+                    if rebuild:
+                        self.index.rebuild()
+                        return self.get(matter_id)
+                    return {
+                        "matter_id": matter_id,
+                        "path": self.vault.relative(path.parent),
+                        **document["metadata"],
+                    }
+        return None
     def _require_matter(self, matter_id: str, *, allow_unindexed: bool = False) -> dict[str, Any]:
         matter = self.index.get_matter(matter_id)
         if matter:
@@ -860,53 +587,6 @@ class MatterService:
 
         return json.dumps(payload, indent=2, default=str)
 
-    def _validate_final_artifact(self, matter_id: str, artifact_path: str) -> dict[str, Any]:
-        matter = self._require_matter(matter_id)
-        base = PurePosixPath(matter["path"])
-        supplied = PurePosixPath(artifact_path)
-        if supplied.suffix.lower() != ".md" or base not in supplied.parents or not self.vault.exists(artifact_path):
-            raise ValueError("The approved artifact must be a Markdown final owned by this matter.")
-        document = self.vault.read_markdown(artifact_path)
-        metadata = document["metadata"]
-        legacy_final = supplied.parent == base / "work-product" / "final"
-        if (
-            metadata.get("matter_id") != matter_id
-            or metadata.get("state") != "final"
-            or not metadata.get("immutable")
-            or not metadata.get("final_id")
-            or (metadata.get("record_type") != "work_product" and not legacy_final)
-        ):
-            raise ValueError("The approved artifact must be one immutable final Markdown work product owned by this matter.")
-        current_draft_path = str(self._matter_metadata(matter).get("current_work_product_draft_path") or "")
-        if not current_draft_path or metadata.get("source_draft") != current_draft_path:
-            raise ValueError("The approved artifact must be the final created from the current work-product draft.")
-        current_draft = self.vault.read_markdown(current_draft_path)
-        current_hash = hashlib.sha256(current_draft["content"].encode("utf-8")).hexdigest()
-        if metadata.get("source_content_hash") != current_hash:
-            raise ValueError("The approved artifact no longer matches the current work-product draft content.")
-        return {"path": artifact_path, "final_id": metadata["final_id"]}
-
-    def _current_final_path(self, base: str, current_draft_path: str | None) -> str | None:
-        if not current_draft_path:
-            return None
-        candidates: list[tuple[tuple[int, str], float, str]] = []
-        for path in self.vault.iter_files(base, {".md"}):
-            document = self.vault.read_markdown(self.vault.relative(path))
-            metadata = document["metadata"]
-            if (
-                metadata.get("record_type") == "work_product"
-                and metadata.get("state") == "final"
-                and metadata.get("immutable")
-                and metadata.get("final_id")
-                and metadata.get("source_draft") == current_draft_path
-            ):
-                candidates.append((
-                    self._event_sort_key(metadata.get("finalized_at")),
-                    float(document.get("updated_at") or 0),
-                    document["path"],
-                ))
-        return max(candidates)[2] if candidates else None
-
     def _latest_research_path(self, base: str, matter_metadata: dict[str, Any]) -> str | None:
         saved_path = str(matter_metadata.get("latest_research_path") or "")
         if saved_path and self.vault.exists(saved_path):
@@ -925,40 +605,141 @@ class MatterService:
                 ))
         return max(candidates)[2] if candidates else None
 
-    def _find_work_item(self, matter_id: str, work_item_id: str) -> dict[str, Any]:
-        item = next(
-            (item for item in self.index.list_work_items(matter_id) if item["work_item_id"] == work_item_id),
-            None,
+    def _action_result(
+        self, action: str, matter_id: str, changed_paths: list[str], event_path: str | None,
+        work_item_id: str | None, already_recorded: bool, *,
+        summary: str | None = None, recovery: str | None = None,
+    ) -> dict[str, Any]:
+        matter = self.get(matter_id)
+        paths = list(dict.fromkeys(path for path in changed_paths if path))
+        operation_summary = summary or {
+            "approve_response": "Approved the final response.",
+            "mark_as_sent": "Recorded manual delivery outside Themis.ai.",
+            "close_matter": "Closed the matter.",
+            "complete_work_item": "Completed the selected work item.",
+            "assign_work_item": "Assigned the selected work item.",
+            "prioritize_work_item": "Updated the selected work item's priority.",
+        }.get(action, action.replace("_", " ").capitalize() + ".")
+        return {
+            "action": action,
+            "operation": action,
+            "status": "no_change" if already_recorded or not paths else "changed",
+            "summary": operation_summary,
+            "matter_id": matter_id,
+            "source_action_key": None,
+            "entity_refs": ([{"type": "work_item", "id": work_item_id}] if work_item_id else []),
+            "matter": matter,
+            "changed_paths": paths,
+            "resulting_matter_state": {
+                "stage": matter["status"],
+                "next_action": matter["work_state"]["next_action"],
+                "work_state": matter["work_state"],
+                "consistency_issues": matter.get("consistency_issues", []),
+            },
+            "available_next_actions": self.available_next_actions(matter),
+            "required_user_action": None,
+            "error": None,
+            "recovery": recovery,
+            "event_path": event_path, "work_item_id": work_item_id,
+            "already_recorded": already_recorded,
+        }
+
+    @staticmethod
+    def available_next_actions(matter: dict[str, Any]) -> list[str]:
+        if matter.get("status") == "closed":
+            return []
+        if matter.get("current_work_product_final_path") and not matter.get("response_approved_at"):
+            return ["approve_response"]
+        if matter.get("response_approved_at") and not matter.get("response_sent_at"):
+            return ["mark_as_sent"]
+        if matter.get("response_sent_at"):
+            return ["close_matter"]
+        return []
+
+    # Public facade methods. Focused services own the mutations; callers keep
+    # the stable MatterService API used by routers, agents, and existing tools.
+    def move_stage(
+        self, matter_id: str, stage: str, *, reason: str = "", actor: str = "user", rebuild: bool = True,
+    ) -> dict[str, Any]:
+        return self._lifecycle.move_stage(matter_id, stage, reason=reason, actor=actor, rebuild=rebuild)
+
+    def repair_consistency(self, matter_id: str, *, actor: str) -> dict[str, Any]:
+        return self._lifecycle.repair_consistency(matter_id, actor=actor)
+
+    def perform_action(
+        self, matter_id: str, action: str, *, actor: str, artifact_path: str | None = None,
+        work_item_id: str | None = None, note: str | None = None,
+    ) -> dict[str, Any]:
+        return self._lifecycle.perform_action(
+            matter_id, action, actor=actor, artifact_path=artifact_path,
+            work_item_id=work_item_id, note=note,
         )
-        if not item:
-            raise ValueError(f"Work item {work_item_id} does not belong to matter {matter_id}.")
-        return item
+
+    def closure_prerequisite(self, matter_id: str) -> str | None:
+        return self._lifecycle.closure_prerequisite(matter_id)
+
+    def note_durable_decision_recorded(self, matter_id: str) -> None:
+        self._lifecycle.note_durable_decision_recorded(matter_id)
+
+    def create_work_item(self, request: WorkItemCreate, *, rebuild: bool = True) -> dict[str, Any]:
+        return self._work_items.create(request, rebuild=rebuild)
+
+    def create_review_work_item(
+        self, request: WorkItemCreate, *, review_packet_id: str,
+        decision_id: str | None = None, rebuild: bool = True,
+    ) -> dict[str, Any]:
+        return self._work_items.create_review(
+            request, review_packet_id=review_packet_id, decision_id=decision_id, rebuild=rebuild,
+        )
+
+    def complete_open_work_items(self, matter_id: str, *, item_type: str | None = None) -> list[str]:
+        return self._work_items.complete_open(matter_id, item_type=item_type)
+
+    def complete_work_item(
+        self, matter_id: str, work_item_id: str, *, actor: str, rebuild: bool = True,
+    ) -> dict[str, Any]:
+        return self._work_items.complete(matter_id, work_item_id, actor=actor, rebuild=rebuild)
+
+    def assign_work_item(self, matter_id: str, work_item_id: str, *, owner: str, actor: str) -> dict[str, Any]:
+        return self._work_items.assign(matter_id, work_item_id, owner=owner, actor=actor)
+
+    def prioritize_work_item(self, matter_id: str, work_item_id: str, *, priority: str, actor: str) -> dict[str, Any]:
+        return self._work_items.prioritize(matter_id, work_item_id, priority=priority, actor=actor)
+
+    def add_participant(self, matter_id: str, *, name: str, role: str, actor: str) -> dict[str, Any]:
+        return self._participants_service.add(matter_id, name=name, role=role, actor=actor)
+
+    def _participants(self, matter_path: str) -> list[dict[str, str]]:
+        return self._participants_service.list(matter_path)
+
+    @staticmethod
+    def _participants_from_content(content: str) -> list[dict[str, str]]:
+        return MatterParticipantService.from_content(content)
+
+    @staticmethod
+    def _structured_participants(*, requester: Any, legal_owner: Any, business_owner: Any) -> list[dict[str, str]]:
+        return MatterParticipantService.structured(
+            requester=requester, legal_owner=legal_owner, business_owner=business_owner,
+        )
+
+    def _complete_open_work_items(self, matter_id: str, *, item_type: str | None = None) -> list[str]:
+        return self._work_items.complete_open(matter_id, item_type=item_type)
+
+    def _find_work_item(self, matter_id: str, work_item_id: str) -> dict[str, Any]:
+        return self._work_items.find(matter_id, work_item_id)
+
+    def _validate_final_artifact(self, matter_id: str, artifact_path: str) -> dict[str, Any]:
+        return self._lifecycle.validate_final_artifact(matter_id, artifact_path)
+
+    def _current_final_path(self, base: str, current_draft_path: str | None) -> str | None:
+        return self._lifecycle._legacy_final_path(base, current_draft_path)
 
     @staticmethod
     def _lifecycle_event_id(matter_id: str, suffix: str) -> str:
-        safe_matter = "".join(char if char.isalnum() or char == "-" else "-" for char in matter_id)
-        return f"EVT-{safe_matter}-{suffix.upper()}"
+        return MatterLifecycleService.event_id(matter_id, suffix)
 
     def _repair_lifecycle_event(
         self, matter_id: str, metadata: dict[str, Any], field: str, event_type: str,
         title: str, timestamp: str, actor: str,
     ) -> str:
-        suffix = {"response_approved": "approval", "response_sent": "delivery", "matter_closed": "closure"}[event_type]
-        expected = self.append_event(
-            matter_id, event_type, {"title": title, "actor": actor},
-            event_id=self._lifecycle_event_id(matter_id, suffix), timestamp=timestamp,
-        )
-        stored = metadata.get(field)
-        return stored if stored and self.vault.exists(stored) else expected
-
-    def _action_result(
-        self, action: str, matter_id: str, changed_paths: list[str], event_path: str | None,
-        work_item_id: str | None, already_recorded: bool,
-    ) -> dict[str, Any]:
-        matter = self.get(matter_id)
-        return {
-            "action": action, "matter": matter,
-            "changed_paths": list(dict.fromkeys(path for path in changed_paths if path)),
-            "event_path": event_path, "work_item_id": work_item_id,
-            "already_recorded": already_recorded,
-        }
+        return self._lifecycle._repair_event(matter_id, metadata, field, event_type, title, timestamp, actor)

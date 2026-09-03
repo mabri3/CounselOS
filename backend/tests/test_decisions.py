@@ -6,6 +6,7 @@ import pytest
 
 from app.models.api import DecisionCreate
 from app.services.index import IndexService
+from app.services.recommendations import RecommendationService
 
 
 APEX_DECISION_ID = "DEC-DEMO-APEX-RETENTION"
@@ -26,6 +27,19 @@ def test_decision_audit_flags_elapsed_review(app_context):
     apex = next(item for item in decisions if item["decision_id"] == "DEC-DEMO-APEX-RETENTION")
     assert apex["review_status"] == "stale"
     assert "review date passed" in apex["staleness_reason"].lower()
+
+
+def test_index_decisions_can_be_scoped_to_one_matter(app_context):
+    all_decisions = app_context.index.list_decisions()
+    matter_id = "MAT-DEMO-APEX"
+
+    scoped = app_context.index.list_decisions(matter_id=matter_id)
+
+    assert scoped
+    assert all(item["matter_id"] == matter_id for item in scoped)
+    assert [item["decision_id"] for item in scoped] == [
+        item["decision_id"] for item in all_decisions if item["matter_id"] == matter_id
+    ]
 
 
 @pytest.mark.parametrize("field", ["next_review_at", "last_reviewed_at", "decided_at"])
@@ -156,6 +170,66 @@ def test_decision_persists_conditions_and_not_decided(app_context):
     assert loaded["not_decided"] == ["The wording of the notice."]
     body = app_context.vault.read_markdown(decision["path"])["content"]
     assert "## Not decided" in body
+
+
+def test_decision_records_recommendation_disposition_and_version(app_context):
+    recommendations = RecommendationService(app_context.vault, app_context.matters)
+    version = recommendations.set_working(
+        "MAT-DEMO-HARBOR", "Give advance notice.", actor="Themis.ai", origin="initial_agent"
+    )["current_version_id"]
+    decision = app_context.decisions.record(DecisionCreate(
+        matter_id="MAT-DEMO-HARBOR",
+        title="Follow working recommendation",
+        chosen_path="Use advance notice.",
+        recommendation_disposition="followed",
+        recommendation_version_id=version,
+    ))
+
+    assert decision["recommendation_disposition"] == "followed"
+    assert decision["recommendation_version_id"] == version
+
+
+def test_decision_can_reference_a_historical_recommendation_version(app_context):
+    recommendations = RecommendationService(app_context.vault, app_context.matters)
+    historical = recommendations.set_working(
+        "MAT-DEMO-HARBOR", "First recommendation.", actor="Themis.ai", origin="initial_agent"
+    )["current_version_id"]
+    recommendations.set_working(
+        "MAT-DEMO-HARBOR", "Current recommendation.", actor="Counsel", origin="lawyer_edit"
+    )
+
+    decision = app_context.decisions.record(DecisionCreate(
+        matter_id="MAT-DEMO-HARBOR", title="Historical basis",
+        chosen_path="Use the earlier recommendation.", recommendation_version_id=historical,
+    ))
+
+    assert decision["recommendation_version_id"] == historical
+
+
+@pytest.mark.parametrize("version_id", ["REC-UNKNOWN", "REC-FOREIGN"])
+def test_decision_rejects_unknown_or_foreign_recommendation_version(app_context, version_id):
+    if version_id == "REC-FOREIGN":
+        foreign = RecommendationService(app_context.vault, app_context.matters).set_working(
+            "MAT-DEMO-BEACON", "Foreign recommendation.", actor="Themis.ai", origin="initial_agent"
+        )
+        version_id = foreign["current_version_id"]
+
+    with pytest.raises(ValueError, match="does not belong to this matter"):
+        app_context.decisions.record(DecisionCreate(
+            matter_id="MAT-DEMO-HARBOR", title="Bad basis",
+            chosen_path="Do not record this.", recommendation_version_id=version_id,
+        ))
+
+
+@pytest.mark.parametrize("disposition", ["modified", "not_followed"])
+def test_decision_departure_requires_short_reason(disposition):
+    with pytest.raises(ValueError, match="short reason"):
+        DecisionCreate(
+            matter_id="MAT-DEMO-HARBOR",
+            title="Departure",
+            chosen_path="Use another path.",
+            recommendation_disposition=disposition,
+        )
 
 
 def test_decision_retry_with_same_action_key_returns_one_canonical_record(app_context):

@@ -1,6 +1,7 @@
 "use client";
 
 import { KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import ConfirmationDialog from "@/components/ConfirmationDialog";
 import { advanceCompanyInterview, getCompanyInterview, saveCompanyProfile } from "@/lib/api";
 import type {
   CompanyInterview as Interview,
@@ -79,6 +80,7 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
   const [saving, setSaving] = useState(false);
   const [saveState, setSaveState] = useState<SaveState>(existingProfile ? "clean" : "dirty");
   const [error, setError] = useState("");
+  const [replacementConfirmation, setReplacementConfirmation] = useState<string | null>(null);
 
   const loadInterview = useCallback(async () => {
     setLoading(true);
@@ -169,10 +171,8 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
     requestAnimationFrame(() => (websiteRef.current ?? inputRef.current)?.focus());
   }
 
-  async function saveDraft() {
+  async function persistDraft(replacementMessage: string | null) {
     if (saving || saveState !== "dirty") return;
-    const replacementMessage = companyReplacementMessage(profile.company_name, draft.company_name);
-    if (replacementMessage && !window.confirm(replacementMessage)) return;
     setSaving(true);
     setError("");
     try {
@@ -184,10 +184,22 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
       setSaveState("saved");
       onSaved(nextProfile);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Could not save the company profile.");
+      const message = caught instanceof Error ? caught.message : "Could not save the company profile.";
+      setError(message);
+      throw new Error(message);
     } finally {
       setSaving(false);
     }
+  }
+
+  function saveDraft() {
+    if (saving || saveState !== "dirty") return;
+    const replacementMessage = companyReplacementMessage(profile.company_name, draft.company_name);
+    if (replacementMessage) {
+      setReplacementConfirmation(replacementMessage);
+      return;
+    }
+    void persistDraft(null).catch(() => undefined);
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
@@ -276,6 +288,13 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
           </div>
         </div>
       ) : null}
+      {replacementConfirmation ? <ConfirmationDialog
+        confirmLabel="Replace company profile"
+        description={replacementConfirmation}
+        onCancel={() => setReplacementConfirmation(null)}
+        onConfirm={() => persistDraft(replacementConfirmation)}
+        title="Replace company profile?"
+      /> : null}
     </section>
   );
 }

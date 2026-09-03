@@ -9,6 +9,9 @@ import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from urllib.parse import urlsplit
 
+from defusedxml import ElementTree as SafeET
+from defusedxml.common import DefusedXmlException
+
 from app.models.awareness import (
     DevelopmentCandidate, OutboundWatchQuery, ProviderCheckpoint, ProviderScanResult,
     SafeFetchLimits, SourceCoverage, SourceReference,
@@ -119,8 +122,8 @@ class NativeIntelligenceProvider:
     @staticmethod
     def _feed(text: str) -> list[DevelopmentCandidate]:
         try:
-            root = ET.fromstring(text)
-        except ET.ParseError:
+            root = SafeET.fromstring(text)
+        except (DefusedXmlException, ET.ParseError):
             return []
         output: list[DevelopmentCandidate] = []
         entries = root.findall(".//item") + root.findall(".//{*}entry")

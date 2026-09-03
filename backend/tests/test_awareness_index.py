@@ -10,7 +10,7 @@ from app.models.awareness import (
     BriefingItem, BriefingQuery, PublicWatchQuery, SourceReference, Watch,
     WatchSource,
 )
-from app.services.index import SCHEMA_VERSION, IndexService
+from app.services.index import SCHEMA_VERSION, TABLE_COLUMNS, IndexService
 from app.services.vault import VaultService
 
 
@@ -189,3 +189,203 @@ def test_failed_atomic_rebuild_keeps_last_usable_database(awareness_index, monke
         index.rebuild()
 
     assert index.query_briefing(BriefingQuery()).total == before
+
+
+@pytest.mark.asyncio
+async def test_rebuild_async_runs_the_existing_rebuild_through_to_thread(awareness_index, monkeypatch):
+    index, _, _ = awareness_index
+    report = index.last_report
+    calls = []
+
+    async def fake_to_thread(function):
+        calls.append(function)
+        return function()
+
+    monkeypatch.setattr("app.services.index.asyncio.to_thread", fake_to_thread)
+    monkeypatch.setattr(index, "rebuild", lambda: report)
+
+    assert await index.rebuild_async() is report
+    assert len(calls) == 1
+
+
+def test_explicit_index_column_mappings_match_the_created_schema(awareness_index):
+    index, _, _ = awareness_index
+
+    with index._connect() as connection:
+        actual = {
+            table: tuple(row["name"] for row in connection.execute(f"PRAGMA table_info({table})"))
+            for table in TABLE_COLUMNS
+        }
+
+    assert actual == TABLE_COLUMNS
+
+
+def test_briefing_query_uses_sql_for_overlapping_filters_and_cursor(awareness_index, monkeypatch):
+    index, vault, _ = awareness_index
+    overlapping = _item("ITEM-3", hours=3).model_copy(update={
+        "topics": ["privacy", "ai"],
+        "jurisdictions": ["US", "CA"],
+    })
+    _write(vault, overlapping)
+    index.rebuild()
+
+    def markdown_read_is_not_a_page_filter(_path):
+        raise AssertionError("briefing pages must be read entirely from SQLite")
+
+    monkeypatch.setattr(vault, "read_markdown", markdown_read_is_not_a_page_filter)
+    first = index.query_briefing(BriefingQuery(
+        topic=["ai", "privacy"], jurisdiction=["CA", "US"], limit=1,
+    ))
+    second = index.query_briefing(BriefingQuery(
+        topic=["ai", "privacy"], jurisdiction=["CA", "US"],
+        limit=1, cursor=first.next_cursor,
+    ))
+
+    assert [item.item_id for item in first.items] == ["ITEM-3"]
+    assert first.total == 3
+    assert [item.item_id for item in second.items] == ["ITEM-2"]
+    assert second.total == 3
+
+
+@pytest.mark.parametrize(
+    ("sort", "query", "expected"),
+    [
+        ("newest", {}, ["ITEM-2", "ITEM-1"]),
+        ("relevance", {"q": "privacy"}, ["ITEM-2", "ITEM-1"]),
+        ("potential_impact", {}, ["ITEM-2", "ITEM-1"]),
+        ("primary_sources", {}, ["ITEM-2", "ITEM-1"]),
+        ("effective_date", {}, ["ITEM-2", "ITEM-1"]),
+        ("unread", {}, ["ITEM-1", "ITEM-2"]),
+        ("connected_decisions", {}, ["ITEM-2", "ITEM-1"]),
+    ],
+)
+def test_briefing_sql_sort_variants_keep_stable_ties(awareness_index, sort, query, expected):
+    index, _, _ = awareness_index
+
+    page = index.query_briefing(BriefingQuery(sort=sort, **query))
+
+    assert [item.item_id for item in page.items] == expected
+
+
+def test_fts_search_schema_and_rebuild_replace_stale_content(awareness_index):
+    index, vault, _ = awareness_index
+    vault.write_markdown("notes/search.md", "# Search\n\noldneedle", {})
+    index.rebuild()
+
+    with index._connect() as connection:
+        sql = connection.execute(
+            "SELECT sql FROM sqlite_master WHERE name = 'vault_search'"
+        ).fetchone()[0]
+    assert "VIRTUAL TABLE" in sql.upper()
+    assert "FTS5" in sql.upper()
+    assert [item["path"] for item in index.lexical_search("oldneedle")] == [
+        "notes/search.md"
+    ]
+
+    vault.write_markdown("notes/search.md", "# Search\n\nnewneedle", {})
+    index.rebuild()
+
+    assert index.lexical_search("oldneedle") == []
+    assert [item["path"] for item in index.lexical_search("newneedle")] == [
+        "notes/search.md"
+    ]
+
+
+def test_indexed_search_keeps_the_legacy_lexical_result_contract(awareness_index):
+    index, vault, _ = awareness_index
+    vault.write_markdown("notes/first.md", "# First\n\nprivacy privacy", {})
+    vault.write_markdown("notes/second.md", "# Second\n\nprivacy policy", {})
+    index.rebuild()
+
+    assert index.lexical_search("privacy policy", relative_path="notes", limit=1) == (
+        vault.lexical_search("privacy policy", relative_path="notes", limit=1)
+    )
+
+
+def test_indexed_search_keeps_legacy_substring_matching(awareness_index):
+    index, vault, _ = awareness_index
+    vault.write_markdown("notes/privacy.md", "# Privacy\n\nprivacy review", {})
+    index.rebuild()
+
+    assert index.lexical_search("priv", relative_path="notes") == (
+        vault.lexical_search("priv", relative_path="notes")
+    )
+
+
+def test_indexed_search_prunes_candidates_without_a_full_content_scan(
+    awareness_index, monkeypatch,
+):
+    index, vault, _ = awareness_index
+    vault.write_markdown("notes/privacy.md", "# Privacy\n\nprivacy review", {})
+    index.rebuild()
+    plans = []
+    original_query = index._query
+
+    def query_with_plan(sql, params=()):
+        with index._connect() as connection:
+            plans.extend(
+                str(row[3])
+                for row in connection.execute("EXPLAIN QUERY PLAN " + sql, params)
+            )
+        return original_query(sql, params)
+
+    monkeypatch.setattr(index, "_query", query_with_plan)
+    assert index.lexical_search("priv", relative_path="notes") == (
+        vault.lexical_search("priv", relative_path="notes")
+    )
+
+    with index._connect() as connection:
+        schema = connection.execute(
+            "SELECT sql FROM sqlite_master WHERE name = 'vault_search'"
+        ).fetchone()[0]
+
+    assert "tokenize='trigram'" in schema
+    assert all(
+        "SCAN vault_search" not in detail or "VIRTUAL TABLE INDEX" in detail
+        for detail in plans
+    )
+    assert any("VIRTUAL TABLE INDEX" in detail for detail in plans)
+
+
+def test_indexed_search_preserves_two_character_substrings_without_scanning_content(
+    awareness_index,
+):
+    index, vault, _ = awareness_index
+    vault.write_markdown("notes/privacy.md", "# Privacy\n\nprivacy review", {})
+    index.rebuild()
+
+    with index._connect() as connection:
+        tables = {
+            row[0]
+            for row in connection.execute(
+                "SELECT name FROM sqlite_master WHERE type IN ('table', 'view')"
+            )
+        }
+
+    assert "vault_search_bigrams" in tables
+    assert index.lexical_search("iv", relative_path="notes") == (
+        vault.lexical_search("iv", relative_path="notes")
+    )
+
+
+@pytest.mark.parametrize("term", ["--", "NEAR", "OR", "a*b", 'quo"te'])
+def test_indexed_search_treats_operator_shaped_terms_as_text(awareness_index, term):
+    index, vault, _ = awareness_index
+    vault.write_markdown("notes/operators.md", f"# Operators\n\nValue {term} value", {})
+    index.rebuild()
+
+    assert index.lexical_search(term, relative_path="notes") == (
+        vault.lexical_search(term, relative_path="notes")
+    )
+
+
+def test_indexed_search_escapes_sql_like_scope_prefixes(awareness_index):
+    index, vault, _ = awareness_index
+    vault.write_markdown("scoped_one/match.md", "# Match\n\nprivacy", {})
+    vault.write_markdown("scopedXone/leak.md", "# Leak\n\nprivacy", {})
+    vault.write_markdown("scoped%one/leak.md", "# Percent leak\n\nprivacy", {})
+    index.rebuild()
+
+    assert [item["path"] for item in index.lexical_search(
+        "privacy", relative_path="scoped_one"
+    )] == ["scoped_one/match.md"]

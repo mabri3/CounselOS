@@ -98,6 +98,28 @@ async def test_polaris_one_shot_research_has_no_watch_checkpoint(outbound):
     assert result.next_checkpoint is None
 
 
+def test_polaris_public_configuration_rejects_invalid_transport_values():
+    provider = PolarisIntelligenceProvider("secret")
+
+    with pytest.raises(ValueError, match="Polaris timeout must be a whole number"):
+        provider.configure(timeout_seconds="fast", retry_count=2)
+    with pytest.raises(ValueError, match="Polaris retry count cannot be negative"):
+        provider.configure(timeout_seconds=30, retry_count=-1)
+
+
+@pytest.mark.asyncio
+async def test_polaris_research_uses_operation_specific_retry_count(outbound):
+    failures = FakeClient([FakeResponse({}, 503), FakeResponse({}, 503)])
+    result = await PolarisIntelligenceProvider(
+        "secret", client=failures, sleeper=lambda _: _done(),
+        timeout_seconds=75, retry_count=1,
+    ).research(outbound)
+    assert result.status == "failed"
+    assert result.observability["attempt_count"] == 2
+    assert result.observability["http_status"] == 503
+    assert len(failures.calls) == 2
+
+
 @pytest.mark.asyncio
 async def test_polaris_segmented_plain_text_is_preserved_as_partial(outbound):
     response = FakeResponse(segments=[b"Useful plain ", b"text response"])
@@ -202,11 +224,35 @@ async def test_polaris_research_failure_returns_safe_observability(outbound):
         "elapsed_ms": result.observability["elapsed_ms"],
         "fallback_status": "pending",
     }
+    assert "http_status" not in result.observability
     assert result.observability["elapsed_ms"] >= 0
     rendered = json.dumps(result.model_dump())
     assert "private-secret" not in rendered
     assert "private-matter-text" not in rendered
     assert "secret-api-key" not in rendered
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("status", [401, 429, 500, 503, 504])
+async def test_polaris_http_failure_stores_only_numeric_status(outbound, status):
+    private_detail = "token=private-secret body=private-matter-text"
+    response = FakeResponse(private_detail, status, headers={"x-private": "secret-header"})
+
+    result = await PolarisIntelligenceProvider(
+        "secret-api-key", client=FakeClient([response]), sleeper=lambda _: _done(), retry_count=0,
+    ).research(outbound)
+
+    assert result.status == "failed"
+    assert result.observability == {
+        "failure_class": "http_status",
+        "attempt_count": 1,
+        "elapsed_ms": result.observability["elapsed_ms"],
+        "fallback_status": "pending",
+        "http_status": status,
+    }
+    rendered = json.dumps(result.model_dump())
+    for secret in ("private-secret", "private-matter-text", "secret-header", "secret-api-key", POLARIS_ENDPOINT):
+        assert secret not in rendered
 
 
 @pytest.mark.asyncio

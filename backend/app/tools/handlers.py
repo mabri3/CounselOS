@@ -18,6 +18,7 @@ from app.models.awareness import (
 )
 from app.tools.registry import Handler, ToolExecutionContext
 from app.utils.time import iso_now
+from app.services.recommendations import RecommendationService
 
 
 def build_handlers() -> dict[str, Handler]:
@@ -44,6 +45,11 @@ def build_handlers() -> dict[str, Handler]:
         "append_memory": append_memory,
         "update_matter_intake": update_matter_intake,
     }
+
+
+async def _rebuild_index(context: ToolExecutionContext) -> None:
+    """Use the required non-blocking index rebuild contract."""
+    await context.app.index.rebuild_async()
 
 
 async def update_matter_intake(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
@@ -95,7 +101,9 @@ async def search_vault(context: ToolExecutionContext, arguments: dict[str, Any])
     if not query:
         raise ValueError("A search query is required.")
     path = arguments.get("path")
-    results = context.app.vault.lexical_search(query, relative_path=str(path or ""), limit=10)
+    results = context.app.search.search_internal(
+        query, matter_path=str(path or "") or None, limit=10
+    )
     return {"summary": f"Found {len(results)} internal result(s) for '{query}'.", "data": {"results": results}}
 
 
@@ -111,6 +119,14 @@ async def write_markdown(context: ToolExecutionContext, arguments: dict[str, Any
         current = context.app.vault.read_document(raw_path)
         if current.get("metadata", {}).get("immutable"):
             raise ValueError("The original request is immutable. Create a new version or event instead.")
+        if not _is_reviewable_work_product(raw_path, current):
+            return _confirmation_result(
+                context,
+                operation="overwrite_markdown",
+                summary=f"Review the proposed replacement of {raw_path}.",
+                required_user_action="Confirm replacement with a direct workspace control.",
+                proposal={"path": raw_path, "content": str(arguments.get("content") or "")},
+            )
     content = str(arguments.get("content") or "")
     metadata = arguments.get("metadata") or {}
     if existing and raw_path.lower().endswith(".md") and _is_reviewable_work_product(raw_path, current):
@@ -123,7 +139,7 @@ async def write_markdown(context: ToolExecutionContext, arguments: dict[str, Any
         )
     else:
         path = context.app.vault.write_markdown(raw_path, content, metadata)
-    context.app.index.rebuild()
+    await _rebuild_index(context)
     return {
         "summary": f"Wrote {path}.",
         "changed_paths": [path],
@@ -177,12 +193,23 @@ async def save_work_product(context: ToolExecutionContext, arguments: dict[str, 
     if kind == "recommendation":
         if existing_draft_path:
             raise ValueError("Recommendations are revised in recommendations.md, not as work-product drafts.")
-        path = f"{context.app.matters.matter_path(matter_id)}/recommendations.md"
-        context.app.vault.update_markdown(path, content=content, metadata_updates={"record_type": "recommendations", "matter_id": matter_id})
+        recommendations = RecommendationService(context.app.vault, context.app.matters)
+        existing = recommendations.get(matter_id)
+        if existing["current_version_id"]:
+            saved_recommendation = recommendations.propose(
+                matter_id, content, actor=context.review_author or "Themis.ai"
+            )
+        else:
+            saved_recommendation = recommendations.set_working(
+                matter_id, content, actor=context.review_author or "Themis.ai", origin="initial_agent"
+            )
+        path = saved_recommendation["path"]
         result = {
             "record_type": "recommendation",
             "title": title or "Recommendations",
             "path": path,
+            "current_version_id": saved_recommendation["current_version_id"],
+            "proposal": saved_recommendation["proposal"],
         }
     else:
         current = context.app.work_products.current_draft(
@@ -195,76 +222,33 @@ async def save_work_product(context: ToolExecutionContext, arguments: dict[str, 
         else:
             draft_path = ""
     if kind != "recommendation" and draft_path:
-        draft = context.app.work_products.mutable_draft(matter_id, draft_path)
-        metadata = draft["metadata"]
-        if context.source_action_key and context.source_action_key in {
-            metadata.get("source_action_key"),
-            metadata.get("last_source_action_key"),
-        }:
-            result = {
-                "record_type": "work_product",
-                "work_product_id": metadata["work_product_id"],
-                "title": metadata.get("title", PurePosixPath(draft_path).stem),
-                "vault_path": draft_path,
-                "state": "draft",
-                "summary": metadata.get("summary", ""),
-            }
-            path = draft_path
-            changed_paths = []
-        else:
-            now = iso_now()
-            lifecycle_updates = context.app.work_products.draft_change_updates(matter_id)
-            path = context.app.document_reviews.propose_agent_revision(
-                draft_path,
-                content,
-                {
-                    "updated_at": now,
-                    "last_source_action_key": context.source_action_key,
-                },
-                author_name=context.review_author or "Themis.ai",
-                lawyer_author=context.lawyer_author,
-            )
-            matter_path = f"{context.app.matters.matter_path(matter_id)}/matter.md"
-            context.app.vault.update_markdown(
-                matter_path,
-                metadata_updates={
-                    **lifecycle_updates,
-                    "current_work_product_draft_path": path,
-                    "current_work_product_id": metadata["work_product_id"],
-                    "updated_at": now,
-                },
-            )
-            event_path = context.app.matters.append_event(
-                matter_id,
-                "work_product_revised",
-                {
-                    "path": path,
-                    "title": metadata.get("title", PurePosixPath(path).stem),
-                    "work_product_id": metadata["work_product_id"],
-                },
-                rebuild=False,
-            )
-            result = {
-                "record_type": "work_product",
-                "work_product_id": metadata["work_product_id"],
-                "title": metadata.get("title", PurePosixPath(path).stem),
-                "vault_path": path,
-                "state": "draft",
-                "summary": metadata.get("summary", ""),
-            }
-            changed_paths = [path, matter_path, event_path]
+        result = context.app.work_products.revise_draft(
+            matter_id,
+            draft_path,
+            title=title,
+            content=content,
+            source_action_key=context.source_action_key,
+            recommendation_content=str(arguments.get("recommendation") or "") or None,
+            recommendation_actor=context.review_author or "Themis.ai",
+            lawyer_author=context.lawyer_author,
+            document_reviews=context.app.document_reviews,
+        )
+        path = result["vault_path"]
+        changed_paths = result["changed_paths"]
     elif kind != "recommendation":
         result = context.app.work_products.create_draft(
             matter_id,
             title=title or ("Response" if kind == "response" else "Draft"),
             content=content,
             source_action_key=context.source_action_key,
+            recommendation_content=str(arguments.get("recommendation") or "") or None,
+            recommendation_actor=context.review_author or "Themis.ai",
         )
         path = result["vault_path"]
         changed_paths = result["changed_paths"]
-    context.app.index.rebuild()
+    await _rebuild_index(context)
     if kind == "recommendation":
-        changed_paths = [path]
+        changed_paths = saved_recommendation["changed_paths"]
     return {"summary": f"Saved {kind}: {result['title']}.", "changed_paths": changed_paths, "refresh": ["tree", "matter"], "data": result}
 
 
@@ -282,25 +266,62 @@ async def complete_work_item(context: ToolExecutionContext, arguments: dict[str,
 
 
 async def approve_response(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
-    return _lifecycle_tool(context, arguments, "approve_response", "Approved the final response.")
+    return _lifecycle_confirmation(context, arguments, "approve_response", "Approve the final response")
 
 
 async def mark_response_sent(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
-    return _lifecycle_tool(context, arguments, "mark_as_sent", "Recorded outside delivery of the approved response.")
+    return _lifecycle_confirmation(context, arguments, "mark_as_sent", "Record manual delivery")
 
 
 async def close_matter(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
-    return _lifecycle_tool(context, arguments, "close_matter", "Closed the matter.")
-
-
-def _lifecycle_tool(context: ToolExecutionContext, arguments: dict[str, Any], action: str, summary: str) -> dict[str, Any]:
     matter_id = str(arguments.get("matter_id") or context.matter_id or "")
-    result = context.app.matters.perform_action(
-        matter_id, action, actor=_lawyer_actor(context),
-        artifact_path=arguments.get("artifact_path"), work_item_id=arguments.get("work_item_id"),
-        note=arguments.get("note"),
+    if not matter_id:
+        raise ValueError("An active matter is required.")
+    if prerequisite := context.app.matters.closure_prerequisite(matter_id):
+        return {
+            "summary": "The matter is not ready to close.",
+            "changed_paths": [],
+            "refresh": ["matter"],
+            "data": {"matter_id": matter_id},
+            "operation_status": "no_change",
+            "required_user_action": prerequisite,
+            "recovery": prerequisite,
+        }
+    return _lifecycle_confirmation(context, arguments, "close_matter", "Close the matter")
+
+
+def _lifecycle_confirmation(
+    context: ToolExecutionContext, arguments: dict[str, Any], action: str, label: str
+) -> dict[str, Any]:
+    matter_id = str(arguments.get("matter_id") or context.matter_id or "")
+    if not matter_id:
+        raise ValueError("An active matter is required.")
+    return _confirmation_result(
+        context,
+        operation=action,
+        summary=f"{label} requires your confirmation.",
+        required_user_action=f"Use the direct {label.lower()} control to confirm.",
+        proposal={"matter_id": matter_id, **arguments},
     )
-    return {"summary": summary, "changed_paths": result["changed_paths"], "refresh": ["matter", "kanban", "tree"], "data": result}
+
+
+def _confirmation_result(
+    context: ToolExecutionContext,
+    *,
+    operation: str,
+    summary: str,
+    required_user_action: str,
+    proposal: dict[str, Any],
+) -> dict[str, Any]:
+    return {
+        "summary": summary,
+        "changed_paths": [],
+        "refresh": [],
+        "data": {"proposal": proposal},
+        "operation_status": "confirmation_required",
+        "required_user_action": required_user_action,
+        "recovery": "No workspace change was recorded.",
+    }
 
 
 def _is_reviewable_work_product(path: str, document: dict[str, Any]) -> bool:
@@ -316,14 +337,31 @@ async def move_matter_stage(context: ToolExecutionContext, arguments: dict[str, 
     if not matter_id:
         raise ValueError("An active matter is required.")
     stage = str(arguments.get("new_stage") or arguments.get("stage") or "")
+    if stage.strip().casefold() == "closed":
+        prerequisite = context.app.matters.closure_prerequisite(matter_id)
+        recovery = prerequisite or "Use the Close matter action to confirm closure."
+        return {
+            "summary": "Closure is not a generic stage change.",
+            "changed_paths": [],
+            "refresh": ["matter"],
+            "data": {"matter_id": matter_id},
+            "operation_status": "no_change",
+            "required_user_action": recovery,
+            "recovery": recovery,
+        }
     matter = context.app.matters.move_stage(
         matter_id,
         stage,
         reason=str(arguments.get("reason") or "Moved through chat"),
         actor="agent",
     )
+    changed_paths = matter.get("changed_paths", [])
     return {
-        "summary": f"Moved {matter['title']} to {stage.title()}.",
+        "summary": (
+            f"Moved {matter['title']} to {stage.title()}." if changed_paths
+            else f"Kept {matter['title']} in {matter['status'].title()} so background work did not move it backward."
+        ),
+        "changed_paths": changed_paths,
         "refresh": ["kanban", "matter"],
         "data": matter,
     }
@@ -346,6 +384,27 @@ async def create_work_item(context: ToolExecutionContext, arguments: dict[str, A
         issue_id=arguments.get("issue_id"),
         source_action_key=context.source_action_key,
     )
+    duplicate = next(
+        (
+            item for item in context.app.index.list_work_items(matter_id)
+            if str(item.get("status") or "").casefold() not in {"done", "closed"}
+            and _normalized_work_item_title(item.get("title"))
+            == _normalized_work_item_title(request.title)
+            and str(item.get("item_type") or "").strip().casefold()
+            == request.item_type.strip().casefold()
+            and str(item.get("issue_id") or "").strip().casefold()
+            == str(request.issue_id or "").strip().casefold()
+            and bool(item.get("required")) is bool(request.required)
+        ),
+        None,
+    )
+    if duplicate:
+        return {
+            "summary": f"Reused open work item: {duplicate['title']}.",
+            "changed_paths": [],
+            "refresh": ["matter", "kanban"],
+            "data": duplicate,
+        }
     item = context.app.matters.create_work_item(request)
     return {
         "summary": f"Created work item: {item['title']}.",
@@ -353,6 +412,10 @@ async def create_work_item(context: ToolExecutionContext, arguments: dict[str, A
         "refresh": ["matter", "kanban"],
         "data": item,
     }
+
+
+def _normalized_work_item_title(value: Any) -> str:
+    return " ".join(str(value or "").split()).casefold()
 
 
 async def run_research(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
@@ -379,12 +442,12 @@ async def record_decision(context: ToolExecutionContext, arguments: dict[str, An
     matter_id = str(arguments.get("matter_id") or context.matter_id or "")
     if not matter_id:
         raise ValueError("An active matter is required.")
-    request = DecisionCreate(
+    proposal = DecisionCreate(
         matter_id=matter_id,
-        title=str(arguments.get("title") or "Recorded legal decision"),
+        title=str(arguments.get("title") or "Proposed legal decision"),
         chosen_path=str(arguments.get("chosen_path") or ""),
         rationale=str(arguments.get("rationale") or ""),
-        decision_maker=str(arguments.get("decision_maker") or "User instructed the chat"),
+        decision_maker=str(arguments.get("decision_maker") or context.lawyer_author or ""),
         decision_type=str(arguments.get("decision_type") or "legal_decision"),
         conditions=[str(item) for item in arguments.get("conditions", [])],
         linked_paths=[str(item) for item in arguments.get("linked_paths", [])],
@@ -392,13 +455,13 @@ async def record_decision(context: ToolExecutionContext, arguments: dict[str, An
         risk_level=str(arguments.get("risk_level") or "unknown"),
         source_action_key=context.source_action_key,
     )
-    decision = context.app.decisions.record(request)
-    return {
-        "summary": f"Recorded decision: {decision['title']}.",
-        "changed_paths": [decision["path"]],
-        "refresh": ["matter", "decisions"],
-        "data": decision,
-    }
+    return _confirmation_result(
+        context,
+        operation="record_decision",
+        summary=f"Decision proposal ready: {proposal.title}.",
+        required_user_action="Review and confirm the decision with the direct decision control.",
+        proposal=proposal.model_dump(mode="json"),
+    )
 
 
 async def audit_decisions(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
@@ -411,6 +474,9 @@ async def audit_decisions(context: ToolExecutionContext, arguments: dict[str, An
 
 async def create_agent(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
     request = AgentCreate(**arguments)
+    requested_tools = set(request.allowed_tools)
+    if not requested_tools <= context.allowed_tools:
+        raise ValueError("An agent created by a tool may use only the creator's allowed tools.")
     result = context.app.agents.create(**request.model_dump())
     return {
         "summary": f"Created agent {result['name']}.",
@@ -470,7 +536,7 @@ async def create_watch_draft(context: ToolExecutionContext, arguments: dict[str,
             WatchPatch(expected_revision=watch.revision, **changes),
             watch.revision,
         )
-    context.app.index.rebuild()
+    await _rebuild_index(context)
     return {
         "summary": f"Saved Watch draft: {watch.title}. It is disabled and has no schedule.",
         "changed_paths": [watch.path],
@@ -553,7 +619,7 @@ async def activate_watch(context: ToolExecutionContext, arguments: dict[str, Any
         "updated_at": datetime.now(UTC),
     })
     context.app.watches._write(Watch.model_validate(activated))
-    context.app.index.rebuild()
+    await _rebuild_index(context)
     return {
         "summary": f"Started Watch: {watch.title}.",
         "changed_paths": [watch.path, schedule["path"]],

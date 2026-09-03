@@ -1,13 +1,17 @@
 from __future__ import annotations
 
+import asyncio
 import hashlib
 import io
+import logging
 import re
 import zipfile
 from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
 
+from defusedxml import ElementTree as SafeET
+from defusedxml.common import DefusedXmlException
 from docx import Document as DocxDocument
 from fastapi import UploadFile
 from pypdf import PdfReader
@@ -23,6 +27,17 @@ from app.utils.time import iso_now
 WORD_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 W = f"{{{WORD_NS}}}"
 AUTHOR_PALETTE = ("#2F5597", "#7030A0", "#008272", "#A64B00", "#C0006F", "#5B6573", "#7A3E00", "#006B8F")
+UPLOAD_READ_CHUNK_BYTES = 64 * 1024
+DOCX_MAX_MEMBERS = 256
+DOCX_MAX_XML_PART_BYTES = 8 * 1024 * 1024
+DOCX_MAX_EXPANDED_BYTES = 50 * 1024 * 1024
+DOCX_READ_CHUNK_BYTES = 64 * 1024
+
+logger = logging.getLogger(__name__)
+
+
+class DocxSecurityError(ValueError):
+    """A DOCX package cannot be processed safely."""
 
 
 class IngestionService:
@@ -44,20 +59,19 @@ class IngestionService:
         self.matter_paths = matter_paths
         self.max_upload_bytes = max_upload_mb * 1024 * 1024
 
-    async def upload_to_matter(self, matter_id: str, upload: UploadFile) -> dict[str, Any]:
+    async def upload_to_matter(
+        self, matter_id: str, upload: UploadFile, *, rebuild: bool = True
+    ) -> dict[str, Any]:
         name = safe_filename(upload.filename or "uploaded-file")
         suffix = Path(name).suffix.lower()
         if suffix not in self.SUPPORTED_SUFFIXES:
             supported = ", ".join(sorted(self.SUPPORTED_SUFFIXES))
             raise ValueError(f"Unsupported file type. Use one of: {supported}.")
-        data = await upload.read()
-        if len(data) > self.max_upload_bytes:
-            raise ValueError(f"Upload exceeds {self.max_upload_bytes // (1024 * 1024)} MB limit.")
+        data, extracted, review = await self._prepare_upload(name, upload)
         source_folder = self.matter_paths.folder(
             matter_id, "matter_files.source_documents_dir"
         )
         destination = f"{source_folder}/{name}"
-        self.vault.write_bytes(destination, data)
         content_hash = hashlib.sha256(data).hexdigest()
         result: dict[str, Any] = {
             "path": destination,
@@ -69,7 +83,9 @@ class IngestionService:
             "source_only": suffix in self.IMAGE_SUFFIXES,
         }
 
-        extracted, review = self._extract(name, data)
+        companion: str | None = None
+        companion_content = ""
+        companion_metadata: dict[str, Any] | None = None
         if extracted.strip() or suffix in {".pdf", ".docx"}:
             companion = f"{source_folder}/{name}.extracted.md"
             extracted_body = extracted.strip() or (
@@ -92,19 +108,26 @@ class IngestionService:
                     thread["anchor_start"] += len(prefix)
                     thread["anchor_end"] += len(prefix)
                 metadata["review"] = review
-            self.vault.write_markdown(
-                companion,
-                f"# Extracted text: {name}\n\n{extracted_body}\n",
-                metadata,
-            )
+            companion_content = f"# Extracted text: {name}\n\n{extracted_body}\n"
+            companion_metadata = metadata
             result["extracted_path"] = companion
-        self.matters.append_event(
-            matter_id,
-            "document_uploaded",
-            {"title": f"Uploaded {name}", "path": destination},
-            rebuild=False,
-        )
-        self.index.rebuild()
+        self._persist_source(destination, data, companion, companion_content, companion_metadata)
+        try:
+            self.matters.append_event(
+                matter_id,
+                "document_uploaded",
+                {"title": f"Uploaded {name}", "path": destination},
+                rebuild=False,
+            )
+        except Exception as exc:
+            logger.error("upload event persistence failed: %s", type(exc).__name__)
+            if rebuild:
+                await self.index.rebuild_async()
+            else:
+                setattr(exc, "_ingestion_source_persisted", True)
+            raise
+        if rebuild:
+            await self.index.rebuild_async()
         return result
 
     async def upload_many_to_matter(
@@ -116,13 +139,21 @@ class IngestionService:
     ) -> dict[str, Any]:
         if not uploads:
             raise ValueError("Select at least one file to upload.")
-        attachments = [await self.upload_to_matter(matter_id, upload) for upload in uploads]
-        preview = self.batch_preview(attachments, intent=intent)
-        path = self._batch_path(matter_id, preview["batch_id"])
-        self.vault.write_markdown(path, f"# Uploaded document set\n\n{preview['count']} source files.\n", {
-            **preview, "matter_id": matter_id, "record_type": "document_batch", "state": "preview",
-            "created_at": iso_now(), "action_id": "",
-        })
+        attachments: list[dict[str, Any]] = []
+        try:
+            for upload in uploads:
+                attachments.append(await self.upload_to_matter(matter_id, upload, rebuild=False))
+            preview = self.batch_preview(attachments, intent=intent)
+            path = self._batch_path(matter_id, preview["batch_id"])
+            self.vault.write_markdown(path, f"# Uploaded document set\n\n{preview['count']} source files.\n", {
+                **preview, "matter_id": matter_id, "record_type": "document_batch", "state": "preview",
+                "created_at": iso_now(), "action_id": "",
+            })
+        except Exception as exc:
+            if attachments or getattr(exc, "_ingestion_source_persisted", False):
+                await self.index.rebuild_async()
+            raise
+        await self.index.rebuild_async()
         return preview
 
     def get_batch(self, matter_id: str, batch_id: str) -> dict[str, Any]:
@@ -179,35 +210,98 @@ class IngestionService:
         if not uploads:
             raise ValueError("Select at least one file to upload.")
         attachments: list[dict[str, str]] = []
-        for upload in uploads:
-            name = safe_filename(upload.filename or "uploaded-file")
-            suffix = Path(name).suffix.lower()
-            if suffix not in self.SUPPORTED_SUFFIXES:
-                raise ValueError(f"Unsupported file type: {suffix or 'unknown'}.")
-            data = await upload.read()
-            if len(data) > self.max_upload_bytes:
-                raise ValueError(f"Upload exceeds {self.max_upload_bytes // (1024 * 1024)} MB limit.")
-            digest = hashlib.sha256(data).hexdigest()
-            path = f"04_Inbox/chat-uploads/{digest[:12]}-{name}"
-            self.vault.write_bytes(path, data)
-            extracted, review = self._extract(name, data)
-            if extracted.strip():
-                metadata = {
-                    "record_type": "extracted_document", "source_path": path,
-                    "source_id": f"SRC-{digest[:16].upper()}", "source_version": digest,
-                    "created_at": iso_now()}
-                if review:
-                    review = dict(review)
-                    prefix = f"# Extracted text: {name}\n\n"
-                    review["segments"] = [_review_segment("equal", prefix), *review["segments"]]
-                    for thread in review["comments"]:
-                        thread["anchor_start"] += len(prefix)
-                        thread["anchor_end"] += len(prefix)
-                    metadata["review"] = review
-                self.vault.write_markdown(f"{path}.extracted.md", f"# Extracted text: {name}\n\n{extracted}", metadata)
-            attachments.append({"source_id": f"SRC-{digest[:16].upper()}", "path": path, "name": name, "version": digest})
-        self.index.rebuild()
+        try:
+            for upload in uploads:
+                name = safe_filename(upload.filename or "uploaded-file")
+                suffix = Path(name).suffix.lower()
+                if suffix not in self.SUPPORTED_SUFFIXES:
+                    raise ValueError(f"Unsupported file type: {suffix or 'unknown'}.")
+                data, extracted, review = await self._prepare_upload(name, upload)
+                digest = hashlib.sha256(data).hexdigest()
+                path = f"04_Inbox/chat-uploads/{digest[:12]}-{name}"
+                companion = f"{path}.extracted.md" if extracted.strip() else None
+                companion_content = ""
+                companion_metadata: dict[str, Any] | None = None
+                if companion:
+                    metadata = {
+                        "record_type": "extracted_document", "source_path": path,
+                        "source_id": f"SRC-{digest[:16].upper()}", "source_version": digest,
+                        "created_at": iso_now()}
+                    if review:
+                        review = dict(review)
+                        prefix = f"# Extracted text: {name}\n\n"
+                        review["segments"] = [_review_segment("equal", prefix), *review["segments"]]
+                        for thread in review["comments"]:
+                            thread["anchor_start"] += len(prefix)
+                            thread["anchor_end"] += len(prefix)
+                        metadata["review"] = review
+                    companion_content = f"# Extracted text: {name}\n\n{extracted}"
+                    companion_metadata = metadata
+                self._persist_source(path, data, companion, companion_content, companion_metadata)
+                attachments.append({"source_id": f"SRC-{digest[:16].upper()}", "path": path, "name": name, "version": digest})
+        except Exception:
+            if attachments:
+                await self.index.rebuild_async()
+            raise
+        await self.index.rebuild_async()
         return {"attachments": attachments}
+
+    async def _read_upload(self, upload: UploadFile) -> bytes:
+        data = bytearray()
+        while len(data) <= self.max_upload_bytes:
+            remaining = self.max_upload_bytes + 1 - len(data)
+            chunk = await upload.read(min(UPLOAD_READ_CHUNK_BYTES, remaining))
+            if not chunk:
+                return bytes(data)
+            data.extend(chunk)
+        raise ValueError(f"Upload exceeds {self.max_upload_bytes // (1024 * 1024)} MB limit.")
+
+    async def _prepare_upload(
+        self, name: str, upload: UploadFile
+    ) -> tuple[bytes, str, dict[str, Any] | None]:
+        try:
+            data = await self._read_upload(upload)
+            extracted, review = await self._extract_async(name, data)
+            return data, extracted, review
+        except ValueError:
+            raise
+        except Exception as exc:
+            logger.error("upload validation or extraction failed: %s", type(exc).__name__)
+            raise
+
+    async def _extract_async(self, name: str, data: bytes) -> tuple[str, dict[str, Any] | None]:
+        if Path(name).suffix.lower() in {".pdf", ".docx"}:
+            return await asyncio.to_thread(self._extract, name, data)
+        return self._extract(name, data)
+
+    def _persist_source(
+        self,
+        destination: str,
+        data: bytes,
+        companion: str | None,
+        companion_content: str,
+        companion_metadata: dict[str, Any] | None,
+    ) -> None:
+        source_path = self.vault.resolve(destination)
+        source_before = source_path.read_bytes() if source_path.exists() else None
+        companion_path = self.vault.resolve(companion) if companion else None
+        companion_before = companion_path.read_bytes() if companion_path and companion_path.exists() else None
+        try:
+            self.vault.write_bytes(destination, data)
+            if companion:
+                self.vault.write_markdown(companion, companion_content, companion_metadata)
+        except Exception as exc:
+            logger.error("upload persistence failed: %s", type(exc).__name__)
+            if source_before is not None:
+                self.vault.write_bytes(destination, source_before)
+            elif source_path.exists():
+                source_path.unlink()
+            if companion_path:
+                if companion_before is not None:
+                    self.vault.write_bytes(companion, companion_before)
+                elif companion_path.exists():
+                    companion_path.unlink()
+            raise
 
     def _quick_scan(self, attachment: dict[str, Any]) -> dict[str, Any]:
         text = ""
@@ -240,10 +334,13 @@ class IngestionService:
             pages = [page.extract_text() or "" for page in reader.pages]
             return "\n\n---\n\n".join(page.strip() for page in pages), None
         if suffix == ".docx":
+            parts = _preflight_docx(data)
             try:
-                imported = _reviewed_docx(data)
+                imported = _reviewed_docx(data, parts)
                 if imported is not None:
                     return imported
+            except DocxSecurityError:
+                raise
             except (ET.ParseError, KeyError, ValueError, zipfile.BadZipFile):
                 pass
             document = DocxDocument(io.BytesIO(data))
@@ -289,20 +386,65 @@ def _author_id(name: str, used: set[str]) -> str:
     return candidate
 
 
-def _reviewed_docx(data: bytes) -> tuple[str, dict[str, Any] | None] | None:
+def _preflight_docx(data: bytes) -> dict[str, bytes]:
+    """Read a bounded DOCX package before any XML or python-docx parsing."""
+    try:
+        with zipfile.ZipFile(io.BytesIO(data)) as package:
+            members = package.infolist()
+            if len(members) > DOCX_MAX_MEMBERS:
+                raise DocxSecurityError("DOCX package has too many members")
+            parts: dict[str, bytes] = {}
+            expanded = 0
+            for member in members:
+                if member.flag_bits & 0x1:
+                    raise DocxSecurityError("DOCX package contains encrypted content")
+                size = 0
+                member_name = member.filename.lower()
+                is_xml_part = member_name.endswith((".xml", ".rels"))
+                content = bytearray() if member_name.endswith(".xml") else None
+                with package.open(member) as handle:
+                    while chunk := handle.read(DOCX_READ_CHUNK_BYTES):
+                        size += len(chunk)
+                        expanded += len(chunk)
+                        if size > DOCX_MAX_EXPANDED_BYTES or expanded > DOCX_MAX_EXPANDED_BYTES:
+                            raise DocxSecurityError("DOCX package expands beyond the allowed size")
+                        if is_xml_part and size > DOCX_MAX_XML_PART_BYTES:
+                            raise DocxSecurityError("DOCX XML part exceeds the allowed size")
+                        if content is not None:
+                            content.extend(chunk)
+                if content is not None:
+                    parts[member.filename] = bytes(content)
+    except (OSError, RuntimeError, NotImplementedError, zipfile.BadZipFile, zipfile.LargeZipFile) as exc:
+        raise DocxSecurityError("DOCX package is malformed") from exc
+    if "word/document.xml" not in parts:
+        raise DocxSecurityError("DOCX document XML is missing")
+    return parts
+
+
+def _reviewed_docx(
+    data: bytes, parts: dict[str, bytes] | None = None
+) -> tuple[str, dict[str, Any] | None] | None:
     """Read classic Word revisions/comments. Return None when no review data exists."""
-    with zipfile.ZipFile(io.BytesIO(data)) as package:
-        root = ET.fromstring(package.read("word/document.xml"))
+    parts = parts or _preflight_docx(data)
+    try:
+        root = SafeET.fromstring(parts["word/document.xml"])
+    except DefusedXmlException as exc:
+        raise DocxSecurityError("DOCX XML contains unsafe entities") from exc
+    try:
         has_revisions = root.find(f".//{W}ins") is not None or root.find(f".//{W}del") is not None
         has_ranges = root.find(f".//{W}commentRangeStart") is not None
         if not has_revisions and not has_ranges:
             return None
         comments_root = None
-        if "word/comments.xml" in package.namelist():
+        if "word/comments.xml" in parts:
             try:
-                comments_root = ET.fromstring(package.read("word/comments.xml"))
+                comments_root = SafeET.fromstring(parts["word/comments.xml"])
+            except DefusedXmlException as exc:
+                raise DocxSecurityError("DOCX XML contains unsafe entities") from exc
             except ET.ParseError:
                 comments_root = None
+    except DefusedXmlException as exc:
+        raise DocxSecurityError("DOCX XML contains unsafe entities") from exc
 
     author_map: dict[str, dict[str, str]] = {}
     used_ids: set[str] = set()

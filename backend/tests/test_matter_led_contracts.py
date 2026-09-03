@@ -1,6 +1,9 @@
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.models.api import MatterCreate
+from app.routers.matters import create_matter
 
 
 def _client(context):
@@ -8,21 +11,49 @@ def _client(context):
     return TestClient(app)
 
 
-def test_create_matter_queues_intake_with_exact_request_source(app_context):
+@pytest.mark.asyncio
+async def test_create_matter_queues_intake_with_exact_request_source(app_context):
     request_text = "Can we launch this change for marketplace sellers in eight weeks?"
-    response = _client(app_context).post("/api/matters", json={
-        "title": "Card contract matter",
-        "request_text": request_text,
-    })
-    assert response.status_code == 201
-    created = response.json()
+    created = await create_matter(
+        MatterCreate(title="Card contract matter", request_text=request_text),
+        app_context,
+    )
     matter_id = created["matter_id"]
-    assert created["intake_conversation_id"]
-    assert created["intake_run_id"]
-    conversations = _client(app_context).get(f"/api/matters/{matter_id}/conversations").json()["conversations"]
-    conversation = _client(app_context).get(
-        f"/api/matters/{matter_id}/conversations/{conversations[0]['conversation_id']}"
-    ).json()
+    assert created["creation_status"] == "changed"
+    assert created["creation_summary"] == "Matter created; intake is starting."
+    assert created["intake_conversation_id"] is None
+    assert created["intake_run_id"] is None
+    assert created["operation_result"] == {
+        "action": "create_matter",
+        "source_action_key": None,
+        "operation": "create_matter",
+        "status": "changed",
+        "summary": "Matter created; intake is starting.",
+        "matter_id": matter_id,
+        "entity_refs": [{"type": "matter", "id": matter_id}],
+        "changed_paths": [
+            f"{created['path']}/matter.md",
+            f"{created['path']}/request.md",
+        ],
+        "resulting_matter_state": {
+            "stage": "intake",
+            "next_action": created["work_state"]["next_action"],
+            "work_state": created["work_state"],
+        },
+        "available_next_actions": [],
+        "required_user_action": None,
+        "error": None,
+        "recovery": None,
+    }
+
+    await app_context.wait_for_intake_starts()
+    detail = app_context.matters.get(matter_id)
+    assert detail["intake_conversation_id"]
+    assert detail["intake_run_id"]
+    conversations = app_context.chat_history.list(matter_id)
+    conversation = app_context.chat_history.get(
+        matter_id, conversations[0]["conversation_id"]
+    )
     first = conversation["messages"][0]
     request = app_context.vault.read_markdown(f"{created['path']}/request.md")
     assert conversation["conversation_kind"] == "intake"
@@ -30,15 +61,14 @@ def test_create_matter_queues_intake_with_exact_request_source(app_context):
     assert first["role"] == "user"
     assert first["content"] == request_text
     assert first["source_ids"] == [request["metadata"]["request_id"]]
-    assert first["run_id"] == created["intake_run_id"]
+    assert first["run_id"] == detail["intake_run_id"]
     assert all(
         message["content"] != "Here is what I understand you are asking. Is that correct?"
         for message in conversation["messages"]
     )
 
-    detail = _client(app_context).get(f"/api/matters/{matter_id}").json()
-    assert detail["intake_conversation_id"] == created["intake_conversation_id"]
-    assert detail["intake_run_id"] == created["intake_run_id"]
+    assert conversation["conversation_id"] == detail["intake_conversation_id"]
+    await app_context.chat_runs.wait(detail["intake_run_id"])
 
 
 def test_card_action_and_attachment_metadata_survive_reload(app_context):
@@ -55,7 +85,13 @@ def test_card_action_and_attachment_metadata_survive_reload(app_context):
         f"/api/matters/MAT-DEMO-BEACON/conversations/{payload['conversation_id']}"
     ).json()
     assert conversation["messages"][0]["attachments"][0]["source_id"] == "SRC-1"
-    assert conversation["messages"][1]["cards"][0]["type"] == "matter_update"
+    assert conversation["messages"][0]["card_action"] == {
+        "card_id": "intake-confirm-ask", "action": "answer", "values": ["yes"], "answers": [],
+    }
+    assert not any(
+        card["type"] == "matter_update"
+        for card in conversation["messages"][1]["cards"]
+    )
 
 
 def test_company_profile_is_vault_backed_and_versioned(app_context):

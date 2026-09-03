@@ -6,9 +6,22 @@ from fastapi.responses import FileResponse
 from app.models.api import DocumentReviewAction, FileUpdate
 from app.routers.dependencies import get_context
 from app.runtime import AppContext
+from app.services.recommendations import RecommendationService
 
 
 router = APIRouter(prefix="/files", tags=["files"])
+
+
+def _reject_generic_recommendation_path(path: str, context: AppContext) -> None:
+    normalized = context.vault.relative(context.vault.resolve(path))
+    if RecommendationService(context.vault, context.matters).is_configured_path(normalized):
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "recommendations.md is managed by the typed recommendation endpoint. "
+                "Use /api/matters/{matter_id}/recommendation."
+            ),
+        )
 
 
 @router.get("/tree")
@@ -42,6 +55,7 @@ def get_review(
     context: AppContext = Depends(get_context),
 ):
     try:
+        _reject_generic_recommendation_path(path, context)
         return context.document_reviews.get(path)
     except (ValueError, FileNotFoundError) as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
@@ -54,7 +68,11 @@ def update_review(
     context: AppContext = Depends(get_context),
 ):
     try:
+        _reject_generic_recommendation_path(path, context)
         result = context.document_reviews.apply(path, payload)
+        context.matter_records.reconcile_edited_document(
+            path, actor=payload.author_name or "user"
+        )
         context.index.rebuild()
         return result
     except (ValueError, FileNotFoundError) as exc:
@@ -81,6 +99,7 @@ def read_file(
     context: AppContext = Depends(get_context),
 ):
     try:
+        _reject_generic_recommendation_path(path, context)
         return context.vault.read_document(path)
     except (ValueError, FileNotFoundError) as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
@@ -93,6 +112,7 @@ def update_file(
     context: AppContext = Depends(get_context),
 ):
     try:
+        _reject_generic_recommendation_path(path, context)
         current = context.vault.read_document(path)
         if current.get("metadata", {}).get("immutable"):
             raise ValueError("This is an immutable original record. Create a new version instead.")
@@ -102,6 +122,7 @@ def update_file(
             raise ValueError("Use save_revision with an explicit review author while Track Changes is on.")
         if path.lower().endswith(".md"):
             saved = context.vault.write_markdown(path, payload.content, payload.metadata)
+            context.matter_records.reconcile_edited_document(path, actor="user")
         else:
             saved = context.vault.write_bytes(path, payload.content.encode("utf-8"))
         context.index.rebuild()

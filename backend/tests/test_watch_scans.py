@@ -26,9 +26,13 @@ class IndexFake:
     def __init__(self, store):
         self.store = store
         self.rebuilds = 0
+        self.async_rebuilds = 0
 
     def rebuild(self):
         self.rebuilds += 1
+
+    async def rebuild_async(self):
+        self.async_rebuilds += 1
 
     def query_briefing(self, query):
         return self.store.list_items(query)
@@ -110,6 +114,44 @@ async def test_watches_only_receive_their_owned_developments(tmp_path):
     assert [(item.title, item.topics) for item in result_b.preview_items] == [
         ("Beta rule", ["beta"])
     ]
+
+
+@pytest.mark.asyncio
+async def test_watch_scan_uses_one_async_rebuild(tmp_path):
+    vault = VaultService(tmp_path)
+    watch = make_watch(vault)
+    index = IndexFake(BriefingStore(vault))
+    provider = ProviderFake("native", ProviderScanResult(provider_id="native", status="success"))
+    service = WatchScanService(
+        WatchStore(vault), index.store, DevelopmentService(vault), RegistryFake({"native": provider}),
+        OutboundQueryPolicy(), KnowledgeFake(), AwarenessMatcher(), ReviewPacketService(vault, index.store), index,
+    )
+
+    await service.run_watch(watch.watch_id, "manual")
+
+    assert index.rebuilds == 0
+    assert index.async_rebuilds == 1
+
+
+@pytest.mark.asyncio
+async def test_watch_privacy_validation_failure_rebuilds_the_durable_failed_scan(tmp_path):
+    class InvalidKnowledge(KnowledgeFake):
+        def forbidden_corpus(self, watch):
+            return ForbiddenCorpus()
+
+    vault = VaultService(tmp_path)
+    watch = make_watch(vault)
+    index = IndexFake(BriefingStore(vault))
+    service = WatchScanService(
+        WatchStore(vault), index.store, DevelopmentService(vault), RegistryFake({}),
+        OutboundQueryPolicy(), InvalidKnowledge(), AwarenessMatcher(), ReviewPacketService(vault, index.store), index,
+    )
+
+    result = await service.run_watch(watch.watch_id, "manual")
+
+    assert result.scan.status == "failed"
+    assert index.rebuilds == 0
+    assert index.async_rebuilds == 1
 
 
 @pytest.mark.asyncio

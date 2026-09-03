@@ -26,6 +26,139 @@ def test_exact_completion_is_retry_safe_and_does_not_touch_sibling(app_context):
     assert app_context.vault.read_markdown(sibling["path"])["metadata"]["status"] == "open"
 
 
+def test_direct_action_returns_common_operation_result(app_context):
+    matter_id, final = _responding_matter(app_context)
+
+    result = app_context.matters.perform_action(
+        matter_id,
+        "approve_response",
+        actor="Counsel",
+        artifact_path=final["vault_path"],
+    )
+
+    assert result["operation"] == "approve_response"
+    assert result["status"] == "changed"
+    assert result["matter_id"] == matter_id
+    assert result["resulting_matter_state"]["stage"] == "respond"
+    assert result["available_next_actions"] == ["mark_as_sent"]
+    assert result["error"] is None
+
+
+def test_close_prerequisites_follow_canonical_lifecycle_order(app_context):
+    matter = app_context.matters.create(
+        MatterCreate(title="Close guidance", request_text="Prepare a response.")
+    )
+    matter_id = matter["matter_id"]
+    app_context.matters.move_stage(matter_id, "respond")
+    assert app_context.matters.closure_prerequisite(matter_id) == (
+        "Finalize the current work product before closing the matter."
+    )
+
+    draft = app_context.work_products.create_draft(
+        matter_id, title="Answer", content="Final answer"
+    )
+    final = app_context.work_products.finalize(matter_id, draft["vault_path"])
+    assert app_context.matters.closure_prerequisite(matter_id) == (
+        "Approve the current final response before closing the matter."
+    )
+
+    app_context.matters.perform_action(
+        matter_id, "approve_response", actor="Counsel", artifact_path=final["vault_path"]
+    )
+    assert app_context.matters.closure_prerequisite(matter_id) == (
+        "Record manual delivery before closing the matter."
+    )
+
+    for item in app_context.index.list_work_items(matter_id):
+        if item["required"] and item["status"] not in {"done", "closed"}:
+            app_context.matters.complete_work_item(
+                matter_id, item["work_item_id"], actor="Counsel"
+            )
+    blocker = app_context.matters.create_work_item(WorkItemCreate(
+        matter_id=matter_id, title="Archive approval", required=True,
+    ))
+    app_context.matters.perform_action(matter_id, "mark_as_sent", actor="Counsel")
+    assert app_context.matters.closure_prerequisite(matter_id) == (
+        "Complete required work before closing the matter: Archive approval."
+    )
+
+    app_context.matters.complete_work_item(
+        matter_id, blocker["work_item_id"], actor="Counsel"
+    )
+    assert app_context.matters.closure_prerequisite(matter_id) is None
+
+
+def test_approval_and_delivery_allow_required_open_work_but_closure_does_not(app_context):
+    matter_id, final = _responding_matter(app_context)
+    required = app_context.matters.create_work_item(WorkItemCreate(
+        matter_id=matter_id,
+        title="Archive signed response",
+        required=True,
+    ))
+
+    approved = app_context.matters.perform_action(
+        matter_id, "approve_response", actor="Counsel", artifact_path=final["vault_path"],
+    )
+    delivered = app_context.matters.perform_action(matter_id, "mark_as_sent", actor="Counsel")
+
+    assert approved["matter"]["response_approved_at"]
+    assert delivered["matter"]["response_sent_at"]
+    with pytest.raises(ValueError, match="Archive signed response"):
+        app_context.matters.perform_action(matter_id, "close_matter", actor="Counsel")
+
+    for item in app_context.index.list_work_items(matter_id):
+        if item["required"] and item["status"] not in {"done", "closed"}:
+            app_context.matters.complete_work_item(matter_id, item["work_item_id"], actor="Counsel")
+    closed = app_context.matters.perform_action(matter_id, "close_matter", actor="Counsel")
+    assert closed["matter"]["status"] == "closed"
+
+
+@pytest.mark.parametrize("research_state", ["queued", "running"])
+def test_active_research_blocks_closure_until_it_is_stopped(app_context, research_state):
+    matter_id, final = _responding_matter(app_context)
+    app_context.matters.perform_action(
+        matter_id, "approve_response", actor="Counsel", artifact_path=final["vault_path"]
+    )
+    app_context.matters.perform_action(matter_id, "mark_as_sent", actor="Counsel")
+    for item in app_context.index.list_work_items(matter_id):
+        if item["required"] and item["status"] not in {"done", "closed"}:
+            app_context.matters.complete_work_item(matter_id, item["work_item_id"], actor="Counsel")
+    app_context.research_runs._write(
+        matter_id, "RUN-ACTIVE", state=research_state, questions=["What applies?"],
+        completed=0, status="Research is active.",
+    )
+
+    with pytest.raises(ValueError, match="Stop or finish active research before closing"):
+        app_context.matters.perform_action(matter_id, "close_matter", actor="Counsel")
+
+    app_context.research_runs._write(
+        matter_id, "RUN-ACTIVE", state="interrupted", status="Research was stopped."
+    )
+    assert app_context.matters.perform_action(
+        matter_id, "close_matter", actor="Counsel"
+    )["matter"]["status"] == "closed"
+
+
+def test_closed_matter_with_active_research_has_visible_consistency_issue(app_context):
+    matter_id, final = _responding_matter(app_context)
+    app_context.matters.perform_action(
+        matter_id, "approve_response", actor="Counsel", artifact_path=final["vault_path"]
+    )
+    app_context.matters.perform_action(matter_id, "mark_as_sent", actor="Counsel")
+    for item in app_context.index.list_work_items(matter_id):
+        if item["required"] and item["status"] not in {"done", "closed"}:
+            app_context.matters.complete_work_item(matter_id, item["work_item_id"], actor="Counsel")
+    app_context.matters.perform_action(matter_id, "close_matter", actor="Counsel")
+    app_context.research_runs._write(
+        matter_id, "RUN-LEGACY-ACTIVE", state="running", questions=["What applies?"],
+        completed=0, status="Research is running.",
+    )
+
+    assert "closed_with_active_research" in {
+        issue["code"] for issue in app_context.matters.get(matter_id)["consistency_issues"]
+    }
+
+
 def test_work_item_source_action_key_returns_one_durable_item(app_context):
     request = WorkItemCreate(
         matter_id="MAT-DEMO-BEACON",
@@ -91,6 +224,44 @@ def test_lifecycle_binds_final_and_retries_with_stable_events(app_context):
     repaired = app_context.matters.perform_action(matter_id, "approve_response", actor="Other", artifact_path=final["vault_path"])
     assert repaired["event_path"] == approved["event_path"]
     assert app_context.vault.exists(approved["event_path"])
+
+
+def test_safe_consistency_repair_only_changes_derived_lifecycle_fields(app_context):
+    matter = app_context.matters.create(
+        MatterCreate(title="Legacy final mismatch", request_text="Prepare an answer.")
+    )
+    matter_id = matter["matter_id"]
+    draft = app_context.work_products.create_draft(
+        matter_id, title="Answer", content="Final answer"
+    )
+    final = app_context.work_products.finalize(matter_id, draft["vault_path"])
+    matter_path = f"{matter['path']}/matter.md"
+    app_context.vault.update_markdown(
+        matter_path,
+        metadata_updates={"status": "research", "next_action": "Run research."},
+    )
+    app_context.index.rebuild()
+    before = app_context.vault.read_markdown(matter_path)["metadata"]
+    assert [issue["code"] for issue in app_context.matters.get(matter_id)["consistency_issues"]] == [
+        "final_with_pre_respond_stage"
+    ]
+    listed = next(item for item in app_context.matters.list() if item["matter_id"] == matter_id)
+    assert [issue["code"] for issue in listed["consistency_issues"]] == [
+        "final_with_pre_respond_stage"
+    ]
+
+    repaired = app_context.matters.repair_consistency(matter_id, actor="Counsel")
+
+    after = app_context.vault.read_markdown(matter_path)["metadata"]
+    assert repaired["status"] == "changed"
+    assert repaired["matter"]["status"] == "respond"
+    assert repaired["matter"]["current_work_product_final_path"] == final["vault_path"]
+    for field in ("response_approved_at", "response_sent_at", "closed_at", "durable_decision_needed"):
+        assert after.get(field) == before.get(field)
+    assert app_context.index.list_decisions() == [
+        decision for decision in app_context.index.list_decisions()
+        if decision["matter_id"] != matter_id
+    ]
 
 
 def test_delivered_or_closed_matter_rejects_a_replacement_draft(app_context):

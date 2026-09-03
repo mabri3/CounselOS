@@ -6,6 +6,7 @@ from io import BytesIO
 from pypdf import PdfReader
 
 from app.models.api import DocumentReviewAction
+from app.services.document_review import GRANULAR_REVIEW_CHANGE_LIMIT
 
 
 PATH = "03_Matters/beacon-instant-onboarding/drafts/review-demo.md"
@@ -156,6 +157,74 @@ def test_agent_revision_preserves_metadata_and_becomes_a_redline(app_context):
     change = app_context.document_reviews.get(PATH)["changes"][0]
     assert change["old_text"] == "old"
     assert change["new_text"] == "new"
+
+
+def test_large_agent_rewrite_is_one_reversible_whole_document_change(app_context):
+    old = "\n".join(
+        f"Clause {index}: old wording." for index in range(GRANULAR_REVIEW_CHANGE_LIMIT + 5)
+    )
+    new = "\n".join(
+        f"Clause {index}: new wording." for index in range(GRANULAR_REVIEW_CHANGE_LIMIT + 5)
+    )
+    _write(app_context, old)
+    stored_old = app_context.vault.read_markdown(PATH)["content"]
+
+    app_context.document_reviews.propose_agent_revision(PATH, new)
+    review = app_context.document_reviews.get(PATH)
+    stored_new = app_context.vault.read_markdown(PATH)["content"]
+
+    assert len(review["changes"]) == 1
+    assert review["changes"][0]["old_text"] == stored_old
+    assert review["changes"][0]["new_text"] == stored_new
+
+    rejected = app_context.document_reviews.apply(
+        PATH,
+        DocumentReviewAction(
+            action="reject_change", change_id=review["changes"][0]["change_id"]
+        ),
+    )
+    assert rejected["changes"] == []
+    assert app_context.vault.read_markdown(PATH)["content"] == stored_old
+
+    app_context.document_reviews.propose_agent_revision(PATH, new)
+    review = app_context.document_reviews.get(PATH)
+    accepted = app_context.document_reviews.apply(
+        PATH,
+        DocumentReviewAction(
+            action="accept_change", change_id=review["changes"][0]["change_id"]
+        ),
+    )
+    assert accepted["changes"] == []
+    assert app_context.vault.read_markdown(PATH)["content"] == stored_new
+
+
+def test_large_agent_rewrite_stays_granular_when_older_changes_are_open(app_context):
+    old = "\n".join(
+        f"Clause {index}: old wording." for index in range(GRANULAR_REVIEW_CHANGE_LIMIT + 5)
+    )
+    _write(app_context, old)
+    app_context.document_reviews.apply(
+        PATH, DocumentReviewAction(action="set_tracking", enabled=True)
+    )
+    first = app_context.document_reviews.apply(
+        PATH,
+        DocumentReviewAction(
+            action="save_revision",
+            content=old.replace("Clause 0: old", "Clause 0: pending"),
+            author_id="author-alex",
+            author_name="Alex Chen",
+        ),
+    )
+    first_id = first["changes"][0]["change_id"]
+    new = "\n".join(
+        f"Clause {index}: new wording." for index in range(GRANULAR_REVIEW_CHANGE_LIMIT + 5)
+    )
+
+    app_context.document_reviews.propose_agent_revision(PATH, new)
+    review = app_context.document_reviews.get(PATH)
+
+    assert first_id in {change["change_id"] for change in review["changes"]}
+    assert len(review["changes"]) > 1
 
 
 def test_legacy_generated_author_is_aliased_without_rewriting_review_metadata(app_context):

@@ -1,0 +1,96 @@
+---
+matter_id: MAT-20260903-61b4b7
+record_type: dossier
+editable: true
+source_revision: 03_Matters/mosaic-relay-ux-test-04-payout-hold-and-account-deactivation-61b4b7/dossier-revisions/DOS-20260903-e02257.md
+updated_at: '2026-09-03T17:10:02+00:00'
+content_hash: e6661328bf930d2681e920697131c474acdce9d50f45dfc55c6a7a6e1aaa0512
+---
+# Matter dossier
+
+## Matter summary
+
+Standard process for suspending marketplace sellers and holding pending payouts on fraud/sanctions/identity/unusual-activity triggers, with immediate notice (sanctions/LE exceptions), seven-day extendable review target, and partial/with-deductions release, across US + LatAm + EU before the next holiday sales period.
+
+## Decision question
+
+Risk Operations wants a standard process for suspending a marketplace seller and holding pending payouts when fraud indicators, sanctions alerts, identity discrepancies, or unusual transaction activity appear, with immediate automated notice (except sanctions/law-enforcement), a seven-day review target extendable on escalation, and partial/with-deductions release, consistent across US + LatAm + EU before the next holiday sales period.
+
+## Material facts
+
+- Risk Operations wants a standard process for suspending a seller and holding pending payouts when fraud indicators, sanctions alerts, identity discrepancies, or unusual transaction activity appear.
+- The seller may receive an automated notice, submit documents, and request review.
+- Actors include Risk Operations, Compliance, Customer Support, the marketplace customer, the seller, and payout partners.
+- Product wants consistent behavior across all customers before the next holiday sales period.
+- Existing risk scores and manual-review queues are in place.
+- A proposed seven-day review target is under consideration.
+- Do the marketplace customer agreements (and Mosaic Relay's terms with sellers) currently grant the right to suspend a seller and hold pending payouts, or does this process require new contractual rights? — Not sure — need to check the agreements
+- Which markets must this suspension/hold process cover for the holiday launch? — US + LatAm + EU
+- Is seven days a firm maximum hold, or a target that can extend on escalation? — Target — can extend beyond seven days on escalation
+- When does the business need the legal answer? — Before a planned launch
+- When a payout is held, where do the funds sit? — A payout/acquiring partner
+- Who should own the decision to escalate or release a hold past day seven? — Risk Operations and Compliance jointly
+- Is there a required or preferred notice window for notifying the seller of a hold? — Immediate/automated on hold
+- Whether existing marketplace customer agreements and Mosaic Relay seller terms grant suspension and payout-hold rights (needs agreement review) — Not yet verified. Review both the marketplace customer agreements and Mosaic Relay seller terms before approval.
+- Applicable notice limits/windows for notifying a seller of a hold — Not yet mapped across US, LatAm, and EU. Legal must build a jurisdiction matrix; immediate notice should allow narrow exceptions for sanctions or law-enforcement constraints.
+- Are there specific reporting obligations (e.g., SAR/AML, sanctions) the process should trigger, or should that be left to the legal analysis? — Not sure
+- Is there a defined path for the seller to submit documents and request review, and who handles it? — Customer Support and Risk Operations jointly
+- Specific triggers that escalate a hold past day seven — Escalate for confirmed sanctions or law-enforcement request, unresolved identity mismatch, credible fraud evidence, repeated high-risk activity, or a review that cannot finish by day seven. Compliance must document the reason and next review date.
+- Target date for the holiday sales period launch — Before the next holiday sales period; Product has not supplied an exact launch date yet.
+- Contractual suspension/hold rights (agreement review pending) — Both agreement sets are in scope. No conclusion until counsel reviews customer agreements and seller terms.
+- When a hold is released, is the payout released in full, or can it be partial/with deductions (e.g., chargebacks, fees)? — Partial / with deductions
+- handled ad hoc on release.
+- Does this suspension/hold process apply to all seller types (marketplace sellers, contractors, payees) or only certain categories? — Marketplace sellers only
+- Exact holiday launch date — Not provided. Product only stated that the process is needed before the next holiday sales period.
+- Beyond sanctions/law-enforcement, are there other situations where immediate seller notice should be delayed or withheld? — Only sanctions/law-enforcement exceptions
+
+## Assumptions
+
+- Mosaic Relay does not hold deposits or operate as a bank; held funds flow through regulated partners.
+- The process applies to marketplace sellers across US plus selected LatAm and European markets.
+- Mosaic Relay does not hold deposits or operate as a bank; held funds flow through regulated partners (consistent with reported funds-flow answer).
+- Immediate/automated notice on hold is acceptable as a baseline, subject to narrow exceptions for sanctions or law-enforcement constraints.
+- Funds held with a payout/acquiring partner do not themselves create a deposit-account or money-transmission trigger for Mosaic Relay, pending legal characterization.
+- Funds held with a payout/acquiring partner do not constitute Mosaic Relay holding deposits or acting as a bank.
+- Immediate automated notice is the default, with narrow exceptions for sanctions or law-enforcement constraints.
+- Funds held with a payout/acquiring partner, so Mosaic Relay does not itself hold deposits (per company profile).
+- Immediate/automated seller notice is acceptable except where sanctions or law-enforcement constraints require delay.
+- Funds held with a payout/acquiring partner are treated as pending payouts, not deposits held by Mosaic Relay (Mosaic Relay is not a bank).
+- Immediate automated notice is the baseline, with narrow exceptions for sanctions or law-enforcement constraints.
+- Funds sit with a payout/acquiring partner, not with Mosaic Relay, which bears on money-transmission characterization.
+- Seven-day target is extendable on escalation, not a firm maximum.
+
+## Issues and workstreams
+
+- Money-transmission characterization of holding pending payouts
+- Contractual suspension/hold rights vs. notice obligations
+- Consumer-protection and funds-disclosure obligations
+- Sanctions/AML reporting interplay with holds
+- Jurisdiction-specific notice limits across US, LatAm, and EU
+
+## Open questions
+
+- Jurisdiction-specific notice limits/windows across US, LatAm, and EU
+- Maximum total hold duration or whether holds can extend indefinitely on escalation
+
+## Research and source support
+
+Research has not been added yet.
+
+## Options or working recommendation
+
+## Working recommendation
+Approve a controlled, temporary hold and proportionate restriction for marketplace sellers only. Use immediate automated notice with only sanctions/law-enforcement delay exceptions. Treat seven days as a review target. Any extension needs joint Risk Operations and Compliance approval, documented trigger evidence, reason, owner, and next review date.
+
+Do not approve launch until Legal reviews both agreement sets, completes the US/LatAm/EU notice-and-hold matrix, confirms payout-partner timing and authority, defines reporting handling, and sets a maximum total hold duration. Deactivation requires named authority, contractual basis, Compliance review when applicable, written reason, appeal route, and final payout instructions.
+
+This recommendation is separate from the durable decision and is based on supplied facts, explicit intake answers, and labeled assumptions.
+
+## Next counsel action
+
+Approve the final response.
+
+## Work product links
+
+- Draft: [Payout Hold and Account Deactivation — Legal Approval Packet](03_Matters/mosaic-relay-ux-test-04-payout-hold-and-account-deactivation-61b4b7/work-product/draft/payout-hold-and-account-deactivation-legal-approval-packet-58b082.md)
+- Final: [Payout Hold and Account Deactivation — Legal Approval Packet](03_Matters/mosaic-relay-ux-test-04-payout-hold-and-account-deactivation-61b4b7/work-product/final/payout-hold-and-account-deactivation-legal-approval-packet-58b082-daad72.md)

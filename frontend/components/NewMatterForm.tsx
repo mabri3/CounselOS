@@ -1,7 +1,8 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { getSettings } from "@/lib/api";
+import { FormEvent, useRef, useState } from "react";
+import { getSettings, matterTargetDateFromForm } from "@/lib/api";
+import type { MatterCreatePayload } from "@/lib/types";
 
 /**
  * Canvas 3b — intake is one bar for a request. The full
@@ -11,7 +12,7 @@ export default function NewMatterForm({
   onCreate,
   busy,
 }: {
-  onCreate: (payload: Record<string, unknown>) => Promise<void>;
+  onCreate: (payload: MatterCreatePayload) => Promise<void>;
   busy: boolean;
 }) {
   const [open, setOpen] = useState(false);
@@ -21,45 +22,68 @@ export default function NewMatterForm({
   const [priority, setPriority] = useState("normal");
   const [targetDate, setTargetDate] = useState("");
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [created, setCreated] = useState(false);
+  const sourceActionKey = useRef<string | null>(null);
+  const submitLocked = useRef(false);
 
-  async function submit(event: FormEvent) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submitLocked.current) return;
+    submitLocked.current = true;
+    setSubmitting(true);
+    setCreated(false);
     setError("");
+    const submittedTargetDate = matterTargetDateFromForm(new FormData(event.currentTarget));
     try {
       const settings = await getSettings().catch(() => null);
       const reviewRows = settings?.sections.find((section) => section.id === "document-review")?.rows ?? [];
       const legalOwner = reviewRows
         .find((row) => row.config_key === "document_review.lawyer_name")
         ?.value?.trim() ?? "";
+      sourceActionKey.current ??= `matter-create:form:${crypto.randomUUID()}`;
       await onCreate({
         title: title || requestText.split("\n")[0].slice(0, 120),
         request_text: requestText,
         matter_type: matterType,
         priority,
-        target_date: targetDate || null,
+        target_date: submittedTargetDate,
         legal_owner: legalOwner,
         requester: "Product",
         description: requestText.slice(0, 220),
+        source_action_key: sourceActionKey.current,
       });
+      setCreated(true);
+      sourceActionKey.current = null;
       setTitle("");
       setRequestText("");
       setTargetDate("");
       setOpen(false);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Could not open the matter.");
+    } finally {
+      submitLocked.current = false;
+      setSubmitting(false);
     }
   }
 
   if (!open) {
     return (
-      <div className="intake-bar">
-        <div
-          style={{ flex: 1, minWidth: 0, font: "400 15px/1.5 var(--serif)", color: "var(--ink-5)", cursor: "text" }}
-          onClick={() => setOpen(true)}
-        >
-          Paste a request — a Slack thread, an email, or a redline note…
+      <div>
+        {created ? (
+          <p role="status" style={{ margin: "0 0 8px", color: "var(--healthy)", font: "600 14px var(--sans)" }}>
+            Matter created. Intake is starting.
+          </p>
+        ) : null}
+        <div className="intake-bar">
+          <div
+            style={{ flex: 1, minWidth: 0, font: "400 15px/1.5 var(--serif)", color: "var(--ink-5)", cursor: "text" }}
+            onClick={() => setOpen(true)}
+          >
+            Paste a request — a Slack thread, an email, or a redline note…
+          </div>
+          <button className="btn primary" onClick={() => { setCreated(false); setOpen(true); }}>New matter</button>
         </div>
-        <button className="btn primary" onClick={() => setOpen(true)}>New matter</button>
       </div>
     );
   }
@@ -126,6 +150,7 @@ export default function NewMatterForm({
             <input
               aria-label="Matter target date"
               className="text-input"
+              name="target_date"
               onChange={(event) => setTargetDate(event.target.value)}
               type="date"
               value={targetDate}
@@ -134,11 +159,16 @@ export default function NewMatterForm({
         </div>
       </div>
 
-      {error ? <p className="error">{error}</p> : null}
+      {created ? (
+        <p role="status" style={{ color: "var(--healthy)", font: "600 14px var(--sans)" }}>
+          Matter created. Intake is starting.
+        </p>
+      ) : null}
+      {error ? <p className="error">{error} You can retry without creating a duplicate.</p> : null}
 
       <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
-        <button className="btn primary" disabled={busy || !requestText.trim()} type="submit">
-          {busy ? "Creating matter…" : "Create matter and open Chat"}
+        <button className="btn primary" disabled={busy || submitting || !requestText.trim()} type="submit">
+          {busy || submitting ? "Creating matter…" : "Create matter and open Chat"}
         </button>
       </div>
     </form>

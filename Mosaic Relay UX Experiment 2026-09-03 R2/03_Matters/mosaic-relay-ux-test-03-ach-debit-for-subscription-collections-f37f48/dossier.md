@@ -1,0 +1,83 @@
+---
+matter_id: MAT-20260903-f37f48
+record_type: dossier
+editable: true
+source_revision: 03_Matters/mosaic-relay-ux-test-03-ach-debit-for-subscription-collections-f37f48/dossier-revisions/DOS-20260903-2a213a.md
+updated_at: '2026-09-03T16:39:02+00:00'
+content_hash: 380c48faf34ad11a7d2f8a66ce61256570d10bfef504287c69c5b12194119820
+---
+# Matter dossier
+
+## Matter summary
+
+Mosaic Relay plans to support recurring ACH debits for a software platform collecting monthly subscription fees, with users entering bank account details, agreeing to recurring debits, receiving confirmation, and canceling through the platform. The actors are the platform, its users, Mosaic Relay, the originating bank, and the ACH operator. Counsel is involved because Product wants a pilot in 30 days and needs legal approval of the authorization, recurring-debit, cancellation, notice, return, and recordkeeping requirements. The consumer versus business account mix remains unresolved and determines whether Reg E/EFTA applies at all.
+
+## Decision question
+
+Should legal approve the proposed recurring ACH debit flow for a 30-day pilot, and what specific authorization language, advance-notice timing, cancellation propagation, retry limits, return-code handling, and 2-year recordkeeping format must be locked in before launch to avoid unauthorized-debit liability and Reg E/EFTA violations if consumer accounts are included?
+
+## Material facts
+
+- Mosaic Relay plans to support recurring ACH debits for a software platform that collects monthly subscription fees.
+- A user would enter a bank account, agree to recurring debits, receive confirmation, and be able to cancel through the platform.
+- The actors are the platform, its users, Mosaic Relay, the originating bank, and the ACH operator.
+- Product wants a pilot in 30 days.
+- Known facts include the proposed authorization screen, debit schedule, return handling, and expected transaction volume.
+- Missing facts include the customer's cancellation process, authorization record format, notice timing, retry logic, consumer versus business account mix, and treatment of unauthorized returns.
+- What is the mix of consumer versus business accounts expected in the pilot? This determines the entire regulatory framework (Reg E/EFTA protections for consumers vs. NACHA-only for businesses). — Not yet known / to be determined
+- Is the subscription debit amount fixed or variable? — Not yet known / to be determined
+- How does a user's cancellation propagate from the platform to Mosaic Relay's operations to stop future debits, and who owns the stop obligation? — Not yet known / to be determined
+- What is the authorization record format and retention period for the recurring debits? — Not yet known / to be determined
+- How should retries of returned debits be handled? Retries may constitute new debits requiring fresh authorization and notice, and returned-debit codes (R07, R10, R29) need defined handling to avoid continued debits after a user revokes authorization. — Not yet known / to be determined
+- When does the business need the legal answer? — Before a planned launch
+- Which countries or regions are in scope? — United States only
+- Is there any other fact that would materially change the advice? — No additional facts beyond the listed gaps are confirmed. The legal answer could also change with the platform's role (originator, third-party sender, or service provider), state licensing or money-transmission scope, debit amount limits, consumer disclosure language, data retention/security controls, and whether the pilot uses prenotes or a third-party processor.
+- The business needs the legal answer before a planned launch.
+- Jurisdiction scope is United States only.
+- What role does the platform play in the ACH flow? — Not yet known
+
+## Assumptions
+
+- Mosaic Relay acts as or coordinates with the ODFI/originator for these debits; the originating bank is a regulated partner.
+- The pilot is US-only unless otherwise stated; NACHA rules and Reg E/EFTA apply to US consumer accounts.
+- The pilot is US-only; NACHA rules and Reg E/EFTA apply to US consumer accounts.
+- NACHA Operating Rules and, for consumer accounts, Reg E/EFTA apply to the recurring ACH debits given US-only scope.
+- Mosaic Relay acts as the ODFI or coordinates with an originating bank that holds ODFI obligations; the platform's role is unresolved.
+
+## Issues and workstreams
+
+- NACHA Operating Rules govern recurring ACH debit authorization, notice, and recordkeeping; consumer accounts additionally trigger Reg E/EFTA protections (stop-payment, 60-day error resolution, specific authorization language).
+- Whether the subscription debit amount is fixed or variable determines the NACHA advance-notice requirement (10 days before first debit, 7 days before each subsequent debit for variable amounts).
+- Retry logic for returned debits may constitute new debits requiring fresh authorization and notice, and may implicate unauthorized-return handling (R07, R10, R29).
+- Cancellation must propagate from the user through the platform to Mosaic Relay's operations to prevent unauthorized continued debits.
+- The consumer vs. business account mix remains unresolved and determines whether Reg E/EFTA applies at all.
+- NACHA requires the ODFI to retain the authorization (or a record of it) for 2 years in a reproducible format; format and retention must be confirmed for recordkeeping approval.
+- The platform's role (originator, third-party sender, or service provider) is unresolved and affects NACHA and money-transmission obligations.
+
+## Open questions
+
+- What is the mix of consumer versus business accounts expected in the pilot? This determines whether Reg E/EFTA stop-payment and error-resolution rights apply or whether NACHA rules alone govern.
+- Is the subscription debit amount fixed or variable? This determines whether NACHA requires 10-day advance notice before the first debit and 7-day notice before each subsequent variable debit.
+- How does a user's cancellation propagate from the platform to Mosaic Relay's operations to stop future debits, and who owns the stop obligation?
+- What is the authorization record format and retention period? NACHA requires the ODFI to retain the authorization (or a reproducible record) for 2 years.
+- How should retries of returned debits be handled? Retries may constitute new debits requiring fresh authorization and notice, and returned-debit codes (R07, R10, R29) need defined handling to avoid continued debits after a user revokes authorization.
+
+## Research and source support
+
+Latest review: `03_Matters/mosaic-relay-ux-test-03-ach-debit-for-subscription-collections-f37f48/research/RES-20260903-1929cb.md`
+
+- Internal support: **Facts** — Known Facts Mosaic Relay plans to support recurring ACH debits for a software platform that collects monthly subscription fees. A user would enter a bank account, agree to recurring debits, receive…
+
+## Options or working recommendation
+
+# Recommendations
+
+No recommendation has been drafted yet.
+
+## Next counsel action
+
+Run or supervise first-pass research.
+
+## Work product links
+
+- Draft: [NACHA Operating Rules Requirements for Recurring ACH Debit Authorization, Advance Notice, and Record Retention](03_Matters/mosaic-relay-ux-test-03-ach-debit-for-subscription-collections-f37f48/work-product/draft/mosaic-relay-ux-test-03-ach-debit-for-subscription-collections-r-759b06.md)

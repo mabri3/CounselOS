@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 from app.models.api import ChatRequest, ChatResponse, ToolTrace
 from app.providers.base import ProviderReply, ProviderToolCall
 from app.routers.chat import _apply_matter_actions
+from app.services.recommendations import RecommendationService
 
 
 def _client(app_context):
@@ -15,6 +16,34 @@ def _client(app_context):
 
     app.state.context = app_context
     return TestClient(app)
+
+
+def _seed_decision_confirmation(app_context, *, source_action_key: str) -> tuple[str, str]:
+    saved = app_context.chat_history.append(
+        "MAT-DEMO-BEACON", None, role="user", content="Record the launch decision."
+    )
+    action_id = f"{source_action_key}:confirm"
+    app_context.chat_history.append(
+        "MAT-DEMO-BEACON",
+        saved["conversation_id"],
+        role="assistant",
+        content="Confirm the decision before it is recorded.",
+        operation_results=[{
+            "action": action_id,
+            "source_action_key": source_action_key,
+            "operation": "record_decision",
+            "status": "confirmation_required",
+            "summary": "Decision confirmation required.",
+            "matter_id": "MAT-DEMO-BEACON",
+            "proposal": {
+                "title": "Launch path",
+                "chosen_path": "Launch with a 30-day retention cap.",
+                "rationale": "This limits data exposure.",
+                "source_action_key": source_action_key,
+            },
+        }],
+    )
+    return saved["conversation_id"], action_id
 
 
 def test_successful_typed_work_product_save_prevents_fallback_draft(app_context, monkeypatch):
@@ -78,6 +107,41 @@ def test_typed_save_creates_exactly_one_draft_and_one_work_product_card(app_cont
     assert cards[0]["state"] == "draft"
 
 
+def test_same_turn_repeated_saves_project_one_latest_work_product_card(app_context):
+    class RepeatedSaveProvider:
+        def __init__(self):
+            self.calls = 0
+
+        async def complete(self, messages, tools=None):
+            self.calls += 1
+            if self.calls == 1:
+                return ProviderReply(tool_calls=[
+                    ProviderToolCall(
+                        id="save-1", name="save_work_product",
+                        arguments={"title": "Notes", "content": "First", "kind": "draft"},
+                    ),
+                    ProviderToolCall(
+                        id="save-2", name="save_work_product",
+                        arguments={"title": "Developed notes", "content": "Second", "kind": "draft"},
+                    ),
+                ])
+            return ProviderReply(content="Saved the developed notes.")
+
+    app_context.runner.provider = RepeatedSaveProvider()
+    response = _client(app_context).post(
+        "/api/chat", json={"message": "Draft and save the notes.", "matter_id": "MAT-DEMO-BEACON"},
+    )
+
+    assert response.status_code == 200
+    cards = [card for card in response.json()["cards"] if card["type"] == "work_product"]
+    assert len(cards) == 1
+    assert cards[0]["title"] == "Developed notes"
+    assert len([
+        item for item in response.json()["trace"]
+        if item["tool"] == "save_work_product"
+    ]) == 2
+
+
 def test_recommendation_save_does_not_create_a_work_product_card(app_context):
     class RecommendationProvider:
         def __init__(self):
@@ -113,7 +177,7 @@ def test_recommendation_save_does_not_create_a_work_product_card(app_context):
     [],
     [ToolTrace(tool="save_work_product", status="error", summary="Save failed.")],
 ])
-def test_missing_or_failed_typed_save_keeps_fallback_draft(app_context, monkeypatch, trace):
+def test_missing_or_failed_typed_save_does_not_create_fallback_draft(app_context, monkeypatch, trace):
     calls = []
 
     def create_draft(*args, **kwargs):
@@ -135,8 +199,8 @@ def test_missing_or_failed_typed_save_keeps_fallback_draft(app_context, monkeypa
         response,
     )
 
-    assert len(calls) == 1
-    assert response.changed_paths == ["03_Matters/beacon-instant-onboarding/work-product/draft/fallback.md"]
+    assert calls == []
+    assert response.changed_paths == []
 
 
 def test_matter_chat_is_saved_and_can_start_a_new_conversation(app_context):
@@ -198,6 +262,223 @@ def test_matter_chat_is_saved_and_can_start_a_new_conversation(app_context):
     assert [message["content"] for message in new_saved["messages"] if message["role"] == "user"] == [
         "Start with clean context."
     ]
+
+
+def test_conversation_api_hides_old_tool_plumbing_without_rewriting_history(app_context):
+    saved = app_context.chat_history.append(
+        "MAT-DEMO-BEACON",
+        None,
+        role="assistant",
+        content=(
+            "The protected matter records can't be written with the generic markdown tool — "
+            "they require the typed matter tools, which aren't available in this session.\n\n"
+            "## Intake summary\n\nThe request has two product-change tracks."
+        ),
+    )
+
+    response = _client(app_context).get(
+        f"/api/matters/MAT-DEMO-BEACON/conversations/{saved['conversation_id']}"
+    )
+
+    assert response.status_code == 200
+    assert response.json()["messages"][0]["content"] == (
+        "## Intake summary\nThe request has two product-change tracks."
+    )
+    persisted = app_context.chat_history.get(
+        "MAT-DEMO-BEACON", saved["conversation_id"]
+    )
+    assert "generic markdown tool" in persisted["messages"][0]["content"]
+
+
+def test_prose_claim_without_typed_result_persists_no_change_operation(app_context):
+    class ProseOnlyProvider:
+        async def complete(self, messages, tools=None):
+            return ProviderReply(content="The draft has been saved. Useful analysis remains visible.")
+
+    app_context.runner.provider = ProseOnlyProvider()
+    response = _client(app_context).post(
+        "/api/chat",
+        json={"message": "What is your recommendation?", "matter_id": "MAT-DEMO-BEACON"},
+    )
+    assert response.status_code == 200
+    conversation = app_context.chat_history.get(
+        "MAT-DEMO-BEACON", response.json()["conversation_id"]
+    )
+    assistant = conversation["messages"][-1]
+    assert assistant["content"] == "Useful analysis remains visible."
+    assert assistant["operation_results"][0]["status"] == "no_change"
+    assert response.json()["reply"] == assistant["content"]
+    assert response.json()["operation_results"] == assistant["operation_results"]
+    assert assistant["operation_results"][0]["operation"] == "chat_turn"
+    assert assistant["operation_results"][0]["status"] == "no_change"
+    assert assistant["operation_results"][0]["summary"] == "No workspace change recorded."
+    assert assistant["operation_results"][0]["error"] is None
+
+
+def test_decision_confirmation_persists_disposition_and_latest_typed_result(app_context):
+    recommendation = RecommendationService(app_context.vault, app_context.matters).set_working(
+        "MAT-DEMO-BEACON",
+        "Launch with a 30-day retention cap.",
+        actor="Counsel",
+        origin="lawyer_edit",
+    )
+    conversation_id, action_id = _seed_decision_confirmation(
+        app_context, source_action_key="chat:test:decision-confirmation"
+    )
+    client = _client(app_context)
+
+    response = client.post(
+        "/api/chat",
+        json={
+            "message": "Record this decision as modified because the final cap is shorter.",
+            "matter_id": "MAT-DEMO-BEACON",
+            "conversation_id": conversation_id,
+            "lawyer_author": "Alex Lawyer",
+            "card_action": {
+                "card_id": f"operation-result:{action_id}",
+                "action": "apply",
+                "values": ["modified", "The final retention cap is shorter."],
+            },
+        },
+    )
+
+    assert response.status_code == 200
+    decisions = [item for item in app_context.decisions.list() if item["title"] == "Launch path"]
+    assert len(decisions) == 1
+    assert decisions[0]["decision_maker"] == "Alex Lawyer"
+    assert decisions[0]["recommendation_disposition"] == "modified"
+    assert decisions[0]["recommendation_disposition_reason"] == "The final retention cap is shorter."
+    assert decisions[0]["recommendation_version_id"] == recommendation["current_version_id"]
+    assert app_context.vault.read_markdown(decisions[0]["path"])["metadata"]["source_action_key"] == (
+        "chat:test:decision-confirmation"
+    )
+
+    reloaded = client.get(
+        f"/api/matters/MAT-DEMO-BEACON/conversations/{conversation_id}"
+    ).json()
+    results = [
+        result
+        for message in reloaded["messages"]
+        for result in message.get("operation_results", [])
+        if result.get("action") == action_id
+    ]
+    assert [result["status"] for result in results] == ["confirmation_required", "changed"]
+    assert results[-1]["summary"] == "Decision recorded."
+
+    repeated = client.post(
+        "/api/chat",
+        json={
+            "message": "Record this decision again.",
+            "matter_id": "MAT-DEMO-BEACON",
+            "conversation_id": conversation_id,
+            "lawyer_author": "Alex Lawyer",
+            "card_action": {
+                "card_id": f"operation-result:{action_id}",
+                "action": "apply",
+                "values": ["modified", "The final retention cap is shorter."],
+            },
+        },
+    )
+    assert repeated.status_code == 200
+    assert len([item for item in app_context.decisions.list() if item["title"] == "Launch path"]) == 1
+    latest = app_context.chat_history.get("MAT-DEMO-BEACON", conversation_id)["messages"][-1]
+    assert latest["operation_results"][0]["status"] == "no_change"
+    assert latest["operation_results"][0]["summary"] == "Decision already recorded."
+    assert latest["operation_results"][0]["entity_refs"]
+
+
+@pytest.mark.parametrize("values", [[""], ["modified", ""], ["not_followed", "  "]])
+def test_decision_confirmation_requires_disposition_and_departure_reason(app_context, values):
+    conversation_id, action_id = _seed_decision_confirmation(
+        app_context, source_action_key="chat:test:invalid-decision-confirmation"
+    )
+
+    response = _client(app_context).post(
+        "/api/chat",
+        json={
+            "message": "Record this decision.",
+            "matter_id": "MAT-DEMO-BEACON",
+            "conversation_id": conversation_id,
+            "lawyer_author": "Alex Lawyer",
+            "card_action": {
+                "card_id": f"operation-result:{action_id}",
+                "action": "apply",
+                "values": values,
+            },
+        },
+    )
+
+    assert response.status_code == 400
+    assert not any(item["title"] == "Launch path" for item in app_context.decisions.list())
+
+
+def test_lifecycle_confirmation_persists_latest_typed_result(app_context, monkeypatch):
+    saved = app_context.chat_history.append(
+        "MAT-DEMO-BEACON", None, role="user", content="Record delivery."
+    )
+    action_id = "chat:test:lifecycle-confirmation"
+    source_action_key = "chat:test:lifecycle"
+    app_context.chat_history.append(
+        "MAT-DEMO-BEACON",
+        saved["conversation_id"],
+        role="assistant",
+        content="Confirm manual delivery.",
+        operation_results=[{
+            "action": action_id,
+            "source_action_key": source_action_key,
+            "operation": "mark_response_sent",
+            "status": "confirmation_required",
+            "summary": "Delivery confirmation required.",
+            "matter_id": "MAT-DEMO-BEACON",
+            "proposal": {"note": "Sent by email.", "source_action_key": source_action_key},
+        }],
+    )
+    monkeypatch.setattr(
+        app_context.matters,
+        "perform_action",
+        lambda *args, **kwargs: {
+            "action": "mark_as_sent",
+            "source_action_key": None,
+            "operation": "mark_as_sent",
+            "status": "changed",
+            "summary": "Response marked as sent.",
+            "matter_id": "MAT-DEMO-BEACON",
+            "entity_refs": [],
+            "changed_paths": ["03_Matters/beacon-instant-onboarding/matter.md"],
+            "resulting_matter_state": {"status": "respond"},
+            "available_next_actions": ["close_matter"],
+            "required_user_action": None,
+            "error": None,
+            "recovery": None,
+        },
+    )
+
+    response = _client(app_context).post(
+        "/api/chat",
+        json={
+            "message": "Record manual delivery.",
+            "matter_id": "MAT-DEMO-BEACON",
+            "conversation_id": saved["conversation_id"],
+            "lawyer_author": "Alex Lawyer",
+            "card_action": {
+                "card_id": f"operation-result:{action_id}",
+                "action": "apply",
+                "values": [],
+            },
+        },
+    )
+
+    assert response.status_code == 200
+    reloaded = app_context.chat_history.get("MAT-DEMO-BEACON", saved["conversation_id"])
+    matching = [
+        result
+        for message in reloaded["messages"]
+        for result in message.get("operation_results", [])
+        if result.get("source_action_key") == source_action_key
+    ]
+    assert [result["status"] for result in matching] == ["confirmation_required", "changed"]
+    assert matching[-1]["action"] == action_id
+    assert matching[-1]["summary"] == "Response marked as sent."
 
 
 def test_conversation_cannot_be_read_from_another_matter(app_context):

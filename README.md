@@ -27,7 +27,10 @@ A coding agent should read [`AGENTS.md`](AGENTS.md), [`docs/PRD.md`](docs/PRD.md
 - Mock LLM mode that runs without an API key
 - OpenAI-compatible tool-calling provider adapter
 - Research packets
+- Durable per-matter research queues with serial execution, reorder, retry, and restart recovery
+- Versioned working recommendations with agent proposals and direct lawyer edits
 - Decision register and staleness checks
+- Explicit lifecycle controls for approval, manual delivery, required-work completion, and closure
 - Scheduler and inbox watcher
 - Continuous Legal Awareness with editable Watches and scheduled scans
 - Native public collection and optional Polaris public intelligence

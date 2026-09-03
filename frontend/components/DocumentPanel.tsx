@@ -8,6 +8,9 @@ import { exportFileUrl, getDocumentReview, getFile, rawFileUrl, saveFile, update
 import { parseMemo } from "@/lib/research";
 import type { DocumentReview as ReviewState, DocumentReviewAction, VaultDocument } from "@/lib/types";
 import { authorId, GENERATED_REVIEW_AUTHOR, REVIEW_AUTHOR_PALETTE } from "@/lib/reviewAuthor";
+import { savedMarkdownMatches } from "@/lib/documentSave";
+
+type SaveState = "clean" | "saving" | "conflict" | "error";
 
 /**
  * Canvas 4c — the work surface. A what-you-see editor over a file that stays
@@ -36,11 +39,14 @@ export default function DocumentPanel({
   const [review, setReview] = useState<ReviewState | null>(null);
   const [mode, setMode] = useState<"editing" | "markdown" | "review" | "sources">("editing");
   const [dirty, setDirty] = useState(false);
+  const [saveState, setSaveState] = useState<SaveState>("clean");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [closePromptOpen, setClosePromptOpen] = useState(false);
   const [editorVersion, setEditorVersion] = useState(0);
   const defaultedHumanAuthor = useRef(false);
+  const documentRef = useRef<VaultDocument | null>(null);
+  documentRef.current = document;
 
   useEffect(() => {
     const lawyer = lawyerAuthor.trim();
@@ -61,6 +67,7 @@ export default function DocumentPanel({
         setDocument(result);
         setReview(reviewState);
         setDirty(false);
+        setSaveState("clean");
         setMode("editing");
         setEditorVersion((current) => current + 1);
       })
@@ -85,24 +92,70 @@ export default function DocumentPanel({
 
   async function save(): Promise<boolean> {
     if (!document || !document.editable) return false;
+    const submitted = { ...document, metadata: { ...document.metadata } };
     setBusy(true);
+    setSaveState("saving");
     setError("");
     try {
       let nextReview: ReviewState | null = null;
       if (review?.tracking) {
         const existing = review.authors.find((item) => item.author_id === authorId(activeReviewAuthor));
-        nextReview = await updateDocumentReview(document.path, { action: "save_revision", content: document.content, author_id: authorId(activeReviewAuthor), author_name: activeReviewAuthor, author_color: existing?.color ?? REVIEW_AUTHOR_PALETTE[review.authors.length % REVIEW_AUTHOR_PALETTE.length] });
-      } else if (review) nextReview = await updateDocumentReview(document.path, { action: "save_untracked", content: document.content });
-      else await saveFile(document);
+        nextReview = await updateDocumentReview(submitted.path, { action: "save_revision", content: submitted.content, author_id: authorId(activeReviewAuthor), author_name: activeReviewAuthor, author_color: existing?.color ?? REVIEW_AUTHOR_PALETTE[review.authors.length % REVIEW_AUTHOR_PALETTE.length] });
+      } else if (review) nextReview = await updateDocumentReview(submitted.path, { action: "save_untracked", content: submitted.content });
+      else await saveFile(submitted);
+      let canonical: VaultDocument;
+      try {
+        canonical = await getFile(submitted.path);
+      } catch {
+        setSaveState("conflict");
+        setDirty(true);
+        setError("The save response returned, but Themis.ai could not verify the saved file. Your local text is still here.");
+        return false;
+      }
+      if (!savedMarkdownMatches(submitted.content, canonical.content)) {
+        setSaveState("conflict");
+        setDirty(true);
+        setError("The saved file differs from this edit. Your local text is still here.");
+        return false;
+      }
+      const current = documentRef.current;
+      if (!current || current.path !== submitted.path || current.content !== submitted.content) {
+        setSaveState("clean");
+        setDirty(true);
+        return false;
+      }
+      setDocument(canonical);
       setDirty(false);
-      if (document.kind === "markdown") setReview(nextReview ?? await getDocumentReview(document.path));
+      setSaveState("clean");
+      if (canonical.kind === "markdown" && nextReview) setReview(nextReview);
       setEditorVersion((current) => current + 1);
       return true;
     } catch (caught) {
+      setSaveState("error");
+      setDirty(true);
       setError(caught instanceof Error ? caught.message : "Could not save the file.");
       return false;
     }
     finally { setBusy(false); }
+  }
+
+  async function reloadCanonical() {
+    if (!document) return;
+    if (dirty && !window.confirm("Reload the saved file? This will replace the local edit shown here.")) return;
+    setBusy(true);
+    setError("");
+    try {
+      const loaded = await loadDocument(document.path);
+      setDocument(loaded.result);
+      setReview(loaded.reviewState);
+      setDirty(false);
+      setSaveState("clean");
+      setEditorVersion((current) => current + 1);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not reload the saved file.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   function requestClose() {
@@ -175,6 +228,11 @@ export default function DocumentPanel({
   const agentWritten = /^(research|drafts)\//.test(document.path.split("/").slice(2).join("/"))
     || String(document.metadata.author ?? "").toLowerCase().includes("agent");
   const sourcePath = typeof document.metadata.source_path === "string" ? document.metadata.source_path : null;
+  const saveLabel = saveState === "saving"
+    ? "Saving…"
+    : saveState === "conflict"
+      ? "Save conflict — review"
+      : dirty ? "Unsaved changes" : "Saved";
 
   return (
     <div className="doc-pane" onDragOver={(event) => event.preventDefault()} onDrop={drop}>
@@ -182,9 +240,7 @@ export default function DocumentPanel({
         <div style={{ minWidth: 0 }}>
           <span className="doc-name">{document.name}</span>
           <span className={`doc-status ${agentWritten ? "agent" : ""}`}>
-            {agentWritten
-              ? dirty ? "Agent draft · unsaved changes" : "Agent draft"
-              : dirty ? "Unsaved changes" : "Saved"}
+            {agentWritten ? `Agent draft · ${saveLabel.toLowerCase()}` : saveLabel}
           </span>
         </div>
         <div className="doc-mode">
@@ -294,10 +350,20 @@ export default function DocumentPanel({
       )}
 
       {error ? <p className="error" style={{ margin: "0 34px 12px" }}>{error}</p> : null}
+      {saveState === "conflict" ? (
+        <div className="notice-card wash-attention" style={{ margin: "0 34px 12px" }}>
+          <strong>Save conflict — review</strong>
+          <p>Your local text is still available. Retry the save, or reload the canonical saved file.</p>
+          <div className="btn-row">
+            <button className="btn compact" disabled={busy} onClick={() => void save()} type="button">Retry save</button>
+            <button className="btn compact" disabled={busy} onClick={() => void reloadCanonical()} type="button">Reload canonical</button>
+          </div>
+        </div>
+      ) : null}
 
       <div className="doc-bar" style={{ position: "static", borderBottom: 0, borderTop: "1px solid var(--line-soft)" }}>
         <div className="review-footer-status">
-          <span>{dirty ? "Unsaved changes" : "Saved"}</span>
+          <span>{saveLabel}</span>
           {isMarkdown && review ? (
             <span className="track-toggle">Redline {review.tracking ? "on" : "off"}</span>
           ) : null}

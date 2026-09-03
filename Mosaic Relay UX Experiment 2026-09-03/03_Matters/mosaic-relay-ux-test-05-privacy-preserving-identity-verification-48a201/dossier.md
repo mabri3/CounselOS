@@ -1,0 +1,96 @@
+---
+matter_id: MAT-20260903-48a201
+record_type: dossier
+editable: true
+source_revision: 03_Matters/mosaic-relay-ux-test-05-privacy-preserving-identity-verification-48a201/dossier-revisions/DOS-20260903-8437aa.md
+updated_at: '2026-09-03T09:28:16+00:00'
+content_hash: 5e4f4636b06919f65acb44eb1c6d3a0bfbf96f41e2e705cfc3cc4a1f73487dbf
+---
+# Matter dossier
+
+## Matter summary
+
+Mosaic Relay, a U.S. payments infrastructure company, plans to replace its identity-verification flow with a vendor that extracts data from government ID documents and performs facial comparison via live selfie. The individuals affected are merchant applicants, beneficial owners, and payout recipients. Product wants to begin implementation next month, but the vendor's processing location is undecided, which determines whether GDPR or other cross-border transfer obligations apply. Counsel is involved because the data includes biometric information, government identifiers, and precise addresses — categories that trigger heightened transfer and processing requirements in multiple jurisdictions.
+
+## Decision question
+
+Before implementation begins next month, can Mosaic Relay lawfully structure its identity-verification vendor arrangement so that biometric and ID-document data collected from individuals — potentially including EU/UK data subjects — is transferred to and processed by a U.S.-based (or other non-EEA) vendor, and what transfer mechanisms, contractual safeguards, and notices must be in place before launch?
+
+## Material facts
+
+- Mosaic Relay plans to replace its current identity-verification flow with a vendor that extracts data from identification documents and performs a facial comparison.
+- The proposed UX asks an individual to upload an identification document and take a live selfie, then displays only a pass/fail result to Mosaic Relay and the customer.
+- The vendor would retain images for a proposed period, while Mosaic Relay would retain the result, audit metadata, and a limited data record.
+- Actors are merchant applicants, beneficial owners, payout recipients, Mosaic Relay, the verification vendor, and cloud-storage providers.
+- Product wants to begin implementation next month.
+- The data may include biometric information, government identifiers, and precise address details.
+- It is unsettled where the vendor will process the data.
+- It is unsettled whether the customer or Mosaic Relay will determine the purpose of processing.
+- It is unsettled whether customers may reuse the result for their own compliance programs.
+- Retention periods, deletion workflows, vendor model training, and handling of minors or failed matches are unsettled.
+- Where will the verification vendor process the data (which jurisdiction/location)? — Not yet decided
+- Who determines the purpose and means of processing the identity-verification data — Mosaic Relay or the customer? — Not yet decided
+- When does the business need the legal answer? — Before a planned launch
+- May customers reuse the pass/fail result for their own compliance programs? — Not yet decided
+- Where the vendor will process the data is not yet decided.
+- Whether the customer or Mosaic Relay will determine the purpose of processing is not yet decided.
+- Whether customers may reuse the result for their own compliance programs is not yet decided.
+- The business needs the legal answer before a planned launch.
+- What are the proposed retention periods and deletion workflows for the verification images and the limited data record? — Not yet decided. The vendor image-retention period and Mosaic Relay record-retention period are unsettled. No deletion workflow or verification process is specified. Treat this as a launch blocker; propose the shortest period needed for verification and a documented deletion request, backup, and audit trail process, subject to jurisdiction-specific limits.
+- May the verification vendor train models on the biometric data (the ID-document images and selfies)? — Not yet decided
+- How are minors and failed matches handled in the flow? — Failed-match handling is not yet decided
+
+## Assumptions
+
+- U.S.-primary scope for this fictional scenario; any non-U.S. processing location requires separate review.
+- The facial comparison produces a biometric identifier (faceprint) that may be subject to state biometric privacy statutes.
+- Mosaic Relay does not itself collect or store the biometric; the vendor collects it directly from the individual, which affects who owes biometric notice/consent.
+- U.S.-primary scope: Mosaic Relay operates primarily in the United States; expansion outside the U.S. is subject to separate legal review.
+- The facial comparison produces a biometric identifier/faceprint subject to state biometric statutes.
+- The vendor collects the biometric data directly from the individual, which affects controller/processor allocation.
+- The verification vendor is a service provider/processor rather than an independent controller, absent evidence to the contrary.
+- U.S.-primary scope: Mosaic Relay operates primarily in the U.S.; any non-U.S. processing location would trigger separate cross-border and GDPR analysis.
+- The verification vendor collects the biometric data directly from the individual, which affects controller/processor allocation.
+- The pass/fail result and limited data record are treated as personal information under applicable privacy frameworks.
+- Processing location is assumed to be within the United States until the vendor location is decided; if the vendor processes outside the U.S., cross-border transfer obligations (e.g., GDPR) would be triggered.
+- Mosaic Relay is assumed to be the 'business'/controller that determines the purpose and means of processing until the purpose owner is decided; if the customer determines purpose, the customer becomes a separate controller.
+- Customers are assumed not to reuse the pass/fail result for their own compliance programs until decided; if they do, the result may be a 'sale'/'share' of biometric or sensitive information triggering opt-out duties.
+- The facial comparison is assumed to produce a biometric identifier/faceprint subject to state biometric statutes (e.g., Illinois BIPA, Texas, Washington) until the vendor's processing is confirmed not to create one.
+- Retention is assumed to be set to the shortest period needed for verification with a documented deletion workflow, subject to jurisdiction-specific limits, given the launch-blocker status.
+
+## Issues and workstreams
+
+- Privacy-role allocation: who is the 'business'/controller and who is the 'service provider'/processor under CCPA/CPRA and other frameworks, given the vendor collects the biometric directly from the individual.
+- Biometric privacy requirements: whether the facial comparison produces a biometric identifier/faceprint subject to state biometric statutes (e.g., Illinois BIPA, Texas, Washington) with notice, consent, retention, and private-right-of-action duties.
+- Required notices and consent for collecting ID-document data, government identifiers, precise address, and biometric/selfie data.
+- Cross-border processing: where the vendor processes data and whether that triggers GDPR or other transfer obligations.
+- Data minimization and retention: whether retaining images and a limited data record is proportionate, and deletion workflows (flagged as a launch blocker).
+- Vendor restrictions: contractual limits, whether the vendor may train models on the biometric data, and sub-processor/cloud-storage controls.
+- Whether the pass/fail interface creates a legal problem (e.g., sale/share of biometric or sensitive information, opt-out rights, or consumer-facing disclosure duties).
+- Handling of minors and failed matches.
+
+## Open questions
+
+- Where will the vendor actually process and store the data (which countries, which cloud regions)? This is the single most consequential unresolved fact — it determines whether GDPR Chapter V, UK GDPR, or other transfer regimes apply at all.
+- Will Mosaic Relay or its platform customers onboard individuals who are located in the EEA, UK, or Switzerland? If the customer base is exclusively U.S.-domestic, GDPR transfer obligations likely do not attach, but this has not been confirmed.
+- Does the vendor hold any current transfer mechanism certifications (e.g., EU-U.S. Data Privacy Framework certification, standard contractual clauses, binding corporate rules)?
+- Will the vendor use sub-processors or cloud-storage providers in additional jurisdictions beyond its own processing location?
+- Are any of the individuals whose data is collected located in jurisdictions with their own cross-border transfer restrictions (e.g., Brazil LGPD, Canada PIPEDA/Quebec Law 25, or U.S. state laws with data-transfer provisions)?
+
+## Research and source support
+
+Latest review: `03_Matters/mosaic-relay-ux-test-05-privacy-preserving-identity-verification-48a201/research/RES-20260903-81ac85.md`
+
+- Internal support: **Facts** — Known Facts Mosaic Relay plans to replace its current identity-verification flow with a vendor that extracts data from identification documents and performs a facial comparison. The proposed UX asks…
+
+## Options or working recommendation
+
+No recommendation has been drafted yet.
+
+## Next counsel action
+
+Review the working ask and answer the next material question.
+
+## Work product links
+
+No work product yet.

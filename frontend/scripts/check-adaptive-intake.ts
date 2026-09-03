@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { choiceNeedsDetail, effectiveQuestionMode, groupedAnswerText, legacyQuestionModeStorageKey, questionModeStorageKey, questionProgressLabel } from "../lib/chatCardLogic.ts";
+import { shouldCompactIntakeTurn } from "../lib/chatRunLogic.ts";
 
 assert.equal(questionProgressLabel(), "Follow-up");
 assert.equal(questionProgressLabel(1, null), "Follow-up");
@@ -41,6 +42,29 @@ assert.match(cards, /btn primary compact/, "question actions must use the standa
 assert.doesNotMatch(cards, /matter-update-card/, "internal matter-update receipts must not interrupt the chat");
 assert.match(cards, /QuestionHistoryCard/, "historical questions must use an inert renderer");
 assert.match(cards, /Answered|Superseded|Stopped/, "historical questions must name their truthful state");
+assert.match(cards, /Intake audit history/, "historical intake cards must be compacted behind an audit disclosure");
+assert.match(cards, /Answer one question at a time, or choose Answer a set/, "long question sets must explain grouped mode before selection");
+assert.equal(shouldCompactIntakeTurn(
+  [{ type: "question", question_id: "Q-1" }],
+  { "Q-1": { state: "answered", values: ["yes"] } },
+  "Earlier orientation.",
+  false,
+), true, "answered intake prose may collapse without changing the transcript");
+assert.equal(shouldCompactIntakeTurn(
+  [{ type: "question", question_id: "Q-1", conflict: true }],
+  { "Q-1": { state: "superseded", values: [] } },
+  "Resolve this conflict.",
+  false,
+), false, "a factual conflict must stay expanded");
+assert.equal(shouldCompactIntakeTurn(
+  [{ type: "question", question_id: "Q-1" }],
+  { "Q-1": { state: "superseded", values: [] } },
+  "Material assumption: launch is public.",
+  false,
+), false, "a material assumption must stay expanded");
+assert.doesNotMatch(cards, /onChange=\{\(\) => \{[\s\S]{0,180}answer\(\[choice\.value\]/, "selecting a radio answer must not send it");
+assert.match(cards, /onClick=\{submitSelection\}>\{primaryLabel\}<\/button>/, "Send answer must commit the selected radio answer");
+assert.match(cards, />Finish intake<\/button>/, "the current intake card must offer a clear finish route");
 assert.match(styles, /\.question-choice\s*\{[^}]*justify-content:\s*flex-start/, "question choices must keep the control and answer text left-aligned");
 assert.match(styles, /\.question-choice \.suggested-label\s*\{[^}]*margin-left:\s*auto/, "the Suggested badge may align right without moving the answer text");
 

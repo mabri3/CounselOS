@@ -35,6 +35,28 @@ export type MatterWorkState = {
   signal: { kind: MatterSignalKind; label: string };
 };
 
+export type MatterConsistencyIssue = {
+  code:
+    | "final_with_pre_respond_stage"
+    | "approval_without_current_final"
+    | "delivery_without_approved_artifact"
+    | "closed_without_required_lifecycle_fields";
+  summary: string;
+  repair: string;
+};
+
+export type MatterCreatePayload = {
+  title: string;
+  request_text: string;
+  matter_type: string;
+  priority: string;
+  target_date: string | null;
+  legal_owner: string;
+  requester: string;
+  description: string;
+  source_action_key: string;
+};
+
 export type Matter = {
   matter_id: string;
   path: string;
@@ -79,6 +101,45 @@ export type Matter = {
   current_work_product_id?: string | null;
   current_work_product_final_path?: string | null;
   latest_research_path?: string | null;
+  current_work_product_final_id?: string | null;
+  consistency_issues?: MatterConsistencyIssue[];
+  source_action_key?: string | null;
+  operation?: string;
+  creation_status?: "changed" | "no_change";
+  creation_summary?: string;
+  operation_result?: OperationResult;
+  recommendation?: RecommendationState;
+  recommendation_review_needed?: boolean;
+};
+
+export type RecommendationVersion = {
+  version_id: string;
+  number: number;
+  content: string;
+  actor: string;
+  origin: "initial_agent" | "lawyer_edit" | "agent_proposal";
+  created_at: string;
+  accepted_at?: string;
+  accepted_by?: string;
+};
+
+export type RecommendationState = {
+  matter_id?: string;
+  path: string;
+  content: string;
+  current_version_id: string | null;
+  current_version_number?: number | null;
+  versions?: RecommendationVersion[];
+  proposal: RecommendationVersion | null;
+  changed_paths?: string[];
+  dossier_projection?: DossierProjection;
+};
+
+export type DossierProjection = {
+  state: "applied" | "not_required" | "review_required" | "failed";
+  path?: string;
+  revision_path?: string;
+  error?: string;
 };
 
 export type WorkItem = {
@@ -124,16 +185,59 @@ export type WorkItemAssignRequest = {
   actor: string;
 };
 
-export type MatterActionResult = {
-  action: MatterActionId | "complete_work_item" | "assign_work_item";
-  matter: MatterDetail;
+export type RecommendationDisposition = "followed" | "modified" | "not_followed" | "not_applicable";
+
+export type OperationStatus = "changed" | "no_change" | "failed" | "proposed" | "confirmation_required";
+
+export type OperationResult<TData = unknown> = {
+  action: string;
+  source_action_key?: string | null;
+  operation: string;
+  status: OperationStatus;
+  summary: string;
+  matter_id: string | null;
+  entity_refs: Array<{ type: string; id: string; path?: string }>;
   changed_paths: string[];
+  resulting_matter_state: Record<string, unknown>;
+  available_next_actions: string[];
+  required_user_action?: string | null;
+  error?: string | null;
+  recovery?: string | null;
+  dossier_projection?: DossierProjection;
+  data?: TData;
+};
+
+export type ResearchQueueMutationResult = OperationResult<{
+  items: ResearchRun[];
+  item: ResearchRun | null;
+}> & {
+  data: { items: ResearchRun[]; item: ResearchRun | null };
+};
+
+export type RecommendationMutationResult = OperationResult<RecommendationState> & {
+  data: RecommendationState;
+};
+
+export type ParticipantMutationResult = OperationResult<{
+  matter_id: string;
+  participants: Array<{ name: string; role: string }>;
+  changed_paths: string[];
+}> & {
+  data: {
+    matter_id: string;
+    participants: Array<{ name: string; role: string }>;
+    changed_paths: string[];
+  };
+};
+
+export type MatterActionResult = OperationResult & {
+  matter: MatterDetail;
   event_path?: string | null;
   work_item_id?: string | null;
   already_recorded: boolean;
 };
 
-export type WorkProductLifecycleResult = {
+export type WorkProductLifecycleResult = OperationResult & {
   type?: "work_product";
   record_type: "work_product";
   work_product_id: string;
@@ -142,10 +246,9 @@ export type WorkProductLifecycleResult = {
   state: "final";
   summary: string;
   final_id: string;
-  changed_paths?: string[];
 };
 
-export type WorkProductDraftResult = {
+export type WorkProductDraftResult = OperationResult & {
   type?: "work_product";
   record_type: "work_product";
   work_product_id: string;
@@ -171,6 +274,9 @@ export type Decision = {
   risk_level: string;
   review_status: "fresh" | "current" | "review_recommended" | "stale";
   staleness_reason: string;
+  recommendation_disposition?: RecommendationDisposition;
+  recommendation_disposition_reason?: string;
+  recommendation_version_id?: string | null;
 };
 
 export type FileNode = {
@@ -197,6 +303,7 @@ export type MatterDetail = Matter & {
     next_action: string;
     attention: string[];
     recent_changes: string[];
+    options?: string[];
   };
   work_items: WorkItem[];
   decisions: Decision[];
@@ -292,6 +399,7 @@ export type ResearchResult = {
   external_authority_retrieved: boolean;
   public_research_status: "not_requested" | "retrieved" | "unavailable" | "failed";
   research_warnings: string[];
+  dossier_projection?: DossierProjection;
 };
 
 export type ToolTrace = {
@@ -305,7 +413,7 @@ export type AppliedSkillSummary = { skill_id: string; name: string };
 
 export type ChatChoice = { value: string; label: string; suggested?: boolean };
 export type ChatCard =
-  | { type: "question"; question_id: string; text: string; reason?: string | null; selection_mode: "single" | "multiple" | "free_text"; choices: ChatChoice[]; progress_current?: number | null; progress_total?: number | null; allow_skip: boolean; allow_stop: boolean; conflict: boolean }
+  | { type: "question"; question_id: string; text: string; reason?: string | null; selection_mode: "single" | "multiple" | "free_text"; choices: ChatChoice[]; progress_current?: number | null; progress_total?: number | null; allow_skip: boolean; allow_stop: boolean; conflict: boolean; record_target?: "fact" | "jurisdiction_scope" | "product_area" | "business_team" | "matter_type" | "target_date" | "requester" | "business_owner" | "risk_level" }
   | { type: "matter_update"; action_id: string; summary: string; changed_sections: string[]; can_edit: boolean; can_undo: boolean }
   | { type: "research_status"; run_id: string; state: "queued" | "running" | "completed" | "failed" | "interrupted"; total: number; completed: number; status: string; dossier_effect: string }
   | { type: "work_product"; title: string; vault_path: string; state: "draft" | "final"; summary: string }
@@ -325,9 +433,11 @@ export type ChatResponse = {
   cards: ChatCard[];
   applied_skills: AppliedSkillSummary[];
   review_author?: string | null;
+  operation_results: OperationResult[];
 };
 
 export type ChatRunState = "queued" | "running" | "completed" | "failed" | "interrupted";
+export type ChatRunFailureClass = "provider" | "timeout" | "output_shape" | "tool_validation" | "tool_execution" | "interrupted" | "unknown";
 
 export type ChatRun = {
   run_id: string;
@@ -339,6 +449,9 @@ export type ChatRun = {
   started_at?: string | null;
   finished_at?: string | null;
   failure_detail?: string | null;
+  failure_class?: ChatRunFailureClass | null;
+  correlation_id?: string | null;
+  milestone?: string | null;
   response?: ChatResponse | null;
   path: string;
   selection?: {
@@ -358,6 +471,7 @@ export type ChatHistoryMessage = {
   cards?: ChatCard[];
   attachments?: AttachmentReference[];
   applied_skills?: AppliedSkillSummary[];
+  operation_results?: OperationResult[];
 };
 
 export type SkillDefinition = {
@@ -388,7 +502,7 @@ export type SkillSuggestionsResponse = { suggestions: SkillSuggestion[]; warning
 export type SkillCreate = SkillDraft;
 export type SkillUpdate = Partial<Pick<SkillDefinition, "name" | "description" | "instructions">>;
 
-export type ResearchRun = { run_id: string; matter_id: string; state: "queued" | "running" | "completed" | "failed" | "interrupted"; total: number; completed: number; status: string; dossier_effect: string; useful_support: number; human_questions_left: number; source_action_key?: string | null; selection?: { agent_id: string; provider: string; model: string; reasoning_effort: string } | null };
+export type ResearchRun = { run_id: string; matter_id: string; question_id?: string; question?: string; questions?: string[]; queue_order?: number; priority?: number; origin?: string; state: "queued" | "running" | "completed" | "failed" | "interrupted"; total: number; completed: number; status: string; dossier_effect: string; useful_support: number; human_questions_left: number; results?: ResearchResult[]; created_at?: string; queued_at?: string; started_at?: string; finished_at?: string; source_action_key?: string | null; resumed_from_restart?: boolean; stop_reason?: string | null; attempt_count?: number; selection?: { agent_id: string; provider: string; model: string; reasoning_effort: string } | null };
 export type CompanyProfile = {
   source_id: string;
   version: string;
@@ -401,6 +515,15 @@ export type CompanyProfile = {
   regulatory_context: string;
   data_practices: string;
   risk_posture: string;
+};
+
+export type AnswerContract = {
+  path: string;
+  content: string;
+  metadata: Record<string, unknown>;
+  updated_at: number;
+  is_default: boolean;
+  max_content_chars: number;
 };
 
 export type CompanyInterviewQuestion = {
@@ -474,6 +597,7 @@ export type AgentDefinition = {
   provider?: string | null;
   model?: string | null;
   reasoning_effort?: string | null;
+  runtime_managed?: boolean;
 };
 
 export type LegacySchedule = {
@@ -598,4 +722,9 @@ export type ResearchMemo = {
   byline: string;
   blocks: MemoBlock[];
   citations: Citation[];
+  technicalDetails: {
+    providerLegs: Record<string, unknown>[];
+    polarisObservability: Record<string, unknown> | null;
+    correlationId: string;
+  } | null;
 };

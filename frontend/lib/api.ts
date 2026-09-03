@@ -1,6 +1,7 @@
 import type {
   AgentDefinition,
   AgentDetail,
+  AnswerContract,
   AttachmentReference,
   Audience,
   ChatResponse,
@@ -17,6 +18,7 @@ import type {
   DocumentReview,
   DocumentReviewAction,
   Matter,
+  MatterCreatePayload,
   MatterActionRequest,
   MatterActionResult,
   MatterDetail,
@@ -24,6 +26,7 @@ import type {
   ModelCatalogModel,
   ModelCatalogProvider,
   ResearchNote,
+  ResearchQueueMutationResult,
   ResearchRun,
   Schedule,
   ScheduleUpdate,
@@ -47,12 +50,11 @@ import { DEFAULT_SETTINGS, agentDetailFrom } from "./stubs.ts";
 
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api";
 
-export const MODEL_PROVIDER_IDS = ["mock", "openai_compatible", "polaris", "opencode_go", "codex", "antigravity_cli"] as const;
+export const MODEL_PROVIDER_IDS = ["mock", "openai_compatible", "opencode_go", "codex", "antigravity_cli"] as const;
 
 const MODEL_PROVIDER_LABELS: Record<(typeof MODEL_PROVIDER_IDS)[number], string> = {
   mock: "Mock (offline)",
   openai_compatible: "OpenAI-compatible",
-  polaris: "Polaris",
   opencode_go: "OpenCode Go",
   codex: "Codex CLI",
   antigravity_cli: "Antigravity CLI",
@@ -105,7 +107,13 @@ export async function getMatters(): Promise<{ matters: Matter[]; stages: Stage[]
   return request("/matters");
 }
 
-export async function createMatter(payload: Record<string, unknown>): Promise<MatterDetail> {
+/** Read the browser's submitted date, which is authoritative over a delayed React state update. */
+export function matterTargetDateFromForm(formData: Pick<FormData, "get">): string | null {
+  const value = formData.get("target_date");
+  return typeof value === "string" && value.trim() ? value.trim() : null;
+}
+
+export async function createMatter(payload: MatterCreatePayload): Promise<MatterDetail> {
   return request("/matters", { method: "POST", body: JSON.stringify(payload) });
 }
 
@@ -161,6 +169,32 @@ export async function assignWorkItem(
   return request(`/matters/${encodeURIComponent(matterId)}/work-items/assign`, {
     method: "POST",
     body: JSON.stringify({ work_item_id: workItemId, owner, actor }),
+  });
+}
+
+export async function prioritizeWorkItem(
+  matterId: string, workItemId: string, priority: string, actor: string,
+): Promise<MatterActionResult> {
+  return request(`/matters/${encodeURIComponent(matterId)}/work-items/priority`, {
+    method: "POST", body: JSON.stringify({ work_item_id: workItemId, priority, actor }),
+  });
+}
+
+export async function addMatterParticipant(
+  matterId: string, name: string, role: string, actor: string,
+): Promise<import("./types").ParticipantMutationResult> {
+  return request(`/matters/${encodeURIComponent(matterId)}/participants`, {
+    method: "POST", body: JSON.stringify({ name, role, actor }),
+  });
+}
+
+export async function repairMatterConsistency(
+  matterId: string,
+  actor: string,
+): Promise<MatterActionResult> {
+  return request(`/matters/${encodeURIComponent(matterId)}/consistency/repair`, {
+    method: "POST",
+    body: JSON.stringify({ actor }),
   });
 }
 
@@ -222,6 +256,28 @@ export async function getResearchRun(matterId: string, runId: string): Promise<R
   return request(`/matters/${encodeURIComponent(matterId)}/research-runs/${encodeURIComponent(runId)}`);
 }
 
+export async function getResearchQueue(matterId: string): Promise<{ items: ResearchRun[] }> {
+  return request(`/settings/research-queue/${encodeURIComponent(matterId)}`);
+}
+
+export async function reorderResearchQueue(matterId: string, runIds: string[]): Promise<ResearchQueueMutationResult> {
+  return request(`/settings/research-queue/${encodeURIComponent(matterId)}/reorder`, {
+    method: "POST", body: JSON.stringify({ run_ids: runIds }),
+  });
+}
+
+export async function resumeResearchQueue(matterId: string): Promise<ResearchQueueMutationResult> {
+  return request(`/settings/research-queue/${encodeURIComponent(matterId)}/resume`, { method: "POST" });
+}
+
+export async function stopResearchQueue(matterId: string): Promise<ResearchQueueMutationResult> {
+  return request(`/settings/research-queue/${encodeURIComponent(matterId)}/stop`, { method: "POST" });
+}
+
+export async function retryResearchItem(matterId: string, runId: string): Promise<ResearchQueueMutationResult> {
+  return request(`/settings/research-queue/${encodeURIComponent(matterId)}/${encodeURIComponent(runId)}/retry`, { method: "POST" });
+}
+
 export async function applyBatchAction(matterId: string, batchId: string, action: "preview" | "apply" | "undo"): Promise<Record<string, unknown>> {
   return request(`/matters/${encodeURIComponent(matterId)}/batches`, {
     method: "POST",
@@ -241,10 +297,11 @@ export async function saveWorkProductDraft(
   title: string,
   content: string,
   sourceActionKey?: string,
+  recommendation?: string,
 ): Promise<WorkProductDraftResult> {
   return request(`/matters/${encodeURIComponent(matterId)}/work-product/draft`, {
     method: "POST",
-    body: JSON.stringify({ title, content, source_action_key: sourceActionKey }),
+    body: JSON.stringify({ title, content, source_action_key: sourceActionKey, recommendation }),
   });
 }
 
@@ -254,6 +311,21 @@ export async function getCompanyProfile(): Promise<CompanyProfile> {
 
 export async function saveCompanyProfile(profile: CompanyProfile): Promise<CompanyProfile> {
   return request("/settings/company", { method: "PUT", body: JSON.stringify(profile) });
+}
+
+export async function getAnswerContract(): Promise<AnswerContract> {
+  return request("/settings/answer-contract");
+}
+
+export async function saveAnswerContract(content: string): Promise<AnswerContract> {
+  return request("/settings/answer-contract", {
+    method: "PUT",
+    body: JSON.stringify({ content }),
+  });
+}
+
+export async function resetAnswerContract(): Promise<AnswerContract> {
+  return request("/settings/answer-contract/reset", { method: "POST" });
 }
 
 export async function getCompanyInterview(): Promise<CompanyInterview> {
@@ -276,6 +348,28 @@ export async function advanceCompanyInterview(payload: {
 
 export async function getFile(path: string): Promise<VaultDocument> {
   return request(`/files?path=${encodeURIComponent(path)}`);
+}
+
+export async function getRecommendation(matterId: string): Promise<import("./types").RecommendationState> {
+  return request(`/matters/${encodeURIComponent(matterId)}/recommendation`);
+}
+
+export async function updateRecommendation(matterId: string, content: string, actor: string): Promise<import("./types").RecommendationMutationResult> {
+  return request(`/matters/${encodeURIComponent(matterId)}/recommendation`, {
+    method: "PUT", body: JSON.stringify({ content, actor }),
+  });
+}
+
+export async function proposeRecommendation(matterId: string, content: string, actor: string): Promise<import("./types").RecommendationMutationResult> {
+  return request(`/matters/${encodeURIComponent(matterId)}/recommendation/proposals`, {
+    method: "POST", body: JSON.stringify({ content, actor }),
+  });
+}
+
+export async function acceptRecommendation(matterId: string, actor: string): Promise<import("./types").RecommendationMutationResult> {
+  return request(`/matters/${encodeURIComponent(matterId)}/recommendation/accept`, {
+    method: "POST", body: JSON.stringify({ actor }),
+  });
 }
 
 export async function saveFile(document: VaultDocument): Promise<{ status: string; path: string }> {
@@ -479,7 +573,7 @@ export async function getSettings(): Promise<WorkspaceSettings> {
         const stored = values[row.config_key];
         return row.kind === "toggle"
           ? { ...row, on: typeof stored === "boolean" ? stored : row.on }
-          : { ...row, value: typeof stored === "string" ? stored : row.value };
+          : { ...row, value: typeof stored === "string" || typeof stored === "number" ? String(stored) : row.value };
       }),
     }));
   const reviewRows = sections.find((section) => section.id === "document-review")?.rows;

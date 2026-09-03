@@ -1,0 +1,79 @@
+---
+record_type: research_run
+run_id: RUN-20260903-aadece
+matter_id: MAT-20260903-795ebb
+total: 1
+dossier_effect: Research support is ready for the next dossier update.
+useful_support: 1
+human_questions_left: 0
+created_at: '2026-09-03T09:30:38+00:00'
+state: completed
+questions:
+- What does FTC guidance require to substantiate a qualified speed-of-funds-availability
+  claim in payment advertising?
+completed: 1
+status: Partial research is saved; no public source was retrieved.
+source_action_key: intake:CONV-20260903-2937ff
+batch_source_action_key: intake:CONV-20260903-2937ff
+batch_id: RB-20260903-ffe4e0
+batch_position: 1
+batch_total: 3
+batch_run_ids:
+- RUN-20260903-aadece
+- RUN-20260903-9f1a9e
+- RUN-20260903-852cf3
+queue_item_version: 1
+selection:
+  agent_id: research-agent
+  provider: openai_compatible
+  model: kimi-k3-fast
+  reasoning_effort: default
+return_stage: explore
+question_id: RQ-20260903-b72fde
+question: What does FTC guidance require to substantiate a qualified speed-of-funds-availability
+  claim in payment advertising?
+queue_order: 1
+priority: 1
+origin: user
+queued_at: '2026-09-03T09:30:38+00:00'
+started_at: '2026-09-03T09:30:39+00:00'
+finished_at: '2026-09-03T09:32:27+00:00'
+results:
+- summary: A partial research packet is saved; no public source was retrieved.
+  path: 03_Matters/mosaic-relay-ux-test-06-marketing-claim-for-faster-settlement-795ebb/research/RES-20260903-020af7.md
+  warning: Polaris research timed out within the total external research budget. Local
+    and model research continued.
+  internal_sources: 1
+  external_sources: 0
+  external_authority_retrieved: false
+  public_research_status: unavailable
+  research_warnings:
+  - Polaris research timed out within the total external research budget. Local and
+    model research continued.
+  polaris_status: timeout
+  polaris_observability: null
+  analysis_warning: null
+  orientation_warning: null
+  question_answered: true
+  supplied_sources_used: 0
+  internal_support_used: true
+  assumptions_used: See Working Analysis.
+  remaining_gaps: Verify authority and facts identified in the packet.
+  model_only: true
+  provider_legs:
+  - provider: polaris
+    status: timeout
+    authority_retrieved: false
+    attempt_count: null
+    elapsed_ms: 90000
+    timeout_seconds: 90
+    correlation_id: RC-20260903-8e1840
+    warning: Polaris research timed out within the total external research budget.
+      Local and model research continued.
+  correlation_id: RC-20260903-8e1840
+public_research_status: unavailable
+provider_observability: []
+---
+# Research run RUN-20260903-aadece
+
+Partial research is saved; no public source was retrieved.

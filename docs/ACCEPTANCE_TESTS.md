@@ -639,3 +639,38 @@ unresolved material finding.
 - [x] Confirm all live product surfaces and active help text use `Themis.ai`.
   Remaining old names must match the compatibility exceptions in
   `docs/themis-ai-reliability-build.handoff-progress.md`.
+
+## Q. Workflow reconciliation
+
+- [x] Create a matter with a target date. Confirm that the page opens while
+  intake is visibly running and that the date is present in the header,
+  `matter.md`, and `request.md`.
+- [x] Answer intake and use **Finish intake**. Confirm that the orientation
+  work item completes and the matter moves to Being researched.
+- [x] Add a participant through Overview. Confirm `participants.md` is updated.
+- [x] Start research from Overview with no typed question. Confirm that the
+  saved question is non-empty. Confirm that each question has one durable queue
+  record and that moving a queued item changes its saved order.
+- [x] Save one canonical draft and one working recommendation. Confirm that a
+  later agent revision is proposed, a lawyer must accept it, and a direct
+  lawyer edit creates the next recommendation version.
+- [x] Record a durable decision with a recommendation version, disposition,
+  and reason. Confirm that opening the confirmation does not record it.
+- [x] Change a work item's priority and owner. Complete it only with a direct
+  control and confirm the Markdown fields.
+- [x] Finalize, approve, record manual delivery, and close with separate direct
+  controls. Confirm direct sending is disabled and required work blocks closure.
+- [x] Seed a safe legacy final/stage mismatch in a disposable vault. Confirm the
+  board shows the named warning and that **Repair safe stage mismatch** changes
+  only the derived stage.
+- [x] Delete only the disposable SQLite index, restart the backend, and confirm
+  the index rebuild restores the same closed matter, decision, work product,
+  approval, delivery, target date, and work-item state from Markdown.
+
+**Verified — 2026-09-01:** The fresh visible run used
+`/private/tmp/themis-workflow-verification-20260901-d`. Matter
+`MAT-20260901-fa13a5` completed the full workflow. The repository-vault
+protected hash remained
+`4e7ead57bd49e00a37dbd144ef227593ffe15032fb7803b8c262a16b1baeec3e`.
+The final gate passed 629 backend tests, all focused frontend checks, the older
+lifecycle check, typecheck, production build, and `git diff --check`.

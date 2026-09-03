@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { AutoLinkNode, autoLinkUrlMatcher, LinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
 import { ListItemNode, ListNode, INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND } from "@lexical/list";
 import {
@@ -34,11 +35,14 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { RevisionTextNode } from "@/components/RevisionTextNode";
 import RevisionPlugin, { REVIEW_SYNC_TAG, REVISION_BOUNDARY, type ReviewDisplayMode } from "@/components/RevisionPlugin";
 import type { DocumentComment, DocumentReviewSegment } from "@/lib/types";
+import { isModifiedDocumentEnd, moveSelectionToDocumentEnd } from "@/lib/editorSelection";
 import {
   $createParagraphNode,
   $getSelection,
   $isRangeSelection,
   FORMAT_TEXT_COMMAND,
+  COMMAND_PRIORITY_HIGH,
+  KEY_DOWN_COMMAND,
   type TextFormatType,
 } from "lexical";
 
@@ -55,6 +59,19 @@ const MARKDOWN_TRANSFORMERS: Transformer[] = [
   LINK,
 ];
 const AUTO_LINK_MATCHERS = [autoLinkUrlMatcher];
+
+function DocumentEndShortcut() {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => editor.registerCommand(KEY_DOWN_COMMAND, (event) => {
+    if (!isModifiedDocumentEnd(event)) return false;
+    moveSelectionToDocumentEnd();
+    event.preventDefault();
+    return true;
+  }, COMMAND_PRIORITY_HIGH), [editor]);
+
+  return null;
+}
 
 function ToolbarButton({
   label,
@@ -219,6 +236,7 @@ export default function MarkdownRichEditor({
         </div>
       </div>
       <AutoLinkPlugin matchers={AUTO_LINK_MATCHERS} />
+      {readOnly ? null : <DocumentEndShortcut />}
       <ClickableLinkPlugin />
       {reviewSegments && reviewAuthor ? <RevisionPlugin comments={reviewComments} markdown={markdown} mode={reviewMode} onOpenThread={onOpenCommentThread ?? (() => undefined)} onSelectionContext={onSelectionContext ?? (() => undefined)} readOnly={readOnly} reviewers={reviewReviewers} segments={reviewSegments} tracking={reviewTracking} trackingAuthor={reviewAuthor} /> : null}
       {readOnly ? null : (

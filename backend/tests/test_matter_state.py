@@ -85,6 +85,36 @@ def test_non_required_and_closed_items_do_not_replace_fallback_action(tmp_path: 
     assert result["next_actor"] == "none"
 
 
+def test_active_intake_saved_question_waits_on_lawyer_without_a_work_item(tmp_path: Path) -> None:
+    service = _service(tmp_path)
+    service.vault.write_markdown(
+        "00_System/settings.md", "# Settings\n",
+        {"values": {"document_review.lawyer_name": "Brian Harris"}},
+    )
+
+    result = service.resolve(
+        _matter(status="intake", intake_state="active", next_action="Which regions are in scope?"),
+        [],
+    )
+
+    assert result["next_actor"] == "you"
+    assert result["next_owner"] == "Brian Harris"
+    assert result["signal"] == {"kind": "waiting_on_you", "label": "Waiting on you"}
+
+
+def test_active_intake_stage_default_does_not_invent_waiting_work(tmp_path: Path) -> None:
+    service = _service(tmp_path)
+    default = service.default_next_action("intake")
+
+    result = service.resolve(
+        _matter(status="intake", intake_state="active", next_action=default),
+        [],
+    )
+
+    assert result["next_actor"] == "none"
+    assert result["signal"] == {"kind": "none", "label": ""}
+
+
 def test_completed_intake_ignores_stale_orientation_item(tmp_path: Path) -> None:
     result = _service(tmp_path).resolve(
         _matter(intake_state="complete", next_action="Review the dossier."),

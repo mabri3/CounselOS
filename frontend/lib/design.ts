@@ -5,7 +5,7 @@
  * Nothing in the UI should hard-code these hexes; import the role instead.
  */
 
-import type { Decision, Matter, MatterSignalKind, Schedule, StageId } from "./types.ts";
+import type { Decision, Matter, MatterConsistencyIssue, MatterSignalKind, Schedule, StageId } from "./types.ts";
 
 export const role = {
   attention: "#E0A008",
@@ -35,6 +35,21 @@ export const statusRole = {
   failure: { label: "Failed", color: role.failure, tint: role.failureTint, wash: role.failureWash },
   agent: { label: "Agent work", color: role.agent, tint: role.agentTint, wash: role.agentWash },
 } as const;
+
+const CONSISTENCY_LABELS: Record<MatterConsistencyIssue["code"], string> = {
+  final_with_pre_respond_stage: "Current final is before Ready to send",
+  approval_without_current_final: "Approval is not tied to the current final",
+  delivery_without_approved_artifact: "Delivery has no approved artifact",
+  closed_without_required_lifecycle_fields: "Closed lifecycle record is incomplete",
+};
+
+export function consistencyIssueLabel(issue: MatterConsistencyIssue): string {
+  return CONSISTENCY_LABELS[issue.code];
+}
+
+export function consistencyIssueIsSafelyRepairable(issue: MatterConsistencyIssue): boolean {
+  return issue.code === "final_with_pre_respond_stage";
+}
 
 export const reviewAuthorPalette = ["#2F5597", "#7030A0", "#008272", "#A64B00", "#C0006F", "#5B6573", "#7A3E00", "#006B8F"] as const;
 

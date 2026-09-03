@@ -122,7 +122,33 @@ export default function WatchBuilder({ watchId }: { watchId?: string }) {
     {error ? <p className="error" role="alert">{error}</p> : null}{notice ? <div className="warning-callout" role="status" style={{ marginTop: 16 }}>{notice}</div> : null}
     <div className="stack-list" style={{ marginTop: 24 }}>
       <section className="card card-pad"><h2>Assignment</h2><p className="muted">State what to watch and why it matters.</p>
-        <div style={{ display: "grid", gap: 14 }}><label className="field-label">Watch title<input autoFocus={!watchId} className="text-input" onChange={(event) => patch({ title: event.target.value })} value={draft.title} /></label><label className="field-label">Standing question<textarea className="text-input" onChange={(event) => { patch({ standing_question: event.target.value }); if (!draft.public_query.standing_question || draft.public_query.standing_question === draft.standing_question) patchQuery("standing_question", event.target.value); }} rows={3} value={draft.standing_question} /></label><label className="field-label">Public query<textarea className="text-input" onChange={(event) => patchQuery("standing_question", event.target.value)} rows={3} value={draft.public_query.standing_question} /><span className="small muted">Only public collection terms and public entities belong here.</span></label></div>
+        <div style={{ display: "grid", gap: 14 }}>
+          <label className="field-label">
+            Watch title
+            <input autoFocus={!watchId} className="text-input" onChange={(event) => patch({ title: event.target.value })} value={draft.title} />
+          </label>
+          <label className="field-label">
+            Standing question
+            <textarea
+              className="text-input watch-question-input"
+              onChange={(event) => { patch({ standing_question: event.target.value }); if (!draft.public_query.standing_question || draft.public_query.standing_question === draft.standing_question) patchQuery("standing_question", event.target.value); }}
+              placeholder="The internal goal: what should this Watch answer, and why does it matter to your company?"
+              rows={3}
+              value={draft.standing_question}
+            />
+          </label>
+          <label className="field-label">
+            Public query
+            <textarea
+              className="text-input watch-question-input"
+              onChange={(event) => patchQuery("standing_question", event.target.value)}
+              placeholder="The public-only question sent to the provider. Do not include private company or matter details."
+              rows={3}
+              value={draft.public_query.standing_question}
+            />
+            <span className="small muted">Only public collection terms and public entities belong here.</span>
+          </label>
+        </div>
         <fieldset style={{ border: 0, padding: 0, margin: "18px 0 0" }}><legend className="field-label">Purpose</legend>{purposes.map((purpose) => <label className="checkbox-row" key={purpose.id}><input checked={draft.purposes.includes(purpose.id)} onChange={() => patch({ purposes: draft.purposes.includes(purpose.id) ? draft.purposes.filter((item) => item !== purpose.id) : [...draft.purposes, purpose.id] })} type="checkbox" />{purpose.label}</label>)}</fieldset>
       </section>
       <section className="card card-pad"><h2>Public topics and scope</h2><p className="muted">Use commas to separate values.</p><div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: 14 }}>{(["keywords", "topics", "jurisdictions", "regulators", "courts", "industries"] as const).map((key) => <label className="field-label" key={key}>{titleCase(key)}<input className="text-input" onChange={(event) => patchQuery(key, split(event.target.value))} value={join(draft.public_query[key])} /></label>)}</div></section>

@@ -326,11 +326,38 @@ def test_post_create_activation_failure_preserves_complete_vault_and_clear_api_e
     )
     assert response.status_code == 500
     detail = response.json()["detail"]
-    assert "Vault created" in detail and "could not activate" in detail and "can be loaded" in detail
+    assert detail == "The vault was created but could not be activated. You can load it from Settings."
     assert manager.context.vault.root == current
     assert not pointer.exists()
     assert not list(tmp_path.glob(".created-vault.themis.ai-*"))
     assert VaultManager(current).load(str(target)) == target
+
+
+def test_vault_activation_failure_does_not_expose_diagnostic_details(
+    tmp_path: Path, monkeypatch, caplog: pytest.LogCaptureFixture,
+) -> None:
+    current = tmp_path / "current"
+    copy_test_vault(current)
+    manager = ActiveContextManager(_settings(current), pointer_path=tmp_path / "pointer.json")
+    app = FastAPI()
+    app.state.context_manager = manager
+    app.state.context = manager.context
+    app.include_router(settings_router.router, prefix="/api")
+    secret = "private-key-and-vault-content"
+
+    async def fail_selection(_prepare):
+        raise RuntimeError(secret)
+
+    monkeypatch.setattr(manager, "select", fail_selection)
+    response = TestClient(app, raise_server_exceptions=False).post(
+        "/api/settings/vault/load", json={"path": str(tmp_path / "requested-vault")}
+    )
+
+    assert response.status_code == 500
+    assert response.json()["detail"] == "The vault could not be activated. Try again."
+    assert secret not in response.text
+    assert "RuntimeError" in caplog.text
+    assert secret not in caplog.text
 
 
 @pytest.mark.asyncio

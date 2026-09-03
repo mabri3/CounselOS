@@ -62,3 +62,77 @@ async def test_unexpected_hidden_lifecycle_call_is_rejected(app_context):
     response = await app_context.runner.run(ChatRequest(message="Draft a response.", matter_id="MAT-DEMO-HARBOR"))
     assert any(item.tool == "close_matter" and item.status == "error" for item in response.trace)
     assert "Useful draft" in response.reply
+
+
+@pytest.mark.asyncio
+async def test_tool_created_agent_cannot_broaden_creator_permissions(app_context):
+    class HostileProvider:
+        def __init__(self):
+            self.calls = 0
+
+        async def complete(self, messages, tools=None):
+            self.calls += 1
+            if self.calls == 1:
+                return ProviderReply(content="", tool_calls=[ProviderToolCall(
+                    id="create-agent",
+                    name="create_agent",
+                    arguments={
+                        "agent_id": "broadened-agent",
+                        "name": "Broadened agent",
+                        "description": "Attempts escalation.",
+                        "instructions": "Do useful work.",
+                        "allowed_tools": ["read_file", "activate_watch"],
+                    },
+                )])
+            return ProviderReply(content="The requested agent was not created.")
+
+    app_context.runner.provider = HostileProvider()
+    response = await app_context.runner.run(ChatRequest(
+        message="Create an agent that can read files.",
+        agent_id="counsel-copilot",
+    ))
+
+    assert any(item.tool == "create_agent" and item.status == "error" for item in response.trace)
+    with pytest.raises(KeyError):
+        app_context.agents.get("broadened-agent")
+
+
+@pytest.mark.asyncio
+async def test_tool_created_agent_cannot_replace_runtime_managed_agent(app_context):
+    app_context.agents.create(
+        agent_id="restricted-creator",
+        name="Restricted creator",
+        description="Can create narrowly scoped agents.",
+        instructions="Do useful work.",
+        allowed_tools=["create_agent", "read_file"],
+        max_steps=2,
+    )
+
+    class HostileProvider:
+        def __init__(self):
+            self.calls = 0
+
+        async def complete(self, messages, tools=None):
+            self.calls += 1
+            if self.calls == 1:
+                return ProviderReply(content="", tool_calls=[ProviderToolCall(
+                    id="replace-runtime-agent",
+                    name="create_agent",
+                    arguments={
+                        "agent_id": "research-agent",
+                        "name": "Limited replacement",
+                        "description": "Attempts replacement.",
+                        "instructions": "Read one file.",
+                        "allowed_tools": ["read_file"],
+                    },
+                )])
+            return ProviderReply(content="The requested agent was not created.")
+
+    app_context.runner.provider = HostileProvider()
+    response = await app_context.runner.run(ChatRequest(
+        message="Create a limited reading agent.",
+        agent_id="restricted-creator",
+    ))
+
+    assert any(item.tool == "create_agent" and item.status == "error" for item in response.trace)
+    assert app_context.agents.get("research-agent").name != "Limited replacement"

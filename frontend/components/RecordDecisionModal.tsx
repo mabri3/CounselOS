@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { createDecision, getDecisions, getFile } from "@/lib/api";
 import { formatLongDay } from "@/lib/design";
 import type { MatterDetail } from "@/lib/types";
+import type { RecommendationDisposition } from "@/lib/types";
+import { recommendationNeedsReason } from "@/lib/recommendations";
 
 /**
  * Canvas 2b / 1h. The modal makes the explicit record action clear: the
@@ -29,6 +31,8 @@ export default function RecordDecisionModal({
   const initialDecision = suggestion.trim();
   const [chosenPath, setChosenPath] = useState(initialDecision);
   const [rationale, setRationale] = useState("");
+  const [disposition, setDisposition] = useState<RecommendationDisposition>(detail.recommendation?.current_version_id ? "followed" : "not_applicable");
+  const [dispositionReason, setDispositionReason] = useState("");
   const [conditions, setConditions] = useState("");
   const [notDecided, setNotDecided] = useState("");
   const [linkedBasis, setLinkedBasis] = useState(basis);
@@ -61,6 +65,7 @@ export default function RecordDecisionModal({
   async function record() {
     if (!chosenPath.trim()) { setError("Say what was decided."); return; }
     if (!decider.trim()) { setError("Enter who made the decision."); return; }
+    if (recommendationNeedsReason(disposition) && !dispositionReason.trim()) { setError("Give a short reason for modifying or not following the recommendation."); return; }
     let decisionCreated = created;
     let decisionId = createdId;
     setBusy(true);
@@ -80,6 +85,9 @@ export default function RecordDecisionModal({
           not_decided: lines(notDecided),
           linked_paths: linkedBasis,
           source_action_key: sourceActionKey.current,
+          recommendation_disposition: disposition,
+          recommendation_disposition_reason: dispositionReason.trim(),
+          recommendation_version_id: detail.recommendation?.current_version_id ?? null,
         });
         decisionCreated = true;
         decisionId = saved.decision_id;
@@ -124,6 +132,19 @@ export default function RecordDecisionModal({
               style={{ minHeight: 96 }}
               value={chosenPath}
             />
+          </div>
+
+          <div>
+            <div className="field-label">Recommendation disposition</div>
+            <select aria-label="Recommendation disposition" className="text-input" disabled={busy || created || recorded} onChange={(event) => setDisposition(event.target.value as RecommendationDisposition)} value={disposition}>
+              <option value="followed">Followed</option>
+              <option value="modified">Modified</option>
+              <option value="not_followed">Not followed</option>
+              <option value="not_applicable">Not applicable</option>
+            </select>
+            {recommendationNeedsReason(disposition) ? (
+              <input aria-label="Reason for recommendation disposition" className="text-input" disabled={busy || created || recorded} onChange={(event) => setDispositionReason(event.target.value)} placeholder="Short reason" value={dispositionReason} />
+            ) : null}
           </div>
 
           <div>
@@ -190,7 +211,7 @@ export default function RecordDecisionModal({
           <div className="btn-row">
             <button className={recorded ? "btn primary" : "btn"} disabled={busy} onClick={onClose}>{created ? "Close" : "Cancel"}</button>
             {recorded ? null : (
-              <button className="btn primary" disabled={busy || !chosenPath.trim() || !decider.trim()} onClick={() => void record()}>
+              <button className="btn primary" disabled={busy || !chosenPath.trim() || !decider.trim() || (recommendationNeedsReason(disposition) && !dispositionReason.trim())} onClick={() => void record()}>
                 {busy ? created ? "Refreshing…" : "Recording and refreshing…" : created ? "Retry refresh" : "Record durable decision"}
               </button>
             )}

@@ -13,3 +13,7 @@ vault/.counsel_os/
 vault/.counsel_os_cache.db*
 vault/04_Inbox/_processed/
 frontend/.env.local
+/tmp/
+/graphify-out/
+/vault/
+/vault2/

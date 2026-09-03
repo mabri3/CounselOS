@@ -62,6 +62,50 @@ export function safeChatFailureDetail(detail?: string | null): string {
   return detail;
 }
 
+export function chatFailureGuidance(
+  failureClass?: "provider" | "timeout" | "output_shape" | "tool_validation" | "tool_execution" | "interrupted" | "unknown" | null,
+): string {
+  return {
+    provider: "The model service did not finish. Review saved work, then retry once or continue manually.",
+    timeout: "The model service reached its time limit. Review saved work, then retry once or continue manually.",
+    output_shape: "The response could not be turned into the required action. Use the direct control or send a narrower request.",
+    tool_validation: "The requested action needs corrected input. Review the saved draft, then correct the request.",
+    tool_execution: "The workspace action did not complete. Use the direct control or address the stated prerequisite.",
+    interrupted: "The application stopped before the request finished. Review saved work, then retry or continue manually.",
+    unknown: "The request stopped before completion. Review saved output, then retry or continue manually.",
+  }[failureClass ?? "unknown"];
+}
+
+export function durableChatProgress(
+  run: { state: "queued" | "running" | "completed" | "failed" | "interrupted"; milestone?: string | null; status: string },
+): string {
+  if (run.milestone) return run.milestone;
+  return run.state === "queued" ? "Queued." : run.state === "running" ? "Model is working." : run.status;
+}
+
+export function chatProgressLabel(cardAction?: { action: string } | null): string {
+  return cardAction && ["answer", "answer_set", "skip", "stop"].includes(cardAction.action)
+    ? "Answer saved · Reassessing intake"
+    : "Working…";
+}
+
+export function chatSuggestions(options: string[] = []): string[] {
+  const namedOptions = options.map((option) => option.trim()).filter(Boolean);
+  return [
+    ...(namedOptions.length === 2 ? ["Compare both paths"] : []),
+    "Which other matters does this touch?",
+    "What would change your view?",
+  ];
+}
+
+export function visibleOperationResults<T extends { operation: string; status: string }>(results: T[]): T[] {
+  const savedWorkProduct = results.some((result) => result.operation === "save_work_product" && result.status === "changed");
+  return results.filter((result) => (
+    !(result.status === "no_change" && result.operation === "chat_turn")
+    && !(savedWorkProduct && result.operation === "write_markdown" && result.status === "failed")
+  ));
+}
+
 export function chatAgentId(intakeActive: boolean, activeAgentId?: string | null): string {
   if (intakeActive) return "intake-agent";
   return activeAgentId || "counsel-copilot";
@@ -77,6 +121,18 @@ export function needsIntakeQuestionRecovery(
     latest?.role === "assistant"
     && !latest.cards?.some((card) => card.type === "question"),
   );
+}
+
+export function intakeRecoveryKey(
+  conversationId: string,
+  messages: Array<{ message_id?: string; role: string }>,
+): string | null {
+  const latestSavedUser = [...messages].reverse().find(
+    (message) => message.role === "user" && Boolean(message.message_id),
+  );
+  return latestSavedUser?.message_id
+    ? `${conversationId}:${latestSavedUser.message_id}`
+    : null;
 }
 
 export type HistoricalQuestionState = {
@@ -136,4 +192,17 @@ export function historicalQuestionStates(
     }
   }
   return states;
+}
+
+export function shouldCompactIntakeTurn(
+  cards: Array<{ type: string; question_id?: string; conflict?: boolean }>,
+  states: Record<string, HistoricalQuestionState>,
+  content: string,
+  hasVisibleOperationResult: boolean,
+): boolean {
+  const questions = cards.filter((card) => card.type === "question" && card.question_id);
+  return questions.length > 0
+    && !hasVisibleOperationResult
+    && !/\b(?:material )?assumption\b/i.test(content)
+    && questions.every((card) => !card.conflict && states[card.question_id!]?.state !== "active");
 }

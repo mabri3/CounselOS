@@ -1,0 +1,90 @@
+---
+matter_id: MAT-20260903-ee48cf
+record_type: dossier
+editable: true
+source_revision: 03_Matters/mosaic-relay-ux-test-10-promotional-referral-credits-ee48cf/dossier-revisions/DOS-20260903-4b578c.md
+updated_at: '2026-09-03T18:56:31+00:00'
+content_hash: 08e9f56ae7e13ac0899fb7abec5408d6ed2e8cdf67fa7df330b4b50c4d6582bb
+---
+# Matter dossier
+
+## Matter summary
+
+Mosaic Relay Holdings, Inc. (a fictional B2B payments infrastructure provider) wants to launch a three‑month referral test in the United States and Canada. Existing business customers would earn a $100 platform credit when a referred merchant completes onboarding and settles its first eligible payment. Marketing plans to promote the offer through email, social media, and partner channels, with a requested launch date of October 3, 2026. Counsel is involved because the program implicates advertising‑law compliance, email‑marketing consent (CAN‑SPAM/CASL), tax characterization of the credit, and platform‑risk controls against referral fraud.
+
+## Decision question
+
+Should legal approve the referral program’s specific eligibility rules, disclosure language, email‑consent basis, partner compensation terms, reward restrictions, 90‑day expiration, fraud‑response protocols, and campaign record‑keeping requirements in time for the October 3, 2026 launch, given that tax treatment and email‑consent status remain unconfirmed?
+
+## Material facts
+
+- Growth wants to offer a referral program where a business customer receives a $100 platform credit when a referred merchant completes onboarding and processes its first eligible payment.
+- The reward amount is $100 in platform credit.
+- The eligibility trigger is the referred merchant completing onboarding and processing its first eligible payment.
+- Marketing may promote the offer through email, social media, and partner channels.
+- Product wants to run a three-month test in the United States and Canada.
+- Draft terms and fraud controls exist.
+- Requested launch date is 2026-10-03.
+- Who is eligible to be a referrer and a referred merchant in this program? — Only existing business customers can refer: Referred merchant must be new to Mosaic Relay: Mosaic Relay employees and sales teams excluded from referring: Self-referrals (referring your own business) prohibited
+- What is the email-consent basis for promoting the referral offer to business customers in the US and Canada? — Not sure — need to check with the marketing/compliance team
+- Which countries or regions are in scope? — Multiple regions
+- Email-consent status and basis for promotional outreach (CAN-SPAM/CASL) — Consent status is not yet confirmed. Assume transactional/service consent only until Marketing and Compliance produce opt-in records; do not send promotional email to US or Canadian recipients without a documented basis. Scope should remain the United States and Canada only for this three-month test; no other regions are approved. Apply CAN-SPAM for US messages and CASL consent and unsubscribe rules for Canada, with suppression and proof-of-consent records.
+- Credit expiration terms and how the credit is applied — Approve a non-cash $100 Mosaic Relay platform credit applied only to the referrer's future platform fees. Issue one credit per referred merchant after verified onboarding and the first eligible payment settles. Credit is not redeemable for cash, transferable, or combinable with other promotions. It expires 90 days after issuance, and the terms must state that clearly at sign-up and at issuance. Set a cap of 10 successful credits per referrer during the test.
+- How will marketing partners be compensated and governed for promoting the referral offer? — Flat fee per successful referral
+- Partner compensation and terms for marketing partners — Use a written partner agreement with a flat $25 fee only for a verified successful referral: the referred merchant must be new, complete onboarding, and settle its first eligible payment. No payment for leads, self-referrals, duplicate referrals, or prohibited channels. Partners must use approved copy, disclose the material connection, follow US/Canada marketing and privacy rules, avoid customer-data sharing outside approved flows, keep campaign records, cooperate with fraud reviews, and accept clawback or payment holdback for abuse.
+- How should the $100 platform credit be treated for tax purposes for the referrer and the referred merchant? — Undetermined — needs tax counsel review
+- Disclosure placement for eligibility, expiration, and restriction terms — Use the short-form disclosure adjacent to every call to action in email, social, and partner creative: Existing Mosaic Relay business customers only; referred merchant must be new; onboarding and first eligible payment must settle; one non-cash $100 platform-fee credit, not transferable or combinable, expires 90 days after issue; maximum 10 credits per referrer; no self-referrals or employee/sales referrals. Link the full terms from each placement. Show the full eligibility and expiration terms before sign-up and repeat them when the credit is issued. Partner posts must show the material-connection disclosure next to the claim, not only in a footer.
+
+## Assumptions
+
+- The $100 credit is applied as a platform credit usable toward Mosaic Relay fees, not cash or a deposit (consistent with Mosaic Relay's non-bank model).
+- The referral program is a B2B offer to business customers, not a consumer-facing offer.
+- US and Canada are the only launch jurisdictions for the three-month test.
+- The $100 credit is a platform credit toward Mosaic Relay fees, not cash or a deposit (confirmed by credit-terms answer).
+- US and Canada are the only launch jurisdictions for the three-month test (confirmed by scope answer).
+- The $100 credit is a platform credit toward Mosaic Relay fees, not cash or a deposit (confirmed).
+- US and Canada are the only launch jurisdictions for the three-month test (confirmed).
+- Scope is US and Canada only for this three-month test; no other regions are approved.
+- Email consent is transactional/service only until Marketing and Compliance produce opt-in records; no promotional email without a documented basis.
+- The $100 credit is a non-cash platform-fee credit, not a cash payment or deposit.
+- Tax treatment remains undetermined pending tax counsel review.
+
+## Issues and workstreams
+
+- Advertising/promotion compliance for the referral offer across email, social, and partner channels
+- Privacy and email-consent basis for promotional outreach (CAN-SPAM, CASL for Canada)
+- Tax treatment of the $100 credit for referrer and referred merchant (pending tax counsel)
+- Platform-risk and fraud controls (self-referrals, synthetic referrals, abuse)
+- Partner-channel terms and compensation for marketing partners
+- Disclosure placement and completeness (eligibility, expiration, restrictions)
+- Reward restrictions and credit expiration language
+- Campaign records and monitoring plan
+
+## Open questions
+
+- **Tax treatment:** Is the $100 credit taxable income to the referrer (1099‑MISC/1099‑NEC threshold analysis) and deductible for Mosaic Relay, and does it create GST/HST or provincial tax obligations in Canada?
+- **Email‑consent basis:** Does Marketing hold documented opt‑in consent for promotional email to US and Canadian recipients, or only transactional/service consent? CASL requires express or implied consent for commercial electronic messages to Canadian recipients.
+- **Partner‑channel compliance:** Are marketing partners’ flat‑fee‑per‑referral arrangements structured to avoid money‑transmission or unlicensed‑activity characterization, and do partner agreements include required FTC‑style material‑connection disclosures?
+- **Fraud‑control sufficiency:** Do the existing draft fraud controls adequately address self‑referrals, synthetic referrals, duplicate accounts, and clawback/holdback mechanics before credit issuance?
+- **Regional exclusions:** Are any US states or Canadian provinces excluded from the test, and do local rules (e.g., Quebec’s French‑language requirements or provincial privacy laws) affect the campaign?
+
+## Research and source support
+
+Latest review: `03_Matters/mosaic-relay-ux-test-10-promotional-referral-credits-ee48cf/research/RES-20260903-1f530e.md`
+
+- Internal support: **Referral Credit Program Research Packet 022913** — What would change this Working assumption — consent basis: I'm assuming transactional/service consent only until opt-in records exist. If Marketing/Compliance confirm a documented promotional-consent…
+- Internal support: **Facts** — Known Facts Growth wants to offer a referral program where a business customer receives a $100 platform credit when a referred merchant completes onboarding and processes its first eligible payment.…
+
+## Options or working recommendation
+
+# Recommendations
+
+No recommendation has been drafted yet.
+
+## Next counsel action
+
+Confirm email-consent opt-in records (CAN-SPAM/CASL)
+
+## Work product links
+
+- Draft: [Referral Credit Program — Legal Review & Final Response](03_Matters/mosaic-relay-ux-test-10-promotional-referral-credits-ee48cf/work-product/draft/referral-credit-program-research-packet-022913.md)

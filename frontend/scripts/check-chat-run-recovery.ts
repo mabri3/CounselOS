@@ -1,15 +1,38 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import ts from "typescript";
 import { getChatRun, retryChatRun, startChatRun } from "../lib/api.ts";
-import { chatAgentId, chatDraftStorageKey, chatRunStateLabel, chatRunStorageKey, historicalQuestionStates, legacyChatRunStorageKey, mergeChatMessages, needsIntakeQuestionRecovery, pendingChatRunId, rememberChatRun, remainingComposerValue, safeChatFailureDetail, shouldShowChatRunStatus } from "../lib/chatRunLogic.ts";
+import { chatAgentId, chatDraftStorageKey, chatFailureGuidance, chatProgressLabel, chatRunStateLabel, chatRunStorageKey, chatSuggestions, durableChatProgress, historicalQuestionStates, intakeRecoveryKey, legacyChatRunStorageKey, mergeChatMessages, needsIntakeQuestionRecovery, pendingChatRunId, rememberChatRun, remainingComposerValue, safeChatFailureDetail, shouldShowChatRunStatus, visibleOperationResults } from "../lib/chatRunLogic.ts";
 import type { ChatRun } from "../lib/types.ts";
 
 const originalFetch = globalThis.fetch;
 const chatPanelSource = readFileSync(new URL("../components/ChatPanel.tsx", import.meta.url), "utf8");
+const eligibilitySource = chatPanelSource.match(/function isEligibleWorkProductResponse\(message: Message\): boolean \{[\s\S]*?\n\}/)?.[0];
+if (!eligibilitySource) throw new Error("Could not load work-product eligibility logic.");
+const eligibilityModule = await import(`data:text/javascript;base64,${Buffer.from(ts.transpileModule(`${eligibilitySource}\nexport { isEligibleWorkProductResponse };`, {
+  compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+}).outputText).toString("base64")}`) as { isEligibleWorkProductResponse: (message: { role: string; content: string; cards?: unknown[]; operation_results?: Array<{ operation: string }> }) => boolean };
 assert.match(chatPanelSource, /SHOW_AGENT_TRACES && message\.trace\?\.length/, "technical traces must be hidden unless developer tracing is enabled");
-assert.match(chatPanelSource, /Stop showing progress/, "the local progress control must not claim to cancel server work");
-assert.match(chatPanelSource, /Server work continues if you stop waiting/, "the progress control must explain that server work continues");
-assert.match(chatPanelSource, /mutationFailureMessages/, "structured mutation failures must render above useful reply text");
+assert.match(chatPanelSource, /Continue in background/, "the local progress control must state that only local progress is hidden");
+assert.match(chatPanelSource, /Server work continues/, "the progress control must explain that server work continues");
+assert.match(chatPanelSource, /Last durable step:/, "long runs must show their last durable milestone");
+assert.match(chatPanelSource, /chatFailureGuidance\(activeRun\.failure_class\)/, "failed runs must use the persisted safe failure class");
+assert.match(chatPanelSource, /terminalRuns\.current\.has\(run\.run_id\)/, "a reload must reconcile one durable terminal run only once");
+assert.match(chatPanelSource, /terminalRuns\.current\.delete\(next\.run_id\)/, "retrying the same durable run must permit its next terminal reconciliation");
+assert.match(chatPanelSource, /await onRefresh\(\)/, "a durable terminal run must refresh the matter after reconnect");
+assert.doesNotMatch(chatPanelSource, /setHistoryError\("Themis\.ai could not finish this request\."\);\s*setWaiting\(false\);\s*setBusy\(false\);/, "a temporary run-read error must not enable a conflicting second action");
+assert.doesNotMatch(chatPanelSource, /getChatRun\(matterId, runId\)[\s\S]{0,520}setBusy\(false\);\s*setWaiting\(false\);/, "an initial durable-run reconnect failure must retain its local block");
+assert.match(chatPanelSource, /window\.setTimeout\(reconnectSavedRun, 2000\)/, "a transient initial reconnect failure must schedule one bounded retry");
+assert.match(chatPanelSource, /const reconnectSavedRun =[\s\S]{0,220}setHistoryError\(""\);[\s\S]{0,160}setActiveRun\(run\)/, "a successful durable reconnect must clear the stale blocked error before showing its run");
+assert.match(chatPanelSource, /currentEligibleAssistantIndex/, "only the current eligible assistant response may offer the primary draft save");
+assert.match(chatPanelSource, /isEligibleWorkProductResponse/, "intake and system-status replies must not become a work-product draft");
+assert.match(chatPanelSource, /finish_intake|Intake is complete/, "completed intake summaries must be excluded even when they are long prose");
+assert.match(chatPanelSource, /Save current work product/, "the current developed assistant reply must have a clear primary save action");
+assert.doesNotMatch(chatPanelSource, /Stop showing progress/, "the ambiguous progress label must not return");
+assert.match(chatPanelSource, /operationResults=\{currentOperationResults\}/, "the latest persisted operation result must control workspace-action rendering");
+assert.match(chatPanelSource, /latestOperationResults\.get\(result\.source_action_key \?\? result\.action\) === result/, "reload must hide an older confirmation after its durable result is saved");
+assert.doesNotMatch(chatPanelSource, /mutationFailureMessages|mutationOutcome/, "chat mutation truth must not use legacy trace inference");
+assert.match(chatPanelSource, /operation_results: run\.response!\.operation_results/, "the immediate chat-run fallback must keep finalized operation results");
 assert.match(chatPanelSource, /submit\(answerText \?\? "", action, \[\], false, false\)/, "card actions must not consume unrelated composer content");
 assert.match(chatPanelSource, /historicalQuestionStates/, "question controls and historical state must come from durable chat actions");
 assert.match(chatPanelSource, /saved\.changed_paths\.length[\s\S]*This current draft already exists\. No new save was made\./, "chat-save retries must report that no new draft was saved");
@@ -19,9 +42,26 @@ assert.match(
   "a retry that finishes before the response returns must clear the local busy state",
 );
 assert.match(chatPanelSource, /loadingHistory \|\| busy \|\| refreshingRun \|\| !conversationId/, "intake recovery must wait for terminal matter refresh");
+assert.match(chatPanelSource, /intakeRecoveryAttempts\.current\.has\(recoveryKey\)/, "one saved user turn may trigger only one automatic intake recovery");
+assert.match(chatPanelSource, /could not be restored automatically/, "an exhausted automatic recovery must show a stable recovery state");
+assert.match(chatPanelSource, /Retry intake question/, "failed automatic recovery must offer an explicit retry");
+assert.deepEqual(chatSuggestions([]), ["Which other matters does this touch?", "What would change your view?"], "comparison must not be suggested without two named matter options");
+assert.equal(chatSuggestions(["Path A", "Path B"])[0], "Compare both paths", "two named matter options enable the comparison suggestion");
+assert.equal(chatProgressLabel({ action: "answer" }), "Answer saved · Reassessing intake");
+assert.equal(chatProgressLabel(null), "Working…");
+assert.equal(durableChatProgress({ state: "running", status: "Chat is running.", milestone: "Partial work saved." }), "Partial work saved.");
+assert.match(chatFailureGuidance("provider"), /retry once/);
+assert.match(chatFailureGuidance("tool_validation"), /corrected input/);
+assert.doesNotMatch(chatFailureGuidance("unknown"), /https?:|RUN-|\/Users\//);
+const projectedResults = visibleOperationResults([
+  { operation: "write_markdown", status: "failed", id: "protected" },
+  { operation: "save_work_product", status: "changed", id: "saved" },
+  { operation: "run_research", status: "failed", id: "unrelated" },
+]);
+assert.deepEqual(projectedResults.map((result) => result.id), ["saved", "unrelated"], "only a protected write failure recovered by a typed save is hidden");
 assert.match(
   chatPanelSource,
-  /if \(run\.state !== "completed"[\s\S]*setBusy\(false\);[\s\S]*completedRuns\.current\.add/,
+  /terminalRuns\.current\.add\(run\.run_id\);[\s\S]*setBusy\(false\);[\s\S]*setRefreshingRun\(true\)/,
   "a terminal run must clear visible progress before conversation reload or matter refresh",
 );
 const calls: Array<{ url: string; method: string }> = [];
@@ -34,6 +74,23 @@ const startedRun: ChatRun = {
   created_at: "2026-08-30T00:00:00Z",
   path: "matters/M-1/conversations/runs/CHAT-1.md",
 };
+
+const longStatusTail = "Saved facts and research remain available for review. ".repeat(5);
+assert.equal(
+  eligibilityModule.isEligibleWorkProductResponse({ role: "assistant", content: `## Intake is complete\n\n${longStatusTail}` }),
+  false,
+  "a Markdown-headed completed intake summary must not become the canonical draft",
+);
+assert.equal(
+  eligibilityModule.isEligibleWorkProductResponse({ role: "assistant", content: `## Research complete\n\n${longStatusTail}` }),
+  false,
+  "a Markdown-headed research status must not become the canonical draft",
+);
+assert.equal(
+  eligibilityModule.isEligibleWorkProductResponse({ role: "assistant", content: "## Recommended response\n\nThe company can launch after it completes the listed controls and records the decision rationale.\n\n- Confirm the owner\n- Save the final response\n\nThis keeps the recommendation separate from the recorded decision." }),
+  true,
+  "a developed structured response remains eligible for the canonical draft",
+);
 
 globalThis.fetch = (async (input, init) => {
   calls.push({ url: String(input), method: init?.method ?? "GET" });
@@ -106,11 +163,15 @@ try {
   assert.match(calls[2].url, /\/chat-runs\/CHAT-1\/retry$/);
   assert.equal(calls[2].method, "POST");
 
-  const appended = new Set<string>();
-  const appendCompleted = (runId: string) => appended.add(runId);
-  appendCompleted("CHAT-1");
-  appendCompleted("CHAT-1");
-  assert.equal(appended.size, 1, "a completed run is handled once");
+  const terminalRefreshes = new Set<string>();
+  const refreshTerminalRun = (run: ChatRun) => {
+    if (!run.finished_at || terminalRefreshes.has(run.run_id)) return;
+    terminalRefreshes.add(run.run_id);
+  };
+  const terminal = { ...reconnected, state: "completed" as const, finished_at: "2026-08-30T00:00:08Z" };
+  refreshTerminalRun(terminal);
+  refreshTerminalRun(terminal);
+  assert.equal(terminalRefreshes.size, 1, "reload and polling refresh the same durable terminal run once");
 
   const failedWithOutput: ChatRun = {
     ...reconnected,
@@ -126,7 +187,7 @@ try {
   showRecoveredResult(recovered);
   showRecoveredResult(recovered);
   assert.deepEqual([...recoveredResults.values()], ["Recovered final answer"], "retry shows the recovered final answer once");
-  assert.equal(shouldShowChatRunStatus("completed"), false, "completed runs must not add a redundant status card");
+  assert.equal(shouldShowChatRunStatus("completed"), false, "completed run status remains available through the durable result rather than a second local run");
   assert.equal(shouldShowChatRunStatus("running"), true, "running work must remain visible");
   assert.equal(shouldShowChatRunStatus("failed"), true, "failed work must remain visible for recovery");
 
@@ -143,6 +204,15 @@ try {
   assert.equal(needsIntakeQuestionRecovery(true, [{ role: "assistant", cards: [{ type: "question" }] }]), false, "a structured question must not trigger recovery");
   assert.equal(needsIntakeQuestionRecovery(false, [{ role: "assistant", cards: [] }]), false, "completed intake must not trigger recovery");
   assert.equal(needsIntakeQuestionRecovery(true, [{ role: "user", cards: [] }]), false, "a pending user turn must not trigger recovery");
+  assert.equal(
+    intakeRecoveryKey("CONV-1", [
+      { message_id: "MSG-U1", role: "user" },
+      { message_id: "MSG-A1", role: "assistant" },
+      { message_id: "MSG-A2", role: "assistant" },
+    ]),
+    "CONV-1:MSG-U1",
+    "recovery identity must use the latest saved user message, not an assistant message",
+  );
   assert.deepEqual(
     historicalQuestionStates([
       { message_id: "MSG-A", role: "assistant", content: "Question", cards: [{ type: "question", question_id: "Q-1" }] },

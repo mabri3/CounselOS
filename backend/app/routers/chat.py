@@ -6,10 +6,12 @@ import re
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from pydantic import BaseModel
 
-from app.models.api import ChatMessage, ChatRequest, ChatResponse, ChatRun, MatterUpdateCard, WorkProductCard
+from app.models.api import ChatMessage, ChatRequest, ChatResponse, ChatRun, DecisionCreate, MatterUpdateCard
 from app.routers.dependencies import get_context
 from app.runtime import AppContext
 from app.agents.runner import RunnerExecutionState
+from app.agents.output import clean_conversation_for_display, reconcile_user_facing_reply
+from app.services.recommendations import RecommendationService
 
 
 router = APIRouter(tags=["chat"])
@@ -41,7 +43,7 @@ def get_daily_conversation(
     context: AppContext = Depends(get_context),
 ):
     try:
-        return context.chat_history.get_daily(day)
+        return clean_conversation_for_display(context.chat_history.get_daily(day))
     except (KeyError, FileNotFoundError, ValueError) as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
@@ -72,10 +74,28 @@ async def recover_intake_question(
         if conversation.get("conversation_kind") != "intake" or conversation.get("intake_state") != "active":
             raise ValueError("Only an active intake conversation can recover a question.")
         latest = conversation["messages"][-1] if conversation["messages"] else None
-        if not latest or latest.get("role") != "assistant":
+        if not latest:
             raise ValueError("The active intake is waiting for its current turn to finish.")
-        if any(card.get("type") == "question" for card in latest.get("cards") or []):
-            raise ValueError("The active intake already has a structured question.")
+        if latest.get("role") == "assistant":
+            if any(
+                card.get("type") == "question"
+                and not context.matter_records.is_answered_question(
+                    matter_id,
+                    str(card.get("question_id") or ""),
+                    str(card.get("text") or ""),
+                )
+                for card in latest.get("cards") or []
+            ):
+                raise ValueError("The active intake already has a structured question.")
+        elif latest.get("role") == "user":
+            answered_ids = _action_question_ids(latest.get("card_action") or {})
+            if not answered_ids or not all(
+                context.matter_records.is_answered_question(matter_id, question_id, "")
+                for question_id in answered_ids
+            ):
+                raise ValueError("The active intake is waiting for its current turn to finish.")
+        else:
+            raise ValueError("The active intake is waiting for its current turn to finish.")
         run = context.chat_runs.start(
             matter_id,
             ChatRequest(
@@ -87,6 +107,7 @@ async def recover_intake_question(
                 matter_id=matter_id,
                 conversation_id=payload.conversation_id,
                 agent_id="intake-agent",
+                intake_recovery=True,
             ),
             persist_user_message=False,
         )
@@ -145,6 +166,7 @@ async def execute_chat(
             if payload.matter_id
             else None
         )
+        run_state = execution_state or RunnerExecutionState()
         if payload.matter_id:
             if payload.workspace_day:
                 raise ValueError("A chat cannot be both matter-scoped and day-scoped.")
@@ -159,6 +181,7 @@ async def execute_chat(
                 )
                 if not same_run_user:
                     _reject_duplicate_question_action(saved, payload)
+                _validate_question_action(saved, payload)
                 history = _history(saved, exclude_run_id=run_id)
             existing_user = (
                 context.chat_history.find_run_message(payload.matter_id, conversation_id, run_id, "user")
@@ -186,6 +209,48 @@ async def execute_chat(
                 conversation.get("conversation_kind") == "intake"
                 and conversation.get("intake_state") == "active"
             )
+            resolved_answers = (
+                _resolved_question_answers(conversation, payload)
+                if intake_active
+                else []
+            )
+            if resolved_answers:
+                answer_action_key = str(
+                    payload.source_action_key
+                    or (current_user or {}).get("message_id")
+                    or "intake-answer"
+                )
+                answer_result = context.matter_records.record_intake_answers(
+                    payload.matter_id,
+                    resolved_answers,
+                    source_id=str(trusted_source_id or (current_user or {}).get("message_id") or ""),
+                    source_action_key=answer_action_key,
+                )
+                if answer_result["changed"]:
+                    run_state.changed_paths.extend(answer_result["changed_paths"])
+                    run_state.refresh.extend(["matter", "tree"])
+                    run_state.operation_results.append({
+                        "action": answer_action_key,
+                        "source_action_key": answer_action_key,
+                        "operation": "record_intake_answer",
+                        "status": "changed",
+                        "summary": "Intake answer recorded.",
+                        "matter_id": payload.matter_id,
+                        "entity_refs": [
+                            {"type": "intake_answer", "id": record_id}
+                            for record_id in answer_result["record_ids"]
+                        ],
+                        "changed_paths": answer_result["changed_paths"],
+                        "resulting_matter_state": {},
+                        "available_next_actions": [],
+                        "required_user_action": None,
+                        "error": None,
+                        "recovery": None,
+                    })
+                    if checkpoint:
+                        checkpoint(run_state)
+                model_content = _resolved_answer_text(resolved_answers)
+                expected_dossier_hash = context.dossiers.content_hash(payload.matter_id)
         else:
             if payload.conversation_id:
                 raise ValueError("Today chat continues by date, not by conversation ID.")
@@ -207,13 +272,26 @@ async def execute_chat(
             )
             conversation_id = None
         response = (
-            _stop_intake(
-                context, payload, saved, expected_dossier_hash,
-                intake_active=intake_active,
+            _confirm_saved_operation(
+                context, payload, saved, execution_state=run_state,
             )
             if payload.matter_id else None
         )
         if response is None:
+            response = (
+                _stop_intake(
+                    context, payload, saved, expected_dossier_hash,
+                    intake_active=intake_active,
+                    execution_state=run_state,
+                )
+                if payload.matter_id else None
+            )
+        if response is None:
+            routed_agent_id = _route_matter_agent(
+                payload,
+                intake_active=bool(payload.matter_id and intake_active),
+                recovery=not persist_user_message,
+            )
             response = await context.runner.run(
                 payload.model_copy(
                     update={
@@ -222,19 +300,21 @@ async def execute_chat(
                         "skill_id": skill_id,
                         "agent_id": (
                             "research-agent" if skill_id == "watch-builder"
-                            else "intake-agent" if payload.matter_id and intake_active
-                            else payload.agent_id
+                            else routed_agent_id
                         ),
                         "trusted_source_id": trusted_source_id if payload.matter_id else None,
                         "expected_dossier_hash": expected_dossier_hash,
                     }
                 ),
-                execution_state=execution_state,
+                execution_state=run_state,
                 checkpoint=checkpoint,
                 resolved_provider=resolved_provider,
             )
         if payload.matter_id:
-            _apply_matter_actions(context, payload, saved, response, run_id=run_id)
+            _apply_matter_actions(
+                context, payload, saved, response,
+                execution_state=run_state, run_id=run_id,
+            )
             intake_record = context.matter_records.get(payload.matter_id)
             if conversation.get("conversation_kind") == "intake":
                 intake_state = intake_record.get("intake_state", "active")
@@ -250,7 +330,11 @@ async def execute_chat(
                     _queue_intake_research(
                         context, payload.matter_id, intake_record,
                         cycle_id=conversation_id,
-                    )
+                )
+            response.operation_results = list(run_state.operation_results)
+            response.reply = reconcile_user_facing_reply(
+                response.reply, response.operation_results
+            )
         if payload.matter_id:
             if response.reply.strip():
                 if run_id:
@@ -258,12 +342,14 @@ async def execute_chat(
                         payload.matter_id, conversation_id, run_id, content=response.reply,
                         trace=[item.model_dump() for item in response.trace], cards=[item.model_dump() for item in response.cards],
                         applied_skills=[item.model_dump() for item in response.applied_skills],
+                        operation_results=response.operation_results,
                     )
                 else:
                     saved = context.chat_history.append(
                         payload.matter_id, conversation_id, role="assistant", content=response.reply,
                         trace=[item.model_dump() for item in response.trace], cards=[item.model_dump() for item in response.cards],
                         applied_skills=[item.model_dump() for item in response.applied_skills],
+                        operation_results=response.operation_results,
                     )
         else:
             saved = context.chat_history.append_daily(
@@ -273,6 +359,7 @@ async def execute_chat(
                 trace=[item.model_dump() for item in response.trace],
                 cards=[item.model_dump() for item in response.cards],
                 applied_skills=[item.model_dump() for item in response.applied_skills],
+                operation_results=response.operation_results,
             )
         response.conversation_id = conversation_id
         response.changed_paths = list(dict.fromkeys([*response.changed_paths, saved["path"]]))
@@ -283,9 +370,41 @@ async def execute_chat(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
+_SUBSTANTIVE_INTAKE_REQUEST = re.compile(
+    r"^\s*(?:please\s+)?(?:"
+    r"(?:start|run|begin|conduct)\b.{0,48}\bresearch\b|"
+    r"research\b(?!\s+(?:is|isn't|isnt|was|wasn't|wasnt|seems|may|might|could|should\s+not)\b)|"
+    r"(?:analyze|analyse|draft|prepare)\b|"
+    r"create\s+(?:a|an|the)\s+(?:response|draft|memo|analysis|research\s+packet)\b|"
+    r"(?:proceed|continue)\s+with\s+(?:the\s+)?assumptions?\b"
+    r")",
+    re.IGNORECASE,
+)
+
+
+def _route_matter_agent(
+    payload: ChatRequest,
+    *,
+    intake_active: bool,
+    recovery: bool,
+) -> str:
+    """Choose the active matter agent without letting intake block direct work."""
+    if not intake_active:
+        return payload.agent_id
+    if recovery or payload.card_action is not None:
+        return "intake-agent"
+    if _SUBSTANTIVE_INTAKE_REQUEST.search(payload.message):
+        return "counsel-copilot"
+    return "intake-agent"
+
+
 def _history(saved: dict, *, exclude_run_id: str | None = None) -> list[ChatMessage]:
+    cards = _question_cards(saved)
     return [
-        ChatMessage(role=message["role"], content=message["content"])
+        ChatMessage(
+            role=message["role"],
+            content=_message_content_with_question_context(message, cards),
+        )
         for message in saved["messages"]
         if not exclude_run_id
         or message.get("run_id") != exclude_run_id
@@ -311,8 +430,150 @@ def _reject_duplicate_question_action(saved: dict, payload: ChatRequest) -> None
     action = payload.card_action
     if not action or action.action not in {"answer", "answer_set", "skip", "stop"}:
         return
-    if any((message.get("card_action") or {}).get("card_id") == action.card_id for message in saved["messages"]):
+    submitted_ids = _action_question_ids(action.model_dump())
+    answered_ids = {
+        question_id
+        for message in saved["messages"]
+        for question_id in _action_question_ids(message.get("card_action") or {})
+    }
+    if submitted_ids & answered_ids:
         raise ValueError("This question was already answered.")
+
+
+def _validate_question_action(saved: dict, payload: ChatRequest) -> None:
+    action = payload.card_action
+    if (
+        saved.get("conversation_kind") != "intake"
+        or not action
+        or action.action not in {"answer", "answer_set", "skip"}
+    ):
+        return
+    cards = _question_cards(saved)
+    active_ids: set[str] = set()
+    for message in reversed(saved.get("messages", [])):
+        if message.get("role") != "assistant":
+            continue
+        active_ids = {
+            str(card.get("question_id") or "")
+            for card in message.get("cards", [])
+            if card.get("type") == "question" and card.get("question_id")
+        }
+        break
+    question_ids = _action_question_ids(action.model_dump())
+    if not question_ids or not question_ids <= active_ids:
+        raise ValueError("This intake question is no longer active.")
+    for answer in _action_answers(action.model_dump()):
+        card = cards.get(str(answer.get("card_id") or ""))
+        if card is None:
+            raise ValueError("The saved intake question is not available.")
+        values = [str(value).strip() for value in answer.get("values", []) if str(value).strip()]
+        if answer.get("action") == "skip":
+            if values:
+                raise ValueError("A skipped question cannot include an answer.")
+            continue
+        if not values:
+            raise ValueError("Select or enter an answer.")
+        choices = {
+            str(choice.get("value") or "")
+            for choice in card.get("choices", [])
+            if choice.get("value")
+        }
+        if choices and values[0] not in choices:
+            raise ValueError("The selected answer is not available for this question.")
+
+
+def _resolved_question_answers(saved: dict, payload: ChatRequest) -> list[dict[str, object]]:
+    action = payload.card_action
+    if not action or action.action not in {"answer", "answer_set", "skip"}:
+        return []
+    cards = _question_cards(saved)
+    resolved: list[dict[str, object]] = []
+    for answer in _action_answers(action.model_dump()):
+        card = cards.get(str(answer.get("card_id") or ""))
+        if card is None:
+            continue
+        values = [str(value).strip() for value in answer.get("values", []) if str(value).strip()]
+        labels = {
+            str(choice.get("value") or ""): str(choice.get("label") or choice.get("value") or "")
+            for choice in card.get("choices", [])
+        }
+        answer_parts = [labels.get(value, value) for value in values]
+        answer_text = ": ".join(answer_parts) if len(answer_parts) > 1 else "".join(answer_parts)
+        status = "skipped" if answer.get("action") == "skip" else "answered"
+        resolved.append({
+            "question_id": str(answer.get("card_id") or ""),
+            "question": str(card.get("text") or "").strip(),
+            "answer": answer_text,
+            "values": values,
+            "status": status,
+            "record_target": _question_record_target(card),
+        })
+    return resolved
+
+
+def _resolved_answer_text(answers: list[dict[str, object]]) -> str:
+    lines = ["Answers to the saved intake questions:"]
+    for answer in answers:
+        detail = str(answer.get("answer") or "Skipped")
+        lines.append(f"- Question: {answer.get('question')}\n  Answer: {detail}")
+    return "\n".join(lines)
+
+
+def _question_cards(saved: dict) -> dict[str, dict]:
+    return {
+        str(card.get("question_id")): card
+        for message in saved.get("messages", [])
+        if message.get("role") == "assistant"
+        for card in message.get("cards", [])
+        if card.get("type") == "question" and card.get("question_id")
+    }
+
+
+def _question_record_target(card: dict) -> str:
+    target = str(card.get("record_target") or "fact")
+    if target != "fact":
+        return target
+    card_text = f"{card.get('question_id') or ''} {card.get('text') or ''}".casefold()
+    if re.search(r"\b(jurisdiction|countries|country|regions?)\b", card_text):
+        return "jurisdiction_scope"
+    return "fact"
+
+
+def _action_answers(action: dict) -> list[dict]:
+    if action.get("action") == "answer_set":
+        return [dict(item) for item in action.get("answers", []) if isinstance(item, dict)]
+    if action.get("action") in {"answer", "skip"}:
+        return [{
+            "card_id": action.get("card_id"),
+            "action": action.get("action"),
+            "values": list(action.get("values") or []),
+        }]
+    return []
+
+
+def _action_question_ids(action: dict) -> set[str]:
+    return {
+        str(answer.get("card_id"))
+        for answer in _action_answers(action)
+        if answer.get("card_id")
+    }
+
+
+def _message_content_with_question_context(message: dict, cards: dict[str, dict]) -> str:
+    action = message.get("card_action") or {}
+    answers = []
+    for answer in _action_answers(action):
+        card = cards.get(str(answer.get("card_id") or ""))
+        if not card:
+            continue
+        values = [str(value) for value in answer.get("values", [])]
+        labels = {
+            str(choice.get("value") or ""): str(choice.get("label") or choice.get("value") or "")
+            for choice in card.get("choices", [])
+        }
+        detail = ": ".join(labels.get(value, value) for value in values) or "Skipped"
+        answers.append(f"Question: {card.get('text')}\nAnswer: {detail}")
+    return "\n\n".join(answers) if answers else str(message.get("content") or "")
 
 
 def _watch_builder_requested(content: str, payload: ChatRequest) -> bool:
@@ -345,9 +606,18 @@ def _stop_intake(
     expected_dossier_hash: str | None,
     *,
     intake_active: bool,
+    execution_state: RunnerExecutionState,
 ) -> ChatResponse | None:
     action = payload.card_action
-    if not intake_active or not action or action.action != "stop":
+    continue_with_assumptions = bool(
+        action
+        and action.action == "answer"
+        and action.card_id.startswith("intake-recovery-")
+        and "continue_with_assumptions" in action.values
+    )
+    if not intake_active or not action or (
+        action.action != "stop" and not continue_with_assumptions
+    ):
         return None
     matter_id = str(payload.matter_id)
     record = context.matter_records.set_intake_state(matter_id, "complete")
@@ -371,8 +641,31 @@ def _stop_intake(
     _queue_intake_research(
         context, matter_id, record, cycle_id=saved["conversation_id"]
     )
+    changed_paths = [
+        record["path"],
+        str(dossier.get("path") or dossier.get("revision_path")),
+    ]
+    execution_state.operation_results.append({
+        "action": action.card_id,
+        "source_action_key": payload.source_action_key,
+        "operation": "finish_intake",
+        "status": "changed",
+        "summary": "Intake complete.",
+        "matter_id": matter_id,
+        "entity_refs": [],
+        "changed_paths": changed_paths,
+        "resulting_matter_state": {"intake_state": "complete"},
+        "available_next_actions": ["review_dossier"],
+        "required_user_action": None,
+        "error": None,
+        "recovery": None,
+    })
     return ChatResponse(
-        reply="Intake is complete. The saved facts and open questions remain available for the dossier and research.",
+        reply=(
+            "Intake is complete with the current assumptions. The saved facts and open questions remain available for the dossier and research."
+            if continue_with_assumptions
+            else "Intake is complete. The saved facts and open questions remain available for the dossier and research."
+        ),
         cards=[MatterUpdateCard(
             action_id=action.card_id,
             summary="Intake complete",
@@ -380,14 +673,114 @@ def _stop_intake(
             can_edit=False,
             can_undo=False,
         )],
-        changed_paths=[
-            record["path"],
-            str(dossier.get("path") or dossier.get("revision_path")),
-        ],
+        changed_paths=changed_paths,
         refresh=["matter"],
     )
 
 
+def _confirm_saved_operation(
+    context: AppContext,
+    payload: ChatRequest,
+    saved: dict,
+    *,
+    execution_state: RunnerExecutionState,
+) -> ChatResponse | None:
+    action = payload.card_action
+    if not action or action.action != "apply" or not action.card_id.startswith("operation-result:"):
+        return None
+    action_id = action.card_id.removeprefix("operation-result:")
+    proposal_result = next(
+        (
+            result
+            for message in reversed(saved.get("messages", []))
+            for result in reversed(message.get("operation_results") or [])
+            if str(result.get("action") or "") == action_id
+            and result.get("status") in {"confirmation_required", "proposed"}
+        ),
+        None,
+    )
+    if proposal_result is None:
+        raise ValueError("The saved confirmation proposal is no longer available.")
+    matter_id = str(payload.matter_id)
+    operation = str(proposal_result.get("operation") or "")
+    proposal = proposal_result.get("proposal")
+    proposal = dict(proposal) if isinstance(proposal, dict) else {}
+    source_action_key = str(
+        proposal.get("source_action_key")
+        or proposal_result.get("source_action_key")
+        or action_id
+    )
+
+    if operation == "record_decision":
+        disposition = action.values[0] if action.values else ""
+        reason = action.values[1].strip() if len(action.values) > 1 else ""
+        if disposition not in {"followed", "modified", "not_followed", "not_applicable"}:
+            raise ValueError("Select how the recorded decision relates to the recommendation.")
+        recommendation_version_id = proposal.get("recommendation_version_id")
+        if not recommendation_version_id:
+            recommendation_version_id = RecommendationService(
+                context.vault, context.matters
+            ).get(matter_id).get("current_version_id")
+        request = DecisionCreate.model_validate({
+            **proposal,
+            "matter_id": matter_id,
+            "decision_maker": str(payload.lawyer_author or payload.review_author or "Lawyer"),
+            "source_action_key": source_action_key,
+            "recommendation_disposition": disposition,
+            "recommendation_disposition_reason": reason,
+            "recommendation_version_id": recommendation_version_id,
+        })
+        existing_decision_ids = {
+            str(item["decision_id"]) for item in context.decisions.list()
+        }
+        decision = context.decisions.record(request)
+        already_recorded = str(decision["decision_id"]) in existing_decision_ids
+        changed_paths = [] if already_recorded else [str(decision["path"])]
+        operation_result = {
+            "action": action_id,
+            "source_action_key": source_action_key,
+            "operation": operation,
+            "status": "no_change" if already_recorded else "changed",
+            "summary": "Decision already recorded." if already_recorded else "Decision recorded.",
+            "matter_id": matter_id,
+            "entity_refs": [{"type": "decision", "id": str(decision["decision_id"]), "path": str(decision["path"])}],
+            "changed_paths": changed_paths,
+            "resulting_matter_state": {},
+            "available_next_actions": context.matters.available_next_actions(context.matters.get(matter_id)),
+            "required_user_action": None,
+            "error": None,
+            "recovery": None,
+        }
+    else:
+        matter_action = "mark_as_sent" if operation == "mark_response_sent" else operation
+        if matter_action not in {"approve_response", "mark_as_sent", "close_matter"}:
+            raise ValueError("This confirmation does not map to a supported matter action.")
+        saved_result = context.matters.perform_action(
+            matter_id,
+            matter_action,
+            actor=str(payload.lawyer_author or payload.review_author or "Lawyer"),
+            artifact_path=proposal.get("artifact_path"),
+            work_item_id=proposal.get("work_item_id"),
+            note=proposal.get("note"),
+        )
+        operation_result = {
+            key: saved_result.get(key)
+            for key in (
+                "action", "source_action_key", "operation", "status", "summary",
+                "matter_id", "entity_refs", "changed_paths", "resulting_matter_state",
+                "available_next_actions", "required_user_action", "error", "recovery",
+            )
+        }
+        operation_result["action"] = action_id
+        operation_result["source_action_key"] = source_action_key
+        changed_paths = [str(path) for path in operation_result.get("changed_paths") or []]
+
+    execution_state.operation_results.append(operation_result)
+    return ChatResponse(
+        reply=str(operation_result["summary"]),
+        changed_paths=changed_paths,
+        refresh=["matter", "kanban", "tree"],
+    )
 def _queue_intake_research(
     context: AppContext,
     matter_id: str,
@@ -409,39 +802,31 @@ def _queue_intake_research(
 
 def _apply_matter_actions(
     context: AppContext, payload: ChatRequest, saved: dict, response: ChatResponse,
-    *, run_id: str | None = None,
+    *, execution_state: RunnerExecutionState | None = None, run_id: str | None = None,
 ) -> None:
     matter_id = payload.matter_id
     if not matter_id:
         return
-    lowered = payload.message.lower().strip()
+    execution_state = execution_state or RunnerExecutionState()
     if payload.card_action and payload.card_action.action == "undo":
         action = context.matter_records.withdraw_action(matter_id, payload.card_action.card_id)
         response.cards = [MatterUpdateCard(action_id=action["action_id"], summary="Matter update withdrawn", changed_sections=["Facts"], can_undo=False)]
         response.refresh.append("matter")
+        record_path = context.matter_records.get(matter_id)["path"]
+        response.changed_paths.append(record_path)
+        execution_state.operation_results.append({
+            "action": action["action_id"],
+            "source_action_key": payload.source_action_key,
+            "operation": "withdraw_matter_update",
+            "status": "changed",
+            "summary": "Matter update withdrawn.",
+            "matter_id": matter_id,
+            "entity_refs": [],
+            "changed_paths": [record_path],
+            "resulting_matter_state": {},
+            "available_next_actions": [],
+            "required_user_action": None,
+            "error": None,
+            "recovery": None,
+        })
         return
-    if lowered.startswith("save facts from this chat"):
-        action = context.matter_records.save_facts_from_messages(
-            matter_id, saved["messages"], conversation_id=saved["conversation_id"]
-        )
-        response.cards.append(MatterUpdateCard(action_id=action["action_id"], summary="Matter updated", changed_sections=["Facts", "Sources"]))
-        response.changed_paths.append(context.matter_records.get(matter_id)["path"])
-    typed_save_succeeded = any(
-        item.tool == "save_work_product" and item.status == "success"
-        for item in response.trace
-    )
-    if (
-        not typed_save_succeeded
-        and any(phrase in lowered for phrase in ("draft the work product", "create work product", "draft work product"))
-    ):
-        matter = context.matters.get(matter_id)
-        draft = context.work_products.create_draft(
-            matter_id,
-            title=f"{matter['title']} advice",
-            content=f"# {matter['title']} advice\n\n## Working answer\n\n{response.reply}\n\n## Assumptions and open items\n\nConfirm material facts before finalizing.",
-            summary="Editable first-pass advice",
-            source_action_key=f"{payload.source_action_key or run_id or saved['conversation_id']}:fallback-work-product",
-        )
-        response.cards.append(WorkProductCard(**draft))
-        response.changed_paths.append(draft["vault_path"])
-        response.refresh.append("matter")

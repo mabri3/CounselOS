@@ -33,6 +33,8 @@ class Settings(BaseSettings):
     search_max_results: int = Field(6, alias="SEARCH_MAX_RESULTS")
 
     polaris_api_key: str | None = Field(None, alias="POLARIS_API_KEY")
+    research_external_timeout_max_seconds: int = Field(180, alias="RESEARCH_EXTERNAL_TIMEOUT_MAX_SECONDS")
+    research_external_retry_max_count: int = Field(3, alias="RESEARCH_EXTERNAL_RETRY_MAX_COUNT")
     intelligence_request_timeout_seconds: int = Field(15, alias="INTELLIGENCE_REQUEST_TIMEOUT_SECONDS")
     intelligence_run_timeout_seconds: int = Field(60, alias="INTELLIGENCE_RUN_TIMEOUT_SECONDS")
     intelligence_max_redirects: int = Field(3, alias="INTELLIGENCE_MAX_REDIRECTS")

@@ -13,18 +13,26 @@ You are the senior coding agent responsible for turning this scaffold into a rel
 
 ## Current authoritative checkpoint
 
-The Themis.ai reliability build is complete. Its authoritative plan, execution
-record, and reusable prompt are:
+The Mosaic Relay R2 UX repair is implemented. It covers `MR2-01` through
+`MR2-12` in `docs/experiments/2026-09-03-mosaic-relay-r2-ux-experiment-report.md`.
+The full backend suite passes 838 tests. The full frontend UX check, typecheck,
+production build, graph refresh, and a visible existing-matter browser check
+also pass. A focused Sol High recheck found no remaining material defect after
+the dossier-projection and latest-request refresh corrections. Read
+`current.md` for the exact visible evidence and current queue.
 
-- `docs/themis-ai-reliability-build.handoff-plan.md`
-- `docs/themis-ai-reliability-build.handoff-progress.md`
-- `docs/themis-ai-reliability-build.handoff-prompt.md`
+The Themis.ai workflow reconciliation build is complete. Its authoritative
+plan, execution record, and reusable prompt are:
 
-The full backend suite passes 550 tests. Every standalone frontend check,
-workspace check, typecheck, production build, graph refresh, isolated browser
-demo, and repository-vault guard passed. One independent Sol High reviewer
-found nine issues. Sol Light corrections resolved them, and the same reviewer
-reported no unresolved material finding after two rechecks.
+- `docs/themis-ai-workflow-reconciliation-build.handoff-plan.md`
+- `docs/themis-ai-workflow-reconciliation-build.handoff-progress.md`
+- `docs/themis-ai-workflow-reconciliation-build.handoff-prompt.md`
+
+The full backend suite passes 629 tests. All focused frontend checks, the older
+lifecycle check, typecheck, production build, graph refresh, fresh visible
+workflow demo, SQLite rebuild, and repository-vault guard pass. The combined
+Sol Medium review passed all 12 groups. No Sol High engineering escalation was
+required.
 
 There is no active or Next checkpoint. Read `current.md` before new work. Start
 only from an explicit Later item or a new user request.

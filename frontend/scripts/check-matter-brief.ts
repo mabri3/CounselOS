@@ -165,6 +165,7 @@ assert.deepEqual(mutationFailureMessages([
 
 const closeWithRequiredWork = matterAction({
   status: "respond",
+  current_work_product_final_path: "matters/M-1/work-product/final/approved.md",
   response_approved_at: "2026-08-29T12:00:00Z",
   response_sent_at: "2026-08-30T12:00:00Z",
   work_items: [{ required: 1, status: "open" }],

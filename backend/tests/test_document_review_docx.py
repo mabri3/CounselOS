@@ -10,6 +10,8 @@ from docx.oxml.ns import qn
 from fastapi import UploadFile
 from pypdf import PdfReader
 
+from app.services import ingestion
+
 
 W = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 NS = {"w": W}
@@ -86,6 +88,71 @@ def _stale_comment_range_docx() -> bytes:
         for name, content in parts.items():
             package.writestr(name, content)
     return output.getvalue()
+
+
+def _docx_package(parts: dict[str, bytes]) -> bytes:
+    output = io.BytesIO()
+    with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as package:
+        for name, content in parts.items():
+            package.writestr(name, content)
+    return output.getvalue()
+
+
+def test_docx_xml_part_limit_is_checked_before_python_docx(monkeypatch):
+    monkeypatch.setattr(ingestion, "DOCX_MAX_XML_PART_BYTES", 8, raising=False)
+    monkeypatch.setattr(ingestion, "DocxDocument", lambda *_: pytest.fail("fallback must not run"))
+    data = _docx_package({"word/document.xml": b"<document>longer-than-eight-bytes</document>"})
+
+    with pytest.raises(ValueError, match="DOCX"):
+        ingestion.IngestionService._extract("limited.docx", data)
+
+
+def test_docx_relationship_part_limit_is_case_insensitive(monkeypatch):
+    monkeypatch.setattr(ingestion, "DOCX_MAX_XML_PART_BYTES", 16)
+    data = _docx_package({
+        "word/document.xml": b"<document/>",
+        "word/_rels/document.XML.RELS": b"x" * 17,
+    })
+
+    with pytest.raises(ValueError, match="XML part"):
+        ingestion._preflight_docx(data)
+
+
+@pytest.mark.parametrize(
+    ("constant", "value", "parts", "message"),
+    [
+        ("DOCX_MAX_MEMBERS", 1, {"word/document.xml": b"<document/>", "extra.bin": b"x"}, "members"),
+        ("DOCX_MAX_EXPANDED_BYTES", 32, {"word/document.xml": b"<document/>", "extra.bin": b"x" * 40}, "expands"),
+    ],
+)
+def test_docx_package_limits_reject_small_in_memory_archives(monkeypatch, constant, value, parts, message):
+    monkeypatch.setattr(ingestion, constant, value)
+
+    with pytest.raises(ValueError, match=message):
+        ingestion.IngestionService._extract("limited.docx", _docx_package(parts))
+
+
+def test_docx_encrypted_member_is_rejected_before_parsing():
+    data = bytearray(_docx_package({"word/document.xml": b"<document/>"}))
+    central_directory = data.index(b"PK\x01\x02")
+    data[central_directory + 8] |= 0x01
+
+    with pytest.raises(ValueError, match="encrypted"):
+        ingestion.IngestionService._extract("encrypted.docx", bytes(data))
+
+
+def test_docx_entity_rejection_is_terminal_and_never_uses_python_docx(monkeypatch):
+    monkeypatch.setattr(ingestion, "DocxDocument", lambda *_: pytest.fail("fallback must not run"))
+    data = _docx_package({
+        "word/document.xml": (
+            b'<!DOCTYPE root [<!ENTITY injected "not safe">]>'
+            b'<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+            b"<w:body><w:p><w:r><w:t>&injected;</w:t></w:r></w:p></w:body></w:document>"
+        ),
+    })
+
+    with pytest.raises(ValueError, match="DOCX"):
+        ingestion.IngestionService._extract("entity.docx", data)
 
 
 @pytest.mark.asyncio

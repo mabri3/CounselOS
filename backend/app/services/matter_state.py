@@ -21,6 +21,10 @@ class MatterStateService:
     }
     _PRIORITY_RANK = {"urgent": 0, "high": 1, "normal": 2, "low": 3}
     _RUN_READ_ERROR = "One or more research-run records could not be read."
+    _STAGE_RANK = {
+        "intake": 0, "research": 1, "explore": 2, "generate": 3,
+        "respond": 4, "closed": 5,
+    }
 
     def __init__(self, vault: VaultService):
         self.vault = vault
@@ -40,7 +44,20 @@ class MatterStateService:
 
         item_title = self._text(next_item.get("title")) if next_item else ""
         saved_action = self._text(matter.get("next_action"))
-        next_action = item_title or saved_action or self.default_next_action(stage)
+        intake_active = self._text(matter.get("intake_state")).casefold() == "active"
+        if (
+            intake_active
+            and next_item is None
+            and saved_action
+            and saved_action != self.default_next_action(stage)
+        ):
+            next_owner = self._configured_lawyer() or None
+            next_actor = "you"
+        next_action = (
+            saved_action or item_title or self.default_next_action(stage)
+            if intake_active
+            else item_title or saved_action or self.default_next_action(stage)
+        )
         due_at = self._display_value(
             next_item.get("due_at") if next_item and next_item.get("due_at") else matter.get("target_date")
         )
@@ -65,9 +82,84 @@ class MatterStateService:
             "signal": signal,
         }
 
+    def consistency_issues(
+        self,
+        matter: dict[str, Any],
+        *,
+        current_final_path: str | None,
+        required_open_count: int = 0,
+        execution_state: str | None = None,
+    ) -> list[dict[str, str]]:
+        """Report durable contradictions without inferring material records."""
+        stage = self._text(matter.get("status")).lower()
+        approved_at = self._text(matter.get("response_approved_at"))
+        approved_path = self._text(matter.get("response_approved_artifact_path"))
+        sent_at = self._text(matter.get("response_sent_at"))
+        closed_at = self._text(matter.get("closed_at"))
+        issues: list[dict[str, str]] = []
+        if execution_state is None:
+            execution_state, _, _ = self._execution_state(matter)
+        if current_final_path and self._STAGE_RANK.get(stage, 0) < self._STAGE_RANK["respond"]:
+            issues.append({
+                "code": "final_with_pre_respond_stage",
+                "summary": "A current final exists, but the matter is before Respond.",
+                "repair": "Move the derived lifecycle stage to Respond.",
+            })
+        if approved_at and (not current_final_path or not approved_path or approved_path != current_final_path):
+            issues.append({
+                "code": "approval_without_current_final",
+                "summary": "Approval does not point to the current final response.",
+                "repair": "Review the final and record approval directly. Automatic repair is not safe.",
+            })
+        if sent_at and (not approved_at or not approved_path):
+            issues.append({
+                "code": "delivery_without_approved_artifact",
+                "summary": "Delivery exists without a durable approved artifact.",
+                "repair": "Review the lifecycle records. Automatic repair is not safe.",
+            })
+        if stage == "closed" and (
+            not closed_at or not approved_at or not sent_at or required_open_count
+        ):
+            issues.append({
+                "code": "closed_without_required_lifecycle_fields",
+                "summary": "Closed state is missing delivery, closure, or required-work facts.",
+                "repair": "Review the lifecycle records. Automatic repair is not safe.",
+            })
+        if stage == "closed" and execution_state in {"queued", "running"}:
+            issues.append({
+                "code": "closed_with_active_research",
+                "summary": "Closed state conflicts with active research.",
+                "repair": "Stop or finish the active research, then review the matter state.",
+            })
+        return issues
+
+    def lifecycle_next_action(
+        self,
+        matter: dict[str, Any],
+        *,
+        current_final_path: str | None,
+        required_open_count: int = 0,
+    ) -> str:
+        if self._text(matter.get("status")).lower() == "closed":
+            return self._NEXT_ACTIONS["closed"]
+        if not current_final_path:
+            return "Review and finalize the current draft."
+        if not matter.get("response_approved_at"):
+            return "Approve the final response."
+        if not matter.get("response_sent_at"):
+            return "Record manual delivery of the approved response."
+        if required_open_count:
+            return "Complete required work before closing the matter."
+        return "Close the matter."
+
     def default_next_action(self, stage: str) -> str:
         normalized = self._text(stage).lower()
         return self._NEXT_ACTIONS.get(normalized, self._NEXT_ACTIONS["intake"])
+
+    def is_backward_stage_change(self, current: str, proposed: str) -> bool:
+        return self._STAGE_RANK.get(self._text(proposed).lower(), 0) < self._STAGE_RANK.get(
+            self._text(current).lower(), 0
+        )
 
     def _next_work_item(
         self,

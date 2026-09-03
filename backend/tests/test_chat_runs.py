@@ -4,13 +4,20 @@ import asyncio
 
 import pytest
 
-from app.agents.runner import RunnerExecutionState
+from app.agents.runner import RunnerExecutionState, _cards_for, _deterministic_intake_question
 from app.models.api import ChatRequest, ChatResponse, MatterCreate, ToolTrace
 from app.providers.base import ProviderReply, ProviderToolCall
 from app.providers.catalog import ProviderAdapterError
-from app.routers.chat import IntakeQuestionRecoveryRequest, execute_chat, recover_intake_question
+from app.routers.chat import (
+    IntakeQuestionRecoveryRequest,
+    _reject_duplicate_question_action,
+    _route_matter_agent,
+    execute_chat,
+    recover_intake_question,
+)
 from app.routers.chat import _apply_matter_actions, _queue_intake_research
 from app.routers.matters import create_matter
+from app.routers.matters import _hide_resolved_intake_questions
 from app.tools.registry import ToolExecutionResult
 from app.runtime import AppContext
 
@@ -29,17 +36,50 @@ async def test_chat_run_persists_queued_running_completed(app_context):
         "MAT-DEMO-BEACON", ChatRequest(message="Help me.", matter_id="MAT-DEMO-BEACON")
     )
     assert started["state"] == "queued"
+    assert started["correlation_id"].startswith("COR-")
+    assert started["milestone"] == "Queued."
     assert started["expected_dossier_hash"] == app_context.dossiers.content_hash(
         "MAT-DEMO-BEACON"
     )
     await asyncio.sleep(0)
     assert app_context.chat_runs.get("MAT-DEMO-BEACON", started["run_id"])["state"] == "running"
+    assert app_context.chat_runs.get("MAT-DEMO-BEACON", started["run_id"])["milestone"] == "Model is working."
     gate.set()
     await app_context.chat_runs.wait(started["run_id"])
     completed = app_context.chat_runs.get("MAT-DEMO-BEACON", started["run_id"])
     assert completed["state"] == "completed"
+    assert completed["milestone"] == "Completed."
     assert completed["response"]["reply"] == "Useful durable answer."
     assert app_context.vault.read_markdown(completed["path"])["metadata"]["record_type"] == "chat_run"
+
+
+@pytest.mark.asyncio
+async def test_run_08_no_change_decision_claim_matches_saved_history(app_context):
+    class NoToolProvider:
+        async def complete(self, messages, tools=None):
+            return ProviderReply(content=(
+                "## Recorded decision\n\n"
+                "The durable matter decision is now recorded. The launch analysis remains useful."
+            ))
+
+    app_context.runner.provider = NoToolProvider()
+    started = app_context.chat_runs.start(
+        "MAT-DEMO-BEACON",
+        ChatRequest(message="Assess the launch path.", matter_id="MAT-DEMO-BEACON"),
+    )
+    await app_context.chat_runs.wait(started["run_id"])
+
+    completed = app_context.chat_runs.get("MAT-DEMO-BEACON", started["run_id"])
+    response_reply = completed["response"]["reply"]
+    conversation = app_context.chat_history.get(
+        "MAT-DEMO-BEACON", completed["conversation_id"]
+    )
+    saved_reply = conversation["messages"][-1]["content"]
+
+    assert response_reply == (
+        "The launch analysis remains useful.\n\nNo durable decision was recorded."
+    )
+    assert saved_reply == response_reply
 
 
 def test_startup_marks_unfinished_chat_runs_interrupted(app_context):
@@ -50,6 +90,277 @@ def test_startup_marks_unfinished_chat_runs_interrupted(app_context):
     })
     assert app_context.chat_runs.mark_running_interrupted() == 1
     assert app_context.chat_runs.get("MAT-DEMO-BEACON", "RUN-OLD")["state"] == "interrupted"
+
+
+def test_restart_preserves_useful_durable_chat_evidence(app_context):
+    path = "03_Matters/beacon-instant-onboarding/conversations/runs/RUN-PARTIAL.md"
+    app_context.vault.write_markdown(path, "# Chat run", {
+        "record_type": "chat_run", "run_id": "RUN-PARTIAL", "matter_id": "MAT-DEMO-BEACON",
+        "state": "running", "status": "Chat is running.", "created_at": "2026-01-01T00:00:00Z",
+        "partial_changed_paths": ["03_Matters/beacon-instant-onboarding/work-product/draft/advice.md"],
+        "operation_results": [{
+            "operation": "save_work_product", "status": "changed",
+            "summary": "Saved the useful draft.",
+            "changed_paths": ["03_Matters/beacon-instant-onboarding/work-product/draft/advice.md"],
+        }],
+    })
+
+    assert app_context.chat_runs.mark_running_interrupted() == 1
+    interrupted = app_context.chat_runs.get("MAT-DEMO-BEACON", "RUN-PARTIAL")
+    assert interrupted["finished_at"]
+    assert interrupted["response"]["changed_paths"] == interrupted["partial_changed_paths"]
+    assert "No tool work completed" not in interrupted["response"]["reply"]
+
+
+def test_start_rejects_a_second_answer_before_it_is_appended(app_context):
+    conversation = app_context.chat_history.append(
+        "MAT-DEMO-BEACON", None, role="assistant", content="Which countries are in scope?",
+        conversation_kind="intake", intake_state="active", active_agent_id="intake-agent",
+        cards=[{
+            "type": "question", "question_id": "intake-jurisdiction",
+            "text": "Which countries are in scope?", "selection_mode": "free_text",
+        }],
+    )
+    app_context.chat_history.append(
+        "MAT-DEMO-BEACON", conversation["conversation_id"], role="user",
+        content="United States only",
+        card_action={"card_id": "intake-jurisdiction", "action": "answer", "values": ["United States only"]},
+    )
+    before = app_context.chat_history.get("MAT-DEMO-BEACON", conversation["conversation_id"])
+
+    with pytest.raises(ValueError, match="already answered"):
+        app_context.chat_runs.start(
+            "MAT-DEMO-BEACON",
+            ChatRequest(
+                matter_id="MAT-DEMO-BEACON", agent_id="intake-agent",
+                conversation_id=conversation["conversation_id"],
+                card_action={"card_id": "intake-jurisdiction", "action": "answer", "values": ["United States only"]},
+            ),
+        )
+
+    after = app_context.chat_history.get("MAT-DEMO-BEACON", conversation["conversation_id"])
+    assert len(after["messages"]) == len(before["messages"])
+
+
+def test_grouped_answer_rejects_a_question_that_was_already_answered(app_context):
+    conversation = app_context.chat_history.append(
+        "MAT-DEMO-BEACON", None, role="assistant", content="Two questions.",
+        conversation_kind="intake", intake_state="active", active_agent_id="intake-agent",
+        cards=[
+            {"type": "question", "question_id": "Q-ONE", "text": "First?", "selection_mode": "free_text"},
+            {"type": "question", "question_id": "Q-TWO", "text": "Second?", "selection_mode": "free_text"},
+        ],
+    )
+    app_context.chat_history.append(
+        "MAT-DEMO-BEACON", conversation["conversation_id"], role="user", content="First answer",
+        card_action={"card_id": "Q-ONE", "action": "answer", "values": ["First answer"]},
+    )
+    saved = app_context.chat_history.get("MAT-DEMO-BEACON", conversation["conversation_id"])
+
+    with pytest.raises(ValueError, match="already answered"):
+        _reject_duplicate_question_action(
+            saved,
+            ChatRequest(
+                matter_id="MAT-DEMO-BEACON",
+                card_action={
+                    "card_id": "intake-set:Q-ONE:Q-TWO",
+                    "action": "answer_set",
+                    "answers": [
+                        {"card_id": "Q-ONE", "action": "answer", "values": ["again"]},
+                        {"card_id": "Q-TWO", "action": "answer", "values": ["second"]},
+                    ],
+                },
+            ),
+        )
+
+
+@pytest.mark.asyncio
+async def test_intake_card_answer_is_saved_before_a_model_can_omit_the_update_tool(app_context):
+    question_text = (
+        "Whether the account opening is subject to a Customer Identification Program (CIP)?"
+    )
+    record = app_context.matter_records.get("MAT-DEMO-BEACON")
+    record["open_questions"] = [question_text]
+    app_context.matter_records._save("MAT-DEMO-BEACON", record)
+    conversation = app_context.chat_history.append(
+        "MAT-DEMO-BEACON", None, role="assistant", content="One material question.",
+        conversation_kind="intake", intake_state="active", active_agent_id="intake-agent",
+        cards=[{
+            "type": "question",
+            "question_id": "cip-applies",
+            "text": question_text,
+            "selection_mode": "single",
+            "choices": [
+                {"value": "yes", "label": "Yes, CIP applies"},
+                {"value": "no", "label": "No, CIP does not apply"},
+            ],
+        }],
+    )
+
+    class NoToolProvider:
+        def __init__(self):
+            self.messages = []
+
+        async def complete(self, messages, tools=None):
+            self.messages = messages
+            return ProviderReply(content="Recorded — CIP applies.")
+
+    provider = NoToolProvider()
+    app_context.runner.provider = provider
+    response = await execute_chat(
+        ChatRequest(
+            matter_id="MAT-DEMO-BEACON",
+            conversation_id=conversation["conversation_id"],
+            message="Yes, CIP applies",
+            card_action={"card_id": "cip-applies", "action": "answer", "values": ["yes"]},
+        ),
+        app_context,
+    )
+
+    saved = app_context.matter_records.get("MAT-DEMO-BEACON")
+    assert saved["intake_answers"][-1]["question_id"] == "cip-applies"
+    assert saved["intake_answers"][-1]["answer"] == "Yes, CIP applies"
+    assert any("CIP applies" in fact["text"] for fact in saved["facts"])
+    assert question_text not in saved["open_questions"]
+    assert any(question_text in str(message.get("content") or "") for message in provider.messages)
+    assert any("Yes, CIP applies" in str(message.get("content") or "") for message in provider.messages)
+    assert all(
+        getattr(card, "text", "") != question_text
+        for card in response.cards
+    )
+    assert any(
+        result["operation"] == "record_intake_answer" and result["status"] == "changed"
+        for result in response.operation_results
+    )
+
+
+def test_conversation_hides_semantically_repeated_question_after_durable_answer(app_context):
+    original = "Is this account subject to a Customer Identification Program under the BSA?"
+    repeated = "Whether the account is subject to a Customer Identification Program under the BSA."
+    app_context.matter_records.record_intake_answers(
+        "MAT-DEMO-BEACON",
+        [{
+            "question_id": "cip-original",
+            "question": original,
+            "answer": "Yes, CIP applies",
+            "values": ["yes"],
+            "status": "answered",
+            "record_target": "fact",
+        }],
+        source_id="MSG-CIP",
+        source_action_key="chat:cip",
+    )
+    conversation = {
+        "conversation_kind": "intake",
+        "messages": [{
+            "role": "assistant",
+            "cards": [{
+                "type": "question",
+                "question_id": "intake-recovery-missing-fact",
+                "text": repeated,
+            }],
+        }],
+    }
+
+    reconciled = _hide_resolved_intake_questions(
+        app_context, "MAT-DEMO-BEACON", conversation
+    )
+
+    assert reconciled["messages"][0]["cards"] == []
+
+
+def test_answered_jurisdiction_card_is_not_asked_again_by_recovery(app_context):
+    matter = app_context.matters.get("MAT-DEMO-BEACON")
+    app_context.vault.update_markdown(
+        f'{matter["path"]}/matter.md',
+        metadata_updates={"jurisdiction_scope": [], "target_date": "2026-09-15"},
+    )
+    record = app_context.matter_records.get("MAT-DEMO-BEACON")
+    record.update({"working_ask": "Assess launch.", "issues": ["Privacy"], "open_questions": []})
+    app_context.matter_records._save("MAT-DEMO-BEACON", record)
+    conversation = app_context.chat_history.append(
+        "MAT-DEMO-BEACON", None, role="assistant", content="Which countries are in scope?",
+        conversation_kind="intake", intake_state="active", active_agent_id="intake-agent",
+        cards=[{
+            "type": "question", "question_id": "intake-jurisdiction",
+            "text": "Which countries are in scope?", "selection_mode": "free_text",
+        }],
+    )
+    app_context.chat_history.append(
+        "MAT-DEMO-BEACON", conversation["conversation_id"], role="user",
+        content="United States only",
+        card_action={"card_id": "intake-jurisdiction", "action": "answer", "values": ["United States only"]},
+    )
+    app_context.vault.update_markdown(
+        f'{matter["path"]}/matter.md',
+        metadata_updates={"intake_conversation_id": conversation["conversation_id"]},
+    )
+
+    question = _deterministic_intake_question(app_context, "MAT-DEMO-BEACON")
+
+    assert question.question_id != "intake-recovery-jurisdiction"
+
+
+def test_answered_categorical_timing_card_is_not_asked_again_by_recovery(app_context):
+    matter = app_context.matters.get("MAT-DEMO-BEACON")
+    app_context.vault.update_markdown(
+        f'{matter["path"]}/matter.md',
+        metadata_updates={"target_date": "", "jurisdiction_scope": []},
+    )
+    record = app_context.matter_records.get("MAT-DEMO-BEACON")
+    record.update({"working_ask": "Assess launch.", "issues": ["Privacy"], "open_questions": []})
+    app_context.matter_records._save("MAT-DEMO-BEACON", record)
+    conversation = app_context.chat_history.append(
+        "MAT-DEMO-BEACON", None, role="assistant", content="Timing?",
+        conversation_kind="intake", intake_state="active", active_agent_id="intake-agent",
+        cards=[{
+            "type": "question", "question_id": "intake-recovery-timing",
+            "text": "When does the business need the legal answer?", "selection_mode": "single",
+            "choices": [{"value": "launch", "label": "Before a planned launch"}],
+        }],
+    )
+    app_context.chat_history.append(
+        "MAT-DEMO-BEACON", conversation["conversation_id"], role="user",
+        content="Before a planned launch",
+        card_action={"card_id": "intake-recovery-timing", "action": "answer", "values": ["Before a planned launch"]},
+    )
+    app_context.vault.update_markdown(
+        f'{matter["path"]}/matter.md',
+        metadata_updates={"intake_conversation_id": conversation["conversation_id"]},
+    )
+
+    question = _deterministic_intake_question(app_context, "MAT-DEMO-BEACON")
+
+    assert question.question_id == "intake-recovery-jurisdiction"
+
+
+@pytest.mark.parametrize(
+    ("message", "card_action", "expected"),
+    [
+        ("Start focused legal research and save a packet.", None, "counsel-copilot"),
+        ("Draft a response for Product.", None, "counsel-copilot"),
+        ("Proceed with assumptions and prepare the memo.", None, "counsel-copilot"),
+        ("Research is not needed.", None, "intake-agent"),
+        ("United States only", {"card_id": "jurisdiction", "action": "answer", "values": ["US"]}, "intake-agent"),
+    ],
+)
+def test_active_intake_routes_only_explicit_substantive_work_to_copilot(message, card_action, expected):
+    request = ChatRequest(message=message, matter_id="MAT-1", card_action=card_action)
+    assert _route_matter_agent(request, intake_active=True, recovery=False) == expected
+
+
+def test_intake_recovery_always_routes_to_intake_agent():
+    request = ChatRequest(message="Start research.", matter_id="MAT-1")
+    assert _route_matter_agent(request, intake_active=True, recovery=True) == "intake-agent"
+
+
+def test_answered_intake_card_does_not_create_a_synthetic_success_card():
+    cards = _cards_for(ChatRequest(
+        matter_id="MAT-1", agent_id="intake-agent",
+        card_action={"card_id": "intake-jurisdiction", "action": "answer", "values": ["US"]},
+    ))
+
+    assert cards == []
 
 
 @pytest.mark.asyncio
@@ -152,6 +463,115 @@ async def test_active_intake_recovers_prose_question_without_fake_user_message(a
 
 
 @pytest.mark.asyncio
+async def test_recovery_ignores_a_saved_card_resolved_by_durable_answer(app_context):
+    original = "Is this account subject to a Customer Identification Program under the BSA?"
+    repeated = "Whether the account is subject to a Customer Identification Program under the BSA."
+    conversation = app_context.chat_history.append(
+        "MAT-DEMO-BEACON", None, role="assistant", content="Saved fallback.",
+        conversation_kind="intake", intake_state="active", active_agent_id="intake-agent",
+        cards=[{
+            "type": "question",
+            "question_id": "stale-cip",
+            "text": repeated,
+            "selection_mode": "free_text",
+        }],
+    )
+    app_context.matter_records.record_intake_answers(
+        "MAT-DEMO-BEACON",
+        [{
+            "question_id": "original-cip",
+            "question": original,
+            "answer": "Yes, CIP applies",
+            "values": ["yes"],
+            "status": "answered",
+            "record_target": "fact",
+        }],
+        source_id="MSG-CIP",
+        source_action_key="chat:cip-recovery",
+    )
+
+    class NoToolProvider:
+        async def complete(self, messages, tools=None):
+            return ProviderReply(content="Continuing from the saved answer.")
+
+    app_context.runner.provider = NoToolProvider()
+    started = await recover_intake_question(
+        "MAT-DEMO-BEACON",
+        IntakeQuestionRecoveryRequest(conversation_id=conversation["conversation_id"]),
+        app_context,
+    )
+    await app_context.chat_runs.wait(started.run_id)
+
+    saved = app_context.chat_history.get("MAT-DEMO-BEACON", conversation["conversation_id"])
+    latest_questions = [
+        card for card in saved["messages"][-1]["cards"] if card["type"] == "question"
+    ]
+    assert latest_questions
+    assert all("Customer Identification Program" not in card["text"] for card in latest_questions)
+
+
+@pytest.mark.asyncio
+async def test_failed_provider_intake_recovery_uses_saved_open_question(app_context):
+    question = "Which saved deployment region is in scope?"
+    record = app_context.matter_records.get("MAT-DEMO-BEACON")
+    record["open_questions"] = [question]
+    app_context.matter_records._save("MAT-DEMO-BEACON", record)
+    conversation = app_context.chat_history.append(
+        "MAT-DEMO-BEACON", None, role="assistant", content="The prior turn lost its card.",
+        conversation_kind="intake", intake_state="active", active_agent_id="intake-agent",
+    )
+
+    class FailingProvider:
+        async def complete(self, messages, tools=None):
+            raise ProviderAdapterError("Provider unavailable.")
+
+    app_context.runner.provider = FailingProvider()
+    started = await recover_intake_question(
+        "MAT-DEMO-BEACON",
+        IntakeQuestionRecoveryRequest(conversation_id=conversation["conversation_id"]),
+        app_context,
+    )
+    await app_context.chat_runs.wait(started.run_id)
+
+    run = app_context.chat_runs.get("MAT-DEMO-BEACON", started.run_id)
+    saved = app_context.chat_history.get("MAT-DEMO-BEACON", conversation["conversation_id"])
+    assert run["state"] == "completed"
+    assert run["milestone"] == "Completed from saved intake state."
+    assert run["response"]["cards"][0]["text"] == question
+    assert saved["messages"][-1]["cards"][0]["text"] == question
+
+
+@pytest.mark.asyncio
+async def test_failed_provider_intake_recovery_offers_finish_without_inventing_question(app_context):
+    record = app_context.matter_records.get("MAT-DEMO-BEACON")
+    record["open_questions"] = []
+    app_context.matter_records._save("MAT-DEMO-BEACON", record)
+    conversation = app_context.chat_history.append(
+        "MAT-DEMO-BEACON", None, role="assistant", content="The prior turn lost its card.",
+        conversation_kind="intake", intake_state="active", active_agent_id="intake-agent",
+    )
+
+    class FailingProvider:
+        async def complete(self, messages, tools=None):
+            raise RuntimeError("provider stopped")
+
+    app_context.runner.provider = FailingProvider()
+    started = await recover_intake_question(
+        "MAT-DEMO-BEACON",
+        IntakeQuestionRecoveryRequest(conversation_id=conversation["conversation_id"]),
+        app_context,
+    )
+    await app_context.chat_runs.wait(started.run_id)
+
+    run = app_context.chat_runs.get("MAT-DEMO-BEACON", started.run_id)
+    card = run["response"]["cards"][0]
+    assert run["state"] == "completed"
+    assert card["question_id"] == "intake-recovery-finish"
+    assert card["allow_stop"] is True
+    assert "No unresolved saved intake question" in card["text"]
+
+
+@pytest.mark.asyncio
 async def test_provider_failure_is_durable_and_retry_reuses_turn(app_context):
     class FailingProvider:
         async def complete(self, messages, tools=None):
@@ -165,6 +585,7 @@ async def test_provider_failure_is_durable_and_retry_reuses_turn(app_context):
     failed = app_context.chat_runs.get("MAT-DEMO-BEACON", started["run_id"])
     assert failed["state"] == "failed"
     assert "secret" not in failed["failure_detail"]
+    assert failed["failure_class"] == "provider"
 
     class GoodProvider:
         async def complete(self, messages, tools=None):
@@ -177,6 +598,34 @@ async def test_provider_failure_is_durable_and_retry_reuses_turn(app_context):
     conversation = app_context.chat_history.get("MAT-DEMO-BEACON", completed["conversation_id"])
     assert [message["role"] for message in conversation["messages"]] == ["user", "assistant"]
     assert conversation["messages"][1]["content"] == "Recovered answer."
+
+
+@pytest.mark.asyncio
+async def test_chat_cancellation_preserves_evidence_and_retry_clears_stale_response(app_context, monkeypatch):
+    original_run = app_context.runner.run
+
+    async def cancelled(_request, *, execution_state=None, **_kwargs):
+        execution_state.changed_paths.append("03_Matters/beacon-instant-onboarding/drafts/advice.md")
+        raise asyncio.CancelledError
+
+    monkeypatch.setattr(app_context.runner, "run", cancelled)
+    started = app_context.chat_runs.start(
+        "MAT-DEMO-BEACON", ChatRequest(message="Draft advice.", matter_id="MAT-DEMO-BEACON")
+    )
+    with pytest.raises(asyncio.CancelledError):
+        await app_context.chat_runs.wait(started["run_id"])
+
+    interrupted = app_context.chat_runs.get("MAT-DEMO-BEACON", started["run_id"])
+    assert interrupted["state"] == "interrupted"
+    assert interrupted["response"]["changed_paths"] == ["03_Matters/beacon-instant-onboarding/drafts/advice.md"]
+    assert "No tool work completed" not in interrupted["response"]["reply"]
+
+    monkeypatch.setattr(app_context.runner, "run", original_run)
+    queued = app_context.chat_runs.retry("MAT-DEMO-BEACON", started["run_id"])
+    assert queued["response"] is None
+    app_context.chat_runs._tasks[started["run_id"]].cancel()
+    with pytest.raises(asyncio.CancelledError):
+        await app_context.chat_runs.wait(started["run_id"])
 
 
 @pytest.mark.asyncio
@@ -374,8 +823,112 @@ async def test_useful_partial_content_and_trace_survive_malformed_later_reply(ap
     await app_context.chat_runs.wait(started["run_id"])
     failed = app_context.chat_runs.get("MAT-DEMO-BEACON", started["run_id"])
     assert failed["state"] == "failed"
+    assert failed["failure_class"] == "output_shape"
     assert failed["response"]["reply"] == "I prepared a useful draft."
     assert failed["response"]["trace"][0]["summary"] == "Saved the useful draft."
+
+
+@pytest.mark.asyncio
+async def test_partial_without_a_mutation_reconciles_a_false_decision_claim(app_context):
+    class MalformedProvider:
+        def __init__(self):
+            self.calls = 0
+
+        async def complete(self, messages, tools=None):
+            self.calls += 1
+            if self.calls == 1:
+                return ProviderReply(content="I recorded the decision. Useful analysis remains.", tool_calls=[ProviderToolCall(
+                    id="search", name="search_vault", arguments={"query": "launch"},
+                )])
+            return ProviderReply(content={"malformed": True})
+
+    app_context.runner.provider = MalformedProvider()
+    started = app_context.chat_runs.start(
+        "MAT-DEMO-BEACON", ChatRequest(message="Assess launch.", matter_id="MAT-DEMO-BEACON")
+    )
+    await app_context.chat_runs.wait(started["run_id"])
+
+    failed = app_context.chat_runs.get("MAT-DEMO-BEACON", started["run_id"])
+    assert any(result["operation"] == "chat_turn" for result in failed["response"]["operation_results"])
+    assert failed["response"]["reply"] == "Useful analysis remains.\n\nNo workspace change recorded."
+
+
+@pytest.mark.asyncio
+async def test_timeout_without_a_mutation_reconciles_a_false_decision_claim(app_context):
+    class TimeoutProvider:
+        def __init__(self):
+            self.calls = 0
+
+        async def complete(self, messages, tools=None):
+            if tools is None:
+                return ProviderReply(content="")
+            self.calls += 1
+            if self.calls == 1:
+                return ProviderReply(content="I recorded the decision. Useful analysis remains.", tool_calls=[ProviderToolCall(
+                    id="search", name="search_vault", arguments={"query": "launch"},
+                )])
+            await asyncio.sleep(1)
+            return ProviderReply(content="late")
+
+    app_context.runner.provider = TimeoutProvider()
+    app_context.chat_runs.timeout_seconds = 0.02
+    started = app_context.chat_runs.start(
+        "MAT-DEMO-BEACON", ChatRequest(message="Assess launch.", matter_id="MAT-DEMO-BEACON")
+    )
+    await app_context.chat_runs.wait(started["run_id"])
+
+    completed = app_context.chat_runs.get("MAT-DEMO-BEACON", started["run_id"])
+    assert any(result["operation"] == "chat_turn" for result in completed["response"]["operation_results"])
+    assert completed["response"]["reply"] == "Useful analysis remains.\n\nNo workspace change recorded."
+
+
+@pytest.mark.asyncio
+async def test_timeout_without_useful_work_is_failed_and_retryable(app_context):
+    class TimeoutProvider:
+        async def complete(self, messages, tools=None):
+            if tools is None:
+                return ProviderReply(content="")
+            await asyncio.sleep(1)
+            return ProviderReply(content="late")
+
+    app_context.runner.provider = TimeoutProvider()
+    app_context.chat_runs.timeout_seconds = 0.02
+    started = app_context.chat_runs.start(
+        "MAT-DEMO-BEACON",
+        ChatRequest(message="Do unfinished work.", matter_id="MAT-DEMO-BEACON"),
+    )
+    await app_context.chat_runs.wait(started["run_id"])
+
+    failed = app_context.chat_runs.get("MAT-DEMO-BEACON", started["run_id"])
+    assert failed["state"] == "failed"
+    assert failed["finished_at"]
+    assert failed["failure_detail"] == "The request reached its time limit."
+    assert failed["failure_class"] == "timeout"
+    assert "No tool work completed" in failed["response"]["reply"]
+
+
+@pytest.mark.asyncio
+async def test_unexpected_failure_is_terminal_when_conversation_lookup_fails(
+    app_context, monkeypatch,
+):
+    async def fail_unexpectedly(*_args, **_kwargs):
+        raise RuntimeError("unexpected runner failure")
+
+    monkeypatch.setattr(app_context.runner, "run", fail_unexpectedly)
+    monkeypatch.setattr(
+        app_context.chat_history,
+        "find_conversation_for_run",
+        lambda *_args: (_ for _ in ()).throw(RuntimeError("history lookup failed")),
+    )
+    started = app_context.chat_runs.start(
+        "MAT-DEMO-BEACON",
+        ChatRequest(message="Keep the run terminal.", matter_id="MAT-DEMO-BEACON"),
+    )
+    await app_context.chat_runs.wait(started["run_id"])
+
+    failed = app_context.chat_runs.get("MAT-DEMO-BEACON", started["run_id"])
+    assert failed["state"] == "failed"
+    assert failed["finished_at"]
 
 
 @pytest.mark.asyncio
@@ -412,6 +965,71 @@ async def test_timeout_fallback_summarizes_completed_work(app_context, monkeypat
     assert completed["state"] == "completed"
     assert "Created the launch checklist." in completed["response"]["reply"]
     assert "Remaining work" in completed["response"]["reply"]
+
+
+@pytest.mark.asyncio
+async def test_agent_error_with_persisted_changed_path_does_not_claim_no_tool_work(app_context, monkeypatch):
+    """A durable mutation remains evidence even if the runner loses its typed result."""
+    partial = RunnerExecutionState(changed_paths=["03_Matters/beacon-instant-onboarding/drafts/advice.md"])
+
+    async def fail_after_saved_work(*_args, **_kwargs):
+        raise __import__("app.agents.runner", fromlist=["AgentExecutionError"]).AgentExecutionError(partial)
+
+    monkeypatch.setattr(app_context.runner, "run", fail_after_saved_work)
+    started = app_context.chat_runs.start(
+        "MAT-DEMO-BEACON", ChatRequest(message="Draft the advice.", matter_id="MAT-DEMO-BEACON")
+    )
+    await app_context.chat_runs.wait(started["run_id"])
+
+    failed = app_context.chat_runs.get("MAT-DEMO-BEACON", started["run_id"])
+    assert failed["state"] == "failed"
+    assert failed["finished_at"]
+    assert failed["response"]["changed_paths"] == partial.changed_paths
+    assert "No tool work completed" not in failed["response"]["reply"]
+    assert not any(result["operation"] == "chat_turn" for result in failed["response"]["operation_results"])
+
+
+@pytest.mark.asyncio
+async def test_intake_recovery_can_continue_after_a_durable_answer_lost_its_assistant_turn(app_context):
+    question = "Which countries are in scope?"
+    conversation = app_context.chat_history.append(
+        "MAT-DEMO-BEACON", None, role="assistant", content=question,
+        conversation_kind="intake", intake_state="active", active_agent_id="intake-agent",
+        cards=[{"type": "question", "question_id": "jurisdiction", "text": question, "selection_mode": "free_text"}],
+    )
+    app_context.chat_history.append(
+        "MAT-DEMO-BEACON", conversation["conversation_id"], role="user", content="United States only",
+        card_action={"card_id": "jurisdiction", "action": "answer", "values": ["United States only"]},
+    )
+    app_context.matter_records.record_intake_answers(
+        "MAT-DEMO-BEACON",
+        [{"question_id": "jurisdiction", "question": question, "answer": "United States only", "values": ["United States only"], "status": "answered", "record_target": "fact"}],
+        source_id="MSG-JURISDICTION", source_action_key="chat:jurisdiction",
+    )
+
+    class RecoveryProvider:
+        async def complete(self, _messages, tools=None):
+            if tools is not None:
+                return ProviderReply(tool_calls=[ProviderToolCall(
+                    id="next-question", name="update_matter_intake", arguments={
+                        "working_ask": "Assess launch.",
+                        "next_questions": [{"question_id": "launch-date", "text": "When is the launch?", "selection_mode": "free_text"}],
+                        "intake_state": "active",
+                    },
+                )])
+            return ProviderReply(content="One more question is needed.")
+
+    app_context.runner.provider = RecoveryProvider()
+    started = await recover_intake_question(
+        "MAT-DEMO-BEACON",
+        IntakeQuestionRecoveryRequest(conversation_id=conversation["conversation_id"]),
+        app_context,
+    )
+    await app_context.chat_runs.wait(started.run_id)
+
+    saved = app_context.chat_history.get("MAT-DEMO-BEACON", conversation["conversation_id"])
+    questions = [card for card in saved["messages"][-1]["cards"] if card["type"] == "question"]
+    assert [card["question_id"] for card in questions] == ["launch-date"]
 
 
 @pytest.mark.asyncio
@@ -471,7 +1089,7 @@ async def test_timeout_persists_failed_mutation_trace_on_assistant_message(app_c
                 return ProviderReply(content="")
             self.calls += 1
             if self.calls == 1:
-                return ProviderReply(content="I created the work item.", tool_calls=[ProviderToolCall(
+                return ProviderReply(content="I created the work item. The open issue still needs a legal owner.", tool_calls=[ProviderToolCall(
                     id="work", name="create_work_item", arguments={"title": "Launch checklist"},
                 )])
             await asyncio.sleep(1)
@@ -490,6 +1108,10 @@ async def test_timeout_persists_failed_mutation_trace_on_assistant_message(app_c
     failed = next(item for item in run["response"]["trace"] if item["tool"] == "create_work_item")
     assert failed["mutation_status"] == "failed"
     assert assistant["trace"] == run["response"]["trace"]
+    assert assistant["content"] == run["response"]["reply"]
+    assert "created the work item" not in assistant["content"].lower()
+    assert "The open issue still needs a legal owner." in assistant["content"]
+    assert assistant["content"].endswith("No workspace change recorded.")
 
 
 @pytest.mark.asyncio
@@ -564,7 +1186,7 @@ async def test_useful_partial_assistant_is_replaced_by_retry_result(app_context,
     assert assistants[0]["content"] == "Recovered final answer."
 
 
-def test_phrase_fallback_work_product_is_idempotent_on_retry(app_context):
+def test_phrase_only_work_product_request_does_not_mutate_on_retry(app_context):
     payload = ChatRequest(
         message="Draft the work product.",
         matter_id="MAT-DEMO-BEACON",
@@ -577,9 +1199,10 @@ def test_phrase_fallback_work_product_is_idempotent_on_retry(app_context):
     _apply_matter_actions(app_context, payload, saved, first, run_id="RUN-1")
     _apply_matter_actions(app_context, payload, saved, retried, run_id="RUN-1")
 
-    assert retried.cards[0].vault_path == first.cards[0].vault_path
+    assert first.cards == []
+    assert retried.cards == []
     folder = app_context.matter_paths.folder("MAT-DEMO-BEACON", "matter_files.draft_outputs_dir")
-    assert len(list(app_context.vault.iter_files(folder, {".md"}))) == 1
+    assert len(list(app_context.vault.iter_files(folder, {".md"}))) == 0
 
 
 @pytest.mark.asyncio
@@ -852,6 +1475,8 @@ async def test_new_matter_runs_contextual_typed_intake_to_records_and_dossier(ap
         MatterCreate(title="Marketplace payouts", request_text=request_text),
         app_context,
     )
+    await app_context.wait_for_intake_starts()
+    created = app_context.matters.get(created["matter_id"])
     await app_context.chat_runs.wait(created["intake_run_id"])
 
     run = app_context.chat_runs.get(created["matter_id"], created["intake_run_id"])

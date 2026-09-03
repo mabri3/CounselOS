@@ -1,0 +1,125 @@
+---
+matter_id: MAT-20260902-4d6d0d
+record_type: dossier
+editable: true
+source_revision: 03_Matters/juniper-ledger-ux-test-04-deactivating-accounts-after-repeated-f-4d6d0d/dossier-revisions/DOS-20260902-2c0fff.md
+updated_at: '2026-09-02T07:04:10+00:00'
+content_hash: 1fd553c3bc0633577fad969a2c4e2ce5f5bbdffee50f4bccc7f6bca56978bb3f
+---
+# Matter dossier
+
+## Matter summary
+
+Juniper Ledger, a fintech serving both consumer and business accounts through sponsor bank Cedar Harbor Bank, N.A., is building a fraud-response flow that freezes card authorization and outbound transfers, allows limited inbound funds, and routes cases to a fraud investigator. After review, Juniper Ledger could restore access, impose limits, or deactivate the account and return remaining funds. Counsel is involved because no fraud-alert threshold or escalation policy exists, and the company needs lawful grounds, notices, funds-return procedures, and a clear boundary between its own decisions and the sponsor bank's before a confirmed November 1, 2026 production target. The affected accounts include both consumer and business customers, which pulls in different regulatory regimes for each.
+
+## Decision question
+
+What lawful grounds, notice and timing requirements, funds-return procedures, escalation obligations, and complaint-handling limits should govern Juniper Ledger's freeze / limit / deactivate flow for accounts with repeated fraud alerts, and where does Juniper Ledger's decision authority end and Cedar Harbor Bank's begin, so the process can launch by November 1, 2026 without creating UDAAP, Reg E, or sponsor-bank conflict?
+
+## Material facts
+
+- Juniper Ledger wants a consistent process for deactivating accounts that generate repeated fraud alerts.
+- The proposed flow would freeze card authorization and outbound transfers, allow limited inbound funds, and send the case to a fraud investigator.
+- After review, Juniper Ledger could restore access, impose limits, or deactivate the account and return remaining funds.
+- Customer-support would communicate with the customer, while compliance and the sponsor bank would handle regulatory escalation.
+- Product wants the process in production before the holiday shopping period.
+- Alerts may concern unusual card purchases, account takeover, synthetic identity indicators, or suspicious transfers.
+- Product has not settled the threshold for action, decision timing, disclosure limits, or handling of pending refunds and payroll deposits.
+- A policy is needed for customers with a negative balance or disputed transactions.
+- What is the target production date for the holiday shopping period, and how much lead time do we have? — Assume a November 1, 2026 production target, with about eight weeks for a controlled pilot, training, and sponsor-bank sign-off. If Product means a different date, treat this as an assumption to confirm.
+- Are the affected accounts consumer or business accounts (or both)? — Both consumer and business
+- Does the Cedar Harbor Bank program-management agreement already allocate who decides to freeze or deactivate an account, or is that open for us to define? — Not sure / need to check
+- Is there an existing fraud-alert threshold or escalation policy we should build on, or are we starting from scratch? — Starting from scratch
+- Who should own this workstream on the legal side, and is there a business owner to coordinate with on the operational flow? — Legal owner: Product Counsel, coordinating with Compliance and the Fraud Operations lead. Business owner: Product, with Customer Support and the sponsor-bank relationship manager for operations. Names are not provided, so assign roles rather than individuals.
+- Affected accounts include both consumer and business accounts.
+- There is no existing fraud-alert threshold or escalation policy; starting from scratch.
+- Legal owner is Product Counsel coordinating with Compliance and the Fraud Operations lead; business owner is Product with Customer Support and the sponsor-bank relationship manager. Roles assigned, not individuals.
+- What should trigger the freeze flow — how many fraud alerts, or what severity, before an account is frozen? — Undecided — need a recommendation
+- How quickly must a decision (restore, limit, or deactivate) be made after an account is frozen? — Undecided — need a recommendation
+- How should pending refunds and payroll deposits be handled during the freeze and on deactivation? — Undecided — need a recommendation
+- How should accounts with a negative balance or disputed transactions be handled on deactivation? — Undecided — need a recommendation
+- The proposed flow freezes card authorization and outbound transfers, allows limited inbound funds, and sends the case to a fraud investigator.
+- Customer support communicates with the customer; compliance and the sponsor bank handle regulatory escalation.
+- Legal owner is Product Counsel coordinating with Compliance and Fraud Operations; business owner is Product with Customer Support and the sponsor-bank relationship manager. Roles assigned, not individuals.
+- Trigger threshold for the freeze flow is undecided; needs a recommendation.
+- Decision timing (restore, limit, or deactivate) after a freeze is undecided; needs a recommendation.
+- Handling of pending refunds and payroll deposits during freeze and on deactivation is undecided; needs a recommendation.
+- Handling of negative balance or disputed transactions on deactivation is undecided; needs a recommendation.
+- Nov 1, 2026 is correct.
+- Nov 1, 2026 production target is confirmed.
+- When does the business need the legal answer? — Before a planned launch
+- Nov 1, 2026 production target is confirmed, with about eight weeks for pilot, training, and sponsor-bank sign-off.
+- The business needs the legal answer before a planned launch.
+- Both consumer and business accounts are in scope.
+
+## Assumptions
+
+- Juniper Ledger acts as program manager/first-line operator under the Cedar Harbor Bank program-management agreement; Cedar Harbor is the named bank for deposit accounts and payment rails.
+- The accounts at issue are business operating accounts (sub-ledger) with ACH, wires, and virtual cards, subject to U.S. payment and deposit rules.
+- The holiday shopping period target implies a near-term production deadline, though no specific date is given.
+- November 1, 2026 production target with ~8 weeks for pilot, training, and sponsor-bank sign-off; to confirm if Product means a different date.
+- Target production date assumed November 1, 2026, with about eight weeks for a controlled pilot, training, and sponsor-bank sign-off; to confirm if Product means a different date.
+- Target production date assumed Nov 1, 2026 with about eight weeks for a controlled pilot, training, and sponsor-bank sign-off; to confirm if Product means a different date.
+- Both consumer and business accounts are in scope, so the process must satisfy Reg E (consumer) and UCC Art 4A / Reg CC (business) frameworks.
+- The Cedar Harbor program-management agreement's allocation of freeze/deactivate authority is not yet known and must be checked before finalizing the recommendation.
+- Target production date assumed Nov 1, 2026 with ~8 weeks for pilot, training, and sponsor-bank sign-off; to confirm if Product means a different date.
+- Nov 1, 2026 production target confirmed by Product.
+- Both consumer and business accounts are in scope, requiring distinct Reg E vs UCC/Reg CC treatment.
+- Cedar Harbor agreement authority allocation is unknown and must be reviewed before finalizing the decision boundary.
+- Nov 1, 2026 production target with ~8 weeks for pilot, training, and sponsor-bank sign-off (confirmed by requester).
+- Cedar Harbor program-management agreement may already allocate freeze/deactivate authority; must be reviewed before finalizing the decision boundary.
+- Both consumer and business accounts are in scope, requiring distinct Reg E vs. UCC/Reg CC treatment.
+- Nov 1, 2026 production target confirmed by the lawyer.
+- Nov 1, 2026 production target confirmed by lawyer.
+- Cedar Harbor program-management agreement may already allocate freeze/deactivate authority; this must be checked before finalizing the decision boundary.
+- Nov 1, 2026 production target with ~8 weeks lead time (confirmed by lawyer).
+- Roles assigned rather than named individuals for legal and business ownership.
+- Nov 1, 2026 production target with ~8 weeks for pilot, training, and sponsor-bank sign-off (confirmed by user).
+- The design decisions (trigger threshold, decision timing, pending refunds/payroll, negative-balance/dispute handling) will be resolved as recommendations in the policy rather than intake facts.
+- The Cedar Harbor agreement's allocation of freeze/deactivate authority is unverified; assume Juniper Ledger may operate only within delegated program authority, with Cedar Harbor retaining sponsor-bank/regulatory decisions.
+- Both consumer and business accounts are in scope, requiring distinct Reg E vs UCC Art 4A / Reg CC treatment.
+- Nov 1, 2026 production target with ~8 weeks for pilot, training, and sponsor-bank sign-off (confirmed).
+- Roles are assigned rather than named individuals for legal and business ownership.
+- The design decisions (trigger threshold, decision timing, pending refunds/payroll, negative-balance/dispute handling) are resolved as recommendations in the policy.
+- The Cedar Harbor program-management agreement's allocation of freeze/deactivate authority is unverified; assume Juniper Ledger operates only within delegated program authority with Cedar Harbor retaining sponsor-bank/regulatory decisions.
+
+## Issues and workstreams
+
+- Lawful grounds and process for each action (freeze, limit, deactivate) under Reg E (consumer), UCC Art 4A / Reg CC (business), and the sponsor-bank agreement
+- Required notices and timing to the customer for each action, differing by consumer vs business account
+- Funds-return procedures on deactivation, including pending refunds, payroll deposits, and negative balances
+- Escalation obligations to compliance and sponsor bank, and the boundary between Juniper Ledger's decision and Cedar Harbor's decision
+- Complaint handling and disclosure limits that do not compromise an ongoing fraud investigation
+- Threshold for triggering action and how quickly a decision must be made
+- UDAAP risk from inconsistent or unfair account freezes/deactivations
+- SAR/AML filing obligations and tipping-off constraints
+
+## Open questions
+
+- Does the Cedar Harbor program-management agreement already allocate freeze/deactivation authority, or is that open for Juniper Ledger to define? (Unverified; treated as delegated program authority for now.)
+- What fraud-alert threshold and severity should trigger the freeze flow, and what decision timeline is defensible?
+- How should pending refunds, payroll deposits, negative balances, and disputed transactions be handled during freeze and on deactivation?
+- What can customer support disclose to the customer without compromising an ongoing fraud investigation or violating tipping-off rules?
+- Are there state money-transmitter or mini-UDAAP statutes in the states where Juniper Ledger operates that add notice or timing requirements beyond federal law?
+
+## Research and source support
+
+Latest review: `03_Matters/juniper-ledger-ux-test-04-deactivating-accounts-after-repeated-f-4d6d0d/research/RES-20260902-0964d1.md`
+
+- Internal support: **Facts** — Known Facts Juniper Ledger wants a consistent process for deactivating accounts that generate repeated fraud alerts. The proposed flow would freeze card authorization and outbound transfers, allow…
+- Internal support: **Juniper Ledger Ux Test 04 Deactivating Accounts After Repeated F 34Ac32** — Juniper Ledger Account Deactivation After Repeated Fraud Alerts Status: Working draft for Product Counsel review Matter: Juniper Ledger UX Test — 04 — Deactivating Accounts After Repeated Fraud Alerts…
+- Internal support: **Dossier** — Matter dossier Matter summary Juniper Ledger, a fintech serving both consumer and business accounts through sponsor bank Cedar Harbor Bank, N.A., is building a fraud-response flow that freezes card…
+- Internal support: **Dos 20260902 356376** — Matter dossier Matter summary Juniper Ledger, a fintech serving both consumer and business accounts through sponsor bank Cedar Harbor Bank, N.A., is building a fraud-response flow that freezes card…
+- Internal support: **Dos 20260902 6004B8** — Matter dossier Matter summary Juniper Ledger, a fintech serving both consumer and business accounts through sponsor bank Cedar Harbor Bank, N.A., is building a fraud-response flow that freezes card…
+
+## Options or working recommendation
+
+No recommendation has been drafted yet.
+
+## Next counsel action
+
+Review the working ask and answer the next material question.
+
+## Work product links
+
+No work product yet.

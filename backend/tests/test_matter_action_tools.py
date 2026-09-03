@@ -1,5 +1,8 @@
+import re
+
 import pytest
 
+from app.services.recommendations import RecommendationService
 from app.tools.registry import ToolExecutionContext
 
 
@@ -14,6 +17,196 @@ async def test_typed_tools_use_context_actor_and_generic_write_is_protected(app_
     assert missing_path.status == protected.status == "error"
     no_actor = await app_context.tools.execute(agent, ToolExecutionContext(app_context, matter_id="MAT-DEMO-BEACON"), "complete_work_item", {"work_item_id": "WI-X"})
     assert no_actor.status == "error"
+    assert no_actor.operation_result["status"] == "failed"
+    assert no_actor.operation_result["summary"] == "No workspace change recorded."
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "tool_id,arguments",
+    [
+        ("approve_response", {"artifact_path": "proposed-final.md"}),
+        ("mark_response_sent", {}),
+        ("record_decision", {"title": "Proposed choice", "chosen_path": "Ship"}),
+    ],
+)
+async def test_material_chat_tools_return_confirmation_without_mutation(
+    app_context, tool_id, arguments
+):
+    agent = app_context.agents.get("counsel-copilot")
+    context = ToolExecutionContext(
+        app_context,
+        matter_id="MAT-DEMO-BEACON",
+        lawyer_author="Counsel",
+        source_action_key=f"chat:RUN-1:{tool_id}",
+    )
+    before = app_context.matters.get("MAT-DEMO-BEACON")
+    decisions_before = len(app_context.index.list_decisions())
+
+    result = await app_context.tools.execute(agent, context, tool_id, arguments)
+
+    assert result.status == "success"
+    assert result.changed_paths == []
+    assert result.operation_result["status"] == "confirmation_required"
+    assert result.operation_result["required_user_action"]
+    assert result.operation_result["recovery"] == "No workspace change was recorded."
+    after = app_context.matters.get("MAT-DEMO-BEACON")
+    assert after["response_approved_at"] == before["response_approved_at"]
+    assert after["response_sent_at"] == before["response_sent_at"]
+    assert after["closed_at"] == before["closed_at"]
+    assert len(app_context.index.list_decisions()) == decisions_before
+
+
+def test_current_stage_tool_schema_excludes_closed(app_context):
+    agent = app_context.agents.get("counsel-copilot")
+    stage_tool = next(
+        tool for tool in app_context.tools.provider_tools(agent)
+        if tool["function"]["name"] == "move_matter_stage"
+    )
+
+    assert stage_tool["function"]["parameters"]["properties"]["new_stage"]["enum"] == [
+        "intake", "research", "explore", "generate", "respond",
+    ]
+
+
+@pytest.mark.asyncio
+async def test_legacy_closed_stage_request_returns_typed_recovery(app_context):
+    agent = app_context.agents.get("counsel-copilot")
+    result = await app_context.tools.execute(
+        agent,
+        ToolExecutionContext(app_context, matter_id="MAT-DEMO-BEACON"),
+        "move_matter_stage",
+        {"new_stage": "closed"},
+    )
+
+    assert result.status == "success"
+    assert result.operation_result["status"] == "no_change"
+    assert result.operation_result["summary"] == "Closure is not a generic stage change."
+    assert result.operation_result["required_user_action"] == (
+        "Finalize the current work product before closing the matter."
+    )
+    assert "move_matter_stage failed" not in result.summary
+
+
+@pytest.mark.asyncio
+async def test_close_tool_reports_first_prerequisite_without_false_confirmation(app_context):
+    agent = app_context.agents.get("counsel-copilot")
+    result = await app_context.tools.execute(
+        agent,
+        ToolExecutionContext(app_context, matter_id="MAT-DEMO-BEACON"),
+        "close_matter",
+        {},
+    )
+
+    assert result.operation_result["status"] == "no_change"
+    assert result.operation_result["required_user_action"] == (
+        "Finalize the current work product before closing the matter."
+    )
+
+
+@pytest.mark.asyncio
+async def test_safe_tool_returns_common_operation_result(app_context):
+    agent = app_context.agents.get("counsel-copilot")
+    context = ToolExecutionContext(
+        app_context,
+        matter_id="MAT-DEMO-BEACON",
+        source_action_key="chat:RUN-2:create-work",
+    )
+
+    result = await app_context.tools.execute(
+        agent, context, "create_work_item", {"title": "Confirm launch owner"}
+    )
+
+    assert result.operation_result == {
+        **result.operation_result,
+        "action": "chat:RUN-2:create-work",
+        "operation": "create_work_item",
+        "status": "changed",
+        "matter_id": "MAT-DEMO-BEACON",
+        "changed_paths": result.changed_paths,
+    }
+    assert result.operation_result["resulting_matter_state"]["stage"]
+
+
+@pytest.mark.asyncio
+async def test_create_work_item_reuses_identical_open_scope_but_not_different_scope(app_context):
+    agent = app_context.agents.get("counsel-copilot")
+    first = await app_context.tools.execute(
+        agent,
+        ToolExecutionContext(app_context, matter_id="MAT-DEMO-BEACON"),
+        "create_work_item",
+        {
+            "title": "Confirm   launch owner",
+            "item_type": "question",
+            "issue_id": "ISSUE-1",
+            "required": True,
+        },
+    )
+    duplicate = await app_context.tools.execute(
+        agent,
+        ToolExecutionContext(app_context, matter_id="MAT-DEMO-BEACON"),
+        "create_work_item",
+        {
+            "title": "  confirm launch OWNER ",
+            "item_type": "question",
+            "issue_id": "issue-1",
+            "required": True,
+        },
+    )
+    different = await app_context.tools.execute(
+        agent,
+        ToolExecutionContext(app_context, matter_id="MAT-DEMO-BEACON"),
+        "create_work_item",
+        {
+            "title": "Confirm launch owner",
+            "item_type": "question",
+            "issue_id": "ISSUE-2",
+            "required": True,
+        },
+    )
+
+    assert first.changed_paths
+    assert duplicate.changed_paths == []
+    assert duplicate.data["work_item_id"] == first.data["work_item_id"]
+    assert different.changed_paths
+    assert different.data["work_item_id"] != first.data["work_item_id"]
+
+
+@pytest.mark.asyncio
+async def test_completed_identical_work_item_can_be_created_again(app_context):
+    agent = app_context.agents.get("counsel-copilot")
+    context = ToolExecutionContext(app_context, matter_id="MAT-DEMO-BEACON")
+    first = await app_context.tools.execute(
+        agent, context, "create_work_item", {"title": "Repeatable review"}
+    )
+    app_context.matters.complete_work_item(
+        "MAT-DEMO-BEACON", first.data["work_item_id"], actor="Counsel"
+    )
+
+    recreated = await app_context.tools.execute(
+        agent, context, "create_work_item", {"title": "repeatable review"}
+    )
+
+    assert recreated.changed_paths
+    assert recreated.data["work_item_id"] != first.data["work_item_id"]
+
+
+@pytest.mark.asyncio
+async def test_agent_stage_tool_cannot_move_respond_backward_for_background_work(app_context):
+    app_context.matters.move_stage("MAT-DEMO-BEACON", "respond")
+    agent = app_context.agents.get("counsel-copilot")
+
+    result = await app_context.tools.execute(
+        agent,
+        ToolExecutionContext(app_context, matter_id="MAT-DEMO-BEACON"),
+        "move_matter_stage",
+        {"new_stage": "research", "reason": "Background research started"},
+    )
+
+    assert result.status == "success"
+    assert result.changed_paths == []
+    assert result.operation_result["status"] == "no_change"
+    assert app_context.matters.get("MAT-DEMO-BEACON")["status"] == "respond"
 
 
 @pytest.mark.asyncio
@@ -62,10 +255,14 @@ async def test_recommendation_save_returns_a_non_finalizable_record(app_context)
     )
 
     assert result.status == "success"
+    version_id = result.data["current_version_id"]
+    assert re.fullmatch(r"REC-\d{8}-[0-9a-f]{6}", version_id)
     assert result.data == {
         "record_type": "recommendation",
         "title": "Launch path",
         "path": "03_Matters/beacon-instant-onboarding/recommendations.md",
+        "current_version_id": version_id,
+        "proposal": None,
     }
 
 
@@ -101,9 +298,9 @@ async def test_save_work_product_revises_the_existing_canonical_draft(app_contex
     updated = app_context.vault.read_markdown(created.data["vault_path"])
     assert revised.status == "success"
     assert revised.data["vault_path"] == created.data["vault_path"]
-    assert revised.data["title"] == "Customer answer"
+    assert revised.data["title"] == "A renamed answer"
     assert updated["metadata"]["work_product_id"] == original["metadata"]["work_product_id"]
-    assert updated["metadata"]["title"] == "Customer answer"
+    assert updated["metadata"]["title"] == "A renamed answer"
     assert updated["metadata"]["review"]["tracking"] is True
     assert updated["content"].strip() == "Second version"
 
@@ -132,8 +329,39 @@ async def test_save_work_product_without_path_revises_current_canonical_draft(ap
 
     assert revised.status == "success"
     assert revised.data["vault_path"] == created.data["vault_path"]
-    assert revised.data["title"] == "Customer answer"
+    assert revised.data["title"] == "Summary text that must not replace the title"
     assert app_context.vault.read_markdown(created.data["vault_path"])["content"].strip() == "The revised deliverable body"
+
+
+@pytest.mark.asyncio
+async def test_existing_draft_revision_can_atomically_save_a_separate_recommendation(app_context):
+    agent = app_context.agents.get("counsel-copilot")
+    context = ToolExecutionContext(
+        app_context, matter_id="MAT-DEMO-BEACON", review_author="Themis.ai",
+        lawyer_author="Counsel",
+    )
+    created = await app_context.tools.execute(
+        agent, context, "save_work_product",
+        {"title": "Initial", "content": "Draft advice", "kind": "draft"},
+    )
+
+    revised = await app_context.tools.execute(
+        agent, context, "save_work_product",
+        {
+            "title": "Developed memo", "content": "Developed advice", "kind": "draft",
+            "existing_draft_path": created.data["vault_path"],
+            "recommendation": "Proceed with the limited path.",
+        },
+    )
+
+    recommendation = RecommendationService(
+        app_context.vault, app_context.matters
+    ).get("MAT-DEMO-BEACON")
+    assert revised.status == "success"
+    assert revised.data["vault_path"] == created.data["vault_path"]
+    assert revised.data["title"] == "Developed memo"
+    assert recommendation["content"] == "Proceed with the limited path."
+    assert app_context.index.list_decisions(matter_id="MAT-DEMO-BEACON") == []
 
 
 @pytest.mark.asyncio

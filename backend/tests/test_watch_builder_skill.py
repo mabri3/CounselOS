@@ -24,7 +24,7 @@ from conftest import TEST_VAULT_SOURCE
 
 
 class IndexFake:
-    def rebuild(self):
+    async def rebuild_async(self):
         return None
 
 

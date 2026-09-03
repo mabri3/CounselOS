@@ -35,36 +35,175 @@ class ResearchRunService:
     def has_active_work(self) -> bool:
         return any(not task.done() for task in self._tasks.values())
 
-    def start(self, matter_id: str, questions: list[str], *, source_action_key: str | None = None) -> dict[str, Any]:
+    def start(
+        self, matter_id: str, questions: list[str], *,
+        source_action_key: str | None = None, origin: str = "user",
+    ) -> dict[str, Any]:
         clean_questions = [item.strip() for item in questions if item.strip()][: self.MAX_QUESTIONS]
         if not clean_questions:
             raise ValueError("At least one research question is required.")
         if source_action_key:
-            existing = next((run for run in self.list(matter_id) if run.get("source_action_key") == source_action_key), None)
-            if existing:
-                return existing
-        run_id = new_id("RUN")
+            existing_batch = sorted(
+                (
+                    run for run in self.list(matter_id)
+                    if run.get("batch_source_action_key") == source_action_key
+                    or run.get("source_action_key") == source_action_key
+                ),
+                key=lambda run: int(run.get("batch_position") or 1),
+            )
+            if existing_batch:
+                return existing_batch[0]
         resolved = self.resolve_agent() if self.resolve_agent is not None else None
         selection = self._selection_values(resolved) if resolved is not None else None
         matter = self.research.index.get_matter(matter_id)
         original_stage = str(matter.get("status") or "") if matter else ""
-        record = self._write(
-            matter_id,
-            run_id,
-            state="queued",
-            questions=clean_questions,
-            completed=0,
-            status="Research is queued.",
-            source_action_key=source_action_key,
-            selection=selection,
-            return_stage="explore" if original_stage in {"intake", "research", "explore"} else original_stage,
-        )
+        return_stage = "explore" if original_stage in {"intake", "research", "explore"} else original_stage
+        batch_id = new_id("RB")
+        run_ids = [new_id("RUN") for _ in clean_questions]
+        first_order = self._next_order(matter_id)
+        queued_at = iso_now()
+        records = []
+        for position, (run_id, question) in enumerate(zip(run_ids, clean_questions), start=1):
+            item_source_action_key = (
+                source_action_key if position == 1
+                else f"{source_action_key}:item:{position}"
+                if source_action_key else None
+            )
+            records.append(self._write(
+                matter_id,
+                run_id,
+                state="queued",
+                questions=[question],
+                completed=0,
+                status="Research is queued.",
+                source_action_key=item_source_action_key,
+                batch_source_action_key=source_action_key,
+                batch_id=batch_id,
+                batch_position=position,
+                batch_total=len(clean_questions),
+                batch_run_ids=run_ids,
+                queue_item_version=1,
+                selection=selection,
+                return_stage=return_stage,
+                question_id=new_id("RQ"),
+                question=question,
+                queue_order=first_order + position - 1,
+                priority=first_order + position - 1,
+                origin=origin,
+                queued_at=queued_at,
+            ))
         if original_stage in {"intake", "explore"}:
             self.research.matters.move_stage(
                 matter_id, "research", reason="Research run started", actor="research-agent"
             )
-        self._tasks[run_id] = asyncio.create_task(self._execute(matter_id, run_id, clean_questions))
-        return record
+        first = records[0]
+        if not self._matter_has_active_task(matter_id):
+            next_item = self._pending(matter_id)[0]
+            next_id = str(next_item["run_id"])
+            self._tasks[next_id] = asyncio.create_task(
+                self._execute(matter_id, next_id, self._execution_questions(next_item))
+            )
+        return first
+
+    def reorder(self, matter_id: str, run_ids: list[str]) -> list[dict[str, Any]]:
+        pending = {item["run_id"]: item for item in self.list(matter_id) if item.get("state") == "queued"}
+        if set(run_ids) != set(pending):
+            raise ValueError("Reorder must include every pending research item exactly once.")
+        current_order = [item["run_id"] for item in self.list(matter_id) if item.get("state") == "queued"]
+        if run_ids == current_order:
+            return self.list(matter_id)
+        now = iso_now()
+        for order, run_id in enumerate(run_ids, start=1):
+            self.vault.update_markdown(
+                self._path(matter_id, run_id),
+                metadata_updates={"queue_order": order, "priority": order, "updated_at": now},
+            )
+        return self.list(matter_id)
+
+    def resume(self, matter_id: str) -> dict[str, Any] | None:
+        matter_run_ids = {str(item.get("run_id")) for item in self.list(matter_id)}
+        if any(run_id in matter_run_ids and not task.done() for run_id, task in self._tasks.items()):
+            return None
+        interrupted = [item for item in self.list(matter_id) if item.get("state") == "interrupted"]
+        if not interrupted:
+            return None
+        item = interrupted[0]
+        resumable = (
+            [entry for entry in interrupted if entry.get("resumed_from_restart")]
+            if item.get("resumed_from_restart")
+            else [item]
+        )
+        for entry in resumable:
+            self._write(
+                matter_id, str(entry["run_id"]), state="queued",
+                status="Research is queued to resume.", finished_at=None,
+                resumed_from_restart=False, stop_reason=None,
+            )
+        item = self.get(matter_id, str(item["run_id"]))
+        run_id = str(item["run_id"])
+        self._tasks[run_id] = asyncio.create_task(
+            self._execute(matter_id, run_id, self._execution_questions(item))
+        )
+        return item
+
+    async def stop(self, matter_id: str) -> list[dict[str, Any]]:
+        active_ids = {
+            str(item["run_id"])
+            for item in self.list(matter_id)
+            if item.get("state") in {"queued", "running"}
+        }
+        durable_before_cancel = {
+            run_id: self.get(matter_id, run_id) for run_id in active_ids
+        }
+        tasks = [
+            task for run_id, task in list(self._tasks.items())
+            if run_id in active_ids and not task.done()
+        ]
+        for task in tasks:
+            task.cancel()
+        if tasks:
+            await asyncio.gather(*tasks, return_exceptions=True)
+        now = iso_now()
+        for run_id in active_ids:
+            current = self.get(matter_id, run_id)
+            before = durable_before_cancel[run_id]
+            preserved = (
+                before
+                if int(before.get("completed") or 0) > int(current.get("completed") or 0)
+                else current
+            )
+            if current.get("state") not in {"completed", "failed"}:
+                self._write(
+                    matter_id, run_id, state="interrupted",
+                    status="Research was stopped by the lawyer.",
+                    resumed_from_restart=False, stop_reason="Stopped by the lawyer.",
+                    finished_at=now,
+                    completed=int(preserved.get("completed") or 0),
+                    results=list(preserved.get("results") or []),
+                )
+        if active_ids:
+            first_id = sorted(active_ids)[0]
+            self._restore_stage(
+                matter_id, first_id, reason="Research was stopped; saved results remain available"
+            )
+        return self.list(matter_id)
+
+    def retry(self, matter_id: str, run_id: str) -> dict[str, Any]:
+        current = self.get(matter_id, run_id)
+        if current.get("state") != "failed":
+            raise ValueError("Only failed research can be retried.")
+        retried = self._write(
+            matter_id, run_id, state="queued", status="Research is queued to retry.",
+            finished_at=None, failure_detail=None,
+            attempt_count=int(current.get("attempt_count") or 1) + 1,
+        )
+        if not self._matter_has_active_task(matter_id):
+            next_item = self._pending(matter_id)[0]
+            next_id = str(next_item["run_id"])
+            self._tasks[next_id] = asyncio.create_task(
+                self._execute(matter_id, next_id, self._execution_questions(next_item))
+            )
+        return retried
 
     def get(self, matter_id: str, run_id: str) -> dict[str, Any]:
         path = self._path(matter_id, run_id)
@@ -91,7 +230,11 @@ class ResearchRunService:
         directory = self.vault.resolve(f"{self._matter_path(matter_id)}/research/runs")
         if not directory.exists():
             return []
-        return [self.get(matter_id, path.stem) for path in sorted(directory.glob("*.md"), reverse=True)]
+        records = [self.get(matter_id, path.stem) for path in directory.glob("*.md")]
+        return sorted(records, key=lambda item: (
+            0 if item.get("state") == "running" else 1 if item.get("state") == "queued" else 2,
+            int(item.get("queue_order") or 0), str(item.get("created_at") or ""),
+        ))
 
     def mark_running_interrupted(self) -> int:
         count = 0
@@ -110,15 +253,17 @@ class ResearchRunService:
                     relative,
                     metadata_updates={
                         "state": "interrupted",
-                        "status": "Research was interrupted when the application stopped.",
+                        "status": "Research is queued to resume after restart.",
+                        "resumed_from_restart": True,
                         "finished_at": iso_now(),
+                        "updated_at": iso_now(),
                     },
                 )
                 count += 1
                 interrupted.append((str(metadata.get("matter_id") or ""), str(metadata.get("run_id") or path.stem)))
         for matter_id, run_id in interrupted:
             if matter_id:
-                self._restore_stage(matter_id, run_id, reason="Research was interrupted; review the matter")
+                self._restore_stage(matter_id, run_id, reason="Research is ready to resume after restart")
         return count
 
     async def wait(self, run_id: str) -> None:
@@ -127,17 +272,31 @@ class ResearchRunService:
             await task
 
     async def wait_for_active_work(self) -> None:
-        tasks = [task for task in self._tasks.values() if not task.done()]
-        if tasks:
+        while tasks := [task for task in self._tasks.values() if not task.done()]:
             await asyncio.gather(*tasks, return_exceptions=True)
 
     async def _execute(self, matter_id: str, run_id: str, questions: list[str]) -> None:
-        results: list[dict[str, Any]] = []
-        self._write(matter_id, run_id, state="running", questions=questions, completed=0, status="Research is running.")
+        current = self.get(matter_id, run_id)
+        all_questions = [
+            str(question) for question in current.get("questions", []) if str(question).strip()
+        ] or list(questions)
+        prior_results = [
+            dict(result) for result in current.get("results", []) if isinstance(result, dict)
+        ]
+        completed_before = min(
+            int(current.get("completed") or 0), len(prior_results), len(all_questions)
+        )
+        results: list[dict[str, Any]] = prior_results[:completed_before]
+        cancelled = False
+        self._write(
+            matter_id, run_id, state="running", questions=all_questions,
+            completed=completed_before, status="Research is running.", started_at=iso_now(),
+            finished_at=None,
+        )
         try:
             saved_selection = self.get(matter_id, run_id).get("selection")
             resolved = self._resolve_saved_selection(saved_selection)
-            for position, question in enumerate(questions, start=1):
+            for position, question in enumerate(questions, start=completed_before + 1):
                 result = await self.research.run(
                     matter_id,
                     question,
@@ -146,8 +305,8 @@ class ResearchRunService:
                 )
                 results.append(result)
                 self._write(
-                    matter_id, run_id, state="running", questions=questions, completed=position,
-                    status=f"Completed {position} of {len(questions)} research items.", results=results,
+                    matter_id, run_id, state="running", questions=all_questions, completed=position,
+                    status=f"Completed {position} of {len(all_questions)} research items.", results=results,
                 )
             public_statuses = {str(item.get("public_research_status") or "unavailable") for item in results}
             has_public = "retrieved" in public_statuses
@@ -158,7 +317,7 @@ class ResearchRunService:
                 and observation.get("failure_class")
             ]
             self._write(
-                matter_id, run_id, state="completed", questions=questions, completed=len(questions),
+                matter_id, run_id, state="completed", questions=all_questions, completed=len(results),
                 status=(
                     "Research is complete."
                     if has_public
@@ -172,21 +331,29 @@ class ResearchRunService:
             )
             self._restore_stage(matter_id, run_id, reason="Research results are ready for counsel exploration")
         except asyncio.CancelledError:
+            cancelled = True
             self._write(
-                matter_id, run_id, state="interrupted", questions=questions, completed=len(results),
+                matter_id, run_id, state="interrupted", questions=all_questions, completed=len(results),
                 status="Research was interrupted.", results=results, finished_at=iso_now(),
             )
             self._restore_stage(matter_id, run_id, reason="Research was interrupted; review the matter")
             raise
         except Exception:
             self._write(
-                matter_id, run_id, state="failed", questions=questions, completed=len(results),
+                matter_id, run_id, state="failed", questions=all_questions, completed=len(results),
                 status=f"Research stopped after preserving {len(results)} useful result(s).",
                 results=results, finished_at=iso_now(),
             )
             self._restore_stage(matter_id, run_id, reason="Research stopped; review the saved results")
         finally:
             self._tasks.pop(run_id, None)
+            pending = self._pending(matter_id)
+            if pending and not cancelled:
+                next_item = pending[0]
+                next_id = str(next_item["run_id"])
+                self._tasks[next_id] = asyncio.create_task(self._execute(
+                    matter_id, next_id, self._execution_questions(next_item)
+                ))
 
     def _restore_stage(self, matter_id: str, run_id: str, *, reason: str) -> None:
         current = self.research.index.get_matter(matter_id)
@@ -229,6 +396,31 @@ class ResearchRunService:
 
     def _path(self, matter_id: str, run_id: str) -> str:
         return f"{self._matter_path(matter_id)}/research/runs/{run_id}.md"
+
+    def _pending(self, matter_id: str) -> list[dict[str, Any]]:
+        return [
+            item for item in self.list(matter_id)
+            if item.get("state") == "queued"
+        ]
+
+    def _next_order(self, matter_id: str) -> int:
+        return max((int(item.get("queue_order") or 0) for item in self.list(matter_id)), default=0) + 1
+
+    def _matter_has_active_task(self, matter_id: str) -> bool:
+        matter_run_ids = {str(item.get("run_id")) for item in self.list(matter_id)}
+        return any(
+            run_id in matter_run_ids and not task.done()
+            for run_id, task in self._tasks.items()
+        )
+
+    @staticmethod
+    def _execution_questions(item: dict[str, Any]) -> list[str]:
+        completed = max(0, int(item.get("completed") or 0))
+        if item.get("queue_item_version"):
+            question = str(item.get("question") or "").strip()
+            return [question] if question and completed < 1 else []
+        questions = [str(value) for value in item.get("questions", []) if str(value).strip()]
+        return questions[completed:]
 
     def _matter_path(self, matter_id: str) -> str:
         matter = self.research.index.get_matter(matter_id)

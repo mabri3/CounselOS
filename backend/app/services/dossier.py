@@ -100,13 +100,88 @@ class DossierService:
             ("Issues and workstreams", _markdown_list(issues, "No workstreams identified yet.")),
             ("Open questions", _markdown_list(open_questions, "No open questions recorded.")),
             ("Research and source support", self.section(content, "Research and source support") or "Research has not been added yet."),
-            ("Options or working recommendation", self.section(content, "Options or working recommendation") or "No recommendation has been drafted yet."),
+            ("Options or working recommendation", self.section(content, "Options or working recommendation") or "No separate working recommendation is saved; the draft may still contain advice."),
             ("Next counsel action", "Review the working ask and answer the next material question."),
             ("Work product links", self.section(content, "Work product links") or "No work product yet."),
         ]
         for heading, value in sections:
             content = self._set_section(content, heading, value)
         return self.propose_update(matter_id, content, expected_hash=expected_hash)
+
+    def update_work_state(
+        self,
+        matter_id: str,
+        *,
+        recommendation: str,
+        draft: dict[str, str] | None,
+        final: dict[str, str] | None,
+        next_action: str,
+        expected_hash: str | None,
+    ) -> dict[str, Any]:
+        """Project only the work-state sections of the dossier."""
+        current = self.get(matter_id)
+        content = current["content"] if current else "# Matter dossier\n"
+        links: list[str] = []
+        if draft and draft.get("path"):
+            links.append(
+                f'- Draft: [{draft.get("title") or "Current draft"}]({draft["path"]})'
+            )
+        if final and final.get("path"):
+            links.append(
+                f'- Final: [{final.get("title") or "Current final"}]({final["path"]})'
+            )
+        projected = self._set_section(
+            content,
+            "Options or working recommendation",
+            recommendation.strip() or "No separate working recommendation is saved; the draft may still contain advice.",
+        )
+        projected = self._set_section(
+            projected,
+            "Work product links",
+            "\n".join(links) or "No work product yet.",
+        )
+        projected = self._set_section(
+            projected,
+            "Next counsel action",
+            next_action.strip() or "Review the matter and choose the next action.",
+        )
+        if current and self._hash(projected) == self._hash(content):
+            return {
+                "state": "not_required",
+                "path": self._path(matter_id),
+                "content_hash": self._hash(content),
+            }
+        return self.propose_update(
+            matter_id, projected, expected_hash=expected_hash
+        )
+
+    def project_current_work_state(
+        self, matter_id: str, *, expected_hash: str | None
+    ) -> dict[str, Any]:
+        """Project canonical recommendation and work pointers into the dossier."""
+        # Local import keeps the service graph acyclic at module load time.
+        from app.services.recommendations import RecommendationService
+
+        detail = self.matters.get(matter_id)
+        recommendation = RecommendationService(self.vault, self.matters).get(matter_id)
+
+        def linked_work(path: str | None, fallback: str) -> dict[str, str] | None:
+            if not path:
+                return None
+            title = fallback
+            if self.vault.exists(path):
+                document = self.vault.read_markdown(path)
+                title = str(document["metadata"].get("title") or title)
+            return {"path": path, "title": title}
+
+        return self.update_work_state(
+            matter_id,
+            recommendation=str(recommendation.get("content") or ""),
+            draft=linked_work(detail.get("current_work_product_draft_path"), "Current draft"),
+            final=linked_work(detail.get("current_work_product_final_path"), "Current final"),
+            next_action=str(detail["work_state"].get("next_action") or ""),
+            expected_hash=expected_hash,
+        )
 
     def propose_update(
         self, matter_id: str, content: str, *, expected_hash: str | None,

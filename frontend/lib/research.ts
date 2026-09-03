@@ -7,8 +7,8 @@
  * and any `[n]` markers already in the prose bind to that list by position.
  */
 
-import type { Citation, MemoBlock, ResearchMemo, VaultDocument } from "./types";
-import { formatDateTime } from "./design";
+import type { Citation, MemoBlock, ResearchMemo, VaultDocument } from "./types.ts";
+import { formatDateTime } from "./design.ts";
 
 const SOURCE_LINE = /^[-*]\s+(Internal(?: support)?|External(?: authority)?|Supplied(?: source)?|Source)\s*:\s*(.+)$/i;
 const BACKTICK_PATH = /`([^`]+)`/;
@@ -53,6 +53,15 @@ export function parseMemo(document: VaultDocument): ResearchMemo & {
 
   const author = String(document.metadata.author ?? document.metadata.agent_id ?? "Themis.ai");
   const created = String(document.metadata.created_at ?? document.metadata.updated_at ?? "");
+  const providerLegs = Array.isArray(document.metadata.provider_legs)
+    ? document.metadata.provider_legs.filter(isRecord)
+    : [];
+  const polarisObservability = isRecord(document.metadata.polaris_observability)
+    ? document.metadata.polaris_observability
+    : null;
+  const correlationId = typeof document.metadata.correlation_id === "string"
+    ? document.metadata.correlation_id
+    : "";
 
   return {
     path: document.path,
@@ -66,10 +75,17 @@ export function parseMemo(document: VaultDocument): ResearchMemo & {
       .join(" · "),
     blocks,
     citations,
+    technicalDetails: providerLegs.length || polarisObservability || correlationId
+      ? { providerLegs, polarisObservability, correlationId }
+      : null,
     publicResearchStatus: isPublicResearchStatus(document.metadata.public_research_status)
       ? document.metadata.public_research_status
       : undefined,
   };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
 function isPublicResearchStatus(

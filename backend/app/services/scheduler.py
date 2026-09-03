@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime, time, timedelta
 from pathlib import Path
@@ -13,6 +14,9 @@ from app.services.index import IndexService
 from app.services.vault import VaultService
 from app.utils.ids import new_id, slugify
 from app.utils.time import iso_now, parse_iso, utc_now
+
+
+logger = logging.getLogger(__name__)
 
 
 class SchedulerService:
@@ -135,71 +139,85 @@ class SchedulerService:
             return {"schedule_id": schedule_id, "status": "already_running"}
         self._running.add(schedule_id)
         try:
-            kind = schedule.get("kind") or "agent_prompt"
-            if kind == "watch_scan":
-                status, result, message = await self._run_watch_scan(schedule)
-            elif kind == "briefing_digest":
-                status, result, message = await self._run_briefing_digest(schedule)
-            elif kind == "inbox_watch":
-                result = await self._run_inbox_watch(schedule)
-                status, message = "success", ""
-            elif kind == "decision_audit":
-                result = self.app.decisions.audit()
-                status, message = "success", ""
-            else:
-                response = await self.app.runner.run(
-                    ChatRequest(
-                        message=(
-                            "[Scheduled task]\n"
-                            "Execute this task now. Do not create or change its schedule.\n\n"
-                            f"{schedule.get('instructions') or 'Run the scheduled task.'}"
-                        ),
-                        matter_id=schedule.get("matter_id"),
-                        agent_id=schedule.get("agent_id") or "counsel-copilot",
+            try:
+                kind = schedule.get("kind") or "agent_prompt"
+                if kind == "watch_scan":
+                    status, result, message = await self._run_watch_scan(schedule)
+                elif kind == "briefing_digest":
+                    status, result, message = await self._run_briefing_digest(schedule)
+                elif kind == "inbox_watch":
+                    result = await self._run_inbox_watch(schedule, rebuild=False)
+                    status, message = "success", ""
+                elif kind == "decision_audit":
+                    result = self.app.decisions.audit()
+                    status, message = "success", ""
+                else:
+                    response = await self.app.runner.run(
+                        ChatRequest(
+                            message=(
+                                "[Scheduled task]\n"
+                                "Execute this task now. Do not create or change its schedule.\n\n"
+                                f"{schedule.get('instructions') or 'Run the scheduled task.'}"
+                            ),
+                            matter_id=schedule.get("matter_id"),
+                            agent_id=schedule.get("agent_id") or "counsel-copilot",
+                        )
                     )
-                )
-                result = response.model_dump()
-                status, message = "success", ""
-        except Exception as exc:
-            result = {"error": str(exc)}
-            status, message = "failed", str(exc)
+                    result = response.model_dump()
+                    status, message = "success", ""
+            except Exception as exc:
+                logger.exception("Scheduled task %s failed", schedule_id)
+                message = self._failure_message(exc)
+                result = {"error": message}
+                status = "failed"
+            now = utc_now()
+            recurrence = self._recurrence(schedule)
+            scheduled_at = parse_iso(schedule.get("next_run_at"))
+            anchor = scheduled_at if scheduled_at is not None and scheduled_at <= now else now
+            next_run = self._next_run(recurrence, anchor)
+            self.vault.update_markdown(
+                schedule["path"],
+                metadata_updates={
+                    "last_run_at": now.isoformat(timespec="seconds"),
+                    "next_run_at": self._iso(next_run),
+                    "last_status": status,
+                    "last_message": message,
+                },
+            )
+            await self.index.rebuild_async()
+            return {"schedule_id": schedule_id, "status": status, "result": result}
         finally:
             self._running.discard(schedule_id)
-        now = utc_now()
-        recurrence = self._recurrence(schedule)
-        scheduled_at = parse_iso(schedule.get("next_run_at"))
-        anchor = scheduled_at if scheduled_at is not None and scheduled_at <= now else now
-        next_run = self._next_run(recurrence, anchor)
-        self.vault.update_markdown(
-            schedule["path"],
-            metadata_updates={
-                "last_run_at": now.isoformat(timespec="seconds"),
-                "next_run_at": self._iso(next_run),
-                "last_status": status,
-                "last_message": message,
-            },
-        )
-        self.index.rebuild()
-        return {"schedule_id": schedule_id, "status": status, "result": result}
 
     async def _loop(self) -> None:
         while True:
             try:
-                for schedule in self.index.list_schedules():
-                    schedule = self._schedule_with_metadata(schedule)
-                    if not schedule.get("enabled") or schedule["schedule_id"] in self._running:
-                        continue
-                    if self._recurrence(schedule).kind == "manual":
-                        continue
-                    next_run = parse_iso(schedule.get("next_run_at"))
-                    if next_run is None or next_run <= utc_now():
-                        task = asyncio.create_task(self.run(schedule["schedule_id"]))
-                        self._run_tasks.add(task)
-                        task.add_done_callback(self._run_tasks.discard)
+                await self._poll()
             except Exception:
-                # A scheduler failure is visible through last_status but must not take down the app.
-                pass
+                # Keep diagnostic detail local while the next poll remains available.
+                logger.exception("Scheduler poll failed")
             await asyncio.sleep(self.poll_seconds)
+
+    async def _poll(self) -> None:
+        now = utc_now()
+        for indexed_schedule in self.index.list_schedules():
+            if not indexed_schedule.get("enabled"):
+                continue
+            if indexed_schedule.get("kind") == "manual":
+                continue
+            schedule_id = indexed_schedule["schedule_id"]
+            if schedule_id in self._running:
+                continue
+            next_run = parse_iso(indexed_schedule.get("next_run_at"))
+            if next_run is not None and next_run > now:
+                continue
+
+            schedule = self._schedule_with_metadata(indexed_schedule)
+            if not schedule.get("enabled") or self._recurrence(schedule).kind == "manual":
+                continue
+            task = asyncio.create_task(self.run(schedule_id))
+            self._run_tasks.add(task)
+            task.add_done_callback(self._run_tasks.discard)
 
     async def _run_watch_scan(self, schedule: dict[str, Any]) -> tuple[str, Any, str]:
         watch_id = str(schedule.get("target_watch_id") or "")
@@ -246,6 +264,12 @@ class SchedulerService:
             raise ValueError("watch_scan schedule requires target_watch_id")
         if kind == "briefing_digest" and not view_id:
             raise ValueError("briefing_digest schedule requires target_view_id")
+
+    @staticmethod
+    def _failure_message(exc: Exception) -> str:
+        if isinstance(exc, KeyError):
+            return "The scheduled task failed because a required record was not found."
+        return "The scheduled task failed. Check the local application log for details."
 
     @staticmethod
     def _recurrence(schedule: dict[str, Any]) -> ScheduleRecurrence:
@@ -299,37 +323,41 @@ class SchedulerService:
     def _iso(value: datetime | None) -> str | None:
         return value.isoformat(timespec="seconds") if value else None
 
-    async def _run_inbox_watch(self, schedule: dict[str, Any]) -> dict[str, Any]:
+    async def _run_inbox_watch(self, schedule: dict[str, Any], *, rebuild: bool = True) -> dict[str, Any]:
         watch_path = str(schedule.get("watch_path") or "04_Inbox")
         inbox = self.vault.resolve(watch_path)
         processed = inbox / "_processed"
         processed.mkdir(parents=True, exist_ok=True)
         created: list[str] = []
-        for path in sorted(inbox.iterdir()) if inbox.exists() else []:
-            if not path.is_file() or path.name.startswith(".") or path.name.lower() == "readme.md":
-                continue
-            data = path.read_bytes()
-            extracted = self.app.ingestion._extract_text(path.name, data)
-            request_text = extracted.strip() or f"New intake file received: {path.name}"
-            matter = self.app.matters.create(
-                MatterCreate(
-                    title=Path(path.name).stem.replace("-", " ").replace("_", " ").title(),
-                    request_text=request_text,
-                    description="Automatically created from the watched intake folder.",
-                    matter_type="general_advice",
-                    priority="normal",
+        try:
+            for path in sorted(inbox.iterdir()) if inbox.exists() else []:
+                if not path.is_file() or path.name.startswith(".") or path.name.lower() == "readme.md":
+                    continue
+                data = path.read_bytes()
+                extracted = self.app.ingestion._extract_text(path.name, data)
+                request_text = extracted.strip() or f"New intake file received: {path.name}"
+                matter = self.app.matters.create(
+                    MatterCreate(
+                        title=Path(path.name).stem.replace("-", " ").replace("_", " ").title(),
+                        request_text=request_text,
+                        description="Automatically created from the watched intake folder.",
+                        matter_type="general_advice",
+                        priority="normal",
+                    ),
+                    rebuild=False,
                 )
-            )
-            destination = f"{matter['path']}/documents/{path.name}"
-            self.vault.write_bytes(destination, data)
-            if extracted.strip():
-                self.vault.write_markdown(
-                    f"{destination}.extracted.md",
-                    f"# Extracted text: {path.name}\n\n{extracted}\n",
-                    {"matter_id": matter["matter_id"], "source_path": destination, "created_at": iso_now()},
-                )
-            archive_name = f"{iso_now()[:10]}-{new_id('IN')}-{path.name}"
-            path.replace(processed / archive_name)
-            created.append(matter["matter_id"])
-        self.index.rebuild()
+                destination = f"{matter['path']}/documents/{path.name}"
+                self.vault.write_bytes(destination, data)
+                if extracted.strip():
+                    self.vault.write_markdown(
+                        f"{destination}.extracted.md",
+                        f"# Extracted text: {path.name}\n\n{extracted}\n",
+                        {"matter_id": matter["matter_id"], "source_path": destination, "created_at": iso_now()},
+                    )
+                archive_name = f"{iso_now()[:10]}-{new_id('IN')}-{path.name}"
+                path.replace(processed / archive_name)
+                created.append(matter["matter_id"])
+        finally:
+            if rebuild:
+                await self.index.rebuild_async()
         return {"created_matters": created, "count": len(created)}

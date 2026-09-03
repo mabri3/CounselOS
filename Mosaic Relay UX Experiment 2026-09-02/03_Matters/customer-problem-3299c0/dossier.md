@@ -1,0 +1,60 @@
+---
+matter_id: MAT-20260903-3299c0
+record_type: dossier
+editable: true
+source_revision: 03_Matters/customer-problem-3299c0/dossier-revisions/DOS-20260903-5aba2e.md
+updated_at: '2026-09-03T00:29:09+00:00'
+content_hash: 505742bd0241f072b4f3546d24fd0afdc64f51516d4ae3d9437f2631067b3ddc
+---
+# Matter dossier
+
+## Matter summary
+
+A customer reports an unauthorized transfer by phone, but Mosaic Relay's procedures ask them to submit a written statement within 10 business days. Can Mosaic Relay delay the investigation or provisional credit until it receives the written statement?
+
+## Decision question
+
+A customer reports an unauthorized transfer by phone, but Mosaic Relay's procedures ask them to submit a written statement within 10 business days. Can Mosaic Relay delay the investigation or provisional credit until it receives the written statement?
+
+## Material facts
+
+- A customer reported an unauthorized transfer by phone.
+- Mosaic Relay's procedures ask the customer to submit a written statement within 10 business days.
+- The question is whether the investigation or provisional credit can be delayed until the written statement is received.
+- What type of account or transfer is involved in this unauthorized-transfer report? — Consumer account (individual customer's own funds)
+
+## Assumptions
+
+- The unauthorized transfer relates to a Mosaic Relay payment product or money-movement service
+- The 10-business-day written-statement procedure is an internal Mosaic Relay policy rather than a statutory requirement
+- The unauthorized transfer relates to a Mosaic Relay payment product or money-movement service.
+- The 10-business-day written-statement procedure is an internal Mosaic Relay policy rather than a statutory requirement.
+- The oral phone report constitutes a valid Regulation E error notice that starts the investigation clock.
+
+## Issues and workstreams
+
+- Whether delaying the investigation or provisional credit until a written statement is received complies with Regulation E / EFTA error-resolution and provisional-credit timing rules (12 CFR 1005.11).
+- Whether the 10-business-day written-statement requirement is permissible or conflicts with the Regulation E investigation/provisional-credit deadlines, given that an oral report starts the clock.
+- Whether Mosaic Relay's role as a payment-infrastructure provider (not a bank) affects which entity bears the Regulation E error-resolution obligation.
+
+## Open questions
+
+- Which payment rail or product is involved (card, ACH, wire, payout).
+- Where the 10-business-day written-statement requirement comes from (internal policy, contract, or network/regulatory rule).
+- Whether Mosaic Relay is the institution obligated under Regulation E or acts through a partner/issuing bank.
+
+## Research and source support
+
+Research has not been added yet.
+
+## Options or working recommendation
+
+No recommendation has been drafted yet.
+
+## Next counsel action
+
+Review the working ask and answer the next material question.
+
+## Work product links
+
+No work product yet.

@@ -39,11 +39,14 @@ export function matterAction(detail: MatterDetail, hasDraft: boolean): MatterAct
       : { id: "draft_work_product", category: "Work action", label: "Draft work product", detail: "Create the output for the chosen path." };
   }
   if (detail.status === "respond") {
+    if (!detail.current_work_product_final_path) {
+      return { id: "review_draft", category: "Work action", label: "Review draft", detail: "Finalize the current draft before approval is available." };
+    }
     if (!detail.response_approved_at) {
       return { id: "approve_response", category: "Approval", label: "Approve response", detail: "Give permission to use or send this work product." };
     }
     if (!detail.response_sent_at) {
-      return { id: "mark_as_sent", category: "Delivery", label: "Mark as sent", detail: "Record that the approved response was delivered." };
+      return { id: "mark_as_sent", category: "Delivery", label: "Record manual delivery", detail: "Record delivery outside Themis.ai. This does not send or contact anyone." };
     }
     const requiredOpen = detail.work_items.some(
       (item) => Boolean(item.required) && !["done", "closed"].includes(item.status),
@@ -62,4 +65,40 @@ export function matterAction(detail: MatterDetail, hasDraft: boolean): MatterAct
 
 export function lifecycleActionNeedsDirectMutation(action: MatterActionId): action is "approve_response" | "mark_as_sent" | "close_matter" {
   return action === "approve_response" || action === "mark_as_sent" || action === "close_matter";
+}
+
+/**
+ * Present one backend-derived state sentence when the stage and next actor both
+ * matter. This keeps a ready stage from looking contradictory when assignment
+ * or active agent work still determines the immediate next action.
+ */
+export function workflowStateExplanation(detail: MatterDetail): string {
+  const stage = {
+    intake: "Just came in",
+    research: "Being researched",
+    explore: "Waiting on your judgment",
+    generate: "Being drafted",
+    respond: "Ready to send",
+    closed: "Closed",
+  }[detail.status];
+  const nextAction = detail.work_state.next_action.trim() || "Review the matter.";
+  const workItem = detail.work_items.find((item) => item.work_item_id === detail.work_state.next_work_item_id);
+
+  if (["queued", "running"].includes(detail.work_state.execution_state)) {
+    return `Stage: ${stage}. Themis.ai is working now. Next after it finishes: ${nextAction}`;
+  }
+  if (detail.work_state.next_actor === "unassigned") {
+    const subject = workItem?.title ? ` for “${workItem.title}”` : "";
+    return `Stage: ${stage}. Assign an owner${subject} before the next action: ${nextAction}`;
+  }
+  if (detail.work_state.next_actor === "named_owner") {
+    return `Stage: ${stage}. ${detail.work_state.next_owner || "The assigned owner"} must act next: ${nextAction}`;
+  }
+  if (detail.work_state.next_actor === "themis") {
+    return `Stage: ${stage}. Themis.ai can act next: ${nextAction}`;
+  }
+  if (detail.work_state.next_actor === "you") {
+    return `Stage: ${stage}. You act next: ${nextAction}`;
+  }
+  return `Stage: ${stage}. Next action: ${nextAction}`;
 }

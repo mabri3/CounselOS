@@ -20,7 +20,12 @@ def list_decisions(
 
 @router.post("", status_code=201)
 def record_decision(payload: DecisionCreate, context: AppContext = Depends(get_context)):
-    return context.decisions.record(payload)
+    try:
+        return context.decisions.record(payload)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @router.get("/{decision_id}")

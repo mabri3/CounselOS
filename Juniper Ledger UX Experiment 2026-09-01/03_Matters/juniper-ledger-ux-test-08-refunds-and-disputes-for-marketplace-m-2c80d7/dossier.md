@@ -1,0 +1,93 @@
+---
+matter_id: MAT-20260902-2c80d7
+record_type: dossier
+editable: true
+source_revision: 03_Matters/juniper-ledger-ux-test-08-refunds-and-disputes-for-marketplace-m-2c80d7/dossier-revisions/DOS-20260902-02bcd6.md
+updated_at: '2026-09-02T07:35:26+00:00'
+content_hash: c3ed08f46f6ccd58c30c414c4535d3a3bc2170c3288c9736d619261560569a8e
+---
+# Matter dossier
+
+## Matter summary
+
+Juniper Ledger wants to launch a unified refunds and disputes console for merchants using its payment-acceptance APIs, letting merchants issue refunds, upload dispute evidence, accept liability, or contest claims. Juniper Ledger would route messages to processors and card networks (Visa and Mastercard only), show status in the merchant dashboard, and debit merchants for valid adjustments. The merchant of record is mixed depending on the merchant/product, and some merchants sell digital goods, subscriptions, and services with delayed delivery. Product needs legal guidance before a planned launch next quarter (within ~3 months) on allocation of duties and liability, required communications, refund timing and practices, record retention, and minimum API and operational controls.
+
+## Decision question
+
+Before launching the refunds and disputes console next quarter, what duties and liability should be allocated among merchants, buyers, Juniper Ledger, the sponsor bank, processors, and card networks; what consumer and merchant communications are required; what refund timing and practices (including provisional credits) are permissible; what records must be retained; and what minimum API and operational controls must be in place to avoid network-rule violations, consumer-protection exposure, and unresolved liability for missed deadlines?
+
+## Material facts
+
+- Juniper Ledger wants to provide a unified refunds and disputes console for merchants that use its payment-acceptance APIs.
+- The proposed flow would let a merchant issue a full or partial refund, upload evidence for a card dispute, accept liability, or contest a claim.
+- Juniper Ledger would route messages to the processor and card network, show status in the merchant dashboard, and debit the merchant for valid adjustments.
+- Merchants, their buyers, Juniper Ledger, the sponsor bank, processors, and card networks would act at different stages.
+- Some merchants sell digital goods, subscriptions, and services with delayed delivery.
+- Product has not determined who must send notices to buyers, how evidence is authenticated, how deadlines are calculated across time zones, or whether Juniper Ledger may make provisional credits.
+- Product has not resolved liability when Juniper Ledger's API or a processor causes a missed deadline.
+- What is the target launch date or timing for the refunds and disputes console? — Next quarter (within ~3 months)
+- Target launch for the refunds and disputes console is next quarter (within ~3 months).
+- Who is the merchant of record for the transactions in the refunds/disputes console? — Mixed — depends on the merchant/product
+- When does the business need the legal answer? — Before a planned launch
+- Juniper Ledger wants to provide a unified refunds and disputes console for merchants using its payment-acceptance APIs.
+- The flow lets a merchant issue a full or partial refund, upload card-dispute evidence, accept liability, or contest a claim.
+- Juniper Ledger routes messages to the processor and card network, shows status in the merchant dashboard, and debits the merchant for valid adjustments.
+- Merchants, buyers, Juniper Ledger, the sponsor bank, processors, and card networks act at different stages.
+- The business needs the legal answer before a planned launch.
+- The merchant of record is mixed — it depends on the merchant/product.
+- Which card networks and processors are in scope for the refunds/disputes console? — Visa and Mastercard only: Multiple processors
+- The console is in scope for Visa and Mastercard only, across multiple processors.
+- Does Juniper Ledger contemplate making provisional credits to buyers before a dispute is resolved? — Undecided — we want legal guidance on whether it's permissible
+- Whether Juniper Ledger may make provisional credits to buyers before a dispute is resolved is undecided; legal guidance is requested on permissibility.
+- Who currently owns the obligation to send notices to buyers about refunds and disputes? — Mixed — depends on the merchant/product
+- Who currently owns the obligation to send notices to buyers about refunds and disputes is mixed — depends on the merchant/product.
+
+## Assumptions
+
+- Juniper Ledger operates as a fintech without a banking charter, relying on sponsor bank Cedar Harbor Bank, N.A. for deposit and payment services, so card-network and sponsor-bank program rules will govern much of the dispute mechanics.
+- The console is a product launch for merchants using Juniper Ledger's payment-acceptance APIs (card acceptance).
+- Juniper Ledger operates as a payment facilitator / marketplace model for at least some merchants, given the mixed merchant-of-record answer.
+- Visa and Mastercard network dispute timelines and evidence rules apply to the console.
+- Merchant of record is mixed, so the console must support both merchant-of-record and payment-facilitator/marketplace models without assuming a single liability or notice model.
+- Visa and Mastercard network rules govern dispute timelines and evidence requirements; multiple processors require consistent routing and deadline tracking across integrations.
+- Evidence authentication method for card disputes is not yet determined; will need to align with Visa/Mastercard evidence requirements.
+- Deadline calculation across time zones is not yet determined; will need a defined reference-timezone and cut-off policy.
+- Liability for missed deadlines caused by Juniper Ledger's API or a processor is not yet resolved; will need contractual and operational allocation.
+- Mixed merchant-of-record and buyer-notice ownership means the console must support both merchant-of-record and payment-facilitator/marketplace models.
+
+## Issues and workstreams
+
+- Allocation of duties and liability across merchant, buyer, Juniper Ledger, sponsor bank, processor, and card network
+- Required consumer and merchant communications (who sends notices to buyers, and when)
+- Permissible refund timing and practices (provisional credits, full vs partial refunds, digital goods/subscriptions/delayed delivery)
+- Record-retention requirements for refunds and disputes
+- Minimum API and operational controls for launch
+- Evidence authentication for card disputes
+- Deadline calculation across time zones and liability for missed deadlines caused by Juniper Ledger's API or a processor
+
+## Open questions
+
+- **Visa and Mastercard dispute timelines and evidence requirements:** What are the specific cardholder dispute windows, issuer chargeback deadlines, merchant representment deadlines, pre-arbitration/arbitration stages, and reason-code-specific compelling-evidence standards under current Visa Core Rules / Visa Claims Resolution and Mastercard Chargeback Guide / Mastercard Standards? (Not resolved by supplied materials.)
+- **Merchant-of-record and notice obligations:** For each merchant/product configuration, who is the merchant of record, and who bears the obligation to send refund and dispute notices to buyers — the merchant, Juniper Ledger, or both?
+- **Provisional credits:** May Juniper Ledger make provisional credits to buyers before a dispute is resolved, and if so, under what conditions and with what recourse against the merchant?
+- **Deadline calculation and missed-deadline liability:** How are dispute and representment deadlines calculated across time zones, and who bears liability when Juniper Ledger's API or a processor causes a missed deadline?
+- **Acquirer/processor agreement terms:** What do the sponsor bank and processor agreements require regarding dispute handling, evidence submission, timing, and indemnification?
+
+## Research and source support
+
+Latest review: `03_Matters/juniper-ledger-ux-test-08-refunds-and-disputes-for-marketplace-m-2c80d7/research/RES-20260902-68bcf6.md`
+
+- Internal support: **Facts** — Known Facts Juniper Ledger wants to provide a unified refunds and disputes console for merchants that use its payment-acceptance APIs. The proposed flow would let a merchant issue a full or partial…
+- Supplied source: **Supplied public legal research** — [disclaim] served index is stale: retrieval ran against a lens built from corpus a9e9a48681d1, but this answer cites 6550e407952a — rebuild the lens BOTTOM LINE — The question cannot be answered from…
+
+## Options or working recommendation
+
+No recommendation has been drafted yet.
+
+## Next counsel action
+
+Review the working ask and answer the next material question.
+
+## Work product links
+
+No work product yet.

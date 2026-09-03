@@ -220,6 +220,7 @@ h3 { font: 600 17px var(--serif); margin-bottom: 0; }
 .text-input:focus, .select-input:focus { border-color: var(--ink); }
 textarea.text-input { min-height: 90px; resize: vertical; line-height: 1.6; }
 textarea.text-input.prose { font: 400 15.5px/1.7 var(--serif); padding: 14px 16px; }
+.watch-question-input:focus::placeholder { color: transparent; }
 
 .switch {
   position: relative; width: 38px; height: 22px; border-radius: 11px;
@@ -728,6 +729,11 @@ textarea.text-input.prose { font: 400 15.5px/1.7 var(--serif); padding: 14px 16p
   padding: 13px 15px 14px;
 }
 .assistant-message > .agent-label { margin-bottom: 9px; color: var(--agent); }
+.intake-turn-history { border: 1px solid var(--line-soft); border-radius: 8px; background: var(--rail); }
+.intake-turn-history > summary { display: flex; flex-direction: column; gap: 5px; padding: 10px 12px; cursor: pointer; font: 500 13px/1.45 var(--sans); color: var(--ink-3); }
+.intake-turn-history > summary::marker { color: var(--agent); }
+.intake-turn-history[open] > summary { border-bottom: 1px solid var(--line-soft); }
+.intake-turn-history > .bubble-agent { padding: 12px; }
 .bubble-agent { min-width: 0; }
 .bubble-agent p { margin: 0 0 9px; font: 400 16px/1.68 var(--serif); color: var(--ink-2); text-wrap: pretty; }
 .bubble-agent > :last-child { margin-bottom: 0; }
@@ -1423,7 +1429,6 @@ label.field-block, .skill-form-grid > label { display: block; }
 .revision-delete { text-decoration: line-through 2px; background: color-mix(in srgb, var(--revision-color) 9%, transparent); }
 .revision-comment { color: inherit; background: var(--attention-tint); border-bottom: 2px solid var(--attention); cursor: pointer; }
 .revision-insert[data-author="__hidden__"] { display: none; }
-.revision-text::after { content: attr(data-author); font: 500 9px var(--sans); vertical-align: super; margin-left: 2px; }
 .revision-comment::after, .revision-insert[data-author="__hidden__"]::after { content: none; }
 .comment-anchor-button { display: block; width: 100%; padding: 0; border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; }
 .author-popover { display: flex; gap: 6px; padding: 6px; border: 1px solid var(--line); border-radius: 7px; background: var(--raised); }

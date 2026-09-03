@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+import logging
 from datetime import UTC, datetime, timedelta
 
 from pydantic import ValidationError
@@ -11,6 +12,9 @@ from app.models.awareness import (
     ProviderScanResult, Scan, ScanMode, ScanResult, Watch,
 )
 from app.utils.ids import new_id
+
+
+logger = logging.getLogger(__name__)
 
 
 class WatchScanService:
@@ -56,7 +60,15 @@ class WatchScanService:
                 "status": "failed", "warnings": [self._warning("Outbound query validation failed", exc)],
                 "completed_at": datetime.now(UTC),
             })
-            return ScanResult(scan=self.briefing.update_scan(failed))
+            saved = self.briefing.update_scan(failed)
+            try:
+                await self.index.rebuild_async()
+            except Exception as rebuild_exc:
+                logger.warning("Awareness index rebuild failed: %s", type(rebuild_exc).__name__)
+                saved = self._append_terminal_warning(
+                    saved, self._warning("Awareness index rebuild failed", rebuild_exc),
+                )
+            return ScanResult(scan=saved)
 
         scan = self.briefing.append_scan(self._running_scan(watch, mode, outbound))
         provider_ids = ["native", "polaris"] if watch.provider == "both" else [watch.provider]
@@ -132,8 +144,9 @@ class WatchScanService:
         saved = self.briefing.update_scan(terminal)
         self._advance_watch(saved, output_checkpoints)
         try:
-            self.index.rebuild()
+            await self.index.rebuild_async()
         except Exception as exc:
+            logger.warning("Awareness index rebuild failed: %s", type(exc).__name__)
             saved = self._append_terminal_warning(saved, self._warning("Awareness index rebuild failed", exc))
         return ScanResult(scan=saved, preview_items=preview_items, preview_packets=preview_packets)
 
@@ -275,6 +288,7 @@ class WatchScanService:
 
     @staticmethod
     def _warning(prefix, exc):
+        logger.warning("Watch scan step failed: %s", type(exc).__name__)
         return f"{prefix}: {type(exc).__name__}: {exc}"
 
     @staticmethod

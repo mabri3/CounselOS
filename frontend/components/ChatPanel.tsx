@@ -11,19 +11,14 @@ import SkillCommandMenu from "@/components/SkillCommandMenu";
 import LinkifiedText from "@/components/LinkifiedText";
 import UploadIntentCard from "@/components/UploadIntentCard";
 import { getChatRun, getConversation, getConversations, getSkills, recoverIntakeQuestion, retryChatRun, saveWorkProductDraft, startChatRun, uploadDocuments } from "@/lib/api";
-import { chatAgentId, chatDraftStorageKey, chatRunStateLabel, chatRunStorageKey, historicalQuestionStates, legacyChatDraftStorageKey, legacyChatRunStorageKey, mergeChatMessages, needsIntakeQuestionRecovery, pendingChatRunId, rememberChatRun, remainingComposerValue, safeChatFailureDetail, shouldShowChatRunStatus } from "@/lib/chatRunLogic";
+import { chatAgentId, chatDraftStorageKey, chatFailureGuidance, chatProgressLabel, chatRunStateLabel, chatRunStorageKey, chatSuggestions, durableChatProgress, historicalQuestionStates, intakeRecoveryKey, legacyChatDraftStorageKey, legacyChatRunStorageKey, mergeChatMessages, needsIntakeQuestionRecovery, pendingChatRunId, rememberChatRun, remainingComposerValue, safeChatFailureDetail, shouldCompactIntakeTurn, shouldShowChatRunStatus } from "@/lib/chatRunLogic";
 import { legacyQuestionModeStorageKey, questionModeStorageKey } from "@/lib/chatCardLogic";
 import { skillBuilderGoal } from "@/lib/skills";
-import { mutationFailureMessages, mutationOutcome } from "@/lib/matterBrief";
-import type { AppliedSkillSummary, AttachmentReference, CardAction, ChatCard, ChatRun, QuestionMode, SkillDefinition, ToolTrace } from "@/lib/types";
+import type { AppliedSkillSummary, AttachmentReference, CardAction, ChatCard, ChatRun, OperationResult, QuestionMode, SkillDefinition, ToolTrace } from "@/lib/types";
 
-type Message = { message_id?: string; role: "user" | "assistant"; content: string; trace?: ToolTrace[]; cards?: ChatCard[]; attachments?: AttachmentReference[]; applied_skills?: AppliedSkillSummary[]; card_action?: CardAction | null };
+type ChatOperationResult = OperationResult & { proposal?: Record<string, unknown> };
+type Message = { message_id?: string; role: "user" | "assistant"; content: string; trace?: ToolTrace[]; cards?: ChatCard[]; attachments?: AttachmentReference[]; applied_skills?: AppliedSkillSummary[]; card_action?: CardAction | null; operation_results?: ChatOperationResult[] };
 
-const SUGGESTIONS = [
-  "Compare both paths",
-  "Which other matters does this touch?",
-  "What would change your view?",
-];
 const SHOW_AGENT_TRACES = process.env.NEXT_PUBLIC_SHOW_AGENT_TRACES === "true";
 
 /**
@@ -48,6 +43,7 @@ export default function ChatPanel({
   lawyerAuthor,
   onReviewAuthorChange,
   currentWorkProductDraftPath,
+  decisionOptions = [],
 }: {
   matterId: string;
   matterTitle: string;
@@ -65,6 +61,7 @@ export default function ChatPanel({
   lawyerAuthor: string;
   onReviewAuthorChange: (name: string) => void;
   currentWorkProductDraftPath?: string | null;
+  decisionOptions?: string[];
 }) {
   const router = useRouter();
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -86,8 +83,10 @@ export default function ChatPanel({
   const [savedAnswerPaths, setSavedAnswerPaths] = useState<Record<string, string>>({});
   const [savedAnswerNotices, setSavedAnswerNotices] = useState<Record<string, string>>({});
   const [saveAnswerErrors, setSaveAnswerErrors] = useState<Record<string, string>>({});
-  const completedRuns = useRef(new Set<string>());
-  const refreshedRuns = useRef(new Set<string>());
+  const [intakeRecoveryNotice, setIntakeRecoveryNotice] = useState("");
+  const [intakeRecoveryRevision, setIntakeRecoveryRevision] = useState(0);
+  const [pendingCardAction, setPendingCardAction] = useState<CardAction | null>(null);
+  const terminalRuns = useRef(new Set<string>());
   const intakeRecoveryAttempts = useRef(new Set<string>());
 
   useEffect(() => {
@@ -159,12 +158,12 @@ export default function ChatPanel({
   const finishRun = useCallback(async (run: ChatRun) => {
     setActiveRun(run);
     setWaiting(false);
-    if (run.state !== "completed" || completedRuns.current.has(run.run_id)) {
+    if (terminalRuns.current.has(run.run_id)) {
       setBusy(false);
       return;
     }
+    terminalRuns.current.add(run.run_id);
     setBusy(false);
-    completedRuns.current.add(run.run_id);
     setRefreshingRun(true);
     if (run.response?.review_author) onReviewAuthorChange(run.response.review_author);
     const nextConversationId = run.response?.conversation_id ?? run.conversation_id;
@@ -177,31 +176,29 @@ export default function ChatPanel({
       } catch {
         if (run.response) setMessages((current) => current.some((item) => item.role === "assistant" && item.content === run.response?.reply)
           ? current
-          : [...current, { role: "assistant", content: run.response!.reply, trace: run.response!.trace, cards: run.response!.cards, applied_skills: run.response!.applied_skills }]);
+          : [...current, { role: "assistant", content: run.response!.reply, trace: run.response!.trace, cards: run.response!.cards, applied_skills: run.response!.applied_skills, operation_results: run.response!.operation_results }]);
       }
-    } else if (run.response && !messages.some((item) => item.role === "assistant" && item.content === run.response?.reply)) {
-      setMessages((current) => [...current, { role: "assistant", content: run.response!.reply, trace: run.response!.trace, cards: run.response!.cards, applied_skills: run.response!.applied_skills }]);
+    } else if (run.response) {
+      setMessages((current) => current.some((item) => item.role === "assistant" && item.content === run.response?.reply)
+        ? current
+        : [...current, { role: "assistant", content: run.response!.reply, trace: run.response!.trace, cards: run.response!.cards, applied_skills: run.response!.applied_skills, operation_results: run.response!.operation_results }]);
     }
     window.localStorage.removeItem(chatRunStorageKey(matterId, run.conversation_id));
     window.localStorage.removeItem(chatRunStorageKey(matterId));
     window.localStorage.removeItem(legacyChatRunStorageKey(matterId, run.conversation_id));
     window.localStorage.removeItem(legacyChatRunStorageKey(matterId));
-    if (!refreshedRuns.current.has(run.run_id)) {
-      refreshedRuns.current.add(run.run_id);
-      try {
-        await onRefresh();
-      } finally {
-        setRefreshingRun(false);
-        setBusy(false);
-      }
-      return;
+    try {
+      await onRefresh();
+    } catch {
+      setHistoryError("The request finished, but the matter did not refresh. Reload the page to see current state.");
+    } finally {
+      setRefreshingRun(false);
+      setBusy(false);
     }
-    setRefreshingRun(false);
-    setBusy(false);
-  }, [matterId, messages, onConversationChange, onRefresh, onReviewAuthorChange]);
+  }, [matterId, onConversationChange, onRefresh, onReviewAuthorChange]);
 
   useEffect(() => {
-    if (!activeRun || !waiting || !["queued", "running"].includes(activeRun.state)) return;
+    if (!activeRun || !["queued", "running"].includes(activeRun.state)) return;
     let cancelled = false;
     const check = async () => {
       try {
@@ -212,13 +209,12 @@ export default function ChatPanel({
       } catch {
         if (!cancelled) setHistoryError("Themis.ai could not finish this request.");
         setWaiting(false);
-        setBusy(false);
       }
     };
     void check();
     const timer = window.setInterval(() => void check(), 2000);
     return () => { cancelled = true; window.clearInterval(timer); };
-  }, [activeRun?.run_id, activeRun?.state, finishRun, matterId, waiting]);
+  }, [activeRun?.run_id, activeRun?.state, finishRun, matterId]);
 
   useEffect(() => {
     if (!seed?.text) return;
@@ -233,18 +229,24 @@ export default function ChatPanel({
   useEffect(() => {
     if (loadingHistory) return;
     const runId = pendingChatRunId(window.localStorage, matterId, conversationId) ?? initialRunId;
-    if (!runId || activeRun?.run_id === runId || completedRuns.current.has(runId)) return;
+    if (!runId || activeRun?.run_id === runId || terminalRuns.current.has(runId)) return;
     setBusy(true);
     setWaiting(true);
-    void getChatRun(matterId, runId).then(async (run) => {
+    let cancelled = false;
+    let timer: number | undefined;
+    const reconnectSavedRun = () => void getChatRun(matterId, runId).then(async (run) => {
+      if (cancelled) return;
+      setHistoryError("");
       rememberChatRun(window.localStorage, matterId, run);
       setActiveRun(run);
       if (!["queued", "running"].includes(run.state)) await finishRun(run);
     }).catch(() => {
-      setHistoryError("Themis.ai could not finish this request.");
-      setBusy(false);
-      setWaiting(false);
+      if (cancelled) return;
+      setHistoryError("Themis.ai could not reconnect to the saved request. The server may still be working, so sending another request is blocked.");
+      timer = window.setTimeout(reconnectSavedRun, 2000);
     });
+    reconnectSavedRun();
+    return () => { cancelled = true; window.clearTimeout(timer); };
   }, [activeRun?.run_id, conversationId, finishRun, initialRunId, loadingHistory, matterId]);
 
   useEffect(() => {
@@ -253,10 +255,16 @@ export default function ChatPanel({
       || (initialConversationId && conversationId !== initialConversationId)
       || !needsIntakeQuestionRecovery(intakeActive, messages)
     ) return;
-    const latest = messages.at(-1);
-    const recoveryKey = `${conversationId}:${latest?.message_id ?? messages.length}`;
-    if (intakeRecoveryAttempts.current.has(recoveryKey)) return;
+    const recoveryKey = intakeRecoveryKey(conversationId, messages);
+    if (!recoveryKey) return;
+    if (intakeRecoveryAttempts.current.has(recoveryKey)) {
+      setIntakeRecoveryNotice(
+        "The next intake question could not be restored automatically. Send a message to continue.",
+      );
+      return;
+    }
     intakeRecoveryAttempts.current.add(recoveryKey);
+    setIntakeRecoveryNotice("");
     setBusy(true);
     setWaiting(true);
     setHistoryError("");
@@ -267,10 +275,21 @@ export default function ChatPanel({
       if (!["queued", "running"].includes(run.state)) await finishRun(run);
     }).catch(() => {
       setHistoryError("Themis.ai could not restore the next intake question.");
+      setIntakeRecoveryNotice(
+        "The next intake question could not be restored automatically. Send a message to continue.",
+      );
       setBusy(false);
       setWaiting(false);
     });
-  }, [busy, conversationId, finishRun, initialConversationId, intakeActive, loadingHistory, matterId, messages, refreshingRun]);
+  }, [busy, conversationId, finishRun, initialConversationId, intakeActive, intakeRecoveryRevision, loadingHistory, matterId, messages, refreshingRun]);
+
+  function retryIntakeQuestion() {
+    if (!conversationId) return;
+    const recoveryKey = intakeRecoveryKey(conversationId, messages);
+    if (recoveryKey) intakeRecoveryAttempts.current.delete(recoveryKey);
+    setIntakeRecoveryNotice("");
+    setIntakeRecoveryRevision((value) => value + 1);
+  }
 
   async function submit(
     text: string,
@@ -304,6 +323,7 @@ export default function ChatPanel({
         review_author: reviewAuthor,
         lawyer_author: lawyerAuthor,
       });
+      setPendingCardAction(cardAction ?? null);
       setActiveRun(run);
       setInput((current) => remainingComposerValue(current, previousInput, consumeInput, ""));
       setAttachments((current) => remainingComposerValue(current, previousAttachments, consumeAttachments, []));
@@ -372,6 +392,7 @@ export default function ChatPanel({
     setBusy(true); setWaiting(true); setHistoryError("");
     try {
       const next = await retryChatRun(matterId, activeRun.run_id);
+      terminalRuns.current.delete(next.run_id);
       setActiveRun(next);
       setWaiting(["queued", "running"].includes(next.state));
       rememberChatRun(window.localStorage, matterId, next);
@@ -424,26 +445,47 @@ export default function ChatPanel({
       && activeRun?.run_id === initialRunId
       && ["queued", "running"].includes(activeRun.state),
   );
+  const latestOperationResults = new Map<string, ChatOperationResult>();
+  for (const message of messages) {
+    for (const result of message.operation_results ?? []) {
+      latestOperationResults.set(result.source_action_key ?? result.action, result);
+    }
+  }
+  const currentEligibleAssistantIndex = intakeActive
+    ? -1
+    : messages.reduce(
+      (latest, message, index) => isEligibleWorkProductResponse(message) ? index : latest,
+      -1,
+    );
+  const activeRunHasSavedWork = Boolean(
+    activeRun?.response?.changed_paths.length
+    || activeRun?.response?.operation_results.some((result) => result.status === "changed"),
+  );
 
   return (
     <div className="chat-panel">
       {historyError ? <p className="error chat-history-status">{historyError}</p> : null}
+      {intakeRecoveryNotice ? <div className="chat-history-status" role="status">{intakeRecoveryNotice} <button className="btn tiny quiet" disabled={busy} onClick={retryIntakeQuestion} type="button">Retry intake question</button></div> : null}
       {loadingHistory ? <p className="chat-history-status">Loading saved chat…</p> : null}
-      {activeRun && shouldShowChatRunStatus(activeRun.state) ? (
-        <section className={`chat-card ${activeRun.state === "failed" || activeRun.state === "interrupted" ? "wash-failure" : "wash-agent"}`} role="status">
+      {activeRun && (shouldShowChatRunStatus(activeRun.state) || activeRun.finished_at) ? (
+        <section className={`chat-card ${activeRun.state === "failed" || activeRun.state === "interrupted" ? "wash-failure" : activeRun.state === "completed" ? "wash-healthy" : "wash-agent"}`} role="status">
           <div className="chat-card-kicker">Themis.ai · {chatRunStateLabel(activeRun.state)}</div>
           {activeRun.state === "failed" || activeRun.state === "interrupted" ? (
             <>
-              <div className="chat-card-summary">Themis.ai could not finish this request.</div>
+              <div className="chat-card-summary">{activeRunHasSavedWork ? "Partial work was saved. Review it, then continue with the next matter action." : "Themis.ai could not finish this request."}</div>
+              <div className="chat-card-detail">{chatFailureGuidance(activeRun.failure_class)}</div>
               {safeChatFailureDetail(activeRun.failure_detail) ? <div className="chat-card-detail">{safeChatFailureDetail(activeRun.failure_detail)}</div> : null}
-              {activeRun.response?.reply ? <div className="chat-card-detail">{mutationFailureMessages(activeRun.response.trace).map((summary) => <div className="error" role="alert" key={summary}><strong>Workspace change failed</strong> — {summary}</div>)}<strong>Saved response</strong><ReactMarkdown remarkPlugins={[remarkGfm]}>{activeRun.response.reply}</ReactMarkdown></div> : null}
+              {activeRun.response?.reply ? <div className="chat-card-detail"><strong>Saved response</strong><ReactMarkdown remarkPlugins={[remarkGfm]}>{activeRun.response.reply}</ReactMarkdown></div> : null}
             </>
-          ) : <div className="chat-card-summary">{readingInitialRequest ? "Themis.ai is reading your request…" : activeRun.status}</div>}
+          ) : activeRun.state === "completed" ? <div className="chat-card-summary">{activeRun.status} Saved work and the matter state are current.</div>
+            : <div className="chat-card-summary">{readingInitialRequest ? "Themis.ai is reading your request…" : durableChatProgress(activeRun)}</div>}
           <div className="chat-card-actions">
             {["failed", "interrupted"].includes(activeRun.state) ? <button className="btn tiny quiet" disabled={busy} onClick={() => void retryRun()}>Retry</button> : null}
-            {waiting && ["queued", "running"].includes(activeRun.state) ? <button className="btn tiny quiet" onClick={() => { setWaiting(false); setBusy(false); }}>Stop showing progress</button> : null}
+            {waiting && ["queued", "running"].includes(activeRun.state) ? <button className="btn tiny quiet" onClick={() => setWaiting(false)} type="button">Continue in background</button> : null}
+            {!waiting && ["queued", "running"].includes(activeRun.state) ? <button className="btn tiny quiet" onClick={() => setWaiting(true)} type="button">Show progress</button> : null}
           </div>
-          {waiting && ["queued", "running"].includes(activeRun.state) ? <div className="chat-card-detail">Server work continues if you stop waiting.</div> : null}
+          {!waiting && ["queued", "running"].includes(activeRun.state) ? <div className="chat-card-detail">Progress is hidden on this page. Server work continues.</div> : null}
+          {waiting && elapsedSeconds >= 15 && ["queued", "running"].includes(activeRun.state) ? <div className="chat-card-detail">Last durable step: {durableChatProgress(activeRun)} You can leave this page. Server work continues.</div> : null}
         </section>
       ) : null}
       {messages.length ? (
@@ -452,8 +494,18 @@ export default function ChatPanel({
             const messageKey = message.message_id ?? String(index);
             const questionIds = message.cards?.flatMap((card) => card.type === "question" ? [card.question_id] : []) ?? [];
             const questionStates = historicalQuestionStates(messages, index, questionIds, intakeActive);
-            const mutationFailures = mutationFailureMessages(message.trace);
-            const mutationResult = mutationOutcome(message.trace, message.cards);
+            const currentOperationResults = message.operation_results?.filter(
+              (result) => latestOperationResults.get(result.source_action_key ?? result.action) === result,
+            );
+            const questionCards = message.cards?.filter((card) => card.type === "question") ?? [];
+            const compactIntakeTurn = message.role === "assistant" && shouldCompactIntakeTurn(
+              questionCards,
+              questionStates,
+              message.content,
+              Boolean(currentOperationResults?.some((result) => ![
+                "record_intake_answer", "update_matter_intake",
+              ].includes(result.operation))),
+            );
             return message.role === "user" ? (
               <UserMessage
                 appliedSkill={messages[index + 1]?.role === "assistant" ? messages[index + 1].applied_skills?.[0] : undefined}
@@ -465,15 +517,30 @@ export default function ChatPanel({
               <div className="assistant-message" key={messageKey}>
                 {message.applied_skills?.map((skill) => <div className="applied-skill-label" key={skill.skill_id}>Applied skill: {skill.name}</div>)}
                 <div className="agent-label">Themis.ai</div>
-                <div className="bubble-agent">
-                  {mutationFailures.map((summary) => <div className="error" role="alert" key={summary}><strong>Workspace change failed</strong> — {summary}</div>)}
+                {compactIntakeTurn ? (
+                  <details className="intake-turn-history">
+                    <summary>
+                      {questionCards.map((card) => {
+                        const state = questionStates[card.question_id];
+                        const label = state.state === "answered" ? "Answered" : state.state === "stopped" ? "Stopped" : "Superseded";
+                        const savedValues = state.values.map((value) => (
+                          card.choices.find((choice) => choice.value === value)?.label ?? value
+                        ));
+                        const answer = savedValues.length
+                          ? ` — ${savedValues.join(" · ")}`
+                          : state.state === "stopped" ? " — Intake stopped" : " — No answer saved";
+                        return <span key={card.question_id}>{label} · {card.text}{answer}</span>;
+                      })}
+                      <span className="text-button">Expand</span>
+                    </summary>
+                    <div className="bubble-agent">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
+                      <ChatCards cards={message.cards} currentWorkProductDraftPath={currentWorkProductDraftPath} disabled matterId={matterId} onAction={handleCardAction} onOpenDocument={onOpenDocument} onRefresh={onRefresh} operationResults={currentOperationResults} questionStates={questionStates} questionsDisabled />
+                    </div>
+                  </details>
+                ) : <div className="bubble-agent">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
-                  <ChatCards cards={message.cards} currentWorkProductDraftPath={currentWorkProductDraftPath} disabled={busy} matterId={matterId} onAction={handleCardAction} onOpenDocument={onOpenDocument} onQuestionModeChange={changeQuestionMode} onRefresh={onRefresh} questionMode={questionMode} questionStates={questionStates} showQuestionMode={intakeActive} />
-                  {mutationResult === "recorded" ? (
-                    <div className="mutation-status recorded">Workspace state change recorded</div>
-                  ) : mutationResult === "no_change" && mutationFailures.length === 0 ? (
-                    <div className="mutation-status no-change">No workspace state change recorded</div>
-                  ) : null}
+                  <ChatCards cards={message.cards} currentWorkProductDraftPath={currentWorkProductDraftPath} disabled={busy} matterId={matterId} onAction={handleCardAction} onOpenDocument={onOpenDocument} onQuestionModeChange={changeQuestionMode} onRefresh={onRefresh} operationResults={currentOperationResults} questionMode={questionMode} questionStates={questionStates} showQuestionMode={intakeActive} />
                   {SHOW_AGENT_TRACES && message.trace?.length ? (
                     <details className="chat-actions">
                       <summary>Actions taken ({message.trace.length})</summary>
@@ -494,24 +561,24 @@ export default function ChatPanel({
                     <div className="mutation-status recorded">
                       {savedAnswerNotices[messageKey]} <button className="text-button" onClick={() => onOpenDocument?.(savedAnswerPaths[messageKey])} type="button">Open draft</button>
                     </div>
-                  ) : message.content.trim().length > 80 ? (
+                  ) : index === currentEligibleAssistantIndex ? (
                     <button
-                      className="btn tiny quiet"
+                      className="btn primary compact"
                       disabled={busy || savingAnswerKey !== null}
                       onClick={() => void saveAssistantAnswer(message.content, messageKey)}
                       type="button"
                     >
-                      {savingAnswerKey === messageKey ? "Saving…" : "Save as work product"}
+                      {savingAnswerKey === messageKey ? "Saving…" : "Save current work product"}
                     </button>
                   ) : null}
-                </div>
+                </div>}
               </div>
             );
           })}
-          {busy ? (
+          {busy && waiting ? (
             <div className="agent-label" role="status">
               <span className="agent-mark" style={{ width: 12, height: 12 }} />
-              {readingInitialRequest ? "Themis.ai is reading your request…" : elapsedSeconds < 10 ? "Working…" : "Still working…"} {elapsedSeconds}s
+              {readingInitialRequest ? "Themis.ai is reading your request…" : pendingCardAction ? chatProgressLabel(pendingCardAction) : durableChatProgress(activeRun ?? { state: "running", status: "Model is working." })} {elapsedSeconds}s
             </div>
           ) : null}
         </div>
@@ -523,7 +590,7 @@ export default function ChatPanel({
         ) : null}
         <UploadIntentCard attachments={attachments} busy={busy} onClear={() => setAttachments([])} onSend={(intent) => submit(intent, undefined, attachments, false, true)} />
         <div className="composer-suggestions">
-          {SUGGESTIONS.map((suggestion) => (
+          {chatSuggestions(decisionOptions).map((suggestion) => (
             <button className="suggestion" disabled={busy} key={suggestion} onClick={() => void submit(suggestion)}>
               {suggestion}
             </button>
@@ -550,6 +617,17 @@ export default function ChatPanel({
       </div>
     </div>
   );
+}
+
+function isEligibleWorkProductResponse(message: Message): boolean {
+  const content = message.content.trim();
+  const contentWithoutHeading = content.replace(/^#{1,6}[^\S\r\n]+/u, "").trim();
+  if (message.role !== "assistant" || message.cards?.length) return false;
+  if (message.operation_results?.some((result) => (
+    result.operation === "finish_intake" || result.operation === "record_intake_answer"
+  ))) return false;
+  if (/^intake is complete\b/i.test(contentWithoutHeading) || /^(?:chat|research) (?:is |was )?(?:queued|running|complete|interrupted|stopped)\b/i.test(contentWithoutHeading)) return false;
+  return content.length > 180 && (/\n\s*\n/.test(content) || /^#{1,3}\s|^\s*[-*]\s/m.test(content));
 }
 
 function UserMessage({ content, appliedSkill, cardAction }: { content: string; appliedSkill?: AppliedSkillSummary; cardAction?: CardAction | null }) {

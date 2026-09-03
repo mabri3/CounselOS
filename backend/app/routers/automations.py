@@ -42,7 +42,10 @@ async def run_schedule(schedule_id: str, context: AppContext = Depends(get_conte
 
 @router.post("/agents", status_code=201)
 def create_agent(payload: AgentCreate, context: AppContext = Depends(get_context)):
-    return context.agents.create(**payload.model_dump())
+    try:
+        return context.agents.create(**payload.model_dump())
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
 @router.get("/agents")

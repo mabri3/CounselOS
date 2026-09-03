@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 import pytest
 
 from app.intelligence.fetch import SafeHttpFetcher, UnsafeUrlError, _Response
+from app.intelligence.native import NativeIntelligenceProvider
 from app.intelligence.outbound_policy import OutboundQueryPolicy, PublicResearchQuery
 from app.intelligence.source_support import SourceSupportService
 from app.models.awareness import (
@@ -65,6 +66,13 @@ def test_policy_checks_public_source_urls_against_corpus():
             watch_with("public_source_urls", "https://private-alias.example/public"),
             ForbiddenCorpus(terms=("PRIVATE-ALIAS",)),
         )
+
+
+def test_native_feed_rejects_xml_entities_without_expanding_them():
+    feed = """<!DOCTYPE rss [<!ENTITY injected \"private text\">]>
+    <rss><channel><item><title>&injected;</title><link>https://example.com/feed</link></item></channel></rss>"""
+
+    assert NativeIntelligenceProvider._feed(feed) == []
 
 
 def test_matter_research_uses_same_private_data_policy_as_watches():

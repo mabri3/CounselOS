@@ -3,13 +3,21 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import LinkifiedText from "@/components/LinkifiedText";
-import { dueWord, matterNextAction, matterNextOwner, riskLabel, signalCellTint, signalFor, stageLabel, STAGES } from "@/lib/design";
+import { consistencyIssueIsSafelyRepairable, consistencyIssueLabel, dueWord, matterNextAction, matterNextOwner, riskLabel, role, signalCellTint, signalFor, stageLabel, STAGES } from "@/lib/design";
 import type { Matter } from "@/lib/types";
 
 type SortKey = "stage" | "owner" | "due";
 type SortDirection = "asc" | "desc";
 
-export default function MattersTable({ matters }: { matters: Matter[] }) {
+export default function MattersTable({
+  matters,
+  onRepair,
+  repairingMatterId,
+}: {
+  matters: Matter[];
+  onRepair?: (matterId: string) => Promise<void>;
+  repairingMatterId?: string | null;
+}) {
   const [sortKey, setSortKey] = useState<SortKey>("due");
   const [direction, setDirection] = useState<SortDirection>("asc");
 
@@ -85,6 +93,20 @@ export default function MattersTable({ matters }: { matters: Matter[] }) {
               <span className="register-cell" style={{ display: "block", marginTop: 2 }}>
                 {matter.matter_type.replaceAll("_", " ")}
               </span>
+              {(matter.consistency_issues ?? []).map((issue) => (
+                <span key={issue.code} style={{ display: "block", marginTop: 6, padding: 6, background: role.attentionTint, color: role.attentionDeep }}>
+                  <strong>Consistency issue: {consistencyIssueLabel(issue)}</strong>
+                  <span style={{ display: "block", marginTop: 3 }}>{issue.summary}</span>
+                  <span style={{ display: "flex", gap: 8, marginTop: 4, flexWrap: "wrap" }}>
+                    <Link href={`/matters/${encodeURIComponent(matter.matter_id)}`}>Review matter</Link>
+                    {onRepair && consistencyIssueIsSafelyRepairable(issue) ? (
+                      <button className="btn compact" disabled={repairingMatterId === matter.matter_id} onClick={() => void onRepair(matter.matter_id)} type="button">
+                        {repairingMatterId === matter.matter_id ? "Repairing…" : "Repair safe stage mismatch"}
+                      </button>
+                    ) : null}
+                  </span>
+                </span>
+              ))}
             </span>
             <span className="register-cell" title={STAGES.find((stage) => stage.id === matter.status)?.sub}>
               <span style={{ display: "block" }}>{stageLabel(matter.status)}</span>

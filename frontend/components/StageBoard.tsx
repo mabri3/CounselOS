@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import LinkifiedText from "@/components/LinkifiedText";
-import { STAGES, isWaitingSignal, matterNextAction, matterNextOwner, role, signalFor, dueWord } from "@/lib/design";
+import { repairMatterConsistency } from "@/lib/api";
+import { STAGES, consistencyIssueIsSafelyRepairable, consistencyIssueLabel, isWaitingSignal, matterNextAction, matterNextOwner, role, signalFor, dueWord } from "@/lib/design";
 import type { Matter, StageId } from "@/lib/types";
 
 /**
@@ -19,6 +20,23 @@ export default function StageBoard({
 }) {
   const [dragId, setDragId] = useState<string | null>(null);
   const [overColumn, setOverColumn] = useState<string | null>(null);
+  const [repairing, setRepairing] = useState<string | null>(null);
+  const [repairError, setRepairError] = useState<{ matterId: string; message: string } | null>(null);
+
+  async function repair(matterId: string) {
+    setRepairing(matterId);
+    setRepairError(null);
+    try {
+      await repairMatterConsistency(matterId, "Lawyer");
+      window.location.reload();
+    } catch (caught) {
+      setRepairError({
+        matterId,
+        message: caught instanceof Error ? caught.message : "Could not repair the lifecycle stage.",
+      });
+      setRepairing(null);
+    }
+  }
 
   return (
     <div className="board">
@@ -109,9 +127,26 @@ export default function StageBoard({
                     <span>{matterNextOwner(matter)}</span>
                     <span style={{ color: due.color }}>{due.text}</span>
                   </span>
+                  {(matter.consistency_issues ?? []).map((issue) => (
+                    <div key={issue.code} style={{ marginTop: 8, padding: 8, background: role.attentionTint, color: role.attentionDeep }}>
+                      <strong>Consistency issue: {consistencyIssueLabel(issue)}</strong>
+                      <div style={{ marginTop: 3 }}>{issue.summary}</div>
+                      <div style={{ marginTop: 5, display: "flex", gap: 8, flexWrap: "wrap" }}>
+                        <Link href={`/matters/${encodeURIComponent(matter.matter_id)}`}>Review matter</Link>
+                        {consistencyIssueIsSafelyRepairable(issue) ? (
+                          <button className="btn compact" disabled={repairing === matter.matter_id} onClick={() => void repair(matter.matter_id)} type="button">
+                            {repairing === matter.matter_id ? "Repairing…" : "Repair safe stage mismatch"}
+                          </button>
+                        ) : null}
+                      </div>
+                    </div>
+                  ))}
                 </article>
               );
             })}
+            {repairError && items.some((matter) => matter.matter_id === repairError.matterId)
+              ? <span className="error">{repairError.message}</span>
+              : null}
           </section>
         );
       })}
