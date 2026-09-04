@@ -81,6 +81,7 @@ class ResearchService:
         change_stage: bool = True,
         work_item_id: str | None = None,
         resolved_provider: ResolvedAgentProvider | None = None,
+        on_packet_saved: Callable[[dict[str, Any]], None] | None = None,
     ) -> dict[str, Any]:
         matter = self.index.get_matter(matter_id)
         if not matter:
@@ -277,11 +278,18 @@ class ResearchService:
                 "correlation_id": correlation_id,
             },
         )
+        if on_packet_saved is not None:
+            on_packet_saved({
+                "path": path,
+                "public_research_status": public_status,
+                "internal_sources": len(search_result.get("internal", [])),
+                "external_sources": len(search_result.get("external", [])),
+                "model_only": model_only,
+            })
         warnings = [warning for warning in (search_result.get("warning"), analysis_warning, citation_warning) if warning]
         orientation_warning: str | None = None
         try:
             generated_summary = DossierService.section(body, "Matter summary")
-            generated_question = DossierService.section(body, "Decision question")
             generated_open_questions = DossierService.list_section(body, "Open questions")
             current_orientation = self.dossiers.orientation(matter_id)
             self.dossiers.update_orientation(
@@ -293,8 +301,7 @@ class ResearchService:
                     or matter["title"]
                 ),
                 decision_question=(
-                    generated_question
-                    or current_orientation["decision_question"]
+                    current_orientation["decision_question"]
                     or matter.get("next_action")
                     or research_question
                 ),

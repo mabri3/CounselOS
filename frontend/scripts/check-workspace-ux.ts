@@ -7,6 +7,7 @@ import { beginPendingAction, endPendingAction } from "../lib/pendingActions.ts";
 
 const form = readFileSync(new URL("../components/NewMatterForm.tsx", import.meta.url), "utf8");
 const workspace = readFileSync(new URL("../components/MatterWorkspace.tsx", import.meta.url), "utf8");
+const documentReview = readFileSync(new URL("../components/DocumentReview.tsx", import.meta.url), "utf8");
 const cards = readFileSync(new URL("../components/ChatCards.tsx", import.meta.url), "utf8");
 const cardLogic = readFileSync(new URL("../lib/chatCardLogic.ts", import.meta.url), "utf8");
 const chat = readFileSync(new URL("../components/ChatPanel.tsx", import.meta.url), "utf8");
@@ -17,7 +18,23 @@ const mattersTable = readFileSync(new URL("../components/MattersTable.tsx", impo
 const mattersPage = readFileSync(new URL("../app/matters/page.tsx", import.meta.url), "utf8");
 const matterPage = readFileSync(new URL("../app/matters/[matterId]/page.tsx", import.meta.url), "utf8");
 const companyInterview = readFileSync(new URL("../components/CompanyInterview.tsx", import.meta.url), "utf8");
+const todayChat = readFileSync(new URL("../components/TodayChat.tsx", import.meta.url), "utf8");
+const automationPanel = readFileSync(new URL("../components/AutomationPanel.tsx", import.meta.url), "utf8");
+const briefingSource = readFileSync(new URL("../lib/briefing.ts", import.meta.url), "utf8");
+const styles = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
+const designLanguage = readFileSync(new URL("../../docs/DESIGN_LANGUAGE.md", import.meta.url), "utf8");
 const modal = readFileSync(new URL("../components/RecordDecisionModal.tsx", import.meta.url), "utf8");
+const decisionsPage = readFileSync(new URL("../app/decisions/page.tsx", import.meta.url), "utf8");
+const agentsPage = readFileSync(new URL("../app/agents/page.tsx", import.meta.url), "utf8");
+const decisionFiltersSource = readFileSync(new URL("../lib/decisionFilters.ts", import.meta.url), "utf8")
+  .replace(/import type \{[^;]+\} from "\.\/types";\n/, "");
+const decisionFiltersModule = await import(`data:text/javascript;base64,${Buffer.from(ts.transpileModule(decisionFiltersSource, {
+  compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+}).outputText).toString("base64")}`) as typeof import("../lib/decisionFilters.ts");
+const matterActionsSource = matterActions.replace(/import type \{[^;]+\} from "\.\/types";\n/, "");
+const matterActionsModule = await import(`data:text/javascript;base64,${Buffer.from(ts.transpileModule(matterActionsSource, {
+  compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+}).outputText).toString("base64")}`) as typeof import("../lib/matterActions.ts");
 const matterWorkspaceSource = readFileSync(new URL("../lib/matter-workspace.ts", import.meta.url), "utf8")
   .replace(/import type \{[^;]+\} from "\.\/types";\n/, "");
 const matterWorkspaceModule = await import(`data:text/javascript;base64,${Buffer.from(ts.transpileModule(matterWorkspaceSource, {
@@ -39,7 +56,17 @@ assert.match(board, /Repair safe stage mismatch/, "the board must expose the exp
 assert.match(mattersTable, /Consistency issue:/, "the matter table must name deterministic consistency issues");
 assert.match(mattersTable, /Review matter/, "the matter table must link each consistency issue to review");
 assert.match(mattersPage, /Repair safe stage mismatch/, "the grouped matter view must expose the safe repair control");
-assert.match(design, /final_with_pre_respond_stage:\s*"Current final is before Ready to send"/, "consistency codes must have stable lawyer-facing labels");
+assert.match(mattersPage, /setMatters\(\(await getMatters\(\)\)\.matters\);\s*setLoaded\(true\);/, "matters must become loaded only after the first successful response");
+assert.doesNotMatch(mattersPage, /finally\s*\{\s*setLoaded\(true\)/, "an initial matters error must not become a loaded zero-count state");
+assert.match(mattersPage, /\{loaded \? <p>\{inFlight\} in flight, \{closed\} closed\.<\/p> : null\}/, "matter totals must stay hidden until the first successful load");
+assert.match(mattersPage, /\{loaded \? \(\s*<>\s*<div className="stat-chips"/, "matter filters must stay hidden until the first successful load");
+assert.match(mattersPage, /!loaded && !error \? <div className="loading">Loading matters…<\/div>/, "matters must show a neutral initial loading state");
+assert.match(mattersPage, /<fieldset className="segmented">\s*<legend className="sr-only">Matter view<\/legend>/, "the matter view switch must be a labelled native radio group");
+assert.equal([...mattersPage.matchAll(/name="matter-view"/g)].length, 2, "both matter view options must share one radio name");
+assert.equal([...mattersPage.matchAll(/type="radio"/g)].length, 2, "both matter view options must be native radios");
+assert.match(design, /final_with_pre_respond_stage:\s*"Current final is before Respond"/, "consistency codes must have stable lawyer-facing labels");
+assert.match(design, /id: "respond", label: "Respond"/, "the shared Respond stage must use its stable stage name");
+assert.match(designLanguage, /\| `respond` \| Respond \|/, "the design language must use the shared Respond stage name");
 assert.match(design, /approval_without_current_final:\s*"Approval is not tied to the current final"/, "approval conflicts must have a stable label");
 assert.match(design, /delivery_without_approved_artifact:\s*"Delivery has no approved artifact"/, "delivery conflicts must have a stable label");
 assert.match(design, /closed_without_required_lifecycle_fields:\s*"Closed lifecycle record is incomplete"/, "closure conflicts must have a stable label");
@@ -56,7 +83,7 @@ assert.doesNotMatch(workspace, /startResearchRun\(detail\.matter_id\s*\)/, "the 
 assert.match(workspace, /getResearchQueue\(detail\.matter_id\)/, "matter research must load the full durable queue");
 assert.match(workspace, /shouldPollResearchQueue\(researchQueue\)/, "matter research must poll queued or running work");
 assert.match(workspace, /<ResearchQueuePanel\s+items=\{researchQueue\}\s+mode="summary"/, "the overview must show the research queue summary");
-assert.match(workspace, /required open · \{optionalOpenWorkItems\.length\} optional open/, "the queue count must split required and optional work items");
+assert.match(workspace, /otherRequiredOpenCount\} required open · \{otherOptionalOpenCount\} optional open/, "the queue count must split other required and optional work items");
 assert.doesNotMatch(cards, /Finalize saved draft/, "chat work-product cards must not repeat the overview finalization action");
 assert.doesNotMatch(
   workspace,
@@ -78,6 +105,8 @@ assert.match(workspace, /const startedResearchRun = await startResearchRun/, "a 
 assert.match(workspace, /Research started in the background\. Server work continues/, "a queue-read failure after a successful start must state that work continues");
 assert.match(workspace, /setResearchQueue\(\(current\) => current\.some\(\(item\) => item\.run_id === startedResearchRun\.run_id\)/, "a queue-read failure must retain the durable active run for the next queue poll");
 assert.match(workspace, /currentControl\.id === "run_research" && researchQueueActive/, "a durable active research run must block duplicate starts");
+assert.match(documentReview, /useState<ReviewDisplayMode>\("current"\)/, "documents must open in No Markup without discarding saved redlines");
+assert.match(documentReview, /setMode\("markup"\)/, "explicit redline and tracked-change actions must still open All Markup");
 assert.match(workspace, /RecommendationPanel/, "recommendation paths must use the typed recommendation panel");
 assert.match(workspace, /const recommendationSelected = Boolean\(activePath && \[recommendationPath, recommendationState\?\.path\]/, "the active recommendation path must route separately");
 assert.match(workspace, /recommendationSelected \? recommendationState \? <RecommendationPanel[\s\S]{0,500}: <DocumentPanel/, "the recommendation route must not render DocumentPanel");
@@ -87,16 +116,24 @@ assert.match(workspace, /Review dossier update/, "a dossier projection conflict 
 assert.match(workspace, /Work saved; dossier did not refresh\./, "a projection exception must show a refresh failure without claiming a revision exists");
 assert.match(workspace, /projection\.state === "review_required" && projection\.revision_path/, "only a real dossier revision may show the review link");
 assert.match(workspace, /Approved — required work remains/, "approved matters must name required open work without blocking delivery");
-assert.match(workspace, /Closure blocked · Required work remains/, "closure controls must list all required blockers before Close");
-assert.match(workspace, /required open · \{optionalOpenWorkItems\.length\} optional open/, "the open queue must split required and optional counts");
-assert.match(workspace, /\{item\.required \? "Required" : "Optional"\}/, "each consideration row must have a text requirement label");
-assert.match(workspace, /Optional"\}\s*\{detail\.status === "closed"[\s\S]{0,100}Open after closure/, "optional work must remain visibly open after closure");
+assert.match(workspace, /Before you can close/, "closure controls must list all required blockers before Close");
+assert.match(workspace, /Stop or finish active research/, "closure blockers must put active research first");
+assert.match(workspace, /Assign owner[\s\S]{0,500}Complete/, "each required closure blocker must expose assign and complete controls");
+assert.match(workspace, /Other saved work items/, "the lower list must identify non-current saved work");
+assert.match(workspace, /item\.source === "open_question" \? "Open question" : item\.required \? "Required work" : "Optional work"/, "each secondary row must name whether it is work or a question");
+assert.match(workspace, /Open context at closure/, "closed matters must keep optional history under a past-tense disclosure");
+assert.match(workspace, /Other open items and questions/, "the secondary list must state that Current work is excluded");
+assert.match(workspace, /other required work[^\n]+optional work[^\n]+open questions/, "secondary counts must distinguish work from questions");
+assert.match(workspace, /const otherOpenWorkItems = detail\.work_items\.filter\([\s\S]{0,180}item\.work_item_id !== currentWorkItem\?\.work_item_id/, "the lower list must exclude the current work item");
+assert.match(workspace, /Assign to \$\{reviewSettings\.lawyer\.trim\(\) \|\| "Lawyer"\}/, "unassigned current work must offer the configured lawyer");
+assert.match(workspace, /htmlFor="current-work-item-owner">Other owner/, "custom assignment must remain available with a clear label");
+assert.match(workspace, /detail\.status !== "closed" \? <section className="matter-open" aria-label="Other saved work items">/, "closed matters must not present old optional work as an active queue");
 assert.match(workspace, /Adding participant…/, "participant feedback must identify its exact pending action");
 assert.match(workspace, /Assigning owner…/, "owner feedback must identify its exact pending action");
 assert.match(workspace, /setVisibleParticipants\(result\.data\.participants\)/, "participant rows must update from the mutation result before reload");
 assert.match(workspace, /result\.matter\.work_items\.find/, "owner rows must update from the mutation result before reload");
 assert.match(matterPage, /createLatestRequestLoader/, "matter refreshes must use latest-request-wins ordering");
-assert.match(matterPage, /if \(error && !detail\)/, "a refresh failure must not hide the existing matter detail");
+assert.match(matterPage, /if \(!detail\)[\s\S]*error=\{loadError\}/, "a refresh failure must not hide the existing matter detail");
 assert.match(matterPage, /await latestMatterLoader\(\)/, "refresh failures must reject back to the workspace action");
 
 function deferred<T>() {
@@ -186,10 +223,37 @@ assert.equal(matterWorkspaceModule.shouldApplyCanonicalRecommendation(
 assert.equal(matterWorkspaceModule.shouldApplyCanonicalRecommendation(
   { path: "recommendations.md", content: "Saved", current_version_id: "REC-3", current_version_number: 3, proposal: null },
   null,
-), true, "confirmed canonical absence must clear the overview");
-assert.match(workspace, /workflowStateExplanation/, "the workspace must present one combined stage, actor, and next-action explanation");
-assert.match(matterActions, /export function workflowStateExplanation/, "the combined workflow explanation must derive from the durable work-state projection");
+  undefined,
+), false, "a stale canonical absence must not clear a confirmed saved recommendation");
+assert.match(workspace, /workflowStateExplanation/, "the workspace must present the durable stage and actor state");
+assert.match(matterActions, /export function workflowStateExplanation/, "the workflow explanation must derive from the durable work-state projection");
 assert.match(matterActions, /detail\.work_state\.next_actor/, "stage and actor wording must use the persisted next actor");
+assert.doesNotMatch(matterActions, /const nextAction = detail\.work_state\.next_action/, "the state explanation must not repeat the current task");
+const closedState = {
+  status: "closed",
+  work_items: [],
+  work_state: { execution_state: "running", next_actor: "named_owner", next_owner: "Stale owner", next_work_item_id: null },
+};
+assert.equal(
+  matterActionsModule.workflowStateExplanation(closedState as never),
+  "Stage: Closed. No action required.",
+  "closed matters must ignore stale actor and execution projections",
+);
+const deliveredWithRequiredWork = {
+  status: "respond",
+  response_sent_at: "2026-09-04T12:00:00+00:00",
+  work_items: [{ work_item_id: "WI-1", title: "Confirm funds flow", status: "open", required: 1 }],
+  work_state: { execution_state: "idle", next_actor: "unassigned", next_owner: null, next_work_item_id: "WI-1" },
+};
+const deliveredWithRequiredWorkState = matterActionsModule.workflowStateExplanation(deliveredWithRequiredWork as never);
+assert.equal(
+  deliveredWithRequiredWorkState,
+  "Stage: Respond. Manual delivery recorded. Required work remains before closure.",
+  "a delivered Respond matter must describe the recorded delivery and remaining closure work",
+);
+assert.doesNotMatch(deliveredWithRequiredWorkState, /Ready to send/, "a delivered matter must not claim it is waiting to be sent");
+assert.doesNotMatch(workspace, /<p>\{currentWorkItem\.title\}<\/p>/, "the current work controls must not repeat the current task title");
+assert.match(workspace, /Priority for \$\{currentWorkItem\.title\}[\s\S]{0,240}changeWorkItemPriority\(currentWorkItem\.work_item_id/, "current saved work must retain its priority control");
 assert.match(workspace, /onContinueFromPartial/, "partial research must let the lawyer continue to a safe drafting action");
 assert.match(workspace, /const refreshAfterChatRun = useCallback\(async \(\) => \{[\s\S]{0,100}reload\(\), loadResearchQueue\(\)/, "a terminal chat run must refresh both the durable matter and research queue");
 assert.match(workspace, /onRefresh=\{refreshAfterChatRun\}/, "chat terminal refresh must use the complete durable workspace refresh");
@@ -198,24 +262,65 @@ assert.match(cards, /selectedDetail/, "single-choice clarification detail must b
 assert.doesNotMatch(cards, /result\.status !== "failed" \|\| Boolean\(result\.required_user_action\)/, "failed durable operation results must remain visible with their saved recovery details");
 assert.match(cards, /result\.summary/, "failed durable operation cards must show their durable summary");
 assert.match(cards, /result\.recovery/, "failed durable operation cards must show their durable recovery action");
-assert.match(workspace, /detail\.intake_conversation_id \|\| detail\.intake_state === "active" \? "chat" : "overview"/, "new intake matters must land with Chat open");
+assert.match(workspace, /detail\.intake_state === "active" \? "chat" : "overview"/, "only active intake matters must land with Chat open");
 assert.match(workspace, /initialConversationId=\{detail\.intake_conversation_id\}/, "the workspace must open the durable intake conversation");
 assert.match(workspace, /initialRunId=\{detail\.intake_run_id\}/, "the workspace must reconnect to the initial intake run");
 assert.match(chat, /Themis.ai is reading your request…/, "the initial intake run must have a clear reading state");
 assert.match(chat, /agent_id:\s*chatAgentId\(intakeActive, activeAgentId\)/, "chat must route turns through the active intake or copilot agent");
 assert.match(design, /matterAwaitsJudgment\([\s\S]{0,160}matter\.status === "explore"/, "judgment counts must include overdue matters in the Explore stage");
-assert.match(companyInterview, /generatedDraft && !draftEditedByLawyer[\s\S]{0,180}"Themis\.ai · Not yet reviewed by an attorney"/, "an untouched generated company draft must keep generated attribution");
+assert.match(companyInterview, /generatedDraft && !draftEditedByLawyer[\s\S]{0,220}"Company profile draft · Themis\.ai · Not yet reviewed by an attorney"/, "an untouched generated company draft must keep generated attribution");
 assert.match(companyInterview, /setDraftEditedByLawyer\(true\)[\s\S]{0,150}setSaveState\("dirty"\)/, "editing a generated review draft must record lawyer involvement");
 assert.match(companyInterview, /Unsaved lawyer edits to a Themis\.ai draft/, "an edited generated company draft must use mixed attribution");
+assert.match(todayChat, /Saved replies reflect the workspace when written\. The attention list above is current\./, "saved Today replies must be separated from the current attention list");
+assert.match(todayChat, /Saved reply · \$\{parsed\.toLocaleTimeString/, "valid saved replies must show local time");
+assert.match(todayChat, /if \(Number\.isNaN\(parsed\.getTime\(\)\)\) return "Saved reply"/, "invalid timestamps must not invent a time");
+assert.match(todayChat, /<summary>Saved conversation · \{messages\.length\} messages<\/summary>/, "saved Today history must have one collapsed summary");
+assert.match(todayChat, /setHistoryOpen\(day !== today\)/, "past daily conversations must open their history");
+assert.match(todayChat, /setHistoryOpen\(true\)[\s\S]{0,180}setMessages/, "a newly submitted message must open the current history");
+assert.doesNotMatch(briefingSource, /TITLE_MAX|clampText/, "Today titles must not be clipped in data");
+assert.doesNotMatch(styles, /\.brief-title\s*\{\s*-webkit-line-clamp/, "Today titles must not be line-clamped");
+assert.match(automationPanel, /<label className="sr-only" htmlFor="automation-prompt">Automation instructions<\/label>/, "automation prompt must be a labelled native field");
+assert.match(automationPanel, /value=\{instructions\}/, "opening the automation form must preserve typed instructions");
+assert.match(automationPanel, /event\.key === "Enter"[\s\S]{0,100}setOpen\(true\)/, "Enter must open the final automation form without submitting it");
 assert.match(cardLogic, /:\s*"Follow-up"/, "questions without real progress must say Follow-up");
 assert.doesNotMatch(cards, /progress_current=1|progress_total=3/, "question progress must not use a fixed total");
 assert.match(modal, /await onRecorded\(\);\s*setRecorded\(true\)/, "success must follow both decision creation and matter reload");
 assert.match(modal, /Decision recorded\. The refreshed matter/, "decision recording must expose a persisted success state");
 assert.match(modal, /created \? "Retry refresh"/, "a failed reload must not create a duplicate decision on retry");
+assert.match(modal, /Issues this decision does not resolve/, "the decision form must name unresolved issues clearly");
+assert.match(modal, /Optional\. List issues that remain open after this decision\./, "the unresolved-issues field must explain that it is optional");
+assert.match(styles, /\.btn\.primary:disabled\s*\{[^}]*var\(--sunken\)[^}]*var\(--line\)[^}]*var\(--ink-6\)/, "disabled primary buttons must use the shared disabled tokens");
+assert.match(decisionsPage, /const \[loaded, setLoaded\] = useState\(false\)/, "decisions must track initial loading separately from an empty register");
+assert.match(decisionsPage, /<DataLoadStatus[^>]+loadingLabel=/, "decisions must show neutral feedback while its first read runs");
+assert.match(decisionsPage, /\{loaded \? \(\s*<DecisionTable/, "decisions must not flash an empty register before loading finishes");
+assert.match(decisionsPage, /Mine \(configured lawyer\)/, "the personal decision filter must identify its configured source");
+assert.match(decisionsPage, /<fieldset className="segmented">\s*<legend className="sr-only">Decision filter<\/legend>/, "decision filters must be a labelled native radio group");
+assert.equal([...decisionsPage.matchAll(/name="decision-filter"/g)].length, 1, "the mapped decision radios must use one shared name");
+assert.match(decisionsPage, /type="radio"/, "decision filters must use native radios");
+assert.doesNotMatch(decisionsPage, /includes\(["']harris["']\)/i, "the personal decision filter must not contain a hard-coded person");
+assert.equal(decisionFiltersModule.isDecisionByConfiguredLawyer("  ALEX LAWYER ", "Alex Lawyer"), true);
+assert.equal(decisionFiltersModule.isDecisionByConfiguredLawyer("Alex Lawyer Jr.", "Alex Lawyer"), false, "the personal filter must use an exact normalized name");
+assert.equal(decisionFiltersModule.isDecisionByConfiguredLawyer("Alex Lawyer", "   "), false, "an empty configured lawyer must not match decisions");
+assert.equal(decisionFiltersModule.configuredLawyerName({ model_catalog: { providers: [] }, sections: [{
+  id: "document-review", label: "", title: "", sub: "", rows: [{
+    id: "lawyer", kind: "text", config_key: "document_review.lawyer_name", value: "  Alex Lawyer  ",
+  }],
+}] }), "Alex Lawyer", "the personal filter must read and trim the configured document-review lawyer");
+assert.match(agentsPage, /const \[loaded, setLoaded\] = useState\(false\)/, "agents must track initial loading separately from an empty registry");
+assert.match(agentsPage, /loaded \? \([\s\S]{0,100}No agents are defined/, "agents must not show an empty state before loading finishes");
+assert.doesNotMatch(agentsPage, /<span className="agent-mark" \/>\s*Fixed for every agent/, "the fixed-rules heading must not look like a checkbox");
+assert.match(agentsPage, /Effective tool access/, "built-in agents must name their effective tool access");
+assert.match(agentsPage, /Application-managed · Read-only/, "built-in tool access must identify its owner and read-only state");
+assert.match(agentsPage, /checked \? "Available" : "Not available"/, "built-in tools must show an explicit availability state");
 assert.match(workspace, /basisLabels=\{Object\.fromEntries\(evidence\.map/, "decision evidence must receive saved matter titles");
 assert.match(modal, /basisLabel\(path, basisLabels\)/, "decision evidence must display supplied saved titles");
 assert.match(workspace, /detail\.status !== "closed"[\s\S]{0,240}Record durable decision/, "all non-closed matters must expose the durable decision form in artifacts");
 assert.match(workspace, /Record durable decision[\s\S]{0,160}Open the decision form/, "Generate and Respond matter artifacts must name the direct decision action");
+assert.match(workspace, /research: "Research packet"[\s\S]{0,160}<span>\{item\.label\}<\/span>/, "research artifacts must show the artifact role and saved title once each");
+assert.match(workspace, /item\.path === detail\.response_approved_artifact_path \? "Approved response" : "Final response"/, "only the exact approved artifact may use the approved response caption");
+assert.doesNotMatch(workspace, /Approved \/ final response/, "final and approved artifact captions must stay distinct");
+assert.match(designLanguage, /label it \*\*Approved response\*\* only when its exact path is the recorded\s+approved artifact path/, "the design language must preserve the exact approved-artifact caption rule");
+assert.match(styles, /\.segmented-input:focus-visible \+ label/, "segmented radio labels must show visible keyboard focus");
 
 const memo = researchModule.parseMemo({
   path: "03_Matters/example/research/RES-1.md",

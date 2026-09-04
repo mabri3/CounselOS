@@ -20,6 +20,12 @@ assert.match(types, /reasoning_efforts:\s*string\[\]/, "model reasoning efforts 
 assert.match(settings, /settings\.model_catalog\.providers\.map/, "Settings must show every model provider");
 assert.match(settings, /provider\.models\.map/, "Settings must show each returned model catalog");
 assert.match(settings, /provider\.readiness_detail/, "Settings must show honest readiness detail");
+assert.match(stubs, /Polaris legal research/, "research services must have plain-language labels");
+assert.match(stubs, /Tavily web research/, "the backup service must have a plain-language label");
+assert.match(stubs, /OpenAI-compatible model service/, "the model fallback provider must have a human label");
+assert.match(settings, /Active research route/, "Research settings must start with a concise active-route summary");
+assert.match(stubs, /Advanced \/ Technical details/, "technical research controls must be collapsed by default");
+assert.match(settings, /<summary className="setting-help"[^>]*>Technical details<\/summary>/, "raw model IDs and reasoning modes must be collapsed");
 
 const warning = "Development only — do not use confidential matter data.";
 assert.match(settings, new RegExp(warning), "Settings must show the Antigravity warning");
@@ -34,5 +40,10 @@ assert.match(api, /provider:\s*agent\.provider\s*\?\?\s*""/, "agent saves must i
 assert.match(api, /model:\s*agent\.model\s*\?\?\s*""/, "agent saves must include model selection");
 assert.match(api, /reasoning_effort:\s*agent\.reasoning_effort\s*\?\?\s*""/, "agent saves must include effort selection");
 assert.match(agents, /\(unavailable\)/, "saved unavailable selections must remain visible");
+assert.match(agents, /draft\.runtime_managed \? "Effective tool access" : "Tool permissions"/, "built-in agents must show effective access instead of editable permissions");
+assert.match(agents, /Application-managed · Read-only/, "built-in tool access must be visibly read-only");
+assert.match(agents, /checked \? "Available" : "Not available"/, "each built-in tool must show its effective state");
+assert.doesNotMatch(agents, /<input checked=\{checked\} disabled=\{draft\.runtime_managed\}/, "custom-agent checkboxes must remain the only tool inputs");
+assert.match(agents, /<input checked=\{checked\} onChange=\{\(\) => toggleTool\(tool\.tool_id\)\} type="checkbox" \/>/, "custom agents must retain editable tool checkboxes");
 
 console.log("Provider administration checks passed.");

@@ -9,7 +9,7 @@ from app.services.vault import VaultService
 
 DEFAULT_ANSWER_CONTRACT = """---
 record_type: answer_contract
-version: 0.1.0
+version: 0.2.0
 ---
 # Answer contract
 
@@ -25,6 +25,29 @@ a reason to withhold, hedge, shorten, delay, or refuse an answer.
 The section below is co-equal work product, not metadata on the answer. An edge
 item maps a fork in the reasoning or the boundary of the work. It is not merely a
 task to complete.
+
+## Support and claim strength
+
+A substantive legal answer must show what supports each material claim and must
+match the strength of each claim to the support available.
+
+- Never invent or guess a source, quotation, citation, holding, statute,
+  regulation, date, jurisdiction, or fact.
+- Never imply that a source was read, retrieved, or verified unless it was.
+- Cite each material legal proposition inline with the best available primary
+  authority when supplied or retrieved. Name the authority and link its URL when
+  available.
+- Separate established matter facts, retrieved authority, supplied but unverified
+  sources, and generated analysis.
+- If no supporting authority was retrieved, state **No external authority
+  retrieved** near the start. Give a useful preliminary analysis, but use
+  calibrated terms such as "likely," "may," or "appears" instead of presenting
+  the legal conclusion as settled.
+- For each recommendation or material conclusion, state the strongest reasonable
+  counterargument or alternative reading and explain why it does or does not
+  change the answer.
+- Missing support never blocks the answer. Name the exact missing authority under
+  **What would change this**.
 
 ## What would change this
 

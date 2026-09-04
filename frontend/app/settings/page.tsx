@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
 import CompanyInterview from "@/components/CompanyInterview";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
+import DataLoadStatus from "@/components/DataLoadStatus";
 import LinkifiedText from "@/components/LinkifiedText";
 import { createVault, effortLabel, getActiveVault, getAnswerContract, getCompanyProfile, getSettings, loadVault, resetAnswerContract, saveAnswerContract, saveSettings } from "@/lib/api";
 import { role } from "@/lib/design";
@@ -58,6 +59,12 @@ function providerState(provider: ModelCatalogProvider): { label: string; color: 
   return { label: "Unavailable", color: role.failure };
 }
 
+const RESEARCH_PROVIDER_LABELS: Record<string, string> = {
+  polaris: "Polaris legal research",
+  tavily: "Tavily web research",
+  none: "no external research service",
+};
+
 export default function SettingsPage() {
   const [settings, setSettings] = useState<WorkspaceSettings | null>(null);
   const [savedSettings, setSavedSettings] = useState<WorkspaceSettings | null>(null);
@@ -70,13 +77,15 @@ export default function SettingsPage() {
   const [section, setSection] = useState("agents");
   const [settingsDirty, setSettingsDirty] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [error, setError] = useState("");
   const [vaultConfirmation, setVaultConfirmation] = useState<"create" | "load" | null>(null);
   const [answerResetConfirmation, setAnswerResetConfirmation] = useState(false);
 
   const load = useCallback(async () => {
+    setLoading(true); setLoadError("");
     try {
-      setError("");
       const [nextSettings, nextCompany, providerResult, nextVault, nextAnswerContract] = await Promise.all([
         getSettings(),
         getCompanyProfile(),
@@ -93,7 +102,8 @@ export default function SettingsPage() {
       setAnswerDraft(nextAnswerContract.content);
       setSettingsDirty(false);
     }
-    catch (caught) { setError(caught instanceof Error ? caught.message : "Could not load settings."); }
+    catch { setLoadError("Settings are unavailable because their current data could not be loaded."); }
+    finally { setLoading(false); }
   }, []);
 
   useEffect(() => { void load(); }, [load]);
@@ -170,8 +180,7 @@ export default function SettingsPage() {
     }
   }
 
-  if (error && !settings) return <AppShell><main className="page"><p className="error">{error}</p></main></AppShell>;
-  if (!settings || !company || !vault || !answerContract) return <AppShell><main className="page"><div className="loading">Loading settings…</div></main></AppShell>;
+  if (!settings || !company || !vault || !answerContract) return <AppShell><main className="page"><DataLoadStatus error={loadError} loading={loading} loadingLabel="Loading settings…" onRetry={load} /></main></AppShell>;
 
   const current = settings.sections.find((entry) => entry.id === section) ?? settings.sections[0];
   const companySection = section === "company";
@@ -185,6 +194,8 @@ export default function SettingsPage() {
   const selectedModel = selectedModelRow?.option_labels?.[selectedModelRow.value ?? ""]
     ?? selectedModelRow?.value
     ?? "Not configured";
+  const primaryResearch = current.rows.find((row) => row.config_key === "research.primary_external_provider")?.value ?? "none";
+  const backupResearch = current.rows.find((row) => row.config_key === "research.fallback_external_provider")?.value ?? "none";
 
   return (
     <AppShell>
@@ -211,6 +222,7 @@ export default function SettingsPage() {
         <div className="admin-main">
           <div className="admin-scroll">
             <div className="admin-body" style={{ maxWidth: 760 }}>
+              <DataLoadStatus error={loadError} loading={loading} loadingLabel="Refreshing settings…" onRetry={load} />
               <h1 style={{ fontSize: 26 }}>{vaultSection ? "Vaults" : companySection ? "Company" : modelProviderSection ? "Model providers" : providerSection ? "Watch providers" : current.title}</h1>
               <p style={{ margin: "6px 0 24px", font: "400 15px var(--sans)", color: "var(--ink-3)" }}>
                 {vaultSection
@@ -286,11 +298,15 @@ export default function SettingsPage() {
                               Development only — do not use confidential matter data.
                             </div>
                           ) : null}
-                          <div className="setting-help" style={{ marginTop: 7 }}>
-                            {provider.models.length
-                              ? provider.models.map((model) => `${model.label} (${model.reasoning_efforts.length ? model.reasoning_efforts.map(effortLabel).join(", ") : "effort unavailable"})`).join(" · ")
-                              : "No models available."}
-                          </div>
+                          <details style={{ marginTop: 7 }}>
+                            <summary className="setting-help" style={{ cursor: "pointer" }}>Technical details</summary>
+                            <div className="setting-help" style={{ marginTop: 7 }}>
+                              Provider ID: <code>{provider.id}</code><br />
+                              {provider.models.length
+                                ? provider.models.map((model) => `${model.label} [${model.id}] — ${model.reasoning_efforts.length ? model.reasoning_efforts.map(effortLabel).join(", ") : "reasoning modes unavailable"}`).join(" · ")
+                                : "No models available."}
+                            </div>
+                          </details>
                         </div>
                         <span className="signal" style={{ color: state.color, flex: "none", fontWeight: 500 }}>
                           <span className="dot" style={{ background: state.color }} />
@@ -374,6 +390,30 @@ export default function SettingsPage() {
                     }}
                     profile={company}
                   />
+                </>
+              ) : current.id === "research" ? (
+                <>
+                  <div className="agent-note" style={{ margin: "-12px 0 2px" }}>
+                    <div className="field-label">Active research route</div>
+                    <p style={{ margin: "5px 0 0" }}>
+                      Start with {RESEARCH_PROVIDER_LABELS[primaryResearch] ?? primaryResearch}. If it cannot return useful sources, try {RESEARCH_PROVIDER_LABELS[backupResearch] ?? backupResearch}.
+                    </p>
+                  </div>
+                  {current.rows.map((row, index) => {
+                    if (row.kind !== "heading") return null;
+                    const advancedRows = current.rows.slice(index + 1);
+                    return (
+                      <details key={row.id} style={{ marginTop: 20 }}>
+                        <summary className="setting-heading" style={{ cursor: "pointer" }}>{row.label}</summary>
+                        {advancedRows.map((advancedRow) => (
+                          <div className="setting-row" key={advancedRow.id}>
+                            <div><div className="setting-label">{advancedRow.label}</div>{advancedRow.help ? <div className="setting-help"><LinkifiedText text={advancedRow.help} /></div> : null}</div>
+                            {advancedRow.kind === "toggle" ? <button aria-checked={!!advancedRow.on} aria-label={advancedRow.label} className="switch" onClick={() => update(advancedRow.id, { on: !advancedRow.on })} role="switch" style={{ background: advancedRow.on ? "var(--ink)" : "var(--control)" }}><span style={{ left: advancedRow.on ? 18 : 2 }} /></button> : advancedRow.kind === "text" ? <input aria-label={advancedRow.label} className="text-input setting-control" onChange={(event) => update(advancedRow.id, { value: event.target.value })} value={advancedRow.value ?? ""} /> : <select aria-label={advancedRow.label} className="select-input setting-control" onChange={(event) => update(advancedRow.id, { value: event.target.value })} value={advancedRow.value}>{(advancedRow.options ?? [advancedRow.value ?? ""]).map((option) => <option key={option} value={option}>{advancedRow.option_labels?.[option] ?? option}</option>)}</select>}
+                          </div>
+                        ))}
+                      </details>
+                    );
+                  })}
                 </>
               ) : current.rows.map((row, index) => {
                 if (row.kind === "heading") {

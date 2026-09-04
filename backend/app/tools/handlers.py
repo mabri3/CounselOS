@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+import re
+import unicodedata
 from datetime import UTC, datetime
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -35,6 +38,7 @@ def build_handlers() -> dict[str, Handler]:
         "move_matter_stage": move_matter_stage,
         "create_work_item": create_work_item,
         "run_research": run_research,
+        "stop_research": stop_research,
         "record_decision": record_decision,
         "audit_decisions": audit_decisions,
         "create_agent": create_agent,
@@ -56,7 +60,7 @@ async def update_matter_intake(context: ToolExecutionContext, arguments: dict[st
     if not context.matter_id:
         raise ValueError("An active matter is required.")
     turn = IntakeTurn.model_validate({
-        **arguments,
+        **_normalize_nested_intake_questions(arguments),
         "source_action_key": context.source_action_key,
     })
     if turn.intake_state == "active" and not turn.next_questions:
@@ -78,6 +82,25 @@ async def update_matter_intake(context: ToolExecutionContext, arguments: dict[st
         "refresh": ["matter", "tree"],
         "data": payload,
     }
+
+
+def _normalize_nested_intake_questions(arguments: dict[str, Any]) -> dict[str, Any]:
+    """Decode only the two provider fields that may contain one JSON object."""
+    normalized = dict(arguments)
+
+    def decode(value: Any) -> Any:
+        if not isinstance(value, str):
+            return value
+        decoded = json.loads(value)
+        if not isinstance(decoded, dict):
+            raise ValueError("An encoded intake question must contain one JSON object.")
+        return decoded
+
+    if "next_question" in normalized:
+        normalized["next_question"] = decode(normalized["next_question"])
+    if isinstance(normalized.get("next_questions"), list):
+        normalized["next_questions"] = [decode(item) for item in normalized["next_questions"]]
+    return normalized
 
 
 async def read_file(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
@@ -384,26 +407,40 @@ async def create_work_item(context: ToolExecutionContext, arguments: dict[str, A
         issue_id=arguments.get("issue_id"),
         source_action_key=context.source_action_key,
     )
-    duplicate = next(
+    existing_items = context.app.index.list_work_items(matter_id)
+    source_keys = {
+        item["work_item_id"]: str(
+            context.app.vault.read_markdown(item["path"])["metadata"].get("source_action_key") or ""
+        )
+        for item in existing_items
+    }
+    same_source = next(
         (
-            item for item in context.app.index.list_work_items(matter_id)
+            item for item in existing_items
+            if context.source_action_key
+            and source_keys[item["work_item_id"]] == context.source_action_key
+        ),
+        None,
+    )
+    duplicate = same_source or next(
+        (
+            item for item in existing_items
             if str(item.get("status") or "").casefold() not in {"done", "closed"}
+            and source_keys[item["work_item_id"]].startswith("chat:")
             and _normalized_work_item_title(item.get("title"))
             == _normalized_work_item_title(request.title)
-            and str(item.get("item_type") or "").strip().casefold()
-            == request.item_type.strip().casefold()
-            and str(item.get("issue_id") or "").strip().casefold()
-            == str(request.issue_id or "").strip().casefold()
+            and item.get("issue_id") == request.issue_id
             and bool(item.get("required")) is bool(request.required)
         ),
         None,
     )
     if duplicate:
         return {
-            "summary": f"Reused open work item: {duplicate['title']}.",
+            "summary": f"Reused existing work item: {duplicate['title']}.",
             "changed_paths": [],
             "refresh": ["matter", "kanban"],
             "data": duplicate,
+            "operation_status": "no_change",
         }
     item = context.app.matters.create_work_item(request)
     return {
@@ -415,7 +452,9 @@ async def create_work_item(context: ToolExecutionContext, arguments: dict[str, A
 
 
 def _normalized_work_item_title(value: Any) -> str:
-    return " ".join(str(value or "").split()).casefold()
+    normalized = unicodedata.normalize("NFKC", str(value or "")).casefold()
+    normalized = normalized.replace("/", " and ")
+    return " ".join(re.sub(r"[\W_]+", " ", normalized, flags=re.UNICODE).split())
 
 
 async def run_research(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
@@ -435,6 +474,30 @@ async def run_research(context: ToolExecutionContext, arguments: dict[str, Any])
         "changed_paths": [str(started["path"])],
         "refresh": ["matter", "kanban", "tree"],
         "data": started,
+    }
+
+
+async def stop_research(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
+    if not context.matter_id:
+        raise ValueError("An active matter is required.")
+    before = context.app.research_runs.list(context.matter_id)
+    active_ids = {
+        str(item.get("run_id")) for item in before
+        if item.get("state") in {"queued", "running"}
+    }
+    stopped = await context.app.research_runs.stop(context.matter_id)
+    changed_paths = [
+        str(item["path"]) for item in stopped
+        if item.get("path") and str(item.get("run_id")) in active_ids
+    ]
+    return {
+        "summary": (
+            "Stopped the active research. Saved packets remain available."
+            if active_ids else "Research was already stopped. Saved packets remain available."
+        ),
+        "changed_paths": changed_paths,
+        "refresh": ["matter", "kanban", "tree"],
+        "data": {"runs": stopped},
     }
 
 

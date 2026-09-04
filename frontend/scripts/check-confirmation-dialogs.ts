@@ -40,6 +40,8 @@ assert.match(sources.workspace, /This records delivery outside Themis\.ai\. It d
 assert.match(sources.workspace, /performMatterAction\(/);
 assert.match(sources.workspace, /onConfirm=\{\(\) => runControl\(manualDeliveryConfirmation, true, true\)\}/);
 assert.match(sources.company, /replacement_confirmation: replacementMessage/);
+assert.match(sources.company, /Discard the unsaved company profile draft\? The saved company profile stays active until you save its replacement\./);
+assert.match(sources.company, /saveState === "dirty"[\s\S]{0,100}setDiscardConfirmation\(true\)/, "dirty replacement must ask before discard");
 assert.match(sources.settings, /createVault\(/);
 assert.match(sources.settings, /loadVault\(/);
 assert.doesNotMatch(sources.settings, /NEXT_PUBLIC_DISABLE_VAULT_CONFIRMATION|vaultConfirmDisabled/);

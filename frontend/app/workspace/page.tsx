@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import AppShell from "@/components/AppShell";
+import DataLoadStatus from "@/components/DataLoadStatus";
 import LinkifiedText from "@/components/LinkifiedText";
 import NewMatterForm from "@/components/NewMatterForm";
 import StageBoard from "@/components/StageBoard";
@@ -19,11 +20,14 @@ export default function WorkspacePage() {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [creating, setCreating] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [error, setError] = useState("");
 
   const load = useCallback(async () => {
+    setLoading(true);
     try {
-      setError("");
+      setLoadError("");
       const [matterData, decisionData, automationData] = await Promise.all([
         getMatters(),
         getDecisions(),
@@ -32,11 +36,10 @@ export default function WorkspacePage() {
       setMatters(matterData.matters);
       setDecisions(decisionData.decisions);
       setSchedules(automationData.schedules);
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Could not load the workspace.");
-    } finally {
       setLoaded(true);
-    }
+    } catch {
+      setLoadError("The workspace is unavailable because its current data could not be loaded.");
+    } finally { setLoading(false); }
   }, []);
 
   useEffect(() => { void load(); }, [load]);
@@ -70,15 +73,17 @@ export default function WorkspacePage() {
         <div className="page-header">
           <div>
             <h1>Workspace</h1>
-            <p>
+            {loaded ? <p>
               {inFlight} matter{inFlight === 1 ? "" : "s"} in flight.{" "}
               {needsYou} {needsYou === 1 ? "matter awaits" : "matters await"} your judgment.
-            </p>
+            </p> : <p>{loadError ? "Current workspace data is unavailable." : "Loading workspace…"}</p>}
           </div>
         </div>
 
-        {error ? <p className="error">{error}</p> : null}
+        <DataLoadStatus error={loadError} loading={loading} loadingLabel={loaded ? "Refreshing the workspace…" : "Loading the workspace…"} onRetry={load} />
+        {error ? <div className="error">{error}</div> : null}
 
+        {loaded ? <>
         <div style={{ marginTop: 20 }}>
           <NewMatterForm
             busy={creating}
@@ -102,8 +107,7 @@ export default function WorkspacePage() {
             <span className="legend-item"><span className="dot" style={{ background: role.agent }} />Themis.ai is working</span>
             <span className="legend-item"><span className="dot" style={{ background: "#d6d1c7" }} />No action needed</span>
           </div>
-          {loaded ? (
-            <StageBoard
+          <StageBoard
               matters={matters}
               onMove={async (matterId, stage: StageId) => {
                 setError("");
@@ -115,9 +119,6 @@ export default function WorkspacePage() {
                 }
               }}
             />
-          ) : (
-            <div className="loading">Loading the board…</div>
-          )}
         </section>
 
         <section
@@ -179,6 +180,7 @@ export default function WorkspacePage() {
             </div>
           </div>
         </section>
+        </> : null}
       </main>
     </AppShell>
   );

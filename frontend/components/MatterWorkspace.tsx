@@ -77,7 +77,7 @@ export default function MatterWorkspace({
   const [chatSeed, setChatSeed] = useState({ text: "", revision: 0 });
   const [conversationSeed, setConversationSeed] = useState({ conversationId: "", revision: 0 });
   const [middleSection, setMiddleSection] = useState<"overview" | "chat">(() =>
-    detail.intake_conversation_id || detail.intake_state === "active" ? "chat" : "overview",
+    detail.intake_state === "active" ? "chat" : "overview",
   );
   const [uploading, setUploading] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -159,7 +159,7 @@ export default function MatterWorkspace({
     const canonical = detail.recommendation ?? null;
     const identity = recommendationIdentity(detail.matter_id, canonical);
     recommendationIdentityRef.current = identity;
-    if (shouldApplyCanonicalRecommendation(recommendationStateRef.current, canonical)) {
+    if (shouldApplyCanonicalRecommendation(recommendationStateRef.current, canonical, detail.matter_id)) {
       recommendationStateRef.current = canonical;
       setRecommendation(canonical?.content.trim() ?? "");
       setRecommendationState(canonical);
@@ -236,6 +236,9 @@ export default function MatterWorkspace({
       : { id: "open_work_item", category: "Work item", label: "Open work item", detail: "Open the saved work item and review its details." };
   const currentCompletableWorkItemId = completableCurrentWorkItemId(currentWorkItem);
   const currentWorkItemOwner = workItemOwnerLabel(currentWorkItem);
+  const currentWorkItemPriority = detail.work_items.find(
+    (item) => item.work_item_id === currentWorkItem?.work_item_id,
+  )?.priority ?? "normal";
   const currentResearchWorkItem = detail.work_items.find(
     (item) => item.work_item_id === currentWorkItem?.work_item_id && item.item_type === "research",
   );
@@ -254,6 +257,9 @@ export default function MatterWorkspace({
     setOwnerOverrides({});
   }, [detail.matter_id, (detail as MatterDetail & { participants?: MatterParticipant[] }).participants, detail.work_items]);
   const participants = visibleParticipants;
+  const configuredLawyer = reviewSettings.lawyer.trim();
+  const currentQuickOwners = [...new Set([configuredLawyer, ...participants.map((participant) => participant.name)].filter(Boolean))]
+    .filter((owner) => currentWorkItemOwner !== "Unassigned" || owner !== configuredLawyer);
   const signal = signalFor(detail);
   const due = dueWord(detail);
 
@@ -563,7 +569,9 @@ export default function MatterWorkspace({
       await reloadPersisted("The final work product was saved, but the matter did not refresh. Reload the page to see current state.");
       openDocument(result.vault_path);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Could not finalize the current draft.");
+      const message = caught instanceof Error ? caught.message : "Could not finalize the current draft.";
+      setError(message);
+      if (/draft status before finalizing/i.test(message)) openDocument(draftPath);
     } finally {
       setBusy(false);
     }
@@ -650,12 +658,20 @@ export default function MatterWorkspace({
     currentTask,
   );
   const requiredCount = openItems.filter((item) => item.required).length;
+  const optionalWorkCount = openItems.filter((item) => item.source === "work_item" && !item.required).length;
+  const openQuestionCount = openItems.filter((item) => item.source === "open_question").length;
+  const closedContext = detail.status === "closed"
+    ? [...new Set([decisionQuestion, ...openItems.map((item) => item.text)].filter(Boolean))]
+    : [];
   const requiredOpenWorkItems = detail.work_items.filter(
     (item) => Boolean(item.required) && !["done", "closed"].includes(item.status),
   );
-  const optionalOpenWorkItems = detail.work_items.filter(
-    (item) => !Boolean(item.required) && !["done", "closed"].includes(item.status),
+  const otherOpenWorkItems = detail.work_items.filter(
+    (item) => !["done", "closed"].includes(item.status)
+      && item.work_item_id !== currentWorkItem?.work_item_id,
   );
+  const otherRequiredOpenCount = otherOpenWorkItems.filter((item) => Boolean(item.required)).length;
+  const otherOptionalOpenCount = otherOpenWorkItems.length - otherRequiredOpenCount;
   const recommendationSelected = Boolean(activePath && [recommendationPath, recommendationState?.path].filter(Boolean).includes(activePath));
   const visibleArtifacts = artifacts.filter((item) => item.kind !== "recommendation");
   const showCurrentControl = lifecycleAction.id !== "none"
@@ -843,7 +859,7 @@ export default function MatterWorkspace({
                   <div className="matter-orientation">
                     <div className="matter-orientation-label">Matter at a glance</div>
                     <p><LinkifiedText text={orientationSummary || "No matter summary is saved."} /></p>
-                    {decisionQuestion && decisionQuestion !== orientationSummary ? (
+                    {detail.status !== "closed" && decisionQuestion && decisionQuestion !== orientationSummary ? (
                       <>
                         <div className="matter-orientation-label matter-orientation-question">Question to resolve</div>
                         <p><LinkifiedText text={decisionQuestion} /></p>
@@ -883,10 +899,17 @@ export default function MatterWorkspace({
                       </div>
                     </div>
 
-                  {lifecycleAction.id === "close_matter" && requiredOpenWorkItems.length ? (
+                  {lifecycleAction.id === "close_matter" && (researchQueueActive || requiredOpenWorkItems.length > 0) ? (
                     <div className="matter-lifecycle-action" role="status">
-                      <span>Closure blocked · Required work remains</span>
-                      <p>{requiredOpenWorkItems.map((item) => item.title).join("; ")}</p>
+                      <span>Before you can close</span>
+                      <ol className="matter-open-list">
+                        {researchQueueActive ? <li><span className="matter-open-text">Stop or finish active research.</span><button className="btn tiny quiet" disabled={busy} onClick={() => void stopResearchQueue(detail.matter_id).then(loadResearchQueue)} type="button">Stop research</button></li> : null}
+                        {requiredOpenWorkItems.map((item) => <li key={item.work_item_id}>
+                          <span className="matter-open-text"><strong>{item.title}</strong> · Owner: {ownerOverrides[item.work_item_id] || item.owner?.trim() || "Unassigned"}</span>
+                          {!item.owner?.trim() ? <button className="btn tiny quiet" disabled={busy} onClick={() => void assignWorkItemTo(item.work_item_id, reviewSettings.lawyer.trim() || "Lawyer")} type="button">Assign owner</button> : null}
+                          <button className="btn tiny quiet" disabled={busy} onClick={() => void completeSavedWorkItem(item.work_item_id)} type="button">Complete</button>
+                        </li>)}
+                      </ol>
                     </div>
                   ) : null}
 
@@ -896,12 +919,12 @@ export default function MatterWorkspace({
                       <button
                         aria-busy={busy}
                         className={`${primaryActionClass} matter-call-button`}
-                        disabled={busy || (currentControl.id === "run_research" && researchQueueActive) || (currentControl.id === "approve_response" && approvalUnavailable) || (currentControl.id === "close_matter" && Boolean(requiredOpenWorkItems.length))}
+                        disabled={busy || (currentControl.id === "run_research" && researchQueueActive) || (currentControl.id === "approve_response" && approvalUnavailable) || (currentControl.id === "close_matter" && (researchQueueActive || Boolean(requiredOpenWorkItems.length)))}
                         onClick={() => void runControl(currentControl)}
                         title={currentControl.detail}
                         type="button"
                       >
-                        {busy ? "Working…" : currentControl.id === "run_research" && researchQueueActive ? "Research is running" : currentControl.id === "mark_as_sent" ? "Record manual delivery" : currentControl.label}
+                        {busy ? "Working…" : currentControl.id === "mark_as_sent" ? "Record manual delivery" : currentControl.label}
                       </button>
                       {currentControl.id === "mark_as_sent" ? <button className="btn quiet compact" disabled title="Direct sending is not available in the MVP." type="button">Send directly — coming later</button> : null}
                     </div>
@@ -910,10 +933,22 @@ export default function MatterWorkspace({
                   {currentWorkItem ? (
                     <div className="matter-lifecycle-action">
                       <span>Current work · Saved work item</span>
-                      <p>{currentWorkItem.title}</p>
                       <p>Owner: <strong>{ownerOverrides[currentWorkItem.work_item_id] || currentWorkItemOwner}</strong></p>
                       <div className="matter-inline-actions">
-                        <label htmlFor="current-work-item-owner">Assign owner</label>
+                        <select aria-label={`Priority for ${currentWorkItem.title}`} className="text-input" disabled={busy} onChange={(event) => void changeWorkItemPriority(currentWorkItem.work_item_id, event.target.value)} value={currentWorkItemPriority}>
+                          <option value="low">Low</option><option value="normal">Normal</option><option value="high">High</option><option value="urgent">Urgent</option>
+                        </select>
+                        {currentWorkItemOwner === "Unassigned" ? (
+                          <button className="btn quiet compact" disabled={pendingActions.includes(`assign_owner:${currentWorkItem.work_item_id}`)} onClick={() => void assignWorkItemTo(currentWorkItem.work_item_id, reviewSettings.lawyer.trim() || "Lawyer")} type="button">
+                            {pendingActions.includes(`assign_owner:${currentWorkItem.work_item_id}`) ? "Assigning owner…" : `Assign to ${reviewSettings.lawyer.trim() || "Lawyer"}`}
+                          </button>
+                        ) : null}
+                        {currentQuickOwners.map((owner) => (
+                          <button className="btn tiny quiet" disabled={pendingActions.includes(`assign_owner:${currentWorkItem.work_item_id}`)} key={owner} onClick={() => void assignWorkItemTo(currentWorkItem.work_item_id, owner)} type="button">
+                            {pendingActions.includes(`assign_owner:${currentWorkItem.work_item_id}`) ? "Assigning owner…" : owner}
+                          </button>
+                        ))}
+                        <label htmlFor="current-work-item-owner">Other owner</label>
                         <input id="current-work-item-owner" className="text-input" onChange={(event) => setWorkItemOwnerInput(event.target.value)} placeholder="Owner name" value={workItemOwnerInput} />
                         <button
                           className="btn quiet compact"
@@ -944,7 +979,7 @@ export default function MatterWorkspace({
                       <p>{lifecycleAction.detail}</p>
                       <button
                         className={`${lifecycleAction.category === "Approval" || lifecycleAction.category === "Counsel judgment" ? "btn review" : "btn quiet"} compact`}
-                        disabled={busy || (lifecycleAction.id === "approve_response" && approvalUnavailable) || (lifecycleAction.id === "close_matter" && Boolean(requiredOpenWorkItems.length))}
+                        disabled={busy || (lifecycleAction.id === "approve_response" && approvalUnavailable) || (lifecycleAction.id === "close_matter" && (researchQueueActive || Boolean(requiredOpenWorkItems.length)))}
                         onClick={() => void runControl(lifecycleAction)}
                         type="button"
                       >
@@ -997,7 +1032,9 @@ export default function MatterWorkspace({
                     {recommendationPath ? <button className="matter-artifact-link" onClick={() => openDocument(recommendationPath)} type="button"><span>Recommendation</span><span>Open recommendation</span></button> : null}
                     {visibleArtifacts.map((item) => (
                       <button className="matter-artifact-link" key={`${item.kind}:${item.path}`} onClick={() => openDocument(item.path)} type="button">
-                        <span>{{ recommendation: "Working recommendation", research: researchTitle, draft: "Current draft", final: "Approved / final response" }[item.kind]}</span>
+                        <span>{item.kind === "final"
+                          ? item.path === detail.response_approved_artifact_path ? "Approved response" : "Final response"
+                          : { recommendation: "Working recommendation", research: "Research packet", draft: "Current draft" }[item.kind]}</span>
                         <span>{item.label}</span>
                       </button>
                     ))}
@@ -1031,11 +1068,16 @@ export default function MatterWorkspace({
                   </div>
                 </section>
 
-                <section className="matter-open" id="remaining-work">
+                {detail.status === "closed" ? (
+                  closedContext.length ? <details className="matter-open" id="remaining-work">
+                    <summary>Open context at closure</summary>
+                    <ul className="matter-open-list">{closedContext.map((item) => <li key={item}><span className="matter-open-text"><LinkifiedText text={item} /></span></li>)}</ul>
+                  </details> : null
+                ) : <section className="matter-open" id="remaining-work">
                   <div className="matter-open-head">
-                    <h2>{openItems.length ? "Things to consider" : "No other things to consider"}</h2>
+                    <h2>{openItems.length ? "Other open items and questions" : "No other open items or questions"}</h2>
                     {openItems.length ? (
-                      <span>{requiredCount} required · {openItems.length - requiredCount} optional</span>
+                      <span>{requiredCount} other required work · {optionalWorkCount} optional work · {openQuestionCount} open questions</span>
                     ) : null}
                   </div>
                   {openItems.length ? (
@@ -1044,7 +1086,7 @@ export default function MatterWorkspace({
                         <li className={item.required ? "is-required" : ""} key={item.key}>
                           <span aria-hidden="true" className="matter-open-mark" />
                           <span className="matter-open-text"><LinkifiedText text={item.text} /></span>
-                          <span className="matter-open-tag">{item.required ? "Required" : "Optional"}</span>
+                          <span className="matter-open-tag">{item.source === "open_question" ? "Open question" : item.required ? "Required work" : "Optional work"}</span>
                           {item.required && item.workItemId ? (
                             <button className="btn tiny quiet" disabled={busy} onClick={() => void completeSavedWorkItem(item.workItemId!)} type="button">Complete</button>
                           ) : null}
@@ -1054,12 +1096,16 @@ export default function MatterWorkspace({
                   ) : (
                     <p className="matter-open-empty">No other open records are saved.</p>
                   )}
-                </section>
+                </section>}
 
                 <ResearchQueuePanel
                   items={researchQueue}
                   mode="summary"
                   busy={busy}
+                  showDraftSnapshotNotice={Boolean(draftPath && activePath === draftPath)}
+                  onUpdateDraftFromSavedResearch={() => openChatWithSeed(
+                    `Update the active draft from the saved research packets. Propose the changes as tracked revisions in ${draftPath?.split("/").at(-1) ?? "the current draft"} so I can accept or reject each redline. Do not replace the draft automatically.`,
+                  )}
                   onResume={async () => { setBusy(true); try { await resumeResearchQueue(detail.matter_id); await loadResearchQueue(); } finally { setBusy(false); } }}
                   onStop={async () => { setBusy(true); try { await stopResearchQueue(detail.matter_id); await loadResearchQueue(); } finally { setBusy(false); } }}
                   onRetry={async (runId) => { setBusy(true); try { await retryResearchItem(detail.matter_id, runId); await loadResearchQueue(); } finally { setBusy(false); } }}
@@ -1068,10 +1114,10 @@ export default function MatterWorkspace({
                   )}
                 />
 
-                <section className="matter-open" aria-label="Open work queue">
-                  <div className="matter-open-head"><h2>Open work queue</h2><span>{requiredOpenWorkItems.length} required open · {optionalOpenWorkItems.length} optional open</span></div>
+                {detail.status !== "closed" ? <section className="matter-open" aria-label="Other saved work items">
+                  <div className="matter-open-head"><h2>Other saved work items</h2><span>{otherRequiredOpenCount} required open · {otherOptionalOpenCount} optional open</span></div>
                   <div className="stack-list">
-                    {detail.work_items.filter((item) => !["done", "closed"].includes(item.status)).map((item) => (
+                    {otherOpenWorkItems.map((item) => (
                       <div className="matter-lifecycle-action" key={item.work_item_id}>
                         <span>
                           {Boolean(item.required) ? "Required" : "Optional"}
@@ -1095,7 +1141,7 @@ export default function MatterWorkspace({
                       </div>
                     ))}
                   </div>
-                </section>
+                </section> : null}
 
                 <details className="matter-reference">
                   <summary>Materials, activity, and decision maintenance</summary>
@@ -1174,6 +1220,7 @@ export default function MatterWorkspace({
                   initialConversationId={detail.intake_conversation_id}
                   initialRunId={detail.intake_run_id}
                   intakeActive={detail.intake_state === "active"}
+                  intakeAnswers={detail.intake_answers}
                   matterId={detail.matter_id}
                   matterTitle={detail.title}
                   onRefresh={refreshAfterChatRun}

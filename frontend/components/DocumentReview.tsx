@@ -12,7 +12,7 @@ export default function DocumentReview({ review, author, lawyerAuthor, lawyerAut
   review: ReviewState; author: ReviewAuthor; lawyerAuthor: string; lawyerAuthorId: string; busy: boolean; readOnly: boolean; onAuthorChange: (name: string) => void; onAction: (action: DocumentReviewAction) => Promise<void>;
   children: (props: { mode: ReviewDisplayMode; reviewers: Set<string>; onAddComment: (context: SelectionContext) => void; onOpenThread: (threadId: string, returnFocus: HTMLElement | null) => void; onSelectionContext: (context: SelectionContext) => void }) => React.ReactNode;
 }) {
-  const [mode, setMode] = useState<ReviewDisplayMode>(() => review.tracking || review.changes.length || review.comments.some((item) => !item.resolved) ? "markup" : "current");
+  const [mode, setMode] = useState<ReviewDisplayMode>("current");
   const [reviewers, setReviewers] = useState<Set<string>>(new Set());
   const [selection, setSelection] = useState<SelectionContext | null>(null);
   const [commentQuote, setCommentQuote] = useState("");

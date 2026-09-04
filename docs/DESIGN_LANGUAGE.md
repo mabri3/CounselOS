@@ -79,6 +79,9 @@ This is the one rule that never bends.
 - Recorded decisions: solid border, serif, a real date, a named human.
 - Recommendations never appear inside the decision table. They sit outside it,
   and the only path from one to the other is the act of recording.
+- Matter artifacts label an immutable current final as **Final response**. They
+  label it **Approved response** only when its exact path is the recorded
+  approved artifact path. Do not combine these states in one caption.
 - The first saved recommendation becomes the working recommendation. Later
   agent changes appear as **Proposed · Agent work** and require **Accept
   recommendation update**. A direct lawyer edit creates a separate version.
@@ -125,6 +128,11 @@ One primary (`--ink` on `--paper` text) per region. Secondary is `--raised` with
 a `#d6d1c7` border. Ochre `#FDEEC0`/`#F0D896` is the "review now" affordance.
 Agent actions are dashed iris on transparent.
 
+Segmented controls use a native radio group inside a `fieldset`, with one
+screen-reader-only legend and a visible keyboard focus ring. Each option uses
+the same radio `name`. The selected style does not replace the native checked
+state.
+
 Decision recording always ends with an explicit submit action. A Themis.ai draft
 can prefill the modal, but the lawyer can edit both the decision and its visible
 rationale before recording it. Opening or cancelling the modal changes no
@@ -155,6 +163,9 @@ queue order only. They do not imply parallel execution.
   reasoning effort are under **Advanced model options**.
 - Agents shows name, role, and purpose first. Standing Markdown instructions,
   tool permissions, and file paths are under **Advanced controls**.
+- Built-in agents show **Effective tool access** as noninteractive
+  **Available** or **Not available** rows with **Application-managed · Read-only**.
+  Custom agents keep editable tool-permission checkboxes.
 - Skills explains the object in plain language. The requested raw prompt remains
   available under a clear label or Advanced details.
 
@@ -162,6 +173,7 @@ queue order only. They do not imply parallel execution.
 
 - The editable document is the review surface. Do not place redlines in a separate preview.
 - Use **All Markup**, **No Markup**, and **Original** as local display modes. A display mode never changes saved review data.
+- Open a document in **No Markup**. Keep saved redlines and review history unchanged. Switch to **All Markup** only when the lawyer selects it, starts redlining, or opens the tracked-change review.
 - Insertions are underlined. Deletions use a strike-through. Both use the saved document author color and show the author name.
 - Author colors come only from the Themis.ai review palette. Color is not an identity by itself.
 - Each tracked change has individual **Accept**, **Reject**, **Accept and next**, and **Reject and next** actions. There are no bulk review actions.
@@ -228,5 +240,5 @@ same in the board, the matter header and chat.
 | `research` | Being researched | An agent is gathering the facts |
 | `explore` | Waiting on your judgment | Research is done; a path must be chosen |
 | `generate` | Being drafted | Work product is being written |
-| `respond` | Ready to send | Drafted and approved, not yet out |
+| `respond` | Respond | Review, approve, and deliver |
 | `closed` | Closed | Decided and delivered |

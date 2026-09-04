@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import DataLoadStatus from "@/components/DataLoadStatus";
 import SourceRoleEditor from "@/components/SourceRoleEditor";
 import WatchScanPreview from "@/components/WatchScanPreview";
 import { formatDateTime } from "@/lib/design";
@@ -43,20 +44,23 @@ export default function WatchBuilder({ watchId }: { watchId?: string }) {
   const [draft, setDraft] = useState<EditableWatch>(empty);
   const [runs, setRuns] = useState<Scan[]>([]);
   const [providers, setProviders] = useState<ProviderCapability[]>([]);
-  const [loading, setLoading] = useState(!!watchId);
+  const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
 
   const load = useCallback(async () => {
+    setLoading(true); setLoadError("");
     try {
-      setError("");
       const [capabilities, watch, history] = await Promise.all([
         getProviderCapabilities(), watchId ? getWatch(watchId) : Promise.resolve(null), watchId ? getWatchRuns(watchId, { limit: 20 }) : Promise.resolve({ items: [], next_cursor: null, total: 0 }),
       ]);
       setProviders(capabilities.items);
       if (watch) { setRecord(watch); setDraft(editableWatch(watch)); setRuns(history.items); }
-    } catch (caught) { setError(caught instanceof Error ? caught.message : "Could not load the Watch."); }
+      setLoaded(true);
+    } catch { setLoadError("This Watch is unavailable because its current data could not be loaded."); }
     finally { setLoading(false); }
   }, [watchId]);
   useEffect(() => { void load(); }, [load]);
@@ -112,12 +116,12 @@ export default function WatchBuilder({ watchId }: { watchId?: string }) {
     finally { setBusy(""); }
   }
 
-  if (loading) return <div className="loading">Loading Watch…</div>;
-  if (error && watchId && !record) return <><p className="error" role="alert">{error}</p><Link className="btn" href="/watches">Back to Watches</Link></>;
+  if (!loaded) return <DataLoadStatus error={loadError} loading={loading} loadingLabel="Loading Watch…" onRetry={load} />;
   const status = record?.status ?? "draft";
   const statusClass = status === "failed" ? "state-failure" : status === "healthy" ? "state-healthy" : status === "draft" || status === "scanning" ? "state-agent" : "state-attention";
 
   return <>
+    <DataLoadStatus error={loadError} loading={loading} loadingLabel="Refreshing Watch…" onRetry={load} />
     <div className="page-header"><div><div className="record-meta">Briefing · Watch Builder</div><h1>{record ? draft.title || "Edit Watch" : "New Watch"}</h1><p>Define one public monitoring assignment. You can save or scan it without starting a schedule.</p></div><div className="btn-row"><span className={`state-label ${statusClass}`}>{titleCase(status)}</span><Link className="btn quiet" href="/watches">All Watches</Link></div></div>
     {error ? <p className="error" role="alert">{error}</p> : null}{notice ? <div className="warning-callout" role="status" style={{ marginTop: 16 }}>{notice}</div> : null}
     <div className="stack-list" style={{ marginTop: 24 }}>

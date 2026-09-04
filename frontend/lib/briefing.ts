@@ -40,9 +40,6 @@ export type BriefingItem = {
 
 const RANK: Record<BriefingKind, number> = { overdue: 0, blocked: 1, assignment: 2, judgment: 3, packet: 4, review: 5, failing: 6 };
 
-/** A ranked list only reads as ranked if every row has similar mass. */
-const TITLE_MAX = 72;
-
 /** How many items show before the disclosure. The value of a ranked list is
     that it ends. */
 export const VISIBLE_LIMIT = 6;
@@ -71,15 +68,6 @@ function whyFor(matter: Matter): string {
   return matterNextAction(matter);
 }
 
-function clampText(value: string, max = TITLE_MAX): string {
-  const clean = (value || "").trim();
-  if (clean.length <= max) return clean;
-  const cut = clean.slice(0, max);
-  const space = cut.lastIndexOf(" ");
-  const kept = space > max * 0.6 ? cut.slice(0, space) : cut;
-  return `${kept.replace(/[,;:.\s]+$/, "")}…`;
-}
-
 /** Due-date sort key. Undated work sorts last, never first. */
 function dueOrder(dueAt: string | null | undefined): number {
   if (!dueAt) return Number.MAX_SAFE_INTEGER;
@@ -105,7 +93,7 @@ export function buildBriefing(
         status: "Overdue",
         color: role.failure,
         rowBg: role.failureWash,
-        title: clampText(matterNextAction(matter)),
+        title: matterNextAction(matter).trim(),
         why: matter.description || matter.title,
         when: late === 0 ? "Due today" : late === 1 ? "1 day late" : `${late} days late`,
         action: matter.status === "respond" ? "Review and send" : "Open the matter",
@@ -126,7 +114,7 @@ export function buildBriefing(
         status: blocked ? "Blocked" : "Needs assignment",
         color: role.attention,
         rowBg: role.attentionWash,
-        title: clampText(matterNextAction(matter)),
+        title: matterNextAction(matter).trim(),
         why: matter.description || matter.title,
         when: matter.work_state.due_at ? `Due ${formatShortDate(matter.work_state.due_at)}` : "No date",
         action: "Open the matter",
@@ -146,7 +134,7 @@ export function buildBriefing(
         status: "Waiting on you",
         color: role.attention,
         rowBg: role.attentionWash,
-        title: clampText(matter.title),
+        title: matter.title.trim(),
         why: whyFor(matter),
         when: matter.work_state.due_at ? `Due ${formatShortDate(matter.work_state.due_at)}` : "No date",
         action: "Read the memo",
@@ -168,7 +156,7 @@ export function buildBriefing(
       status: "Needs review",
       color: role.attention,
       rowBg: role.attentionWash,
-      title: clampText(decision.title),
+      title: decision.title.trim(),
       why: decision.staleness_reason || "The ground this decision rests on has moved since you recorded it.",
       when: decision.review_status === "stale" ? "Stale" : "Review recommended",
       action: "Review decision",
@@ -184,7 +172,7 @@ export function buildBriefing(
   for (const packet of reviewPackets) {
     if (packet.attention_state !== "required" || packet.status !== "open") continue;
     items.push({ id: `packet-${packet.packet_id}`, kind: "packet", status: "Needs review", color: role.attention,
-      rowBg: role.attentionWash, title: clampText(packet.what_happened), why: packet.why_surfaced,
+      rowBg: role.attentionWash, title: packet.what_happened.trim(), why: packet.why_surfaced,
       when: packet.timing || "Review today", action: "Review packet",
       href: `/decisions?packet=${encodeURIComponent(packet.packet_id)}`, primary: false,
       order: 0, pillBg: PILL.attention.bg, pillInk: PILL.attention.ink, late: false });
@@ -198,7 +186,7 @@ export function buildBriefing(
       status: "Failing",
       color: role.failure,
       rowBg: role.failureWash,
-      title: clampText(`Reconnect ${schedule.title.toLowerCase()}`),
+      title: `Reconnect ${schedule.title.toLowerCase()}`.trim(),
       why: `The last run failed. Nothing has been filed by this automation since ${
         schedule.last_run_at ? formatShortDate(schedule.last_run_at) : "it stopped"
       }.`,

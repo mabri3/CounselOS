@@ -229,6 +229,10 @@ async def test_research_uses_bound_research_agent_without_changing_manual_behavi
 
 @pytest.mark.asyncio
 async def test_research_refreshes_precomputed_dossier_orientation(app_context):
+    decision_question_before = (
+        app_context.dossiers.orientation("MAT-DEMO-ORBIT")["decision_question"]
+        or app_context.index.get_matter("MAT-DEMO-ORBIT")["next_action"]
+    )
     async def run_agent(_request):
         return ChatResponse(
             reply=(
@@ -257,7 +261,7 @@ async def test_research_refreshes_precomputed_dossier_orientation(app_context):
             "Orbit uses an automated notice process that may need updated reason codes. "
             "Counsel must resolve the notice approach before launch."
         ),
-        "decision_question": "Should Orbit block launch until the new reason codes are in every notice?",
+        "decision_question": decision_question_before,
         "open_questions": [
             "Which notices still use the old reason codes?",
             "Can the launch be limited to updated states?",
@@ -271,6 +275,23 @@ async def test_research_refreshes_precomputed_dossier_orientation(app_context):
     assert "## Research\n" not in dossier
     assert f"Latest review: `{result['path']}`" in dossier
     assert "Research has not been added yet." not in dossier
+
+
+@pytest.mark.asyncio
+async def test_research_reports_saved_packet_before_orientation_follow_up(app_context, monkeypatch):
+    saved = []
+
+    def observe_orientation(*args, **kwargs):
+        assert saved and saved[0]["path"]
+        return {"path": app_context.dossiers.get("MAT-DEMO-ORBIT")["path"]}
+
+    monkeypatch.setattr(app_context.dossiers, "update_orientation", observe_orientation)
+    result = await app_context.research.run(
+        "MAT-DEMO-ORBIT", "What applies?", change_stage=False,
+        on_packet_saved=saved.append,
+    )
+
+    assert saved[0]["path"] == result["path"]
 
 
 @pytest.mark.asyncio

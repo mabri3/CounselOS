@@ -1,0 +1,13 @@
+Generation mode: built-in image generation tool
+
+cover-flashlight.png
+Premium editorial magazine illustration of a lawyer actively directing a controlled beam across abstract legal terrain. Wide 16:9 composition with headline space. Bright saturated cobalt, coral-orange, citrus yellow, white, and deep navy. Geometric paper collage with topographic lines. Human agency, no legal or AI clichés, no text.
+
+blind-spots.png
+Premium editorial illustration of the private burden of legal judgment before all facts are visible. Abstract aerial terrain with illuminated and hidden paths, one small confident professional studying the field, and strong negative space for copy. Bright cobalt, coral, aqua, yellow, white, and navy. No text or legal and AI clichés.
+
+journey.png
+Panoramic editorial illustration of one professional moving from uncertainty to judgment while directing a beam through facts, forks, hazards, unknown edges, and a chosen route. Six visual zones for annotations. Bright cobalt, coral, yellow, aqua, white, and navy. No workflow diagram, text, or guide figure.
+
+defensible-leap.png
+Abstract editorial illustration of a luminous path becoming more coherent through repeated decision points and retained context. Suggest trust earned over time without literal software or a moat. Bright cobalt, coral, yellow, aqua, white, and navy. No text or legal and AI clichés.

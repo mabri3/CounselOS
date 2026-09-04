@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&amp;display=swap">
+  <style>
+
+  .slide{
+    --paper:#FBF6EA; --ink:#15211F; --body:#35423F; --src:#55605D; --src-b:#22302D;
+    --muted:#8B948F; --rule:#DFD6C4; --border:#C9C0AD; --shadow-1:#E7DECC; --ridge:#C4BCA9;
+    --ground:#06322F; --on-ground:#F9F3E5; --on-ground-1:#FBF6EA; --on-ground-2:#DCE7DF; --on-ground-3:#C2D3CB;
+    --ground-rule:#1C4C48; --accent:#DE3D22; --accent-hover:#B22F19; --accent-dk:#F6B650;
+    --marker:#D9930C; --fur:#948F84; --fur-dk:#6E9089; --page-bg:#E8E1D2;
+    --beam-1:#FFE0A0; --beam-2:#F7C463; --beam-3:#E0A020; --vig:#02201E;
+  }
+  .slide.pal-cobalt{
+    --paper:#F7F4EC; --ink:#101326; --body:#2F3348; --src:#4E5266; --src-b:#1D2135;
+    --muted:#8A8D9C; --rule:#DCD8CC; --border:#C6C2B6; --shadow-1:#E4E0D4; --ridge:#C0BCB0;
+    --ground:#1A2FA6; --on-ground:#F7F4EC; --on-ground-1:#FFFFFF; --on-ground-2:#D6DCFA; --on-ground-3:#BFC8F2;
+    --ground-rule:#3B4DC0; --accent:#FF5A3C; --accent-hover:#D8422A; --accent-dk:#FFC53D;
+    --marker:#FF5A3C; --fur:#8D8F9B; --fur-dk:#8894DC; --page-bg:#E6E2D6;
+    --beam-1:#FFE49B; --beam-2:#FFC53D; --beam-3:#FF8A3C; --vig:#0B1560;
+  }
+  .slide.pal-oxblood{
+    --paper:#F6F1E8; --ink:#1A1310; --body:#3E332E; --src:#5F5249; --src-b:#2B221D;
+    --muted:#8A7B70; --rule:#E2D9C9; --border:#CFC3B0; --shadow-1:#EAE0CE; --ridge:#C9BCA6;
+    --ground:#1A1310; --on-ground:#F3EADC; --on-ground-1:#F6EEE0; --on-ground-2:#DFD2BE; --on-ground-3:#CFC0AE;
+    --ground-rule:#3A2E27; --accent:#C24A38; --accent-hover:#A33324; --accent-dk:#E2A544;
+    --marker:#B0851F; --fur:#9C8E80; --fur-dk:#7A6A56; --page-bg:#ECE5D8;
+    --beam-1:#FFD48A; --beam-2:#F0BE63; --beam-3:#D99A3C; --vig:#080604;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#E8E1D2}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{color:var(--accent-hover)}
+  .slide{position:relative;width:1280px;height:720px;overflow:hidden;background:var(--paper);color:var(--ink);
+    font-family:'Source Serif 4',Charter,'Iowan Old Style',Georgia,serif;font-size:21.33px;line-height:1.44;-webkit-font-smoothing:antialiased;font-kerning:normal}
+  .slide.night{background:var(--ground);color:var(--on-ground)}
+  .art{position:absolute;top:0;left:0;width:1280px;height:720px;pointer-events:none}
+  .pad{position:absolute;top:40px;left:46px;width:1188px;height:638px;display:flex;flex-direction:column}
+  .fur{position:absolute;left:46px;right:46px;bottom:8px;display:flex;justify-content:space-between;align-items:baseline;
+    font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;font-size:11.5px;font-weight:500;letter-spacing:.17em;text-transform:uppercase;color:var(--fur)}
+  .night .fur{color:var(--fur-dk)}
+  h1,h2,h3,p{margin:0;font-weight:400}
+  .h0{font-size:68px;line-height:1.06;font-weight:600;letter-spacing:-.021em;text-wrap:pretty}
+  .h1{font-size:47px;line-height:1.08;font-weight:600;letter-spacing:-.014em;text-wrap:pretty}
+  .lede{font-size:28px;line-height:1.32;color:var(--body);text-wrap:pretty}
+  .p{font-size:21.33px;line-height:1.37;color:var(--body);text-wrap:pretty}
+  .p+.p{margin-top:10px}
+  .callout{font-size:32px;line-height:1.19;font-weight:600;letter-spacing:-.022em;color:var(--ink);text-wrap:pretty}
+  .big{font-size:44px;line-height:1.08;font-weight:600;letter-spacing:-.018em;text-wrap:pretty}
+  .night .lede,.ink .lede{color:var(--on-ground-2)}
+  .night .p,.ink .p{color:var(--on-ground-3)}
+  .night .callout,.ink .callout,.night .big,.ink .big{color:var(--on-ground-1)}
+  .kick{font-family:'IBM Plex Sans','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:13.5px;font-weight:600;letter-spacing:.155em;text-transform:uppercase;color:var(--accent);line-height:1.2}
+  .night .kick,.ink .kick{color:var(--accent-dk)}
+  .src{font-family:'IBM Plex Sans','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:21.33px;line-height:1.29;color:var(--src);font-weight:400;text-wrap:pretty}
+  .src b{font-weight:600;color:var(--src-b)}
+  .lead{font-weight:600;color:var(--ink)}
+  .night .lead,.ink .lead{color:var(--on-ground-1)}
+  .rule{height:1px;background:var(--rule);flex:none}
+  .night .rule,.ink .rule{background:var(--ground-rule)}
+  .rule-ink{height:2px;background:var(--ink);flex:none}
+  .cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 30px}
+  .cols2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 40px}
+  .vr{border-left:1px solid var(--rule);padding-left:29px}
+  .night .vr,.ink .vr{border-left-color:var(--ground-rule)}
+  .list{display:flex;flex-direction:column;gap:11px}
+  .li{display:grid;grid-template-columns:7px minmax(0,1fr);gap:0 15px;align-items:start}
+  .dot{width:7px;height:7px;background:var(--marker);margin-top:13px}
+  .nli{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 14px;align-items:start}
+  .num{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;font-size:12.5px;font-weight:500;letter-spacing:.08em;color:var(--accent);margin-top:9px}
+  .ink{background:var(--ink);color:var(--on-ground)}
+  .ochre-rule{border-left:3px solid var(--accent);padding-left:26px}
+  .stack{display:flex;flex-direction:column}
+  .grow{flex:1 1 auto;min-height:0}
+  .slide.wide .pad{top:30px;left:34px;width:1212px;height:662px}
+  .slide.wide .fur{left:34px;right:34px;bottom:8px}
+  .tight .p{line-height:1.31}
+  .tight .src{line-height:1.24}
+  .tight .p+.p{margin-top:9px}
+  .flow{column-gap:40px;column-rule:1px solid var(--rule);column-fill:balance}
+  .flow>div{break-inside:avoid}
+  .flow>p{orphans:2;widows:2}
+  .flow>*+*{margin-top:6px}
+  .flow .kick{margin-bottom:5px}
+  .xtight .p{line-height:1.26}
+  .xtight .src{line-height:1.22}
+  .xtight .p+.p{margin-top:8px}
+  .slide.xwide .pad{top:22px;left:30px;width:1220px;height:676px}
+  .slide.xwide .fur{left:30px;right:30px;bottom:4px}
+</style>
+</helmet>
+<div class="slide wide tight">
+
+<div class="pad">
+
+<h1 class="h1" style="max-width:1150px;flex:none">Lawyers are not only asking for faster work. They want a second perspective as they work through the decision.</h1>
+<div style="height:12px;flex:none"></div><div class="rule"></div><div style="height:14px;flex:none"></div>
+<p class="p" style="flex:none;max-width:1170px">Across four interviews with in-house lawyers and 203 de-duplicated Reddit discussions about legal AI, the requested tasks and features varied. The recurring need was more consistent: a capable second perspective that helps the lawyer examine the question, test their reasoning, and decide with confidence.</p>
+<div style="height:20px;flex:none"></div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 46px;flex:none">
+  <div><p class="p"><span class="lead">&#8220;I need someone to think with.&#8221;</span> A second legal perspective helps the lawyer work through ambiguity instead of facing a blank page or a finished answer.</p></div><div class="vr"><p class="p"><span class="lead">&#8220;I need to know what I may have missed.&#8221;</span> The lawyer wants thoughtful challenge: another issue, another fact, another interpretation, or another consequence that could change the path.</p></div><div><p class="p"><span class="lead">&#8220;I need support that respects my judgment.&#8221;</span> The system can inform, question, and test. The lawyer must remain the author of the decision.</p></div><div class="vr"><p class="p"><span class="lead">&#8220;I need my reasoning tested before I rely on it.&#8221;</span> Confidence becomes fragile when material counterexamples, conflicting facts, or overlooked problems remain outside the lawyer's view. Themis should surface them before the decision is made.</p></div>
+</div>
+<div class="grow"></div>
+<div class="rule"></div><div style="height:12px;flex:none"></div>
+<div style="display:grid;grid-template-columns:400px minmax(0,1fr);gap:0 44px;align-items:start;flex:none">
+  <p class="p">The adoption opportunity may not be another feature bundle. It may be a product relationship in which the lawyer receives useful challenge without giving up control.</p>
+  <p class="src"><b>Source:</b> Themis analysis of 203 de-duplicated Reddit discussions about legal AI and four discovery interviews with in-house lawyers, August 2026. The statements above synthesize recurring themes; they are not direct quotations. Interview quotations should not appear externally without approval and verification against the recordings.</p>
+</div>
+</div>
+<div class="fur"><span>Themis.ai</span><span>04</span></div>
+</div>
+</x-dc>
+</body>
+</html>

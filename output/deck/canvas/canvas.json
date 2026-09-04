@@ -1,0 +1,148 @@
+{
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1280,
+      "h": 720,
+      "page": "page-1"
+    },
+    {
+      "file": "Burden.dc.html",
+      "x": 1400,
+      "y": 0,
+      "w": 1280,
+      "h": 720,
+      "page": "page-1"
+    },
+    {
+      "file": "Thesis.dc.html",
+      "x": 2800,
+      "y": 0,
+      "w": 1280,
+      "h": 720,
+      "page": "page-1"
+    },
+    {
+      "file": "Voices.dc.html",
+      "x": 0,
+      "y": 910,
+      "w": 1280,
+      "h": 720,
+      "page": "page-1"
+    },
+    {
+      "file": "Incomplete.dc.html",
+      "x": 1400,
+      "y": 910,
+      "w": 1280,
+      "h": 720,
+      "page": "page-1"
+    },
+    {
+      "file": "Journey.dc.html",
+      "x": 2800,
+      "y": 910,
+      "w": 1280,
+      "h": 720,
+      "page": "page-1"
+    },
+    {
+      "file": "Matter.dc.html",
+      "x": 0,
+      "y": 1820,
+      "w": 1280,
+      "h": 720,
+      "page": "page-1"
+    },
+    {
+      "file": "Behaviors.dc.html",
+      "x": 1400,
+      "y": 1820,
+      "w": 1280,
+      "h": 720,
+      "page": "page-1"
+    },
+    {
+      "file": "Leap.dc.html",
+      "x": 2800,
+      "y": 1820,
+      "w": 1280,
+      "h": 720,
+      "page": "page-1"
+    },
+    {
+      "file": "Assumptions.dc.html",
+      "x": 0,
+      "y": 2730,
+      "w": 1280,
+      "h": 720,
+      "page": "page-1"
+    },
+    {
+      "file": "Evidence.dc.html",
+      "x": 1400,
+      "y": 2730,
+      "w": 1280,
+      "h": 720,
+      "page": "page-1"
+    },
+    {
+      "file": "CoverCobalt.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1280,
+      "h": 720,
+      "page": "page-2"
+    },
+    {
+      "file": "PageCobalt.dc.html",
+      "x": 1400,
+      "y": 0,
+      "w": 1280,
+      "h": 720,
+      "page": "page-2"
+    },
+    {
+      "file": "CoverOxblood.dc.html",
+      "x": 0,
+      "y": 910,
+      "w": 1280,
+      "h": 720,
+      "page": "page-2"
+    },
+    {
+      "file": "PageOxblood.dc.html",
+      "x": 1400,
+      "y": 910,
+      "w": 1280,
+      "h": 720,
+      "page": "page-2"
+    }
+  ],
+  "pages": [
+    {
+      "id": "page-1",
+      "name": "Deck"
+    },
+    {
+      "id": "page-2",
+      "name": "Palette options"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "palette-note",
+      "x": 0,
+      "y": -96,
+      "w": 1280,
+      "page": "page-2",
+      "text": "Two alternate colourways of the cover and slide 10. Page 1 (Deck) is currently set in Ember: petrol ground, vermilion accent, amber light. Say which you want and it swaps across all eleven slides."
+    }
+  ],
+  "launch": {
+    "view": "canvas",
+    "page": "page-1"
+  }
+}

@@ -936,12 +936,21 @@ def test_output_hygiene_strips_tool_step_limit_variants(control_text):
     assert clean_user_facing_reply(f"{control_text} Useful answer.") == "Useful answer."
 
 
+def test_output_hygiene_removes_empty_orientation_preface():
+    reply = "Here's my orientation to the request.\n\n## Summary of the request\n\nThe product team wants to launch instant payouts."
+
+    assert clean_user_facing_reply(reply) == (
+        "## Summary of the request\nThe product team wants to launch instant payouts."
+    )
+
+
 def test_primary_agent_contracts_keep_questions_atomic_and_save_once(app_context):
     intake = app_context.agent_context.build_system(app_context.agents.get("intake-agent"))
     copilot = app_context.agent_context.build_system(app_context.agents.get("counsel-copilot"))
 
     assert "Each single-choice question must resolve one independently answerable fact" in intake
     assert "Report only new facts or material corrections" in intake
+    assert "Treat legal conclusions as preliminary unless supplied or retrieved authority supports them" in intake
     assert "save the complete artifact once" in copilot
 
 

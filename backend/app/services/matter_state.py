@@ -33,6 +33,9 @@ class MatterStateService:
         self,
         matter: dict[str, Any],
         work_items: list[dict[str, Any]],
+        *,
+        current_final_path: str | None = None,
+        required_open_count: int | None = None,
     ) -> dict[str, Any]:
         stage = self._text(matter.get("status")).lower()
         next_item = self._next_work_item(
@@ -58,6 +61,20 @@ class MatterStateService:
             if intake_active
             else item_title or saved_action or self.default_next_action(stage)
         )
+        if current_final_path or matter.get("response_approved_at"):
+            open_count = required_open_count if required_open_count is not None else int(next_item is not None)
+            next_action = self.lifecycle_next_action(
+                matter,
+                current_final_path=current_final_path,
+                required_open_count=open_count,
+            )
+            if (
+                next_action in {"Approve the final response.", "Record manual delivery."}
+                or not open_count
+            ):
+                next_item = None
+                next_owner = self._configured_lawyer() or None
+                next_actor = "you"
         due_at = self._display_value(
             next_item.get("due_at") if next_item and next_item.get("due_at") else matter.get("target_date")
         )
@@ -147,7 +164,7 @@ class MatterStateService:
         if not matter.get("response_approved_at"):
             return "Approve the final response."
         if not matter.get("response_sent_at"):
-            return "Record manual delivery of the approved response."
+            return "Record manual delivery."
         if required_open_count:
             return "Complete required work before closing the matter."
         return "Close the matter."

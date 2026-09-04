@@ -1,6 +1,23 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { recommendationBasis, recommendationNeedsReason } from "../lib/recommendations.ts";
+import { shouldApplyCanonicalRecommendation } from "../lib/matter-workspace.ts";
+import type { RecommendationState } from "../lib/types.ts";
+
+const savedRecommendation = {
+  matter_id: "MAT-1", path: "03_Matters/demo/recommendations.md", content: "Ship with controls.",
+  current_version_id: "REC-1", current_version_number: 1, proposal: null,
+} as RecommendationState;
+assert.equal(
+  shouldApplyCanonicalRecommendation(savedRecommendation, null, "MAT-1"),
+  false,
+  "a stale empty reload must not clear a confirmed saved recommendation",
+);
+assert.equal(
+  shouldApplyCanonicalRecommendation(savedRecommendation, null, "MAT-2"),
+  true,
+  "an empty canonical value for a different matter must clear the prior matter's recommendation",
+);
 
 assert.equal(recommendationNeedsReason("followed"), false);
 assert.equal(recommendationNeedsReason("modified"), true);

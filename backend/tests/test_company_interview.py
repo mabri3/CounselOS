@@ -107,6 +107,35 @@ def test_mock_updates_working_draft_without_writing(app_context):
     assert not app_context.vault.exists("00_System/company.md")
 
 
+def test_long_overview_uses_concise_local_summary_without_model(app_context):
+    overview = (
+        "Acme provides payment tools to small shops in the United States. "
+        "It also handles a long list of operational details that belong in the structured profile, not the summary. "
+        + "More detail. " * 40
+    )
+    response = _client(app_context).post(
+        "/api/settings/company/interview", json=_payload(message=overview)
+    )
+
+    assert response.status_code == 200
+    assert response.json()["draft"]["summary"] == (
+        "Acme provides payment tools to small shops in the United States."
+    )
+
+
+def test_model_summary_replaces_only_temporary_overview_fallback(app_context):
+    provider = ProviderFake(_model_result(profile={"summary": "Concise model orientation."}))
+    _use_model(app_context, provider)
+
+    response = _client(app_context).post(
+        "/api/settings/company/interview",
+        json=_payload(message="Acme provides payment tools. It serves many customer groups and has detailed operations."),
+    )
+
+    assert response.status_code == 200
+    assert response.json()["draft"]["summary"] == "Concise model orientation."
+
+
 def test_model_generates_one_tailored_follow_up(app_context):
     provider = ProviderFake(_model_result())
     _use_model(app_context, provider)

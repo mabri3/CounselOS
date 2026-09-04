@@ -22,6 +22,7 @@ CONTENT_FIELDS = tuple(
 )
 PROFILE_FIELDS = set(CONTENT_FIELDS)
 MAX_ANSWERS = 6
+SUMMARY_MAX_CHARS = 240
 ABSENT_WEBSITE_VALUES = {"", "leave blank", "none", "no website"}
 
 INITIAL_QUESTION = CompanyInterviewQuestion(
@@ -114,7 +115,7 @@ class CompanyInterviewService:
                 answer,
             )
         elif answer and question_id == "overview" and not current_profile.summary.strip():
-            direct_updates["summary"] = answer
+            direct_updates["summary"] = self._local_summary(answer)
 
         if website_url:
             direct_updates["website_url"] = website_url
@@ -181,7 +182,11 @@ class CompanyInterviewService:
                 ]
             )
             parsed = self._parse_turn(reply.content, current_profile)
-            draft = self._merge_model_profile(fallback, parsed["profile"])
+            draft = self._merge_model_profile(
+                fallback,
+                parsed["profile"],
+                replace_temporary_summary=(question_id == "overview" and not current_profile.summary.strip()),
+            )
             complete = bool(parsed["complete"]) or answer_count >= MAX_ANSWERS
             if complete:
                 question = None
@@ -277,16 +282,30 @@ class CompanyInterviewService:
     def _merge_model_profile(
         current: CompanyProfile,
         proposed: CompanyProfile,
+        *,
+        replace_temporary_summary: bool = False,
     ) -> CompanyProfile:
         updates = {
             field: (
-                str(getattr(current, field))
+                str(getattr(proposed, field))
+                if field == "summary" and replace_temporary_summary and str(getattr(proposed, field)).strip()
+                else str(getattr(current, field))
                 if str(getattr(current, field)).strip()
                 else str(getattr(proposed, field))
             )
             for field in CONTENT_FIELDS
         }
         return current.model_copy(update=updates)
+
+    @staticmethod
+    def _local_summary(answer: str) -> str:
+        clean = " ".join(answer.split())
+        sentence = re.match(r".*?[.!?](?:\s|$)", clean)
+        candidate = sentence.group(0).strip() if sentence else clean
+        if len(candidate) <= SUMMARY_MAX_CHARS:
+            return candidate
+        shortened = candidate[: SUMMARY_MAX_CHARS + 1].rsplit(" ", 1)[0].rstrip(" ,;:")
+        return f"{shortened}."
 
     @staticmethod
     def _plain_text(content: str) -> str:

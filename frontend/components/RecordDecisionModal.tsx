@@ -166,8 +166,9 @@ export default function RecordDecisionModal({
               <textarea aria-label="Conditions" className="text-input prose" disabled={busy || created || recorded} onChange={(event) => setConditions(event.target.value)} placeholder="One condition per line" value={conditions} />
             </div>
             <div>
-              <div className="field-label">Not decided</div>
-              <textarea aria-label="Not decided" className="text-input prose" disabled={busy || created || recorded} onChange={(event) => setNotDecided(event.target.value)} placeholder="One open point per line" value={notDecided} />
+              <div className="field-label">Issues this decision does not resolve</div>
+              <textarea aria-label="Issues this decision does not resolve" className="text-input prose" disabled={busy || created || recorded} onChange={(event) => setNotDecided(event.target.value)} placeholder="One open point per line" value={notDecided} />
+              <div className="field-help">Optional. List issues that remain open after this decision.</div>
             </div>
           </div>
 

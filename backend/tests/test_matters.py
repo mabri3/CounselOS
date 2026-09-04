@@ -173,6 +173,43 @@ def test_response_approval_delivery_and_closure_are_separate(app_context):
     assert closed["matter"]["closed_at"]
 
 
+def test_list_and_detail_share_delivery_and_closure_projection(app_context):
+    created = app_context.matters.create(
+        MatterCreate(title="Lifecycle projection", request_text="Prepare the response.")
+    )
+    matter_id = created["matter_id"]
+    app_context.matters.move_stage(matter_id, "respond")
+    draft = app_context.work_products.create_draft(
+        matter_id, title="Lifecycle response", content="Response body."
+    )
+    final = app_context.work_products.finalize(matter_id, draft["vault_path"])
+    for item in app_context.index.list_work_items(matter_id):
+        if item["required"] and item["status"] not in {"done", "closed"}:
+            app_context.matters.complete_work_item(matter_id, item["work_item_id"], actor="Counsel")
+
+    app_context.matters.perform_action(
+        matter_id, "approve_response", actor="Counsel", artifact_path=final["vault_path"]
+    )
+    approved_detail = app_context.matters.get(matter_id)
+    approved_list = next(
+        item for item in app_context.matters.list() if item["matter_id"] == matter_id
+    )
+
+    assert approved_list["work_state"] == approved_detail["work_state"]
+    assert approved_detail["work_state"]["next_action"] == "Record manual delivery."
+    assert approved_detail["work_state"]["next_actor"] == "you"
+
+    app_context.matters.perform_action(matter_id, "mark_as_sent", actor="Counsel")
+    delivered_detail = app_context.matters.get(matter_id)
+    delivered_list = next(
+        item for item in app_context.matters.list() if item["matter_id"] == matter_id
+    )
+
+    assert delivered_list["work_state"] == delivered_detail["work_state"]
+    assert delivered_detail["work_state"]["next_action"] == "Close the matter."
+    assert delivered_detail["work_state"]["next_actor"] == "you"
+
+
 def test_approval_requires_final_linked_to_current_draft(app_context):
     created = app_context.matters.create(
         MatterCreate(title="Current final", request_text="Prepare the response.")

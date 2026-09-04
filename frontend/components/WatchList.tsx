@@ -1,4 +1,5 @@
 import Link from "next/link";
+import DataLoadStatus from "@/components/DataLoadStatus";
 import { formatDateTime } from "@/lib/design";
 import type { Watch } from "@/lib/watchTypes";
 
@@ -23,14 +24,13 @@ function cadenceWords(recurrence: Watch["recurrence"]): string {
   return "On a set interval";
 }
 
-export default function WatchList({ error, watches }: { error: string; watches: Watch[] | null }) {
+export default function WatchList({ error, loading, onRetry, watches }: { error: string; loading: boolean; onRetry: () => void | Promise<void>; watches: Watch[] | null }) {
   return <>
     <div className="page-header">
       <div className="page-header-main"><div className="eyebrow">Continuous legal awareness</div><h1 className="headline">Watches</h1><p className="page-lede">A Watch is a standing question Themis.ai re-asks of public sources on a schedule. What each one finds arrives in Briefing.</p></div>
       <Link className="btn primary" href="/watches/new">New Watch</Link>
     </div>
-    {error ? <p className="error" role="alert">{error}</p> : null}
-    {!watches && !error ? <div className="loading">Loading Watches…</div> : null}
+    <DataLoadStatus error={error} loading={loading} loadingLabel={watches ? "Refreshing Watches…" : "Loading Watches…"} onRetry={onRetry} />
     {watches?.length === 0 ? <div className="empty-state" style={{ marginTop: 24 }}>No Watches yet. Create one to save a monitoring question.</div> : null}
     {watches?.length ? <div className="stack-list" style={{ marginTop: 24 }}>
       {watches.map((watch) => <Link className="card card-pad responsive-card" href={`/watches/${encodeURIComponent(watch.watch_id)}`} key={watch.watch_id}>

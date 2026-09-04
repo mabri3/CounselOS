@@ -110,6 +110,15 @@ export type Matter = {
   operation_result?: OperationResult;
   recommendation?: RecommendationState;
   recommendation_review_needed?: boolean;
+  intake_answers?: IntakeAnswer[];
+};
+
+export type IntakeAnswer = {
+  question_id: string;
+  question: string;
+  answer: string;
+  values: string[];
+  status: "answered" | "skipped" | string;
 };
 
 export type RecommendationVersion = {
@@ -452,6 +461,7 @@ export type ChatRun = {
   failure_class?: ChatRunFailureClass | null;
   correlation_id?: string | null;
   milestone?: string | null;
+  operation_results?: OperationResult[];
   response?: ChatResponse | null;
   path: string;
   selection?: {

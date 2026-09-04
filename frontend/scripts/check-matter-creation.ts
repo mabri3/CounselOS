@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { createMatter, matterTargetDateFromForm } from "../lib/api.ts";
+import { createMatter, matterTargetDateFromForm, request } from "../lib/api.ts";
 
 const form = readFileSync(new URL("../components/NewMatterForm.tsx", import.meta.url), "utf8");
 const api = readFileSync(new URL("../lib/api.ts", import.meta.url), "utf8");
@@ -56,5 +56,28 @@ await createMatter({
 
 assert.equal(JSON.parse(sentBody).target_date, "2026-09-15", "createMatter must preserve the date in the HTTP request body");
 assert.equal(JSON.parse(sentBody).source_action_key, "matter-create:form:test", "createMatter must preserve the duplicate-prevention key");
+
+globalThis.fetch = (async () => { throw new TypeError("Failed to fetch"); }) as typeof fetch;
+await assert.rejects(
+  request("/matters"),
+  /Counsel OS cannot reach the local service\. Check that it is running, then retry\./,
+  "network failures must use plain recovery wording",
+);
+
+const originalSetTimeout = globalThis.setTimeout;
+globalThis.setTimeout = ((callback: TimerHandler) => {
+  if (typeof callback === "function") callback();
+  return 1;
+}) as typeof globalThis.setTimeout;
+globalThis.fetch = (async (_input, init) => {
+  if (init?.signal?.aborted) throw new DOMException("Timed out", "AbortError");
+  return new Promise<Response>(() => undefined);
+}) as typeof fetch;
+await assert.rejects(
+  request("/matters"),
+  /Counsel OS cannot reach the local service\. Check that it is running, then retry\./,
+  "a request that reaches the client timeout must become retryable",
+);
+globalThis.setTimeout = originalSetTimeout;
 
 console.log("Matter creation checks passed.");

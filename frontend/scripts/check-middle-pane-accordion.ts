@@ -6,7 +6,8 @@ const documentPanel = readFileSync(new URL("../components/DocumentPanel.tsx", im
 const styles = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
 
 assert.match(workspace, /useState<"overview" \| "chat">\(\(\) =>/);
-assert.match(workspace, /detail\.intake_conversation_id \|\| detail\.intake_state === "active" \? "chat" : "overview"/);
+assert.match(workspace, /detail\.intake_state === "active" \? "chat" : "overview"/, "only active intake opens Chat initially");
+assert.doesNotMatch(workspace, /detail\.intake_conversation_id \|\| detail\.intake_state === "active"/, "a saved intake conversation alone must not hide Overview");
 assert.match(workspace, />\s*Overview\s*</);
 assert.match(workspace, />\s*Chat\s*</);
 assert.match(workspace, /aria-controls="matter-overview-panel"/);

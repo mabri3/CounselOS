@@ -173,6 +173,14 @@ const closeWithRequiredWork = matterAction({
 assert.equal(closeWithRequiredWork.id, "close_matter");
 assert.match(closeWithRequiredWork.detail, /Required work remains/);
 
+const unrelatedRequiredItem: BriefWorkItem = {
+  work_item_id: "WI-REQUIRED", path: "work-items/required.md", title: "Archive response",
+  status: "open", required: 1, item_type: "task", owner: "Operations",
+};
+assert.equal(controlIdForCurrentWork("approve_response", unrelatedRequiredItem), "approve_response");
+assert.equal(controlIdForCurrentWork("mark_as_sent", unrelatedRequiredItem), "mark_as_sent");
+assert.equal(controlIdForCurrentWork("close_matter", unrelatedRequiredItem), "open_work_item");
+
 const workspaceSource = readFileSync(new URL("../components/MatterWorkspace.tsx", import.meta.url), "utf8");
 assert.equal(workspaceSource.includes("Latest research"), false);
 assert.equal(workspaceSource.includes("Agent research"), false);
@@ -180,7 +188,8 @@ assert.equal(workspaceSource.includes("Written by Themis.ai, unreviewed"), false
 assert.equal(workspaceSource.includes("No working recommendation is saved."), false);
 assert.equal(workspaceSource.includes("Matter at a glance"), true);
 assert.equal(workspaceSource.includes("Question to resolve"), true);
-assert.equal(workspaceSource.includes("Things to consider"), true);
+assert.equal(workspaceSource.includes("Other open items and questions"), true);
+assert.equal(workspaceSource.includes("Other saved work items"), true);
 assert.equal(workspaceSource.includes("Also open on this matter"), false);
 assert.equal(workspaceSource.includes("detail.orientation.summary"), true);
 assert.equal(workspaceSource.includes("<summary>Original request</summary>"), true);
@@ -189,7 +198,8 @@ assert.equal(workspaceSource.includes("openDocument(requestPath)"), true);
 assert.equal(workspaceSource.includes("completeSavedWorkItem"), true);
 assert.equal(workspaceSource.includes("Open work item"), true);
 assert.equal(workspaceSource.includes("Current work · Saved work item"), true);
-assert.equal(workspaceSource.includes("Owner: <strong>{currentWorkItemOwner}</strong>"), true);
+assert.equal(workspaceSource.includes("<p>{currentWorkItem.title}</p>"), false);
+assert.equal(workspaceSource.includes("Owner: <strong>{ownerOverrides[currentWorkItem.work_item_id] || currentWorkItemOwner}</strong>"), true);
 assert.equal(workspaceSource.includes("detail as MatterDetail & { participants?: MatterParticipant[] }"), true);
 assert.equal(workspaceSource.includes("finalizeCurrentDraft"), true);
 assert.equal(workspaceSource.includes("createManualDraft"), true);
@@ -199,10 +209,12 @@ assert.equal(workspaceSource.includes("const draftPath = detail.current_work_pro
 assert.equal(workspaceSource.includes("detail.current_work_product_final_path"), true);
 assert.equal(workspaceSource.includes("detail.latest_research_path"), true);
 assert.equal(workspaceSource.includes("approvalUnavailable"), true);
+assert.equal(workspaceSource.includes("showDraftSnapshotNotice={Boolean(draftPath && activePath === draftPath)}"), true);
+assert.equal(workspaceSource.includes("Do not replace the draft automatically."), true);
 assert.equal(workspaceSource.includes("finalizeWorkProduct(detail.matter_id, draftPath)"), true);
 assert.equal(workspaceSource.includes("currentWorkProductDraftPath={draftPath}"), true);
 assert.equal(workspaceSource.includes('currentControl.id !== "open_work_item"'), true);
-assert.ok((workspaceSource.match(/researchTitle/g) ?? []).length >= 3, "workspace reuses the saved research title");
+assert.equal(workspaceSource.includes('research: "Research packet"'), true, "workspace gives saved research a clear artifact type");
 for (const message of [
   "No research packet is saved yet.",
   "No working recommendation is saved yet.",

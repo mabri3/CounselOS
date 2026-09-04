@@ -26,6 +26,38 @@ def test_exact_completion_is_retry_safe_and_does_not_touch_sibling(app_context):
     assert app_context.vault.read_markdown(sibling["path"])["metadata"]["status"] == "open"
 
 
+def test_work_item_service_does_not_merge_distinct_agent_action_keys(app_context):
+    matter_id = "MAT-DEMO-BEACON"
+    first = app_context.matters.create_work_item(WorkItemCreate(
+        matter_id=matter_id, title="Confirm funds-flow and custody model",
+        required=True, source_action_key="chat:RUN-1",
+    ))
+    distinct_action = app_context.matters.create_work_item(WorkItemCreate(
+        matter_id=matter_id, title="Confirm funds-flow and custody model",
+        required=True, source_action_key="chat:RUN-2",
+    ))
+
+    assert distinct_action["work_item_id"] != first["work_item_id"]
+
+
+def test_work_item_service_preserves_required_class_and_manual_repeat(app_context):
+    matter_id = "MAT-DEMO-BEACON"
+    required = app_context.matters.create_work_item(WorkItemCreate(
+        matter_id=matter_id, title="Country approval gate", required=True,
+        source_action_key="chat:RUN-A",
+    ))
+    optional = app_context.matters.create_work_item(WorkItemCreate(
+        matter_id=matter_id, title="Country approval gate", required=False,
+        source_action_key="chat:RUN-B",
+    ))
+    manual = app_context.matters.create_work_item(WorkItemCreate(
+        matter_id=matter_id, title="Country approval gate", required=True,
+    ))
+
+    assert required["work_item_id"] != optional["work_item_id"]
+    assert manual["work_item_id"] != required["work_item_id"]
+
+
 def test_direct_action_returns_common_operation_result(app_context):
     matter_id, final = _responding_matter(app_context)
 
@@ -99,10 +131,25 @@ def test_approval_and_delivery_allow_required_open_work_but_closure_does_not(app
     approved = app_context.matters.perform_action(
         matter_id, "approve_response", actor="Counsel", artifact_path=final["vault_path"],
     )
+    approved_detail = app_context.matters.get(matter_id)["work_state"]
+    approved_list = next(
+        item for item in app_context.matters.list() if item["matter_id"] == matter_id
+    )["work_state"]
     delivered = app_context.matters.perform_action(matter_id, "mark_as_sent", actor="Counsel")
+    delivered_detail = app_context.matters.get(matter_id)["work_state"]
+    delivered_list = next(
+        item for item in app_context.matters.list() if item["matter_id"] == matter_id
+    )["work_state"]
 
     assert approved["matter"]["response_approved_at"]
+    assert approved_detail == approved_list
+    assert approved_detail["next_action"] == "Record manual delivery."
+    assert approved_detail["next_work_item_id"] is None
+    assert approved_detail["next_actor"] == "you"
     assert delivered["matter"]["response_sent_at"]
+    assert delivered_detail == delivered_list
+    assert delivered_detail["next_action"] == "Complete required work before closing the matter."
+    assert delivered_detail["next_work_item_id"] is not None
     with pytest.raises(ValueError, match="Archive signed response"):
         app_context.matters.perform_action(matter_id, "close_matter", actor="Counsel")
 

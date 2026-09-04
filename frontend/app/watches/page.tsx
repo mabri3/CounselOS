@@ -8,14 +8,17 @@ import type { Watch } from "@/lib/watchTypes";
 
 export default function WatchesPage() {
   const [watches, setWatches] = useState<Watch[] | null>(null);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const load = useCallback(async () => {
-    try { setError(""); setWatches((await getWatches({ limit: 100 })).items); }
-    catch (caught) { setError(caught instanceof Error ? caught.message : "Could not load Watches."); }
+    setLoading(true); setLoadError("");
+    try { setWatches((await getWatches({ limit: 100 })).items); }
+    catch { setLoadError("Watches are unavailable because their current data could not be loaded."); }
+    finally { setLoading(false); }
   }, []);
   useEffect(() => { void load(); }, [load]);
 
   return <AppShell><main className="page narrow">
-    <WatchList error={error} watches={watches} />
+    <WatchList error={loadError} loading={loading} onRetry={load} watches={watches} />
   </main></AppShell>;
 }

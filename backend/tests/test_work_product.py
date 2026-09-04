@@ -26,6 +26,53 @@ def test_create_draft_and_finalize_immutable_copy(app_context):
     assert "## Next counsel action\n\nApprove the final response." in dossier
 
 
+@pytest.mark.parametrize("status", [
+    "**Status:** Draft for review",
+    "**Status:** Draft for review — not approved",
+    "Status: Not final",
+])
+def test_finalize_rejects_conflicting_leading_lifecycle_status(app_context, status):
+    matter_id = "MAT-DEMO-BEACON"
+    draft = app_context.work_products.create_draft(
+        matter_id, title="Conflicting status", content=f"# Advice\n\n{status}\n\nUseful analysis."
+    )
+    matter_path = f"{app_context.matters.matter_path(matter_id)}/matter.md"
+    final_folder = app_context.work_products.matter_paths.folder(matter_id, "matter_files.final_outputs_dir")
+    event_folder = f"{app_context.matters.matter_path(matter_id)}/events"
+    matter_before = app_context.vault.read_markdown(matter_path)["metadata"]
+    final_paths_before = {app_context.vault.relative(path) for path in app_context.vault.iter_files(final_folder)}
+    event_paths_before = {app_context.vault.relative(path) for path in app_context.vault.iter_files(event_folder)}
+
+    assert app_context.work_products.mutable_draft(
+        matter_id, draft["vault_path"]
+    )["content"].startswith("# Advice")
+    with pytest.raises(ValueError, match="Update the draft status before finalizing"):
+        app_context.work_products.finalize(matter_id, draft["vault_path"])
+
+    matter_after = app_context.vault.read_markdown(matter_path)["metadata"]
+    assert {app_context.vault.relative(path) for path in app_context.vault.iter_files(final_folder)} == final_paths_before
+    assert {app_context.vault.relative(path) for path in app_context.vault.iter_files(event_folder)} == event_paths_before
+    assert matter_after.get("current_work_product_draft_path") == matter_before.get("current_work_product_draft_path")
+    assert matter_after.get("current_work_product_final_path") == matter_before.get("current_work_product_final_path")
+    assert matter_after.get("current_work_product_final_id") == matter_before.get("current_work_product_final_id")
+    assert matter_after["status"] == matter_before["status"]
+    assert app_context.index.get_matter(matter_id)["status"] == matter_before["status"]
+
+
+@pytest.mark.parametrize("content", [
+    "# Advice\n\nStatus: Final for approval\n\nUseful analysis.",
+    "# Advice\n\nStatus: Partial research\n\nThe old policy was not approved in 2024.",
+])
+def test_finalize_allows_non_conflicting_status_and_body_discussion(app_context, content):
+    draft = app_context.work_products.create_draft(
+        "MAT-DEMO-BEACON", title="Allowed status", content=content
+    )
+
+    final = app_context.work_products.finalize("MAT-DEMO-BEACON", draft["vault_path"])
+
+    assert final["state"] == "final"
+
+
 def test_draft_projects_accepted_recommendation_and_dossier_failure_is_best_effort(
     app_context, monkeypatch
 ):

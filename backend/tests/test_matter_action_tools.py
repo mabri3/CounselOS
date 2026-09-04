@@ -1,9 +1,88 @@
+import json
 import re
 
 import pytest
 
+from app.models.api import WorkItemCreate
 from app.services.recommendations import RecommendationService
 from app.tools.registry import ToolExecutionContext
+
+
+def _intake_question(question_id: str = "q-safe") -> dict:
+    return {
+        "question_id": question_id,
+        "text": "Which launch path applies?",
+        "selection_mode": "single",
+        "choices": [{"value": "pilot", "label": "Pilot"}],
+    }
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("field", ["next_question", "next_questions"])
+async def test_intake_tool_decodes_one_nested_question_json_object(app_context, field):
+    agent = app_context.agents.get("intake-agent")
+    value = json.dumps(_intake_question())
+    arguments = {"working_ask": "Choose a launch path.", "intake_state": "active"}
+    arguments[field] = value if field == "next_question" else [value]
+
+    result = await app_context.tools.execute(
+        agent,
+        ToolExecutionContext(app_context, matter_id="MAT-DEMO-BEACON"),
+        "update_matter_intake",
+        arguments,
+    )
+
+    assert result.status == "success"
+    assert result.data["questions"][0]["question_id"] == "q-safe"
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("encoded", ["not json", '[{"question_id":"q"}]'])
+async def test_intake_tool_rejects_invalid_or_non_object_nested_question(app_context, encoded):
+    result = await app_context.tools.execute(
+        app_context.agents.get("intake-agent"),
+        ToolExecutionContext(app_context, matter_id="MAT-DEMO-BEACON"),
+        "update_matter_intake",
+        {"working_ask": "Choose.", "intake_state": "active", "next_question": encoded},
+    )
+
+    assert result.status == "error"
+
+
+@pytest.mark.asyncio
+async def test_chat_stop_research_uses_typed_active_matter_operation(app_context):
+    app_context.research_runs._write(
+        "MAT-DEMO-BEACON", "RUN-CHAT-STOP", state="queued", questions=["Question"],
+        completed=0, status="Research is queued.", queue_order=1,
+        results=[{"path": "03_Matters/beacon-instant-onboarding/research/saved.md"}],
+    )
+    app_context.research_runs._write(
+        "MAT-DEMO-ORBIT", "RUN-OTHER-MATTER", state="queued", questions=["Other"],
+        completed=0, status="Research is queued.", queue_order=1,
+    )
+
+    result = await app_context.tools.execute(
+        app_context.agents.get("counsel-copilot"),
+        ToolExecutionContext(app_context, matter_id="MAT-DEMO-BEACON"),
+        "stop_research",
+        {},
+    )
+
+    assert result.status == "success"
+    assert result.operation_result["operation"] == "stop_research"
+    assert result.operation_result["status"] == "changed"
+    stopped = app_context.research_runs.get("MAT-DEMO-BEACON", "RUN-CHAT-STOP")
+    assert stopped["state"] == "interrupted"
+    assert stopped["results"][0]["path"].endswith("saved.md")
+    assert app_context.research_runs.get("MAT-DEMO-ORBIT", "RUN-OTHER-MATTER")["state"] == "queued"
+
+    retry = await app_context.tools.execute(
+        app_context.agents.get("counsel-copilot"),
+        ToolExecutionContext(app_context, matter_id="MAT-DEMO-BEACON"),
+        "stop_research",
+        {},
+    )
+    assert retry.operation_result["status"] == "no_change"
 
 
 @pytest.mark.asyncio
@@ -133,10 +212,13 @@ async def test_create_work_item_reuses_identical_open_scope_but_not_different_sc
     agent = app_context.agents.get("counsel-copilot")
     first = await app_context.tools.execute(
         agent,
-        ToolExecutionContext(app_context, matter_id="MAT-DEMO-BEACON"),
+        ToolExecutionContext(
+            app_context, matter_id="MAT-DEMO-BEACON",
+            source_action_key="chat:RUN-WORK-1:tool:1",
+        ),
         "create_work_item",
         {
-            "title": "Confirm   launch owner",
+            "title": "Confirm funds flow and custody model",
             "item_type": "question",
             "issue_id": "ISSUE-1",
             "required": True,
@@ -144,21 +226,27 @@ async def test_create_work_item_reuses_identical_open_scope_but_not_different_sc
     )
     duplicate = await app_context.tools.execute(
         agent,
-        ToolExecutionContext(app_context, matter_id="MAT-DEMO-BEACON"),
+        ToolExecutionContext(
+            app_context, matter_id="MAT-DEMO-BEACON",
+            source_action_key="chat:RUN-WORK-2:tool:1",
+        ),
         "create_work_item",
         {
-            "title": "  confirm launch OWNER ",
-            "item_type": "question",
-            "issue_id": "issue-1",
+            "title": "  ＣONFIRM funds-flow / custody MODEL!! ",
+            "item_type": "deliverable",
+            "issue_id": "ISSUE-1",
             "required": True,
         },
     )
     different = await app_context.tools.execute(
         agent,
-        ToolExecutionContext(app_context, matter_id="MAT-DEMO-BEACON"),
+        ToolExecutionContext(
+            app_context, matter_id="MAT-DEMO-BEACON",
+            source_action_key="chat:RUN-WORK-3:tool:1",
+        ),
         "create_work_item",
         {
-            "title": "Confirm launch owner",
+            "title": "Confirm funds flow and custody model",
             "item_type": "question",
             "issue_id": "ISSUE-2",
             "required": True,
@@ -167,6 +255,7 @@ async def test_create_work_item_reuses_identical_open_scope_but_not_different_sc
 
     assert first.changed_paths
     assert duplicate.changed_paths == []
+    assert duplicate.operation_result["status"] == "no_change"
     assert duplicate.data["work_item_id"] == first.data["work_item_id"]
     assert different.changed_paths
     assert different.data["work_item_id"] != first.data["work_item_id"]
@@ -175,20 +264,101 @@ async def test_create_work_item_reuses_identical_open_scope_but_not_different_sc
 @pytest.mark.asyncio
 async def test_completed_identical_work_item_can_be_created_again(app_context):
     agent = app_context.agents.get("counsel-copilot")
-    context = ToolExecutionContext(app_context, matter_id="MAT-DEMO-BEACON")
     first = await app_context.tools.execute(
-        agent, context, "create_work_item", {"title": "Repeatable review"}
+        agent,
+        ToolExecutionContext(
+            app_context, matter_id="MAT-DEMO-BEACON",
+            source_action_key="chat:RUN-RECUR-1:tool:1",
+        ),
+        "create_work_item", {"title": "Repeatable review"},
     )
     app_context.matters.complete_work_item(
         "MAT-DEMO-BEACON", first.data["work_item_id"], actor="Counsel"
     )
 
     recreated = await app_context.tools.execute(
-        agent, context, "create_work_item", {"title": "repeatable review"}
+        agent,
+        ToolExecutionContext(
+            app_context, matter_id="MAT-DEMO-BEACON",
+            source_action_key="chat:RUN-RECUR-2:tool:1",
+        ),
+        "create_work_item", {"title": "repeatable review"},
     )
 
     assert recreated.changed_paths
     assert recreated.data["work_item_id"] != first.data["work_item_id"]
+
+
+@pytest.mark.asyncio
+async def test_create_work_item_same_source_retry_is_no_change(app_context):
+    agent = app_context.agents.get("counsel-copilot")
+    context = ToolExecutionContext(
+        app_context, matter_id="MAT-DEMO-BEACON",
+        source_action_key="chat:RUN-RETRY:tool:1",
+    )
+
+    first = await app_context.tools.execute(
+        agent, context, "create_work_item", {"title": "Retry-safe follow-up"}
+    )
+    retry = await app_context.tools.execute(
+        agent, context, "create_work_item", {"title": "Changed retry title"}
+    )
+
+    assert first.changed_paths
+    assert retry.changed_paths == []
+    assert retry.operation_result["status"] == "no_change"
+    assert retry.data["work_item_id"] == first.data["work_item_id"]
+
+
+@pytest.mark.asyncio
+async def test_create_work_item_ignores_non_chat_prior_and_other_scope(app_context):
+    agent = app_context.agents.get("counsel-copilot")
+    manual = app_context.matters.create_work_item(WorkItemCreate(
+        matter_id="MAT-DEMO-BEACON", title="Review launch gate",
+        required=True, issue_id="ISSUE-1",
+    ))
+
+    chat = await app_context.tools.execute(
+        agent,
+        ToolExecutionContext(
+            app_context, matter_id="MAT-DEMO-BEACON",
+            source_action_key="chat:RUN-SCOPE-1:tool:1",
+        ),
+        "create_work_item",
+        {"title": "Review launch gate", "required": True, "issue_id": "ISSUE-1"},
+    )
+    optional = await app_context.tools.execute(
+        agent,
+        ToolExecutionContext(
+            app_context, matter_id="MAT-DEMO-BEACON",
+            source_action_key="chat:RUN-SCOPE-2:tool:1",
+        ),
+        "create_work_item",
+        {"title": "Review launch gate", "required": False, "issue_id": "ISSUE-1"},
+    )
+    other_matter = await app_context.tools.execute(
+        agent,
+        ToolExecutionContext(
+            app_context, matter_id="MAT-DEMO-ORBIT",
+            source_action_key="chat:RUN-SCOPE-3:tool:1",
+        ),
+        "create_work_item",
+        {"title": "Review launch gate", "required": True, "issue_id": "ISSUE-1"},
+    )
+    distinct_title = await app_context.tools.execute(
+        agent,
+        ToolExecutionContext(
+            app_context, matter_id="MAT-DEMO-BEACON",
+            source_action_key="chat:RUN-SCOPE-4:tool:1",
+        ),
+        "create_work_item",
+        {"title": "Review a different launch gate", "required": True, "issue_id": "ISSUE-1"},
+    )
+
+    assert chat.changed_paths and chat.data["work_item_id"] != manual["work_item_id"]
+    assert optional.changed_paths and optional.data["work_item_id"] != chat.data["work_item_id"]
+    assert other_matter.changed_paths
+    assert distinct_title.changed_paths
 
 
 @pytest.mark.asyncio

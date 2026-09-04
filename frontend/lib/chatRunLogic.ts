@@ -98,12 +98,44 @@ export function chatSuggestions(options: string[] = []): string[] {
   ];
 }
 
-export function visibleOperationResults<T extends { operation: string; status: string }>(results: T[]): T[] {
+export function visibleOperationResults<T extends {
+  operation: string;
+  status: string;
+  required_user_action?: string | null;
+  recovery?: string | null;
+}>(results: T[]): T[] {
   const savedWorkProduct = results.some((result) => result.operation === "save_work_product" && result.status === "changed");
+  const updatedIntake = results.some((result) => result.operation === "update_matter_intake" && result.status === "changed");
   return results.filter((result) => (
-    !(result.status === "no_change" && result.operation === "chat_turn")
+    !(result.status === "no_change" && !result.required_user_action && !result.recovery)
     && !(savedWorkProduct && result.operation === "write_markdown" && result.status === "failed")
+    && !(updatedIntake && result.operation === "record_intake_answer" && result.status === "changed")
   ));
+}
+
+export type OperationChangeLink = { label: string; path: string };
+
+export function operationChangeLinks(paths: string[] = []): OperationChangeLink[] {
+  const links: OperationChangeLink[] = [];
+  const seen = new Set<string>();
+  for (const path of paths) {
+    const name = path.split("/").at(-1) ?? path;
+    const label = name === "facts.md" ? "Facts, sources & assumptions"
+      : name === "issues.md" ? "Issue map"
+        : name === "matter.md" ? "Matter details"
+          : name === "participants.md" ? "People & roles"
+            : name === "recommendations.md" ? "Working recommendations"
+              : name === "request.md" ? "Original request"
+                : path.includes("/dossier-revisions/") || name === "dossier.md" ? "Dossier"
+                  : path.includes("/work-items/") ? "Work item"
+                    : path.includes("/decisions/") ? "Recorded decision"
+                      : path.includes("/events/") ? "Activity history"
+                        : name.replace(/\.md$/i, "").replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+    if (!label || seen.has(label)) continue;
+    seen.add(label);
+    links.push({ label, path });
+  }
+  return links;
 }
 
 export function chatAgentId(intakeActive: boolean, activeAgentId?: string | null): string {
@@ -136,8 +168,16 @@ export function intakeRecoveryKey(
 }
 
 export type HistoricalQuestionState = {
-  state: "active" | "answered" | "superseded" | "stopped";
+  state: "active" | "answered" | "superseded" | "stopped" | "earlier";
   values: string[];
+};
+
+export type DurableIntakeAnswer = {
+  question_id: string;
+  question: string;
+  values?: string[];
+  answer?: string;
+  status?: string;
 };
 
 type HistoricalChatMessage = {
@@ -158,6 +198,8 @@ export function historicalQuestionStates(
   messageIndex: number,
   questionIds: string[],
   intakeActive: boolean,
+  durableAnswers: DurableIntakeAnswer[] = [],
+  questionTexts: Record<string, string> = {},
 ): Record<string, HistoricalQuestionState> {
   const states: Record<string, HistoricalQuestionState> = Object.fromEntries(
     questionIds.map((id) => [id, { state: "active", values: [] }]),
@@ -165,16 +207,29 @@ export function historicalQuestionStates(
   const laterSavedMessages = messages.slice(messageIndex + 1).filter((message) => message.message_id);
   let stopped = false;
 
+  for (const id of questionIds) {
+    const exact = durableAnswers.filter((answer) => answer.question_id === id);
+    const normalizedText = normalizeIntakeQuestion(questionTexts[id] ?? "");
+    const textMatches = normalizedText
+      ? durableAnswers.filter((answer) => normalizeIntakeQuestion(answer.question) === normalizedText)
+      : [];
+    const durable = exact.length === 1 ? exact[0] : exact.length === 0 && textMatches.length === 1 ? textMatches[0] : null;
+    if (!durable) continue;
+    states[id] = durable.status === "skipped"
+      ? { state: "superseded", values: [] }
+      : { state: "answered", values: durable.values?.length ? durable.values : durable.answer ? [durable.answer] : [] };
+  }
+
   for (const message of laterSavedMessages) {
     if (message.role !== "user" || !message.card_action) continue;
     const action = message.card_action;
-    if (action.action === "answer" && states[action.card_id]) {
+    if (action.action === "answer" && states[action.card_id]?.state === "active") {
       states[action.card_id] = { state: "answered", values: action.values ?? [] };
-    } else if (action.action === "skip" && states[action.card_id]) {
+    } else if (action.action === "skip" && states[action.card_id]?.state === "active") {
       states[action.card_id] = { state: "superseded", values: [] };
     } else if (action.action === "answer_set") {
       for (const answer of action.answers ?? []) {
-        if (!states[answer.card_id]) continue;
+        if (!states[answer.card_id] || states[answer.card_id].state !== "active") continue;
         states[answer.card_id] = answer.action === "answer"
           ? { state: "answered", values: answer.values ?? [] }
           : { state: "superseded", values: [] };
@@ -188,10 +243,14 @@ export function historicalQuestionStates(
     if (states[id].state !== "active") continue;
     if (stopped) states[id] = { state: "stopped", values: [] };
     else if (!intakeActive || laterSavedMessages.length > 0) {
-      states[id] = { state: "superseded", values: [] };
+      states[id] = { state: "earlier", values: [] };
     }
   }
   return states;
+}
+
+function normalizeIntakeQuestion(value: string): string {
+  return value.normalize("NFKC").trim().toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
 }
 
 export function shouldCompactIntakeTurn(

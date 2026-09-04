@@ -67,38 +67,42 @@ export function lifecycleActionNeedsDirectMutation(action: MatterActionId): acti
   return action === "approve_response" || action === "mark_as_sent" || action === "close_matter";
 }
 
-/**
- * Present one backend-derived state sentence when the stage and next actor both
- * matter. This keeps a ready stage from looking contradictory when assignment
- * or active agent work still determines the immediate next action.
- */
+/** Present the backend-derived stage and actor without repeating the current task. */
 export function workflowStateExplanation(detail: MatterDetail): string {
   const stage = {
     intake: "Just came in",
     research: "Being researched",
     explore: "Waiting on your judgment",
     generate: "Being drafted",
-    respond: "Ready to send",
+    respond: "Respond",
     closed: "Closed",
   }[detail.status];
-  const nextAction = detail.work_state.next_action.trim() || "Review the matter.";
   const workItem = detail.work_items.find((item) => item.work_item_id === detail.work_state.next_work_item_id);
 
+  if (detail.status === "closed") {
+    return "Stage: Closed. No action required.";
+  }
+  const requiredWorkRemains = detail.work_items.some(
+    (item) => Boolean(item.required) && !["done", "closed"].includes(item.status),
+  );
+  if (detail.status === "respond" && detail.response_sent_at && requiredWorkRemains) {
+    return "Stage: Respond. Manual delivery recorded. Required work remains before closure.";
+  }
   if (["queued", "running"].includes(detail.work_state.execution_state)) {
-    return `Stage: ${stage}. Themis.ai is working now. Next after it finishes: ${nextAction}`;
+    return `${stage} · Research still running in the background.`;
   }
   if (detail.work_state.next_actor === "unassigned") {
     const subject = workItem?.title ? ` for “${workItem.title}”` : "";
-    return `Stage: ${stage}. Assign an owner${subject} before the next action: ${nextAction}`;
+    return `Stage: ${stage}. Assign an owner${subject}.`;
   }
   if (detail.work_state.next_actor === "named_owner") {
-    return `Stage: ${stage}. ${detail.work_state.next_owner || "The assigned owner"} must act next: ${nextAction}`;
+    return `Stage: ${stage}. Waiting on ${detail.work_state.next_owner || "the assigned owner"}.`;
   }
   if (detail.work_state.next_actor === "themis") {
-    return `Stage: ${stage}. Themis.ai can act next: ${nextAction}`;
+    return `Stage: ${stage}. Ready for Themis.ai.`;
   }
   if (detail.work_state.next_actor === "you") {
-    return `Stage: ${stage}. You act next: ${nextAction}`;
+    return `Stage: ${stage}. Waiting on you.`;
   }
-  return `Stage: ${stage}. Next action: ${nextAction}`;
+  return `Stage: ${stage}.`;
 }

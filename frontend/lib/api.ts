@@ -90,11 +90,28 @@ function formatErrorDetail(detail: unknown, fallback: string): string {
 }
 
 export async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`, {
-    ...init,
-    headers: init?.body instanceof FormData ? init.headers : { "Content-Type": "application/json", ...init?.headers },
-    cache: "no-store",
-  });
+  const controller = new AbortController();
+  const timeout = globalThis.setTimeout(() => controller.abort(), 15_000);
+  const abortFromCaller = () => controller.abort();
+  if (init?.signal?.aborted) controller.abort();
+  else init?.signal?.addEventListener("abort", abortFromCaller, { once: true });
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE}${path}`, {
+      ...init,
+      signal: controller.signal,
+      headers: init?.body instanceof FormData ? init.headers : { "Content-Type": "application/json", ...init?.headers },
+      cache: "no-store",
+    });
+  } catch (error) {
+    if (error instanceof TypeError || (error instanceof DOMException && error.name === "AbortError")) {
+      throw new Error("Counsel OS cannot reach the local service. Check that it is running, then retry.");
+    }
+    throw error;
+  } finally {
+    globalThis.clearTimeout(timeout);
+    init?.signal?.removeEventListener("abort", abortFromCaller);
+  }
   if (!response.ok) {
     const payload: { detail?: unknown } = await response.json().catch(() => ({ detail: response.statusText }));
     throw new Error(formatErrorDetail(payload.detail, `Request failed: ${response.status}`));

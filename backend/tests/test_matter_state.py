@@ -294,3 +294,97 @@ def test_explore_without_required_open_item_waits_on_you(tmp_path: Path) -> None
 
     assert result["next_actor"] == "you"
     assert result["signal"] == {"kind": "waiting_on_you", "label": "Waiting on you"}
+
+
+def test_approved_response_without_required_work_waits_on_lawyer_delivery(tmp_path: Path) -> None:
+    result = _service(tmp_path).resolve(
+        _matter(
+            status="respond",
+            intake_state="complete",
+            response_approved_at="2026-09-03T10:00:00+00:00",
+        ),
+        [],
+        current_final_path="03_Matters/example/work-product/final/response.md",
+        required_open_count=0,
+    )
+
+    assert result["next_action"] == "Record manual delivery."
+    assert result["next_actor"] == "you"
+    assert result["signal"] == {"kind": "waiting_on_you", "label": "Waiting on you"}
+
+
+def test_approval_ignores_required_item_until_lawyer_records_approval(tmp_path: Path) -> None:
+    service = _service(tmp_path)
+    service.vault.write_markdown(
+        "00_System/settings.md", "# Settings\n",
+        {"values": {"document_review.lawyer_name": "Brian Harris"}},
+    )
+
+    result = service.resolve(
+        _matter(status="respond", intake_state="complete"),
+        [_item("FOLLOW-UP", owner="Product lead")],
+        current_final_path="03_Matters/example/work-product/final/response.md",
+        required_open_count=1,
+    )
+
+    assert result["next_action"] == "Approve the final response."
+    assert result["next_work_item_id"] is None
+    assert result["next_owner"] == "Brian Harris"
+    assert result["next_actor"] == "you"
+    assert result["signal"] == {"kind": "waiting_on_you", "label": "Waiting on you"}
+
+
+def test_delivery_ignores_required_item_until_lawyer_records_delivery(tmp_path: Path) -> None:
+    result = _service(tmp_path).resolve(
+        _matter(
+            status="respond",
+            intake_state="complete",
+            response_approved_at="2026-09-03T10:00:00+00:00",
+        ),
+        [_item("FOLLOW-UP", owner="Product lead")],
+        current_final_path="03_Matters/example/work-product/final/response.md",
+        required_open_count=1,
+    )
+
+    assert result["next_action"] == "Record manual delivery."
+    assert result["next_work_item_id"] is None
+    assert result["next_owner"] is None
+    assert result["next_actor"] == "you"
+    assert result["signal"] == {"kind": "waiting_on_you", "label": "Waiting on you"}
+
+
+def test_delivered_response_without_required_work_waits_on_lawyer_closure(tmp_path: Path) -> None:
+    result = _service(tmp_path).resolve(
+        _matter(
+            status="respond",
+            intake_state="complete",
+            response_approved_at="2026-09-03T10:00:00+00:00",
+            response_sent_at="2026-09-03T11:00:00+00:00",
+        ),
+        [],
+        current_final_path="03_Matters/example/work-product/final/response.md",
+        required_open_count=0,
+    )
+
+    assert result["next_action"] == "Close the matter."
+    assert result["next_actor"] == "you"
+    assert result["signal"] == {"kind": "waiting_on_you", "label": "Waiting on you"}
+
+
+def test_delivered_response_with_required_work_keeps_real_owner(tmp_path: Path) -> None:
+    result = _service(tmp_path).resolve(
+        _matter(
+            status="respond",
+            intake_state="complete",
+            response_approved_at="2026-09-03T10:00:00+00:00",
+            response_sent_at="2026-09-03T11:00:00+00:00",
+        ),
+        [_item("FOLLOW-UP", owner="Product lead")],
+        current_final_path="03_Matters/example/work-product/final/response.md",
+        required_open_count=1,
+    )
+
+    assert result["next_action"] == "Complete required work before closing the matter."
+    assert result["next_owner"] == "Product lead"
+    assert result["next_actor"] == "named_owner"
+    assert result["signal"] == {"kind": "waiting_on_owner", "label": "Waiting on Product lead"}

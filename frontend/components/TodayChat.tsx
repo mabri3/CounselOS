@@ -34,6 +34,13 @@ function dayLabel(day: string, today: string): string {
   return formatLongDate(day);
 }
 
+function savedReplyLabel(createdAt: string): string {
+  if (!createdAt) return "Saved reply";
+  const parsed = new Date(createdAt);
+  if (Number.isNaN(parsed.getTime())) return "Saved reply";
+  return `Saved reply · ${parsed.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`;
+}
+
 type Props = {
   onRefresh?: () => void | Promise<void>;
 };
@@ -48,6 +55,7 @@ export default function TodayChat({ onRefresh }: Props) {
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [historyOpen, setHistoryOpen] = useState(false);
   const [error, setError] = useState("");
   const [attachments, setAttachments] = useState<AttachmentReference[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -64,6 +72,7 @@ export default function TodayChat({ onRefresh }: Props) {
 
   const loadConversation = useCallback(async (day: string, knownDays: DailyConversationSummary[]) => {
     setSelectedDay(day);
+    setHistoryOpen(day !== today);
     setInput("");
     setError("");
     if (!knownDays.some((item) => item.day === day)) {
@@ -72,7 +81,7 @@ export default function TodayChat({ onRefresh }: Props) {
     }
     const conversation = await getDailyConversation(day);
     setMessages(conversation.messages);
-  }, []);
+  }, [today]);
 
   useEffect(() => {
     let active = true;
@@ -99,6 +108,7 @@ export default function TodayChat({ onRefresh }: Props) {
     }
     const visibleText = message || cardActionText(cardAction) || `Attached ${actionAttachments.map((item) => item.name).join(", ")}`;
     const previousMessages = messages;
+    setHistoryOpen(true);
     setMessages((current) => [
       ...current,
       { message_id: `pending-${Date.now()}`, role: "user", content: visibleText, created_at: "", trace: [], attachments: actionAttachments },
@@ -117,6 +127,8 @@ export default function TodayChat({ onRefresh }: Props) {
       setMessages(conversation.messages);
     } catch (caught) {
       setMessages(previousMessages);
+      if (message) setInput(message);
+      if (actionAttachments.length) setAttachments(actionAttachments);
       setError(caught instanceof Error ? caught.message : "The workspace chat failed.");
     } finally {
       setBusy(false);
@@ -170,28 +182,33 @@ export default function TodayChat({ onRefresh }: Props) {
       {error ? <p className="error today-chat-status">{error}</p> : null}
       {loading ? <p className="today-chat-status">Loading today&apos;s conversation…</p> : null}
       {messages.length ? (
-        <div className="today-chat-thread" aria-live="polite">
-          {messages.map((message, index) => message.role === "user" ? (
-            <div className="bubble-you" key={message.message_id ?? index}><LinkifiedText text={message.content} /></div>
-          ) : (
-            <div className="bubble-agent" key={message.message_id ?? index}>
-              {message.applied_skills?.map((skill) => <div className="applied-skill-label" key={skill.skill_id}>Applied skill: {skill.name}</div>)}
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
-              {message.trace?.length ? (
-                <div className="trace-list" style={{ marginTop: 10 }}>
-                  {message.trace.map((item, traceIndex) => (
-                    <div className="trace-item" key={traceIndex}>
-                      <span>{item.status === "success" ? "✓" : "!"}</span>
-                      <span><LinkifiedText text={item.summary} /></span>
-                    </div>
-                  ))}
-                </div>
-              ) : null}
-              <ChatCards cards={message.cards} disabled={busy} onAction={(action, answerText) => submit(answerText ?? "", action, [])} />
-            </div>
-          ))}
-          {busy ? <div className="agent-label"><span className="agent-mark" />Working…</div> : null}
-        </div>
+        <details className="today-chat-history" open={historyOpen} onToggle={(event) => setHistoryOpen(event.currentTarget.open)}>
+          <summary>Saved conversation · {messages.length} messages</summary>
+          <p className="today-chat-history-note">Saved replies reflect the workspace when written. The attention list above is current.</p>
+          <div className="today-chat-thread" aria-live="polite">
+            {messages.map((message, index) => message.role === "user" ? (
+              <div className="bubble-you" key={message.message_id ?? index}><LinkifiedText text={message.content} /></div>
+            ) : (
+              <div className="bubble-agent" key={message.message_id ?? index}>
+                <div className="today-chat-saved-label">{savedReplyLabel(message.created_at)}</div>
+                {message.applied_skills?.map((skill) => <div className="applied-skill-label" key={skill.skill_id}>Applied skill: {skill.name}</div>)}
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
+                {message.trace?.length ? (
+                  <div className="trace-list" style={{ marginTop: 10 }}>
+                    {message.trace.map((item, traceIndex) => (
+                      <div className="trace-item" key={traceIndex}>
+                        <span>{item.status === "success" ? "✓" : "!"}</span>
+                        <span><LinkifiedText text={item.summary} /></span>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+                <ChatCards cards={message.cards} disabled={busy} onAction={(action, answerText) => submit(answerText ?? "", action, [])} />
+              </div>
+            ))}
+            {busy ? <div className="agent-label"><span className="agent-mark" />Working…</div> : null}
+          </div>
+        </details>
       ) : null}
 
       {isToday ? (

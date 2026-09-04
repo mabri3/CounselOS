@@ -12,6 +12,7 @@ export default function AutomationsPage() {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [agents, setAgents] = useState<AgentDefinition[]>([]);
   const [busySchedule, setBusySchedule] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState("");
 
   const load = useCallback(async () => {
@@ -20,8 +21,9 @@ export default function AutomationsPage() {
       const data = await getAutomations();
       setSchedules(data.schedules);
       setAgents(data.agents);
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Could not load automations.");
+      setLoaded(true);
+    } catch {
+      setError("Automations are unavailable because their current data could not be loaded.");
     }
   }, []);
 
@@ -46,7 +48,7 @@ export default function AutomationsPage() {
           </div>
         </header>
 
-        {schedules.length ? (
+        {loaded && schedules.length ? (
           <div className="stat-chips" style={{ marginTop: 20 }}>
             <span className="stat-chip static"><b>{running}</b><span>running on schedule</span></span>
             <span className="stat-chip static"><b>{paused}</b><span>paused</span></span>
@@ -56,9 +58,11 @@ export default function AutomationsPage() {
           </div>
         ) : null}
 
-        {error ? <p className="error">{error}</p> : null}
+        {error ? <div className="error">{error} <button className="btn tiny quiet" onClick={() => void load()} type="button">Retry</button></div> : null}
 
-        <div style={{ marginTop: 24 }}>
+        {!loaded && !error ? <div className="loading">Loading automations…</div> : null}
+
+        {loaded ? <div style={{ marginTop: 24 }}>
           <AutomationPanel
             agents={agents}
             busySchedule={busySchedule}
@@ -86,7 +90,7 @@ export default function AutomationsPage() {
             }}
             schedules={schedules}
           />
-        </div>
+        </div> : null}
       </main>
     </AppShell>
   );

@@ -37,7 +37,7 @@ export const statusRole = {
 } as const;
 
 const CONSISTENCY_LABELS: Record<MatterConsistencyIssue["code"], string> = {
-  final_with_pre_respond_stage: "Current final is before Ready to send",
+  final_with_pre_respond_stage: "Current final is before Respond",
   approval_without_current_final: "Approval is not tied to the current final",
   delivery_without_approved_artifact: "Delivery has no approved artifact",
   closed_without_required_lifecycle_fields: "Closed lifecycle record is incomplete",
@@ -59,7 +59,7 @@ export const STAGES: { id: StageId; label: string; sub: string }[] = [
   { id: "research", label: "Being researched", sub: "An agent is gathering the facts" },
   { id: "explore", label: "Waiting on your judgment", sub: "Research is done; a path must be chosen" },
   { id: "generate", label: "Being drafted", sub: "Work product is being written" },
-  { id: "respond", label: "Ready to send", sub: "Review, approve, and deliver" },
+  { id: "respond", label: "Respond", sub: "Review, approve, and deliver" },
   { id: "closed", label: "Closed", sub: "Delivered or otherwise resolved" },
 ];
 

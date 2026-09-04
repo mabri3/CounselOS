@@ -11,6 +11,9 @@ from app.utils.time import iso_now
 
 
 class DossierService:
+    _RECOMMENDATION_HEADING = "Options or working recommendation"
+    _RECOMMENDATION_SUCCESSOR = "Next counsel action"
+
     def __init__(self, vault: VaultService, matters: MatterService):
         self.vault = vault
         self.matters = matters
@@ -130,8 +133,16 @@ class DossierService:
             links.append(
                 f'- Final: [{final.get("title") or "Current final"}]({final["path"]})'
             )
+        # Establish the canonical successor before replacing the recommendation.
+        # The recommendation can contain its own H2 headings, so its managed span
+        # ends only at "Next counsel action" rather than at the next H2.
         projected = self._set_section(
             content,
+            "Next counsel action",
+            next_action.strip() or "Review the matter and choose the next action.",
+        )
+        projected = self._set_section(
+            projected,
             "Options or working recommendation",
             recommendation.strip() or "No separate working recommendation is saved; the draft may still contain advice.",
         )
@@ -139,11 +150,6 @@ class DossierService:
             projected,
             "Work product links",
             "\n".join(links) or "No work product yet.",
-        )
-        projected = self._set_section(
-            projected,
-            "Next counsel action",
-            next_action.strip() or "Review the matter and choose the next action.",
         )
         if current and self._hash(projected) == self._hash(content):
             return {
@@ -237,8 +243,11 @@ class DossierService:
         stored_content = content.strip() + "\n"
         return hashlib.sha256(stored_content.encode("utf-8")).hexdigest()
 
-    @staticmethod
-    def section(content: str, heading: str) -> str:
+    @classmethod
+    def section(cls, content: str, heading: str) -> str:
+        if heading == cls._RECOMMENDATION_HEADING:
+            span = cls._managed_section_span(content)
+            return content[span[2]:span[1]].strip() if span else ""
         match = re.search(
             rf"(?ms)^##\s+{re.escape(heading)}\s*\n+(.*?)(?=^##\s+|\Z)",
             content,
@@ -258,15 +267,49 @@ class DossierService:
     @classmethod
     def _set_section(cls, content: str, heading: str, value: str) -> str:
         replacement = f"## {heading}\n\n{value.strip()}\n\n"
+        if heading == cls._RECOMMENDATION_HEADING:
+            span = cls._managed_section_span(content)
+            if span:
+                return content[:span[0]] + replacement + content[span[1]:]
+            successor = cls._heading_match(content, cls._RECOMMENDATION_SUCCESSOR)
+            if successor:
+                return content[:successor.start()] + replacement + content[successor.start():]
+            return content.rstrip() + f"\n\n{replacement}"
         pattern = rf"(?ms)^##\s+{re.escape(heading)}\s*\n+.*?(?=^##\s+|\Z)"
         if re.search(pattern, content):
             return re.sub(pattern, replacement, content, count=1).rstrip() + "\n"
         return content.rstrip() + f"\n\n{replacement}"
 
-    @staticmethod
-    def _remove_section(content: str, heading: str) -> str:
+    @classmethod
+    def _remove_section(cls, content: str, heading: str) -> str:
+        if heading == cls._RECOMMENDATION_HEADING:
+            span = cls._managed_section_span(content)
+            if span:
+                return (content[:span[0]] + content[span[1]:]).rstrip() + "\n"
+            return content.rstrip() + "\n"
         pattern = rf"(?ms)^##\s+{re.escape(heading)}\s*\n+.*?(?=^##\s+|\Z)"
         return re.sub(pattern, "", content).rstrip() + "\n"
+
+    @classmethod
+    def _managed_section_span(cls, content: str) -> tuple[int, int, int] | None:
+        """Return the complete recommendation span bounded by its canonical successor."""
+        heading = cls._heading_match(content, cls._RECOMMENDATION_HEADING)
+        if not heading:
+            return None
+        successor = cls._heading_match(
+            content, cls._RECOMMENDATION_SUCCESSOR, start=heading.end()
+        )
+        if not successor:
+            return None
+        return heading.start(), successor.start(), heading.end()
+
+    @staticmethod
+    def _heading_match(
+        content: str, heading: str, *, start: int = 0
+    ) -> re.Match[str] | None:
+        return re.compile(
+            rf"(?m)^##\s+{re.escape(heading)}\s*\n+"
+        ).search(content, pos=start)
 
 
 def _markdown_list(values: list[str], empty: str) -> str:

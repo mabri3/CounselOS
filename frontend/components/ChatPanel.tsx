@@ -14,7 +14,7 @@ import { getChatRun, getConversation, getConversations, getSkills, recoverIntake
 import { chatAgentId, chatDraftStorageKey, chatFailureGuidance, chatProgressLabel, chatRunStateLabel, chatRunStorageKey, chatSuggestions, durableChatProgress, historicalQuestionStates, intakeRecoveryKey, legacyChatDraftStorageKey, legacyChatRunStorageKey, mergeChatMessages, needsIntakeQuestionRecovery, pendingChatRunId, rememberChatRun, remainingComposerValue, safeChatFailureDetail, shouldCompactIntakeTurn, shouldShowChatRunStatus } from "@/lib/chatRunLogic";
 import { legacyQuestionModeStorageKey, questionModeStorageKey } from "@/lib/chatCardLogic";
 import { skillBuilderGoal } from "@/lib/skills";
-import type { AppliedSkillSummary, AttachmentReference, CardAction, ChatCard, ChatRun, OperationResult, QuestionMode, SkillDefinition, ToolTrace } from "@/lib/types";
+import type { AppliedSkillSummary, AttachmentReference, CardAction, ChatCard, ChatRun, IntakeAnswer, OperationResult, QuestionMode, SkillDefinition, ToolTrace } from "@/lib/types";
 
 type ChatOperationResult = OperationResult & { proposal?: Record<string, unknown> };
 type Message = { message_id?: string; role: "user" | "assistant"; content: string; trace?: ToolTrace[]; cards?: ChatCard[]; attachments?: AttachmentReference[]; applied_skills?: AppliedSkillSummary[]; card_action?: CardAction | null; operation_results?: ChatOperationResult[] };
@@ -44,6 +44,7 @@ export default function ChatPanel({
   onReviewAuthorChange,
   currentWorkProductDraftPath,
   decisionOptions = [],
+  intakeAnswers = [],
 }: {
   matterId: string;
   matterTitle: string;
@@ -62,6 +63,7 @@ export default function ChatPanel({
   onReviewAuthorChange: (name: string) => void;
   currentWorkProductDraftPath?: string | null;
   decisionOptions?: string[];
+  intakeAnswers?: IntakeAnswer[];
 }) {
   const router = useRouter();
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -461,6 +463,10 @@ export default function ChatPanel({
     activeRun?.response?.changed_paths.length
     || activeRun?.response?.operation_results.some((result) => result.status === "changed"),
   );
+  const activeRunHasSavedIntakeAnswer = Boolean(activeRun?.operation_results?.some((result) => (
+    ["record_intake_answer", "update_matter_intake"].includes(result.operation)
+    && ["changed", "no_change"].includes(result.status)
+  )));
 
   return (
     <div className="chat-panel">
@@ -478,14 +484,14 @@ export default function ChatPanel({
               {activeRun.response?.reply ? <div className="chat-card-detail"><strong>Saved response</strong><ReactMarkdown remarkPlugins={[remarkGfm]}>{activeRun.response.reply}</ReactMarkdown></div> : null}
             </>
           ) : activeRun.state === "completed" ? <div className="chat-card-summary">{activeRun.status} Saved work and the matter state are current.</div>
-            : <div className="chat-card-summary">{readingInitialRequest ? "Themis.ai is reading your request…" : durableChatProgress(activeRun)}</div>}
+            : <div className="chat-card-summary">{activeRunHasSavedIntakeAnswer ? "Answer saved · Preparing the next question" : readingInitialRequest ? "Themis.ai is reading your request…" : durableChatProgress(activeRun)}</div>}
           <div className="chat-card-actions">
             {["failed", "interrupted"].includes(activeRun.state) ? <button className="btn tiny quiet" disabled={busy} onClick={() => void retryRun()}>Retry</button> : null}
             {waiting && ["queued", "running"].includes(activeRun.state) ? <button className="btn tiny quiet" onClick={() => setWaiting(false)} type="button">Continue in background</button> : null}
             {!waiting && ["queued", "running"].includes(activeRun.state) ? <button className="btn tiny quiet" onClick={() => setWaiting(true)} type="button">Show progress</button> : null}
           </div>
           {!waiting && ["queued", "running"].includes(activeRun.state) ? <div className="chat-card-detail">Progress is hidden on this page. Server work continues.</div> : null}
-          {waiting && elapsedSeconds >= 15 && ["queued", "running"].includes(activeRun.state) ? <div className="chat-card-detail">Last durable step: {durableChatProgress(activeRun)} You can leave this page. Server work continues.</div> : null}
+          {waiting && elapsedSeconds >= 15 && ["queued", "running"].includes(activeRun.state) ? <div className="chat-card-detail">Last durable step: {activeRunHasSavedIntakeAnswer ? "Answer saved · Preparing the next question." : durableChatProgress(activeRun)} You can leave this page. Server work continues.</div> : null}
         </section>
       ) : null}
       {messages.length ? (
@@ -493,7 +499,14 @@ export default function ChatPanel({
           {messages.map((message, index) => {
             const messageKey = message.message_id ?? String(index);
             const questionIds = message.cards?.flatMap((card) => card.type === "question" ? [card.question_id] : []) ?? [];
-            const questionStates = historicalQuestionStates(messages, index, questionIds, intakeActive);
+            const questionStates = historicalQuestionStates(
+              messages,
+              index,
+              questionIds,
+              intakeActive,
+              intakeAnswers,
+              Object.fromEntries((message.cards ?? []).filter((card) => card.type === "question").map((card) => [card.question_id, card.text])),
+            );
             const currentOperationResults = message.operation_results?.filter(
               (result) => latestOperationResults.get(result.source_action_key ?? result.action) === result,
             );
@@ -520,20 +533,22 @@ export default function ChatPanel({
                 {compactIntakeTurn ? (
                   <details className="intake-turn-history">
                     <summary>
+                      <span className="intake-history-label">Earlier intake update</span>
                       {questionCards.map((card) => {
                         const state = questionStates[card.question_id];
-                        const label = state.state === "answered" ? "Answered" : state.state === "stopped" ? "Stopped" : "Superseded";
+                        const label = state.state === "answered" ? "Answered" : state.state === "stopped" ? "Stopped" : state.state === "superseded" ? "Superseded" : "Earlier question";
                         const savedValues = state.values.map((value) => (
                           card.choices.find((choice) => choice.value === value)?.label ?? value
                         ));
                         const answer = savedValues.length
                           ? ` — ${savedValues.join(" · ")}`
-                          : state.state === "stopped" ? " — Intake stopped" : " — No answer saved";
+                          : state.state === "stopped" ? " — Intake stopped" : "";
                         return <span key={card.question_id}>{label} · {card.text}{answer}</span>;
                       })}
                       <span className="text-button">Expand</span>
                     </summary>
                     <div className="bubble-agent">
+                      <div className="intake-history-context">This response shows what was known at that point. The latest turn shows the current status.</div>
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
                       <ChatCards cards={message.cards} currentWorkProductDraftPath={currentWorkProductDraftPath} disabled matterId={matterId} onAction={handleCardAction} onOpenDocument={onOpenDocument} onRefresh={onRefresh} operationResults={currentOperationResults} questionStates={questionStates} questionsDisabled />
                     </div>

@@ -618,7 +618,7 @@ unresolved material finding.
 - [x] Finalize a supported legacy draft when no canonical pointer exists.
   Confirm that it is safely adopted and can be approved. Confirm that it cannot
   replace an existing canonical draft.
-- [x] Confirm the normal guided path reaches Being drafted, Ready to send,
+- [x] Confirm the normal guided path reaches Being drafted, Respond,
   approved, sent outside the system, and Closed with visible saved outcomes.
 - [x] Confirm that Today, Matters, the matter header, and Overview agree on
   required work, next action, owner, risk, research state, and lifecycle state
@@ -674,3 +674,20 @@ protected hash remained
 `4e7ead57bd49e00a37dbd144ef227593ffe15032fb7803b8c262a16b1baeec3e`.
 The final gate passed 629 backend tests, all focused frontend checks, the older
 lifecycle check, typecheck, production build, and `git diff --check`.
+
+## Cycle 10: Research snapshots and lifecycle focus
+
+- [ ] Run more than one research item. Confirm that the matter queue shows the
+  live run, packet, and saved-support totals. Confirm that each run says how
+  much support is saved, including an honest zero-support state.
+- [ ] Open the current draft while research is active or newly complete.
+  Confirm that the page says the draft uses a saved research snapshot and does
+  not change automatically.
+- [ ] Select **Update draft from saved research**. Confirm that Chat opens with
+  a request to update the active draft through tracked revisions. Confirm that
+  the draft does not change until that agent action saves a revision.
+- [ ] Keep required work open while a final response exists. Confirm that
+  approval is the current lawyer action with no unrelated current work item.
+  Record approval and confirm that delivery has the same coherent state.
+- [ ] Record delivery. Confirm that the required item becomes current again and
+  that closure stays unavailable until the required item is complete.

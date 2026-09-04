@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import AppShell from "@/components/AppShell";
 import BriefingItemList from "@/components/BriefingItemList";
 import BriefingQueryBar from "@/components/BriefingQueryBar";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
+import DataLoadStatus from "@/components/DataLoadStatus";
 import { formatDateTime } from "@/lib/design";
 import { createSavedView, createSavedViewDigest, deleteSavedView, getBriefingItems, getDigests, getSavedViews, getWatches, scheduleSavedViewDigest, updateSavedView } from "@/lib/watchApi";
 import type { BriefingQuery, Digest, SavedView } from "@/lib/watchTypes";
@@ -62,27 +63,34 @@ export default function BriefingWorkspace({ initialSearchParams }: { initialSear
   const [views, setViews] = useState<SavedView[]>([]); const [digests, setDigests] = useState<Digest[]>([]);
   const [watchNames, setWatchNames] = useState<Record<string, string>>({});
   const [counts, setCounts] = useState<Counts | null>(null);
+  const [loading, setLoading] = useState(true); const [loadError, setLoadError] = useState("");
   const [error, setError] = useState(""); const [notice, setNotice] = useState(""); const [busy, setBusy] = useState(false);
   const [viewEditor, setViewEditor] = useState<{ mode: "save" | "rename"; name: string; viewId?: string } | null>(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState<SavedView | null>(null);
+  const loadGeneration = useRef(0);
   const queryString = useMemo(() => toParams(query).toString(), [query]);
   const activeView = views.find((view) => view.view_id === query.view) ?? null;
 
-  useEffect(() => {
-    let live = true;
-    setError("");
+  const load = useCallback(async () => {
+    const generation = ++loadGeneration.current;
+    setLoading(true); setLoadError("");
     const requested = parseQuery(rawFrom(new URLSearchParams(searchKey)));
     setQuery(requested);
-    setItems(null);
-    Promise.all([getBriefingItems(requested), getSavedViews(), getDigests()])
-      .then(([page, viewPage, digestPage]) => {
-        if (!live) return;
-        setItems(page); setViews(viewPage.items); setDigests(digestPage.items);
-        if (page.resolved_query) setQuery(page.resolved_query);
-      })
-      .catch((reason: unknown) => live && setError(message(reason)));
-    return () => { live = false; };
+    try {
+      const [page, viewPage, digestPage] = await Promise.all([getBriefingItems(requested), getSavedViews(), getDigests()]);
+      if (generation !== loadGeneration.current) return;
+      setItems(page); setViews(viewPage.items); setDigests(digestPage.items);
+      if (page.resolved_query) setQuery(page.resolved_query);
+    } catch {
+      if (generation === loadGeneration.current) setLoadError("Briefing is unavailable because its current data could not be loaded.");
+    } finally {
+      if (generation === loadGeneration.current) setLoading(false);
+    }
   }, [searchKey]);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
 
   /* Watch names and the count chips are orientation. Neither may break the list. */
   useEffect(() => {
@@ -140,14 +148,16 @@ export default function BriefingWorkspace({ initialSearchParams }: { initialSear
       </div>
       <div className="btn-row">
         <Link className="btn" href="/watches">Manage Watches</Link>
-        <button className="btn primary" disabled={busy} onClick={() => setViewEditor({ mode: "save", name: "" })} type="button">Save this view</button>
+        <button className="btn primary" disabled={busy || !items} onClick={() => setViewEditor({ mode: "save", name: "" })} type="button">Save this view</button>
       </div>
     </header>
 
-    {viewEditor?.mode === "save" ? <ViewNameForm busy={busy} help="A saved view remembers this exact search so you can return to it, or turn it into a daily digest." label="Name this view" name={viewEditor.name} onCancel={() => setViewEditor(null)} onChange={(name) => setViewEditor({ mode: "save", name })} onSave={(name) => saveView(name)} /> : null}
+    {viewEditor?.mode === "save" && items ? <ViewNameForm busy={busy} help="A saved view remembers this exact search so you can return to it, or turn it into a daily digest." label="Name this view" name={viewEditor.name} onCancel={() => setViewEditor(null)} onChange={(name) => setViewEditor({ mode: "save", name })} onSave={(name) => saveView(name)} /> : null}
+    <DataLoadStatus error={loadError} loading={loading} loadingLabel={items ? "Refreshing Briefing…" : "Reading your Watches…"} onRetry={load} />
     {error && <div className="error" role="alert">{error}</div>}
     {notice && <div className="warning-callout" style={{ marginTop: 14 }} role="status">{notice}</div>}
 
+    {items ? <>
     <div className="stat-chips" style={{ marginTop: 20 }}>
       {chips.map((chip) => <button
         className={`stat-chip ${chip.active ? "active" : ""}`}
@@ -174,9 +184,7 @@ export default function BriefingWorkspace({ initialSearchParams }: { initialSear
           </span>
           <span className="query-summary-note">Ordered by {SORT_WORD[query.sort] ?? query.sort}</span>
         </div>
-        {items
-          ? <BriefingItemList group={query.group} items={items.items} queryString={queryString} watchNames={watchNames} />
-          : <div className="card"><div className="loading">Reading your Watches…</div></div>}
+        <BriefingItemList group={query.group} items={items.items} queryString={queryString} watchNames={watchNames} />
       </div>
 
       <aside className="work-rail" aria-label="Saved views, digests and Watches">
@@ -220,6 +228,7 @@ export default function BriefingWorkspace({ initialSearchParams }: { initialSear
         </section>
       </aside>
     </div>
+    </> : null}
   </main>{deleteConfirmation ? <ConfirmationDialog
     confirmLabel="Delete saved view"
     description={`Delete saved view “${deleteConfirmation.name}”? Past digests will stay available.`}

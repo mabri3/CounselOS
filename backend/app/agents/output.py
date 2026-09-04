@@ -31,6 +31,10 @@ _TOOL_PLUMBING_LINE = re.compile(
     r"\b(?:write_markdown|generic markdown tool|typed matter tools?)\b",
     re.IGNORECASE,
 )
+_EMPTY_ORIENTATION_LINE = re.compile(
+    r"^\s*here(?:'s| is) my orientation to the request(?: and (?:the )?prioritized questions)?\.?\s*$",
+    re.IGNORECASE,
+)
 _INTERNAL_ID = re.compile(
     r"\b(?:RUN|MAT|CONV|MSG|FACT|ASM|EVT|EVENT|WI|WP|FINAL|DEC|RES|SRC|ACT)-[A-Za-z0-9][A-Za-z0-9-]*\b"
 )
@@ -85,6 +89,10 @@ _MUTATION_SUCCESS_CLAIMS: dict[str, tuple[re.Pattern[str], ...]] = {
         re.compile(r"\b(?:i|we) (?:have )?(?:started|ran|completed) (?:the )?research\b", re.IGNORECASE),
         re.compile(r"\b(?:the )?research (?:has been|was) (?:started|run|completed)\b", re.IGNORECASE),
         re.compile(r"\b(?:the )?research run (?:has been|was) (?:saved|started|created)\b", re.IGNORECASE),
+    ),
+    "stop_research": (
+        re.compile(r"\b(?:i|we) (?:have )?stopped (?:the )?research\b", re.IGNORECASE),
+        re.compile(r"\b(?:the )?research (?:has been|was|is now) stopped\b", re.IGNORECASE),
     ),
     "save_work_product": (
         re.compile(r"\b(?:i|we) (?:have )?(?:saved|wrote|created|revised|filed) (?:the )?(?:draft|response|work product)\b", re.IGNORECASE),
@@ -143,6 +151,7 @@ def clean_user_facing_reply(content: str) -> str:
             _INTERNAL_ONLY_LINE.match(line)
             or _TOOL_SYNTAX_LINE.match(line)
             or _TOOL_PLUMBING_LINE.search(line)
+            or _EMPTY_ORIENTATION_LINE.fullmatch(line)
         ):
             continue
         line = _INLINE_FUNCTION_TAG.sub("", line).strip()
@@ -252,7 +261,9 @@ def reconcile_user_facing_reply(content: str, operation_results: list[dict[str, 
             )
 
     reconciled = re.sub(r"\n{3,}", "\n\n", "".join(_join_kept(spans, dropped))).strip()
-    if removed_research_claim or "run_research" in unsupported_operations:
+    if "stop_research" in unsupported_operations:
+        status = "No durable research stop was recorded. Use Stop research in the queue."
+    elif removed_research_claim or "run_research" in unsupported_operations:
         status = "No durable research run was started."
     elif removed_decision_claim and unsupported_operations == {"chat_turn"}:
         status = "No durable decision was recorded."

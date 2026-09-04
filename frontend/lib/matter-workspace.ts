@@ -22,8 +22,11 @@ export function isMatchingRecommendationSupplement(
 export function shouldApplyCanonicalRecommendation(
   current: RecommendationState | null,
   incoming: RecommendationState | null,
+  matterId?: string,
 ): boolean {
-  if (!incoming || !current) return true;
+  if (current && matterId && current.matter_id !== matterId) return true;
+  if (!current) return true;
+  if (!incoming) return false;
   if (incoming.current_version_id === current.current_version_id) return true;
   const currentNumber = current.current_version_number;
   const incomingNumber = incoming.current_version_number;

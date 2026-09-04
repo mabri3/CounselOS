@@ -29,6 +29,7 @@ assert.match(grouped, /What changes the decision\?\n  Still pending/);
 assert.match(grouped, /Who owns the filing\?\n  Skipped/);
 
 const cards = readFileSync(new URL("../components/ChatCards.tsx", import.meta.url), "utf8");
+const panel = readFileSync(new URL("../components/ChatPanel.tsx", import.meta.url), "utf8");
 const styles = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
 assert.match(cards, /action:\s*"skip"/, "adaptive questions must allow a no-answer skip action");
 assert.match(cards, /action:\s*"stop"/, "adaptive questions must allow intake to stop without an answer");
@@ -41,8 +42,11 @@ assert.match(cards, /Priority order/, "the UI must preserve and label model prio
 assert.match(cards, /btn primary compact/, "question actions must use the standard compact primary size");
 assert.doesNotMatch(cards, /matter-update-card/, "internal matter-update receipts must not interrupt the chat");
 assert.match(cards, /QuestionHistoryCard/, "historical questions must use an inert renderer");
-assert.match(cards, /Answered|Superseded|Stopped/, "historical questions must name their truthful state");
+assert.match(cards, /Answered|Superseded|Stopped|Earlier question/, "historical questions must name their truthful state");
+assert.doesNotMatch(cards, /No answer saved/, "history must not claim an answer was absent without durable proof");
 assert.match(cards, /Intake audit history/, "historical intake cards must be compacted behind an audit disclosure");
+assert.match(panel, />Earlier intake update</, "a collapsed historical response must identify itself as an earlier update");
+assert.match(panel, /This response shows what was known at that point\. The latest turn shows the current status\./, "expanded historical prose must not read like the current matter status");
 assert.match(cards, /Answer one question at a time, or choose Answer a set/, "long question sets must explain grouped mode before selection");
 assert.equal(shouldCompactIntakeTurn(
   [{ type: "question", question_id: "Q-1" }],
@@ -67,5 +71,7 @@ assert.match(cards, /onClick=\{submitSelection\}>\{primaryLabel\}<\/button>/, "S
 assert.match(cards, />Finish intake<\/button>/, "the current intake card must offer a clear finish route");
 assert.match(styles, /\.question-choice\s*\{[^}]*justify-content:\s*flex-start/, "question choices must keep the control and answer text left-aligned");
 assert.match(styles, /\.question-choice \.suggested-label\s*\{[^}]*margin-left:\s*auto/, "the Suggested badge may align right without moving the answer text");
+assert.match(styles, /\.bubble-agent p\s*\{[^}]*font:\s*400 15px\/1\.6 var\(--sans\)/, "assistant paragraphs must use the base interface text size and family");
+assert.match(styles, /\.bubble-agent ul, \.bubble-agent ol\s*\{[^}]*font:\s*400 15px\/1\.6 var\(--sans\)/, "assistant lists must match paragraph typography");
 
 console.log("Adaptive intake card checks passed.");

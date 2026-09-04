@@ -36,6 +36,11 @@ def test_read_creates_missing_default(tmp_path):
     assert service.vault.exists(service.PATH)
     assert result["content"] == DEFAULT_ANSWER_CONTRACT_CONTENT
     assert result["is_default"] is True
+    normalized = " ".join(result["content"].split())
+    assert "## Support and claim strength" in result["content"]
+    assert "Never invent or guess a source" in result["content"]
+    assert "strongest reasonable counterargument" in normalized
+    assert "No external authority retrieved" in normalized
 
 
 def test_write_persists_custom_body(tmp_path):

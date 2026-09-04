@@ -169,3 +169,152 @@ def test_work_state_projection_uses_hash_guard_for_lawyer_edit(app_context):
     assert result["state"] == "review_required"
     assert result["revision_path"]
     assert "Lawyer note." in service.get("MAT-DEMO-BEACON")["content"]
+
+
+def test_work_state_projection_replaces_nested_recommendation_atomically_twice(app_context):
+    service = app_context.dossiers
+    prefix = "# Matter dossier\n\n## Material facts\n\n- Preserve this fact.\n\n"
+    suffix = (
+        "## Next counsel action\n\nOld action.\n\n"
+        "## Work product links\n\nOld link.\n\n"
+        "## Lawyer notes\n\nPreserve this note exactly.\n"
+    )
+    service.propose_update(
+        "MAT-DEMO-BEACON",
+        prefix
+        + "## Options or working recommendation\n\nOld recommendation.\n\n"
+        + "## Old nested analysis\n\nThis stale text must be replaced.\n\n"
+        + suffix,
+        expected_hash=None,
+    )
+    recommendation = (
+        "# Working recommendation\n\nProceed with conditions.\n\n"
+        "## Conditions\n\n- Add notice.\n\n"
+        "## Decision requiring approval\n\nApprove the conditional path."
+    )
+
+    first = service.update_work_state(
+        "MAT-DEMO-BEACON",
+        recommendation=recommendation,
+        draft={"path": "03_Matters/example/draft.md", "title": "Current advice"},
+        final=None,
+        next_action="Review the conditions.",
+        expected_hash=service.content_hash("MAT-DEMO-BEACON"),
+    )
+
+    assert first["state"] == "applied"
+    content = service.get("MAT-DEMO-BEACON")["content"]
+    assert content.startswith(prefix)
+    assert content.endswith("## Lawyer notes\n\nPreserve this note exactly.\n")
+    assert service.section(content, "Options or working recommendation") == recommendation
+    assert "Old nested analysis" not in content
+    assert content.count("## Options or working recommendation") == 1
+
+    second = service.update_work_state(
+        "MAT-DEMO-BEACON",
+        recommendation=recommendation,
+        draft={"path": "03_Matters/example/draft.md", "title": "Current advice"},
+        final=None,
+        next_action="Review the conditions.",
+        expected_hash=first["content_hash"],
+    )
+    assert second["state"] == "not_required"
+    assert service.get("MAT-DEMO-BEACON")["content"] == content
+
+
+def test_work_state_projection_repairs_legacy_duplicated_recommendation(app_context):
+    service = app_context.dossiers
+    legacy = """# Matter dossier
+
+## Material facts
+
+- Keep this.
+
+## Options or working recommendation
+
+Newest fragment.
+
+## Nested heading
+
+Stale remainder.
+
+## Options or working recommendation
+
+Older duplicated recommendation.
+
+## Another nested heading
+
+More stale remainder.
+
+## Next counsel action
+
+Old action.
+
+## Work product links
+
+Old link.
+
+## Lawyer notes
+
+Keep this too.
+"""
+    service.propose_update("MAT-DEMO-BEACON", legacy, expected_hash=None)
+
+    result = service.update_work_state(
+        "MAT-DEMO-BEACON",
+        recommendation="# Canonical recommendation\n\n## One nested section\n\nCurrent text.",
+        draft=None,
+        final=None,
+        next_action="Review current text.",
+        expected_hash=service.content_hash("MAT-DEMO-BEACON"),
+    )
+
+    assert result["state"] == "applied"
+    content = service.get("MAT-DEMO-BEACON")["content"]
+    assert content.count("## Options or working recommendation") == 1
+    assert "Older duplicated recommendation" not in content
+    assert "More stale remainder" not in content
+    assert content.startswith("# Matter dossier\n\n## Material facts\n\n- Keep this.\n\n")
+    assert content.endswith("## Lawyer notes\n\nKeep this too.\n")
+
+
+def test_nested_work_state_projection_keeps_stale_hash_lawyer_edit_in_revision(app_context):
+    service = app_context.dossiers
+    original = """# Matter dossier
+
+## Options or working recommendation
+
+# Old recommendation
+
+## Old detail
+
+Old text.
+
+## Next counsel action
+
+Old action.
+
+## Lawyer notes
+
+Original note.
+"""
+    first = service.propose_update("MAT-DEMO-BEACON", original, expected_hash=None)
+    dossier_path = service.get("MAT-DEMO-BEACON")["path"]
+    lawyer_edit = original.replace("Original note.", "Lawyer changed this note.")
+    app_context.vault.update_markdown(dossier_path, content=lawyer_edit)
+
+    result = service.update_work_state(
+        "MAT-DEMO-BEACON",
+        recommendation="# New recommendation\n\n## New detail\n\nNew text.",
+        draft=None,
+        final=None,
+        next_action="Review new text.",
+        expected_hash=first["content_hash"],
+    )
+
+    assert result["state"] == "review_required"
+    assert service.get("MAT-DEMO-BEACON")["content"] == lawyer_edit
+    revision = app_context.vault.read_markdown(result["revision_path"])
+    assert revision["metadata"]["status"] == "draft"
+    assert "## New detail\n\nNew text." in revision["content"]
+    assert "Lawyer changed this note." in revision["content"]

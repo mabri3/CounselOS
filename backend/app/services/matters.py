@@ -63,13 +63,12 @@ class MatterService:
                 "response_sent_at": metadata.get("response_sent_at"),
                 "closed_at": metadata.get("closed_at"),
             })
-            matter["work_state"] = self.matter_state.resolve(durable_matter, items)
-            if current_final_path or metadata.get("response_approved_at"):
-                matter["work_state"]["next_action"] = self.matter_state.lifecycle_next_action(
-                    durable_matter,
-                    current_final_path=current_final_path,
-                    required_open_count=matter["required_work_items"],
-                )
+            matter["work_state"] = self.matter_state.resolve(
+                durable_matter,
+                items,
+                current_final_path=current_final_path,
+                required_open_count=matter["required_work_items"],
+            )
             matter["consistency_issues"] = self.matter_state.consistency_issues(
                 durable_matter,
                 current_final_path=current_final_path,
@@ -219,13 +218,12 @@ class MatterService:
             self.index.rebuild()
         durable_matter["current_work_product_final_path"] = current_final_path
         required_open_count = len(required)
-        work_state = self.matter_state.resolve(durable_matter, work_items)
-        if current_final_path or matter_metadata.get("response_approved_at"):
-            work_state["next_action"] = self.matter_state.lifecycle_next_action(
-                durable_matter,
-                current_final_path=current_final_path,
-                required_open_count=required_open_count,
-            )
+        work_state = self.matter_state.resolve(
+            durable_matter,
+            work_items,
+            current_final_path=current_final_path,
+            required_open_count=required_open_count,
+        )
         consistency_issues = self.matter_state.consistency_issues(
             durable_matter,
             current_final_path=current_final_path,
@@ -309,6 +307,7 @@ class MatterService:
             "decisions": decisions,
             "tree": tree,
             "events": events,
+            "intake_answers": self._intake_answers(base),
             **intake,
         }
 
@@ -360,6 +359,13 @@ class MatterService:
         if lines and lines[0].strip().casefold() == "# original request":
             content = "\n".join(lines[1:]).strip()
         return content or fallback.strip()
+
+    def _intake_answers(self, base: str) -> list[dict[str, Any]]:
+        path = f"{base}/facts.md"
+        if not self.vault.exists(path):
+            return []
+        values = self.vault.read_markdown(path)["metadata"].get("intake_answers") or []
+        return [dict(item) for item in values if isinstance(item, dict)]
 
     def _intake_status(self, matter_id: str) -> dict[str, Any]:
         directory = self.vault.resolve(f"{self.matter_path(matter_id)}/conversations")

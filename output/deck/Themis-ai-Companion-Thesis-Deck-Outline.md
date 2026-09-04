@@ -141,7 +141,7 @@ This is the central human thesis. Give the metaphor room, but retain the definit
 
 ### Context
 
-Across four interviews with in-house lawyers, the requested tasks and features varied. The emotional need beneath them was more consistent: a capable second perspective that helps the lawyer think, challenge, decide, and remember.
+Across four interviews with in-house lawyers and 203 de-duplicated Reddit discussions about legal AI, the requested tasks and features varied. The recurring need was more consistent: a capable second perspective that helps the lawyer examine the question, test their reasoning, and decide with confidence.
 
 #### “I need someone to think with.”
 
@@ -155,17 +155,17 @@ The lawyer wants thoughtful challenge: another issue, another fact, another inte
 
 The system can inform, question, and test. The lawyer must remain the author of the decision.
 
-#### “I need the context to remain when the matter returns.”
+#### “I need my reasoning tested before I rely on it.”
 
-Confidence weakens when the history disappears. The reasoning, open questions, and prior decisions must remain available.
+Confidence becomes fragile when material counterexamples, conflicting facts, or overlooked problems remain outside the lawyer's view. Themis should surface them before the decision is made.
 
 ### Implication
 
-The adoption opportunity may not be another feature bundle. It may be a product relationship in which the lawyer feels supported without giving up control.
+The adoption opportunity may not be another feature bundle. It may be a product relationship in which the lawyer receives useful challenge without giving up control.
 
 ### Visible evidence line
 
-**Source:** Themis discovery interviews with four in-house lawyers, August 2026. Themes are paraphrased from auto-generated notes. Names and direct quotations should not appear externally without approval and verification against the recordings.
+**Source:** Themis analysis of 203 de-duplicated Reddit discussions about legal AI and four discovery interviews with in-house lawyers, August 2026. The statements above synthesize recurring themes; they are not direct quotations. Interview quotations should not appear externally without approval and verification against the recordings.
 
 ### Build note — not on the slide
 
@@ -194,7 +194,7 @@ A generated answer can still leave the lawyer asking:
 
 ### Contrast
 
-Many products ask the lawyer to evaluate and trust an output. Themis is designed to participate in the process through which the lawyer earns confidence in their own answer.
+Many products ask the lawyer to evaluate and trust an output. Themis is designed to drive the process that helps the lawyer examine the question, test their reasoning, and gain confidence in their decision.
 
 ### Investor implication
 
@@ -266,7 +266,9 @@ The flashlight is the main metaphor: Themis reveals the terrain. The climb is se
 
 ### Context
 
-Chat tools tend to organize work around a conversation. Themis organizes work around the matter: the request, facts, issues, sources, open questions, recommendations, and recorded decisions that must remain coherent over time.
+Legal work is not a sequence of isolated answers. It is a matter moving toward a legal and business objective.
+
+Themis organizes the work around that objective. It synthesizes the request, facts, issues, sources, open questions, recommendations, and recorded decisions so the lawyer can understand the whole matter and move it toward a sound decision.
 
 ### Product proof
 
@@ -341,7 +343,7 @@ Connect each behavior to a product or architecture choice where possible: visibl
 
 **The durable position is inside the lawyer's process of reaching confidence.**
 
-> But this is the more important and defensible leap. Intelligence will become common. Workflows can be copied. A product that earns a place inside the lawyer’s process of reaching confidence can become much harder to replace.
+> But this is the more important and defensible leap. Intelligence will become common. Workflows can be copied. A product that earns a place inside the lawyer’s process of reaching confidence in their decision can become much harder to replace.
 
 ### Context
 

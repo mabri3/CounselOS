@@ -44,11 +44,11 @@ export function controlIdForCurrentWork(
   stageActionId: MatterActionId,
   currentWorkItem: BriefWorkItem | undefined,
 ): MatterControlId {
+  // Approval and delivery are explicit lawyer actions. A stale or older API
+  // response must not let an unrelated required item replace either control.
+  if (stageActionId === "approve_response" || stageActionId === "mark_as_sent") return stageActionId;
   if (!currentWorkItem) return stageActionId;
   if (currentWorkItem.item_type === "research") return "run_research";
-  if (currentWorkItem.item_type === "approval" && stageActionId === "approve_response") {
-    return "approve_response";
-  }
   return "open_work_item";
 }
 

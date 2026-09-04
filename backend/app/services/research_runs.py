@@ -297,13 +297,26 @@ class ResearchRunService:
             saved_selection = self.get(matter_id, run_id).get("selection")
             resolved = self._resolve_saved_selection(saved_selection)
             for position, question in enumerate(questions, start=completed_before + 1):
+                def persist_packet(saved: dict[str, Any], *, saved_position: int = position) -> None:
+                    while len(results) < saved_position:
+                        results.append({})
+                    results[saved_position - 1] = dict(saved)
+                    self._write(
+                        matter_id, run_id, state="running", questions=all_questions,
+                        completed=saved_position,
+                        status="Running · saved packet available.", results=results,
+                    )
+
                 result = await self.research.run(
                     matter_id,
                     question,
                     change_stage=False,
                     resolved_provider=resolved,
+                    on_packet_saved=persist_packet,
                 )
-                results.append(result)
+                while len(results) < position:
+                    results.append({})
+                results[position - 1] = result
                 self._write(
                     matter_id, run_id, state="running", questions=all_questions, completed=position,
                     status=f"Completed {position} of {len(all_questions)} research items.", results=results,

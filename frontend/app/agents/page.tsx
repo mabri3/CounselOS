@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
+import DataLoadStatus from "@/components/DataLoadStatus";
 import LinkifiedText from "@/components/LinkifiedText";
 import { effortLabel, getAudiences, getAutomations, getSettings, getTools, saveAgentDetail } from "@/lib/api";
 import { role } from "@/lib/design";
@@ -48,12 +49,15 @@ export default function AgentsPage() {
   const [draft, setDraft] = useState<AgentDetail | null>(null);
   const [dirty, setDirty] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [error, setError] = useState("");
   const [pendingAgent, setPendingAgent] = useState<AgentDetail | null>(null);
 
   const load = useCallback(async () => {
+    setLoading(true); setLoadError("");
     try {
-      setError("");
       const [{ agents: definitions, schedules }, { audiences: audienceOptions }, { tools: toolOptions }, workspaceSettings] = await Promise.all([
         getAutomations(),
         getAudiences(),
@@ -67,9 +71,9 @@ export default function AgentsPage() {
       setSettings(workspaceSettings);
       setDraft((current) => details.find((agent) => agent.agent_id === (current?.agent_id ?? details[0]?.agent_id)) ?? null);
       setDirty(false);
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Could not load agents.");
-    }
+      setLoaded(true);
+    } catch { setLoadError("Agents are unavailable because their current data could not be loaded."); }
+    finally { setLoading(false); }
   }, []);
 
   useEffect(() => { void load(); }, [load]);
@@ -124,16 +128,14 @@ export default function AgentsPage() {
     return agent.agent_id === "counsel-copilot" ? "Workspace assistant" : agent.name;
   }
 
-  if (error && !draft) return <AppShell><main className="page"><p className="error">{error}</p></main></AppShell>;
   if (!draft) {
     return (
       <AppShell>
         <main className="page">
-          {agents.length === 0 ? (
+          <DataLoadStatus error={loadError} loading={loading} loadingLabel="Loading agents…" onRetry={load} />
+          {loaded ? (
             <div className="empty-state">No agents are defined in the vault yet.</div>
-          ) : (
-            <div className="loading">Loading agents…</div>
-          )}
+          ) : null}
         </main>
       </AppShell>
     );
@@ -190,6 +192,7 @@ export default function AgentsPage() {
         <div className="admin-main">
           <div className="admin-scroll">
             <div className="admin-body">
+              <DataLoadStatus error={loadError} loading={loading} loadingLabel="Refreshing agents…" onRetry={load} />
               <div style={{ font: "400 14px var(--sans)", color: "var(--ink-4)" }}>Editing an agent</div>
               <h1 style={{ margin: "5px 0 0" }}>{displayName(draft)}</h1>
               <p style={{ margin: "5px 0 0", color: "var(--ink-3)" }}><strong>Role:</strong> {displayRole(draft)}</p>
@@ -213,7 +216,6 @@ export default function AgentsPage() {
 
               <div className="agent-note" style={{ marginTop: 26 }}>
                 <div className="agent-label">
-                  <span className="agent-mark" />
                   Fixed for every agent
                 </div>
                 <div style={{ marginTop: 9, display: "flex", flexDirection: "column", gap: 5, font: "400 15px/1.6 var(--sans)", color: "var(--ink-2)" }}>
@@ -354,17 +356,25 @@ export default function AgentsPage() {
                     value={draft.audience_prompt}
                   />
                 </div>
-                <div className="section-heading">Tool permissions</div>
+                <div className="section-heading">{draft.runtime_managed ? "Effective tool access" : "Tool permissions"}</div>
                 <p>{draft.runtime_managed
-                  ? "The current application manages these built-in tool permissions. Workspace instructions can still guide how the agent uses them."
+                  ? "Application-managed · Read-only"
                   : "Anything not selected is unavailable to this agent."}</p>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 24px" }}>
                   {tools.map((tool) => {
                     const checked = draft.allowed_tools.includes(tool.tool_id);
                     const label = tool.description.match(/^.*?[.!?](?:\s|$)/)?.[0].trim() || tool.description || tool.tool_id;
+                    if (draft.runtime_managed) {
+                      return (
+                        <div className="checkbox-row" key={tool.tool_id}>
+                          <span className="record-meta">{checked ? "Available" : "Not available"}</span>
+                          <span>{label}</span>
+                        </div>
+                      );
+                    }
                     return (
                       <label className="checkbox-row" key={tool.tool_id}>
-                        <input checked={checked} disabled={draft.runtime_managed} onChange={() => toggleTool(tool.tool_id)} type="checkbox" />
+                        <input checked={checked} onChange={() => toggleTool(tool.tool_id)} type="checkbox" />
                         <span>{label}</span>
                       </label>
                     );

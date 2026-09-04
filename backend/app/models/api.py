@@ -535,6 +535,7 @@ class ChatRun(BaseModel):
     correlation_id: str | None = None
     milestone: str | None = None
     response: ChatResponse | None = None
+    operation_results: list[dict[str, Any]] = Field(default_factory=list)
     path: str
     selection: AgentRunSelection | None = None
 

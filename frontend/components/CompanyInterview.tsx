@@ -81,6 +81,8 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
   const [saveState, setSaveState] = useState<SaveState>(existingProfile ? "clean" : "dirty");
   const [error, setError] = useState("");
   const [replacementConfirmation, setReplacementConfirmation] = useState<string | null>(null);
+  const [discardConfirmation, setDiscardConfirmation] = useState(false);
+  const [replacementInProgress, setReplacementInProgress] = useState(false);
 
   const loadInterview = useCallback(async () => {
     setLoading(true);
@@ -168,7 +170,16 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
     setWarning("");
     setError("");
     setSaveState("dirty");
+    setReplacementInProgress(existingProfile);
     requestAnimationFrame(() => (websiteRef.current ?? inputRef.current)?.focus());
+  }
+
+  function requestStartAgain() {
+    if (saveState === "dirty") {
+      setDiscardConfirmation(true);
+      return;
+    }
+    startAgain();
   }
 
   async function persistDraft(replacementMessage: string | null) {
@@ -182,6 +193,7 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
       const nextProfile = await saveCompanyProfile(payload);
       setDraft(nextProfile);
       setSaveState("saved");
+      setReplacementInProgress(false);
       onSaved(nextProfile);
     } catch (caught) {
       const message = caught instanceof Error ? caught.message : "Could not save the company profile.";
@@ -220,6 +232,7 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
   return (
     <section className="company-interview" aria-label="Company profile interview">
       <div className="company-interview-thread" aria-live="polite">
+        {replacementInProgress && !reviewing ? <p className="company-interview-warning" role="status"><strong>Saved profile remains active.</strong> The replacement will not be used until you save it.</p> : null}
         {!reviewing ? <AssistantTurn>{interview.opening}</AssistantTurn> : null}
         {exchanges.map((exchange, index) => (
           <div className="company-interview-exchange" key={`${exchange.question.question_id}-${index}`}>
@@ -247,7 +260,7 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
               setSaveState("dirty");
             }}
             onSave={() => void saveDraft()}
-            onStartAgain={startAgain}
+            onStartAgain={requestStartAgain}
           />
         ) : error ? <div className="company-interview-error"><p className="error">{error}</p></div> : null}
       </div>
@@ -295,6 +308,13 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
         onConfirm={() => persistDraft(replacementConfirmation)}
         title="Replace company profile?"
       /> : null}
+      {discardConfirmation ? <ConfirmationDialog
+        confirmLabel="Discard draft and start replacement"
+        description="Discard the unsaved company profile draft? The saved company profile stays active until you save its replacement."
+        onCancel={() => setDiscardConfirmation(false)}
+        onConfirm={() => { setDiscardConfirmation(false); startAgain(); }}
+        title="Start replacement interview?"
+      /> : null}
     </section>
   );
 }
@@ -327,20 +347,20 @@ function ReviewCard({ draft, draftEditedByLawyer, error, generatedDraft, saveSta
 }) {
   const unchanged = saveState !== "dirty";
   return (
-    <section className={`company-review-card ${unchanged ? "saved" : ""}`} aria-label="Company profile draft">
+    <section className={`company-review-card ${unchanged ? "saved" : ""}`} aria-label={saveState === "dirty" ? "Company profile draft" : "Saved company profile"}>
       <div className="agent-label">{saveState === "dirty"
         ? generatedDraft && !draftEditedByLawyer
-          ? "Themis.ai · Not yet reviewed by an attorney"
+          ? "Company profile draft · Themis.ai · Not yet reviewed by an attorney"
           : generatedDraft
-            ? "Unsaved lawyer edits to a Themis.ai draft"
-            : "Unsaved lawyer edits"
+            ? "Company profile draft · Unsaved lawyer edits to a Themis.ai draft"
+            : "Company profile draft · Unsaved lawyer edits"
         : "Company profile · Saved"}</div>
       <h2>{draft.company_name || "Review the company profile"}</h2>
       <p className="company-review-state">
         {saveState === "clean"
-          ? "No unsaved changes."
+          ? "Saved and in use. No unsaved changes."
           : saveState === "saved"
-            ? "Saved. No unsaved changes."
+            ? "Saved and in use. No unsaved changes."
             : "Review and edit this profile. Nothing changes until you choose Save company profile."}
       </p>
       {draft.version ? (
@@ -370,7 +390,7 @@ function ReviewCard({ draft, draftEditedByLawyer, error, generatedDraft, saveSta
         <button className="btn primary" disabled={saving || unchanged} onClick={onSave} type="button">
           {saving ? "Saving…" : unchanged ? "No unsaved changes" : "Save company profile"}
         </button>
-        <button className="btn" disabled={saving} onClick={onStartAgain} type="button">Start again</button>
+        <button className="btn" disabled={saving} onClick={onStartAgain} type="button">Start replacement interview</button>
       </div>
     </section>
   );

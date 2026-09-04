@@ -4,7 +4,7 @@ import Link from "next/link";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { getResearchRun } from "@/lib/api";
 import { choiceNeedsDetail, effectiveQuestionMode, groupedAnswerText, questionProgressLabel } from "@/lib/chatCardLogic";
-import { visibleOperationResults as projectOperationResults } from "@/lib/chatRunLogic";
+import { operationChangeLinks, visibleOperationResults as projectOperationResults } from "@/lib/chatRunLogic";
 import type { HistoricalQuestionState } from "@/lib/chatRunLogic";
 import type { CardAction, ChatCard, OperationResult, QuestionMode, ResearchRun } from "@/lib/types";
 
@@ -38,7 +38,7 @@ export default function ChatCards({ cards = [], matterId, disabled, questionsDis
   const visibleOperationResults = projectOperationResults(operationResults);
   return cards.length || visibleOperationResults.length ? (
     <div className="chat-cards">
-      {visibleOperationResults.map((result, index) => <OperationResultCard disabled={disabled} key={`${result.action}-${result.operation}-${index}`} onAction={onAction} result={result} />)}
+      {visibleOperationResults.map((result, index) => <OperationResultCard disabled={disabled} key={`${result.action}-${result.operation}-${index}`} onAction={onAction} onOpenDocument={onOpenDocument} result={result} />)}
       {historicalQuestions.length ? <details className="chat-card question-card intake-audit-history"><summary>Intake audit history ({historicalQuestions.length})</summary>{historicalQuestions.map((card) => <QuestionHistoryCard card={card} key={card.question_id} status={questionStates![card.question_id]} />)}</details> : null}
       {activeQuestions.length ? <QuestionSequence cards={activeQuestions} disabled={disabled || questionsDisabled} mode={showQuestionMode ? questionMode : "guided"} onAction={onAction} onModeChange={showQuestionMode ? onQuestionModeChange : undefined} showModeControl={showQuestionMode && !questionsDisabled} /> : null}
       {otherCards.map((card, index) => {
@@ -55,9 +55,10 @@ export default function ChatCards({ cards = [], matterId, disabled, questionsDis
   ) : null;
 }
 
-function OperationResultCard({ disabled, onAction, result }: {
+function OperationResultCard({ disabled, onAction, onOpenDocument, result }: {
   disabled?: boolean;
   onAction: Props["onAction"];
+  onOpenDocument?: Props["onOpenDocument"];
   result: ChatOperationResult;
 }) {
   const [busy, setBusy] = useState(false);
@@ -67,8 +68,10 @@ function OperationResultCard({ disabled, onAction, result }: {
   const recorded = result.status === "changed";
   const needsConfirmation = result.status === "confirmation_required" || result.status === "proposed";
   const failed = result.status === "failed";
+  const protectedWriteFailure = failed && result.operation === "write_markdown" && /protected|typed tool/i.test(result.error ?? "");
   const decisionConfirmation = needsConfirmation && result.operation === "record_decision";
   const reasonRequired = disposition === "modified" || disposition === "not_followed";
+  const changedRecords = recorded ? operationChangeLinks(result.changed_paths) : [];
 
   async function confirm() {
     if (!needsConfirmation || (decisionConfirmation && (!disposition || (reasonRequired && !reason.trim())))) return;
@@ -96,10 +99,11 @@ function OperationResultCard({ disabled, onAction, result }: {
   return (
     <section className={`chat-card ${failed ? "wash-failure" : needsConfirmation ? "wash-attention" : recorded ? "wash-healthy" : ""}`}>
       <div className="chat-card-kicker">Workspace action · {label}</div>
-      <div className="chat-card-summary">{result.status === "no_change" ? "No workspace change recorded" : result.summary}</div>
+      <div className="chat-card-summary">{protectedWriteFailure ? "Use the matching workspace action for this record." : result.status === "no_change" ? "No workspace change recorded" : result.summary}</div>
+      {changedRecords.length ? <div className="chat-card-detail">Updated records: {changedRecords.map((record) => record.label).join(" · ")}</div> : null}
       {result.required_user_action ? <div className="chat-card-detail">{result.required_user_action}</div> : null}
-      {result.recovery && (failed || result.status === "no_change") ? <div className="chat-card-detail">{result.recovery}</div> : null}
-      {failed && result.error ? <div className="chat-card-detail">{result.error}</div> : null}
+      {protectedWriteFailure ? <div className="chat-card-detail">Use Save work product, Run research, Stop research, or the matching direct control.</div> : result.recovery && (failed || result.status === "no_change") ? <div className="chat-card-detail">{result.recovery}</div> : null}
+      {failed && result.error && !protectedWriteFailure ? <div className="chat-card-detail">{result.error}</div> : null}
       {error ? <div className="error chat-card-detail" role="alert">{error}</div> : null}
       {decisionConfirmation ? <div className="chat-card-detail">
         <label>Recommendation disposition
@@ -116,6 +120,9 @@ function OperationResultCard({ disabled, onAction, result }: {
         </label> : null}
       </div> : null}
       {needsConfirmation ? <div className="chat-card-actions"><button className="btn primary compact" disabled={disabled || busy || (decisionConfirmation && (!disposition || (reasonRequired && !reason.trim())))} onClick={() => void confirm()} type="button">{busy ? "Recording…" : operationActionLabel(result.operation)}</button></div> : null}
+      {recorded && onOpenDocument && changedRecords.length ? <div className="chat-card-actions">
+        {changedRecords.map((record) => <button className="btn tiny quiet" key={record.path} onClick={() => onOpenDocument(record.path)} type="button">Open {record.label}</button>)}
+      </div> : null}
     </section>
   );
 }
@@ -248,12 +255,13 @@ function QuestionHistoryCard({ card, status }: { card: Question; status: Histori
   )).filter((value, index, values) => value && values.indexOf(value) === index);
   const stateLabel = status.state === "answered" ? "Answered"
     : status.state === "stopped" ? "Stopped"
-    : "Superseded";
+    : status.state === "superseded" ? "Superseded" : "Earlier question";
   const detail = status.state === "answered"
     ? labels.join(" · ") || "Answer saved"
     : status.state === "stopped"
       ? "Intake stopped before this question was answered."
-      : "This question was skipped or replaced by later intake work.";
+      : status.state === "superseded" ? "This question was skipped or replaced by later intake work."
+      : "This question is part of the earlier intake history.";
   return (
     <section className="chat-card question-card" aria-label={`${stateLabel}: ${card.text}`}>
       <div className="question-meta"><span>{stateLabel}</span></div>

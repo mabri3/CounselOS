@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import re
 from datetime import datetime
 from pathlib import PurePosixPath
 from typing import Any
@@ -495,6 +496,7 @@ class WorkProductService:
             or (metadata.get("record_type") != "work_product" and not is_legacy_draft)
         ):
             raise ValueError("The selected file is not a draft for this matter.")
+        self._validate_leading_lifecycle_status(draft["content"])
         adopted_matter_path: str | None = None
         if is_legacy_draft and metadata.get("record_type") != "work_product":
             matter_path = f"{base}/matter.md"
@@ -557,6 +559,21 @@ class WorkProductService:
             ],
             "_expected_dossier_hash": expected_dossier_hash,
         })
+
+    @staticmethod
+    def _validate_leading_lifecycle_status(content: str) -> None:
+        leading = "\n".join(content.splitlines()[:40])
+        match = re.search(
+            r"^\s*(?:\*\*)?Status(?:\*\*)?\s*:\s*(?P<value>.+?)\s*$",
+            leading,
+            flags=re.IGNORECASE | re.MULTILINE,
+        )
+        if match and re.search(
+            r"\bdraft\b|\bnot\s+(?:final|approved)\b",
+            match.group("value"),
+            flags=re.IGNORECASE,
+        ):
+            raise ValueError("Update the draft status before finalizing. The draft is still editable.")
 
     def _advance_after_finalize(
         self, matter_id: str, result: dict[str, Any]

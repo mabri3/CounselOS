@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import AppShell from "@/components/AppShell";
 import BriefingList from "@/components/BriefingList";
+import DataLoadStatus from "@/components/DataLoadStatus";
 import NewMatterForm from "@/components/NewMatterForm";
 import PracticeRail from "@/components/PracticeRail";
 import TodayChat from "@/components/TodayChat";
@@ -23,12 +24,14 @@ export default function TodayPage() {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [reviewPackets, setReviewPackets] = useState<ReviewPacket[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
-  const [error, setError] = useState("");
+  const [loadError, setLoadError] = useState("");
 
   const load = useCallback(async () => {
+    setLoading(true);
     try {
-      setError("");
+      setLoadError("");
       const [matterData, decisionData, automationData, packetData] = await Promise.all([
         getMatters(),
         getDecisions(),
@@ -39,11 +42,10 @@ export default function TodayPage() {
       setDecisions(decisionData.decisions);
       setSchedules(automationData.schedules);
       setReviewPackets(packetData.items);
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Could not load today.");
-    } finally {
       setLoaded(true);
-    }
+    } catch {
+      setLoadError("Today is unavailable because the current workspace data could not be loaded.");
+    } finally { setLoading(false); }
   }, []);
 
   useEffect(() => { void load(); }, [load]);
@@ -60,12 +62,11 @@ export default function TodayPage() {
       <main className="page">
         <div style={{ maxWidth: 1324 }}>
           <div className="day">{today}</div>
-          {loaded ? <h1 className="headline">{briefing.headline}</h1> : <h1 className="headline">Reading the vault…</h1>}
-          <p className="subhead">{loaded ? briefing.subhead : "One moment."}</p>
+          {loaded ? <h1 className="headline">{briefing.headline}</h1> : <h1 className="headline">Today</h1>}
+          <p className="subhead">{loaded ? briefing.subhead : loadError ? "Current workspace data is unavailable." : "Reading the vault…"}</p>
 
-          {error ? <p className="error">{error}</p> : null}
-          {!loaded && !error ? <div className="loading">Loading the briefing…</div> : null}
-          {loaded && !error ? (
+          <DataLoadStatus error={loadError} loading={loading} loadingLabel={loaded ? "Refreshing the briefing…" : "Loading the briefing…"} onRetry={load} />
+          {loaded ? (
             <div className="today-grid">
               <div className="today-col">
                 <BriefingList items={briefing.items} />
@@ -95,7 +96,7 @@ export default function TodayPage() {
             </div>
           ) : null}
 
-          <div className="today-start" style={{ maxWidth: 1000 }}>
+          {loaded ? <div className="today-start" style={{ maxWidth: 1000 }}>
             <NewMatterForm
               busy={creating}
               onCreate={async (payload) => {
@@ -109,7 +110,7 @@ export default function TodayPage() {
               }}
             />
             <TodayChat onRefresh={load} />
-          </div>
+          </div> : null}
         </div>
       </main>
     </AppShell>

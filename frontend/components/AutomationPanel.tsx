@@ -251,12 +251,16 @@ export default function AutomationPanel({
           <>
             <p className="automation-compose-help">Want something to happen on its own? Describe it and it will run on a schedule.</p>
             <div className="intake-bar">
-              <span
-                onClick={() => setOpen(true)}
-                style={{ flex: 1, font: "400 15px var(--serif)", color: "var(--ink-5)", cursor: "text" }}
-              >
-                Describe something you want done on a schedule…
-              </span>
+              <label className="sr-only" htmlFor="automation-prompt">Automation instructions</label>
+              <input
+                className="text-input"
+                id="automation-prompt"
+                onChange={(event) => setInstructions(event.target.value)}
+                onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); setOpen(true); } }}
+                placeholder="Describe something you want done on a schedule…"
+                style={{ flex: 1 }}
+                value={instructions}
+              />
               <button className="btn primary" onClick={() => setOpen(true)} type="button">New automation</button>
             </div>
           </>

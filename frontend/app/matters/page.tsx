@@ -31,9 +31,12 @@ export default function MattersPage() {
   const [repairingMatterId, setRepairingMatterId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    try { setError(""); setMatters((await getMatters()).matters); }
+    try {
+      setError("");
+      setMatters((await getMatters()).matters);
+      setLoaded(true);
+    }
     catch (caught) { setError(caught instanceof Error ? caught.message : "Could not load matters."); }
-    finally { setLoaded(true); }
   }, []);
 
   useEffect(() => { void load(); }, [load]);
@@ -114,63 +117,70 @@ export default function MattersPage() {
         <div className="page-header">
           <div>
             <h1>Matters</h1>
-            <p>{inFlight} in flight, {closed} closed.</p>
+            {loaded ? <p>{inFlight} in flight, {closed} closed.</p> : null}
           </div>
           <div className="btn-row">
-            <div className="segmented">
-              <button className={view === "stages" ? "active" : ""} onClick={() => setView("stages")} title="Group matters by their current workflow stage." type="button">Stages</button>
-              <button className={view === "table" ? "active" : ""} onClick={() => setView("table")} title="Compare and sort matters in rows." type="button">Table</button>
-            </div>
+            <fieldset className="segmented">
+              <legend className="sr-only">Matter view</legend>
+              <input checked={view === "stages"} className="segmented-input" id="matter-view-stages" name="matter-view" onChange={() => setView("stages")} type="radio" value="stages" />
+              <label htmlFor="matter-view-stages" title="Group matters by their current workflow stage.">Stages</label>
+              <input checked={view === "table"} className="segmented-input" id="matter-view-table" name="matter-view" onChange={() => setView("table")} type="radio" value="table" />
+              <label htmlFor="matter-view-table" title="Compare and sort matters in rows.">Table</label>
+            </fieldset>
             <Link className="btn primary" href="/workspace">New matter</Link>
           </div>
         </div>
 
-        <div className="stat-chips" style={{ marginTop: 20 }}>
-          {stats.map((stat) => (
-            <button
-              className={`stat-chip ${countFilter === stat.key ? "active" : ""}`}
-              key={stat.key}
-              style={{ background: stat.tint }}
-              onClick={() => setCountFilter((current) => (current === stat.key ? "" : stat.key))}
-              aria-pressed={countFilter === stat.key}
-              type="button"
-            >
-              <b style={{ color: stat.color }}>{stat.n}</b>
-              <span style={{ color: stat.color }}>{stat.label}</span>
-            </button>
-          ))}
-          <span style={{ flex: 1 }} />
-          <div style={{ display: "flex", gap: 9, alignItems: "center", flexWrap: "wrap" }}>
-            <label className="field-label">
-              Owner
-              <select aria-label="Filter matters by owner" className="select-input" onChange={(event) => setOwnerFilter(event.target.value)} value={ownerFilter}>
-                <option value="">All owners</option>
-                {owners.map((owner) => <option key={owner} value={owner}>{owner}</option>)}
-              </select>
-            </label>
-            <label className="field-label">
-              Area
-              <select aria-label="Filter matters by area" className="select-input" onChange={(event) => setAreaFilter(event.target.value)} value={areaFilter}>
-                <option value="">All areas</option>
-                {areas.map((area) => <option key={area} value={area}>{area}</option>)}
-              </select>
-            </label>
-            <label className="field-label" title={RISK_DEFINITION}>
-              Risk
-              <select aria-describedby="risk-definition" aria-label="Filter matters by risk" className="select-input" onChange={(event) => setRiskFilter(event.target.value)} value={riskFilter}>
-                <option value="">All risk levels</option>
-                {risks.map((risk) => <option key={risk} value={risk}>{risk}</option>)}
-              </select>
-            </label>
-          </div>
-        </div>
-        <p id="risk-definition" style={{ margin: "8px 0 0", font: "400 13.5px var(--sans)", color: "var(--ink-5)" }}>{RISK_DEFINITION}</p>
+        {loaded ? (
+          <>
+            <div className="stat-chips" style={{ marginTop: 20 }}>
+              {stats.map((stat) => (
+                <button
+                  className={`stat-chip ${countFilter === stat.key ? "active" : ""}`}
+                  key={stat.key}
+                  style={{ background: stat.tint }}
+                  onClick={() => setCountFilter((current) => (current === stat.key ? "" : stat.key))}
+                  aria-pressed={countFilter === stat.key}
+                  type="button"
+                >
+                  <b style={{ color: stat.color }}>{stat.n}</b>
+                  <span style={{ color: stat.color }}>{stat.label}</span>
+                </button>
+              ))}
+              <span style={{ flex: 1 }} />
+              <div style={{ display: "flex", gap: 9, alignItems: "center", flexWrap: "wrap" }}>
+                <label className="field-label">
+                  Owner
+                  <select aria-label="Filter matters by owner" className="select-input" onChange={(event) => setOwnerFilter(event.target.value)} value={ownerFilter}>
+                    <option value="">All owners</option>
+                    {owners.map((owner) => <option key={owner} value={owner}>{owner}</option>)}
+                  </select>
+                </label>
+                <label className="field-label">
+                  Area
+                  <select aria-label="Filter matters by area" className="select-input" onChange={(event) => setAreaFilter(event.target.value)} value={areaFilter}>
+                    <option value="">All areas</option>
+                    {areas.map((area) => <option key={area} value={area}>{area}</option>)}
+                  </select>
+                </label>
+                <label className="field-label" title={RISK_DEFINITION}>
+                  Risk
+                  <select aria-describedby="risk-definition" aria-label="Filter matters by risk" className="select-input" onChange={(event) => setRiskFilter(event.target.value)} value={riskFilter}>
+                    <option value="">All risk levels</option>
+                    {risks.map((risk) => <option key={risk} value={risk}>{risk}</option>)}
+                  </select>
+                </label>
+              </div>
+            </div>
+            <p id="risk-definition" style={{ margin: "8px 0 0", font: "400 13.5px var(--sans)", color: "var(--ink-5)" }}>{RISK_DEFINITION}</p>
 
-        {filtersActive ? (
-          <div style={{ marginTop: 10, display: "flex", gap: 10, alignItems: "center", font: "400 13.5px var(--sans)", color: "var(--ink-4)" }}>
-            <span>Active filters: {activeFilters.join(" · ")}</span>
-            <button className="btn" onClick={() => { setCountFilter(""); setOwnerFilter(""); setAreaFilter(""); setRiskFilter(""); }} type="button">Clear filters</button>
-          </div>
+            {filtersActive ? (
+              <div style={{ marginTop: 10, display: "flex", gap: 10, alignItems: "center", font: "400 13.5px var(--sans)", color: "var(--ink-4)" }}>
+                <span>Active filters: {activeFilters.join(" · ")}</span>
+                <button className="btn" onClick={() => { setCountFilter(""); setOwnerFilter(""); setAreaFilter(""); setRiskFilter(""); }} type="button">Clear filters</button>
+              </div>
+            ) : null}
+          </>
         ) : null}
 
         {error ? <p className="error">{error}</p> : null}

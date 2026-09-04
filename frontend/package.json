@@ -11,8 +11,9 @@
     "check:adaptive-intake": "node --experimental-strip-types scripts/check-adaptive-intake.ts",
     "check:chat-run-recovery": "node --experimental-strip-types scripts/check-chat-run-recovery.ts",
     "check:matter-workspace-helpers": "node --experimental-strip-types scripts/check-matter-workspace-helpers.ts",
+    "check:initial-load-integrity": "node --experimental-strip-types scripts/check-initial-load-integrity.ts",
     "check:research-queue": "node --experimental-strip-types scripts/check-research-queue.ts",
-    "check:workspace-ux": "node --experimental-strip-types scripts/check-transport-preservation.ts && node --experimental-strip-types scripts/check-workspace-ux.ts && npm run check:provider-admin && npm run check:adaptive-intake && npm run check:chat-run-recovery && npm run check:research-queue"
+    "check:workspace-ux": "node --experimental-strip-types scripts/check-transport-preservation.ts && node --experimental-strip-types scripts/check-workspace-ux.ts && npm run check:initial-load-integrity && npm run check:provider-admin && npm run check:adaptive-intake && npm run check:chat-run-recovery && npm run check:research-queue"
   },
   "dependencies": {
     "@lexical/link": "^0.49.0",

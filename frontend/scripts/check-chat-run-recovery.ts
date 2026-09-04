@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import ts from "typescript";
 import { getChatRun, retryChatRun, startChatRun } from "../lib/api.ts";
-import { chatAgentId, chatDraftStorageKey, chatFailureGuidance, chatProgressLabel, chatRunStateLabel, chatRunStorageKey, chatSuggestions, durableChatProgress, historicalQuestionStates, intakeRecoveryKey, legacyChatRunStorageKey, mergeChatMessages, needsIntakeQuestionRecovery, pendingChatRunId, rememberChatRun, remainingComposerValue, safeChatFailureDetail, shouldShowChatRunStatus, visibleOperationResults } from "../lib/chatRunLogic.ts";
+import { chatAgentId, chatDraftStorageKey, chatFailureGuidance, chatProgressLabel, chatRunStateLabel, chatRunStorageKey, chatSuggestions, durableChatProgress, historicalQuestionStates, intakeRecoveryKey, legacyChatRunStorageKey, mergeChatMessages, needsIntakeQuestionRecovery, operationChangeLinks, pendingChatRunId, rememberChatRun, remainingComposerValue, safeChatFailureDetail, shouldShowChatRunStatus, visibleOperationResults } from "../lib/chatRunLogic.ts";
 import type { ChatRun } from "../lib/types.ts";
 
 const originalFetch = globalThis.fetch;
@@ -59,6 +59,29 @@ const projectedResults = visibleOperationResults([
   { operation: "run_research", status: "failed", id: "unrelated" },
 ]);
 assert.deepEqual(projectedResults.map((result) => result.id), ["saved", "unrelated"], "only a protected write failure recovered by a typed save is hidden");
+const usefulResults = visibleOperationResults([
+  { operation: "list_files", status: "no_change", id: "read-only" },
+  { operation: "complete_work_item", status: "no_change", id: "actionable", required_user_action: "Choose an open work item." },
+  { operation: "run_research", status: "failed", id: "failed" },
+]);
+assert.deepEqual(usefulResults.map((result) => result.id), ["actionable", "failed"], "non-actionable no-change audit results must not become lawyer-facing cards");
+const intakeResults = visibleOperationResults([
+  { operation: "record_intake_answer", status: "changed", id: "answer" },
+  { operation: "update_matter_intake", status: "changed", id: "intake" },
+]);
+assert.deepEqual(intakeResults.map((result) => result.id), ["intake"], "one successful intake step must render one consolidated update card");
+assert.deepEqual(operationChangeLinks([
+  "03_Matters/demo/facts.md",
+  "03_Matters/demo/issues.md",
+  "03_Matters/demo/matter.md",
+  "03_Matters/demo/dossier-revisions/DOS-1.md",
+  "03_Matters/demo/dossier.md",
+]), [
+  { label: "Facts, sources & assumptions", path: "03_Matters/demo/facts.md" },
+  { label: "Issue map", path: "03_Matters/demo/issues.md" },
+  { label: "Matter details", path: "03_Matters/demo/matter.md" },
+  { label: "Dossier", path: "03_Matters/demo/dossier-revisions/DOS-1.md" },
+], "saved change links must use lawyer-facing labels and collapse duplicate dossier targets");
 assert.match(
   chatPanelSource,
   /terminalRuns\.current\.add\(run\.run_id\);[\s\S]*setBusy\(false\);[\s\S]*setRefreshingRun\(true\)/,
@@ -243,8 +266,35 @@ try {
       { message_id: "MSG-U", role: "user", content: "Continue intake" },
       { message_id: "MSG-B", role: "assistant", content: "Next question", cards: [{ type: "question", question_id: "Q-2" }] },
     ], 0, ["Q-1"], true),
-    { "Q-1": { state: "superseded", values: [] } },
-    "a later saved intake turn supersedes an unanswered historical question",
+    { "Q-1": { state: "earlier", values: [] } },
+    "a later saved intake turn uses neutral wording without durable answer evidence",
+  );
+  assert.deepEqual(
+    historicalQuestionStates(
+      [{ message_id: "MSG-A", role: "assistant", content: "Question", cards: [{ type: "question", question_id: "Q-OLD" }] }],
+      0,
+      ["Q-OLD"],
+      false,
+      [{ question_id: "Q-NEW", question: "Which launch path applies?", answer: "Pilot", values: ["pilot"], status: "answered" }],
+      { "Q-OLD": "Which launch path applies?" },
+    ),
+    { "Q-OLD": { state: "answered", values: ["pilot"] } },
+    "one unique normalized question-text match preserves a durable answer when a model changes the ID",
+  );
+  assert.deepEqual(
+    historicalQuestionStates(
+      [{ message_id: "MSG-A", role: "assistant", content: "Question", cards: [{ type: "question", question_id: "Q-OLD" }] }],
+      0,
+      ["Q-OLD"],
+      false,
+      [
+        { question_id: "Q-A", question: "Which launch path applies?", values: ["a"] },
+        { question_id: "Q-B", question: "Which launch path applies?", values: ["b"] },
+      ],
+      { "Q-OLD": "Which launch path applies?" },
+    ),
+    { "Q-OLD": { state: "earlier", values: [] } },
+    "ambiguous text matches stay neutral",
   );
   assert.equal(chatAgentId(false, "counsel-copilot"), "counsel-copilot", "completed intake must use the active agent");
   assert.equal(chatAgentId(false, null), "counsel-copilot", "ordinary chat must have a safe default agent");

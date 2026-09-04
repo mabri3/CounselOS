@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import DataLoadStatus from "@/components/DataLoadStatus";
 import {
   createSkill,
   draftSkill,
@@ -27,18 +28,22 @@ export default function SkillBuilder({ initialGoal }: { initialGoal: string }) {
   const [reviewNote, setReviewNote] = useState("");
   const [warning, setWarning] = useState("");
   const [error, setError] = useState("");
+  const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [busy, setBusy] = useState(false);
   const [findingSuggestions, setFindingSuggestions] = useState(false);
   const focusRef = useRef<HTMLDivElement>(null);
 
   const load = useCallback(async () => {
+    setLoading(true); setLoadError("");
     try {
       const [{ skills: saved }, { questions: fixed }] = await Promise.all([getSkills(), getSkillQuestions()]);
       setSkills(saved);
       setQuestions(fixed);
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Could not load skills.");
-    }
+      setLoaded(true);
+    } catch { setLoadError("Skills are unavailable because their current data could not be loaded."); }
+    finally { setLoading(false); }
   }, []);
 
   useEffect(() => { void load(); }, [load]);
@@ -109,6 +114,10 @@ export default function SkillBuilder({ initialGoal }: { initialGoal: string }) {
   const selectedValues = Array.isArray(selected) ? selected : selected ? [selected] : [];
   const anythingElse = question?.question_id === "anything_else";
 
+  if (!loaded) {
+    return <main className="page"><DataLoadStatus error={loadError} loading={loading} loadingLabel="Loading skills…" onRetry={load} /></main>;
+  }
+
   return (
     <div className="admin-shell">
       <aside className="admin-rail admin-rail-wide">
@@ -132,6 +141,7 @@ export default function SkillBuilder({ initialGoal }: { initialGoal: string }) {
       <div className="admin-main">
         <div className="admin-scroll">
           <div className="admin-body wide">
+            <DataLoadStatus error={loadError} loading={loading} loadingLabel="Refreshing skills…" onRetry={load} />
             {view === "home" ? (
               <>
                 <div className="eyebrow">Reusable guidance</div>
