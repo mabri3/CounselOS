@@ -1,0 +1,1 @@
+{"label": "journey-approve-final-response", "actions": [{"op": "click", "name": "Approve response"}, {"op": "visible", "name": "Record manual delivery", "timeout": 60000}]}

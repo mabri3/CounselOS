@@ -1,0 +1,31 @@
+[
+  {
+    "work_product_id": "WP-7a72aa55b2ed",
+    "path": "03_Matters/harbor-relay-specification-review-0a2378/work-product/draft/harbor-relay-pilot-review-memo-55b2ed.md",
+    "title": "Harbor Relay pilot review memo",
+    "output_type": "general",
+    "revision": "ea0d8dabed73b2ba7668eee7301e530ce024096c81f3c1fcdcd68a05c715892c",
+    "review_revision": "8c71fe1cf5bc633963e0cecde05cdbc975d3f85b3a059ab981475900e539c829",
+    "pending_review": false,
+    "source_run_id": "RUN-20260905-52fc2c",
+    "claim_ids": [],
+    "template_use": {
+      "template_id": "",
+      "output_type": "general",
+      "revision": "",
+      "content_hash": "",
+      "revision_path": null,
+      "instructions_snapshot": "",
+      "section_outline_snapshot": "",
+      "defaults_snapshot": {},
+      "overrides": {},
+      "state": "unavailable",
+      "failure_detail": "No template was selected and this output type has no default.",
+      "path": "",
+      "status": "unavailable"
+    },
+    "preview": false,
+    "version_changes": [],
+    "proposal_paths": []
+  }
+]

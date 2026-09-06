@@ -1,0 +1,1 @@
+{"label":"journey-handoff-source","width":1024,"actions":[{"op":"wait","ms":4000},{"op":"click","name":"Files & context"},{"op":"click","name":"Open extracted text"},{"op":"wait","ms":1500},{"op":"press","key":"Escape"},{"op":"click","name":"Hand off work"},{"op":"wait","ms":1000}]}

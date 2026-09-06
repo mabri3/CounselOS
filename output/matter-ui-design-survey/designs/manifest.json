@@ -1,0 +1,74 @@
+[
+  {
+    "id": "01-understand",
+    "title": "Understand \u2014 clear work list",
+    "source": "/Users/bharris/.codex/generated_images/01a0722b-1559-7a80-9bc0-6914bbc49745/exec-c0688fac-a3e8-496e-8a30-d9dcea37f1be.png",
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/matter-ui-design-survey/designs/01-understand.png"
+  },
+  {
+    "id": "02-issue",
+    "title": "Issue review \u2014 explanation through disposition",
+    "source": "/Users/bharris/.codex/generated_images/01a0722b-1559-7a80-9bc0-6914bbc49745/exec-597ee31e-3179-4c3a-9eeb-0c1b95952069.png",
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/matter-ui-design-survey/designs/02-issue.png"
+  },
+  {
+    "id": "03-discuss",
+    "title": "Discuss \u2014 conversation with visible target",
+    "source": "/Users/bharris/.codex/generated_images/01a0722b-1559-7a80-9bc0-6914bbc49745/exec-6e0bbc5d-0a79-45fa-8ee9-8feaf5eccefa.png",
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/matter-ui-design-survey/designs/03-discuss.png"
+  },
+  {
+    "id": "04-draft",
+    "title": "Draft \u2014 document navigation and editing",
+    "source": "/Users/bharris/.codex/generated_images/01a0722b-1559-7a80-9bc0-6914bbc49745/exec-bbe51944-190c-4271-ae3d-d0ebbc503162.png",
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/matter-ui-design-survey/designs/04-draft.png"
+  },
+  {
+    "id": "05-source",
+    "title": "Source preview \u2014 keep the draft target",
+    "source": "/Users/bharris/.codex/generated_images/01a0722b-1559-7a80-9bc0-6914bbc49745/exec-dc8c2cd8-6623-4da8-a943-c5b3ea3c08fe.png",
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/matter-ui-design-survey/designs/05-source.png"
+  },
+  {
+    "id": "06-map",
+    "title": "Decision map \u2014 visual and outline",
+    "source": "/Users/bharris/.codex/generated_images/01a0722b-1559-7a80-9bc0-6914bbc49745/exec-6c72f455-7667-495b-8e0a-965b8db9e176.png",
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/matter-ui-design-survey/designs/06-map.png"
+  },
+  {
+    "id": "07-scenario",
+    "title": "What if \u2014 analysis separate from facts",
+    "source": "/Users/bharris/.codex/generated_images/01a0722b-1559-7a80-9bc0-6914bbc49745/exec-2f0391e6-99bb-4db1-a94b-96ca52e7e195.png",
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/matter-ui-design-survey/designs/07-scenario.png"
+  },
+  {
+    "id": "08-work",
+    "title": "Research, work and records \u2014 lower-page functions",
+    "source": "/Users/bharris/.codex/generated_images/01a0722b-1559-7a80-9bc0-6914bbc49745/exec-71eb5692-bea5-42ed-a455-af6df197a956.png",
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/matter-ui-design-survey/designs/08-work.png"
+  },
+  {
+    "id": "09-explore",
+    "title": "Explore, prior work and watches \u2014 lower-page functions",
+    "source": "/Users/bharris/.codex/generated_images/01a0722b-1559-7a80-9bc0-6914bbc49745/exec-e38e916e-cded-4332-bc03-9876509199a5.png",
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/matter-ui-design-survey/designs/09-explore.png"
+  },
+  {
+    "id": "10-tools",
+    "title": "Tools and history \u2014 full tool navigation",
+    "source": "/Users/bharris/.codex/generated_images/01a0722b-1559-7a80-9bc0-6914bbc49745/exec-cf3c5a5b-9a63-4b50-a696-0f87391acee1.png",
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/matter-ui-design-survey/designs/10-tools.png"
+  },
+  {
+    "id": "11-business",
+    "title": "Business replies and handoff \u2014 explicit external records",
+    "source": "/Users/bharris/.codex/generated_images/01a0722b-1559-7a80-9bc0-6914bbc49745/exec-ee2207f4-3cfa-470e-96b3-3690a358c41a.png",
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/matter-ui-design-survey/designs/11-business.png"
+  },
+  {
+    "id": "12-compare",
+    "title": "Compare supplied versions \u2014 source and effect",
+    "source": "/Users/bharris/.codex/generated_images/01a0722b-1559-7a80-9bc0-6914bbc49745/exec-7fee1eca-51f8-4138-9fa0-c8ed1f1c48de.png",
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/matter-ui-design-survey/designs/12-compare.png"
+  }
+]

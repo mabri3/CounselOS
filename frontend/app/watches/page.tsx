@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import styles from "@/components/WatchesPhase2.module.css";
 import AppShell from "@/components/AppShell";
 import WatchList from "@/components/WatchList";
 import { getWatches } from "@/lib/watchApi";
@@ -18,7 +19,7 @@ export default function WatchesPage() {
   }, []);
   useEffect(() => { void load(); }, [load]);
 
-  return <AppShell><main className="page narrow">
+  return <AppShell><main className={styles.page}>
     <WatchList error={loadError} loading={loading} onRetry={load} watches={watches} />
   </main></AppShell>;
 }

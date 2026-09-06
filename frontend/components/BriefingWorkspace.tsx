@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import styles from "./BriefingPhase2.module.css";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import AppShell from "@/components/AppShell";
@@ -135,19 +136,16 @@ export default function BriefingWorkspace({ initialSearchParams }: { initialSear
     { key: "saved", label: "Saved", count: counts?.saved, active: query.saved === "yes", next: { ...defaults, sort: query.sort, group: query.group, saved: "yes" } },
   ];
 
-  return <AppShell><main className="page reader">
+  return <AppShell><main className={styles.overview}>
     <header className="page-header">
       <div className="page-header-main">
-        <div className="eyebrow">Continuous legal awareness</div>
-        <h1 className="headline">Briefing</h1>
+        <div className="eyebrow">Briefing overview</div>
+        <h1 className="headline">Stay current without losing your place</h1>
         <p className="page-lede">
-          Public legal developments your Watches picked up. Read here to stay current —
-          <strong> nothing you read on this page adds work to Today.</strong> When a development touches a
-          recorded decision, it also arrives on Today as a review packet.
+          Track the developments that matter to your work.
         </p>
       </div>
-      <div className="btn-row">
-        <Link className="btn" href="/watches">Manage Watches</Link>
+      <div className={styles.saveView}>
         <button className="btn primary" disabled={busy || !items} onClick={() => setViewEditor({ mode: "save", name: "" })} type="button">Save this view</button>
       </div>
     </header>
@@ -175,7 +173,7 @@ export default function BriefingWorkspace({ initialSearchParams }: { initialSear
       onClear={() => apply({ ...defaults })}
     />
 
-    <div className="work-rail-layout" style={{ marginTop: 22 }}>
+    <div className={styles.overviewContents}>
       <div className="work-main">
         <div className="query-summary">
           <span className="query-summary-count">
@@ -187,9 +185,9 @@ export default function BriefingWorkspace({ initialSearchParams }: { initialSear
         <BriefingItemList group={query.group} items={items.items} queryString={queryString} watchNames={watchNames} />
       </div>
 
-      <aside className="work-rail" aria-label="Saved views, digests and Watches">
+      <aside className={styles.rail} aria-label="Saved views, digests and Watches">
         <section className="rail-card">
-          <h2 className="rail-card-title">Saved views</h2>
+          <div className={styles.railHeading}><h2 className="rail-card-title">Saved views</h2><Link href="/watches">Manage watches</Link></div>
           <p className="rail-card-help">A saved view remembers a search. Open one to return to it, or turn it into a digest.</p>
           {views.length === 0
             ? <p className="rail-card-empty">You haven&apos;t saved a view yet. Set the filters above, then choose <strong>Save this view</strong>.</p>
@@ -198,18 +196,18 @@ export default function BriefingWorkspace({ initialSearchParams }: { initialSear
               {query.view === view.view_id ? <div className="rail-entry-meta">Showing now</div> : null}
               {viewEditor?.mode === "rename" && viewEditor.viewId === view.view_id
                 ? <ViewNameForm busy={busy} label={`New name for ${view.name}`} name={viewEditor.name} onCancel={() => setViewEditor(null)} onChange={(name) => setViewEditor({ mode: "rename", name, viewId: view.view_id })} onSave={(name) => rename(view, name)} />
-                : <div className="rail-entry-actions">
+                : <details className={styles.viewMenu}><summary aria-label={`Actions for ${view.name}`}>•••</summary><div className="rail-entry-actions">
                   <button className="btn tiny" disabled={busy} onClick={() => digestNow(view)} type="button">Make a digest now</button>
                   <button className="btn tiny" disabled={busy} onClick={() => schedule(view)} type="button">Digest daily at 8 AM</button>
                   <button className="btn tiny" onClick={() => setViewEditor({ mode: "rename", name: view.name, viewId: view.view_id })} type="button">Rename</button>
                   <button className="btn tiny" disabled={busy} onClick={() => remove(view)} type="button">Delete</button>
-                </div>}
+                </div></details>}
             </div>)}</div>}
         </section>
 
         <section className="rail-card">
           <h2 className="rail-card-title">Digests</h2>
-          <p className="rail-card-help">A digest freezes what a saved view showed on one date. Past digests never change, so they are safe to cite or share.</p>
+          <p className="rail-card-help">A digest saves a summary and item list for one date. Its links open current item records.</p>
           {digests.length === 0
             ? <p className="rail-card-empty">No digest yet. Save a view, then choose <strong>Make a digest now</strong>.</p>
             : <div className="rail-card-body">{digests.map((digest) => <div className="rail-entry" key={digest.digest_id}>

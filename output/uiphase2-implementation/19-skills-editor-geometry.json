@@ -1,0 +1,244 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 83.99857330322266,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": -97.7272720336914
+    },
+    {
+      "font": "13px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 237.7627716064453,
+      "x": 756.7826538085938,
+      "y": -30.873579025268555
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 763.68603515625,
+      "y": -5.184659004211426
+    },
+    {
+      "font": "15px",
+      "height": 2320.972900390625,
+      "tag": "MAIN",
+      "text": "Output templatesReusable skills‹ Back to templatesOutput tem",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": -13.728693008422852
+    },
+    {
+      "font": "15px",
+      "height": 46.26420211791992,
+      "tag": "BUTTON",
+      "text": "Output templates",
+      "width": 118.5014190673828,
+      "x": 40,
+      "y": 14.268465042114258
+    },
+    {
+      "font": "15px",
+      "height": 46.26420211791992,
+      "tag": "BUTTON",
+      "text": "Reusable skills",
+      "width": 100.35511016845705,
+      "x": 186.49856567382812,
+      "y": 14.268465042114258
+    },
+    {
+      "font": "15px",
+      "height": 2183.806640625,
+      "tag": "ASIDE",
+      "text": "Your skills14OverviewSynthetic process briefBusiness Decisio",
+      "width": 299.04827880859375,
+      "x": 40,
+      "y": 83.4375
+    },
+    {
+      "font": "14.5px",
+      "height": 37.08806610107422,
+      "tag": "BUTTON",
+      "text": "Overview",
+      "width": 276.1434631347656,
+      "x": 40,
+      "y": 131.796875
+    },
+    {
+      "font": "15px",
+      "height": 130.2201690673828,
+      "tag": "BUTTON",
+      "text": "Synthetic process briefBusiness Decision Brief/output-busine",
+      "width": 276.1434631347656,
+      "x": 40,
+      "y": 213.7926025390625
+    },
+    {
+      "font": "15px",
+      "height": 133.69317626953125,
+      "tag": "BUTTON",
+      "text": "Business Decision BriefA short brief to help a business owne",
+      "width": 276.1434631347656,
+      "x": 40,
+      "y": 346.0085144042969
+    },
+    {
+      "font": "15px",
+      "height": 133.69317626953125,
+      "tag": "BUTTON",
+      "text": "Change Impact NoteA note about the impact of a proposed or r",
+      "width": 276.1434631347656,
+      "x": 40,
+      "y": 481.6974182128906
+    },
+    {
+      "font": "15px",
+      "height": 150.5113525390625,
+      "tag": "BUTTON",
+      "text": "Contract Clause RevisionA focused revision to selected contr",
+      "width": 276.1434631347656,
+      "x": 40,
+      "y": 617.3863525390625
+    },
+    {
+      "font": "15px",
+      "height": 113.40198516845705,
+      "tag": "BUTTON",
+      "text": "Draft Decision RationaleA draft rationale for lawyer review.",
+      "width": 276.1434631347656,
+      "x": 40,
+      "y": 769.8934326171875
+    },
+    {
+      "font": "15px",
+      "height": 130.2201690673828,
+      "tag": "BUTTON",
+      "text": "Fact Confirmation RequestA targeted request to confirm facts",
+      "width": 276.1434631347656,
+      "x": 40,
+      "y": 885.2911376953125
+    },
+    {
+      "font": "15px",
+      "height": 173.90625,
+      "tag": "BUTTON",
+      "text": "Implementation RequirementsRequirements for a product or ope",
+      "width": 276.1434631347656,
+      "x": 40,
+      "y": 1017.507080078125
+    },
+    {
+      "font": "15px",
+      "height": 150.5113525390625,
+      "tag": "BUTTON",
+      "text": "Meeting Preparation BriefA preparation brief for a future me",
+      "width": 276.1434631347656,
+      "x": 40,
+      "y": 1193.4090576171875
+    },
+    {
+      "font": "15px",
+      "height": 133.69317626953125,
+      "tag": "BUTTON",
+      "text": "Outside Counsel BriefA focused single-lawyer request for out",
+      "width": 276.1434631347656,
+      "x": 40,
+      "y": 1345.9161376953125
+    },
+    {
+      "font": "15px",
+      "height": 133.69317626953125,
+      "tag": "BUTTON",
+      "text": "Regulatory MemorandumA concise regulatory analysis for an in",
+      "width": 276.1434631347656,
+      "x": 40,
+      "y": 1481.6051025390625
+    },
+    {
+      "font": "15px",
+      "height": 113.40198516845705,
+      "tag": "BUTTON",
+      "text": "Short Business EmailA direct internal business email./output",
+      "width": 276.1434631347656,
+      "x": 40,
+      "y": 1617.2939453125
+    },
+    {
+      "font": "15px",
+      "height": 113.40198516845705,
+      "tag": "BUTTON",
+      "text": "Transaction ChecklistA practical transaction checklist./outp",
+      "width": 276.1434631347656,
+      "x": 40,
+      "y": 1732.691650390625
+    },
+    {
+      "font": "15px",
+      "height": 175.1846466064453,
+      "tag": "BUTTON",
+      "text": "Product Launch ReviewHelps you systematically review a produ",
+      "width": 276.1434631347656,
+      "x": 40,
+      "y": 1848.0894775390625
+    },
+    {
+      "font": "15px",
+      "height": 153.984375,
+      "tag": "BUTTON",
+      "text": "Watch BuilderCreate or change recurring legal monitoring wit",
+      "width": 276.1434631347656,
+      "x": 40,
+      "y": 2025.269775390625
+    },
+    {
+      "font": "14px",
+      "height": 41.9957389831543,
+      "tag": "BUTTON",
+      "text": "＋ New skill",
+      "width": 252.1519775390625,
+      "x": 51.99573516845703,
+      "y": 2203.252685546875
+    },
+    {
+      "font": "48px",
+      "height": 107.49999237060548,
+      "tag": "H1",
+      "text": "Product Launch Review",
+      "width": 525.4971313476562,
+      "x": 409.04827880859375,
+      "y": 127.98294830322266
+    },
+    {
+      "font": "14px",
+      "height": 41.9957389831543,
+      "tag": "BUTTON",
+      "text": "Start over",
+      "width": 96.7116470336914,
+      "x": 369.04827880859375,
+      "y": 2225.24853515625
+    },
+    {
+      "font": "14px",
+      "height": 41.9957389831543,
+      "tag": "BUTTON",
+      "text": "Save changes",
+      "width": 121.06533813476562,
+      "x": 719.382080078125,
+      "y": 2225.24853515625
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 97.7272720336914,
+  "url": "http://localhost:3134/skills",
+  "width": 1024
+}

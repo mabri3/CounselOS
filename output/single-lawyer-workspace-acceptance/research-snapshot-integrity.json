@@ -1,0 +1,19 @@
+{
+  "protected_records": 9,
+  "changed": [],
+  "research_runs": [
+    "RUN-20260905-23343b",
+    "RUN-20260905-37b204"
+  ],
+  "packets": [
+    "RES-20260905-aaecc1",
+    "RES-20260905-acf24b"
+  ],
+  "browser_totals": {
+    "runs": 3,
+    "active": 0,
+    "saved_packets": 2,
+    "saved_support_sources": 0
+  },
+  "older_stopped_run": "RUN-20260905-5a7c49"
+}

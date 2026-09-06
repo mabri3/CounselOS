@@ -1,6 +1,6 @@
 # Context Map
 
-Last verified: 2026-09-01
+Last verified: 2026-09-05
 
 ## Selective Reading Guide
 
@@ -10,6 +10,10 @@ Start with `AGENTS.md` and `current.md`. Read only the paths mapped to the activ
 
 | Area | Authoritative paths | Purpose | Read when |
 |---|---|---|---|
+| Decision map paths | `docs/decision-map-redesign.contract.md`, `docs/decision-map-redesign.verification.md`, `backend/app/services/issue_analysis.py`, `workspace_review.py`, `frontend/lib/decisionMapTypes.ts`, `decisionMapLayout.ts`, `frontend/components/workspace/DecisionPathGraph.tsx` | Saved inquiry/research analysis, exact issue pointers, conditional route display, frozen decision basis and source identity | Continuing or checking decision map generation, rendering or record integrity |
+| Lawyer continuity | `docs/lawyer-workflow-expansion.contract.md`, `docs/lawyer-workflow-expansion.verification.md`, `docs/lawyer-workflow-expansion.usability.md`, `backend/app/services/workspace_orientation.py`, `fact_requests.py`, `workspace_team.py`, `change_impact.py`, `backend/app/models/continuity.py`, `frontend/lib/continuityTypes.ts` | Shared orientation, exact business replies, optional local lawyer identities, scoped ownership and frozen supplied-version comparison | Continuing or checking the four-area lawyer workflow |
+| Continuity controls and integration | `frontend/components/workspace/OrientationSummary.tsx`, `FactRequestPanel.tsx`, `HandoffPanel.tsx`, `ChangeImpactPanel.tsx`, `DemoLawyerSwitcher.tsx`, `TeamWorkList.tsx`, `frontend/components/MatterWorkspace.tsx`, `backend/app/routers/workspace.py`, `chat.py`, `files.py`, `matters.py` | Contextual catalog loading, one matter conversation, trusted lifecycle/actor transport, repeat-safe commands and canonical target routing | Changing a continuity action or person-scoped input |
+| Continuity proof | `backend/tests/test_workspace_orientation.py`, `test_fact_requests.py`, `test_workspace_team.py`, `test_change_impact.py`, `test_continuity_identity.py`, `test_continuity_integration.py`, `test_continuity_recovery.py`, `frontend/scripts/check-continuity-integrity.ts`, `check-transport-preservation.ts` | Runtime callbacks, real HTTP boundaries, delayed/partial writes, stale editor saves and preserved local input | Verifying continuity or document recovery changes |
 | Entry points | `backend/app/main.py`, `frontend/app/page.tsx`, `scripts/dev.sh` | FastAPI app, Next.js command center, local startup | Starting services or tracing app boot |
 | Core domain | `backend/app/services/`, `backend/app/agents/`, `backend/app/tools/` | Matters, vault/index behavior, research, decisions, agents, tools, scheduling | Changing backend behavior |
 | Interfaces/API | `backend/app/routers/`, `backend/app/models/api.py`, `docs/API.md`, `frontend/lib/api.ts`, `frontend/lib/types.ts` | HTTP routes, request/response models, frontend client contracts | Changing or debugging API behavior |

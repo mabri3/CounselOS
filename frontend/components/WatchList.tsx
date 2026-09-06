@@ -1,3 +1,4 @@
+import styles from "@/components/WatchesPhase2.module.css";
 import Link from "next/link";
 import DataLoadStatus from "@/components/DataLoadStatus";
 import { formatDateTime } from "@/lib/design";
@@ -25,24 +26,16 @@ function cadenceWords(recurrence: Watch["recurrence"]): string {
 }
 
 export default function WatchList({ error, loading, onRetry, watches }: { error: string; loading: boolean; onRetry: () => void | Promise<void>; watches: Watch[] | null }) {
-  return <>
-    <div className="page-header">
-      <div className="page-header-main"><div className="eyebrow">Continuous legal awareness</div><h1 className="headline">Watches</h1><p className="page-lede">A Watch is a standing question Themis.ai re-asks of public sources on a schedule. What each one finds arrives in Briefing.</p></div>
-      <Link className="btn primary" href="/watches/new">New Watch</Link>
+  return <div className={styles.index}>
+    <div className={styles.header}>
+      <div><h1 className={styles.heading}>Standing questions, kept in view</h1><p className={styles.lede}>Watches keep the questions that matter on your radar.<br />What each one finds arrives in Briefing.</p></div>
+      <Link className="btn primary" href="/watches/new">+ New Watch</Link>
     </div>
     <DataLoadStatus error={error} loading={loading} loadingLabel={watches ? "Refreshing Watches…" : "Loading Watches…"} onRetry={onRetry} />
-    {watches?.length === 0 ? <div className="empty-state" style={{ marginTop: 24 }}>No Watches yet. Create one to save a monitoring question.</div> : null}
-    {watches?.length ? <div className="stack-list" style={{ marginTop: 24 }}>
-      {watches.map((watch) => <Link className="card card-pad responsive-card" href={`/watches/${encodeURIComponent(watch.watch_id)}`} key={watch.watch_id}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, flexWrap: "wrap" }}>
-          <div style={{ minWidth: 0 }}><h2>{watch.title}</h2><p className="muted" style={{ margin: "7px 0 0", lineHeight: 1.55 }}>{watch.standing_question}</p></div>
-          <span className={`state-label ${stateClass[watch.status]}`}>{label(watch.status)}</span>
-        </div>
-        <div className="watch-card-foot">
-          <span>{cadenceWords(watch.recurrence)} · Asks {providerNames(watch.provider)}</span>
-          <span className="record-meta">Updated {formatDateTime(watch.updated_at)}</span>
-        </div>
-      </Link>)}
-    </div> : null}
-  </>;
+    {watches?.length === 0 ? <div className={styles.empty}><span aria-hidden="true" className={styles.emptyIcon}>⌕</span><h2>No Watches yet</h2><p>Create one to save a monitoring question.</p><Link className="btn primary" href="/watches/new">+ New Watch</Link></div> : null}
+    {watches?.length ? <div aria-label="Watches" className={styles.tableWrap} role="region" tabIndex={0}><table className={styles.table}><thead><tr><th>Watch</th><th>Standing question</th><th>Provider</th><th>Cadence</th><th>Last successful scan</th><th>Status</th><th><span className="sr-only">Open</span></th></tr></thead><tbody>
+      {watches.map((watch) => <tr key={watch.watch_id}><td><Link href={`/watches/${encodeURIComponent(watch.watch_id)}`}>{watch.title}</Link></td><td>{watch.standing_question}</td><td>{providerNames(watch.provider)}</td><td>{cadenceWords(watch.recurrence)}</td><td>{watch.last_successful_scan_at ? formatDateTime(watch.last_successful_scan_at) : "No successful scan yet"}</td><td><span className={`state-label ${stateClass[watch.status]}`}>{watch.enabled && watch.status === "healthy" ? "Active" : label(watch.status)}</span></td><td><Link aria-label={`Open ${watch.title}`} href={`/watches/${encodeURIComponent(watch.watch_id)}`}>Open ›</Link></td></tr>)}
+    </tbody></table></div> : null}
+    <section className={styles.explanation}><h2>Save draft, Scan now, or Start Watch</h2><dl><dt>Save draft</dt><dd>Save your question and refine it later.</dd><dt>Scan now</dt><dd>Save the draft, then run a one-time check. The schedule state stays the same.</dd><dt>Start Watch</dt><dd>Begin ongoing monitoring on your chosen schedule.</dd></dl></section>
+  </div>;
 }

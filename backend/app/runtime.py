@@ -33,6 +33,14 @@ from app.services.developments import DevelopmentService
 from app.services.document_export import DocumentExportService
 from app.services.document_review import DocumentReviewService
 from app.services.dossier import DossierService
+from app.services.workspace import WorkspaceService
+from app.services.issue_analysis import IssueAnalysisService
+from app.services.workspace_actions import WorkspaceActionsService
+from app.services.workspace_evidence import WorkspaceEvidenceService
+from app.services.workspace_scenarios import WorkspaceScenarioService
+from app.services.workspace_review import WorkspaceReviewService
+from app.services.workspace_flow import WorkspaceFlowService
+from app.services.workspace_reuse import WorkspaceReuseService
 from app.services.index import IndexService
 from app.services.ingestion import IngestionService
 from app.services.internal_knowledge import InternalKnowledgeService
@@ -82,6 +90,8 @@ class AppContext:
         self.matter_records = MatterRecordService(self.vault, self.matters)
         self.dossiers = DossierService(self.vault, self.matters)
         self.matters.bind_dossiers(self.dossiers)
+        self.workspace = WorkspaceService(self.vault, self.matters, self.dossiers, self.matter_records)
+        self.issue_analysis = IssueAnalysisService(self.vault, self.matters, self.workspace)
         self.work_products = WorkProductService(self.vault, self.matters, self.matter_paths)
         self.document_reviews = DocumentReviewService(self.vault)
         self.document_exports = DocumentExportService(self.vault)
@@ -173,6 +183,14 @@ class AppContext:
         self.agents = AgentRegistry(self.vault, self.settings.max_agent_steps)
         self.provider_router = ProviderRouter(self.settings, self.provider)
         self.skills = SkillRegistry(self.vault)
+        self.skills.install_missing_output_template_starters()
+        self.workspace_evidence = WorkspaceEvidenceService(self.vault, self.matters, self.workspace)
+        self.workspace_scenarios = WorkspaceScenarioService(self.vault, self.matters, self.workspace, self.matter_records)
+        self.workspace_review = WorkspaceReviewService(
+            self.vault, self.matters, self.workspace, self.matter_records, self.workspace_scenarios
+        )
+        self.workspace_flow = WorkspaceFlowService(self.vault, self.matters, self.workspace, self.matter_records)
+        self.workspace_reuse = WorkspaceReuseService(self.vault, search=self.search, records=self.matter_records, skills=self.skills, watches=self.watches, workspace=self.workspace)
         self.skill_builder = SkillBuilderService(
             self.skills,
             self.chat_history,
@@ -186,6 +204,7 @@ class AppContext:
             self.agents,
             self.matter_state,
             self.answer_contract,
+            workspace=self.workspace,
         )
         self.scheduler = SchedulerService(
             self.vault,
@@ -213,6 +232,17 @@ class AppContext:
         self.chat_runs = ChatRunService(
             self.vault, self, timeout_seconds=self.settings.chat_run_timeout_seconds
         )
+        self.workspace_actions = WorkspaceActionsService(self.vault, self.matters, self.workspace, run_starter=self.chat_runs.start)
+        from app.services.fact_requests import FactRequestService
+        from app.services.workspace_team import WorkspaceTeamService
+        from app.services.workspace_orientation import WorkspaceOrientationService
+        from app.services.change_impact import ChangeImpactService
+        self.workspace_team = WorkspaceTeamService(self.vault, self.matters, self.workspace, self.settings_store, transfer_owner=self.matters.transfer_continuity_owner)
+        self.matters.continuity_team = self.workspace_team
+        self.fact_requests = FactRequestService(self.vault, self.matters, self.workspace, self.matter_records)
+        self.workspace_orientation = WorkspaceOrientationService(self.vault, self.matters, self.workspace)
+        self.change_impact = ChangeImpactService(self.vault, self.matters, self.workspace, self.workspace_evidence, self.work_products, self.workspace_actions)
+
         if recover_interrupted:
             self.chat_runs.mark_running_interrupted()
         self.scheduler.bind(self)

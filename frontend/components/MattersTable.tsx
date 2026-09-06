@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import styles from "@/components/PortfolioPhase2.module.css";
 import { useMemo, useState } from "react";
 import LinkifiedText from "@/components/LinkifiedText";
 import { consistencyIssueIsSafelyRepairable, consistencyIssueLabel, dueWord, matterNextAction, matterNextOwner, riskLabel, role, signalCellTint, signalFor, stageLabel, STAGES } from "@/lib/design";
@@ -28,11 +29,8 @@ export default function MattersTable({
     });
   }, [direction, matters, sortKey]);
 
-  const owners = new Set(matters.map(matterNextOwner));
-  const showOwner = owners.size > 1;
-  const columns = showOwner
-    ? "minmax(0,2fr) 150px minmax(0,2fr) 120px 110px 90px"
-    : "minmax(0,2fr) 150px minmax(0,2fr) 110px 90px";
+  const showOwner = true;
+  const columns = "minmax(0,2.2fr) minmax(0,1fr) minmax(0,1.6fr) minmax(0,1.2fr) 95px 85px";
 
   function sortBy(key: SortKey) {
     if (key === sortKey) {
@@ -61,7 +59,7 @@ export default function MattersTable({
   );
 
   return (
-    <div className="register">
+    <div className={styles.tableScroll} role="region" aria-label="Matters table, scroll horizontally to see all columns" tabIndex={0}><div className="register">
       <div
         className="register-grid register-head record-meta"
         style={{ ...templateVar(columns), textTransform: "none" }}
@@ -81,8 +79,8 @@ export default function MattersTable({
             className="register-grid register-row"
             key={matter.matter_id}
             style={{
-              background: "#fffefb",
-              borderLeft: `5px solid ${signal.rail}`,
+              background: "white",
+              borderLeft: "0",
               ...templateVar(columns),
             }}
           >
@@ -128,7 +126,7 @@ export default function MattersTable({
           </div>
         );
       })}
-    </div>
+    </div></div>
   );
 }
 

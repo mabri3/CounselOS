@@ -1,0 +1,91 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 83.99857330322266,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "font": "13px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 237.7627716064453,
+      "x": 756.7826538085938,
+      "y": 66.85369110107422
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 763.68603515625,
+      "y": 92.54261016845705
+    },
+    {
+      "font": "15px",
+      "height": 1224.1689453125,
+      "tag": "MAIN",
+      "text": "← Back to BriefingDigest · frozen Sep 6, 2026, 12:53 AMSynth",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": 83.99857330322266
+    },
+    {
+      "font": "15px",
+      "height": 145.2627716064453,
+      "tag": "HEADER",
+      "text": "Digest · frozen Sep 6, 2026, 12:53 AMSynthetic saved briefin",
+      "width": 930.553955078125,
+      "x": 41.9957389831543,
+      "y": 183.53692626953125
+    },
+    {
+      "font": "48px",
+      "height": 55.1917610168457,
+      "tag": "H1",
+      "text": "Synthetic saved briefing",
+      "width": 513.84228515625,
+      "x": 41.9957389831543,
+      "y": 222.0809631347656
+    },
+    {
+      "font": "15px",
+      "height": 179.53125,
+      "tag": "SECTION",
+      "text": "Agent work · Digest summaryA saved test view includes one av",
+      "width": 930.553955078125,
+      "x": 41.9957389831543,
+      "y": 460.2485656738281
+    },
+    {
+      "font": "26px",
+      "height": 67.59942626953125,
+      "tag": "H2",
+      "text": "Reading only — alternative-data explanation practices",
+      "width": 646.7471313476562,
+      "x": 306.89630126953125,
+      "y": 706.6832275390625
+    },
+    {
+      "font": "26px",
+      "height": 33.799713134765625,
+      "tag": "H2",
+      "text": "Current item unavailable",
+      "width": 646.7471313476562,
+      "x": 306.89630126953125,
+      "y": 960.9019775390624
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 0,
+  "url": "http://localhost:3134/briefing/digests/DIG-PHASE2",
+  "width": 1024
+}

@@ -1,0 +1,1 @@
+{"label": "journey-reload-saved-proposal", "actions": [{"op": "clickConfirm", "name": "Reload saved file"}, {"op": "visible", "name": "Review 62 changes", "timeout": 60000}, {"op": "click", "name": "Review 62 changes"}]}

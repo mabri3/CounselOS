@@ -5,9 +5,10 @@ from typing import Any
 import frontmatter
 
 from app.services.vault import VaultService
+from app.services.dossier import serialized
 
 
-DEFAULT_ANSWER_CONTRACT = """---
+LEGACY_ANSWER_CONTRACT = """---
 record_type: answer_contract
 version: 0.2.0
 ---
@@ -76,10 +77,117 @@ Rules:
 - If the vault could have answered an item but was not consulted, say so plainly.
 """
 
+DEFAULT_ANSWER_CONTRACT = """---
+record_type: answer_contract
+version: 0.3.0
+---
+# Answer contract
+
+Give the strongest useful answer first. Match the requested work: discussion,
+explanation, drafting, and research need different forms. No mandatory headings
+or minimum number of caveats apply.
+
+## Support and claim strength
+
+- Never invent or guess a source, quotation, citation, holding, statute,
+  regulation, date, jurisdiction, or fact.
+- Distinguish reported facts, verified facts, supplied sources, retrieved
+  authority, unverified leads, and generated analysis. Retrieval alone is not
+  verification. Cite material claims using the actual available sources.
+- If external authority was needed but none was retrieved, say briefly:
+  **No external authority retrieved**. Continue with useful conditional analysis.
+- Take a supported position. Explain a material competing reading when evidence
+  supports it. Do not invent an objection or automatically agree with the user.
+- For a material missing fact, state the likely answer and the short alternative
+  if the fact changes. Ask at most one optional question when its answer could
+  materially change the analysis. State its consequence. An unanswered question
+  does not block useful work. Do not repeat answered questions without a change.
+- Name specific limits only when they matter. There is no required caveat count.
+  Never add generic disclaimers or force a research template on a draft.
+- Preserve useful output if research, tools, citation formatting, or optional
+  structure parsing fails. Clearly name any resulting material support gap.
+- Keep recommendations separate from recorded decisions. Explain the effect of
+  changed facts and offer a draft update; revise only on the lawyer's request.
+"""
+
+_LEGACY_DOCUMENT = frontmatter.loads(LEGACY_ANSWER_CONTRACT)
+LEGACY_ANSWER_CONTRACT_CONTENT = _LEGACY_DOCUMENT.content.strip()
+
 _DEFAULT_DOCUMENT = frontmatter.loads(DEFAULT_ANSWER_CONTRACT)
 DEFAULT_ANSWER_CONTRACT_CONTENT = _DEFAULT_DOCUMENT.content.strip()
 DEFAULT_ANSWER_CONTRACT_METADATA = dict(_DEFAULT_DOCUMENT.metadata)
 MAX_ANSWER_CONTRACT_CHARS = 12_000
+
+
+# This runtime-owned supplement applies even when a lawyer has edited Answer.md.
+# It defines the machine-readable citation shape without replacing that custom
+# presentation contract.
+CLAIM_SUPPORT_EXECUTION_CONTRACT = """# Claim support output contract
+
+Keep the useful prose as the answer. When the response makes material legal
+claims, also preserve claim-level support in optional structured output when the
+provider supports it. Each saved claim contains:
+
+`claim_id`, `text`, `claim_revision`, `output_revision`, `applicability`,
+`evidence`, and `support_gap`.
+
+Applicability names the regulated actor and jurisdiction, the saved fact and
+assumption IDs used, and a short application explanation. If any of these are
+material and unknown, state that gap. Do not infer that a definition or generic
+mention of an authority proves that the law applies to this actor or matter.
+
+Each evidence entry names `source_id`, the exact saved `locator`, and a short
+claim-specific explanation. Use only an exact available excerpt supplied by the
+source record. Do not invent or reconstruct an excerpt, locator, source status,
+verification event, claim revision, or output revision. Retrieved is not Verified.
+If the provider cannot return separate structured output, put
+`[source:SOURCE_ID|exact locator]` directly after the supported claim. Several
+claims can cite different exact passages from the same source.
+
+The ordinary chat transport is also available. Write the useful prose first,
+then optionally append exactly one fenced JSON object in this form:
+
+```claim-support
+{"claims":[{"claim_id":"CLM-ID","text":"Exact text copied from the prose","applicability":{"regulated_actor":"","jurisdiction":"","fact_ids":[],"assumption_ids":[],"explanation":""},"evidence":[{"source_id":"SRC-ID","locator":"exact saved locator","explanation":""}],"support_gap":""}]}
+```
+
+Do not put generated excerpts, source status, claim revisions, or output
+revisions in this block. The application derives those values from saved source
+records and the saved answer. The block is optional; do not force an ordinary
+answer through JSON.
+Missing support or malformed optional structure must not remove useful prose or
+other valid claims and evidence entries.
+"""
+
+DECISION_PATHS_EXECUTION_CONTRACT = """# Optional decision paths output
+
+Keep the useful answer in normal prose. For a focused issue analysis, you may
+append one independent fenced JSON object after the prose:
+
+```decision-paths
+{"issue_analysis":{"issue_id":"ISS-real","display_title":"Short issue title","explanation":"Why this issue matters","business_effect":"What changes for the business","tests":[{"test_id":"test-1","title":"The legal test","summary":"How the test applies","kind":"legal_test","actor":"Regulated actor","jurisdiction":"Applicable jurisdiction","effective_at":"Relevant date or period","exceptions":"Material exceptions","applicability":"Why this test applies","claim_ids":[],"condition_ids":["condition-1"]}],"conditions":[{"condition_id":"condition-1","question":"Is the required fact true?","assessment":"unknown","assessment_basis":"Why the current record does or does not answer it","fact_ids":[],"question_ids":[],"claim_ids":[]}],"options":[{"option_id":"option-met","title":"Path if the condition is met","kind":"conditional_path","condition_summary":"The required fact is true","requirements":[{"condition_id":"condition-1","state":"met"}],"combination":"all","consequence":"Result on this path","trade_off":"Material cost or risk","remaining_work":[],"recommendation":"candidate","recommendation_reason":"Why this path remains available","claim_ids":[],"work_item_ids":[]},{"option_id":"option-not-met","title":"Path if the condition is not met","kind":"conditional_path","condition_summary":"The required fact is false","requirements":[{"condition_id":"condition-1","state":"not_met"}],"combination":"all","consequence":"Different result on this path","trade_off":"Material cost or risk","remaining_work":[],"recommendation":"candidate","recommendation_reason":"Why this path remains available","claim_ids":[],"work_item_ids":[]}]}}
+```
+
+Use only real issue, fact, question, work-item, and claim IDs supplied in this
+run. Use the exact field names shown above. Do not shorten `test_id`,
+`condition_id`, or `option_id` to `id`, and do not replace titles or questions
+with a generic `text` field. Give each new test, condition, and option a unique
+local ID.
+
+Allowed `kind` values for a test are `law`, `regulation`, `contract`, `policy`,
+and `legal_test`. Allowed condition assessments are `met`, `not_met`, `unknown`,
+and `conflicting`. Unknown never chooses a path. Allowed option kinds are
+`conditional_path`, `business_alternative`, and `clarify`. Each requirement is
+an object with `condition_id` and `state`; its state is `met` or `not_met`.
+`requirements` is always an array, not an object such as `{\"all\": [...]}`. An
+option with requirements must set `combination` to `all` or `any`. Allowed
+recommendation values are `candidate` and `recommended`.
+
+Express mixed nested logic as separate options. Do not supply analysis or option
+revisions; the application creates them. Whole-matter analysis may use
+`issue_analyses` instead. This block is optional. Malformed optional structure
+must never replace or remove useful prose.
+"""
 
 
 class AnswerContractService:
@@ -88,12 +196,18 @@ class AnswerContractService:
     def __init__(self, vault: VaultService):
         self.vault = vault
 
+    @serialized
     def read(self) -> dict[str, Any]:
         if not self.vault.exists(self.PATH):
             self._write_default()
         document = self.vault.read_markdown(self.PATH)
         content = str(document["content"]).strip()
-        return {
+        if (content == LEGACY_ANSWER_CONTRACT_CONTENT
+                and document["metadata"] == dict(_LEGACY_DOCUMENT.metadata)):
+            self._write_default()
+            document = self.vault.read_markdown(self.PATH)
+            content = str(document["content"]).strip()
+        result = {
             "path": document["path"],
             "content": content,
             "metadata": document["metadata"],
@@ -102,6 +216,14 @@ class AnswerContractService:
             "max_content_chars": MAX_ANSWER_CONTRACT_CHARS,
         }
 
+        if content and content != DEFAULT_ANSWER_CONTRACT_CONTENT:
+            result["update_proposal"] = {
+                "state": "proposed", "content": DEFAULT_ANSWER_CONTRACT_CONTENT,
+                "reason": "Optional update: useful answer first, with only material uncertainty and no fixed caveat count.",
+            }
+        return result
+
+    @serialized
     def write(self, content: str) -> dict[str, Any]:
         if len(content) > MAX_ANSWER_CONTRACT_CHARS:
             raise ValueError(
@@ -115,6 +237,7 @@ class AnswerContractService:
         self.vault.write_markdown(self.PATH, content, metadata)
         return self.read()
 
+    @serialized
     def reset(self) -> dict[str, Any]:
         self._write_default()
         return self.read()

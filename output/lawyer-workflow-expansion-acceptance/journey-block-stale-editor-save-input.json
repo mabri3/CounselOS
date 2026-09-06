@@ -1,0 +1,1 @@
+{"label": "journey-block-stale-editor-save", "actions": [{"op": "visible", "name": "Reload saved file"}, {"op": "click", "name": "Save"}, {"op": "wait", "ms": 5000}]}

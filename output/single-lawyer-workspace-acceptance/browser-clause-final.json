@@ -1,0 +1,212 @@
+{
+  "path": "/var/folders/xb/kzc31shn1pz2s_5l2fy6d7rh0000gn/T/themis-single-lawyer-hhdu5aid/vault/03_Matters/beacon-instant-onboarding/work-product/draft/notice-clause-revision-60-day-notice-period-323995.md",
+  "metadata": {
+    "review": {
+      "segments": [
+        {
+          "kind": "delete",
+          "text": "# Extracted text: notice-clause.txt\n\n",
+          "change_id": "CHG-20260905-bdea58",
+          "author_id": "author-themis",
+          "author_name": "Themis.ai",
+          "author_color": "#2F5597",
+          "created_at": "2026-09-05T04:42:07+00:00"
+        },
+        {
+          "kind": "equal",
+          "text": "4.2 Service Changes. Provider shall give Customer at least ",
+          "change_id": "",
+          "author_id": "",
+          "author_name": "",
+          "author_color": "",
+          "created_at": ""
+        },
+        {
+          "kind": "delete",
+          "text": "thirty",
+          "change_id": "CHG-20260905-db9790",
+          "author_id": "author-themis",
+          "author_name": "Themis.ai",
+          "author_color": "#2F5597",
+          "created_at": "2026-09-05T04:42:07+00:00"
+        },
+        {
+          "kind": "insert",
+          "text": "sixty",
+          "change_id": "CHG-20260905-db9790",
+          "author_id": "author-themis",
+          "author_name": "Themis.ai",
+          "author_color": "#2F5597",
+          "created_at": "2026-09-05T04:42:07+00:00"
+        },
+        {
+          "kind": "equal",
+          "text": " (",
+          "change_id": "",
+          "author_id": "",
+          "author_name": "",
+          "author_color": "",
+          "created_at": ""
+        },
+        {
+          "kind": "delete",
+          "text": "30",
+          "change_id": "CHG-20260905-bfa356",
+          "author_id": "author-themis",
+          "author_name": "Themis.ai",
+          "author_color": "#2F5597",
+          "created_at": "2026-09-05T04:42:07+00:00"
+        },
+        {
+          "kind": "insert",
+          "text": "60",
+          "change_id": "CHG-20260905-bfa356",
+          "author_id": "author-themis",
+          "author_name": "Themis.ai",
+          "author_color": "#2F5597",
+          "created_at": "2026-09-05T04:42:07+00:00"
+        },
+        {
+          "kind": "equal",
+          "text": ") days prior written notice of a material change to the Services. Customer may terminate the affected Services within ten (10) days after receiving such notice. All other obligations under this Agreement remain in effect.\n",
+          "change_id": "",
+          "author_id": "",
+          "author_name": "",
+          "author_color": "",
+          "created_at": ""
+        }
+      ],
+      "comments": [],
+      "version": 2,
+      "tracking": true,
+      "authors": [
+        {
+          "author_id": "author-themis",
+          "name": "Themis.ai",
+          "color": "#2F5597"
+        }
+      ],
+      "comment_events": [],
+      "last_proposed_by": "Themis.ai",
+      "last_proposed_at": "2026-09-05T04:42:07+00:00"
+    },
+    "supplied_original": {
+      "path": "03_Matters/beacon-instant-onboarding/documents/notice-clause.txt.extracted.md",
+      "revision": "72065a23a0a8c9fccc61c3f190ce77036d9ae13f914f06edce28d56f305efe89",
+      "review_revision": "999131009075b117f7266751b565db94b331f134885bd68480cb5d55743aaabb",
+      "metadata": {
+        "record_type": "extracted_document",
+        "matter_id": "MAT-DEMO-BEACON",
+        "source_path": "03_Matters/beacon-instant-onboarding/documents/notice-clause.txt",
+        "source_filename": "notice-clause.txt",
+        "source_id": "SRC-08BC38EA54A72041",
+        "source_version": "08bc38ea54a7204188727bb443792ea9b21090178c1b3c5e751f1ef067207629",
+        "created_at": "2026-09-05T03:58:50+00:00",
+        "extraction_state": "available",
+        "extraction_warning": "",
+        "review": {
+          "segments": [
+            {
+              "kind": "equal",
+              "text": "# Extracted text: notice-clause.txt\n\n4.2 Service Changes. Provider shall give Customer at least thirty (30) days prior written notice of a material change to the Services. Customer may terminate the affected Services within ten (10) days after receiving such notice. All other obligations under this Agreement remain in effect.\n",
+              "change_id": "",
+              "author_id": "",
+              "author_name": "",
+              "author_color": "",
+              "created_at": ""
+            }
+          ],
+          "comments": [],
+          "version": 2,
+          "tracking": false,
+          "authors": [],
+          "comment_events": []
+        }
+      }
+    },
+    "work_product_id": "WP-a38166323995",
+    "matter_id": "MAT-DEMO-BEACON",
+    "title": "Notice Clause Revision (60-Day Notice Period)",
+    "record_type": "work_product",
+    "state": "draft",
+    "summary": "",
+    "created_at": "2026-09-05T04:42:07+00:00",
+    "updated_at": "2026-09-05T04:42:07+00:00",
+    "immutable": false,
+    "source_action_key": "chat:0b9cc95a-2911-4c35-9a21-d5f005ae23a9:tool:1ad3bacc7b9bcc1aaabec225",
+    "source_action_payload": "b69dccb070159567bed09dee7114e383efe83fa26ed4c82fa5cab10f15d194d2",
+    "output_type": "contract_clause_revision",
+    "template_use": {
+      "template_id": "output-contract-clause-revision",
+      "output_type": "contract_clause_revision",
+      "revision": "1:ce083059d6e63b9f",
+      "content_hash": "ce083059d6e63b9f06d26dba5ac76bd23bfb6f8fa3ea93a5094b059140f7141d",
+      "revision_path": "00_System/skills/output_templates/history/output-contract-clause-revision/1-ce083059d6e63b9f.md",
+      "instructions_snapshot": "Revise only the selected language. Preserve defined terms unless the instruction explicitly changes them. Put the proposed clause first, then separately explain each material change. Do not create a complete agreement or alter surrounding text that was not selected.",
+      "section_outline_snapshot": "Proposed clause; Changes explained",
+      "defaults_snapshot": {
+        "exclusions": "Preserve defined terms and untouched language"
+      },
+      "overrides": {},
+      "state": "applied",
+      "failure_detail": null,
+      "path": "00_System/skills/output-contract-clause-revision.md",
+      "status": "applied"
+    },
+    "preview": false,
+    "source_run_id": "RUN-20260905-3bdbd4",
+    "claim_ids": [],
+    "draft_context": {
+      "target": {
+        "matter_id": "MAT-DEMO-BEACON",
+        "business_question_id": null,
+        "business_question_revision": "2a600fd29efcc847f78b2b7e:4ea9fcd39b7b54f5a129d35cebd0a0b7d1897b4db9ef7ee57518f6ea012c1bcc",
+        "issue_id": null,
+        "source_id": null,
+        "scenario_id": null,
+        "artifact_path": "03_Matters/beacon-instant-onboarding/documents/notice-clause.txt.extracted.md",
+        "artifact_revision": "72065a23a0a8c9fccc61c3f190ce77036d9ae13f914f06edce28d56f305efe89",
+        "artifact_review_revision": "999131009075b117f7266751b565db94b331f134885bd68480cb5d55743aaabb",
+        "selected_range": null,
+        "local_draft_snapshot": null
+      },
+      "source_revisions": {
+        "03_Matters/beacon-instant-onboarding/matter.md": "4d02ca8d3a458576ff96eee9e36918f90d1e02e3daf8c688631d44dd5d349d86",
+        "03_Matters/beacon-instant-onboarding/dossier.md": "9d4fa620127cc6dd054b03ef772d7ace3df1636fc0d12a8578ad9d30c6006dc8",
+        "03_Matters/beacon-instant-onboarding/facts.md": "daa0a8cdf35d6fbc616445703a1751912f6a70cfed61085b4f397dc52048ea96",
+        "03_Matters/beacon-instant-onboarding/issues.md": "d3387b39f9ef28e3187a84de1501256bad97323d6b4b24be2846d7fd636ab4b0",
+        "03_Matters/beacon-instant-onboarding/recommendations.md": "7092165be5780f2d2c1ffa032b86e29f642632b3190d061ed855a7ca817e157d",
+        "03_Matters/beacon-instant-onboarding/flow.md": "f82699cfb7faa4623e2b5177eaa36ad72d4c9b83e297f8f85f44e5c192389998",
+        "03_Matters/beacon-instant-onboarding/documents/settlement-flow.txt.extracted.md": "01bdba90bf50a97954ac58ad5b9b0b445d534ec6960e2bf59737266084f1dfc3",
+        "03_Matters/beacon-instant-onboarding/documents/settlement-flow.txt": "d499d7b9770b3dfb945edbe4fdc7ab169837edc9e6021ff9927879174249148e",
+        "03_Matters/beacon-instant-onboarding/documents/transaction-checklist.md.extracted.md": "0c283ff0302e15d0a76fc2077ebce7978ef42fd5cb9852c426b15441f30222e1",
+        "03_Matters/beacon-instant-onboarding/documents/transaction-checklist.md": "f57bb95a66b0d64aa845bcb270d68ec17b43ac6285b43047542e38708c578d69",
+        "03_Matters/beacon-instant-onboarding/documents/notice-clause.txt.extracted.md": "d320ef88405c740adb82ab76b7404fa3325a52b5d0b8d69ed9410e69f5c270e9",
+        "03_Matters/beacon-instant-onboarding/documents/notice-clause.txt": "08bc38ea54a7204188727bb443792ea9b21090178c1b3c5e751f1ef067207629",
+        "03_Matters/beacon-instant-onboarding/documents/same-name.txt.extracted.md": "782c90ba8f72b5e5b7b11ff30ee0f8ac46d6c77908840beb0e9e2a63141e9db9",
+        "03_Matters/beacon-instant-onboarding/documents/same-name.txt": "83d7a242f917d63457e9b713f469ea609944ebb888080eec83a174c13e04fe94",
+        "03_Matters/beacon-instant-onboarding/documents/batch-valid.txt.extracted.md": "9822a10e7b01257ed4f37433ec6813dc3934d742eedd3af47ade2a0327535c7c",
+        "03_Matters/beacon-instant-onboarding/documents/batch-valid.txt": "608f10911744be873ac5a3b66e7eea9fb0519f54a5f3fd0e238d80975586add7",
+        "03_Matters/beacon-instant-onboarding/documents/partial-settlement-notes.pdf.extracted.md": "155f16d6436361040fac12b98ffcb5daa85c2f1b46302c261e3941c4d1c37ca3",
+        "03_Matters/beacon-instant-onboarding/documents/partial-settlement-notes.pdf": "82566301606e15b7675e9287a9743cddf3c33a7c8c140e39ac679c3bf2f3181f",
+        "business_question": "2a600fd29efcc847f78b2b7e:4ea9fcd39b7b54f5a129d35cebd0a0b7d1897b4db9ef7ee57518f6ea012c1bcc"
+      }
+    },
+    "recommendation_version_id": null,
+    "recommendation_snapshot": "# Recommendations\n\nNo recommendation yet. Intake must distinguish deposit onboarding, credit decisioning, fraud review, and partner-required manual review.",
+    "review_generation": "REV-20260905-55c8fd",
+    "version_changes": [
+      {
+        "reason": "Requested revision of the supplied document",
+        "action": "propose_revision",
+        "actor": "Themis.ai",
+        "created_at": "2026-09-05T04:42:07+00:00",
+        "before_revision": "72065a23a0a8c9fccc61c3f190ce77036d9ae13f914f06edce28d56f305efe89",
+        "after_revision": "eafbcabf5a03219d5714f659eaf4d31daa8509695188817612b99f0bf87b5d35",
+        "revision_path": "03_Matters/beacon-instant-onboarding/work-product/draft/.history/notice-clause-revision-60-day-notice-period-323995/999131009075b117f7266751b565db94b331f134885bd68480cb5d55743aaabb.md"
+      }
+    ]
+  },
+  "content": "4.2 Service Changes. Provider shall give Customer at least sixty (60) days prior written notice of a material change to the Services. Customer may terminate the affected Services within ten (10) days after receiving such notice. All other obligations under this Agreement remain in effect.\n",
+  "original_unchanged": true
+}

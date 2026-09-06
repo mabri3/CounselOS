@@ -1,16 +1,20 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import styles from "@/components/SettingsPhase2.module.css";
+import Phase2Icon from "@/components/Phase2Icon";
 import AppShell from "@/components/AppShell";
 import CompanyInterview from "@/components/CompanyInterview";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import DataLoadStatus from "@/components/DataLoadStatus";
 import LinkifiedText from "@/components/LinkifiedText";
-import { createVault, effortLabel, getActiveVault, getAnswerContract, getCompanyProfile, getSettings, loadVault, resetAnswerContract, saveAnswerContract, saveSettings } from "@/lib/api";
+import { createVault, effortLabel, getActiveVault, getAnswerContract, getCompanyProfile, getSettings, loadVault, resetAnswerContract, saveAnswerContract, saveSettings, request } from "@/lib/api";
 import { role } from "@/lib/design";
 import { getProviderCapabilities } from "@/lib/watchApi";
 import type { AnswerContract, CompanyProfile, ModelCatalogProvider, SettingRow, VaultInfo, WorkspaceSettings } from "@/lib/types";
 import type { ProviderCapability } from "@/lib/watchTypes";
+
+import { loadContinuityIdentity, useContinuityIdentity } from "@/lib/continuityApi";
 
 function alignModelRows(rows: SettingRow[], settings: WorkspaceSettings): SettingRow[] {
   const providerRow = rows.find((row) => row.config_key === "agents.provider");
@@ -66,6 +70,20 @@ const RESEARCH_PROVIDER_LABELS: Record<string, string> = {
 };
 
 export default function SettingsPage() {
+  const { identity } = useContinuityIdentity();
+  const [teamNames, setTeamNames] = useState("Alex Morgan\nJordan Lee\nCasey Chen");
+  useEffect(() => { if (identity?.roster.people?.length) setTeamNames(identity.roster.people.map(person => person.display_name).join("\n")); }, [identity]);
+  async function configureTeam(enabled: boolean) {
+    if (!identity) return;
+    setBusy(true); setError("");
+    try {
+      const names = teamNames.split("\n").map(name => name.trim()).filter(Boolean);
+      const people = names.map(name => identity.roster.people?.find(person => person.display_name === name) || { person_id: crypto.randomUUID(), display_name: name });
+      await request("/team", { method: "PUT", body: JSON.stringify({ enabled, people, expected_revision: identity.roster.revision, source_action_key: crypto.randomUUID() }) });
+      await loadContinuityIdentity(true);
+    } catch (error) { setError(error instanceof Error ? error.message : "Local people were not saved."); }
+    finally { setBusy(false); }
+  }
   const [settings, setSettings] = useState<WorkspaceSettings | null>(null);
   const [savedSettings, setSavedSettings] = useState<WorkspaceSettings | null>(null);
   const [company, setCompany] = useState<CompanyProfile | null>(null);
@@ -75,7 +93,7 @@ export default function SettingsPage() {
   const [vault, setVault] = useState<VaultInfo | null>(null);
   const [vaultPath, setVaultPath] = useState("");
   const [section, setSection] = useState("agents");
-  const [settingsDirty, setSettingsDirty] = useState(false);
+
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
@@ -100,7 +118,6 @@ export default function SettingsPage() {
       setVault(nextVault);
       setAnswerContract(nextAnswerContract);
       setAnswerDraft(nextAnswerContract.content);
-      setSettingsDirty(false);
     }
     catch { setLoadError("Settings are unavailable because their current data could not be loaded."); }
     finally { setLoading(false); }
@@ -108,8 +125,12 @@ export default function SettingsPage() {
 
   useEffect(() => { void load(); }, [load]);
 
+  function navigateSection(next: string) {
+    setSection(next);
+    setError("");
+  }
+
   function update(rowId: string, patch: Partial<SettingRow>) {
-    setSettingsDirty(true);
     setSettings((current) => current && ({
       ...current,
       sections: current.sections.map((entry) => {
@@ -136,6 +157,7 @@ export default function SettingsPage() {
     try {
       if (action === "create") await createVault(vaultPath.trim());
       else await loadVault(vaultPath.trim());
+      await loadContinuityIdentity(true);
       window.location.assign("/");
     } catch (caught) {
       const message = caught instanceof Error ? caught.message : "Could not change the active vault.";
@@ -188,7 +210,7 @@ export default function SettingsPage() {
   const modelProviderSection = section === "model-providers";
   const providerSection = section === "intelligence-providers";
   const vaultSection = section === "vaults";
-  const activeDirty = modelProviderSection || providerSection || vaultSection || companySection || answerSection ? false : settingsDirty;
+  const activeDirty = modelProviderSection || providerSection || vaultSection || companySection || answerSection ? false : JSON.stringify(current) !== JSON.stringify(savedSettings?.sections.find((entry) => entry.id === current.id));
   const answerDirty = answerDraft !== answerContract.content;
   const selectedModelRow = current.rows.find((row) => row.config_key === "agents.reasoning_model");
   const selectedModel = selectedModelRow?.option_labels?.[selectedModelRow.value ?? ""]
@@ -199,32 +221,32 @@ export default function SettingsPage() {
 
   return (
     <AppShell>
-      <div className="admin-shell">
-        <aside className="admin-rail">
-          <div className="admin-rail-title">Settings</div>
+      <div className={styles.shell}>
+        <aside className={styles.rail}>
+          <div className={styles.railTitle}>Settings</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {settings.sections.map((entry) => (
               <button
-                className={`admin-rail-link ${!companySection && !modelProviderSection && !providerSection && entry.id === current.id ? "active" : ""}`}
+                className={`admin-rail-link ${entry.id === section ? "active" : ""}`}
                 key={entry.id}
-                onClick={() => setSection(entry.id)}
+                onClick={() => navigateSection(entry.id)}
               >
-                {entry.label}
+                <Phase2Icon name={entry.id === "agents" ? "Skills" : entry.id === "files" ? "Matters" : "Briefing"} />{entry.label}
               </button>
             ))}
-            <button className={`admin-rail-link ${modelProviderSection ? "active" : ""}`} onClick={() => setSection("model-providers")}>Model providers</button>
-            <button className={`admin-rail-link ${providerSection ? "active" : ""}`} onClick={() => setSection("intelligence-providers")}>Watch providers</button>
-            <button className={`admin-rail-link ${companySection ? "active" : ""}`} onClick={() => setSection("company")}>Company</button>
-            <button className={`admin-rail-link ${vaultSection ? "active" : ""}`} onClick={() => setSection("vaults")}>Vaults</button>
+            <button className={`admin-rail-link ${modelProviderSection ? "active" : ""}`} onClick={() => navigateSection("model-providers")}><Phase2Icon name="Skills" />Model providers</button>
+            <button className={`admin-rail-link ${providerSection ? "active" : ""}`} onClick={() => navigateSection("intelligence-providers")}><Phase2Icon name="Automations" />Watch providers</button>
+            <button className={`admin-rail-link ${companySection ? "active" : ""}`} onClick={() => navigateSection("company")}><Phase2Icon name="Agents" />Company</button>
+            <button className={`admin-rail-link ${vaultSection ? "active" : ""}`} onClick={() => navigateSection("vaults")}><Phase2Icon name="Workspace" />Vaults</button>
           </div>
         </aside>
 
-        <div className="admin-main">
-          <div className="admin-scroll">
-            <div className="admin-body" style={{ maxWidth: 760 }}>
+        <div className={styles.main}>
+          <div>
+            <div className={`${styles.body} ${section === "research" ? styles.research : ""}`}>
               <DataLoadStatus error={loadError} loading={loading} loadingLabel="Refreshing settings…" onRetry={load} />
-              <h1 style={{ fontSize: 26 }}>{vaultSection ? "Vaults" : companySection ? "Company" : modelProviderSection ? "Model providers" : providerSection ? "Watch providers" : current.title}</h1>
-              <p style={{ margin: "6px 0 24px", font: "400 15px var(--sans)", color: "var(--ink-3)" }}>
+              <h1 className={styles.heading}>{vaultSection ? "Vaults" : companySection ? "Company profile" : modelProviderSection ? "Model providers" : providerSection ? "Watch providers" : section === "agents" ? "Choose how Themis.ai works" : current.title}</h1>
+              <p className={styles.lede}>
                 {vaultSection
                   ? "Create a blank workspace or load an existing Themis.ai vault."
                   : companySection
@@ -235,17 +257,25 @@ export default function SettingsPage() {
                     ? "Public intelligence services that a Watch can use. Provider keys stay outside Themis.ai screens."
                     : current.sub}
               </p>
-              {!companySection && !modelProviderSection && !providerSection && current.id === "agents" ? (
-                <div className="agent-note" style={{ margin: "-12px 0 22px" }}>
+              {section === "agents" ? (
+                <div className={styles.summary}>
                   <div className="field-label">Current model</div>
                   <div style={{ marginTop: 5, font: "500 16px var(--sans)", color: "var(--ink-2)" }}>{selectedModel}</div>
                   <p style={{ margin: "5px 0 0" }}>This model is used for new requests. Changes apply after you save.</p>
                 </div>
               ) : null}
-              {!companySection && !modelProviderSection && !providerSection && current.id === "agents" && settings.model_catalog.warning ? (
+              {section === "agents" && settings.model_catalog.warning ? (
                 <p className="error" style={{ margin: "-12px 0 18px" }}>{settings.model_catalog.warning}</p>
               ) : null}
 
+              <div hidden={!companySection}>
+                  <CompanyInterview
+                    onSaved={(savedProfile) => {
+                      setCompany(savedProfile);
+                    }}
+                    profile={company}
+                  />
+              </div>
               {vaultSection ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
                   <div className="setting-row" style={{ alignItems: "flex-start" }}>
@@ -281,6 +311,7 @@ export default function SettingsPage() {
                       </button>
                     ))}
                   </div>
+      <section className={styles.team}><h2 className="section-heading">Local team demonstration</h2><p>Optional people share this vault. Switch the current person to show their work and preserve who made each change.</p><p className="small muted">This is a local simulation. It does not add accounts or access controls.</p><label className="field-block">People, one name per line<textarea className="text-input" value={teamNames} onChange={event => setTeamNames(event.target.value)} rows={3} /></label><div className="btn-row"><button className="btn compact" disabled={busy || !identity} onClick={() => void configureTeam(true)}>Save and enable people</button>{identity?.roster.enabled ? <button className="btn quiet compact" disabled={busy} onClick={() => void configureTeam(false)}>Use one lawyer</button> : <span className="small muted">Single lawyer mode</span>}</div></section>
                   {error ? <p className="error">{error}</p> : null}
                 </div>
               ) : modelProviderSection ? (
@@ -343,6 +374,7 @@ export default function SettingsPage() {
                 </div>
               ) : answerSection ? (
                 <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  {answerContract.update_proposal ? <details><summary>Optional answer style update</summary><p>{answerContract.update_proposal.reason}</p><pre className="prose">{answerContract.update_proposal.content}</pre><button className="btn" type="button" onClick={() => setAnswerDraft(answerContract.update_proposal!.content)}>Use this text in the editor</button><p>Review the text, then select Save to apply it.</p></details> : null}
                   <div>
                     <label className="field-label" htmlFor="answer-contract-body">Contract body</label>
                     <textarea
@@ -382,18 +414,9 @@ export default function SettingsPage() {
                     >{busy ? "Saving…" : "Save"}</button>
                   </div>
                 </div>
-              ) : companySection ? (
+              ) : companySection ? null : current.id === "research" ? (
                 <>
-                  <CompanyInterview
-                    onSaved={(savedProfile) => {
-                      setCompany(savedProfile);
-                    }}
-                    profile={company}
-                  />
-                </>
-              ) : current.id === "research" ? (
-                <>
-                  <div className="agent-note" style={{ margin: "-12px 0 2px" }}>
+                  <div className={styles.summary}>
                     <div className="field-label">Active research route</div>
                     <p style={{ margin: "5px 0 0" }}>
                       Start with {RESEARCH_PROVIDER_LABELS[primaryResearch] ?? primaryResearch}. If it cannot return useful sources, try {RESEARCH_PROVIDER_LABELS[backupResearch] ?? backupResearch}.
@@ -403,12 +426,12 @@ export default function SettingsPage() {
                     if (row.kind !== "heading") return null;
                     const advancedRows = current.rows.slice(index + 1);
                     return (
-                      <details key={row.id} style={{ marginTop: 20 }}>
+                      <details key={row.id} open style={{ marginTop: 20 }}>
                         <summary className="setting-heading" style={{ cursor: "pointer" }}>{row.label}</summary>
                         {advancedRows.map((advancedRow) => (
                           <div className="setting-row" key={advancedRow.id}>
                             <div><div className="setting-label">{advancedRow.label}</div>{advancedRow.help ? <div className="setting-help"><LinkifiedText text={advancedRow.help} /></div> : null}</div>
-                            {advancedRow.kind === "toggle" ? <button aria-checked={!!advancedRow.on} aria-label={advancedRow.label} className="switch" onClick={() => update(advancedRow.id, { on: !advancedRow.on })} role="switch" style={{ background: advancedRow.on ? "var(--ink)" : "var(--control)" }}><span style={{ left: advancedRow.on ? 18 : 2 }} /></button> : advancedRow.kind === "text" ? <input aria-label={advancedRow.label} className="text-input setting-control" onChange={(event) => update(advancedRow.id, { value: event.target.value })} value={advancedRow.value ?? ""} /> : <select aria-label={advancedRow.label} className="select-input setting-control" onChange={(event) => update(advancedRow.id, { value: event.target.value })} value={advancedRow.value}>{(advancedRow.options ?? [advancedRow.value ?? ""]).map((option) => <option key={option} value={option}>{advancedRow.option_labels?.[option] ?? option}</option>)}</select>}
+                            {advancedRow.kind === "toggle" ? <input type="checkbox" aria-label={advancedRow.label} checked={!!advancedRow.on} onChange={(event) => update(advancedRow.id, { on: event.target.checked })} /> : advancedRow.kind === "text" ? <input aria-label={advancedRow.label} className="text-input setting-control" onChange={(event) => update(advancedRow.id, { value: event.target.value })} value={advancedRow.value ?? ""} /> : <select aria-label={advancedRow.label} className="select-input setting-control" onChange={(event) => update(advancedRow.id, { value: event.target.value })} value={advancedRow.value}>{(advancedRow.options ?? [advancedRow.value ?? ""]).map((option) => <option key={option} value={option}>{advancedRow.option_labels?.[option] ?? option}</option>)}</select>}
                           </div>
                         ))}
                       </details>
@@ -419,7 +442,7 @@ export default function SettingsPage() {
                 if (row.kind === "heading") {
                   const advancedRows = current.rows.slice(index + 1);
                   return (
-                    <details key={row.id} style={{ marginTop: 20 }}>
+                    <details key={row.id} open style={{ marginTop: 20 }}>
                       <summary className="setting-heading" style={{ cursor: "pointer" }}>{row.label}</summary>
                       {advancedRows.map((advancedRow) => (
                         <div className="setting-row" key={advancedRow.id}>
@@ -498,9 +521,9 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {!vaultSection && !companySection && !answerSection ? <div className="admin-foot">
+          {!vaultSection && !companySection && !answerSection ? <div className={styles.footer}>
             <span className={error ? "error" : "stub-note"}>
-              {error || (modelProviderSection || providerSection ? "Provider status is read-only." : !activeDirty ? "Saved" : current.id === "agents" ? "Model settings have unsaved changes." : "Document review settings have unsaved changes.")}
+              {error || (modelProviderSection || providerSection ? "Provider status is read-only." : !activeDirty ? "Saved" : current.id === "agents" ? "Model settings have unsaved changes." : `${current.label} settings have unsaved changes.`)}
             </span>
             <div className="btn-row">
               <button
@@ -511,9 +534,8 @@ export default function SettingsPage() {
                   setError("");
                   try {
                     const nextSettings = await getSettings();
-                    setSettings(nextSettings);
+                    setSettings((draft) => draft && ({ ...draft, sections: draft.sections.map((entry) => entry.id === current.id ? nextSettings.sections.find((saved) => saved.id === current.id) ?? entry : entry) }));
                     setSavedSettings(nextSettings);
-                    setSettingsDirty(false);
                   }
                   catch (caught) { setError(caught instanceof Error ? caught.message : "Could not discard settings changes."); }
                   finally { setBusy(false); }
@@ -526,25 +548,13 @@ export default function SettingsPage() {
                   setBusy(true);
                   setError("");
                   try {
-                    await saveSettings(settings);
+                    await saveSettings({ ...settings, sections: [current] });
                     const nextSettings = await getSettings();
-                    setSettings(nextSettings);
+                    setSettings((draft) => draft && ({ ...draft, sections: draft.sections.map((entry) => entry.id === current.id ? nextSettings.sections.find((saved) => saved.id === current.id) ?? entry : entry) }));
                     setSavedSettings(nextSettings);
-                    setSettingsDirty(false);
                   }
                   catch (caught) {
                     const message = caught instanceof Error ? caught.message : "Could not save settings.";
-                    try {
-                      const nextSettings = await getSettings();
-                      setSettings(nextSettings);
-                      setSavedSettings(nextSettings);
-                      setSettingsDirty(false);
-                    } catch {
-                      if (savedSettings) {
-                        setSettings(savedSettings);
-                        setSettingsDirty(false);
-                      }
-                    }
                     setError(message);
                   }
                   finally { setBusy(false); }
@@ -556,6 +566,7 @@ export default function SettingsPage() {
           </div> : null}
         </div>
       </div>
+
       {vaultConfirmation ? <ConfirmationDialog
         confirmLabel={vaultConfirmation === "create" ? "Create new vault" : "Load existing vault"}
         description={`Confirm that you want to ${vaultConfirmation === "create" ? "create a new vault" : "load this vault"}. Your current vault is preserved. No files will be moved or deleted.`}

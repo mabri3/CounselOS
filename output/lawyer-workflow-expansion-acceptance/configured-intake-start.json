@@ -1,0 +1,314 @@
+{
+  "matter_id": "MAT-20260905-0a2378",
+  "path": "03_Matters/harbor-relay-specification-review-0a2378",
+  "title": "Harbor Relay specification review",
+  "description": "",
+  "matter_type": "general_advice",
+  "product_area": "",
+  "business_team": "",
+  "requester": "Morgan Patel",
+  "legal_owner": "Alex Morgan",
+  "business_owner": "",
+  "status": "intake",
+  "priority": "normal",
+  "risk_level": "unknown",
+  "target_date": null,
+  "privilege": "privileged_and_confidential",
+  "next_action": "Orient to the request and identify the first missing facts.",
+  "created_at": "2026-09-05T08:10:26+00:00",
+  "updated_at": "2026-09-05T08:10:26+00:00",
+  "jurisdiction_scope": [],
+  "intake_state": null,
+  "active_agent_id": "counsel-copilot",
+  "durable_decision_needed": false,
+  "response_approved_at": null,
+  "response_sent_at": null,
+  "closed_at": null,
+  "source_action_key": "continuity-acceptance-harbor-v1",
+  "current_work_product_final_path": null,
+  "original_request": "Fictional acceptance test. We plan a US pilot of Harbor Relay on 21 October 2026. The product sends an account activity report to the customer. Current supplied specification says reports are retained for 30 days and only the customer can open them. Business has not confirmed whether support staff can open reports. Give useful initial advice with that assumption and one supporting question about support access. Do not record a legal decision or create a draft yet.",
+  "current_work_product_draft_path": null,
+  "current_work_product_id": null,
+  "response_approved_by": null,
+  "response_approved_artifact_path": null,
+  "response_approved_artifact_id": null,
+  "response_approved_final_id": null,
+  "response_approval_event_path": null,
+  "response_sent_by": null,
+  "response_sent_artifact_path": null,
+  "response_sent_artifact_id": null,
+  "response_delivery_method": null,
+  "response_delivery_note": null,
+  "response_delivery_event_path": null,
+  "closed_by": null,
+  "closure_event_path": null,
+  "current_work_product_final_id": null,
+  "consistency_issues": [],
+  "latest_research_path": null,
+  "participants": [
+    {
+      "name": "Morgan Patel",
+      "role": "requester"
+    },
+    {
+      "name": "Alex Morgan",
+      "role": "legal_owner"
+    }
+  ],
+  "recommendation": {
+    "path": "03_Matters/harbor-relay-specification-review-0a2378/recommendations.md",
+    "content": "# Recommendations\n\nNo recommendation has been drafted yet.",
+    "current_version_id": null,
+    "proposal": null
+  },
+  "recommendation_review_needed": false,
+  "work_state": {
+    "next_action": "Orient to the request and identify the first missing facts.",
+    "next_work_item_id": "WI-20260905-177aed",
+    "next_owner": "Alex Morgan",
+    "next_actor": "named_owner",
+    "due_at": null,
+    "execution_state": "not_running",
+    "active_run_id": null,
+    "execution_note": "",
+    "signal": {
+      "kind": "waiting_on_owner",
+      "label": "Waiting on Alex Morgan"
+    }
+  },
+  "orientation": {
+    "headline": "Orient to the request and identify the first missing facts.",
+    "summary": "",
+    "decision_question": "Orient to the request and identify the first missing facts.",
+    "open_questions": [
+      "Orient to the request"
+    ],
+    "open_question_items": [
+      {
+        "id": "WI-20260905-177aed",
+        "text": "Orient to the request",
+        "work_item_id": "WI-20260905-177aed"
+      }
+    ],
+    "why_now": "1 required work item(s) remain open.",
+    "next_action": "Orient to the request and identify the first missing facts.",
+    "attention": [
+      "Orient to the request"
+    ],
+    "recent_changes": [
+      "Harbor Relay specification review"
+    ]
+  },
+  "work_items": [
+    {
+      "work_item_id": "WI-20260905-177aed",
+      "matter_id": "MAT-20260905-0a2378",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/work-items/WI-20260905-177aed.md",
+      "title": "Orient to the request",
+      "description": "Confirm the business objective, timing, and facts needed to frame the legal work.",
+      "item_type": "question",
+      "status": "open",
+      "priority": "normal",
+      "owner": "Alex Morgan",
+      "due_at": null,
+      "required": 1,
+      "issue_id": null,
+      "created_at": "2026-09-05T08:10:26+00:00",
+      "completed_at": null
+    }
+  ],
+  "decisions": [],
+  "tree": [
+    {
+      "name": "conversations",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations",
+      "type": "folder",
+      "children": []
+    },
+    {
+      "name": "decisions",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/decisions",
+      "type": "folder",
+      "children": []
+    },
+    {
+      "name": "documents",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/documents",
+      "type": "folder",
+      "children": []
+    },
+    {
+      "name": "dossier-revisions",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/dossier-revisions",
+      "type": "folder",
+      "children": []
+    },
+    {
+      "name": "drafts",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/drafts",
+      "type": "folder",
+      "children": []
+    },
+    {
+      "name": "events",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/events",
+      "type": "folder",
+      "children": [
+        {
+          "name": "2026-09-05-EVT-20260905-18cb30.md",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/events/2026-09-05-EVT-20260905-18cb30.md",
+          "type": "file",
+          "extension": ".md",
+          "updated_at": 1788595826.238091,
+          "record_type": "matter_record",
+          "label": "Harbor Relay specification review"
+        }
+      ]
+    },
+    {
+      "name": "mitigations",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/mitigations",
+      "type": "folder",
+      "children": []
+    },
+    {
+      "name": "research",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/research",
+      "type": "folder",
+      "children": []
+    },
+    {
+      "name": "work-items",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/work-items",
+      "type": "folder",
+      "children": [
+        {
+          "name": "WI-20260905-177aed.md",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/work-items/WI-20260905-177aed.md",
+          "type": "file",
+          "extension": ".md",
+          "updated_at": 1788595826.2283852,
+          "record_type": "matter_record",
+          "label": "Orient to the request"
+        }
+      ]
+    },
+    {
+      "name": "work-product",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/work-product",
+      "type": "folder",
+      "children": [
+        {
+          "name": "draft",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/work-product/draft",
+          "type": "folder",
+          "children": []
+        },
+        {
+          "name": "final",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/work-product/final",
+          "type": "folder",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "facts.md",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/facts.md",
+      "type": "file",
+      "extension": ".md",
+      "updated_at": 1788595826.216585
+    },
+    {
+      "name": "issues.md",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/issues.md",
+      "type": "file",
+      "extension": ".md",
+      "updated_at": 1788595826.2168512
+    },
+    {
+      "name": "matter.md",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/matter.md",
+      "type": "file",
+      "extension": ".md",
+      "updated_at": 1788595826.2154624
+    },
+    {
+      "name": "participants.md",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/participants.md",
+      "type": "file",
+      "extension": ".md",
+      "updated_at": 1788595826.216305
+    },
+    {
+      "name": "recommendations.md",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/recommendations.md",
+      "type": "file",
+      "extension": ".md",
+      "updated_at": 1788595826.2173088
+    },
+    {
+      "name": "request.md",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/request.md",
+      "type": "file",
+      "extension": ".md",
+      "updated_at": 1788595826.2159145
+    }
+  ],
+  "events": [
+    {
+      "event_id": "EVT-20260905-18cb30",
+      "matter_id": "MAT-20260905-0a2378",
+      "event_type": "matter_created",
+      "actor_type": "system",
+      "timestamp": "2026-09-05T08:10:26+00:00",
+      "title": "Harbor Relay specification review"
+    }
+  ],
+  "intake_answers": [],
+  "intake_conversation_id": null,
+  "intake_run_id": null,
+  "operation": "create_matter",
+  "creation_status": "changed",
+  "creation_summary": "Matter created; intake is starting.",
+  "operation_result": {
+    "action": "continuity-acceptance-harbor-v1",
+    "source_action_key": "continuity-acceptance-harbor-v1",
+    "operation": "create_matter",
+    "status": "changed",
+    "summary": "Matter created; intake is starting.",
+    "matter_id": "MAT-20260905-0a2378",
+    "entity_refs": [
+      {
+        "type": "matter",
+        "id": "MAT-20260905-0a2378"
+      }
+    ],
+    "changed_paths": [
+      "03_Matters/harbor-relay-specification-review-0a2378/matter.md",
+      "03_Matters/harbor-relay-specification-review-0a2378/request.md"
+    ],
+    "resulting_matter_state": {
+      "stage": "intake",
+      "next_action": "Orient to the request and identify the first missing facts.",
+      "work_state": {
+        "next_action": "Orient to the request and identify the first missing facts.",
+        "next_work_item_id": "WI-20260905-177aed",
+        "next_owner": "Alex Morgan",
+        "next_actor": "named_owner",
+        "due_at": null,
+        "execution_state": "not_running",
+        "active_run_id": null,
+        "execution_note": "",
+        "signal": {
+          "kind": "waiting_on_owner",
+          "label": "Waiting on Alex Morgan"
+        }
+      }
+    },
+    "available_next_actions": [],
+    "required_user_action": null,
+    "error": null,
+    "recovery": null
+  }
+}

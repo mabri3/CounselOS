@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 
 import pytest
 
@@ -12,6 +13,7 @@ from app.agents.runner import ResolvedAgentProvider
 from app.providers.base import ProviderSelection
 from app.tools.handlers import run_research
 from app.tools.registry import ToolExecutionContext
+from app.services.workspace import digest
 
 
 @pytest.mark.asyncio
@@ -225,6 +227,134 @@ async def test_research_uses_bound_research_agent_without_changing_manual_behavi
     assert requests[0].agent_id == "research-agent"
     assert "Configured agent analysis" in app_context.vault.read_markdown(result["path"])["content"]
     assert app_context.index.get_matter("MAT-DEMO-ORBIT")["status"] == "explore"
+
+
+@pytest.mark.asyncio
+async def test_research_provider_output_saves_issue_paths_through_packet_boundary(app_context):
+    app = app_context
+    issue_id = app.workspace.issues("MAT-DEMO-ORBIT")[0]["issue_id"]
+
+    async def run_agent(request, **_kwargs):
+        assert request.frozen_context["issue_analysis_capture"]["issues"][issue_id]
+        assert request.target.issue_id == issue_id
+        return ChatResponse(reply="""Useful research analysis.
+
+```decision-paths
+{"issue_analysis":{"issue_id":"%s","explanation":"The rule changes the notice path.","tests":[{"test_id":"t1","title":"Notice rule","condition_ids":["c1"]}],"conditions":[{"condition_id":"c1","question":"Was an adverse decision made?","assessment":"unknown"}],"options":[{"option_id":"yes","title":"Give notice","requirements":[{"condition_id":"c1","state":"met"}],"combination":"all"},{"option_id":"no","title":"No adverse-action notice","requirements":[{"condition_id":"c1","state":"not_met"}],"combination":"all"}]}}
+```""" % issue_id)
+
+    app.research.bind_agent_runner(run_agent)
+    result = await app.research.run(
+        "MAT-DEMO-ORBIT", "Which notice rule applies?", change_stage=False,
+        issue_id=issue_id, run_id="RUN-research-paths",
+    )
+    packet = app.vault.read_markdown(result["path"])
+    assert "decision-paths" not in packet["content"]
+    assert packet["metadata"]["issue_analyses"][0]["run_id"] == "RUN-research-paths"
+    assert result["issue_analyses"][0]["issue_id"] == issue_id
+    assert app.issue_analysis.resolve("MAT-DEMO-ORBIT", issue_id)["state"] == "saved"
+
+
+@pytest.mark.asyncio
+async def test_research_run_freezes_issue_and_input_when_queued(app_context, monkeypatch):
+    app = app_context
+    issue_id = app.workspace.issues("MAT-DEMO-BEACON")[0]["issue_id"]
+    observed = {}
+
+    async def run_research(matter_id, question, **kwargs):
+        observed.update(kwargs)
+        return {"path": "saved.md", "public_research_status": "unavailable",
+                "internal_sources": 0, "external_sources": 0}
+
+    monkeypatch.setattr(app.research, "run", run_research)
+    runs = ResearchRunService(app.vault, app.research)
+    started = runs.start("MAT-DEMO-BEACON", ["Captured question"], issue_id=issue_id)
+    queued = runs.get("MAT-DEMO-BEACON", started["run_id"])
+    captured_title = queued["frozen_context"]["issue_analysis_capture"]["issues"][issue_id]["inputs"]["issue"]["title"]
+    issues = app.workspace.issues("MAT-DEMO-BEACON")
+    issues[0]["title"] = "Changed after queue"
+    app.workspace.save_issues("MAT-DEMO-BEACON", issues, expected_revision=app.workspace.issues_revision("MAT-DEMO-BEACON"))
+    await runs.wait(started["run_id"])
+    assert observed["issue_id"] == issue_id
+    assert observed["frozen_context"]["issue_analysis_capture"]["issues"][issue_id]["inputs"]["issue"]["title"] == captured_title
+
+
+@pytest.mark.asyncio
+async def test_queued_research_prompt_uses_frozen_request_and_internal_sources(app_context):
+    app = app_context
+    matter_id = "MAT-DEMO-BEACON"
+    issue_id = app.workspace.issues(matter_id)[0]["issue_id"]
+    requests = []
+
+    async def run_agent(request, **_kwargs):
+        requests.append(request)
+        return ChatResponse(reply="Useful frozen research answer.")
+
+    app.research.bind_agent_runner(run_agent)
+    runs = ResearchRunService(app.vault, app.research)
+    started = runs.start(matter_id, ["What does the original request ask?"], issue_id=issue_id)
+    request_path = f"{app.matters.matter_path(matter_id)}/request.md"
+    original = app.vault.read_markdown(request_path)
+    app.vault.write_markdown(request_path, "CHANGED AFTER QUEUE", original["metadata"])
+    await runs.wait(started["run_id"])
+    assert requests
+    assert "Can we remove manual review" in requests[0].message
+    assert "CHANGED AFTER QUEUE" not in requests[0].message
+
+
+@pytest.mark.asyncio
+async def test_queued_issue_research_uses_frozen_facts_and_cannot_replace_current_after_fact_change(app_context):
+    app = app_context
+    matter_id = "MAT-DEMO-BEACON"
+    issue_id = app.workspace.issues(matter_id)[0]["issue_id"]
+    structure = {"issue_analysis": {
+        "issue_id": issue_id, "explanation": "The fact controls the route.",
+        "tests": [{"test_id": "t", "title": "Coverage", "condition_ids": ["c"]}],
+        "conditions": [{"condition_id": "c", "question": "Is the fact true?", "assessment": "unknown"}],
+        "options": [
+            {"option_id": "yes", "title": "Covered", "requirements": [{"condition_id": "c", "state": "met"}], "combination": "all"},
+            {"option_id": "no", "title": "Not covered", "requirements": [{"condition_id": "c", "state": "not_met"}], "combination": "all"},
+        ],
+    }}
+    current_capture = app.issue_analysis.capture(matter_id, issue_id)
+    current_path = app.workspace._path(matter_id, "inquiries/RUN-before-queued-research.md")
+    current_text = "Current analysis."
+    current_revision = digest(current_text)
+    app.vault.write_markdown(current_path, current_text, {
+        "record_type": "workspace_inquiry", "matter_id": matter_id,
+        "run_id": "RUN-before-queued-research", "output_revision": current_revision,
+    })
+    app.issue_analysis.publish(
+        matter_id, path=current_path, run_id="RUN-before-queued-research",
+        output_revision=current_revision, structure=structure, capture=current_capture,
+    )
+
+    record = app.workspace.records.get(matter_id)
+    old_fact = record["facts"][0]["text"]
+    changed_fact = old_fact + " Changed after enqueue."
+
+    async def run_agent(request, **_kwargs):
+        assert old_fact in request.message
+        assert changed_fact not in request.message
+        return ChatResponse(reply=(
+            "Useful queued analysis.\n\n```decision-paths\n"
+            + json.dumps(structure)
+            + "\n```"
+        ))
+
+    app.research.bind_agent_runner(run_agent)
+    runs = ResearchRunService(app.vault, app.research)
+    started = runs.start(matter_id, ["Which path applies?"], issue_id=issue_id)
+    record["facts"][0]["text"] = changed_fact
+    app.workspace.records._save(matter_id, record)
+    await runs.wait(started["run_id"])
+
+    completed = runs.get(matter_id, started["run_id"])
+    assert completed["state"] == "completed"
+    assert completed["results"][0]["historical_analysis"] is True
+    resolved = app.issue_analysis.resolve(matter_id, issue_id)
+    assert resolved["state"] == "needs_review"
+    assert resolved["analysis"]["run_id"] == "RUN-before-queued-research"
 
 
 @pytest.mark.asyncio
@@ -885,10 +1015,11 @@ async def test_research_source_lines_use_clean_label_and_bounded_body_excerpt(ap
 
     assert "Launch Policy" in sources
     assert "The limited pilot needs a manual review before launch." in sources
-    assert source_path not in sources
+    assert f"]({source_path})" in sources
+    assert "[source:SRC-" in sources
     assert "secret_internal_key" not in sources
     assert "record_type:" not in sources
-    assert len(sources) <= 260
+    assert len(sources) <= 500
 
 
 @pytest.mark.asyncio
@@ -916,7 +1047,7 @@ async def test_research_excludes_chat_runs_packets_and_duplicate_dossiers_as_sup
         "MAT-DEMO-BEACON", "What support applies?", change_stage=False
     )
     content = app_context.vault.read_markdown(result["path"])["content"]
-    assert "**facts**" in content
+    assert f"[facts]({matter_path}/facts.md)" in content
     assert content.count("Useful body") == 2
     assert "Chat Transcript" not in content
     assert "Research Run" not in content
@@ -1107,3 +1238,38 @@ async def test_research_rebuilds_after_warning_metadata_is_finalized(app_context
     result = await app_context.research.run("MAT-DEMO-BEACON", "What should counsel assess?", change_stage=False)
 
     assert captured_warnings == [app_context.vault.read_markdown(result["path"])["metadata"]["warnings"]]
+
+
+@pytest.mark.asyncio
+async def test_research_preserves_useful_prose_when_runner_fails_after_answer(app_context):
+    from app.agents.runner import AgentExecutionError, RunnerExecutionState
+    async def failed_after_answer(request, **kwargs):
+        raise AgentExecutionError(RunnerExecutionState(useful_content="On the supplied facts, the limited pilot remains possible."))
+    app_context.research.bind_agent_runner(failed_after_answer)
+    result = await app_context.research.run("MAT-DEMO-BEACON", "What can we do?", change_stage=False)
+    packet = app_context.vault.read_markdown(result["path"])
+    assert "the limited pilot remains possible" in packet["content"]
+    assert result["question_answered"] and packet["metadata"]["analysis_warning"]
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("endpoint", ["research-runs", "research"])
+async def test_http_research_start_runs_on_the_application_loop(app_context, endpoint):
+    import httpx
+    from fastapi import FastAPI
+    from app.routers.dependencies import get_context
+    from app.routers.matters import router
+
+    app = FastAPI()
+    app.include_router(router, prefix="/api")
+    app.dependency_overrides[get_context] = lambda: app_context
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app, raise_app_exceptions=False), base_url="http://test") as client:
+        options = {"json": {"question": "Which notice work is needed?", "source_action_key": "http-research-start"}} if endpoint == "research-runs" else {"params": {"question": "Which notice work is needed?"}}
+        response = await client.post(f"/api/matters/MAT-DEMO-ORBIT/{endpoint}", **options)
+        assert response.status_code == 202, response.text
+        run = response.json()
+        await app_context.research_runs.wait_for_active_work()
+        saved = app_context.research_runs.get("MAT-DEMO-ORBIT", run["run_id"])
+        assert saved["state"] == "completed"
+        assert saved["completed"] == 1
+        assert saved["results"] and app_context.vault.exists(saved["results"][0]["path"])

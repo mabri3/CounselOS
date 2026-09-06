@@ -1,0 +1,680 @@
+[
+  {
+    "run_id": "RUN-20260905-3e0180",
+    "matter_id": "MAT-20260905-329d59",
+    "conversation_id": "CONV-20260905-95d1c0",
+    "state": "completed",
+    "status": "Chat is complete.",
+    "created_at": "2026-09-05T08:19:59+00:00",
+    "started_at": "2026-09-05T08:19:59+00:00",
+    "finished_at": "2026-09-05T08:20:15+00:00",
+    "failure_detail": null,
+    "failure_class": null,
+    "correlation_id": "COR-20260905-5292ab",
+    "milestone": "Completed.",
+    "response": {
+      "reply": "Here's my useful first pass on the proposed equipment-loan policy.\n## Useful first pass\n**What the policy covers (as reported):** Employees at the US office may borrow a laptop for 14 days. The policy is internal and doesn't currently state who can approve an extension.\n**The core gap you flagged is the right one.** An equipment-loan policy that allows a 14-day loan but is silent on extension approval creates two practical problems:\n1. **Unclear authority \u2192 inconsistent outcomes.** Without a named approver, extensions get granted ad hoc (or not at all), which is unfair and hard to audit.\n2. **No accountability for the asset.** A laptop is company property; an open-ended extension with no owner means no one is responsible for tracking return, condition, or data security (e.g., a departing employee holding a device).\n**What the policy should ideally specify around extensions** (beyond just naming an approver):\n- Whether extensions are permitted at all, and if so, a cap (e.g., one extension of up to 14 more days) so the \"14-day\" rule isn't effectively meaningless.\n- Who approves \u2014 typically the employee's direct manager (for business need) plus IT/equipment (for asset tracking), or a single owner.\n- What happens on overdue return (escalation, recovery, data wipe).\n**The single most decision-changing missing fact** is who is authorized to approve an extension. That's the gap you asked me to identify, and it's the one I'd resolve first.\n**Note on scope:** This is an internal employment/asset-management matter, not a customer-facing or regulatory one, so no external authority is needed for the first pass. No legal decision or draft is requested yet, so I've stopped at analysis.\n---\nTo move this forward, I have a few questions. The most important one first:\n**1. Who should be authorized to approve an extension of the 14-day laptop loan period?**\n- Employee's direct manager\n- IT / equipment team\n- HR\n- Any of the above (manager, IT, or HR)\n- Not yet decided \u2014 this is the gap to fill\n**2. Should extensions be permitted at all, and if so, should there be a cap?** *(optional)*\n- No extensions \u2014 14 days is firm\n- One extension allowed, with a defined additional period\n- Extensions allowed without a stated cap\n- Not yet decided\n**3. Does the policy cover only laptops, or other equipment as well?** *(optional)*\n- Laptops only\n- Laptops and other equipment (e.g., monitors, phones, peripherals)\n- Not yet decided",
+      "conversation_id": "CONV-20260905-95d1c0",
+      "trace": [
+        {
+          "tool": "select_conversation_scope",
+          "status": "success",
+          "summary": "Current matter context selected.",
+          "mutation_status": null
+        },
+        {
+          "tool": "list_files",
+          "status": "success",
+          "summary": "Listed files under 03_Matters/cedar-desk-policy-review-329d59.",
+          "mutation_status": null
+        },
+        {
+          "tool": "read_file",
+          "status": "success",
+          "summary": "Read 03_Matters/cedar-desk-policy-review-329d59/request.md.",
+          "mutation_status": null
+        },
+        {
+          "tool": "read_file",
+          "status": "success",
+          "summary": "Read 03_Matters/cedar-desk-policy-review-329d59/facts.md.",
+          "mutation_status": null
+        },
+        {
+          "tool": "read_file",
+          "status": "success",
+          "summary": "Read 03_Matters/cedar-desk-policy-review-329d59/matter.md.",
+          "mutation_status": null
+        },
+        {
+          "tool": "read_file",
+          "status": "success",
+          "summary": "Read 03_Matters/cedar-desk-policy-review-329d59/work-items/WI-20260905-c6faab.md.",
+          "mutation_status": null
+        },
+        {
+          "tool": "update_matter_intake",
+          "status": "success",
+          "summary": "Updated the matter intake record.",
+          "mutation_status": "changed"
+        }
+      ],
+      "changed_paths": [
+        "03_Matters/cedar-desk-policy-review-329d59/facts.md",
+        "03_Matters/cedar-desk-policy-review-329d59/issues.md",
+        "03_Matters/cedar-desk-policy-review-329d59/matter.md",
+        "03_Matters/cedar-desk-policy-review-329d59/dossier.md",
+        "03_Matters/cedar-desk-policy-review-329d59/conversations/CONV-20260905-95d1c0.md"
+      ],
+      "refresh": [
+        "matter",
+        "tree"
+      ],
+      "cards": [
+        {
+          "type": "question",
+          "question_id": "Q-approver",
+          "text": "Who should be authorized to approve an extension of the 14-day laptop loan period?",
+          "reason": "This is the explicitly identified missing business fact and the most decision-changing element of the policy.",
+          "selection_mode": "single",
+          "choices": [
+            {
+              "value": "manager",
+              "label": "Employee's direct manager",
+              "suggested": false
+            },
+            {
+              "value": "it",
+              "label": "IT / equipment team",
+              "suggested": false
+            },
+            {
+              "value": "hr",
+              "label": "HR",
+              "suggested": false
+            },
+            {
+              "value": "any_above",
+              "label": "Any of the above (manager, IT, or HR)",
+              "suggested": false
+            },
+            {
+              "value": "undecided",
+              "label": "Not yet decided \u2014 this is the gap to fill",
+              "suggested": false
+            }
+          ],
+          "progress_current": null,
+          "progress_total": null,
+          "allow_skip": false,
+          "allow_stop": false,
+          "conflict": false,
+          "record_target": "fact"
+        },
+        {
+          "type": "question",
+          "question_id": "Q-extension-limit",
+          "text": "Should extensions be permitted at all, and if so, should there be a cap on how long or how many extensions an employee can take?",
+          "reason": "Whether extensions exist at all shapes the policy and the approval workflow.",
+          "selection_mode": "single",
+          "choices": [
+            {
+              "value": "no_extensions",
+              "label": "No extensions \u2014 14 days is firm",
+              "suggested": false
+            },
+            {
+              "value": "one_extension",
+              "label": "One extension allowed, with a defined additional period",
+              "suggested": false
+            },
+            {
+              "value": "unlimited",
+              "label": "Extensions allowed without a stated cap",
+              "suggested": false
+            },
+            {
+              "value": "undecided",
+              "label": "Not yet decided",
+              "suggested": false
+            }
+          ],
+          "progress_current": null,
+          "progress_total": null,
+          "allow_skip": true,
+          "allow_stop": false,
+          "conflict": false,
+          "record_target": "fact"
+        },
+        {
+          "type": "question",
+          "question_id": "Q-scope",
+          "text": "Does the policy cover only laptops, or other equipment as well?",
+          "reason": "Determines the breadth of the policy being reviewed.",
+          "selection_mode": "single",
+          "choices": [
+            {
+              "value": "laptops_only",
+              "label": "Laptops only",
+              "suggested": false
+            },
+            {
+              "value": "other_equipment",
+              "label": "Laptops and other equipment (e.g., monitors, phones, peripherals)",
+              "suggested": false
+            },
+            {
+              "value": "undecided",
+              "label": "Not yet decided",
+              "suggested": false
+            }
+          ],
+          "progress_current": null,
+          "progress_total": null,
+          "allow_skip": true,
+          "allow_stop": false,
+          "conflict": false,
+          "record_target": "fact"
+        },
+        {
+          "type": "matter_update",
+          "action_id": "ACT-20260905-acc351",
+          "summary": "Matter intake updated",
+          "changed_sections": [
+            "Working ask",
+            "Facts",
+            "Issues",
+            "Open questions"
+          ],
+          "can_edit": true,
+          "can_undo": true
+        }
+      ],
+      "applied_skills": [],
+      "review_author": "Themis.ai",
+      "operation_results": [
+        {
+          "action": "chat:RUN-20260905-3e0180:tool:a3e4b981287cb0ca1ef4f888",
+          "source_action_key": "chat:RUN-20260905-3e0180:tool:a3e4b981287cb0ca1ef4f888",
+          "operation": "select_conversation_scope",
+          "status": "no_change",
+          "summary": "Current matter context selected.",
+          "matter_id": "MAT-20260905-329d59",
+          "entity_refs": [],
+          "changed_paths": [],
+          "resulting_matter_state": {
+            "stage": "intake",
+            "next_action": "Orient to the request and identify the first missing facts.",
+            "work_state": {
+              "next_action": "Orient to the request and identify the first missing facts.",
+              "next_work_item_id": "WI-20260905-c6faab",
+              "next_owner": "Jordan Lee",
+              "next_actor": "named_owner",
+              "due_at": null,
+              "execution_state": "not_running",
+              "active_run_id": null,
+              "execution_note": "",
+              "signal": {
+                "kind": "waiting_on_owner",
+                "label": "Waiting on Jordan Lee"
+              }
+            },
+            "consistency_issues": []
+          },
+          "available_next_actions": [],
+          "required_user_action": null,
+          "error": null,
+          "recovery": null
+        },
+        {
+          "action": "chat:RUN-20260905-3e0180:tool:436158cbe9578fc3321a78d4",
+          "source_action_key": "chat:RUN-20260905-3e0180:tool:436158cbe9578fc3321a78d4",
+          "operation": "list_files",
+          "status": "no_change",
+          "summary": "Listed files under 03_Matters/cedar-desk-policy-review-329d59.",
+          "matter_id": "MAT-20260905-329d59",
+          "entity_refs": [],
+          "changed_paths": [],
+          "resulting_matter_state": {
+            "stage": "intake",
+            "next_action": "Orient to the request and identify the first missing facts.",
+            "work_state": {
+              "next_action": "Orient to the request and identify the first missing facts.",
+              "next_work_item_id": "WI-20260905-c6faab",
+              "next_owner": "Jordan Lee",
+              "next_actor": "named_owner",
+              "due_at": null,
+              "execution_state": "not_running",
+              "active_run_id": null,
+              "execution_note": "",
+              "signal": {
+                "kind": "waiting_on_owner",
+                "label": "Waiting on Jordan Lee"
+              }
+            },
+            "consistency_issues": []
+          },
+          "available_next_actions": [],
+          "required_user_action": null,
+          "error": null,
+          "recovery": null
+        },
+        {
+          "action": "chat:RUN-20260905-3e0180:tool:ed39e7bfe250ebccf108d554",
+          "source_action_key": "chat:RUN-20260905-3e0180:tool:ed39e7bfe250ebccf108d554",
+          "operation": "read_file",
+          "status": "no_change",
+          "summary": "Read 03_Matters/cedar-desk-policy-review-329d59/request.md.",
+          "matter_id": "MAT-20260905-329d59",
+          "entity_refs": [],
+          "changed_paths": [],
+          "resulting_matter_state": {
+            "stage": "intake",
+            "next_action": "Orient to the request and identify the first missing facts.",
+            "work_state": {
+              "next_action": "Orient to the request and identify the first missing facts.",
+              "next_work_item_id": "WI-20260905-c6faab",
+              "next_owner": "Jordan Lee",
+              "next_actor": "named_owner",
+              "due_at": null,
+              "execution_state": "not_running",
+              "active_run_id": null,
+              "execution_note": "",
+              "signal": {
+                "kind": "waiting_on_owner",
+                "label": "Waiting on Jordan Lee"
+              }
+            },
+            "consistency_issues": []
+          },
+          "available_next_actions": [],
+          "required_user_action": null,
+          "error": null,
+          "recovery": null
+        },
+        {
+          "action": "chat:RUN-20260905-3e0180:tool:7818513c329d529d19a1d980",
+          "source_action_key": "chat:RUN-20260905-3e0180:tool:7818513c329d529d19a1d980",
+          "operation": "read_file",
+          "status": "no_change",
+          "summary": "Read 03_Matters/cedar-desk-policy-review-329d59/facts.md.",
+          "matter_id": "MAT-20260905-329d59",
+          "entity_refs": [],
+          "changed_paths": [],
+          "resulting_matter_state": {
+            "stage": "intake",
+            "next_action": "Orient to the request and identify the first missing facts.",
+            "work_state": {
+              "next_action": "Orient to the request and identify the first missing facts.",
+              "next_work_item_id": "WI-20260905-c6faab",
+              "next_owner": "Jordan Lee",
+              "next_actor": "named_owner",
+              "due_at": null,
+              "execution_state": "not_running",
+              "active_run_id": null,
+              "execution_note": "",
+              "signal": {
+                "kind": "waiting_on_owner",
+                "label": "Waiting on Jordan Lee"
+              }
+            },
+            "consistency_issues": []
+          },
+          "available_next_actions": [],
+          "required_user_action": null,
+          "error": null,
+          "recovery": null
+        },
+        {
+          "action": "chat:RUN-20260905-3e0180:tool:ea0fff09bbe1f928f321eefa",
+          "source_action_key": "chat:RUN-20260905-3e0180:tool:ea0fff09bbe1f928f321eefa",
+          "operation": "read_file",
+          "status": "no_change",
+          "summary": "Read 03_Matters/cedar-desk-policy-review-329d59/matter.md.",
+          "matter_id": "MAT-20260905-329d59",
+          "entity_refs": [],
+          "changed_paths": [],
+          "resulting_matter_state": {
+            "stage": "intake",
+            "next_action": "Orient to the request and identify the first missing facts.",
+            "work_state": {
+              "next_action": "Orient to the request and identify the first missing facts.",
+              "next_work_item_id": "WI-20260905-c6faab",
+              "next_owner": "Jordan Lee",
+              "next_actor": "named_owner",
+              "due_at": null,
+              "execution_state": "not_running",
+              "active_run_id": null,
+              "execution_note": "",
+              "signal": {
+                "kind": "waiting_on_owner",
+                "label": "Waiting on Jordan Lee"
+              }
+            },
+            "consistency_issues": []
+          },
+          "available_next_actions": [],
+          "required_user_action": null,
+          "error": null,
+          "recovery": null
+        },
+        {
+          "action": "chat:RUN-20260905-3e0180:tool:774382ba3fc7822f55b407b3",
+          "source_action_key": "chat:RUN-20260905-3e0180:tool:774382ba3fc7822f55b407b3",
+          "operation": "read_file",
+          "status": "no_change",
+          "summary": "Read 03_Matters/cedar-desk-policy-review-329d59/work-items/WI-20260905-c6faab.md.",
+          "matter_id": "MAT-20260905-329d59",
+          "entity_refs": [],
+          "changed_paths": [],
+          "resulting_matter_state": {
+            "stage": "intake",
+            "next_action": "Orient to the request and identify the first missing facts.",
+            "work_state": {
+              "next_action": "Orient to the request and identify the first missing facts.",
+              "next_work_item_id": "WI-20260905-c6faab",
+              "next_owner": "Jordan Lee",
+              "next_actor": "named_owner",
+              "due_at": null,
+              "execution_state": "not_running",
+              "active_run_id": null,
+              "execution_note": "",
+              "signal": {
+                "kind": "waiting_on_owner",
+                "label": "Waiting on Jordan Lee"
+              }
+            },
+            "consistency_issues": []
+          },
+          "available_next_actions": [],
+          "required_user_action": null,
+          "error": null,
+          "recovery": null
+        },
+        {
+          "action": "chat:RUN-20260905-3e0180:tool:ce4dab6a6e33e5bb4e0b5550",
+          "source_action_key": "chat:RUN-20260905-3e0180:tool:ce4dab6a6e33e5bb4e0b5550",
+          "operation": "update_matter_intake",
+          "status": "changed",
+          "summary": "Updated the matter intake record.",
+          "matter_id": "MAT-20260905-329d59",
+          "entity_refs": [],
+          "changed_paths": [
+            "03_Matters/cedar-desk-policy-review-329d59/facts.md",
+            "03_Matters/cedar-desk-policy-review-329d59/issues.md",
+            "03_Matters/cedar-desk-policy-review-329d59/matter.md",
+            "03_Matters/cedar-desk-policy-review-329d59/dossier.md"
+          ],
+          "resulting_matter_state": {
+            "stage": "intake",
+            "next_action": "Who should be authorized to approve an extension of the 14-day laptop loan period?",
+            "work_state": {
+              "next_action": "Who should be authorized to approve an extension of the 14-day laptop loan period?",
+              "next_work_item_id": "WI-20260905-c6faab",
+              "next_owner": "Jordan Lee",
+              "next_actor": "named_owner",
+              "due_at": null,
+              "execution_state": "not_running",
+              "active_run_id": null,
+              "execution_note": "",
+              "signal": {
+                "kind": "waiting_on_owner",
+                "label": "Waiting on Jordan Lee"
+              }
+            },
+            "consistency_issues": []
+          },
+          "available_next_actions": [],
+          "required_user_action": null,
+          "error": null,
+          "recovery": null
+        }
+      ]
+    },
+    "operation_results": [
+      {
+        "action": "chat:RUN-20260905-3e0180:tool:a3e4b981287cb0ca1ef4f888",
+        "source_action_key": "chat:RUN-20260905-3e0180:tool:a3e4b981287cb0ca1ef4f888",
+        "operation": "select_conversation_scope",
+        "status": "no_change",
+        "summary": "Current matter context selected.",
+        "matter_id": "MAT-20260905-329d59",
+        "entity_refs": [],
+        "changed_paths": [],
+        "resulting_matter_state": {
+          "stage": "intake",
+          "next_action": "Orient to the request and identify the first missing facts.",
+          "work_state": {
+            "next_action": "Orient to the request and identify the first missing facts.",
+            "next_work_item_id": "WI-20260905-c6faab",
+            "next_owner": "Jordan Lee",
+            "next_actor": "named_owner",
+            "due_at": null,
+            "execution_state": "not_running",
+            "active_run_id": null,
+            "execution_note": "",
+            "signal": {
+              "kind": "waiting_on_owner",
+              "label": "Waiting on Jordan Lee"
+            }
+          },
+          "consistency_issues": []
+        },
+        "available_next_actions": [],
+        "required_user_action": null,
+        "error": null,
+        "recovery": null
+      },
+      {
+        "action": "chat:RUN-20260905-3e0180:tool:436158cbe9578fc3321a78d4",
+        "source_action_key": "chat:RUN-20260905-3e0180:tool:436158cbe9578fc3321a78d4",
+        "operation": "list_files",
+        "status": "no_change",
+        "summary": "Listed files under 03_Matters/cedar-desk-policy-review-329d59.",
+        "matter_id": "MAT-20260905-329d59",
+        "entity_refs": [],
+        "changed_paths": [],
+        "resulting_matter_state": {
+          "stage": "intake",
+          "next_action": "Orient to the request and identify the first missing facts.",
+          "work_state": {
+            "next_action": "Orient to the request and identify the first missing facts.",
+            "next_work_item_id": "WI-20260905-c6faab",
+            "next_owner": "Jordan Lee",
+            "next_actor": "named_owner",
+            "due_at": null,
+            "execution_state": "not_running",
+            "active_run_id": null,
+            "execution_note": "",
+            "signal": {
+              "kind": "waiting_on_owner",
+              "label": "Waiting on Jordan Lee"
+            }
+          },
+          "consistency_issues": []
+        },
+        "available_next_actions": [],
+        "required_user_action": null,
+        "error": null,
+        "recovery": null
+      },
+      {
+        "action": "chat:RUN-20260905-3e0180:tool:ed39e7bfe250ebccf108d554",
+        "source_action_key": "chat:RUN-20260905-3e0180:tool:ed39e7bfe250ebccf108d554",
+        "operation": "read_file",
+        "status": "no_change",
+        "summary": "Read 03_Matters/cedar-desk-policy-review-329d59/request.md.",
+        "matter_id": "MAT-20260905-329d59",
+        "entity_refs": [],
+        "changed_paths": [],
+        "resulting_matter_state": {
+          "stage": "intake",
+          "next_action": "Orient to the request and identify the first missing facts.",
+          "work_state": {
+            "next_action": "Orient to the request and identify the first missing facts.",
+            "next_work_item_id": "WI-20260905-c6faab",
+            "next_owner": "Jordan Lee",
+            "next_actor": "named_owner",
+            "due_at": null,
+            "execution_state": "not_running",
+            "active_run_id": null,
+            "execution_note": "",
+            "signal": {
+              "kind": "waiting_on_owner",
+              "label": "Waiting on Jordan Lee"
+            }
+          },
+          "consistency_issues": []
+        },
+        "available_next_actions": [],
+        "required_user_action": null,
+        "error": null,
+        "recovery": null
+      },
+      {
+        "action": "chat:RUN-20260905-3e0180:tool:7818513c329d529d19a1d980",
+        "source_action_key": "chat:RUN-20260905-3e0180:tool:7818513c329d529d19a1d980",
+        "operation": "read_file",
+        "status": "no_change",
+        "summary": "Read 03_Matters/cedar-desk-policy-review-329d59/facts.md.",
+        "matter_id": "MAT-20260905-329d59",
+        "entity_refs": [],
+        "changed_paths": [],
+        "resulting_matter_state": {
+          "stage": "intake",
+          "next_action": "Orient to the request and identify the first missing facts.",
+          "work_state": {
+            "next_action": "Orient to the request and identify the first missing facts.",
+            "next_work_item_id": "WI-20260905-c6faab",
+            "next_owner": "Jordan Lee",
+            "next_actor": "named_owner",
+            "due_at": null,
+            "execution_state": "not_running",
+            "active_run_id": null,
+            "execution_note": "",
+            "signal": {
+              "kind": "waiting_on_owner",
+              "label": "Waiting on Jordan Lee"
+            }
+          },
+          "consistency_issues": []
+        },
+        "available_next_actions": [],
+        "required_user_action": null,
+        "error": null,
+        "recovery": null
+      },
+      {
+        "action": "chat:RUN-20260905-3e0180:tool:ea0fff09bbe1f928f321eefa",
+        "source_action_key": "chat:RUN-20260905-3e0180:tool:ea0fff09bbe1f928f321eefa",
+        "operation": "read_file",
+        "status": "no_change",
+        "summary": "Read 03_Matters/cedar-desk-policy-review-329d59/matter.md.",
+        "matter_id": "MAT-20260905-329d59",
+        "entity_refs": [],
+        "changed_paths": [],
+        "resulting_matter_state": {
+          "stage": "intake",
+          "next_action": "Orient to the request and identify the first missing facts.",
+          "work_state": {
+            "next_action": "Orient to the request and identify the first missing facts.",
+            "next_work_item_id": "WI-20260905-c6faab",
+            "next_owner": "Jordan Lee",
+            "next_actor": "named_owner",
+            "due_at": null,
+            "execution_state": "not_running",
+            "active_run_id": null,
+            "execution_note": "",
+            "signal": {
+              "kind": "waiting_on_owner",
+              "label": "Waiting on Jordan Lee"
+            }
+          },
+          "consistency_issues": []
+        },
+        "available_next_actions": [],
+        "required_user_action": null,
+        "error": null,
+        "recovery": null
+      },
+      {
+        "action": "chat:RUN-20260905-3e0180:tool:774382ba3fc7822f55b407b3",
+        "source_action_key": "chat:RUN-20260905-3e0180:tool:774382ba3fc7822f55b407b3",
+        "operation": "read_file",
+        "status": "no_change",
+        "summary": "Read 03_Matters/cedar-desk-policy-review-329d59/work-items/WI-20260905-c6faab.md.",
+        "matter_id": "MAT-20260905-329d59",
+        "entity_refs": [],
+        "changed_paths": [],
+        "resulting_matter_state": {
+          "stage": "intake",
+          "next_action": "Orient to the request and identify the first missing facts.",
+          "work_state": {
+            "next_action": "Orient to the request and identify the first missing facts.",
+            "next_work_item_id": "WI-20260905-c6faab",
+            "next_owner": "Jordan Lee",
+            "next_actor": "named_owner",
+            "due_at": null,
+            "execution_state": "not_running",
+            "active_run_id": null,
+            "execution_note": "",
+            "signal": {
+              "kind": "waiting_on_owner",
+              "label": "Waiting on Jordan Lee"
+            }
+          },
+          "consistency_issues": []
+        },
+        "available_next_actions": [],
+        "required_user_action": null,
+        "error": null,
+        "recovery": null
+      },
+      {
+        "action": "chat:RUN-20260905-3e0180:tool:ce4dab6a6e33e5bb4e0b5550",
+        "source_action_key": "chat:RUN-20260905-3e0180:tool:ce4dab6a6e33e5bb4e0b5550",
+        "operation": "update_matter_intake",
+        "status": "changed",
+        "summary": "Updated the matter intake record.",
+        "matter_id": "MAT-20260905-329d59",
+        "entity_refs": [],
+        "changed_paths": [
+          "03_Matters/cedar-desk-policy-review-329d59/facts.md",
+          "03_Matters/cedar-desk-policy-review-329d59/issues.md",
+          "03_Matters/cedar-desk-policy-review-329d59/matter.md",
+          "03_Matters/cedar-desk-policy-review-329d59/dossier.md"
+        ],
+        "resulting_matter_state": {
+          "stage": "intake",
+          "next_action": "Who should be authorized to approve an extension of the 14-day laptop loan period?",
+          "work_state": {
+            "next_action": "Who should be authorized to approve an extension of the 14-day laptop loan period?",
+            "next_work_item_id": "WI-20260905-c6faab",
+            "next_owner": "Jordan Lee",
+            "next_actor": "named_owner",
+            "due_at": null,
+            "execution_state": "not_running",
+            "active_run_id": null,
+            "execution_note": "",
+            "signal": {
+              "kind": "waiting_on_owner",
+              "label": "Waiting on Jordan Lee"
+            }
+          },
+          "consistency_issues": []
+        },
+        "available_next_actions": [],
+        "required_user_action": null,
+        "error": null,
+        "recovery": null
+      }
+    ],
+    "path": "03_Matters/cedar-desk-policy-review-329d59/conversations/runs/RUN-20260905-3e0180.md",
+    "selection": {
+      "agent_id": "intake-agent",
+      "provider": "openai_compatible",
+      "model": "deepseek-v4-flash",
+      "reasoning_effort": "default"
+    }
+  }
+]

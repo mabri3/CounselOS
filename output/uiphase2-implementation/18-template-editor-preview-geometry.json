@@ -1,0 +1,208 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 126.61221313476562,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 938.1817626953124,
+      "x": 0,
+      "y": -1082.727294921875
+    },
+    {
+      "font": "13px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 237.7627716064453,
+      "x": 684.4246826171875,
+      "y": -1022.4218139648438
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 691.328125,
+      "y": -996.73291015625
+    },
+    {
+      "font": "15px",
+      "height": 2103.37353515625,
+      "tag": "MAIN",
+      "text": "Output templatesReusable skills‹ Back to templatesOutput tem",
+      "width": 938.1817626953124,
+      "x": 0,
+      "y": -956.1150512695312
+    },
+    {
+      "font": "15px",
+      "height": 46.26420211791992,
+      "tag": "BUTTON",
+      "text": "Output templates",
+      "width": 118.5014190673828,
+      "x": 40,
+      "y": -928.1178588867188
+    },
+    {
+      "font": "15px",
+      "height": 46.26420211791992,
+      "tag": "BUTTON",
+      "text": "Reusable skills",
+      "width": 100.35511016845705,
+      "x": 186.49856567382812,
+      "y": -928.1178588867188
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "‹ Back to templates",
+      "width": 157.50709533691406,
+      "x": 40,
+      "y": -858.9488525390625
+    },
+    {
+      "font": "15px",
+      "height": 1904.2115478515625,
+      "tag": "SECTION",
+      "text": "Output template · output-business-decision-brief-copy-143145",
+      "width": 858.1817626953125,
+      "x": 40,
+      "y": -796.953125
+    },
+    {
+      "font": "15px",
+      "height": 112.13777923583984,
+      "tag": "HEADER",
+      "text": "Output template · output-business-decision-brief-copy-143145",
+      "width": 858.1817626953125,
+      "x": 40,
+      "y": -796.953125
+    },
+    {
+      "font": "48px",
+      "height": 55.1917610168457,
+      "tag": "H2",
+      "text": "Synthetic process brief",
+      "width": 513.366455078125,
+      "x": 40,
+      "y": -769.5028076171875
+    },
+    {
+      "font": "15px",
+      "height": 400.53265380859375,
+      "tag": "SECTION",
+      "text": "Plain-language instructions and desired contentState what th",
+      "width": 454.40338134765625,
+      "x": 443.77838134765625,
+      "y": -654.8153076171875
+    },
+    {
+      "font": "15px",
+      "height": 25.99431800842285,
+      "tag": "BUTTON",
+      "text": "B",
+      "width": 27.99715805053711,
+      "x": 628.75,
+      "y": -574.375
+    },
+    {
+      "font": "15px",
+      "height": 25.99431800842285,
+      "tag": "BUTTON",
+      "text": "I",
+      "width": 27.99715805053711,
+      "x": 662.741455078125,
+      "y": -574.375
+    },
+    {
+      "font": "15px",
+      "height": 25.99431800842285,
+      "tag": "BUTTON",
+      "text": "U",
+      "width": 27.99715805053711,
+      "x": 696.73291015625,
+      "y": -574.375
+    },
+    {
+      "font": "13.5px",
+      "height": 25.99431800842285,
+      "tag": "BUTTON",
+      "text": "List",
+      "width": 41.17897415161133,
+      "x": 743.7073364257812,
+      "y": -574.375
+    },
+    {
+      "font": "13.5px",
+      "height": 25.99431800842285,
+      "tag": "BUTTON",
+      "text": "Numbered",
+      "width": 84.19033813476562,
+      "x": 477.7769775390625,
+      "y": -539.4744262695312
+    },
+    {
+      "font": "13.5px",
+      "height": 25.99431800842285,
+      "tag": "BUTTON",
+      "text": "Quote",
+      "width": 56.69744110107422,
+      "x": 567.9616088867188,
+      "y": -539.4744262695312
+    },
+    {
+      "font": "13.5px",
+      "height": 25.99431800842285,
+      "tag": "BUTTON",
+      "text": "Link",
+      "width": 44.737213134765625,
+      "x": 630.6533813476562,
+      "y": -539.4744262695312
+    },
+    {
+      "font": "15px",
+      "height": 117.2585220336914,
+      "tag": "SECTION",
+      "text": "Markdown section outline and heading orderPut headings in th",
+      "width": 454.40338134765625,
+      "x": 443.77838134765625,
+      "y": -230.2840881347656
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Save reusable template",
+      "width": 184.9076690673828,
+      "x": 469.6661682128906,
+      "y": 220.0852203369141
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Cancel",
+      "width": 77.29402923583984,
+      "x": 662.5709838867188,
+      "y": 220.0852203369141
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Create editable preview",
+      "width": 186.3849334716797,
+      "x": 60.909088134765625,
+      "y": 785.234375
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 1082.727294921875,
+  "url": "http://localhost:3134/skills",
+  "width": 948
+}

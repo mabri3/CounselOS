@@ -1,0 +1,136 @@
+{
+  "issue_id": "ISS-TIMING",
+  "state": "saved",
+  "analysis": {
+    "schema_version": 1,
+    "issue_id": "ISS-TIMING",
+    "analysis_id": "IAN-b22c217582c4f526485bf91d",
+    "analysis_revision": "f2674c79427960567af9809250d2540b352a902a0d8d5fe1b992efbf4972e349",
+    "source_path": "03_Matters/harbor-sandbox-release-timing-1b2102/conversations/inquiries/RUN-20260906-0106ca.md",
+    "output_revision": "1fb312f3a7ce3f86f11eb3043830602c3e35c78d8f994624591418b60134f4c3",
+    "source_revisions": {},
+    "input_basis": {
+      "business_question": "790f1fc5181a9db3af964850f6c32ef4a3162d9c830058b34f86d0b72fb3a4a0",
+      "issue": "16b9716d32e980e1c7e0e2c47f7510bc1286a15a60f6e715f7c3c926079d7439",
+      "facts": "e132126863700c0bd631bcff119d3cb3a611d6a7f49333669b7fae817389b8f1",
+      "assumptions": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "questions": "352221ebd27247d10d885757eb91c2c1fbc6f3b84a85531452fec7f8a69ebc13",
+      "projection:eyJpbmNsdWRlZF9yb2xlcyI6IFsiQWN0aXZlIG1hdHRlciByZWNvcmQiLCAiQ3VycmVudCBidXNpbmVzcyBxdWVzdGlvbiAoY2Fub25pY2FsIHNjb3BlKSIsICJDdXJyZW50IG1hdHRlciB3b3JrIHN0YXRlIiwgIlN1cHBvcnRpbmcgcXVlc3Rpb25zIChhbnN3ZXJlZCBpcyBub3QgaW5kZXBlbmRlbnRseSB2ZXJpZmllZCBvciBpc3N1ZSByZXNvbHZlZCkiLCAiYWNjZXB0ZWRfbGF3eWVyX2NvbnRyaWJ1dGlvbnMiLCAiY29udmVyc2F0aW9uX3RhcmdldCIsICJjdXJyZW50X2ZhY3RzIiwgImhpc3RvcmljYWxfcXVlc3Rpb25fY2hhbmdlc19ub3RfY3VycmVudF9zY29wZSIsICJpc3N1ZXMiLCAibWF0dGVyX2xvY2FsX3ByZWZlcmVuY2VzIiwgIm9yaWdpbmFsX3JlcXVlc3RfaGlzdG9yaWNhbF9ub3RfY3VycmVudF9mYWN0cyIsICJ3b3JraW5nX2Fzc3VtcHRpb25zIl0sICJtYW5pZmVzdF9wcmVzZW50IjogdHJ1ZSwgInBhdGhzIjogW10sICJyZWZlcmVuY2VfaWRzIjogW119": "b408bab71d5551c8ae3a36b73acf14afd3c05e2f4243b475864566eafe326268"
+    },
+    "run_id": "RUN-20260906-0106ca",
+    "display_title": "Screening before release",
+    "explanation": "Section 4 requires screening to complete before any release; the only exception is a capped manual-screening pilot that does not waive screening. Whether screening completes before release decides which route is available.",
+    "business_effect": "If screening completes first, Harbor can run a full release. If not, Harbor is limited to a ten-account manual-screening pilot and must defer the wider rollout.",
+    "tests": [
+      {
+        "test_id": "TST-136ef4cb8720520ee7b2",
+        "title": "Sequencing obligation under Section 4",
+        "summary": "The operator must complete screening before releasing a payment; Section 5 requires a dated screening record.",
+        "kind": "contract",
+        "actor": "Harbor (operator)",
+        "jurisdiction": "Fictional supplier contract",
+        "effective_at": "Current contract term",
+        "exceptions": "Limited pilot of at most ten test accounts may use manual screening; the exception does not waive screening.",
+        "applicability": "Harbor is the operator that releases payments under the fictional supplier contract, so Section 4's sequencing obligation applies to it.",
+        "claim_ids": [],
+        "condition_ids": [
+          "CON-b1ae2f11405bff50a6eb"
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "condition_id": "CON-b1ae2f11405bff50a6eb",
+        "question": "Does screening complete before release?",
+        "assessment": "unknown",
+        "assessment_basis": "Product has not confirmed whether screening completes before release; recorded as an open supporting question and an open fact.",
+        "fact_ids": [
+          "FACT-20260906-5f6cae",
+          "FACT-20260906-c18380"
+        ],
+        "question_ids": [
+          "Q-SCREENING"
+        ],
+        "claim_ids": []
+      }
+    ],
+    "options": [
+      {
+        "option_id": "OPT-98a7e452fa347b4b003e",
+        "option_revision": "4555cacec002a8a355a6a14d2e1175b602de7314d99cde10a383da4dee4a197e",
+        "title": "Delayed full release (screening completes first)",
+        "kind": "conditional_path",
+        "condition_summary": "Screening completes before release",
+        "requirements": [
+          {
+            "condition_id": "CON-b1ae2f11405bff50a6eb",
+            "state": "met"
+          }
+        ],
+        "combination": "all",
+        "consequence": "Harbor may release payments through the normal path, satisfying Section 4's sequencing requirement.",
+        "trade_off": "Release is delayed until screening finishes, pushing back launch timing.",
+        "remaining_work": [
+          "Confirm screening completes before release"
+        ],
+        "recommendation": "candidate",
+        "recommendation_reason": "This is the only route that permits a full (uncapped) release under the contract.",
+        "claim_ids": [],
+        "work_item_ids": []
+      },
+      {
+        "option_id": "OPT-e66618162577f2aeaa0b",
+        "option_revision": "43e137aece4fb9ddc6b8a05590dbe4df3dc4355ce6d48e1c8dcd0e4ee555bd24",
+        "title": "Limited pilot (manual screening, at most ten test accounts)",
+        "kind": "conditional_path",
+        "condition_summary": "Screening cannot be confirmed to complete before a full release",
+        "requirements": [
+          {
+            "condition_id": "CON-b1ae2f11405bff50a6eb",
+            "state": "not_met"
+          }
+        ],
+        "combination": "all",
+        "consequence": "Harbor may proceed only with a limited pilot of at most ten test accounts using manual screening; the wider rollout must wait.",
+        "trade_off": "Capped at ten accounts and still requires screening (manual); does not authorize a wider rollout.",
+        "remaining_work": [
+          "Confirm screening timing",
+          "Complete pilot operational work (ISS-PILOT)"
+        ],
+        "recommendation": "candidate",
+        "recommendation_reason": "This is the only contract-compliant path when screening timing is unconfirmed.",
+        "claim_ids": [],
+        "work_item_ids": []
+      },
+      {
+        "option_id": "OPT-c4ef37aaf12deebe2887",
+        "option_revision": "f5e645be0531f8f297f28ef446ad02c08f18f0de6ec106a0b3535e988021b91d",
+        "title": "Treat the pilot as the first release and defer the wider rollout",
+        "kind": "business_alternative",
+        "condition_summary": "Business choice independent of the timing fact",
+        "requirements": [],
+        "combination": "all",
+        "consequence": "Harbor stays within the contract while gathering data, deferring the wider rollout until screening timing is confirmed and pilot operational work is complete.",
+        "trade_off": "Smaller initial footprint and slower scale-up.",
+        "remaining_work": [
+          "Confirm screening timing",
+          "Complete pilot operational work (ISS-PILOT)"
+        ],
+        "recommendation": "candidate",
+        "recommendation_reason": "Preserves learning and contract compliance while limiting first-release exposure.",
+        "claim_ids": [],
+        "work_item_ids": []
+      }
+    ],
+    "warnings": []
+  },
+  "warnings": [],
+  "reference": {
+    "analysis_id": "IAN-b22c217582c4f526485bf91d",
+    "analysis_revision": "f2674c79427960567af9809250d2540b352a902a0d8d5fe1b992efbf4972e349",
+    "source_path": "03_Matters/harbor-sandbox-release-timing-1b2102/conversations/inquiries/RUN-20260906-0106ca.md",
+    "output_revision": "1fb312f3a7ce3f86f11eb3043830602c3e35c78d8f994624591418b60134f4c3",
+    "run_id": "RUN-20260906-0106ca",
+    "captured_at": "2026-09-06T04:16:31.895993+00:00"
+  }
+}

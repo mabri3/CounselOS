@@ -1,0 +1,528 @@
+- banner:
+  - link "Themis.ai":
+    - /url: /
+    - img "Themis.ai"
+  - navigation "Main navigation":
+    - link "Today":
+      - /url: /
+    - link "Briefing":
+      - /url: /briefing
+    - link "Workspace":
+      - /url: /workspace
+    - link "Matters":
+      - /url: /matters
+    - link "Decisions":
+      - /url: /decisions
+    - link "Skills":
+      - /url: /skills
+    - link "Automations":
+      - /url: /automations
+    - link "Agents":
+      - /url: /agents
+    - link "Settings":
+      - /url: /settings
+  - generic: Un
+- main:
+  - link "Back to matter":
+    - /url: /matters/MAT-20260904-abf788?conversation=CONV-20260904-469ac8
+  - text: Saved matter records
+  - heading "Instant payouts Q1 · Decision map" [level=1]
+  - paragraph: Can Mosaic Relay ship Instant Payouts for marketplace sellers in Q1, given the proposed onboarding (email + bank account only, full identity deferred to $3,000 cumulative payouts), ACH payouts initiated by Mosaic Relay via the bank partner, USDC payouts to international sellers (Mexico) via Circuit, nightly batch OFAC screening, W-9-only business onboarding without owners, and a public $3,000 verification progress bar?
+  - generic: Agent analysis stays proposed
+  - region "Decision map":
+    - region "Decision map controls and visual":
+      - heading "Decision map" [level=2]
+      - paragraph: Local neighborhood · 7 visible records
+      - button "Local neighborhood" [pressed]
+      - button "Show whole matter"
+      - generic "Map viewport controls":
+        - button "Zoom out"
+        - generic: Zoom 100%
+        - button "Zoom in"
+        - button "Fit map"
+        - button "Reset view"
+      - paragraph: Select a record for details. Drag empty space to pan. The outline below has the same records and relationships.
+      - generic "Decision map visual":
+        - button "Can Mosaic Relay ship Instant Payouts for marketplace sellers in Q1, given the proposed onboarding (email + bank account only, full identity deferred to $3,000 cumulative payouts), ACH payouts initiated by Mosaic Relay via the bank partner, USDC payouts to international sellers (Mexico) via Circuit, nightly batch OFAC screening, W-9-only business onboarding without owners, and a public $3,000 verification progress bar?. business_question. Current.":
+          - generic: business_question
+          - strong: Can Mosaic Relay ship Instant Payouts for marketplace s…
+          - generic: Current
+        - button "OFAC screening in nightly batch against the day's payouts means payouts are released before screening completes, risking release of funds to sanctioned parties; screening must generally occur before funds are released/blocked.. issue. Open.":
+          - generic: issue
+          - strong: OFAC screening in nightly batch against the day's payou…
+          - generic: Open
+        - button "Not collecting beneficial owners for business sellers is a KYB/AML gap and may conflict with beneficial-ownership reporting obligations.. issue. Open.":
+          - generic: issue
+          - strong: Not collecting beneficial owners for business sellers i…
+          - generic: Open
+        - button "Operating as an agent under the bank partner's license does not resolve Mosaic Relay's own money transmission licensing posture for initiating ACH payouts, nor its own CIP/AML and sanctions obligations.. issue. Open.":
+          - generic: issue
+          - strong: Operating as an agent under the bank partner's license…
+          - generic: Open
+        - button "Publicly displaying the $3,000 verification threshold via a progress bar may facilitate evasion and raises funds-flow/consumer disclosure concerns.. issue. Open.":
+          - generic: issue
+          - strong: Publicly displaying the $3,000 verification threshold v…
+          - generic: Open
+        - button "The $3,000 cumulative payout threshold is not a recognized BSA customer-identification threshold; there is no $3,000 BSA CIP trigger. Under BSA/AML, a money transmitter must collect CIP before establishing the account relationship, not after a payout threshold. Deferring identity collection until $3,000 is likely non-compliant.. issue. Open.":
+          - generic: issue
+          - strong: The $3,000 cumulative payout threshold is not a recogni…
+          - generic: Open
+        - button "USDC payouts to international sellers (Mexico), including to self-hosted wallets, raise sanctions, AML, and virtual-asset money transmission licensing questions distinct from fiat ACH payouts.. issue. Open.":
+          - generic: issue
+          - strong: USDC payouts to international sellers (Mexico), includi…
+          - generic: Open
+    - complementary "Selected map record":
+      - generic: Selected business_question
+      - heading "Can Mosaic Relay ship Instant Payouts for marketplace sellers in Q1, given the proposed onboarding (email + bank account only, full identity deferred to $3,000 cumulative payouts), ACH payouts initiated by Mosaic Relay via the bank partner, USDC payouts to international sellers (Mexico) via Circuit, nightly batch OFAC screening, W-9-only business onboarding without owners, and a public $3,000 verification progress bar?" [level=2]
+      - paragraph: Current
+      - button "Clear selection"
+      - button "Discuss this path"
+      - button "Try a different assumption" [active]
+    - region "Saved scenarios":
+      - paragraph: Explore
+      - heading "Saved scenarios" [level=2]
+      - button "Try a different assumption" [expanded]
+      - paragraph: A scenario tests changed assumptions. It does not change actual facts, decisions, or drafts.
+      - generic: Current reported fact
+      - combobox "Current reported fact":
+        - option "No linked fact" [selected]
+        - option "Sellers onboard with email and bank account only; full identity info is collected only after a seller crosses $3,000 in cumulative payouts."
+        - option "Engineering selected the $3,000 cumulative payout threshold because they believe it is 'the BSA threshold.'"
+        - option "Payouts go out via the bank partner's ACH rails, and Mosaic Relay is the party initiating them."
+        - option "International sellers can elect payout in USDC through Circuit (a licensed exchange Mosaic Relay contracts with); the seller provides a wallet address that may be an exchange account or their own wallet."
+        - option "OFAC screening runs nightly in batch against the day's payouts; real-time screening adds ~400ms and would undermine the 'instant' promise."
+        - option "Business sellers upload a W-9 and Mosaic Relay takes the signer's name; Mosaic Relay is not asking for owners because the UI is already 11 screens."
+        - option "Sellers are shown a progress bar reading '$1,240 of $3,000 until full verification.'"
+        - option "The bank partner has seen the deck."
+        - option "What is the legal basis for the $3,000 cumulative payout threshold before collecting full identity? This is the foundation of the onboarding design and appears to rest on a misconception about 'the BSA threshold.' — It was purely an engineering/product choice, no legal basis confirmed"
+        - option "What is Mosaic Relay's money transmission licensing posture for initiating these ACH payouts? — We operate as an agent / under the bank partner's license"
+        - option "Which jurisdictions are the international sellers located in for the USDC payout option? — Asia"
+        - option "Jurisdictions of the international sellers eligible for USDC payouts. — Mexico"
+      - generic: Hypothetical value, one change per line
+      - textbox "Hypothetical value, one change per line":
+        - /placeholder: Funds remain in the account for two days
+      - generic: Question for the analysis
+      - textbox "Question for the analysis":
+        - /placeholder: How would this change the current analysis?
+      - paragraph: Analyze creates a temporary baseline record. It does not save a named user scenario. Actual matter facts are unchanged.
+      - button "Analyze scenario"
+      - button "Cancel"
+      - generic "Saved scenarios":
+        - paragraph: No saved scenarios. Try a changed assumption to keep the exploration available for later.
+      - paragraph: Select a saved scenario to compare it with the current matter.
+      - generic "Correct a fact"
+      - option "Add a new reported fact" [selected]
+      - option "Sellers onboard with email and bank account only; full identity info is collected only after a seller crosses $3,000 in cumulative payouts."
+      - option "Engineering selected the $3,000 cumulative payout threshold because they believe it is 'the BSA threshold.'"
+      - option "Payouts go out via the bank partner's ACH rails, and Mosaic Relay is the party initiating them."
+      - option "International sellers can elect payout in USDC through Circuit (a licensed exchange Mosaic Relay contracts with); the seller provides a wallet address that may be an exchange account or their own wallet."
+      - option "OFAC screening runs nightly in batch against the day's payouts; real-time screening adds ~400ms and would undermine the 'instant' promise."
+      - option "Business sellers upload a W-9 and Mosaic Relay takes the signer's name; Mosaic Relay is not asking for owners because the UI is already 11 screens."
+      - option "Sellers are shown a progress bar reading '$1,240 of $3,000 until full verification.'"
+      - option "The bank partner has seen the deck."
+      - option "What is the legal basis for the $3,000 cumulative payout threshold before collecting full identity? This is the foundation of the onboarding design and appears to rest on a misconception about 'the BSA threshold.' — It was purely an engineering/product choice, no legal basis confirmed"
+      - option "What is Mosaic Relay's money transmission licensing posture for initiating these ACH payouts? — We operate as an agent / under the bank partner's license"
+      - option "Which jurisdictions are the international sellers located in for the USDC payout option? — Asia"
+      - option "Jurisdictions of the international sellers eligible for USDC payouts. — Mexico"
+    - region "Decision map outline":
+      - heading "Map outline" [level=2]
+      - paragraph: Use this list to reach every visible record and relationship without the visual map.
+      - list:
+        - button "Can Mosaic Relay ship Instant Payouts for marketplace sellers in Q1, given the proposed onboarding (email + bank account only, full identity deferred to $3,000 cumulative payouts), ACH payouts initiated by Mosaic Relay via the bank partner, USDC payouts to international sellers (Mexico) via Circuit, nightly batch OFAC screening, W-9-only business onboarding without owners, and a public $3,000 verification progress bar? business_question · Current":
+          - strong: Can Mosaic Relay ship Instant Payouts for marketplace sellers in Q1, given the proposed onboarding (email + bank account only, full identity deferred to $3,000 cumulative payouts), ACH payouts initiated by Mosaic Relay via the bank partner, USDC payouts to international sellers (Mexico) via Circuit, nightly batch OFAC screening, W-9-only business onboarding without owners, and a public $3,000 verification progress bar?
+          - generic: business_question · Current
+        - button "Discuss this path"
+        - button "OFAC screening in nightly batch against the day's payouts means payouts are released before screening completes, risking release of funds to sanctioned parties; screening must generally occur before funds are released/blocked. issue · Open":
+          - strong: OFAC screening in nightly batch against the day's payouts means payouts are released before screening completes, risking release of funds to sanctioned parties; screening must generally occur before funds are released/blocked.
+          - generic: issue · Open
+        - button "Discuss this path"
+        - button "Not collecting beneficial owners for business sellers is a KYB/AML gap and may conflict with beneficial-ownership reporting obligations. issue · Open":
+          - strong: Not collecting beneficial owners for business sellers is a KYB/AML gap and may conflict with beneficial-ownership reporting obligations.
+          - generic: issue · Open
+        - button "Discuss this path"
+        - button "Operating as an agent under the bank partner's license does not resolve Mosaic Relay's own money transmission licensing posture for initiating ACH payouts, nor its own CIP/AML and sanctions obligations. issue · Open":
+          - strong: Operating as an agent under the bank partner's license does not resolve Mosaic Relay's own money transmission licensing posture for initiating ACH payouts, nor its own CIP/AML and sanctions obligations.
+          - generic: issue · Open
+        - button "Discuss this path"
+        - button "Publicly displaying the $3,000 verification threshold via a progress bar may facilitate evasion and raises funds-flow/consumer disclosure concerns. issue · Open":
+          - strong: Publicly displaying the $3,000 verification threshold via a progress bar may facilitate evasion and raises funds-flow/consumer disclosure concerns.
+          - generic: issue · Open
+        - button "Discuss this path"
+        - button "The $3,000 cumulative payout threshold is not a recognized BSA customer-identification threshold; there is no $3,000 BSA CIP trigger. Under BSA/AML, a money transmitter must collect CIP before establishing the account relationship, not after a payout threshold. Deferring identity collection until $3,000 is likely non-compliant. issue · Open":
+          - strong: The $3,000 cumulative payout threshold is not a recognized BSA customer-identification threshold; there is no $3,000 BSA CIP trigger. Under BSA/AML, a money transmitter must collect CIP before establishing the account relationship, not after a payout threshold. Deferring identity collection until $3,000 is likely non-compliant.
+          - generic: issue · Open
+        - button "Discuss this path"
+        - button "USDC payouts to international sellers (Mexico), including to self-hosted wallets, raise sanctions, AML, and virtual-asset money transmission licensing questions distinct from fiat ACH payouts. issue · Open":
+          - strong: USDC payouts to international sellers (Mexico), including to self-hosted wallets, raise sanctions, AML, and virtual-asset money transmission licensing questions distinct from fiat ACH payouts.
+          - generic: issue · Open
+        - button "Discuss this path"
+      - heading "Visible relationships" [level=3]
+      - list:
+        - strong: Can Mosaic Relay ship Instant Payouts for marketplace sellers in Q1, given the proposed onboarding (email + bank account only, full identity deferred to $3,000 cumulative payouts), ACH payouts initiated by Mosaic Relay via the bank partner, USDC payouts to international sellers (Mexico) via Circuit, nightly batch OFAC screening, W-9-only business onboarding without owners, and a public $3,000 verification progress bar?
+        - text: Includes issue
+        - strong: Publicly displaying the $3,000 verification threshold via a progress bar may facilitate evasion and raises funds-flow/consumer disclosure concerns.
+        - text: · Active
+        - strong: Can Mosaic Relay ship Instant Payouts for marketplace sellers in Q1, given the proposed onboarding (email + bank account only, full identity deferred to $3,000 cumulative payouts), ACH payouts initiated by Mosaic Relay via the bank partner, USDC payouts to international sellers (Mexico) via Circuit, nightly batch OFAC screening, W-9-only business onboarding without owners, and a public $3,000 verification progress bar?
+        - text: Includes issue
+        - strong: USDC payouts to international sellers (Mexico), including to self-hosted wallets, raise sanctions, AML, and virtual-asset money transmission licensing questions distinct from fiat ACH payouts.
+        - text: · Active
+        - strong: Can Mosaic Relay ship Instant Payouts for marketplace sellers in Q1, given the proposed onboarding (email + bank account only, full identity deferred to $3,000 cumulative payouts), ACH payouts initiated by Mosaic Relay via the bank partner, USDC payouts to international sellers (Mexico) via Circuit, nightly batch OFAC screening, W-9-only business onboarding without owners, and a public $3,000 verification progress bar?
+        - text: Includes issue
+        - strong: OFAC screening in nightly batch against the day's payouts means payouts are released before screening completes, risking release of funds to sanctioned parties; screening must generally occur before funds are released/blocked.
+        - text: · Active
+        - strong: Can Mosaic Relay ship Instant Payouts for marketplace sellers in Q1, given the proposed onboarding (email + bank account only, full identity deferred to $3,000 cumulative payouts), ACH payouts initiated by Mosaic Relay via the bank partner, USDC payouts to international sellers (Mexico) via Circuit, nightly batch OFAC screening, W-9-only business onboarding without owners, and a public $3,000 verification progress bar?
+        - text: Includes issue
+        - strong: The $3,000 cumulative payout threshold is not a recognized BSA customer-identification threshold; there is no $3,000 BSA CIP trigger. Under BSA/AML, a money transmitter must collect CIP before establishing the account relationship, not after a payout threshold. Deferring identity collection until $3,000 is likely non-compliant.
+        - text: · Active
+        - strong: Can Mosaic Relay ship Instant Payouts for marketplace sellers in Q1, given the proposed onboarding (email + bank account only, full identity deferred to $3,000 cumulative payouts), ACH payouts initiated by Mosaic Relay via the bank partner, USDC payouts to international sellers (Mexico) via Circuit, nightly batch OFAC screening, W-9-only business onboarding without owners, and a public $3,000 verification progress bar?
+        - text: Includes issue
+        - strong: Not collecting beneficial owners for business sellers is a KYB/AML gap and may conflict with beneficial-ownership reporting obligations.
+        - text: · Active
+        - strong: Can Mosaic Relay ship Instant Payouts for marketplace sellers in Q1, given the proposed onboarding (email + bank account only, full identity deferred to $3,000 cumulative payouts), ACH payouts initiated by Mosaic Relay via the bank partner, USDC payouts to international sellers (Mexico) via Circuit, nightly batch OFAC screening, W-9-only business onboarding without owners, and a public $3,000 verification progress bar?
+        - text: Includes issue
+        - strong: Operating as an agent under the bank partner's license does not resolve Mosaic Relay's own money transmission licensing posture for initiating ACH payouts, nor its own CIP/AML and sanctions obligations.
+        - text: · Active
+  - heading "Discuss the selected path" [level=2]
+  - generic: "Target: Instant payouts Q1"
+  - status:
+    - generic: Themis.ai · Completed
+    - generic: Chat is complete. Review the saved result below.
+  - generic: "From: Priya, PM — Marketplace Payments Subject: Instant Payouts — can we ship Q1? We're launching Instant Payouts for marketplace sellers. Plan: Sellers onboard with email + bank account only. We collect full identity info once a seller crosses $3,000 in cumulative payouts — engineering picked that because it's \"the BSA threshold.\" Payouts go out via our bank partner's ACH rails. We're the ones initiating. International sellers can elect payout in USDC through Circuit (a licensed exchange we contract with); the seller gives us a wallet address, which may be an exchange account or their own wallet. OFAC screening runs nightly in batch against the day's payouts. Real-time screening adds ~400ms and tanks the \"instant\" promise. Business sellers upload a W-9 and we take the signer's name. We're not asking for owners — the UI is already 11 screens. We show sellers a progress bar: \"$1,240 of $3,000 until full verification.\" Bank partner has seen the deck. Can we ship Q1?"
+  - generic: Themis.ai
+  - heading "Summary of the request" [level=2]
+  - paragraph:
+    - text: Priya (PM, Marketplace Payments) is asking whether Mosaic Relay can ship
+    - strong: Instant Payouts for marketplace sellers in Q1
+    - text: ". The proposed design:"
+  - list:
+    - text: Sellers onboard with
+    - strong: email + bank account only
+    - text: ; full identity is deferred until
+    - strong: $3,000 in cumulative payouts
+    - text: (engineering picked this as "the BSA threshold").
+    - text: Payouts go out via the
+    - strong: bank partner's ACH rails
+    - text: ", with Mosaic Relay initiating."
+    - strong: International sellers
+    - text: can elect payout in
+    - strong: USDC via Circuit
+    - text: (a licensed exchange), to a wallet address that may be an exchange account or the seller's own wallet.
+    - strong: OFAC screening runs nightly in batch
+    - text: against the day's payouts (real-time screening would add ~400ms and break "instant").
+    - strong: Business sellers
+    - text: upload a W-9 and we take the signer's name —
+    - strong: no owners collected
+    - text: (UI already 11 screens).
+    - text: "Sellers see a progress bar:"
+    - strong: "\"$1,240 of $3,000 until full verification.\""
+    - text: The bank partner has seen the deck.
+    - strong: Can we ship Q1?
+  - heading "My read before we go further" [level=2]
+  - paragraph: "This design has several serious compliance red flags that will likely block a Q1 ship as proposed, regardless of the bank partner's comfort:"
+  - list:
+    - strong: The $3,000 threshold is not a real BSA threshold.
+    - text: There is no $3,000 BSA customer-identification trigger. The $3,000 figure is associated with money-transmission registration thresholds and cash-transaction reporting (CTR), not with deferring identity collection. Under BSA/AML, a money transmitter must collect CIP
+    - strong: before
+    - text: establishing the account relationship — not after a payout threshold. If Mosaic Relay is a money transmitter, deferring identity until $3,000 is likely non-compliant. This is the foundation of the whole onboarding design, so it's my top question.
+    - strong: OFAC screening after payouts go out
+    - text: means funds are released before screening — a sanctions compliance problem.
+    - strong: Initiating ACH payouts
+    - text: raises whether Mosaic Relay needs its own money transmission licenses.
+    - strong: USDC payouts to international sellers
+    - text: (including self-hosted wallets) raise distinct sanctions/AML/licensing questions.
+    - strong: No beneficial-owner collection
+    - text: for business sellers is a KYB/AML gap.
+    - strong: Publicly showing the $3,000 threshold
+    - text: "may facilitate evasion. I've recorded the reported facts and issues. Here are my prioritized questions — the first is the most decision-changing:"
+    - strong: Q1 — What is the legal basis for the $3,000 cumulative payout threshold before collecting full identity?
+  - list:
+    - listitem: It was purely an engineering/product choice, no legal basis confirmed
+    - listitem: It's tied to a money transmission licensing threshold we believe applies
+    - listitem: We believe it's a BSA/CIP customer identification requirement
+    - listitem: It's a requirement our bank partner imposed
+    - text: Not sure — need legal to determine the right threshold
+    - strong: Q2 — What is Mosaic Relay's money transmission licensing posture for initiating these ACH payouts?
+    - listitem: Mosaic Relay holds its own money transmission licenses
+    - listitem: We operate as an agent/under the bank partner's license
+    - listitem: We hold no money transmission licenses
+    - text: Not sure — need to confirm with compliance
+    - strong: Q3 — Which jurisdictions are the international sellers located in for the USDC payout option?
+    - text: "(multi-select: UK, EU, Canada, Latin America, Asia, countries with sanctions exposure, not yet determined)"
+    - strong: Q4 — Is the nightly batch OFAC screening acceptable, or must screening occur before payouts are released?
+    - listitem: Screening must happen before funds are released
+    - listitem: Nightly batch after payout is acceptable to us/our bank
+    - listitem: Not sure — need legal to advise on timing Answer these (step by step or all together) and I'll refine the assessment.
+  - generic: Workspace action · Recorded
+  - generic: Updated the matter intake record.
+  - generic: "Updated records: Facts, sources & assumptions · Issue map · Matter details · Dossier"
+  - button "Open Facts, sources & assumptions"
+  - button "Open Issue map"
+  - button "Open Matter details"
+  - button "Open Dossier"
+  - generic "Intake audit history (1)"
+  - text: It was purely an engineering/product choice, no legal basis confirmed
+  - strong: Answered
+  - text: · engineering_choice
+  - generic: Themis.ai
+  - generic "Earlier intake update Earlier question · Is the nightly batch OFAC screening acceptable, or must screening occur before payouts are released? Expand":
+    - generic: Earlier intake update
+    - generic: Earlier question · Is the nightly batch OFAC screening acceptable, or must screening occur before payouts are released?
+    - generic: Expand
+  - text: We operate as an agent / under the bank partner's license
+  - strong: Answered
+  - text: · agent_under_bank
+  - generic: Themis.ai
+  - generic "Earlier intake update Earlier question · Is the nightly batch OFAC screening acceptable, or must screening occur before payouts are released? Expand":
+    - generic: Earlier intake update
+    - generic: Earlier question · Is the nightly batch OFAC screening acceptable, or must screening occur before payouts are released?
+    - generic: Expand
+  - text: Asia
+  - strong: Answered
+  - text: · asia
+  - generic: Themis.ai
+  - heading "What changed" [level=2]
+  - paragraph:
+    - text: You've confirmed the international sellers for the USDC option are in
+    - strong: Asia
+    - text: ". That's recorded. It narrows the USDC analysis to Asian jurisdictions (which carry their own sanctions/AML and virtual-asset licensing considerations, distinct from the fiat ACH flow). One material question remains before I can finalize the ship/no-ship assessment:"
+    - strong: Is the nightly batch OFAC screening acceptable, or must screening occur before payouts are released?
+  - list:
+    - listitem: Screening must happen before funds are released
+    - listitem: Nightly batch after payout is acceptable to us / our bank
+    - listitem: Not sure — need legal to advise on timing This is the last open item. Once you answer it, I'll give you the full Q1 ship assessment.
+  - generic: Workspace action · Recorded
+  - generic: Intake answer recorded.
+  - generic: "Updated records: Facts, sources & assumptions · Matter details · Dossier"
+  - button "Open Facts, sources & assumptions"
+  - button "Open Matter details"
+  - button "Open Dossier"
+  - text: Mexico
+  - strong: Answered
+  - text: · Mexico
+  - generic: Themis.ai
+  - paragraph: I've finalized the intake and set up the workstreams. Here's the summary.
+  - heading "Assessment complete — Q1 as designed is not shippable" [level=2]
+  - paragraph: "The design has multiple compliance blockers that a bank partner's deck review does not cure. The three highest-priority blockers, in order of how much they move the decision:"
+  - list:
+    - strong: Deferred identity collection ($3,000 threshold) — blocker.
+    - text: You confirmed the $3,000 figure was purely an engineering/product choice with no legal basis. There is no $3,000 BSA customer-identification threshold; a money transmitter must collect CIP
+    - strong: before
+    - text: establishing the account relationship, not after a payout threshold. This is the foundation of the onboarding and must be redesigned.
+    - strong: Money transmission licensing — unresolved.
+    - text: Operating as an agent under the bank partner's license does not resolve Mosaic Relay's own posture for
+    - strong: initiating
+    - text: ACH payouts, nor its own CIP/AML and sanctions obligations. Needs a determination before ship.
+    - strong: OFAC screening after payouts go out — blocker.
+    - text: "Nightly batch screening releases funds before screening completes, risking release to sanctioned parties. Screening must occur before funds are released. Plus two high-risk items needing work:"
+    - strong: USDC payouts to Mexico
+    - text: (sanctions/AML/virtual-asset questions, especially to self-hosted wallets) and
+    - strong: no beneficial-owner collection
+    - text: for business sellers — and a medium-risk item on the
+    - strong: public $3,000 progress bar
+    - text: (evasion/disclosure risk).
+  - heading "What I've set up" [level=2]
+  - list:
+    - strong: Intake marked complete
+    - text: with the full fact, issue, and assumption record saved.
+    - strong: Six work items
+    - text: "created, prioritized: (1) redesign identity collection at onboarding, (2) determine money transmission licensing posture, (3) move OFAC screening before payout release, (4) design sanctions/AML controls for USDC payouts to Mexico, (5) assess beneficial-owner collection, (6) review the public progress bar."
+  - heading "What would change this" [level=2]
+  - list:
+    - strong: "Working assumption:"
+    - text: Operating as an agent under the bank partner's license does not by itself resolve Mosaic Relay's own CIP/AML and sanctions obligations. If the bank partner's license and CIP program fully cover Mosaic Relay's onboarding, the deferred-identity and licensing concerns weaken materially — but the OFAC-before-release and USDC issues would remain.
+    - strong: "Working assumption:"
+    - text: The OFAC timing is effectively nightly batch after payouts are released, per the design. If screening actually runs before release, that blocker drops.
+    - strong: "Not examined:"
+    - text: The specific money transmission licensing requirements in the states where Mosaic Relay operates, and Mexico's virtual-asset/sanctions treatment of USDC payouts to self-hosted wallets — neither was researched in the vault. These are the two highest-value research items to resolve next. Want me to move this matter into research and start on the licensing and OFAC workstreams?
+  - generic: Workspace action · Recorded
+  - generic: Updated the matter intake record.
+  - generic: "Updated records: Facts, sources & assumptions · Issue map · Matter details · Dossier"
+  - button "Open Facts, sources & assumptions"
+  - button "Open Issue map"
+  - button "Open Matter details"
+  - button "Open Dossier"
+  - generic: Workspace action · Recorded
+  - generic: "Created work item: Redesign identity collection: collect CIP at onboarding, not at $3,000 payout threshold."
+  - generic: "Updated records: Work item"
+  - button "Open Work item"
+  - generic: Workspace action · Recorded
+  - generic: "Created work item: Determine Mosaic Relay's money transmission licensing posture for initiating ACH payouts."
+  - generic: "Updated records: Work item"
+  - button "Open Work item"
+  - generic: Workspace action · Recorded
+  - generic: "Created work item: Move OFAC screening before payout release."
+  - generic: "Updated records: Work item"
+  - button "Open Work item"
+  - generic: Workspace action · Recorded
+  - generic: "Created work item: Design sanctions/AML controls for USDC payouts to Mexico (incl. self-hosted wallets)."
+  - generic: "Updated records: Work item"
+  - button "Open Work item"
+  - generic: Workspace action · Recorded
+  - generic: "Created work item: Assess beneficial-owner collection requirement for business sellers."
+  - generic: "Updated records: Work item"
+  - button "Open Work item"
+  - generic: Workspace action · Recorded
+  - generic: "Created work item: Review public $3,000 verification progress bar for evasion and disclosure risk."
+  - generic: "Updated records: Work item"
+  - button "Open Work item"
+  - generic: summarize where we stand
+  - generic: Themis.ai
+  - heading "Where we stand — Instant Payouts Q1" [level=2]
+  - paragraph:
+    - strong: "The ask:"
+    - text: Priya (PM) wants to know if Mosaic Relay can ship Instant Payouts for marketplace sellers in Q1.
+    - strong: "Bottom line: Not as designed."
+    - text: The current design has multiple compliance blockers that a bank partner's deck review does not cure.
+  - heading "The three highest-priority blockers" [level=3]
+  - list:
+    - strong: Deferred identity collection ($3,000 threshold) — blocker.
+    - text: You confirmed the $3,000 figure was purely an engineering/product choice with no legal basis. There is no $3,000 BSA customer-identification threshold; a money transmitter must collect CIP
+    - strong: before
+    - text: establishing the account relationship, not after a payout threshold. The onboarding foundation needs redesign.
+    - strong: Money transmission licensing — unresolved.
+    - text: Operating as an agent under the bank partner's license does not resolve Mosaic Relay's own posture for
+    - strong: initiating
+    - text: ACH payouts, nor its own CIP/AML and sanctions obligations. Needs a determination before ship.
+    - strong: OFAC screening after payouts go out — blocker.
+    - text: Nightly batch screening releases funds before screening completes, risking release to sanctioned parties. Screening must occur before funds are released.
+  - heading "Additional high/medium-risk items" [level=3]
+  - list:
+    - strong: USDC payouts to Mexico
+    - text: — sanctions, AML, and virtual-asset licensing questions, especially to self-hosted wallets.
+    - strong: No beneficial-owner collection
+    - text: for business sellers — KYB/AML gap.
+    - strong: Public $3,000 progress bar
+    - text: — evasion and disclosure risk.
+  - heading "What's been done" [level=3]
+  - list:
+    - listitem: Intake complete; facts, issues, and assumptions recorded.
+    - text: Six prioritized work items created, led by
+    - strong: redesigning identity collection at onboarding
+    - text: (the current next action).
+  - heading "What's still open" [level=3]
+  - list:
+    - text: "The two highest-value research items:"
+    - strong: state money transmission licensing
+    - text: for Mosaic Relay's ACH initiation, and
+    - strong: Mexico's treatment of USDC payouts
+    - text: to self-hosted wallets. Neither has been researched yet.
+    - strong: "Suggested next step:"
+    - text: Move the matter into research and start on the licensing and OFAC workstreams. Want me to do that?
+  - generic: Can you go into beneficial-owner for me
+  - generic: Themis.ai
+  - paragraph: I have the relevant context. Here's the deep dive on beneficial-owner.
+  - heading "Beneficial-owner — what's at stake in this design" [level=2]
+  - paragraph:
+    - text: The proposed flow takes the
+    - strong: W-9 signer's name only
+    - text: for business sellers and collects
+    - strong: no owners
+    - text: . That's the gap. Here's the analysis.
+  - 'heading "The core problem: the W-9 signer is not the beneficial owner" [level=3]'
+  - paragraph:
+    - text: A W-9 captures the entity's tax identification and the person signing the form — typically an authorized representative. It does
+    - strong: not
+    - text: identify who actually owns or controls the entity. So "we take the signer's name" gives you a name that may have nothing to do with the person whose identity matters for AML/sanctions purposes. That's the fundamental flaw.
+  - heading "What the law requires (US)" [level=3]
+  - paragraph:
+    - strong: FinCEN CDD Rule (31 CFR 1010.230)
+    - text: — if Mosaic Relay is a covered financial institution (which it likely is as a money transmitter/MSB), it must identify and verify beneficial owners of legal entity customers
+    - strong: at account opening
+    - text: ":"
+  - list:
+    - strong: "Ownership prong:"
+    - text: any individual owning 25% or more of the entity's equity.
+    - strong: "Control prong:"
+    - text: a single individual with significant responsibility to control/manage/direct the entity (CEO, CFO, managing member, etc.).
+    - text: Requires collecting name, DOB, address, and ID number, and verifying identity.
+    - strong: Corporate Transparency Act (CTA, 31 USC 5336)
+    - text: "— a separate, entity-level reporting obligation to FinCEN for BOI. Note: the CTA's reporting requirement has been subject to litigation and injunctions; its status has shifted over time, so treat the CTA piece as needing current verification rather than settled."
+  - heading "The key tension with this design" [level=3]
+  - paragraph:
+    - text: The CDD Rule applies at
+    - strong: account opening
+    - text: — which here means when Mosaic Relay enables payout services for a seller. The design defers
+    - emphasis: all
+    - text: identity to a $3,000 threshold, and even then only collects the signer's name, not owners. So the beneficial-owner gap is not just a "nice to have" — it's the same deferred-identity problem as the $3,000 threshold, applied to business entities.
+    - strong: Collecting the signer's name at $3,000 does not satisfy the ownership/control prongs.
+  - heading "The \"UI is already 11 screens\" argument doesn't carry" [level=3]
+  - paragraph:
+    - text: The design rationale is that adding owner collection is too much UI. But the CDD Rule doesn't have a UI-cost exemption. The practical answer is a
+    - strong: risk-based approach
+    - text: ": collect beneficial-owner information at onboarding (name, DOB, address, ID), run automated database/sanctions checks, and enable limited activity while completing enhanced verification within a short window — rather than collecting nothing and deferring everything to $3,000."
+  - heading "What would change this" [level=3]
+  - list:
+    - strong: "Working assumption:"
+    - text: Mosaic Relay is a covered financial institution subject to the CDD Rule. If it's structured as a pure technology provider with no money transmission (which the licensing question hasn't resolved), the CDD Rule may not apply directly — but the sanctions and reputational risk would still demand owner collection, and the bank partner's program may impose it anyway.
+    - strong: "Open fork:"
+    - text: Whether Mosaic Relay can rely on the marketplace to collect/verify owners (delegated model) or must do it directly. If delegated, Mosaic Relay stays legally responsible and needs strong contractual indemnities and audit rights.
+    - strong: "Not examined:"
+    - text: The specific terms of Mosaic Relay's contracts with its acquiring bank/processor, which may impose owner/control-person disclosure requirements beyond the CDD Rule. Those contracts weren't provided. Also, the CTA's current enforceability status needs verification given the litigation history.
+    - strong: "Bottom line:"
+    - text: The beneficial-owner gap is a real blocker on its own, independent of the $3,000 threshold. The fix is to collect owner information at onboarding (risk-based, with automated checks), not to add it at the $3,000 point or rely on the W-9 signer's name. Want me to spin this into a dedicated work item with a concrete risk-based owner-collection design, or fold it into the existing identity-redesign workstream?
+  - generic: "Explain why the selected open question matters. Give the likely conditional answer and the short alternative. The question is optional and must not block useful work. Reuse answered questions. Lawyer's instruction: Explore why this matters: Which jurisdictions are the international sellers located in for the USDC payout option?"
+  - generic: Themis.ai
+  - heading "Why the jurisdiction question matters" [level=2]
+  - paragraph:
+    - text: This question drives the
+    - strong: USDC payout leg
+    - text: "— the part of the design that is most distinct from the fiat ACH flow and carries the highest regulatory uncertainty. The answer changes the analysis in three ways:"
+  - list:
+    - strong: Sanctions exposure.
+    - text: Whether any seller is in an OFAC-sanctioned or high-risk jurisdiction determines whether the nightly-batch screening issue is a theoretical risk or an active one. A seller in a sanctioned jurisdiction would require immediate blocking, not deferred screening.
+    - strong: Virtual-asset money transmission licensing.
+    - text: Whether Mosaic Relay needs a license or registration to pay out USDC depends on the local law of the seller's jurisdiction. This is separate from the US state money transmission analysis.
+    - strong: AML/KYB expectations.
+    - text: Some jurisdictions impose their own customer-identification and virtual-asset service provider (VASP) registration rules that would apply even if the US analysis were clean.
+  - heading "What you've told me so far" [level=2]
+  - paragraph:
+    - text: There's a conflict in the record. Earlier you answered
+    - strong: "\"Asia\""
+    - text: ", then later answered"
+    - strong: "\"Mexico\""
+    - text: "for the same question. Those are materially different answers, and the record now holds both. This matters because:"
+  - list:
+    - strong: Mexico
+    - text: has a specific regime — the Fintech Law (Ley Fintech) requires VASP registration with the CNBV, and USDC payouts to Mexican residents may trigger local licensing/registration obligations.
+    - strong: Asia
+    - text: is not a single jurisdiction — it spans countries with very different virtual-asset regimes (e.g., Singapore, Japan, Hong Kong, India, China), some of which ban or heavily restrict crypto payouts.
+  - heading "Likely conditional answer" [level=2]
+  - paragraph:
+    - strong: "If the sellers are in Mexico:"
+    - text: The USDC payout leg likely triggers Mexican VASP registration obligations under the Fintech Law, and Mosaic Relay's agent-under-bank-partner posture almost certainly does not cover virtual-asset activity in Mexico. This makes the USDC option a
+    - strong: separate compliance project
+    - text: that is unlikely to be shippable in Q1 without local counsel and registration.
+    - strong: "If the sellers are in Asia:"
+    - text: The answer depends entirely on
+    - emphasis: which
+    - text: Asian country. In permissive regimes (Singapore, Japan) the flow may be workable with the right licensing; in restrictive ones (China, India) it may be effectively unavailable. Either way, it's a jurisdiction-by-jurisdiction analysis, not a single answer.
+  - heading "Short alternative" [level=2]
+  - paragraph:
+    - text: If the jurisdiction is
+    - strong: not yet determined
+    - text: or the seller base is small/limited, the cleanest path is to
+    - strong: defer the USDC option entirely
+    - text: and ship fiat ACH payouts in Q1, adding USDC once the jurisdiction-specific licensing and sanctions work is done. That preserves the Q1 timeline for the core product while removing the highest-uncertainty feature.
+  - heading "What would change this" [level=2]
+  - list:
+    - strong: "Working assumption:"
+    - text: The USDC payout leg carries its own licensing and sanctions obligations that the bank-partner agent relationship does not cover. If Circuit (the licensed exchange) assumes the compliance burden for the USDC transfers, some risk shifts — but Mosaic Relay's role in initiating the payout still creates exposure.
+    - strong: "Open fork:"
+    - text: Whether Mexico requires CNBV registration for these payouts. If yes, the USDC option needs a separate workstream; if no, it may be more feasible.
+    - strong: "Not examined:"
+    - text: The specific terms of Mosaic Relay's contract with Circuit, which may allocate compliance responsibilities, and whether any sellers sit in sanctioned jurisdictions.
+    - strong: "Bottom line:"
+    - text: The jurisdiction answer is material because it determines whether the USDC leg is a manageable feature or a separate compliance project that can't ship in Q1. Given the conflict between "Asia" and "Mexico" in the record, the single most useful next step is to
+    - strong: confirm which it actually is
+    - text: — that one fact changes the whole USDC analysis. Want me to flag that conflict as a work item so it gets resolved?
+  - button "Save current work product"
+  - button "Which other matters does this touch?"
+  - button "What would change your view?"
+  - button "Add files": +
+  - textbox "Ask Themis.ai about Instant payouts Q1…"
+  - button "Send" [disabled]
+  - text: Themis.ai can research, draft and move this matter. It records a decision only when you explicitly ask it to.
+  - link "Build a skill":
+    - /url: /skills
+- button "Open Next.js Dev Tools":
+- alert

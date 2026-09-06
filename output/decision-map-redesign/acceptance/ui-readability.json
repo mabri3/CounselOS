@@ -1,0 +1,15 @@
+{
+  "checks": [
+    "Optional scenario/reuse failure retains core map",
+    "Keyboard selection retains focused graph identities",
+    "Cleared selection stays cleared after reload",
+    "All issues includes historical/disconnected records; missing analysis offers action",
+    "Map contained at 1440px; graph pans inside viewport",
+    "Map contained at 1024px; graph pans inside viewport",
+    "Map contained at 768px; graph pans inside viewport",
+    "Map contained at 390px; graph pans inside viewport",
+    "200% CSS enlargement keeps outline/actions available (not native browser zoom)",
+    "Understand issue entry shows saved analysis and connected map action"
+  ],
+  "errors": []
+}

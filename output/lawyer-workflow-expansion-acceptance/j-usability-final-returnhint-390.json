@@ -1,0 +1,139 @@
+{
+  "errors": [],
+  "orientation": {
+    "kind": "response",
+    "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/orientation",
+    "status": 200,
+    "elapsedMs": 8850
+  },
+  "network": [
+    {
+      "url": "http://localhost:8117/api/team",
+      "status": 200,
+      "elapsedMs": 22
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378",
+      "status": 200,
+      "elapsedMs": 2001
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/conversations",
+      "status": 200,
+      "elapsedMs": 221
+    },
+    {
+      "url": "http://localhost:8117/api/skills",
+      "status": 200,
+      "elapsedMs": 751
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/scope",
+      "status": 200,
+      "elapsedMs": 751
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/context",
+      "status": 200,
+      "elapsedMs": 955
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/scenarios",
+      "status": 200,
+      "elapsedMs": 989
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/flow",
+      "status": 200,
+      "elapsedMs": 1014
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/fact-requests",
+      "status": 200,
+      "elapsedMs": 1048
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/reuse",
+      "status": 200,
+      "elapsedMs": 1618
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/handoffs",
+      "status": 200,
+      "elapsedMs": 1790
+    },
+    {
+      "url": "http://localhost:8117/api/settings/research-queue/MAT-20260905-0a2378",
+      "status": 200,
+      "elapsedMs": 1792
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/recommendation",
+      "status": 200,
+      "elapsedMs": 1796
+    },
+    {
+      "url": "http://localhost:8117/api/skills/output-templates",
+      "status": 200,
+      "elapsedMs": 1839
+    },
+    {
+      "url": "http://localhost:8117/api/review-packets?limit=100",
+      "status": 200,
+      "elapsedMs": 1841
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/files",
+      "status": 200,
+      "elapsedMs": 2698
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/conversations/CONV-20260905-9d68db",
+      "status": 200,
+      "elapsedMs": 2960
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/chat-runs?conversation_id=CONV-20260905-9d68db",
+      "status": 200,
+      "elapsedMs": 654
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/conversations/CONV-20260905-9d68db",
+      "status": 200,
+      "elapsedMs": 291
+    },
+    {
+      "url": "http://localhost:8117/api/settings",
+      "status": 200,
+      "elapsedMs": 5079
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/mitigations",
+      "status": 200,
+      "elapsedMs": 6428
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace",
+      "status": 200,
+      "elapsedMs": 6936
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace",
+      "status": 200,
+      "elapsedMs": 8040
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/orientation",
+      "status": 200,
+      "elapsedMs": 8850
+    }
+  ],
+  "closed": true,
+  "waiting": false,
+  "useful": true,
+  "stale": true,
+  "timeout": false,
+  "scrollWidth": 390,
+  "clientWidth": 390,
+  "scrollHeight": 8221
+}

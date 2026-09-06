@@ -1,0 +1,256 @@
+Matters
+Harbor sandbox: release timing
+Back to matter
+MATTER
+Harbor sandbox: release timing
+Read full business question
+Understand
+Discuss
+Draft
+Decision map
+← Back to where you were
+READING SOURCE
+Source reading
+Unavailable
+Reference unavailable
+
+03_Matters/harbor-sandbox-release-timing-1b2102/documents/pilot-contract.txt.extracted.md
+
+Requested revision fc2f88f72d42ecf4485cd0b8ad9b5edcb6c11690e508e660293cf8ade602e95b
+
+Reading source
+REFERENCED EXCERPT
+# Extracted text: pilot-contract.txt # Fictional supplier contract ## Section 4 Screening must finish before release. A manual pilot can include ten test accounts.
+
+Reading this source does not add it to the agent request.
+
+Claim support
+Claim
+
+No linked claim
+
+Source
+
+Source unavailable
+
+Passage
+
+Finding exact passage
+
+Applicability
+
+No applicability explanation saved
+
+Finding exact passage
+Referenced document or version is unavailable. Requested revision: fc2f88f72d42ecf4485cd0b8ad9b5edcb6c11690e508e660293cf8ade602e95b.
+DECISION MAP
+This issue
+
+The pilot can use screening before release. Wider rollout still needs a separate timing check.
+
+This issue
+All issues (27 records)
+LAW OR TEST
+WHAT CHANGES THE ANSWER
+POSSIBLE PATHS
+Depends on
+Active
+If met
+Active
+If not met
+Active
+Depends on
+Historical
+If met
+Historical
+If not met
+Historical
+Recorded as
+Historical
+BUSINESS QUESTION
+Which release path can Harbor use under its fictional supplier contract?
+CURRENT
+ISSUE
+A limited pilot with a long title about the vendor exception and the operational work required before a wider rollout
+OPEN
+FACT
+Product has not confirmed whether screening completes before release.
+SUPERSEDED
+FACT
+Product has not confirmed whether screening completes before release.
+ACTIVE
+FACT
+Product confirms screening finishes before release for the ten-account pilot.
+ACTIVE
+QUESTION
+Does screening complete before release?
+OPEN
+RECORDED DECISION
+Harbor sandbox: release timing
+RECORDED
+CONDITION
+Does screening complete before release?
+MET
+LAW OR TEST
+Sequencing obligation under Section 4
+SAVED
+PATH
+Pilot release after confirmed screening
+CANDIDATE
+PATH
+Limited pilot (manual screening, at most ten test accounts)
+CANDIDATE
+PATH
+Treat the pilot as the first release and defer the wider rollout
+CANDIDATE
+CONDITION
+Does screening complete before release?
+HISTORICAL
+LAW OR TEST
+Sequencing obligation under Section 4
+HISTORICAL
+PATH
+Delayed full release (screening completes first)
+HISTORICAL
+PATH
+Limited pilot (manual screening, at most ten test accounts)
+HISTORICAL
+PATH
+Treat the pilot as the first release and defer the wider rollout
+HISTORICAL
+Zoom out
+100%
+Zoom in
+Fit this issue
+Reset view
+SELECTED RECORD
+Pilot release after confirmed screening
+Candidate
+Clear selection
+Back to issue
+Consequence
+
+Harbor may release payments through the normal path, satisfying Section 4's sequencing requirement.
+
+Trade-off
+
+Release is delayed until screening finishes, pushing back launch timing.
+
+Requirements
+
+Screening completes before release
+
+All listed conditions apply to this route. Does screening complete before release? — must be met
+
+Remaining work
+Confirm screening completes before release
+Recommendation
+
+Candidate
+
+This is the only route that permits a full (uncapped) release under the contract.
+
+Business effect
+
+The team can learn from a small pilot while it checks the wider release process.
+
+Source support
+03_Matters/harbor-sandbox-release-timing-1b2102/documents/pilot-contract.txt.extracted.md ·
+Open source
+Discuss this path
+Try a different assumption
+Record this path
+
+The pilot keeps screening before release.
+
+APPLIES TO HARBOR OPERATOR IN FICTIONAL SUPPLIER CONTRACT. APPLIES TO THE PILOT RELEASE.
+
+Review 03_Matters/harbor-sandbox-release-timing-1b2102/documents/pilot-contract.txt.extracted.md
+All records
+
+Complete saved titles and the same relationships shown in the graph.
+
+Current analysis
+Which release path can Harbor use under its fictional supplier contract?
+business question · Current
+Discuss this path
+A limited pilot with a long title about the vendor exception and the operational work required before a wider rollout
+issue · Open
+Discuss this path
+Product has not confirmed whether screening completes before release.
+fact · Superseded
+Discuss this path
+Product has not confirmed whether screening completes before release.
+fact · Active
+Discuss this path
+Product confirms screening finishes before release for the ten-account pilot.
+fact · Active
+Discuss this path
+Does screening complete before release?
+question · Open
+Discuss this path
+Harbor sandbox: release timing
+decision · Recorded
+Discuss this path
+Does screening complete before release?
+condition · Met
+Discuss this path
+Sequencing obligation under Section 4
+legal test · Saved
+Discuss this path
+Pilot release after confirmed screening
+option · Candidate
+Discuss this path
+Limited pilot (manual screening, at most ten test accounts)
+option · Candidate
+Discuss this path
+Treat the pilot as the first release and defer the wider rollout
+option · Candidate
+Discuss this path
+Historical records
+Does screening complete before release?
+condition · Historical
+Discuss this path
+Sequencing obligation under Section 4
+legal test · Historical
+Discuss this path
+Delayed full release (screening completes first)
+option · Historical
+Discuss this path
+Limited pilot (manual screening, at most ten test accounts)
+option · Historical
+Discuss this path
+Treat the pilot as the first release and defer the wider rollout
+option · Historical
+Discuss this path
+Visible relationships (19)
+A limited pilot with a long title about the vendor exception and the operational work required before a wider rollout → Assessed under → Sequencing obligation under Section 4 · Active
+Sequencing obligation under Section 4 → Depends on whether → Does screening complete before release? · Active
+Product has not confirmed whether screening completes before release. → Supports assessment → Does screening complete before release? · Active
+Product confirms screening finishes before release for the ten-account pilot. → Supports assessment → Does screening complete before release? · Active
+Does screening complete before release? → Supports assessment → Does screening complete before release? · Active
+Does screening complete before release? → All · if met → Pilot release after confirmed screening · Active
+Does screening complete before release? → All · if not met → Limited pilot (manual screening, at most ten test accounts) · Active
+A limited pilot with a long title about the vendor exception and the operational work required before a wider rollout → Alternative → Treat the pilot as the first release and defer the wider rollout · Active
+A limited pilot with a long title about the vendor exception and the operational work required before a wider rollout → Assessed under → Sequencing obligation under Section 4 · Historical
+Sequencing obligation under Section 4 → Depends on whether → Does screening complete before release? · Historical
+Product has not confirmed whether screening completes before release. → Supports assessment → Does screening complete before release? · Historical
+Product has not confirmed whether screening completes before release. → Supports assessment → Does screening complete before release? · Historical
+Does screening complete before release? → Supports assessment → Does screening complete before release? · Historical
+Does screening complete before release? → All · if met → Delayed full release (screening completes first) · Historical
+Does screening complete before release? → All · if not met → Limited pilot (manual screening, at most ten test accounts) · Historical
+A limited pilot with a long title about the vendor exception and the operational work required before a wider rollout → Alternative → Treat the pilot as the first release and defer the wider rollout · Historical
+Which release path can Harbor use under its fictional supplier contract? → Includes issue → A limited pilot with a long title about the vendor exception and the operational work required before a wider rollout · Active
+A limited pilot with a long title about the vendor exception and the operational work required before a wider rollout → Depends on → Does screening complete before release? · Unknown
+Delayed full release (screening completes first) → Recorded as → Harbor sandbox: release timing · Historical
+Discuss the selected path
+Conversation and composer
+Inquiry target: Selected issue
+
+Loading saved chat…
+
+Run inquiry: Which other matters does this touch?
+Run inquiry: What would change your view?
++
+Send
+Themis.ai can research, draft and move this matter. It records a decision only when you explicitly ask it to. Build a skill

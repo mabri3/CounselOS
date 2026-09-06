@@ -1,0 +1,373 @@
+--- frontend/components/workspace/UnderstandPanel.tsx
++++ frontend/components/workspace/UnderstandPanel.tsx
+@@ -13,6 +13,7 @@
+ import type { IssueResponseOption, SupportedTextRenderInput } from "./IssueReviewDetail";
+ import OrientationSummary from "./OrientationSummary";
+ import WorkItemSummary from "./WorkItemSummary";
++import styles from "./MatterReview.module.css";
+ 
+ type ReviewIntegrationActions = "onDisposition" | "onOpenDocument" | "onResearchLegalBasis" | "onCreateMitigation" | "onRecordDecision" | "onDiscuss" | "onOpenDecisionMap";
+ export type UnderstandPanelIntegrationProps = ContinuityUnderstandPanelProps & Partial<Pick<IssueReviewDetailProps, ReviewIntegrationActions>> & {
+@@ -20,6 +21,7 @@
+   linkedDecisions?: LinkedIssueDecision[];
+   responseOptions?: IssueResponseOption[];
+   renderSupportedText?: (input: SupportedTextRenderInput) => React.ReactNode;
++  sectionNavigation?: React.ReactNode;
+ };
+ 
+ const reading: CSSProperties = { font: "400 15px/1.65 var(--serif)", color: "var(--ink-2)", margin: "8px 0" };
+@@ -65,8 +67,8 @@
+ }
+ 
+ const answerMarkdownComponents = {
+-  table: ({ children }: { children?: React.ReactNode }) => <div style={{ maxWidth: "100%", overflowX: "auto", margin: "10px 0 22px" }}><table>{children}</table></div>,
+-  pre: ({ children }: { children?: React.ReactNode }) => <pre style={{ maxWidth: "100%", overflowX: "auto", padding: "10px 12px", background: "var(--canvas)", border: "1px solid var(--line-faint)", borderRadius: "var(--radius)" }}>{children}</pre>,
++  table: ({ children }: { children?: React.ReactNode }) => <div className={styles.tableScroll}><table>{children}</table></div>,
++  pre: ({ children }: { children?: React.ReactNode }) => <pre className={styles.codeBlock}>{children}</pre>,
+ };
+ 
+ function receiptText(receipt: InteractionReceipt, fallback: string) {
+@@ -124,7 +126,7 @@
+     return key;
+   };
+ 
+-  if (!snapshot) return <section aria-label="Matter understanding" style={card}>
++  if (!snapshot) return <section aria-label="Matter understanding" className={styles.card}>
+     <h1 style={{ margin: 0 }}>{loading ? "Preparing matter understanding" : "Matter understanding"}</h1>
+     <p style={muted}>{loading ? "Loading the saved question and work." : error || "No saved matter understanding is available."}</p>
+     {error ? <button className="btn tiny" onClick={onRefresh} type="button">Retry</button> : null}
+@@ -221,13 +223,13 @@
+     if (!onQuestionRestore) return;
+     await useReceipt(() => onQuestionRestore({ revision, expected_revision: currentQuestion.revision, source_action_key: actionKey(`restore:${revision}:${currentQuestion.revision}`) }), "Earlier business question");
+   }
+-  const questionDetails = <article style={card}>
++  const questionDetails = <article className={styles.card}>
+     <span className="record-meta">Current business question</span>
+     {questionDraft === null ? <><h1 style={{ font: "600 24px/1.25 var(--serif)", margin: "5px 0" }}>{currentQuestion.text || "No business question is saved yet."}</h1><div className="btn-row"><button className="btn tiny quiet" onClick={() => setQuestionDraft({ text: currentQuestion.text, baseRevision: currentQuestion.revision })} type="button">Edit question</button><button className="btn tiny quiet" disabled={busy} onClick={() => void loadHistory()} type="button">{historyOpen ? "Refresh earlier questions" : "Earlier questions"}</button></div></> : <div style={{ display: "grid", gap: 9, marginTop: 8 }}><label className="field-block"><span className="field-label">Business question</span><textarea className="text-input prose" disabled={busy} onChange={(event) => setQuestionDraft((current) => current ? { ...current, text: event.target.value } : current)} value={questionDraft.text} /></label>{questionDraft.baseRevision !== currentQuestion.revision ? <div className="warning-callout" role="status"><strong>The saved question changed while you were editing.</strong><div className="btn-row" style={{ marginTop: 8 }}><button className="btn quiet tiny" disabled={busy} onClick={() => setQuestionDraft({ text: currentQuestion.text, baseRevision: currentQuestion.revision })} type="button">Use latest question</button><button className="btn tiny" disabled={busy} onClick={() => setQuestionDraft((current) => current ? { ...current, baseRevision: currentQuestion.revision } : current)} type="button">Rebase my edit</button></div></div> : null}<div className="btn-row"><button className="btn tiny" disabled={busy || questionDraft.baseRevision !== currentQuestion.revision || !questionDraft.text.trim()} onClick={() => void saveQuestion()} type="button">{busy ? "Saving…" : "Save question"}</button><button className="btn tiny quiet" disabled={busy} onClick={() => setQuestionDraft(null)} type="button">Cancel</button></div></div>}
+     {historyOpen ? <div style={{ display: "grid", gap: 7, marginTop: 12 }}>{history.map((question) => <div key={question.revision} style={{ borderTop: "1px solid var(--line-faint)", paddingTop: 8 }}><span className="record-meta">{question.revision === currentQuestion.revision ? "Current question" : "Based on an earlier question"}</span><p style={reading}>{question.text}</p>{question.revision !== currentQuestion.revision && onQuestionRestore ? <button className="btn quiet tiny" disabled={busy} onClick={() => void restore(question.revision)} type="button">Restore this question</button> : null}</div>)}</div> : null}
+   </article>;
+ 
+-  return <section aria-label="Matter understanding" style={{ display: "grid", gap: 14, minWidth: 0 }}>
++  return <section aria-label="Matter understanding" className={styles.surface} id={`matter-${snapshot.matter_id}-review`}>
+     {loading ? <p className="state-label state-agent" role="status">Refreshing saved matter work</p> : null}
+     {answerIsStale ? <p className="warning-callout" role="status">Some saved analysis is based on an earlier question or source version. It remains available while you refresh it. <button className="btn quiet tiny" onClick={onRefresh} type="button">Refresh matter</button></p> : null}
+     {error ? <div className="warning-callout" role="status"><strong>Workspace refresh failed.</strong> Saved work is still shown. <button className="btn tiny quiet" onClick={onRefresh} type="button">Retry</button></div> : null}
+@@ -238,10 +240,12 @@
+ 
+     {!props.orientation && !hasReviewProjection ? questionDetails : null}
+ 
+-    {hasReviewProjection ? <section aria-labelledby="needs-review-heading" style={card}>
+-      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}><h2 className="section-heading" id="needs-review-heading" style={{ margin: 0 }}>Needs your review</h2><span className="record-meta">Up to 3 items</span></div>
+-      {reviewItems.length ? <div style={{ display: "grid", gap: 9, marginTop: 12 }}>{reviewItems.map((item) => { const issue = issueById.get(item.issue_id); return issue ? <WorkItemSummary item={item} issue={issue} key={item.issue_id} onClosePanel={() => setHiddenReviewIds((current) => current.includes(item.issue_id) ? current : [...current, item.issue_id])} onOpenIssue={chooseIssue} /> : <div className="warning-callout" key={item.issue_id} role="status"><strong>Issue reference unavailable.</strong> Review item {item.issue_id} remains visible.</div>; })}</div> : <p style={muted}>No saved item needs your review.</p>}
++    {hasReviewProjection ? <section aria-labelledby="needs-review-heading" className={`${styles.card} ${styles.reviewBlock}`}>
++      <div className={styles.between}><h2 className={styles.sectionTitle} id="needs-review-heading">Needs your review</h2><span className="record-meta">Up to 3 items</span></div>
++      {reviewItems.length ? <div className={styles.reviewRows}>{reviewItems.map((item) => { const issue = issueById.get(item.issue_id); return issue ? <WorkItemSummary item={item} issue={issue} key={item.issue_id} onClosePanel={() => setHiddenReviewIds((current) => current.includes(item.issue_id) ? current : [...current, item.issue_id])} onOpenIssue={chooseIssue} /> : <div className="warning-callout" key={item.issue_id} role="status"><strong>Issue reference unavailable.</strong> Review item {item.issue_id} remains visible.</div>; })}</div> : <p className={styles.muted}>No saved item needs your review.</p>}
+     </section> : null}
++
++    {hasReviewProjection ? props.sectionNavigation ?? null : null}
+ 
+     {hasReviewProjection && selectedIssue ? <IssueReviewDetail busy={busy} claims={selectedClaims} decisions={props.linkedDecisions ?? []} error={actionError || error} issue={selectedIssue} issuesRevision={snapshot.issues_revision ?? ""} key={selectedIssue.issue_id} matterId={snapshot.matter_id} onCreateMitigation={props.onCreateMitigation} onDiscuss={props.onDiscuss} onDisposition={props.onDisposition} onIssueUpdate={onIssueUpdate} onOpenDecisionMap={props.onOpenDecisionMap} onOpenDocument={props.onOpenDocument} onOpenEvidence={onOpenEvidence} onQuestionAnswer={onQuestionAnswer} onRecordDecision={props.onRecordDecision} onResearchLegalBasis={props.onResearchLegalBasis} questions={selectedQuestions} renderSupportedText={props.renderSupportedText} responseOptions={props.responseOptions ?? []} workItems={props.linkedWorkItems ?? []} /> : null}
+ 
+@@ -256,7 +260,7 @@
+ 
+     {hasReviewProjection ? <section ref={allIssuesRef}><IssueNavigator issues={snapshot.issues ?? []} issuesRevision={snapshot.issues_revision} onSelect={chooseIssue} selectedIssueId={selectedIssueId} /></section> : null}
+ 
+-    <details open={!hasReviewProjection}><summary>{hasReviewProjection ? "Supporting material and history" : "Matter details"}</summary><div style={{ display: "grid", gap: 14, marginTop: 10 }}>
++    <details className={styles.details} id={`matter-${snapshot.matter_id}-evidence`} open={!hasReviewProjection}><summary>{hasReviewProjection ? "Supporting material and history" : "Matter details"}</summary><div className={styles.supporting}>
+     {props.orientation ? <details><summary>Question, editing and history</summary>{questionDetails}</details> : null}
+ 
+     {proposals.map((proposal) => <article className="wash-agent" key={proposal.proposal_id} style={{ ...card, borderStyle: "dashed", borderColor: "var(--agent-edge)" }}><span className="record-meta">Proposed reframe</span><label className="field-block" style={{ marginTop: 7 }}><span className="field-label">Suggested business question</span><textarea className="text-input prose" disabled={busy} onChange={(event) => setProposalDrafts((current) => ({ ...current, [proposal.proposal_id]: event.target.value }))} ref={(node) => { proposalInputs.current[proposal.proposal_id] = node; }} value={proposalDrafts[proposal.proposal_id] ?? proposal.text} /></label>{proposal.reason ? <p style={muted}>{proposal.reason}</p> : null}<div className="btn-row"><button className="btn tiny" disabled={busy || !(proposalDrafts[proposal.proposal_id] ?? proposal.text).trim()} onClick={() => void actOnProposal(proposal, "apply")} type="button">Apply</button><button className="btn quiet tiny" disabled={busy} onClick={() => proposalInputs.current[proposal.proposal_id]?.focus()} type="button">Edit</button><button className="btn quiet tiny" disabled={busy} onClick={() => void actOnProposal(proposal, "reject")} type="button">Reject</button></div></article>)}
+--- frontend/components/workspace/OrientationSummary.tsx
++++ frontend/components/workspace/OrientationSummary.tsx
+@@ -5,6 +5,7 @@
+ import type { OrientationSummaryProps as ContinuityOrientationSummaryProps } from "@/lib/continuityTypes";
+ import type { ReviewOrientationProps } from "@/lib/workspaceTypes";
+ import { actionOwnerText, actionStateWord, previewOrientationQuestion, visibleOrientationActions } from "@/lib/orientationPresentation";
++import styles from "./MatterReview.module.css";
+ 
+ const card: CSSProperties = { border: "1px solid var(--line)", borderRadius: "var(--radius)", background: "var(--raised)", padding: 16, minWidth: 0, maxWidth: "100%", boxSizing: "border-box" };
+ const quiet: CSSProperties = { color: "var(--ink-3)", font: "400 14px/1.5 var(--sans)", margin: "5px 0", overflowWrap: "anywhere" };
+@@ -101,29 +102,29 @@
+   const answerPreview = compactAnswerPreview(answer);
+   const visibleAnswer = answerOpen ? answer : answerPreview.text;
+ 
+-  return <section aria-label="Matter review orientation" style={{ ...card, display: "grid", gap: 14 }}>
+-    <div style={{ minWidth: 0 }}>
++  return <section aria-label="Matter review orientation" className={`${styles.card} ${styles.stack}`}>
++    <div>
+       <span className="record-meta">Business question</span>
+-      <h2 className="section-heading" style={{ margin: "5px 0", overflowWrap: "anywhere" }}>{questionPreview}</h2>
++      <h2 className={styles.questionTitle}>{questionPreview}</h2>
+       {questionIsLong ? <>
+         <button aria-controls={questionId} aria-expanded={questionOpen} className="btn quiet tiny" type="button" onClick={() => setQuestionOpen((open) => !open)}>{questionOpen ? "Show shorter question" : "Read full question"}</button>
+-        <p id={questionId} hidden={!questionOpen} style={reading}>{fullQuestion}</p>
++        <p id={questionId} hidden={!questionOpen} className={styles.reading}>{fullQuestion}</p>
+       </> : null}
+     </div>
+-    <div className="wash-agent" style={{ border: "1px dashed var(--agent-edge)", borderRadius: "var(--radius)", padding: 14, minWidth: 0 }}>
++    <div className={styles.agentAnswer}>
+       <span className="record-meta">Working answer · Agent work{citationState === "none" ? " · No cited sources" : ""}</span>
+-      <div id={answerId} style={reading}>{answer ? answerPreview.plainText && !answerOpen ? visibleAnswer : renderAnswer?.(visibleAnswer) ?? visibleAnswer : "No working answer is saved yet."}</div>
+-      {answerPreview.shortened ? <><p style={quiet}>{answerOpen ? "The full saved answer is shown." : "Showing a short section of the saved answer."}</p><button aria-controls={answerId} aria-expanded={answerOpen} className="btn quiet tiny" onClick={() => setAnswerOpen((open) => !open)} type="button">{answerOpen ? "Show shorter answer" : "Read full answer"}</button></> : null}
+-      {qualification?.trim() ? <div className="warning-callout" role="note" style={{ marginTop: 10 }}><strong>Qualification</strong><p style={{ margin: "4px 0 0", overflowWrap: "anywhere" }}>{qualification}</p></div> : null}
++      <div id={answerId} className={styles.reading}>{answer ? answerPreview.plainText && !answerOpen ? visibleAnswer : renderAnswer?.(visibleAnswer) ?? visibleAnswer : "No working answer is saved yet."}</div>
++      {answerPreview.shortened ? <><p className={styles.copy}>{answerOpen ? "The full saved answer is shown." : "Showing a short section of the saved answer."}</p><button aria-controls={answerId} aria-expanded={answerOpen} className="btn quiet tiny" onClick={() => setAnswerOpen((open) => !open)} type="button">{answerOpen ? "Show shorter answer" : "Read full answer"}</button></> : null}
++      {qualification?.trim() ? <div className={styles.qualification} role="note"><strong>Material qualification</strong><p className={styles.copy}>{qualification}</p></div> : null}
+     </div>
+-    <div style={{ display: "grid", gap: 9, minWidth: 0 }}>
+-      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 9, flexWrap: "wrap", minWidth: 0 }}>
++    <div className={styles.stack}>
++      <div className={styles.between}>
+         <span className="record-meta">One next action</span>
+-        <button className="btn quiet tiny" style={compactAction} type="button" onClick={onShowAllIssues}>All issues ({allIssueCount})</button>
++        <button className="btn quiet tiny" style={compactAction} type="button" onClick={onShowAllIssues}>View all issues ({allIssueCount})</button>
+       </div>
+-      {next ? <div className={next.state === "needs_attention" ? "wash-attention" : next.state === "agent_work" ? "wash-agent" : next.state === "complete" ? "wash-healthy" : "wash-failure"} style={{ border: "1px solid var(--line)", borderRadius: "var(--radius)", padding: 12, minWidth: 0 }}>
+-        <p style={quiet}><strong>{next.reason}</strong></p>
+-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", minWidth: 0 }}><span className={`state-label ${reviewStateClass(next.state)}`}>{reviewStateWord(next.state)}</span><span style={quiet}>Owner: {next.actor.trim() || "Unassigned"}</span></div>
++      {next ? <div className={`${styles.nextAction} ${next.state === "needs_attention" ? "wash-attention" : next.state === "agent_work" ? "wash-agent" : next.state === "complete" ? "wash-healthy" : "wash-failure"}`}>
++        <p className={styles.copy}><strong>{next.reason}</strong></p>
++        <div className={styles.row}><span className={`state-label ${reviewStateClass(next.state)}`}>{reviewStateWord(next.state)}</span><span className={styles.copy}>Owner: {next.actor.trim() || "Unassigned"}</span></div>
+         <button className="btn tiny" style={{ ...compactAction, marginTop: 9 }} type="button" onClick={() => onOpenIssue(next.issue_id)}>{next.action_label}</button>
+       </div> : <p style={quiet}>No issue needs review.</p>}
+     </div>
+--- frontend/components/workspace/WorkItemSummary.tsx
++++ frontend/components/workspace/WorkItemSummary.tsx
+@@ -1,14 +1,9 @@
+ "use client";
+ 
+-import type { CSSProperties } from "react";
+ import type { IssueReviewItem, WorkItemSummaryProps } from "@/lib/workspaceTypes";
++import styles from "./MatterReview.module.css";
+ 
+ const TITLE_LIMIT = 120;
+-const panel: CSSProperties = { border: "1px solid var(--line)", borderRadius: "var(--radius)", padding: 14, minWidth: 0, maxWidth: "100%", boxSizing: "border-box" };
+-const row: CSSProperties = { display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap", minWidth: 0 };
+-const copy: CSSProperties = { color: "var(--ink-3)", font: "400 14px/1.5 var(--sans)", margin: 0, overflowWrap: "anywhere" };
+-const action: CSSProperties = { maxWidth: "100%", whiteSpace: "normal", overflowWrap: "anywhere", textAlign: "left" };
+-
+ export function previewIssueTitle(title: string, limit = TITLE_LIMIT): string {
+   const clean = title.replace(/\s+/g, " ").trim();
+   if (clean.length <= limit) return clean;
+@@ -30,23 +25,21 @@
+   const shortTitle = previewIssueTitle(title);
+   const titleIsShortened = shortTitle !== title.replace(/\s+/g, " ").trim();
+ 
+-  return <article aria-label={`Review item: ${title}`} className={state.washClassName} style={panel}>
+-    <div style={{ display: "grid", gap: 11, minWidth: 0 }}>
+-      <div style={{ minWidth: 0 }}>
++  return <article aria-label={`Review item: ${title}`} className={`${styles.reviewRow} ${state.washClassName}`}>
++      <div>
+         <span className="record-meta">Issue to review</span>
+-        <h4 className="section-heading" style={{ margin: "4px 0", overflowWrap: "anywhere" }}>{shortTitle}</h4>
+-        {titleIsShortened ? <details><summary>Read full issue</summary><p style={copy}>{title}</p></details> : null}
+-        <p style={copy}>{item.reason}</p>
++        <h4 className={styles.reviewTitle}>{shortTitle}</h4>
++        {titleIsShortened ? <details><summary>Read full issue</summary><p className={styles.copy}>{title}</p></details> : null}
++        <p className={styles.copy}>{item.reason}</p>
+       </div>
+-      <div aria-label="State and owner" style={row}>
++      <div aria-label="State and owner" className={styles.row}>
+         <span className={`state-label ${state.className}`}>{state.label}</span>
+-        <span style={copy}>Owner: {item.actor.trim() || "Unassigned"}</span>
++        <span className={styles.copy}>Owner: {item.actor.trim() || "Unassigned"}</span>
+         {item.due_at ? <span className="record-meta">Due {item.due_at}</span> : null}
+       </div>
+-      <div aria-label="Review actions" style={row}>
+-        <button className="btn tiny" style={action} type="button" onClick={() => onOpenIssue(item.issue_id)}>{item.action_label}</button>
+-        <button aria-label="Close panel without completing work" className="btn quiet tiny" style={action} type="button" onClick={onClosePanel}>Close panel</button>
++      <div aria-label="Review actions" className={styles.reviewActions}>
++        <button className={`btn tiny ${styles.reviewAction}`} type="button" onClick={() => onOpenIssue(item.issue_id)}>{item.action_label}</button>
++        <button aria-label="Close panel without completing work" className={`btn quiet tiny ${styles.reviewAction}`} type="button" onClick={onClosePanel}>Close panel</button>
+       </div>
+-    </div>
+   </article>;
+ }
+--- frontend/components/workspace/IssueNavigator.tsx
++++ frontend/components/workspace/IssueNavigator.tsx
+@@ -1,13 +1,10 @@
+ "use client";
+ 
+ import { useState } from "react";
+-import type { CSSProperties } from "react";
+ import type { IssueNavigatorProps, IssueNode, IssueUpdate } from "@/lib/workspaceTypes";
++import styles from "./MatterReview.module.css";
+ 
+ type IssueDraft = { changes: Omit<IssueUpdate, "expected_revision">; baseRevision: string };
+-
+-const panelStyle: CSSProperties = { border: "1px solid var(--line)", borderRadius: "var(--radius)", background: "var(--raised)", padding: 14, minWidth: 0 };
+-const mutedStyle: CSSProperties = { color: "var(--ink-4)", font: "400 13.5px/1.5 var(--sans)", margin: "4px 0 0" };
+ 
+ function issueDepths(issues: IssueNode[]) {
+   const byId = new Map(issues.map((issue) => [issue.issue_id, issue]));
+@@ -81,12 +78,12 @@
+     } finally { setSavingIds((current) => current.filter((issueId) => issueId !== issue.issue_id)); }
+   }
+ 
+-  return <section aria-label="Issue navigator" style={panelStyle}>
+-    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 }}>
+-      <h2 className="section-heading" style={{ margin: 0 }}>All issues</h2>
++  return <section aria-label="Issue navigator" className={`${styles.card} ${styles.issueNav}`}>
++    <div className={styles.between}>
++      <h2 className={styles.sectionTitle}>All issues</h2>
+       <span className="record-meta">{issues.length} {issues.length === 1 ? "issue" : "issues"}</span>
+     </div>
+-    {!issues.length ? <p style={mutedStyle}>No issues are saved yet.</p> : <div style={{ display: "grid", gap: 8, marginTop: 12 }}>
++    {!issues.length ? <p className={styles.muted}>No issues are saved yet.</p> : <div className={styles.issueList}>
+       {issues.map((issue) => {
+         const selected = issue.issue_id === selectedIssueId;
+         const draft = draftFor(issue);
+@@ -96,19 +93,19 @@
+         const shortTitle = compactIssueTitle(issue.title || "Untitled issue");
+         const parent = field(issue, "parent_issue_id") as string | null;
+         const state = field(issue, "lawyer_state") as IssueNode["lawyer_state"];
+-        return <article aria-current={selected ? "true" : undefined} key={issue.issue_id} style={{ border: `1px solid ${selected ? "var(--ink-4)" : "var(--line-faint)"}`, borderRadius: 8, padding: 10, marginLeft: (depths.get(issue.issue_id) ?? 0) * 10 }}>
+-          <button className="btn quiet tiny" onClick={() => onSelect(selected ? null : issue.issue_id)} style={{ border: 0, padding: 0, textAlign: "left", width: "100%" }} type="button">
+-            <span style={{ font: "600 15px/1.35 var(--serif)" }} title={shortTitle !== issue.title ? issue.title : undefined}>{shortTitle}</span>
+-            <span className={`state-label ${dispositionClass(issue)}`} style={{ float: "right" }}>{dispositionLabel(issue)}</span>
+-            <span className="record-meta" style={{ float: "right", clear: "right", marginTop: 3 }}>{stateLabel(issue.lawyer_state)}</span>
++        return <article aria-current={selected ? "true" : undefined} className={`${styles.issueRow} ${selected ? styles.issueRowSelected : ""}`} key={issue.issue_id} style={{ marginLeft: (depths.get(issue.issue_id) ?? 0) * 10 }}>
++          <button className={styles.issueButton} onClick={() => onSelect(selected ? null : issue.issue_id)} type="button">
++            <span className={styles.issueName} title={shortTitle !== issue.title ? issue.title : undefined}>{shortTitle}</span>
++            <span className={`state-label ${dispositionClass(issue)}`}>{dispositionLabel(issue)}</span>
++            <span className="record-meta">{stateLabel(issue.lawyer_state)}</span>
+           </button>
+-          {issue.why_it_matters ? <p style={mutedStyle}>{issue.why_it_matters}</p> : null}
+-          {selected && onIssueUpdate ? <div style={{ display: "grid", gap: 8, marginTop: 10 }}>
++          {issue.why_it_matters ? <p className={styles.muted}>{issue.why_it_matters}</p> : null}
++          {selected && onIssueUpdate ? <div className={styles.issueEdit}>
+             <label className="field-block"><span className="field-label">Issue title</span><input className="text-input" disabled={!canEdit || saving} onChange={(event) => change(issue.issue_id, { title: event.target.value })} value={title} /></label>
+             <label className="field-block"><span className="field-label">Parent issue</span><select className="select-input" disabled={!canEdit || saving} onChange={(event) => change(issue.issue_id, { parent_issue_id: event.target.value || null })} value={parent ?? ""}><option value="">No parent issue</option>{issues.filter((candidate) => candidate.issue_id !== issue.issue_id).map((candidate) => <option key={candidate.issue_id} value={candidate.issue_id}>{candidate.title}</option>)}</select></label>
+             <label className="field-block"><span className="field-label">Lawyer state</span><select className="select-input" disabled={!canEdit || saving} onChange={(event) => change(issue.issue_id, { lawyer_state: event.target.value as IssueNode["lawyer_state"] })} value={state ?? "open"}><option value="open">Open</option><option value="explored">Explored</option><option value="set_aside">Set aside</option></select></label>
+             {revisionChanged ? <div className="warning-callout" role="status"><strong>This issue changed while you were editing.</strong><div className="btn-row" style={{ marginTop: 8 }}><button className="btn quiet tiny" disabled={saving} onClick={() => setDrafts((current) => { const next = { ...current }; delete next[issue.issue_id]; return next; })} type="button">Use latest issue</button><button className="btn tiny" disabled={saving} onClick={() => setDrafts((current) => ({ ...current, [issue.issue_id]: { ...current[issue.issue_id], baseRevision: issuesRevision ?? "" } }))} type="button">Rebase my edits</button></div></div> : null}
+-            {canEdit ? <div className="btn-row"><button className="btn tiny" disabled={saving || revisionChanged || !Object.keys(draft?.changes ?? {}).length || !title.trim()} onClick={() => void save(issue)} type="button">{saving ? "Saving…" : "Save issue"}</button><button className="btn quiet tiny" disabled={saving || !Object.keys(draft?.changes ?? {}).length} onClick={() => setDrafts((current) => { const next = { ...current }; delete next[issue.issue_id]; return next; })} type="button">Reset</button></div> : <p style={mutedStyle}>Issue editing is not available in this view.</p>}
++            {canEdit ? <div className="btn-row"><button className="btn tiny" disabled={saving || revisionChanged || !Object.keys(draft?.changes ?? {}).length || !title.trim()} onClick={() => void save(issue)} type="button">{saving ? "Saving…" : "Save issue"}</button><button className="btn quiet tiny" disabled={saving || !Object.keys(draft?.changes ?? {}).length} onClick={() => setDrafts((current) => { const next = { ...current }; delete next[issue.issue_id]; return next; })} type="button">Reset</button></div> : <p className={styles.muted}>Issue editing is not available in this view.</p>}
+             {error[issue.issue_id] ? <p className="warning-callout" role="status" style={{ margin: 0 }}>{error[issue.issue_id]}</p> : null}
+           </div> : null}
+         </article>;
+--- frontend/components/workspace/IssueReviewDetail.tsx
++++ frontend/components/workspace/IssueReviewDetail.tsx
+@@ -12,6 +12,7 @@
+   WorkspaceQuestion,
+   WorkspaceClaim,
+ } from "@/lib/workspaceTypes";
++import styles from "./MatterReview.module.css";
+ 
+ type DetailActionKeys =
+   | "onIssueUpdate"
+@@ -46,7 +47,6 @@
+ 
+ type IssueDraft = { title: string; parentIssueId: string; whyItMatters: string; baseRevision: string };
+ 
+-const card: CSSProperties = { border: "1px solid var(--line)", borderRadius: "var(--radius)", background: "var(--raised)", padding: 16, minWidth: 0 };
+ const reading: CSSProperties = { color: "var(--ink-2)", font: "400 15px/1.65 var(--serif)", margin: "7px 0", overflowWrap: "anywhere", whiteSpace: "pre-wrap" };
+ const muted: CSSProperties = { color: "var(--ink-3)", font: "400 14px/1.5 var(--sans)", margin: "5px 0", overflowWrap: "anywhere" };
+ const actionStyle: CSSProperties = { maxWidth: "100%", whiteSpace: "normal", overflowWrap: "anywhere", textAlign: "left" };
+@@ -174,19 +174,17 @@
+     finally { setLocalBusy(""); }
+   }
+ 
+-  return <article aria-label={`Issue review: ${issue.title}`} style={{ display: "grid", gap: 14, minWidth: 0 }}>
+-    <header style={card}>
+-      <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "start", flexWrap: "wrap" }}>
+-        <div style={{ minWidth: 0 }}><span className="record-meta">What needs your judgment</span><h2 className="section-heading" style={{ margin: "5px 0", overflowWrap: "anywhere" }}>{issue.title || "Untitled issue"}</h2></div>
++  return <article aria-label={`Issue review: ${issue.title}`} className={`${styles.detail} ${styles.card}`}>
++    <header className={styles.detailHead}>
++      <div><span className="record-meta">What needs your judgment</span><h2 className={styles.questionTitle}>{issue.title || "Untitled issue"}</h2>
+         <span className={`state-label ${dispositionClass(issue.disposition)}`}>{currentDisposition}</span>
+       </div>
+-      <p style={muted}><strong>Next action:</strong> {issue.next_action || "Review the saved analysis and record the next position."}</p>
+-      <p style={muted}><strong>Owner:</strong> {issue.action_owner || "Unassigned"}</p>
+-      <div className="btn-row" style={{ marginTop: 10 }}>
++      <div className={styles.detailActions}>
++        <p className={styles.copy}><strong>Next action:</strong> {issue.next_action || "Review the saved analysis and record the next position."}</p>
++        <p className={styles.copy}><strong>Owner:</strong> {issue.action_owner || "Unassigned"}</p>
+         <button className="btn tiny" disabled={!props.onOpenDecisionMap} onClick={() => props.onOpenDecisionMap?.(issue.issue_id)} style={actionStyle} title={!props.onOpenDecisionMap ? unavailable : undefined} type="button">Open decision map</button>
+         <button className="btn quiet tiny" disabled={!props.onDiscuss} onClick={() => props.onDiscuss?.(target)} style={actionStyle} title={!props.onDiscuss ? unavailable : undefined} type="button">Discuss this issue</button>
+-      </div>
+-      <details style={{ marginTop: 12 }}>
++        <details className={styles.details}>
+         <summary>Edit issue details</summary>
+         {!props.onIssueUpdate ? <p style={muted}>{unavailable}</p> : <div style={{ display: "grid", gap: 9, marginTop: 10 }}>
+           <label className="field-block"><span className="field-label">Issue title</span><input className="text-input" disabled={busy || localBusy === "issue"} onChange={(event) => setIssueDraft((current) => ({ title: event.target.value, parentIssueId: current?.parentIssueId ?? issue.parent_issue_id ?? "", whyItMatters: current?.whyItMatters ?? issue.why_it_matters ?? "", baseRevision: current?.baseRevision ?? issuesRevision }))} value={issueDraft?.title ?? issue.title} /></label>
+@@ -194,12 +192,14 @@
+           <label className="field-block"><span className="field-label">Why this matters</span><textarea className="text-input prose" disabled={busy || localBusy === "issue"} onChange={(event) => setIssueDraft((current) => ({ title: current?.title ?? issue.title, parentIssueId: current?.parentIssueId ?? issue.parent_issue_id ?? "", whyItMatters: event.target.value, baseRevision: current?.baseRevision ?? issuesRevision }))} value={issueDraft?.whyItMatters ?? issue.why_it_matters ?? ""} /></label>
+           <div className="btn-row"><button className="btn tiny" disabled={!issueDraft || !issueDraft.title.trim() || issueDraft.baseRevision !== issuesRevision || busy || Boolean(localBusy)} onClick={() => void saveIssue()} type="button">{localBusy === "issue" ? "Saving…" : "Save issue details"}</button><button className="btn quiet tiny" disabled={!issueDraft || Boolean(localBusy)} onClick={() => setIssueDraft(null)} type="button">Cancel</button></div>
+         </div>}
+-      </details>
++        </details>
++      </div>
+     </header>
+ 
+-    <section aria-labelledby={`why-${issue.issue_id}`} style={card}><span className="record-meta">Why this matters</span><h3 className="section-heading" id={`why-${issue.issue_id}`} style={{ margin: "5px 0" }}>Business effect</h3><p style={reading}>{issue.why_it_matters || "No business consequence is saved for this issue."}</p></section>
+-
+-    <section aria-labelledby={`law-${issue.issue_id}`} style={card}>
++    <div className={styles.detailGrid}>
++    <section aria-labelledby={`why-${issue.issue_id}`}><span className="record-meta">Why this matters</span><h3 className="section-heading" id={`why-${issue.issue_id}`} style={{ margin: "5px 0" }}>Business effect</h3><p style={reading}>{issue.why_it_matters || "No business consequence is saved for this issue."}</p></section>
++
++    <section aria-labelledby={`law-${issue.issue_id}`}>
+       <span className="record-meta">Legal basis</span><h3 className="section-heading" id={`law-${issue.issue_id}`} style={{ margin: "5px 0" }}>Claims and applicability</h3>
+       {!claims.length ? <div className="warning-callout" role="status"><strong>No cited sources.</strong><p style={{ margin: "4px 0" }}>Useful issue analysis remains available. Research can add claim-level support.</p><button className="btn agent tiny" disabled={!props.onResearchLegalBasis} onClick={() => props.onResearchLegalBasis?.(issue.issue_id)} title={!props.onResearchLegalBasis ? unavailable : undefined} type="button">Research legal basis</button></div> : <div style={{ display: "grid", gap: 10 }}>
+         {!hasCitedEvidence ? <div className="warning-callout" role="status"><strong>No cited sources.</strong><p style={{ margin: "4px 0" }}>The saved claims remain visible. Research can add claim-level support.</p><button className="btn agent tiny" disabled={!props.onResearchLegalBasis} onClick={() => props.onResearchLegalBasis?.(issue.issue_id)} title={!props.onResearchLegalBasis ? unavailable : undefined} type="button">Research legal basis</button></div> : null}
+@@ -211,9 +211,9 @@
+           {claim.evidence.length ? <div style={{ display: "grid", gap: 7 }}>{claim.evidence.map((evidence, index) => <button className="btn quiet tiny" disabled={!props.onOpenEvidence} key={`${evidence.source_id}:${evidence.locator ?? "no-locator"}:${index}`} onClick={() => props.onOpenEvidence?.(evidence)} style={actionStyle} title={!props.onOpenEvidence ? unavailable : undefined} type="button">{evidence.source_label || evidence.source_id} · {evidence.locator || "Location unavailable"} · {evidence.support_state === "verified" ? "Verified" : evidence.support_state === "retrieved" ? "Retrieved" : evidence.support_state === "supplied" ? "Supplied" : "Support needs review"}</button>)}</div> : <p style={muted}><strong>No claim-level evidence is saved.</strong> This claim remains visible with its support gap.</p>}
+         </article>)}
+       </div>}
+-    </section>
+-
+-    <section aria-labelledby={`questions-${issue.issue_id}`} style={card}>
++    </section></div>
++
++    <section aria-labelledby={`questions-${issue.issue_id}`} className={styles.detailSection}>
+       <span className="record-meta">Questions that change the answer</span><h3 className="section-heading" id={`questions-${issue.issue_id}`} style={{ margin: "5px 0" }}>Facts and legal questions</h3>
+       {!questions.length ? <p style={muted}>No linked questions are saved for this issue.</p> : <div style={{ display: "grid", gap: 10 }}>{questions.map((question) => {
+         const isLegal = question.question_kind === "legal";
+@@ -227,7 +227,7 @@
+       })}</div>}
+     </section>
+ 
+-    <section aria-labelledby={`ways-${issue.issue_id}`} style={card}>
++    <section aria-labelledby={`ways-${issue.issue_id}`} className={styles.detailSection}>
+       <span className="record-meta">Ways forward</span><h3 className="section-heading" id={`ways-${issue.issue_id}`} style={{ margin: "5px 0" }}>Options and mitigation</h3>
+       {props.responseOptions?.length ? <div style={{ display: "grid", gap: 8, marginBottom: 10 }}>{props.responseOptions.map((option) => <article className="wash-agent" key={option.option_id} style={{ border: "1px dashed var(--agent-edge)", borderRadius: "var(--radius)", padding: 11 }}><div className="btn-row"><span className={`state-label ${option.state === "selected" ? "state-healthy" : option.state === "unknown" || !option.state ? "state-attention" : "state-agent"}`}>{option.state || "Unknown"}</span><span className="record-meta">{option.option_id}</span></div><h4 style={{ font: "600 16px/1.35 var(--serif)", margin: "6px 0" }}>{option.title}</h4><p style={muted}><strong>Condition:</strong> {option.condition?.trim() || "Unknown condition"}</p></article>)}</div> : <p style={muted}>No saved response options are linked to this issue.</p>}
+       {workItems.length ? <div style={{ display: "grid", gap: 8 }}>{workItems.map((work) => <article key={work.work_item_id} style={{ border: "1px solid var(--line-faint)", borderRadius: "var(--radius)", padding: 11 }}><strong>{work.title}</strong><div className="btn-row" style={{ marginTop: 5 }}><span className={`state-label ${work.state === "done" || work.state === "complete" || work.state === "completed" ? "state-healthy" : "state-attention"}`}>{work.state === "done" || work.state === "complete" || work.state === "completed" ? "Completed" : work.state || "State unknown"}</span><span style={muted}>Owner: {work.owner || "Unassigned"}</span>{work.required ? <span className="state-label state-attention">Required</span> : null}</div></article>)}</div> : <p style={muted}>No mitigation work is linked to this issue.</p>}
+@@ -235,7 +235,7 @@
+       {!props.onCreateMitigation && !props.onRecordDecision ? <p style={muted}>{unavailable}</p> : null}
+     </section>
+ 
+-    <section aria-labelledby={`position-${issue.issue_id}`} style={card}>
++    <section aria-labelledby={`position-${issue.issue_id}`} className={styles.detailSection}>
+       <span className="record-meta">Your recorded position</span><h3 className="section-heading" id={`position-${issue.issue_id}`} style={{ margin: "5px 0" }}>{currentDisposition}</h3>
+       {issue.disposition_reason ? <p style={reading}>{issue.disposition_reason}</p> : <p style={muted}>No disposition reason is recorded.</p>}
+       {decisions.length ? <div style={{ display: "grid", gap: 8 }}>{decisions.map((decision) => <article key={decision.decision_id} style={{ border: "1px solid var(--line-faint)", borderRadius: "var(--radius)", padding: 11 }}><span className="state-label state-healthy">Recorded</span><h4 style={{ font: "600 16px/1.35 var(--serif)", margin: "6px 0" }}>{decision.title}</h4><p style={reading}>{decision.chosen_path}</p><p style={muted}>{decision.rationale} · {decision.decision_maker || "Unknown decision maker"}{decision.decided_at ? ` · ${decision.decided_at}` : ""}</p></article>)}</div> : <p style={muted}>No formal decision is linked to this issue.</p>}
+--- frontend/components/workspace/ChangeRecap.tsx
++++ frontend/components/workspace/ChangeRecap.tsx
+@@ -1,12 +1,9 @@
+ "use client";
+ 
+ import { useState } from "react";
+-import type { CSSProperties } from "react";
+ import type { ContinuityChangeRecapProps, MeaningfulChange, WorkTarget } from "@/lib/continuityTypes";
+ import { isOpenableWorkTarget, visibleRecapChanges } from "@/lib/orientationPresentation";
+-
+-const card: CSSProperties = { border: "1px solid var(--line)", borderRadius: "var(--radius)", background: "var(--raised)", padding: 14 };
+-const copy: CSSProperties = { font: "400 13.5px/1.5 var(--sans)", color: "var(--ink-3)", margin: "5px 0 0" };
++import styles from "./MatterReview.module.css";
+ 
+ type RecapChange = MeaningfulChange | Record<string, unknown>;
+ 
+@@ -48,10 +45,10 @@
+     catch (cause) { setError(cause instanceof Error ? cause.message : "Changes were not marked seen. You can retry."); }
+     finally { setSaving(false); }
+   }
+-  return <section aria-label="What changed" style={card}>
+-    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 }}><h2 className="section-heading" style={{ margin: 0 }}>What changed</h2><span className={recapStateClass}>{recapState}</span></div>
+-    {!hasChanges ? <p style={copy}>No new saved work since you last reviewed this matter.</p> : <>
+-      {changes.length ? <ul style={{ ...copy, paddingLeft: 18 }}>{changes.map((change, index) => { const target = changeTarget(change); return <li key={`${changeKey(change, index)}:${index}`}>{changeText(change)}{target && onOpenTarget ? <button className="btn quiet tiny" onClick={() => onOpenTarget(target)} style={{ marginLeft: 7 }} type="button">Open</button> : null}</li>; })}</ul> : null}
++  return <section aria-label="What changed" className={`${styles.card} ${styles.stack}`}>
++    <div className={styles.between}><h2 className={styles.sectionTitle}>What changed</h2><span className={recapStateClass}>{recapState}</span></div>
++    {!hasChanges ? <p className={styles.copy}>No new saved work since you last reviewed this matter.</p> : <>
++      {changes.length ? <ul className={styles.recapList}>{changes.map((change, index) => { const target = changeTarget(change); return <li key={`${changeKey(change, index)}:${index}`}>{changeText(change)}{target && onOpenTarget ? <button className="btn quiet tiny" onClick={() => onOpenTarget(target)} style={{ marginLeft: 7 }} type="button">Open</button> : null}</li>; })}</ul> : null}
+       {allChanges.length > 3 ? <button aria-expanded={expanded} className="btn quiet tiny" onClick={() => setExpanded(value => !value)} type="button">{expanded ? "Show fewer" : `Show all ${allChanges.length} changes`}</button> : null}
+       {outputs.length ? <div style={{ marginTop: 10 }}><strong className="small">Saved outputs</strong><div className="btn-row" style={{ marginTop: 7 }}>{outputs.map((path) => <button className="btn quiet tiny" key={path} onClick={() => onOpenArtifact(path)} type="button">Open {path.split("/").at(-1) ?? path}</button>)}</div></div> : null}
+       {failures.length ? <div className="warning-callout" role="status" style={{ marginTop: 10 }}><strong>Some optional output files could not be read.</strong><ul style={{ marginBottom: 0 }}>{failures.map((failure) => <li key={failure.path}>{failure.path.split("/").at(-1) ?? failure.path}: {failure.message}</li>)}</ul></div> : null}

@@ -1,0 +1,4 @@
+COMMAND     PID    USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+python3.1  4344 bharris    3u  IPv4 0xd41de5d6f47dced9      0t0  TCP 127.0.0.1:8000 (LISTEN)
+node      17171 bharris   13u  IPv4 0x7e68016bc8097946      0t0  TCP 127.0.0.1:3000 (LISTEN)
+python3.1 72061 bharris    3u  IPv4 0xd41de5d6f47dced9      0t0  TCP 127.0.0.1:8000 (LISTEN)

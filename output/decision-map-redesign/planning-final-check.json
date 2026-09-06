@@ -1,0 +1,12 @@
+{
+  "application_sources_checked": 243,
+  "changed_application_paths": [],
+  "new_status_lines": [
+    "?? docs/decision-map-redesign.blueprint.md",
+    "?? docs/decision-map-redesign.build-plan.md",
+    "?? docs/decision-map-redesign.one-shot.md",
+    "?? docs/decision-map-redesign.tracking.md",
+    "?? output/decision-map-redesign/"
+  ],
+  "preview_copies_match": true
+}

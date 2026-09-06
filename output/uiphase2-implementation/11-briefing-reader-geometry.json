@@ -1,0 +1,253 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 174.33238220214844,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 854.54541015625,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "font": "13px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 237.7627716064453,
+      "x": 600.788330078125,
+      "y": 60.305397033691406
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 607.6917114257812,
+      "y": 85.99431610107422
+    },
+    {
+      "font": "15px",
+      "height": 2386.477294921875,
+      "tag": "MAIN",
+      "text": "← Back to BriefingBriefing · Alternative data and automated ",
+      "width": 854.54541015625,
+      "x": 0,
+      "y": 174.33238220214844
+    },
+    {
+      "font": "15px",
+      "height": 588.203125,
+      "tag": "HEADER",
+      "text": "Briefing · Alternative data and automated credit decisionsRe",
+      "width": 790.553955078125,
+      "x": 31.995737075805664,
+      "y": 277.8692932128906
+    },
+    {
+      "font": "48px",
+      "height": 110.3835220336914,
+      "tag": "H1",
+      "text": "Reading only — alternative-data explanation practices",
+      "width": 790.553955078125,
+      "x": 31.995737075805664,
+      "y": 316.413330078125
+    },
+    {
+      "font": "15px",
+      "height": 171.49147033691406,
+      "tag": "SECTION",
+      "text": "What changedReview the public guidance and industry discussi",
+      "width": 790.553955078125,
+      "x": 31.995737075805664,
+      "y": 894.069580078125
+    },
+    {
+      "font": "30px",
+      "height": 37.5,
+      "tag": "H2",
+      "text": "What changed",
+      "width": 790.553955078125,
+      "x": 31.995737075805664,
+      "y": 924.069580078125
+    },
+    {
+      "font": "15px",
+      "height": 171.49147033691406,
+      "tag": "SECTION",
+      "text": "Why this was shownThe Alternative data Watch matched its pub",
+      "width": 790.553955078125,
+      "x": 31.995737075805664,
+      "y": 1065.56103515625
+    },
+    {
+      "font": "30px",
+      "height": 37.5,
+      "tag": "H2",
+      "text": "Why this was shown",
+      "width": 790.553955078125,
+      "x": 31.995737075805664,
+      "y": 1095.56103515625
+    },
+    {
+      "font": "15px",
+      "height": 171.49147033691406,
+      "tag": "SECTION",
+      "text": "Connection to your workNothing at your company is connected ",
+      "width": 790.553955078125,
+      "x": 31.995737075805664,
+      "y": 1237.052490234375
+    },
+    {
+      "font": "30px",
+      "height": 37.5,
+      "tag": "H2",
+      "text": "Connection to your work",
+      "width": 790.553955078125,
+      "x": 31.995737075805664,
+      "y": 1267.052490234375
+    },
+    {
+      "font": "15px",
+      "height": 334.84375,
+      "tag": "SECTION",
+      "text": "SourcesSupplied and Retrieved mean a source was named or fet",
+      "width": 790.553955078125,
+      "x": 31.995737075805664,
+      "y": 1408.5439453125
+    },
+    {
+      "font": "30px",
+      "height": 37.5,
+      "tag": "H2",
+      "text": "Sources",
+      "width": 790.553955078125,
+      "x": 31.995737075805664,
+      "y": 1438.5439453125
+    },
+    {
+      "font": "15px",
+      "height": 679.2542114257812,
+      "tag": "ASIDE",
+      "text": "What you can doTriage is yours alone. None of this changes a",
+      "width": 790.553955078125,
+      "x": 31.995737075805664,
+      "y": 1825.56103515625
+    },
+    {
+      "font": "15px",
+      "height": 178.45880126953125,
+      "tag": "SECTION",
+      "text": "What you can doTriage is yours alone. None of this changes a",
+      "width": 790.553955078125,
+      "x": 31.995737075805664,
+      "y": 1853.5582275390625
+    },
+    {
+      "font": "16px",
+      "height": 21.818180084228516,
+      "tag": "H2",
+      "text": "What you can do",
+      "width": 754.7442626953125,
+      "x": 49.90056610107422,
+      "y": 1870.4615478515625
+    },
+    {
+      "font": "14px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Mark as read",
+      "width": 175.1846466064453,
+      "x": 49.90056610107422,
+      "y": 1931.2001953125
+    },
+    {
+      "font": "14px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Save for later",
+      "width": 175.19175720214844,
+      "x": 243.08238220214844,
+      "y": 1931.2001953125
+    },
+    {
+      "font": "14px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Not useful",
+      "width": 175.1846466064453,
+      "x": 436.2713012695313,
+      "y": 1931.2001953125
+    },
+    {
+      "font": "15px",
+      "height": 444.8011169433594,
+      "tag": "SECTION",
+      "text": "Themis.aiThemis.ai conversationThemis.ai keeps this item in ",
+      "width": 790.553955078125,
+      "x": 31.995737075805664,
+      "y": 2060.01416015625
+    },
+    {
+      "font": "16px",
+      "height": 21.818180084228516,
+      "tag": "H2",
+      "text": "Themis.ai conversation",
+      "width": 740.7385864257812,
+      "x": 56.90340805053711,
+      "y": 2123.096435546875
+    },
+    {
+      "font": "13.5px",
+      "height": 57.99715805053711,
+      "tag": "BUTTON",
+      "text": "Research this further",
+      "width": 362.37213134765625,
+      "x": 56.90340805053711,
+      "y": 2183.835205078125
+    },
+    {
+      "font": "13.5px",
+      "height": 57.99715805053711,
+      "tag": "BUTTON",
+      "text": "Find related matters and decisions",
+      "width": 362.37213134765625,
+      "x": 435.2698669433594,
+      "y": 2183.835205078125
+    },
+    {
+      "font": "13.5px",
+      "height": 57.99715805053711,
+      "tag": "BUTTON",
+      "text": "Connect this to a matter",
+      "width": 362.37213134765625,
+      "x": 56.90340805053711,
+      "y": 2257.82666015625
+    },
+    {
+      "font": "13.5px",
+      "height": 57.99715805053711,
+      "tag": "BUTTON",
+      "text": "Connect this to a decision",
+      "width": 362.37213134765625,
+      "x": 435.2698669433594,
+      "y": 2257.82666015625
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Ask Themis.ai",
+      "width": 740.7385864257812,
+      "x": 56.90340805053711,
+      "y": 2441.910400390625
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 0,
+  "url": "http://localhost:3134/briefing/ITEM-DEMO-ALTERNATIVE-DATA-BRIEFING",
+  "width": 864
+}

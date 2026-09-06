@@ -1,0 +1,1 @@
+First persistent-browser process received its step path before the separate metadata query finished creating that file. ENOENT ended the process. No application action was submitted. The input reader now reports the input error and retains its private context. The coordinator will create step files before dependent tool calls.

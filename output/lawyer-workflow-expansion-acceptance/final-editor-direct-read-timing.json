@@ -1,0 +1,12 @@
+[
+  {
+    "route": "/matters/MAT-20260905-0a2378/workspace",
+    "seconds": 1.213279,
+    "revision": null
+  },
+  {
+    "route": "/files/review?path=03_Matters%2Fharbor-relay-specification-review-0a2378%2Fwork-product%2Fdraft%2Fharbor-relay-pilot-review-memo-55b2ed.md",
+    "seconds": 0.053800457999999995,
+    "revision": "6a228ea9f06cd991b522d29cca7922abe97a1a20fa67863dce2028d2e11c9542"
+  }
+]

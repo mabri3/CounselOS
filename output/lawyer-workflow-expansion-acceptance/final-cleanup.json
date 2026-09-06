@@ -1,0 +1,9 @@
+{
+  "normal_api_chunks": [
+    "frontend/.next/static/chunks/3jockxmcm1ape.js"
+  ],
+  "temporary_api_chunks": [],
+  "listeners": "COMMAND   PID    USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME\nnode    49235 bharris   13u  IPv4 0x2cbd9f9a178c8276      0t0  TCP 127.0.0.1:3000 (LISTEN)\n",
+  "normal_build_restored": true,
+  "owned_test_servers_stopped": true
+}

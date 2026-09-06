@@ -1,0 +1,1 @@
+{"label":"journey-jordan-incoming","width":1024,"actions":[{"op":"wait","ms":4000},{"op":"select","selector":"#demo-lawyer-person","value":"jordan"},{"op":"click","role":"link","name":"Today"},{"op":"visible","selector":".team-work__row","timeout":60000},{"op":"wait","ms":1000}]}

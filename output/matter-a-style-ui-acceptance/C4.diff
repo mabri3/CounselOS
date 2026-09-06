@@ -1,0 +1,236 @@
+--- frontend/components/workspace/MatterFilesPanel.tsx
++++ frontend/components/workspace/MatterFilesPanel.tsx
+@@ -1,20 +1,17 @@
+ "use client";
+ 
+ import { useEffect, useMemo, useRef, useState } from "react";
+-import type { CSSProperties, DragEvent } from "react";
++import type { DragEvent } from "react";
+ import ContextTray from "./ContextTray";
+ import type { ContextSelection, DocumentReferenceTarget, FileUploadBatch, FileUploadOutcome, MatterFileEntry, MatterFilesPanelProps } from "@/lib/workspaceTypes";
+ import { isSafeVaultPath } from "@/lib/research";
++import styles from "./MatterTools.module.css";
+ 
+ type UploadOutcome = Omit<FileUploadOutcome, "state"> & { state: FileUploadOutcome["state"] | "pending" | "completed" | "unknown"; input: File };
+ type UploadBatch = { id: string; destination: "library" | "inquiry"; outcomes: UploadOutcome[] };
+ type ReferenceAwareMatterFilesPanelProps = MatterFilesPanelProps & {
+   onOpenReference?: (target: DocumentReferenceTarget) => void;
+ };
+-const panel: CSSProperties = { position: "fixed", inset: "0 0 0 auto", zIndex: 80, width: "min(520px, 100vw)", overflowY: "auto", background: "var(--raised)", borderLeft: "1px solid var(--line)", boxShadow: "var(--shadow-modal)", padding: 18, font: "400 15px/1.55 var(--sans)" };
+-const card: CSSProperties = { border: "1px solid var(--line)", borderRadius: "var(--radius)", background: "var(--paper)", padding: 12, minWidth: 0 };
+-const copy: CSSProperties = { font: "400 13.5px/1.5 var(--sans)", color: "var(--ink-3)", margin: "5px 0 0", overflowWrap: "anywhere" };
+-
+ function extractionLabel(state: MatterFileEntry["extraction_state"]) {
+   return ({ pending: "Preparing", complete: "Text ready", partial: "Partial text", failed: "Preview failed", unsupported: "Unsupported type", not_applicable: "Saved output" })[state];
+ }
+@@ -145,37 +142,37 @@
+   }
+ 
+   return <>
+-    <button aria-label="Close files and context" onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 79, border: 0, background: "var(--ink)", opacity: 0.24 }} type="button" />
+-    <aside aria-label="Files and context" aria-modal="true" onDragOver={(event) => event.preventDefault()} onDrop={drop} ref={drawer} role="dialog" style={panel}>
+-      <header style={{ display: "flex", alignItems: "start", justifyContent: "space-between", gap: 12 }}><div><span className="record-meta">Matter workspace</span><h2 style={{ font: "600 21px/1.3 var(--serif)", margin: "3px 0 0" }}>Files &amp; context</h2></div><button aria-label="Close files and context panel" className="btn quiet tiny" onClick={onClose} type="button">Close</button></header>
+-      <div aria-label="Files and context views" className="btn-row" role="tablist" style={{ marginTop: 15 }}><button aria-selected={view === "files"} className={`btn tiny ${view === "files" ? "" : "quiet"}`} onClick={() => setView("files")} role="tab" type="button">Matter files</button><button aria-selected={view === "context"} className={`btn tiny ${view === "context" ? "" : "quiet"}`} onClick={() => setView("context")} role="tab" type="button">Inquiry context</button></div>
++    <button aria-label="Close files and context" className={styles.filesBackdrop} onClick={onClose} type="button" />
++    <aside aria-label="Files and context" aria-modal="true" className={styles.filesPanel} onDragOver={(event) => event.preventDefault()} onDrop={drop} ref={drawer} role="dialog">
++      <header className={styles.filesHeader}><div><span className="record-meta">Matter workspace</span><h2 className={styles.filesTitle}>Files &amp; context</h2></div><button aria-label="Close files and context panel" className="btn quiet tiny" onClick={onClose} type="button">Close</button></header>
++      <div aria-label="Files and context views" className={`btn-row ${styles.filesTabs}`} role="tablist"><button aria-selected={view === "files"} className={`btn tiny ${view === "files" ? "" : "quiet"}`} onClick={() => setView("files")} role="tab" type="button">Matter files</button><button aria-selected={view === "context"} className={`btn tiny ${view === "context" ? "" : "quiet"}`} onClick={() => setView("context")} role="tab" type="button">Inquiry context</button></div>
+       <input hidden multiple onChange={(event) => { void upload(Array.from(event.target.files ?? []), pickerDestination); event.target.value = ""; }} ref={input} type="file" />
+ 
+-      <div className="btn-row" style={{ marginTop: 12 }}><button className="btn quiet tiny" disabled={busy} onClick={() => chooseFiles("library")} type="button">Add files to library</button><button className="btn agent tiny" disabled={busy} onClick={() => chooseFiles("inquiry")} type="button">Add files to inquiry</button></div>
+-      <p style={copy}>You can add several files now and add another batch while earlier files are preparing. Dropped files go to the current view.</p>
+-      {batches.length ? <section aria-label="Recent uploads" style={{ display: "grid", gap: 7, marginTop: 12 }}>{batches.map((batch) => {
++      <div className={`btn-row ${styles.filesActions}`}><button className="btn quiet tiny" disabled={busy} onClick={() => chooseFiles("library")} type="button">Add files to library</button><button className="btn agent tiny" disabled={busy} onClick={() => chooseFiles("inquiry")} type="button">Add files to inquiry</button></div>
++      <p className={styles.filesCopy}>You can add several files now and add another batch while earlier files are preparing. Dropped files go to the current view.</p>
++      {batches.length ? <section aria-label="Recent uploads" className={styles.uploadList}>{batches.map((batch) => {
+         const summary = uploadState(batch.outcomes);
+-        return <div key={batch.id} style={card}><span className={`state-label ${summary.tone}`}>{summary.word}</span><strong style={{ marginLeft: 7 }}>{batch.destination === "inquiry" ? "Inquiry upload" : "Library upload"}</strong><div style={{ display: "grid", gap: 7, marginTop: 9 }}>{batch.outcomes.map((outcome, index) => <div key={`${outcome.retry_key}:${index}`} style={{ borderTop: "1px solid var(--line-faint)", paddingTop: 7 }}><div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}><span style={{ overflowWrap: "anywhere" }}>{outcome.name}</span><span className={`state-label ${outcome.state === "saved" ? "state-healthy" : outcome.state === "failed" ? "state-failure" : outcome.state === "partial" || outcome.state === "unknown" ? "state-attention" : "state-agent"}`}>{outcome.state === "saved" ? "Saved" : outcome.state === "partial" ? "Saved · Partial text" : outcome.state === "failed" ? "Not saved" : outcome.state === "pending" ? "Preparing" : outcome.state === "unknown" ? "Status unavailable" : "Completed"}</span></div>{outcome.failure_detail ? <p style={copy}>{outcome.failure_detail}</p> : null}{outcome.state === "failed" ? <button className="btn quiet tiny" onClick={() => void retryUpload(batch.id, outcome.retry_key)} type="button">Retry {outcome.name}</button> : null}</div>)}</div></div>;
++        return <div className={styles.uploadCard} key={batch.id}><div className={styles.uploadHeading}><span className={`state-label ${summary.tone}`}>{summary.word}</span><strong>{batch.destination === "inquiry" ? "Inquiry upload" : "Library upload"}</strong></div><div className={styles.uploadRows}>{batch.outcomes.map((outcome, index) => <div className={styles.uploadRow} key={`${outcome.retry_key}:${index}`}><div className={styles.uploadHeading}><span className={styles.fileName}>{outcome.name}</span><span className={`state-label ${outcome.state === "saved" ? "state-healthy" : outcome.state === "failed" ? "state-failure" : outcome.state === "partial" || outcome.state === "unknown" ? "state-attention" : "state-agent"}`}>{outcome.state === "saved" ? "Saved" : outcome.state === "partial" ? "Saved · Partial text" : outcome.state === "failed" ? "Not saved" : outcome.state === "pending" ? "Preparing" : outcome.state === "unknown" ? "Status unavailable" : "Completed"}</span></div>{outcome.failure_detail ? <p className={styles.filesCopy}>{outcome.failure_detail}</p> : null}{outcome.state === "failed" ? <button className="btn quiet tiny" onClick={() => void retryUpload(batch.id, outcome.retry_key)} type="button">Retry {outcome.name}</button> : null}</div>)}</div></div>;
+       })}</section> : null}
+ 
+-      {view === "files" ? <section aria-label="Matter files" style={{ display: "grid", gap: 10, marginTop: 16 }}>
++      {view === "files" ? <section aria-label="Matter files" className={styles.filesContent}>
+         <label className="field-block"><span className="field-label">Find by name or folder</span><input className="text-input" onChange={(event) => setQuery(event.target.value)} placeholder="Search matter files" type="search" value={query} /></label>
+-        {props.folderView ? <details><summary className="btn quiet tiny">Folder view</summary><div style={{ marginTop: 8 }}>{props.folderView}</div></details> : null}
++        {props.folderView ? <details className={styles.folderView}><summary className="btn quiet tiny">Folder view</summary><div className={styles.folderBody}>{props.folderView}</div></details> : null}
+         {selectionError ? <div className="warning-callout" role="status"><strong>Selection not saved.</strong> {selectionError} <button className="btn quiet tiny" disabled={selectionSaving} onClick={() => void saveSelections(selections).catch(() => undefined)} type="button">Retry</button></div> : null}
+-        {filtered.length ? filtered.map((file) => {
++        {filtered.length ? <div className={styles.filesList}>{filtered.map((file) => {
+           const selected = selections.find((item) => item.reference_id === file.reference_id)?.selected ?? file.selected;
+           const original = file.original_path && isSafeVaultPath(file.original_path) ? file.original_path : null;
+           const extracted = file.extracted_path && isSafeVaultPath(file.extracted_path) ? file.extracted_path : null;
+           const artifact = file.kind === "work_product" && isSafeVaultPath(file.path) ? file.path : null;
+-          return <article id={`matter-file-${file.reference_id}`} key={`${file.reference_id}:${file.path}`} style={card}><div style={{ display: "flex", alignItems: "start", justifyContent: "space-between", gap: 8 }}><div style={{ minWidth: 0 }}><strong style={{ overflowWrap: "anywhere" }}>{file.name}</strong><p style={copy}>{file.kind === "work_product" ? "Generated output" : file.kind === "source" ? "Supplied source" : "Matter file"} · {file.path}</p></div><span className={`state-label ${stateClass(file.extraction_state)}`}>{extractionLabel(file.extraction_state)}</span></div>
+-            <p style={copy}>Saved: {file.saved_at || "Unknown"}{file.source_id ? ` · Source ID: ${file.source_id}` : " · Source ID: Unknown"}</p>
++          return <article className={styles.fileCard} id={`matter-file-${file.reference_id}`} key={`${file.reference_id}:${file.path}`}><div className={styles.fileHeading}><div><strong className={styles.fileName}>{file.name}</strong><p className={styles.filesCopy}>{file.kind === "work_product" ? "Generated output" : file.kind === "source" ? "Supplied source" : "Matter file"} · {file.path}</p></div><span className={`state-label ${stateClass(file.extraction_state)}`}>{extractionLabel(file.extraction_state)}</span></div>
++            <p className={styles.filesCopy}>Saved: {file.saved_at || "Unknown"}{file.source_id ? ` · Source ID: ${file.source_id}` : " · Source ID: Unknown"}</p>
+             {file.failure_detail ? <p className="warning-callout" role="status">{file.failure_detail}</p> : null}
+-            <div className="btn-row"><button className={`btn tiny ${selected ? "" : "quiet"}`} disabled={busy || selectionSaving} onClick={() => void toggleFile(file)} type="button">{selected ? selectionDirty ? "Selected · Not saved" : "Selected for next inquiry" : selectionDirty ? "Available · Not saved" : "Add to next inquiry"}</button>{original ? <button className="btn quiet tiny" onClick={() => openSource(file, original)} type="button">Open original</button> : null}{extracted ? <button className="btn quiet tiny" onClick={() => openSource(file, extracted)} type="button">Open extracted text</button> : null}{artifact ? <button className="btn quiet tiny" onClick={() => onOpenArtifact(artifact)} type="button">Open generated output</button> : null}{["failed", "partial"].includes(file.extraction_state) ? <button className="btn quiet tiny" disabled={retrying === file.reference_id} onClick={() => void retry(file)} type="button">{retrying === file.reference_id ? "Retrying…" : "Retry preview"}</button> : null}</div>
++            <div className={`btn-row ${styles.fileActions}`}><button className={`btn tiny ${selected ? "" : "quiet"}`} disabled={busy || selectionSaving} onClick={() => void toggleFile(file)} type="button">{selected ? selectionDirty ? "Selected · Not saved" : "Selected for next inquiry" : selectionDirty ? "Available · Not saved" : "Add to next inquiry"}</button>{original ? <button className="btn quiet tiny" onClick={() => openSource(file, original)} type="button">Open original</button> : null}{extracted ? <button className="btn quiet tiny" onClick={() => openSource(file, extracted)} type="button">Open extracted text</button> : null}{artifact ? <button className="btn quiet tiny" onClick={() => onOpenArtifact(artifact)} type="button">Open generated output</button> : null}{["failed", "partial"].includes(file.extraction_state) ? <button className="btn quiet tiny" disabled={retrying === file.reference_id} onClick={() => void retry(file)} type="button">{retrying === file.reference_id ? "Retrying…" : "Retry preview"}</button> : null}</div>
+             {retryError[file.reference_id] ? <p className="warning-callout" role="status">{retryError[file.reference_id]}</p> : null}
+             {!original && file.original_path ? <p className="warning-callout" role="status">Unsafe original path blocked.</p> : null}
+           </article>;
+-        }) : <p style={copy}>No files match this search.</p>}
+-      </section> : <div style={{ marginTop: 16 }}><ContextTray busy={busy || selectionSaving} manifest={manifest} onChange={saveSelections} selections={selections} /></div>}
++        })}</div> : <p className={styles.filesCopy}>No files match this search.</p>}
++      </section> : <div className={styles.contextContent}><ContextTray busy={busy || selectionSaving} manifest={manifest} onChange={saveSelections} selections={selections} /></div>}
+     </aside>
+   </>;
+ }
+--- frontend/components/workspace/ContextTray.tsx
++++ frontend/components/workspace/ContextTray.tsx
+@@ -1,11 +1,8 @@
+ "use client";
+ 
+ import { useEffect, useState } from "react";
+-import type { CSSProperties } from "react";
+ import type { ContextSelection, ContextTrayProps } from "@/lib/workspaceTypes";
+-
+-const card: CSSProperties = { border: "1px solid var(--line)", borderRadius: "var(--radius)", background: "var(--paper)", padding: 12, minWidth: 0 };
+-const copy: CSSProperties = { font: "400 13.5px/1.5 var(--sans)", color: "var(--ink-3)", margin: "5px 0 0", overflowWrap: "anywhere" };
++import styles from "./MatterTools.module.css";
+ 
+ function title(item: Pick<ContextSelection, "reference_id" | "role">) {
+   const known: Record<string, string> = {
+@@ -42,21 +39,21 @@
+     finally { setSaving(null); }
+   }
+ 
+-  return <section aria-label="Inquiry context" style={{ display: "grid", gap: 14 }}>
+-    <div><h2 className="section-heading" style={{ margin: 0 }}>Next inquiry</h2><p style={copy}>These choices apply to the next inquiry. Removing a choice does not delete the saved file or change an earlier run.</p></div>
++  return <section aria-label="Inquiry context" className={styles.context}>
++    <div><h2 className={styles.contextTitle}>Next inquiry</h2><p className={styles.contextCopy}>These choices apply to the next inquiry. Removing a choice does not delete the saved file or change an earlier run.</p></div>
+     {error ? <div className="warning-callout" role="status"><strong>Not saved.</strong> {error} <button className="btn quiet tiny" disabled={Boolean(saving)} onClick={() => void retry()} type="button">Retry</button></div> : null}
+-    <div style={{ display: "grid", gap: 8 }}>
+-      {draft.length ? draft.map((item) => <label key={item.reference_id} style={{ ...card, display: "grid", gridTemplateColumns: "auto minmax(0, 1fr)", gap: 10, cursor: item.mandatory ? "default" : "pointer" }}>
++    <div className={styles.contextList}>
++      {draft.length ? draft.map((item) => <label className={`${styles.contextItem} ${item.mandatory ? styles.contextItemMandatory : ""}`} key={item.reference_id}>
+         <input checked={item.mandatory || item.selected !== false} disabled={busy || Boolean(saving) || item.mandatory} onChange={() => void toggle(item.reference_id)} type="checkbox" />
+-        <span><strong>{title(item)}</strong><span className="record-meta" style={{ marginLeft: 7 }}>{item.mandatory ? "Mandatory" : item.selected !== false ? dirty ? "Selected · Not saved" : "Selected" : dirty ? "Available · Not saved" : "Available"}</span>{item.path ? <span style={copy}>{item.path}</span> : null}<span style={copy}>{item.mandatory ? "This matter record is always supplied because the inquiry cannot be understood without it." : item.selected !== false ? "Chosen for the next inquiry." : "Saved and available. It will not be supplied directly to the next inquiry."}</span>{saving === item.reference_id ? <span className="state-label state-agent" role="status">Saving selection…</span> : null}</span>
+-      </label>) : <p style={copy}>No optional context is available. The current question and saved matter facts still travel with the inquiry.</p>}
++        <span><strong>{title(item)}</strong><span className={`record-meta ${styles.contextMetadata}`}>{item.mandatory ? "Mandatory" : item.selected !== false ? dirty ? "Selected · Not saved" : "Selected" : dirty ? "Available · Not saved" : "Available"}</span>{item.path ? <span className={styles.contextCopy}>{item.path}</span> : null}<span className={styles.contextCopy}>{item.mandatory ? "This matter record is always supplied because the inquiry cannot be understood without it." : item.selected !== false ? "Chosen for the next inquiry." : "Saved and available. It will not be supplied directly to the next inquiry."}</span>{saving === item.reference_id ? <span className="state-label state-agent" role="status">Saving selection…</span> : null}</span>
++      </label>) : <p className={styles.contextCopy}>No optional context is available. The current question and saved matter facts still travel with the inquiry.</p>}
+     </div>
+ 
+-    <div><h2 className="section-heading" style={{ margin: 0 }}>{manifest ? "Submitted context" : "No submitted inquiry selected"}</h2><p style={copy}>{manifest ? "This is the saved context record for the selected inquiry. Later selection changes do not alter it." : "After an inquiry starts, its actual included, partial, omitted, unavailable, and later-read material appears here."}</p></div>
+-    {manifest ? <div style={{ display: "grid", gap: 8 }}>{(manifest.entries ?? []).length ? (manifest.entries ?? []).map((item, index) => <article key={`${item.reference_id}:${index}`} style={card}>
+-      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8 }}><strong>{title(item)}</strong><span className={`state-label ${item.state === "included" ? "state-healthy" : item.state === "truncated" ? "state-attention" : item.state === "unavailable" ? "state-failure" : "state-agent"}`}>{manifestState(item.state)}</span></div>
+-      {item.path ? <p style={copy}>{item.path}</p> : null}<p style={copy}>{item.reason || "No reason was stored."}</p>
+-      {item.tool_read_evidence?.length ? <details style={{ marginTop: 7 }}><summary className="faint">Technical read record</summary><p style={copy}>{item.tool_read_evidence.join(", ")}</p></details> : item.role === "tool_read" ? <p className="warning-callout" style={{ marginBottom: 0 }}>No saved proof of this later read is available.</p> : null}
+-    </article>) : <p style={copy}>This run stored an empty context manifest.</p>}</div> : null}
++    <div><h2 className={styles.contextTitle}>{manifest ? "Submitted context" : "No submitted inquiry selected"}</h2><p className={styles.contextCopy}>{manifest ? "This is the saved context record for the selected inquiry. Later selection changes do not alter it." : "After an inquiry starts, its actual included, partial, omitted, unavailable, and later-read material appears here."}</p></div>
++    {manifest ? <div className={styles.manifestList}>{(manifest.entries ?? []).length ? (manifest.entries ?? []).map((item, index) => <article className={styles.manifestItem} key={`${item.reference_id}:${index}`}>
++      <div className={styles.fileHeading}><strong>{title(item)}</strong><span className={`state-label ${item.state === "included" ? "state-healthy" : item.state === "truncated" ? "state-attention" : item.state === "unavailable" ? "state-failure" : "state-agent"}`}>{manifestState(item.state)}</span></div>
++      {item.path ? <p className={styles.contextCopy}>{item.path}</p> : null}<p className={styles.contextCopy}>{item.reason || "No reason was stored."}</p>
++      {item.tool_read_evidence?.length ? <details className={styles.technicalRecord}><summary className="faint">Technical read record</summary><p className={styles.contextCopy}>{item.tool_read_evidence.join(", ")}</p></details> : item.role === "tool_read" ? <p className="warning-callout">No saved proof of this later read is available.</p> : null}
++    </article>) : <p className={styles.contextCopy}>This run stored an empty context manifest.</p>}</div> : null}
+   </section>;
+ }
+--- frontend/components/workspace/OutputTemplateLibrary.tsx
++++ frontend/components/workspace/OutputTemplateLibrary.tsx
+@@ -2,6 +2,7 @@
+ 
+ import { useEffect, useMemo, useRef, useState } from "react";
+ import type { DraftResult, OutputTemplate, OutputTemplateLibraryProps } from "@/lib/workspaceTypes";
++import styles from "./MatterTools.module.css";
+ 
+ const titleCase = (value: string) => value.replaceAll("_", " ").replaceAll("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+ const isUnavailable = (template: OutputTemplate) => template.enabled === false || ["failed", "malformed", "unavailable"].includes(template.status ?? "");
+@@ -49,7 +50,7 @@
+     finally { if (stillSelected()) setPending(""); }
+   }
+ 
+-  return <section aria-labelledby="template-library-title" className="template-library">
++  return <section aria-labelledby="template-library-title" className={`${styles.library} template-library`}>
+     <header className="template-library__head"><div><h2 id="template-library-title">Output templates</h2><p>Templates set reusable structure and guidance. Instructions below apply to one preview only.</p></div><button className="btn primary" disabled={busy} onClick={onCreate} type="button">Create blank template</button></header>
+     {selectedTemplateId && !selected ? <div className="template-warning" role="alert"><span className="state-label state-failure">Unavailable</span><span>The selected template <span className="mono">{selectedTemplateId}</span> is missing. Choose another template.</span></div> : null}
+     {templates.length === 0 ? <div className="empty-state">No output templates are available. Create one, or restore the starter templates.</div> : <div className="template-layout">
+@@ -69,39 +70,5 @@
+         {preview ? (() => { const state = previewState(preview); return <div className="preview-result"><div><span className={`state-label ${state.className}`}>{state.label}</span><strong>{preview.artifact?.title || "Preview request"}</strong></div><p>Status: {preview.state}</p>{preview.artifact ? <><p>Version {preview.artifact.revision}</p>{onOpenArtifact ? <button className="btn quiet" onClick={() => onOpenArtifact(preview.artifact!.path)} type="button">Open editable preview</button> : null}</> : null}<p>{state.detail}</p></div>; })() : null}
+       </> : <div className="empty-state">Select a template to inspect, copy, edit, set as a default, or preview.</div>}</div>
+     </div>}
+-    <style jsx>{`
+-      .template-library { min-width: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); padding: 18px; }
+-      .template-library__head { display: flex; align-items: start; justify-content: space-between; gap: 14px; }
+-      .template-library__head p, .template-detail__head p { margin: 7px 0 0; color: var(--ink-3); font-size: 13.5px; }
+-      .template-warning, .template-notice, .template-action-failure { display: flex; align-items: center; gap: 9px; margin: 14px 0 0; padding: 10px 12px; border: 1px solid var(--failure-edge); border-radius: 8px; background: var(--failure-wash); }
+-      .template-notice { border-color: var(--agent-edge); background: var(--agent-wash); }
+-      .template-action-failure { color: var(--failure); }
+-      .template-layout { display: grid; grid-template-columns: minmax(240px, 0.8fr) minmax(0, 1.5fr); gap: 18px; margin-top: 18px; }
+-      .template-list { min-width: 0; border-right: 1px solid var(--line-soft); padding-right: 18px; }
+-      .template-group + .template-group { margin-top: 18px; }
+-      .template-group__title { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; margin-bottom: 6px; }
+-      .template-group__title h3 { font-size: 15px; }
+-      .template-group__title span { color: var(--ink-4); font-size: 11px; text-align: right; }
+-      .template-row { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 10px; border: 1px solid transparent; border-radius: 7px; background: transparent; padding: 9px; text-align: left; cursor: pointer; }
+-      .template-row:hover:not(:disabled) { background: var(--hover); } .template-row.selected { border-color: var(--agent-edge); background: var(--agent-wash); } .template-row:disabled { cursor: wait; }
+-      .template-row > span:first-child { min-width: 0; display: grid; gap: 4px; }
+-      .template-row small { color: var(--ink-4); overflow-wrap: anywhere; }
+-      .template-detail { min-width: 0; }
+-      .template-detail__head { display: flex; justify-content: space-between; gap: 12px; align-items: start; }
+-      .template-summary { margin: 16px 0; font-size: 15px; white-space: pre-wrap; }
+-      .template-failure { margin: 12px 0 0; padding: 9px 11px; border: 1px solid var(--failure-edge); border-radius: 7px; background: var(--failure-wash); color: var(--failure); }
+-      details { border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); padding: 10px 0; }
+-      details summary { cursor: pointer; font-weight: 600; } details p { margin: 8px 0 0; color: var(--ink-3); font-size: 12px; overflow-wrap: anywhere; }
+-      .template-actions { margin-top: 14px; }
+-      .preview-overrides { display: grid; gap: 12px; margin: 18px 0 0; padding: 14px; border: 1px solid var(--agent-edge); border-radius: 8px; background: var(--agent-wash); }
+-      .preview-overrides legend { padding: 0 5px; font: 600 16px var(--serif); } .preview-overrides p { margin: 0; color: var(--ink-3); font-size: 13.5px; }
+-      .preview-overrides label { display: grid; gap: 5px; color: var(--ink-3); font-size: 13px; }
+-      .preview-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+-      .preview-result { margin-top: 14px; padding: 12px; border-left: 3px solid var(--agent); background: var(--agent-wash); }
+-      .preview-result > div { display: flex; align-items: center; gap: 8px; } .preview-result p { margin: 7px 0 0; overflow-wrap: anywhere; } .preview-result .btn { margin-top: 10px; }
+-      @media (max-width: 760px) { .template-layout { grid-template-columns: 1fr; } .template-list { border-right: 0; border-bottom: 1px solid var(--line-soft); padding: 0 0 16px; } }
+-      @media (max-width: 430px) { .template-library { padding: 14px; } .template-library__head { flex-direction: column; } .template-library__head .btn, .template-actions .btn { width: 100%; } .preview-grid { grid-template-columns: 1fr; } }
+-      @media (prefers-reduced-motion: reduce) { .template-library * { transition: none !important; animation: none !important; } }
+-    `}</style>
+   </section>;
+ }
+--- frontend/components/workspace/OutputTemplateEditor.tsx
++++ frontend/components/workspace/OutputTemplateEditor.tsx
+@@ -3,6 +3,7 @@
+ import { useEffect, useRef, useState } from "react";
+ import MarkdownRichEditor from "@/components/MarkdownRichEditor";
+ import type { DraftResult, OutputTemplateEditable, OutputTemplateEditorProps } from "@/lib/workspaceTypes";
++import styles from "./MatterTools.module.css";
+ 
+ function editable(template: OutputTemplateEditorProps["template"]): OutputTemplateEditable {
+   return { name: template.name, output_type: template.output_type, instructions: template.instructions ?? "", section_outline: template.section_outline ?? "", audience: template.audience ?? "", purpose: template.purpose ?? "", tone: template.tone ?? "", length: template.length ?? "", exclusions: template.exclusions ?? "", source_presentation: template.source_presentation ?? "", sample_wording: template.sample_wording ?? "", enabled: template.enabled !== false };
+@@ -79,7 +80,7 @@
+     finally { if (stillEditingSubmittedTemplate()) setPending(""); }
+   }
+ 
+-  return <section aria-labelledby="template-editor-title" className="template-editor">
++  return <section aria-labelledby="template-editor-title" className={`${styles.editor} template-editor`}>
+     <header className="template-editor__head"><div><div className="record-meta">Output template · {template.template_id}</div><h2 id="template-editor-title">Edit {template.name}</h2><p>Version <span className="mono">{baseRevision}</span>. Saving creates a new reusable version.</p></div><span className={`state-label ${draft.enabled ? "state-healthy" : "state-failure"}`}>{draft.enabled ? "Available" : "Disabled"}</span></header>
+     {staleRevision ? <div className="stale-warning" role="alert"><span className="state-label state-attention">Newer version exists</span><span>Version <span className="mono">{staleRevision}</span> arrived while you were editing. Your local text is retained. Save will check version <span className="mono">{baseRevision}</span> and report a conflict rather than replace newer content.</span></div> : null}
+     <div className="template-fields"><label><span>Name</span><input className="text-input" onChange={(event) => patch({ name: event.target.value })} value={draft.name} /></label><label><span>Output type</span><input className="text-input mono" onChange={(event) => patch({ output_type: event.target.value })} value={draft.output_type} /></label></div>
+@@ -93,29 +94,5 @@
+     {error ? <p className="error" role="alert">{error}</p> : null}{notice ? <p className={noticeFailed ? "editor-action-failure" : "editor-notice"} role="status">{notice}</p> : null}
+     {preview ? (() => { const state = previewState(preview); return <div className="preview-result"><span className={`state-label ${state.className}`}>{state.label}</span><div><strong>{preview.artifact?.title || "Preview request"}</strong><p>Status: {preview.state}</p>{preview.artifact ? <><p>Version {preview.artifact.revision}</p>{onOpenArtifact ? <button className="btn quiet" onClick={() => onOpenArtifact(preview.artifact!.path)} type="button">Open editable preview</button> : null}</> : <p>{state.detail}</p>}</div></div>; })() : null}
+     <details className="revision-detail"><summary>Current version record</summary><p>Active file: <span className="mono">{template.path}</span></p><p>Content hash: <span className="mono">{template.content_hash || "unavailable"}</span></p><p>Immutable revision: <span className="mono">{template.revision_path || "Created when this version is used or saved"}</span></p></details>
+-    <style jsx>{`
+-      .template-editor { min-width: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); padding: 18px; }
+-      .template-editor__head { display: flex; justify-content: space-between; align-items: start; gap: 14px; }
+-      .template-editor__head p { margin: 7px 0 0; color: var(--ink-3); font-size: 13.5px; }
+-      .stale-warning { display: flex; align-items: start; gap: 9px; margin-top: 14px; padding: 10px 12px; border: 1px solid var(--attention-edge); border-radius: 8px; background: var(--attention-wash); font-size: 13.5px; }
+-      .template-fields { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(180px, 0.7fr); gap: 12px; margin-top: 18px; }
+-      .template-fields--details { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 12px; }
+-      .template-fields label, .template-long-fields label, .preview-box label { display: grid; gap: 6px; color: var(--ink-3); font: 500 13px var(--sans); }
+-      .editor-field { display: grid; gap: 10px; margin-top: 20px; } .editor-field p { margin: 5px 0 0; color: var(--ink-3); font-size: 13.5px; }
+-      .template-long-fields { display: grid; gap: 12px; margin-top: 18px; }
+-      .template-long-fields small { color: var(--ink-4); font-weight: 400; }
+-      .template-enabled { margin-top: 14px; }
+-      .save-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 16px; } .save-actions span { color: var(--ink-3); font-size: 13px; }
+-      .preview-box { display: grid; gap: 12px; margin-top: 22px; padding: 14px; border: 1px solid var(--agent-edge); border-radius: 8px; background: var(--agent-wash); }
+-      .preview-box legend { padding: 0 5px; font: 600 17px var(--serif); } .preview-box > p { margin: 0; color: var(--ink-3); font-size: 13.5px; } .preview-box .preview-save-note { padding: 8px 10px; border: 1px solid var(--attention-edge); border-radius: 7px; background: var(--attention-wash); color: var(--attention-deep); }
+-      .preview-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+-      .editor-notice, .editor-action-failure { margin-top: 14px; padding: 10px 12px; border: 1px solid var(--agent-edge); border-radius: 8px; background: var(--agent-wash); }
+-      .editor-action-failure { border-color: var(--failure-edge); background: var(--failure-wash); color: var(--failure); }
+-      .preview-result { display: flex; align-items: start; gap: 10px; margin-top: 14px; padding: 12px; border-left: 3px solid var(--agent); background: var(--agent-wash); }
+-      .preview-result p { margin: 6px 0 0; overflow-wrap: anywhere; } .preview-result .btn { margin-top: 10px; }
+-      .revision-detail { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--line-soft); } .revision-detail summary { cursor: pointer; font-weight: 600; } .revision-detail p { margin: 7px 0 0; color: var(--ink-3); font-size: 12px; overflow-wrap: anywhere; }
+-      @media (max-width: 620px) { .template-editor { padding: 14px; } .template-fields, .template-fields--details, .preview-fields { grid-template-columns: 1fr; } .template-editor__head { flex-direction: column; } .save-actions .btn { width: 100%; } }
+-      @media (prefers-reduced-motion: reduce) { .template-editor * { transition: none !important; animation: none !important; } }
+-    `}</style>
+   </section>;
+ }

@@ -1,0 +1,217 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 50,
+      "tag": "HEADER",
+      "text": "themis.ai⌄TodayBriefingWorkspaceMattersDecisionsSkillsAutoma",
+      "width": 177.39346313476562,
+      "x": 31.995737075805664,
+      "y": 13.998579025268556
+    },
+    {
+      "font": "15px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 194.1903381347656,
+      "x": 44.90056610107422,
+      "y": 496.90338134765625
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 51.80397415161133,
+      "y": 522.59228515625
+    },
+    {
+      "font": "15px",
+      "height": 97.1022720336914,
+      "tag": "HEADER",
+      "text": "OverdueMattersProject Apex: AI Voice TelemetryMatter details",
+      "width": 874.1903076171875,
+      "x": 31.995737075805664,
+      "y": 0
+    },
+    {
+      "font": "19px",
+      "height": 53.196022033691406,
+      "tag": "H1",
+      "text": "Project Apex: AI Voice Telemetry",
+      "width": 176.25,
+      "x": 316.0085144042969,
+      "y": 22.99715805053711
+    },
+    {
+      "font": "16px",
+      "height": 44.53834915161133,
+      "tag": "BUTTON",
+      "text": "Tools and history",
+      "width": 178.27413940429688,
+      "x": 727.9119262695312,
+      "y": 25.823862075805664
+    },
+    {
+      "font": "15px",
+      "height": 1420.5396728515625,
+      "tag": "SECTION",
+      "text": "Matter workspace viewUnderstandDiscussDraftDecision mapBusin",
+      "width": 874.1903076171875,
+      "x": 31.995737075805664,
+      "y": 97.1022720336914
+    },
+    {
+      "font": "15px",
+      "height": 67.99715423583984,
+      "tag": "HEADER",
+      "text": "Matter workspace viewUnderstandDiscussDraftDecision map",
+      "width": 874.1903076171875,
+      "x": 31.995737075805664,
+      "y": 97.1022720336914
+    },
+    {
+      "font": "16px",
+      "height": 46.35653305053711,
+      "tag": "BUTTON",
+      "text": "Decision map",
+      "width": 120.79544830322266,
+      "x": 785.390625,
+      "y": 107.46448516845705
+    },
+    {
+      "font": "15px",
+      "height": 1214.382080078125,
+      "tag": "ASIDE",
+      "text": "← Back to where you wereReading sourceSource readingSavedpha",
+      "width": 874.1903076171875,
+      "x": 31.995737075805664,
+      "y": 259.2684631347656
+    },
+    {
+      "font": "15px",
+      "height": 162.03834533691406,
+      "tag": "HEADER",
+      "text": "← Back to where you wereReading sourceSource readingSaved",
+      "width": 872.3721313476562,
+      "x": 32.90482711791992,
+      "y": 260.17755126953125
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "← Back to where you were",
+      "width": 169.21875,
+      "x": 58.899147033691406,
+      "y": 284.1761169433594
+    },
+    {
+      "font": "40px",
+      "height": 41.5980110168457,
+      "tag": "H2",
+      "text": "Source reading",
+      "width": 285.5752868652344,
+      "x": 58.899147033691406,
+      "y": 359.70880126953125
+    },
+    {
+      "font": "15px",
+      "height": 124.6022720336914,
+      "tag": "SECTION",
+      "text": "phase2-process03_Matters/project-apex-ai/documents/phase2-pr",
+      "width": 820.3834838867188,
+      "x": 58.899147033691406,
+      "y": 444.2116394042969
+    },
+    {
+      "font": "15px",
+      "height": 160.5326690673828,
+      "tag": "SECTION",
+      "text": "Referenced excerptExact passage unavailable. No excerpt was ",
+      "width": 820.3834838867188,
+      "x": 58.899147033691406,
+      "y": 568.8139038085938
+    },
+    {
+      "font": "15px",
+      "height": 72.52840423583984,
+      "tag": "SECTION",
+      "text": "Open originalCreate working copyUse in this request",
+      "width": 820.3834838867188,
+      "x": 58.899147033691406,
+      "y": 729.3465576171875
+    },
+    {
+      "font": "16px",
+      "height": 36.71875,
+      "tag": "BUTTON",
+      "text": "Open original",
+      "width": 267.4573669433594,
+      "x": 58.899147033691406,
+      "y": 747.2514038085938
+    },
+    {
+      "font": "16px",
+      "height": 36.71875,
+      "tag": "BUTTON",
+      "text": "Create working copy",
+      "width": 267.4644775390625,
+      "x": 335.3551025390625,
+      "y": 747.2514038085938
+    },
+    {
+      "font": "16px",
+      "height": 36.71875,
+      "tag": "BUTTON",
+      "text": "Use in this request",
+      "width": 267.4644775390625,
+      "x": 611.8181762695312,
+      "y": 747.2514038085938
+    },
+    {
+      "font": "15px",
+      "height": 197.80538940429688,
+      "tag": "SECTION",
+      "text": "Claim supportClaimNo linked claimSourceSaved source · phase2",
+      "width": 820.3834838867188,
+      "x": 58.899147033691406,
+      "y": 829.8721313476562
+    },
+    {
+      "font": "15px",
+      "height": 53.0823860168457,
+      "tag": "SECTION",
+      "text": "Exact passage unavailable",
+      "width": 820.3834838867188,
+      "x": 58.899147033691406,
+      "y": 1027.677490234375
+    },
+    {
+      "font": "15px",
+      "height": 339.9928894042969,
+      "tag": "SECTION",
+      "text": "Full saved source# Supplied process note\n\nOperations reviews",
+      "width": 820.3834838867188,
+      "x": 58.899147033691406,
+      "y": 1106.7542724609375
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Show discussion",
+      "width": 106.0085220336914,
+      "x": 800.1775512695312,
+      "y": 1481.647705078125
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 0,
+  "url": "http://localhost:3134/matters/MAT-DEMO-APEX?view=draft&file=03_Matters%2Fproject-apex-ai%2Fwork-product%2Fdraft%2Fworking-draft-16a0e1.md",
+  "width": 948
+}

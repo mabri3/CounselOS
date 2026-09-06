@@ -1,0 +1,1 @@
+{"label": "journey-alex-accept-whole-return", "width": 768, "actions": [{"op": "click", "name": "Hand off work"}, {"op": "visible", "name": "Accept handoff"}, {"op": "click", "name": "Accept handoff"}, {"op": "visible", "selector": ".handoff-panel__scope small:has-text(\"Current owner: Alex Morgan\")", "timeout": 60000}, {"op": "wait", "ms": 2000}]}

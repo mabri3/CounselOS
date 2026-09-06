@@ -1,0 +1,10 @@
+{
+  "checks": [
+    "No model on page load",
+    "UI inquiry publishes real analysis, three options and Unknown",
+    "Preview retains issue and siblings; no decision write",
+    "Cancel has no decision write",
+    "Explicit save records edited wording and exact canonical basis"
+  ],
+  "errors": []
+}

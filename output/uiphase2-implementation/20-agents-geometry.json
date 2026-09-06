@@ -1,0 +1,208 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 83.99857330322266,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "font": "13px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 237.7627716064453,
+      "x": 756.7826538085938,
+      "y": 66.85369110107422
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 763.68603515625,
+      "y": 92.54261016845705
+    },
+    {
+      "font": "16px",
+      "height": 2922.286865234375,
+      "tag": "ASIDE",
+      "text": "Agents5Themis.aiBuilt-inOn requestDecision MonitorBuilt-inOn",
+      "width": 249.99998474121097,
+      "x": 0,
+      "y": 83.99857330322266
+    },
+    {
+      "font": "16px",
+      "height": 107.52840423583984,
+      "tag": "BUTTON",
+      "text": "Themis.aiBuilt-inOn request",
+      "width": 221.09373474121097,
+      "x": 13.998579025268556,
+      "y": 149.26846313476562
+    },
+    {
+      "font": "16px",
+      "height": 107.52840423583984,
+      "tag": "BUTTON",
+      "text": "Decision MonitorBuilt-inOn request",
+      "width": 221.09373474121097,
+      "x": 13.998579025268556,
+      "y": 256.796875
+    },
+    {
+      "font": "16px",
+      "height": 107.52840423583984,
+      "tag": "BUTTON",
+      "text": "Intake AgentBuilt-inOn request",
+      "width": 221.09373474121097,
+      "x": 13.998579025268556,
+      "y": 364.32525634765625
+    },
+    {
+      "font": "16px",
+      "height": 128.4375,
+      "tag": "BUTTON",
+      "text": "Process helper (test)Custom agentOn request",
+      "width": 221.09373474121097,
+      "x": 13.998579025268556,
+      "y": 471.8536682128906
+    },
+    {
+      "font": "16px",
+      "height": 107.52840423583984,
+      "tag": "BUTTON",
+      "text": "Research AgentBuilt-inOn request",
+      "width": 221.09373474121097,
+      "x": 13.998579025268556,
+      "y": 600.2911987304688
+    },
+    {
+      "font": "48px",
+      "height": 53.749996185302734,
+      "tag": "H1",
+      "text": "Themis.ai",
+      "width": 213.28125,
+      "x": 277.9971618652344,
+      "y": 144.17613220214844
+    },
+    {
+      "font": "16px",
+      "height": 289.3323669433594,
+      "tag": "SECTION",
+      "text": "Fixed application rulesIt records a decision only when you e",
+      "width": 708.5510864257812,
+      "x": 277.9971618652344,
+      "y": 288.73577880859375
+    },
+    {
+      "font": "20px",
+      "height": 27.727272033691406,
+      "tag": "H2",
+      "text": "Fixed application rules",
+      "width": 708.5510864257812,
+      "x": 277.9971618652344,
+      "y": 315.6391906738281
+    },
+    {
+      "font": "16px",
+      "height": 192.72726440429688,
+      "tag": "SECTION",
+      "text": "Model summaryWorkspace defaultMock (offline) · Mock demo · D",
+      "width": 708.5510864257812,
+      "x": 277.9971618652344,
+      "y": 578.0681762695312
+    },
+    {
+      "font": "20px",
+      "height": 27.727272033691406,
+      "tag": "H2",
+      "text": "Model summary",
+      "width": 708.5510864257812,
+      "x": 277.9971618652344,
+      "y": 604.0625
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Another lawyer",
+      "width": 149.6732940673828,
+      "x": 277.9971618652344,
+      "y": 1195.9375
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "An executive",
+      "width": 131.640625,
+      "x": 436.66900634765625,
+      "y": 1195.9375
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "The product team",
+      "width": 167.52130126953125,
+      "x": 577.3082275390625,
+      "y": 1195.9375
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "A partner or counterparty",
+      "width": 224.24005126953125,
+      "x": 753.828125,
+      "y": 1195.9375
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "A regulator or auditor",
+      "width": 194.41050720214844,
+      "x": 277.9971618652344,
+      "y": 1247.9332275390625
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "The record",
+      "width": 116.44886016845705,
+      "x": 481.4062194824219,
+      "y": 1247.9332275390625
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Discard changes",
+      "width": 157.88351440429688,
+      "x": 701.6264038085938,
+      "y": 2923.288330078125
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Save agent",
+      "width": 118.0397720336914,
+      "x": 868.5084838867188,
+      "y": 2923.288330078125
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 0,
+  "url": "http://localhost:3134/agents",
+  "width": 1024
+}

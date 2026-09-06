@@ -1,0 +1,1 @@
+{"label": "journey-alex-mark-seen", "width": 390, "actions": [{"op": "click", "selector": "label[for=\"workspace-view-MAT-20260905-0a2378-understand\"]"}, {"op": "visible", "name": "Mark seen"}, {"op": "click", "name": "Mark seen"}, {"op": "wait", "ms": 7000}]}

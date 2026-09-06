@@ -1,0 +1,115 @@
+{
+  "action_actor": {
+    "person_id": "alex",
+    "display_name": "Alex Morgan",
+    "mode": "demo"
+  },
+  "run_id": "RUN-20260905-3fa859",
+  "matter_id": "MAT-20260905-0a2378",
+  "conversation_id": "CONV-20260905-9d68db",
+  "state": "completed",
+  "status": "Chat is complete.",
+  "created_at": "2026-09-05T10:01:54+00:00",
+  "started_at": "2026-09-05T10:01:54+00:00",
+  "finished_at": "2026-09-05T10:02:00+00:00",
+  "failure_detail": null,
+  "failure_class": null,
+  "correlation_id": "COR-20260905-322153",
+  "milestone": "Completed.",
+  "response": {
+    "reply": "Here is the editable wording for the fact request. It is not marked as sent and no facts, decisions, or work products have been changed.\n---\n**Subject: Harbor Relay pilot \u2014 support access to customer account activity reports**\nHi,\nAhead of the Harbor Relay US pilot (launch 21 October 2026), we need to confirm one point about the account activity report that the product sends to the customer. The current specification states reports are retained for 30 days and only the customer can open them. We need to confirm whether that access statement is accurate.\n**Question:** Can support staff open customer account activity reports, and if so under what conditions?\nPlease confirm one of the following:\n- **No** \u2014 only the customer can open reports; support staff cannot.\n- **Yes, restricted** \u2014 support staff can open reports only under defined conditions (e.g., a verified customer request or troubleshooting), which we would document.\n- **Yes, unrestricted** \u2014 support staff can open reports without restriction.\n- **Not yet decided** \u2014 business is still determining this.\n**Why it matters:** This determines whether the stated \"only the customer can open\" access promise is accurate and whether any additional privacy/data-access controls or disclosures are needed before the pilot.\nThanks,\n[Your name]\n---\nThis is draft wording only \u2014 nothing has been sent. Let me know if you'd like any adjustments, or if you'd like me to prepare it as a sendable email.",
+    "conversation_id": "CONV-20260905-9d68db",
+    "trace": [
+      {
+        "tool": "select_conversation_scope",
+        "status": "success",
+        "summary": "Current matter context selected.",
+        "mutation_status": null
+      }
+    ],
+    "changed_paths": [
+      "03_Matters/harbor-relay-specification-review-0a2378/conversations/CONV-20260905-9d68db.md"
+    ],
+    "refresh": [],
+    "cards": [],
+    "applied_skills": [],
+    "review_author": "Themis.ai",
+    "operation_results": [
+      {
+        "action": "prepare-wording:Q-support-access:1f565db0-6209-4a1d-9810-b721d1a093b7:tool:b34b512a677e6656a2ce6732",
+        "source_action_key": "prepare-wording:Q-support-access:1f565db0-6209-4a1d-9810-b721d1a093b7:tool:b34b512a677e6656a2ce6732",
+        "operation": "select_conversation_scope",
+        "status": "no_change",
+        "summary": "Current matter context selected.",
+        "matter_id": "MAT-20260905-0a2378",
+        "entity_refs": [],
+        "changed_paths": [],
+        "resulting_matter_state": {
+          "stage": "intake",
+          "next_action": "Can support staff open customer account activity reports, and if so under what conditions?",
+          "work_state": {
+            "next_action": "Can support staff open customer account activity reports, and if so under what conditions?",
+            "next_work_item_id": "WI-20260905-177aed",
+            "next_owner": "Alex Morgan",
+            "next_actor": "named_owner",
+            "due_at": null,
+            "execution_state": "not_running",
+            "active_run_id": null,
+            "execution_note": "",
+            "signal": {
+              "kind": "waiting_on_owner",
+              "label": "Waiting on Alex Morgan"
+            }
+          },
+          "consistency_issues": []
+        },
+        "available_next_actions": [],
+        "required_user_action": null,
+        "error": null,
+        "recovery": null
+      }
+    ]
+  },
+  "operation_results": [
+    {
+      "action": "prepare-wording:Q-support-access:1f565db0-6209-4a1d-9810-b721d1a093b7:tool:b34b512a677e6656a2ce6732",
+      "source_action_key": "prepare-wording:Q-support-access:1f565db0-6209-4a1d-9810-b721d1a093b7:tool:b34b512a677e6656a2ce6732",
+      "operation": "select_conversation_scope",
+      "status": "no_change",
+      "summary": "Current matter context selected.",
+      "matter_id": "MAT-20260905-0a2378",
+      "entity_refs": [],
+      "changed_paths": [],
+      "resulting_matter_state": {
+        "stage": "intake",
+        "next_action": "Can support staff open customer account activity reports, and if so under what conditions?",
+        "work_state": {
+          "next_action": "Can support staff open customer account activity reports, and if so under what conditions?",
+          "next_work_item_id": "WI-20260905-177aed",
+          "next_owner": "Alex Morgan",
+          "next_actor": "named_owner",
+          "due_at": null,
+          "execution_state": "not_running",
+          "active_run_id": null,
+          "execution_note": "",
+          "signal": {
+            "kind": "waiting_on_owner",
+            "label": "Waiting on Alex Morgan"
+          }
+        },
+        "consistency_issues": []
+      },
+      "available_next_actions": [],
+      "required_user_action": null,
+      "error": null,
+      "recovery": null
+    }
+  ],
+  "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/runs/RUN-20260905-3fa859.md",
+  "selection": {
+    "agent_id": "counsel-copilot",
+    "provider": "openai_compatible",
+    "model": "deepseek-v4-flash",
+    "reasoning_effort": "default"
+  }
+}

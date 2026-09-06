@@ -1,0 +1,269 @@
+{
+  "C1": [
+    {
+      "path": "frontend/components/workspace/UnderstandPanel.tsx",
+      "beforeHandlers": 49,
+      "afterHandlers": 49,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/workspace/OrientationSummary.tsx",
+      "beforeHandlers": 9,
+      "afterHandlers": 9,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/workspace/WorkItemSummary.tsx",
+      "beforeHandlers": 2,
+      "afterHandlers": 2,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/workspace/IssueNavigator.tsx",
+      "beforeHandlers": 8,
+      "afterHandlers": 8,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/workspace/IssueReviewDetail.tsx",
+      "beforeHandlers": 21,
+      "afterHandlers": 21,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/workspace/ChangeRecap.tsx",
+      "beforeHandlers": 4,
+      "afterHandlers": 4,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    }
+  ],
+  "C2": [
+    {
+      "path": "frontend/components/workspace/DocumentNavigator.tsx",
+      "beforeHandlers": 10,
+      "afterHandlers": 10,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/workspace/DocumentTabs.tsx",
+      "beforeHandlers": 9,
+      "afterHandlers": 9,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/workspace/ReferencePreview.tsx",
+      "beforeHandlers": 4,
+      "afterHandlers": 4,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/workspace/EvidenceDrawer.tsx",
+      "beforeHandlers": 3,
+      "afterHandlers": 3,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/workspace/ClaimMarkdown.tsx",
+      "beforeHandlers": 2,
+      "afterHandlers": 2,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/DocumentPanel.tsx",
+      "beforeHandlers": 25,
+      "afterHandlers": 25,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    }
+  ],
+  "C3": [
+    {
+      "path": "frontend/components/ChatPanel.tsx",
+      "beforeHandlers": 36,
+      "afterHandlers": 37,
+      "removedOrChanged": [],
+      "addedOrChanged": [
+        "onClick={() => latestAnswerElement.current?.scrollIntoView({ behavior: \"auto\", block: \"start\" })}"
+      ]
+    },
+    {
+      "path": "frontend/components/workspace/ConversationDock.tsx",
+      "beforeHandlers": 3,
+      "afterHandlers": 3,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    }
+  ],
+  "C4": [
+    {
+      "path": "frontend/components/workspace/MatterFilesPanel.tsx",
+      "beforeHandlers": 18,
+      "afterHandlers": 18,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/workspace/ContextTray.tsx",
+      "beforeHandlers": 2,
+      "afterHandlers": 2,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/workspace/OutputTemplateLibrary.tsx",
+      "beforeHandlers": 9,
+      "afterHandlers": 9,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/workspace/OutputTemplateEditor.tsx",
+      "beforeHandlers": 15,
+      "afterHandlers": 15,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    }
+  ],
+  "C5": [
+    {
+      "path": "frontend/components/workspace/FactRequestPanel.tsx",
+      "beforeHandlers": 23,
+      "afterHandlers": 23,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/workspace/HandoffPanel.tsx",
+      "beforeHandlers": 10,
+      "afterHandlers": 10,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/workspace/ChangeImpactPanel.tsx",
+      "beforeHandlers": 23,
+      "afterHandlers": 23,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    }
+  ],
+  "C6": [
+    {
+      "path": "frontend/components/workspace/ScenarioPanel.tsx",
+      "beforeHandlers": 20,
+      "afterHandlers": 20,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/workspace/InquiryActions.tsx",
+      "beforeHandlers": 5,
+      "afterHandlers": 5,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/workspace/BusinessFlow.tsx",
+      "beforeHandlers": 21,
+      "afterHandlers": 21,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/workspace/PriorWorkPanel.tsx",
+      "beforeHandlers": 4,
+      "afterHandlers": 4,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/workspace/PracticeNotePanel.tsx",
+      "beforeHandlers": 4,
+      "afterHandlers": 4,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/workspace/AssumptionWatchPanel.tsx",
+      "beforeHandlers": 3,
+      "afterHandlers": 3,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    }
+  ],
+  "C7": [
+    {
+      "path": "frontend/components/workspace/DecisionMap.tsx",
+      "beforeHandlers": 25,
+      "afterHandlers": 27,
+      "removedOrChanged": [],
+      "addedOrChanged": [
+        "onClick={() => onScopeChange(\"neighborhood\")}",
+        "onClick={() => onScopeChange(\"whole_matter\")}"
+      ]
+    },
+    {
+      "path": "frontend/app/matters/[matterId]/decision-map/page.tsx",
+      "beforeHandlers": 29,
+      "afterHandlers": 29,
+      "removedOrChanged": [
+        "onDiscuss={(target) => { setConversationTarget({ ...target, business_question_revision: workspace.question.revision, }); requestAnimationFrame(() => { const section = document.getElementById(\"decision-map-discussion\"); section?.scrollIntoView({ behavior: \"smooth\", block: \"start\" }); section?.querySelector<HTMLTextAreaElement>(\"textarea\")?.focus(); }); }}"
+      ],
+      "addedOrChanged": [
+        "onDiscuss={(target) => { setConversationTarget({ ...target, business_question_revision: workspace.question.revision, }); requestAnimationFrame(() => { const section = document.getElementById(\"decision-map-discussion\"); section?.querySelector(\"details\")?.setAttribute(\"open\", \"\"); section?.scrollIntoView({ behavior: \"smooth\", block: \"start\" }); section?.querySelector<HTMLTextAreaElement>(\"textarea\")?.focus(); }); }}"
+      ]
+    }
+  ],
+  "C8": [
+    {
+      "path": "frontend/components/ResearchQueuePanel.tsx",
+      "beforeHandlers": 10,
+      "afterHandlers": 10,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/RecommendationPanel.tsx",
+      "beforeHandlers": 3,
+      "afterHandlers": 3,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    },
+    {
+      "path": "frontend/components/ReviewPacketPanel.tsx",
+      "beforeHandlers": 14,
+      "afterHandlers": 14,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    }
+  ],
+  "C9": [
+    {
+      "path": "frontend/components/MatterWorkspace.tsx",
+      "beforeHandlers": 220,
+      "afterHandlers": 221,
+      "removedOrChanged": [],
+      "addedOrChanged": [
+        "onReveal={revealMatterSection}"
+      ]
+    },
+    {
+      "path": "frontend/components/workspace/DraftWorkspace.tsx",
+      "beforeHandlers": 23,
+      "afterHandlers": 23,
+      "removedOrChanged": [],
+      "addedOrChanged": []
+    }
+  ]
+}

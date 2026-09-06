@@ -1,0 +1,127 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 222.05255126953125,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 380,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "font": "13px",
+      "height": 48.38068008422851,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 145.41192626953125,
+      "x": 218.59373474121097,
+      "y": 60.305397033691406
+    },
+    {
+      "font": "10px",
+      "height": 21.988636016845703,
+      "tag": "H2",
+      "text": "View as",
+      "width": 27.60653305053711,
+      "x": 223.5014190673828,
+      "y": 82.79119110107422
+    },
+    {
+      "font": "15px",
+      "height": 2936.143310546875,
+      "tag": "MAIN",
+      "text": "Your matters10 in flight / 2 closedMatter viewTableStagesNew",
+      "width": 380,
+      "x": 0,
+      "y": 222.05255126953125
+    },
+    {
+      "font": "36px",
+      "height": 41.03693008422851,
+      "tag": "H1",
+      "text": "Your matters",
+      "width": 204.78692626953125,
+      "x": 15.994318008422852,
+      "y": 256.0511169433594
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "6overdue",
+      "width": 166.00851440429688,
+      "x": 15.994318008422852,
+      "y": 442.52838134765625
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "4waiting",
+      "width": 166.00851440429688,
+      "x": 197.9971466064453,
+      "y": 442.52838134765625
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "0with Themis.ai",
+      "width": 166.00851440429688,
+      "x": 15.994318008422852,
+      "y": 547.5283813476562
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "0needs assignment",
+      "width": 166.00851440429688,
+      "x": 197.9971466064453,
+      "y": 547.5283813476562
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "0no action needed",
+      "width": 166.00851440429688,
+      "x": 15.994318008422852,
+      "y": 652.5283813476562
+    },
+    {
+      "font": "12px",
+      "height": 18.004261016845703,
+      "tag": "BUTTON",
+      "text": "Stage",
+      "width": 30.44744300842285,
+      "x": 246.0582275390625,
+      "y": 1105.9019775390625
+    },
+    {
+      "font": "12px",
+      "height": 18.004261016845703,
+      "tag": "BUTTON",
+      "text": "Next owner",
+      "width": 61.74005508422851,
+      "x": 529.5951538085938,
+      "y": 1105.9019775390625
+    },
+    {
+      "font": "12px",
+      "height": 18.004261016845703,
+      "tag": "BUTTON",
+      "text": "Due ↑",
+      "width": 34.140625,
+      "x": 661.9957275390625,
+      "y": 1105.9019775390625
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 0,
+  "url": "http://localhost:3134/matters",
+  "width": 390
+}

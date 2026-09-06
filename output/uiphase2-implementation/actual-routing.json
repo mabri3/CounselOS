@@ -1,0 +1,112 @@
+[
+  {
+    "agent": "/root/research",
+    "session_id": "01a075b8-966b-7832-9355-57ddd8041a23",
+    "log": "/Users/bharris/.codex/sessions/2026/09/06/rollout-2026-09-06T00-57-06-01a075b8-966b-7832-9355-57ddd8041a23.jsonl",
+    "observed_routing": [
+      {
+        "model": "gpt-6-astra",
+        "effort": "low"
+      }
+    ]
+  },
+  {
+    "agent": "/root/watches",
+    "session_id": "01a075bc-6195-7be0-87dd-6be1c18644e4",
+    "log": "/Users/bharris/.codex/sessions/2026/09/06/rollout-2026-09-06T01-01-15-01a075bc-6195-7be0-87dd-6be1c18644e4.jsonl",
+    "observed_routing": [
+      {
+        "model": "gpt-6-astra",
+        "effort": "low"
+      }
+    ]
+  },
+  {
+    "agent": "/root/decisions",
+    "session_id": "01a075bf-4c44-78f1-b90c-455f729c04d2",
+    "log": "/Users/bharris/.codex/sessions/2026/09/06/rollout-2026-09-06T01-04-26-01a075bf-4c44-78f1-b90c-455f729c04d2.jsonl",
+    "observed_routing": [
+      {
+        "model": "gpt-6-astra",
+        "effort": "low"
+      }
+    ]
+  },
+  {
+    "agent": "/root/briefing",
+    "session_id": "01a075b3-ebd2-7363-9667-8c7668805490",
+    "log": "/Users/bharris/.codex/sessions/2026/09/06/rollout-2026-09-06T00-52-00-01a075b3-ebd2-7363-9667-8c7668805490.jsonl",
+    "observed_routing": [
+      {
+        "model": "gpt-6-astra",
+        "effort": "low"
+      }
+    ]
+  },
+  {
+    "agent": "/root/today",
+    "session_id": "01a075b3-4bb0-7fe0-b2f4-19f0e57d7341",
+    "log": "/Users/bharris/.codex/sessions/2026/09/06/rollout-2026-09-06T00-51-19-01a075b3-4bb0-7fe0-b2f4-19f0e57d7341.jsonl",
+    "observed_routing": [
+      {
+        "model": "gpt-6-astra",
+        "effort": "low"
+      }
+    ]
+  },
+  {
+    "agent": "/root/contract_review",
+    "session_id": "01a075ac-f392-7e70-be34-65e7e256bc33",
+    "log": "/Users/bharris/.codex/sessions/2026/09/06/rollout-2026-09-06T00-44-23-01a075ac-f392-7e70-be34-65e7e256bc33.jsonl",
+    "observed_routing": [
+      {
+        "model": "gpt-5.6-sol",
+        "effort": "medium"
+      }
+    ]
+  },
+  {
+    "agent": "/root/templates",
+    "session_id": "01a075bc-b0a2-7130-afdd-d8d0007db522",
+    "log": "/Users/bharris/.codex/sessions/2026/09/06/rollout-2026-09-06T01-01-35-01a075bc-b0a2-7130-afdd-d8d0007db522.jsonl",
+    "observed_routing": [
+      {
+        "model": "gpt-6-astra",
+        "effort": "low"
+      }
+    ]
+  },
+  {
+    "agent": "/root/portfolio",
+    "session_id": "01a075b3-9b15-7c41-aeb1-2e15fb507eb5",
+    "log": "/Users/bharris/.codex/sessions/2026/09/06/rollout-2026-09-06T00-51-40-01a075b3-9b15-7c41-aeb1-2e15fb507eb5.jsonl",
+    "observed_routing": [
+      {
+        "model": "gpt-6-astra",
+        "effort": "low"
+      }
+    ]
+  },
+  {
+    "agent": "/root/final_review",
+    "session_id": "01a075c9-5c86-7441-9fc3-6e553115182a",
+    "log": "/Users/bharris/.codex/sessions/2026/09/06/rollout-2026-09-06T01-15-25-01a075c9-5c86-7441-9fc3-6e553115182a.jsonl",
+    "observed_routing": [
+      {
+        "model": "gpt-5.6-sol",
+        "effort": "medium"
+      }
+    ]
+  },
+  {
+    "agent": "/root",
+    "session_id": "01a075a8-3f68-75e2-89b6-bee126406207",
+    "log": "/Users/bharris/.codex/sessions/2026/09/06/rollout-2026-09-06T00-39-15-01a075a8-3f68-75e2-89b6-bee126406207.jsonl",
+    "observed_routing": [
+      {
+        "model": "gpt-6-astra",
+        "effort": "low"
+      }
+    ]
+  }
+]

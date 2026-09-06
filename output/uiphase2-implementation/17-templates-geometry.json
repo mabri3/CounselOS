@@ -1,0 +1,244 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 83.99857330322266,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "font": "13px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 237.7627716064453,
+      "x": 756.7826538085938,
+      "y": 66.85369110107422
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 763.68603515625,
+      "y": 92.54261016845705
+    },
+    {
+      "font": "15px",
+      "height": 1929.644775390625,
+      "tag": "MAIN",
+      "text": "Output templatesChoose how the business receives legal work.",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": 83.99857330322266
+    },
+    {
+      "font": "48px",
+      "height": 53.749996185302734,
+      "tag": "H1",
+      "text": "Output templates",
+      "width": 934.54541015625,
+      "x": 40,
+      "y": 111.99573516845705
+    },
+    {
+      "font": "15px",
+      "height": 46.26420211791992,
+      "tag": "BUTTON",
+      "text": "Output templates",
+      "width": 118.5014190673828,
+      "x": 40,
+      "y": 215.2911834716797
+    },
+    {
+      "font": "15px",
+      "height": 46.26420211791992,
+      "tag": "BUTTON",
+      "text": "Reusable skills",
+      "width": 100.35511016845705,
+      "x": 186.49856567382812,
+      "y": 215.2911834716797
+    },
+    {
+      "font": "15px",
+      "height": 1689.1832275390625,
+      "tag": "SECTION",
+      "text": "Output templatesTemplates set reusable structure and guidanc",
+      "width": 934.54541015625,
+      "x": 40,
+      "y": 284.460205078125
+    },
+    {
+      "font": "15px",
+      "height": 37.99715805053711,
+      "tag": "HEADER",
+      "text": "Output templatesTemplates set reusable structure and guidanc",
+      "width": 176.4701690673828,
+      "x": 798.0752563476562,
+      "y": 131.9957275390625
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Create blank template",
+      "width": 176.4701690673828,
+      "x": 798.0752563476562,
+      "y": 131.9957275390625
+    },
+    {
+      "font": "15px",
+      "height": 65.26277923583984,
+      "tag": "BUTTON",
+      "text": "1　Synthetic process briefBusiness Decision Brief4:7154b4cdd0",
+      "width": 932.7272338867188,
+      "x": 40.909088134765625,
+      "y": 331.3636169433594
+    },
+    {
+      "font": "15px",
+      "height": 65.26277923583984,
+      "tag": "BUTTON",
+      "text": "2　Business Decision BriefBusiness Decision Brief1:aef14aa0f2",
+      "width": 932.7272338867188,
+      "x": 40.909088134765625,
+      "y": 396.62640380859375
+    },
+    {
+      "font": "15px",
+      "height": 65.26277923583984,
+      "tag": "BUTTON",
+      "text": "3　Change Impact NoteChange Impact Note1:fa45066717dd9ef7Defa",
+      "width": 932.7272338867188,
+      "x": 40.909088134765625,
+      "y": 461.8891906738281
+    },
+    {
+      "font": "15px",
+      "height": 65.26277923583984,
+      "tag": "BUTTON",
+      "text": "4　Contract Clause RevisionContract Clause Revision1:ce083059",
+      "width": 932.7272338867188,
+      "x": 40.909088134765625,
+      "y": 527.1519775390625
+    },
+    {
+      "font": "15px",
+      "height": 65.26277923583984,
+      "tag": "BUTTON",
+      "text": "5　Draft Decision RationaleDecision Record1:91fb2db87ecab3b7D",
+      "width": 932.7272338867188,
+      "x": 40.909088134765625,
+      "y": 592.4147338867188
+    },
+    {
+      "font": "15px",
+      "height": 65.26277923583984,
+      "tag": "BUTTON",
+      "text": "6　Fact Confirmation RequestFact Confirmation Request1:a4a853",
+      "width": 932.7272338867188,
+      "x": 40.909088134765625,
+      "y": 657.6775512695312
+    },
+    {
+      "font": "15px",
+      "height": 65.26277923583984,
+      "tag": "BUTTON",
+      "text": "7　Implementation RequirementsImplementation Requirements1:63",
+      "width": 932.7272338867188,
+      "x": 40.909088134765625,
+      "y": 722.9403076171875
+    },
+    {
+      "font": "15px",
+      "height": 65.26277923583984,
+      "tag": "BUTTON",
+      "text": "8　Meeting Preparation BriefMeeting Preparation Brief1:2081f1",
+      "width": 932.7272338867188,
+      "x": 40.909088134765625,
+      "y": 788.203125
+    },
+    {
+      "font": "15px",
+      "height": 65.26277923583984,
+      "tag": "BUTTON",
+      "text": "9　Outside Counsel BriefOutside Counsel Brief1:2359ac8ce9f69f",
+      "width": 932.7272338867188,
+      "x": 40.909088134765625,
+      "y": 853.4658813476562
+    },
+    {
+      "font": "15px",
+      "height": 65.26277923583984,
+      "tag": "BUTTON",
+      "text": "10　Regulatory MemorandumRegulatory Memorandum1:29d154f5f4a22",
+      "width": 932.7272338867188,
+      "x": 40.909088134765625,
+      "y": 918.7286376953124
+    },
+    {
+      "font": "15px",
+      "height": 65.26277923583984,
+      "tag": "BUTTON",
+      "text": "11　Short Business EmailShort Business Email1:8841c21be3e0695",
+      "width": 932.7272338867188,
+      "x": 40.909088134765625,
+      "y": 983.991455078125
+    },
+    {
+      "font": "15px",
+      "height": 65.26277923583984,
+      "tag": "BUTTON",
+      "text": "12　Transaction ChecklistTransaction Checklist1:7548a7fad25b8",
+      "width": 932.7272338867188,
+      "x": 40.909088134765625,
+      "y": 1049.2542724609375
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Edit or rename",
+      "width": 127.88351440429688,
+      "x": 60.909088134765625,
+      "y": 1351.178955078125
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Make a copy",
+      "width": 112.63494110107422,
+      "x": 197.7911834716797,
+      "y": 1351.178955078125
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Set as default",
+      "width": 121.92471313476562,
+      "x": 319.4247131347656,
+      "y": 1351.178955078125
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Preview with this matter",
+      "width": 190.2130584716797,
+      "x": 81.81817626953125,
+      "y": 1893.8280029296875
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 0,
+  "url": "http://localhost:3134/skills",
+  "width": 1024
+}

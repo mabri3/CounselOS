@@ -1,0 +1,253 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 83.99857330322266,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 1024.54541015625,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "font": "13px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 237.7627716064453,
+      "x": 766.7826538085938,
+      "y": 66.85369110107422
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 773.68603515625,
+      "y": 92.54261016845705
+    },
+    {
+      "font": "15px",
+      "height": 972.0880126953124,
+      "tag": "MAIN",
+      "text": "Briefing overviewStay current without losing your placeTrack",
+      "width": 1024.54541015625,
+      "x": 0,
+      "y": 83.99857330322266
+    },
+    {
+      "font": "15px",
+      "height": 200.4332275390625,
+      "tag": "HEADER",
+      "text": "Briefing overviewStay current without losing your placeTrack",
+      "width": 583.1889038085938,
+      "x": 27.99715805053711,
+      "y": 125.99431610107422
+    },
+    {
+      "font": "50px",
+      "height": 111.98863220214844,
+      "tag": "H1",
+      "text": "Stay current without losing your place",
+      "width": 583.1889038085938,
+      "x": 27.99715805053711,
+      "y": 155.4474334716797
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Save this view",
+      "width": 124.80823516845705,
+      "x": 871.7400512695312,
+      "y": 996.0936889648438
+    },
+    {
+      "font": "14px",
+      "height": 51.07954406738281,
+      "tag": "BUTTON",
+      "text": "2Everything",
+      "width": 145.56817626953125,
+      "x": 28.906248092651367,
+      "y": 327.3366394042969
+    },
+    {
+      "font": "14px",
+      "height": 51.07954406738281,
+      "tag": "BUTTON",
+      "text": "1Needs your review",
+      "width": 195.6676025390625,
+      "x": 174.47442626953125,
+      "y": 327.3366394042969
+    },
+    {
+      "font": "14px",
+      "height": 51.07954406738281,
+      "tag": "BUTTON",
+      "text": "2Unread",
+      "width": 123.90624237060548,
+      "x": 370.14202880859375,
+      "y": 327.3366394042969
+    },
+    {
+      "font": "14px",
+      "height": 51.07954406738281,
+      "tag": "BUTTON",
+      "text": "2Saved",
+      "width": 116.22869110107422,
+      "x": 494.04827880859375,
+      "y": 327.3366394042969
+    },
+    {
+      "font": "15px",
+      "height": 263.2315368652344,
+      "tag": "FORM",
+      "text": "Search these developmentsShowEverythingUnread onlyAlready re",
+      "width": 583.1889038085938,
+      "x": 27.99715805053711,
+      "y": 379.32525634765625
+    },
+    {
+      "font": "13.5px",
+      "height": 41.9957389831543,
+      "tag": "BUTTON",
+      "text": "Clear filters",
+      "width": 100,
+      "x": 392.2798156738281,
+      "y": 551.8465576171875
+    },
+    {
+      "font": "13.5px",
+      "height": 41.9957389831543,
+      "tag": "BUTTON",
+      "text": "Apply",
+      "width": 100,
+      "x": 500.2769775390625,
+      "y": 551.8465576171875
+    },
+    {
+      "font": "15px",
+      "height": 295.3479919433594,
+      "tag": "SECTION",
+      "text": "● UnreadAug 29, 2026 · Alternative data and automated credit",
+      "width": 583.1889038085938,
+      "x": 27.99715805053711,
+      "y": 670.7385864257812
+    },
+    {
+      "font": "15px",
+      "height": 683.0965576171875,
+      "tag": "ASIDE",
+      "text": "Saved viewsManage watchesA saved view remembers a search. Op",
+      "width": 331.3565368652344,
+      "x": 665.1846313476562,
+      "y": 115.99431610107422
+    },
+    {
+      "font": "15px",
+      "height": 207.7982940673828,
+      "tag": "SECTION",
+      "text": "Saved viewsManage watchesA saved view remembers a search. Op",
+      "width": 331.3565368652344,
+      "x": 665.1846313476562,
+      "y": 115.99431610107422
+    },
+    {
+      "font": "12px",
+      "height": 18.004261016845703,
+      "tag": "H2",
+      "text": "Saved views",
+      "width": 93.515625,
+      "x": 686.09375,
+      "y": 140.9019775390625
+    },
+    {
+      "font": "17px",
+      "height": 23.799715042114254,
+      "tag": "BUTTON",
+      "text": "For you",
+      "width": 289.538330078125,
+      "x": 686.09375,
+      "y": 253.0894775390625
+    },
+    {
+      "font": "12.5px",
+      "height": 40,
+      "tag": "BUTTON",
+      "text": "Make a digest now",
+      "width": 188.1818084716797,
+      "x": 776.5411376953125,
+      "y": 321.5269775390625
+    },
+    {
+      "font": "12.5px",
+      "height": 40,
+      "tag": "BUTTON",
+      "text": "Digest daily at 8 AM",
+      "width": 188.1818084716797,
+      "x": 776.5411376953125,
+      "y": 367.5213012695313
+    },
+    {
+      "font": "12.5px",
+      "height": 40,
+      "tag": "BUTTON",
+      "text": "Rename",
+      "width": 188.1818084716797,
+      "x": 776.5411376953125,
+      "y": 413.515625
+    },
+    {
+      "font": "12.5px",
+      "height": 40,
+      "tag": "BUTTON",
+      "text": "Delete",
+      "width": 188.1818084716797,
+      "x": 776.5411376953125,
+      "y": 459.5099182128906
+    },
+    {
+      "font": "15px",
+      "height": 232.61363220214844,
+      "tag": "SECTION",
+      "text": "DigestsA digest saves a summary and item list for one date. ",
+      "width": 331.3565368652344,
+      "x": 665.1846313476562,
+      "y": 347.7911682128906
+    },
+    {
+      "font": "12px",
+      "height": 18.004261016845703,
+      "tag": "H2",
+      "text": "Digests",
+      "width": 289.538330078125,
+      "x": 686.09375,
+      "y": 372.6988525390625
+    },
+    {
+      "font": "15px",
+      "height": 194.6875,
+      "tag": "SECTION",
+      "text": "Where this comes fromWatches are the standing searches that ",
+      "width": 331.3565368652344,
+      "x": 665.1846313476562,
+      "y": 604.4033813476562
+    },
+    {
+      "font": "12px",
+      "height": 18.004261016845703,
+      "tag": "H2",
+      "text": "Where this comes from",
+      "width": 289.538330078125,
+      "x": 686.09375,
+      "y": 629.31103515625
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 0,
+  "url": "http://localhost:3134/briefing?q=Reading+only&read=any&saved=any&company_connection=any&packet=any&sort=newest&group=none&limit=25",
+  "width": 1024
+}

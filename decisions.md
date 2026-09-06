@@ -163,3 +163,12 @@ Keep entries chronological and append-only. When a decision changes, add a new e
 - Scope limit: Do not infer typed state from arbitrary chat prose. Do not add a general semantic synchronization engine or a vault migration framework.
 - Verification: 665 backend tests; frontend typecheck and production build; graph refresh; and a visible old-vault browser check that showed current app-managed tools, removed the resolved CIP card, removed generic no-change text, and recovered a new exception question with three useful choices.
 - Evidence: `backend/app/agents/registry.py`, `backend/app/agents/context.py`, `backend/app/routers/chat.py`, `backend/app/services/matter_records.py`, `backend/app/agents/runner.py`, `frontend/components/ChatCards.tsx`, and focused fail-then-pass tests.
+
+
+### 2026-09-05 — Milestone: Saved decision map paths
+
+- Status: `implemented`
+- Result: Normal inquiry and issue-targeted research publish optional tests, conditions and options beside useful prose. The map and issue review use the same exact saved analysis. Preview and hypothetical work remain separate from explicit lawyer decisions.
+- Record integrity: Current pointers are per issue. Late or stale inputs preserve prior analysis. Selected/unsaved input hashes remain exact. Decisions retain server-validated canonical analysis and option versions beside human wording; retries cannot change the payload under the same key.
+- Verification: 1,222 backend tests, frontend typecheck/map checks/build, isolated configured-model and browser evidence, fresh Sol Medium review and correction recheck, graph update and protected-vault audit. Native 200% browser zoom was unavailable; CSS enlargement passed. Graph HTML exceeded the size limit.
+- Evidence: `docs/decision-map-redesign.contract.md`, `docs/decision-map-redesign.tracking.md`, `docs/decision-map-redesign.verification.md`.

@@ -1,0 +1,693 @@
+{
+  "synthetic": true,
+  "vault": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2-implementation/test-root/vault",
+  "pointer": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2-implementation/test-root/active-vault.json",
+  "matters": [
+    {
+      "matter_id": "MAT-DEMO-ORBIT",
+      "path": "03_Matters/orbit-bank-data",
+      "title": "Orbit: Bank-Transaction Data Expansion",
+      "description": "Use transaction data for a new cash-flow eligibility signal.",
+      "matter_type": "product_launch",
+      "product_area": "Platform",
+      "business_team": "Product",
+      "requester": "Product Manager",
+      "legal_owner": "Brian Harris",
+      "business_owner": "Product Lead",
+      "status": "intake",
+      "priority": "normal",
+      "risk_level": "high",
+      "target_date": "2026-09-20",
+      "privilege": "privileged_and_confidential",
+      "next_action": "Complete orientation and identify missing facts.",
+      "created_at": "2026-08-21T10:00:00+00:00",
+      "updated_at": "2026-08-28T23:10:24+00:00",
+      "jurisdiction_scope": [
+        "US"
+      ],
+      "closed_at": null,
+      "review": {
+        "segments": [
+          {
+            "kind": "equal",
+            "text": "# Orbit: Bank-Transaction Data Expansion\n\nUse transaction data for a new cash-flow eligibility signal.\n",
+            "change_id": "",
+            "author_id": "",
+            "author_name": "",
+            "author_color": "",
+            "created_at": ""
+          }
+        ],
+        "comments": [],
+        "version": 2,
+        "tracking": false,
+        "authors": [
+          {
+            "author_id": "author-themis",
+            "name": "Themis",
+            "color": "#2F5597"
+          }
+        ],
+        "comment_events": [
+          {
+            "event_id": "EVT-20260829-4f7178",
+            "thread_id": "COM-20260829-b1863a",
+            "action": "deleted",
+            "actor": "Lawyer",
+            "created_at": "2026-08-29T18:54:22+00:00"
+          }
+        ]
+      },
+      "open_work_items": 1,
+      "required_work_items": 1,
+      "current_work_product_final_path": null,
+      "response_approved_at": null,
+      "response_sent_at": null,
+      "work_state": {
+        "next_action": "Run adverse-action research",
+        "next_work_item_id": "WI-MAT-DEMO-ORBIT-1",
+        "next_owner": "Brian Harris",
+        "next_actor": "named_owner",
+        "due_at": "2026-09-20",
+        "execution_state": "not_running",
+        "active_run_id": null,
+        "execution_note": "",
+        "signal": {
+          "kind": "waiting_on_owner",
+          "label": "Waiting on Brian Harris"
+        }
+      },
+      "consistency_issues": []
+    },
+    {
+      "matter_id": "MAT-DEMO-PULSE",
+      "path": "03_Matters/pulse-earned-wage-access",
+      "title": "Pulse: Earned Wage Access Expansion",
+      "description": "Evaluate a direct-to-consumer earned wage access product with optional tips, an instant-transfer fee, and payroll-data underwriting in three launch states.",
+      "matter_type": "product_launch",
+      "product_area": "Money Movement",
+      "business_team": "New Products",
+      "requester": "Jordan Lee",
+      "legal_owner": "Brian Harris",
+      "business_owner": "Maya Chen",
+      "status": "intake",
+      "priority": "high",
+      "risk_level": "high",
+      "target_date": "2026-09-04",
+      "privilege": "privileged_and_confidential",
+      "next_action": "Confirm the funds flow, repayment method, and state launch order before scoping the legal review.",
+      "created_at": "2026-08-28T15:20:00+00:00",
+      "updated_at": "2026-08-28T16:05:00+00:00",
+      "jurisdiction_scope": [
+        "California",
+        "Nevada",
+        "New York"
+      ],
+      "closed_at": null,
+      "open_work_items": 2,
+      "required_work_items": 2,
+      "current_work_product_final_path": null,
+      "response_approved_at": null,
+      "response_sent_at": null,
+      "work_state": {
+        "next_action": "Confirm legal funder and end-to-end funds flow",
+        "next_work_item_id": "WI-MAT-DEMO-PULSE-1",
+        "next_owner": "Marcus Grant",
+        "next_actor": "named_owner",
+        "due_at": "2026-09-01",
+        "execution_state": "not_running",
+        "active_run_id": null,
+        "execution_note": "",
+        "signal": {
+          "kind": "overdue",
+          "label": "Overdue"
+        }
+      },
+      "consistency_issues": []
+    },
+    {
+      "matter_id": "MAT-DEMO-NORTHSTAR",
+      "path": "03_Matters/northstar-ai-underwriting",
+      "title": "Northstar: AI Credit-Line Increase Model",
+      "description": "Review a machine-learning model that would use cash-flow and device signals to approve, reduce, or deny credit-line increases for small-business cardholders.",
+      "matter_type": "model_change",
+      "product_area": "Credit",
+      "business_team": "Lending",
+      "requester": "Aisha Patel",
+      "legal_owner": "Brian Harris",
+      "business_owner": "Theo Martin",
+      "status": "research",
+      "priority": "high",
+      "risk_level": "high",
+      "target_date": "2026-09-10",
+      "privilege": "privileged_and_confidential",
+      "next_action": "Complete the adverse-action, fair-lending, and data-permission research packet.",
+      "created_at": "2026-08-19T17:30:00+00:00",
+      "updated_at": "2026-08-28T14:40:00+00:00",
+      "jurisdiction_scope": [
+        "US"
+      ],
+      "closed_at": null,
+      "open_work_items": 2,
+      "required_work_items": 2,
+      "current_work_product_final_path": null,
+      "response_approved_at": null,
+      "response_sent_at": null,
+      "work_state": {
+        "next_action": "Back-test model outputs against proposed notice reasons",
+        "next_work_item_id": "WI-MAT-DEMO-NORTHSTAR-1",
+        "next_owner": "Lena Brooks",
+        "next_actor": "named_owner",
+        "due_at": "2026-09-03",
+        "execution_state": "not_running",
+        "active_run_id": null,
+        "execution_note": "",
+        "signal": {
+          "kind": "overdue",
+          "label": "Overdue"
+        }
+      },
+      "consistency_issues": []
+    },
+    {
+      "matter_id": "MAT-DEMO-RELAY",
+      "path": "03_Matters/relay-open-banking",
+      "title": "Relay: Open-Banking Reauthentication and Data Use",
+      "description": "Decide how to replace credential-based account linking, refresh customer permission, and limit secondary use of transaction data.",
+      "matter_type": "product_change",
+      "product_area": "Connected Accounts",
+      "business_team": "Payments",
+      "requester": "Omar Haddad",
+      "legal_owner": "Brian Harris",
+      "business_owner": "Nina Foster",
+      "status": "explore",
+      "priority": "normal",
+      "risk_level": "medium",
+      "target_date": "2026-09-15",
+      "privilege": "privileged_and_confidential",
+      "next_action": "Choose the consent migration path and approve the proposed data-use limits.",
+      "created_at": "2026-08-05T16:00:00+00:00",
+      "updated_at": "2026-08-28T13:15:00+00:00",
+      "jurisdiction_scope": [
+        "US"
+      ],
+      "closed_at": null,
+      "open_work_items": 1,
+      "required_work_items": 1,
+      "current_work_product_final_path": null,
+      "response_approved_at": null,
+      "response_sent_at": null,
+      "work_state": {
+        "next_action": "Select the customer reauthentication path",
+        "next_work_item_id": "WI-MAT-DEMO-RELAY-1",
+        "next_owner": "Brian Harris",
+        "next_actor": "named_owner",
+        "due_at": "2026-09-02",
+        "execution_state": "not_running",
+        "active_run_id": null,
+        "execution_note": "",
+        "signal": {
+          "kind": "overdue",
+          "label": "Overdue"
+        }
+      },
+      "consistency_issues": []
+    },
+    {
+      "matter_id": "MAT-DEMO-BEACON",
+      "path": "03_Matters/beacon-instant-onboarding",
+      "title": "Beacon: Instant Business Onboarding",
+      "description": "New onboarding flow removes a manual review step for low-risk applicants.",
+      "matter_type": "product_change",
+      "product_area": "Platform",
+      "business_team": "Product",
+      "requester": "Product Manager",
+      "legal_owner": "Brian Harris",
+      "business_owner": "Product Lead",
+      "status": "research",
+      "priority": "high",
+      "risk_level": "medium",
+      "target_date": "2026-09-12",
+      "privilege": "privileged_and_confidential",
+      "next_action": "Run or supervise first-pass research.",
+      "created_at": "2026-08-25T15:00:00+00:00",
+      "updated_at": "2026-08-28T07:00:08+00:00",
+      "jurisdiction_scope": [
+        "US"
+      ],
+      "closed_at": null,
+      "review": {
+        "segments": [
+          {
+            "kind": "equal",
+            "text": "# Beacon: Instant Business Onboarding\n\nNew onboarding flow removes a manual review step for low-risk applicants.\n",
+            "change_id": "",
+            "author_id": "",
+            "author_name": "",
+            "author_color": "",
+            "created_at": ""
+          }
+        ],
+        "comments": [],
+        "version": 2,
+        "tracking": false,
+        "authors": [],
+        "comment_events": []
+      },
+      "open_work_items": 2,
+      "required_work_items": 2,
+      "current_work_product_final_path": null,
+      "response_approved_at": null,
+      "response_sent_at": null,
+      "work_state": {
+        "next_action": "Confirm partner approval requirement",
+        "next_work_item_id": "WI-MAT-DEMO-BEACON-2",
+        "next_owner": "Brian Harris",
+        "next_actor": "named_owner",
+        "due_at": "2026-09-12",
+        "execution_state": "not_running",
+        "active_run_id": null,
+        "execution_note": "",
+        "signal": {
+          "kind": "waiting_on_owner",
+          "label": "Waiting on Brian Harris"
+        }
+      },
+      "consistency_issues": []
+    },
+    {
+      "matter_id": "MAT-DEMO-CEDAR",
+      "path": "03_Matters/cedar-cash-sweep",
+      "title": "Cedar: Cash Sweep and Deposit Insurance Disclosures",
+      "description": "Completed launch review for an automatic cash-sweep program that allocates business-customer funds among partner banks.",
+      "matter_type": "product_launch",
+      "product_area": "Deposits",
+      "business_team": "Banking",
+      "requester": "Chris Bennett",
+      "legal_owner": "Brian Harris",
+      "business_owner": "Evelyn Park",
+      "status": "closed",
+      "priority": "normal",
+      "risk_level": "medium",
+      "target_date": "2026-08-22",
+      "privilege": "privileged_and_confidential",
+      "next_action": "No active work. Review reconciliation evidence after the first 90 days of production.",
+      "created_at": "2026-07-13T16:00:00+00:00",
+      "updated_at": "2026-08-25T21:00:00+00:00",
+      "jurisdiction_scope": [
+        "US"
+      ],
+      "closed_at": "2026-08-25T21:00:00+00:00",
+      "review": {
+        "segments": [
+          {
+            "kind": "equal",
+            "text": "# Cedar: Cash Sweep and Deposit Insurance Disclosures\n\nCompleted launch review for an automatic cash-sweep program that allocates business-customer funds among partner banks.\n",
+            "change_id": "",
+            "author_id": "",
+            "author_name": "",
+            "author_color": "",
+            "created_at": ""
+          }
+        ],
+        "comments": [],
+        "version": 2,
+        "tracking": false,
+        "authors": [],
+        "comment_events": []
+      },
+      "open_work_items": 1,
+      "required_work_items": 0,
+      "current_work_product_final_path": null,
+      "response_approved_at": null,
+      "response_sent_at": null,
+      "work_state": {
+        "next_action": "No active work. Review reconciliation evidence after the first 90 days of production.",
+        "next_work_item_id": null,
+        "next_owner": null,
+        "next_actor": "none",
+        "due_at": "2026-08-22",
+        "execution_state": "not_running",
+        "active_run_id": null,
+        "execution_note": "",
+        "signal": {
+          "kind": "none",
+          "label": ""
+        }
+      },
+      "consistency_issues": [
+        {
+          "code": "closed_without_required_lifecycle_fields",
+          "summary": "Closed state is missing delivery, closure, or required-work facts.",
+          "repair": "Review the lifecycle records. Automatic repair is not safe."
+        }
+      ]
+    },
+    {
+      "matter_id": "MAT-DEMO-HARBOR",
+      "path": "03_Matters/harbor-support-response",
+      "title": "Harbor: Account Hold Support Response",
+      "description": "Respond to a product escalation involving an account hold and inconsistent support messaging.",
+      "matter_type": "consumer_complaint",
+      "product_area": "Platform",
+      "business_team": "Product",
+      "requester": "Product Manager",
+      "legal_owner": "Brian Harris",
+      "business_owner": "Product Lead",
+      "status": "respond",
+      "priority": "high",
+      "risk_level": "medium",
+      "target_date": "2026-08-27",
+      "privilege": "privileged_and_confidential",
+      "next_action": "Approve the customer response.",
+      "created_at": "2026-08-20T08:00:00+00:00",
+      "updated_at": "2026-08-25T19:00:00+00:00",
+      "jurisdiction_scope": [
+        "US"
+      ],
+      "durable_decision_needed": true,
+      "response_approved_at": null,
+      "response_sent_at": null,
+      "closed_at": null,
+      "review": {
+        "comments": [],
+        "tracking": false,
+        "segments": [
+          {
+            "kind": "equal",
+            "text": "# Harbor: Account Hold Support Response\n\n",
+            "change_id": "",
+            "author_id": "",
+            "author_name": "",
+            "author_color": "",
+            "created_at": ""
+          },
+          {
+            "kind": "equal",
+            "text": "Respond",
+            "change_id": "",
+            "author_id": "",
+            "author_name": "",
+            "author_color": "",
+            "created_at": ""
+          },
+          {
+            "kind": "equal",
+            "text": " to ",
+            "change_id": "",
+            "author_id": "",
+            "author_name": "",
+            "author_color": "",
+            "created_at": ""
+          },
+          {
+            "kind": "equal",
+            "text": "a",
+            "change_id": "",
+            "author_id": "",
+            "author_name": "",
+            "author_color": "",
+            "created_at": ""
+          },
+          {
+            "kind": "equal",
+            "text": " ",
+            "change_id": "",
+            "author_id": "",
+            "author_name": "",
+            "author_color": "",
+            "created_at": ""
+          },
+          {
+            "kind": "equal",
+            "text": "product escalation involving",
+            "change_id": "",
+            "author_id": "",
+            "author_name": "",
+            "author_color": "",
+            "created_at": ""
+          },
+          {
+            "kind": "equal",
+            "text": " an ",
+            "change_id": "",
+            "author_id": "",
+            "author_name": "",
+            "author_color": "",
+            "created_at": ""
+          },
+          {
+            "kind": "equal",
+            "text": "account",
+            "change_id": "",
+            "author_id": "",
+            "author_name": "",
+            "author_color": "",
+            "created_at": ""
+          },
+          {
+            "kind": "equal",
+            "text": " hold and",
+            "change_id": "",
+            "author_id": "",
+            "author_name": "",
+            "author_color": "",
+            "created_at": ""
+          },
+          {
+            "kind": "equal",
+            "text": " inconsistent support",
+            "change_id": "",
+            "author_id": "",
+            "author_name": "",
+            "author_color": "",
+            "created_at": ""
+          },
+          {
+            "kind": "equal",
+            "text": " messaging.",
+            "change_id": "",
+            "author_id": "",
+            "author_name": "",
+            "author_color": "",
+            "created_at": ""
+          },
+          {
+            "kind": "equal",
+            "text": " The current question is: Can we send this customer response as written? The current working recommendation is to approve a plain-English response acknowledging inconsistent communication, state that the review is complete, offer a limited service credit, and standardize the support macro. The remaining work is to review the prepared response and remediation amount and decide whether account holds require notice and a limited service credit",
+            "change_id": "",
+            "author_id": "",
+            "author_name": "",
+            "author_color": "",
+            "created_at": ""
+          },
+          {
+            "kind": "equal",
+            "text": "\n",
+            "change_id": "",
+            "author_id": "",
+            "author_name": "",
+            "author_color": "",
+            "created_at": ""
+          }
+        ],
+        "version": 2,
+        "authors": [
+          {
+            "author_id": "author-themis",
+            "name": "Themis",
+            "color": "#2F5597"
+          }
+        ],
+        "comment_events": []
+      },
+      "open_work_items": 2,
+      "required_work_items": 2,
+      "current_work_product_final_path": null,
+      "work_state": {
+        "next_action": "Approve customer response",
+        "next_work_item_id": "WI-MAT-DEMO-HARBOR-1",
+        "next_owner": "Brian Harris",
+        "next_actor": "named_owner",
+        "due_at": "2026-08-27",
+        "execution_state": "not_running",
+        "active_run_id": null,
+        "execution_note": "",
+        "signal": {
+          "kind": "overdue",
+          "label": "Overdue"
+        }
+      },
+      "consistency_issues": []
+    },
+    {
+      "matter_id": "MAT-DEMO-APEX",
+      "path": "03_Matters/project-apex-ai",
+      "title": "Project Apex: AI Voice Telemetry",
+      "description": "Review launch of an optional voice-telemetry feature and its retention settings.",
+      "matter_type": "ai_governance",
+      "product_area": "Platform",
+      "business_team": "Product",
+      "requester": "Product Manager",
+      "legal_owner": "Brian Harris",
+      "business_owner": "Product Lead",
+      "status": "explore",
+      "priority": "high",
+      "risk_level": "high",
+      "target_date": "2026-09-05",
+      "privilege": "privileged_and_confidential",
+      "next_action": "Choose the viable launch path and confirm the retention fact that changes the recommendation.",
+      "created_at": "2026-08-18T09:00:00+00:00",
+      "updated_at": "2026-08-25T18:20:00+00:00",
+      "jurisdiction_scope": [
+        "US"
+      ],
+      "durable_decision_needed": true,
+      "review": {
+        "segments": [
+          {
+            "kind": "equal",
+            "text": "# Project Apex: AI Voice Telemetry\n\nReview launch of an optional voice-telemetry feature and its retention settings.\n",
+            "change_id": "",
+            "author_id": "",
+            "author_name": "",
+            "author_color": "",
+            "created_at": ""
+          }
+        ],
+        "comments": [],
+        "version": 2,
+        "tracking": false,
+        "authors": [],
+        "comment_events": []
+      },
+      "open_work_items": 2,
+      "required_work_items": 2,
+      "current_work_product_final_path": null,
+      "response_approved_at": null,
+      "response_sent_at": null,
+      "closed_at": null,
+      "work_state": {
+        "next_action": "Confirm whether audio is used for model training",
+        "next_work_item_id": "WI-MAT-DEMO-APEX-1",
+        "next_owner": "Brian Harris",
+        "next_actor": "named_owner",
+        "due_at": "2026-09-05",
+        "execution_state": "not_running",
+        "active_run_id": null,
+        "execution_note": "",
+        "signal": {
+          "kind": "overdue",
+          "label": "Overdue"
+        }
+      },
+      "consistency_issues": []
+    },
+    {
+      "matter_id": "MAT-DEMO-DELTA",
+      "path": "03_Matters/delta-pricing-copy",
+      "title": "Delta: Same-Day Payout Pricing",
+      "description": "New fee and marketing copy for optional same-day payouts.",
+      "matter_type": "marketing_review",
+      "product_area": "Platform",
+      "business_team": "Product",
+      "requester": "Product Manager",
+      "legal_owner": "Brian Harris",
+      "business_owner": "Product Lead",
+      "status": "generate",
+      "priority": "normal",
+      "risk_level": "medium",
+      "target_date": "2026-09-02",
+      "privilege": "privileged_and_confidential",
+      "next_action": "Generate the approved disclosure and marketing edits from the selected pricing path.",
+      "created_at": "2026-08-12T16:00:00+00:00",
+      "updated_at": "2026-08-25T12:10:00+00:00",
+      "jurisdiction_scope": [
+        "US"
+      ],
+      "open_work_items": 2,
+      "required_work_items": 2,
+      "current_work_product_final_path": null,
+      "response_approved_at": null,
+      "response_sent_at": null,
+      "closed_at": null,
+      "work_state": {
+        "next_action": "Draft same-day payout disclosure",
+        "next_work_item_id": "WI-MAT-DEMO-DELTA-1",
+        "next_owner": "Brian Harris",
+        "next_actor": "named_owner",
+        "due_at": "2026-09-02",
+        "execution_state": "not_running",
+        "active_run_id": null,
+        "execution_note": "",
+        "signal": {
+          "kind": "overdue",
+          "label": "Overdue"
+        }
+      },
+      "consistency_issues": []
+    },
+    {
+      "matter_id": "MAT-DEMO-MASON",
+      "path": "03_Matters/mason-sdk-closed",
+      "title": "Mason: Analytics SDK Review",
+      "description": "Completed review of an analytics SDK used only in the authenticated dashboard.",
+      "matter_type": "privacy_review",
+      "product_area": "Platform",
+      "business_team": "Product",
+      "requester": "Product Manager",
+      "legal_owner": "Brian Harris",
+      "business_owner": "Product Lead",
+      "status": "closed",
+      "priority": "low",
+      "risk_level": "low",
+      "target_date": "2026-07-15",
+      "privilege": "privileged_and_confidential",
+      "next_action": "No active work. Monitor the recorded vendor-use restriction.",
+      "created_at": "2026-06-20T08:00:00+00:00",
+      "updated_at": "2026-07-12T18:00:00+00:00",
+      "jurisdiction_scope": [
+        "US"
+      ],
+      "open_work_items": 0,
+      "required_work_items": 0,
+      "current_work_product_final_path": null,
+      "response_approved_at": null,
+      "response_sent_at": null,
+      "closed_at": null,
+      "work_state": {
+        "next_action": "No active work. Monitor the recorded vendor-use restriction.",
+        "next_work_item_id": null,
+        "next_owner": null,
+        "next_actor": "none",
+        "due_at": "2026-07-15",
+        "execution_state": "not_running",
+        "active_run_id": null,
+        "execution_note": "",
+        "signal": {
+          "kind": "none",
+          "label": ""
+        }
+      },
+      "consistency_issues": [
+        {
+          "code": "closed_without_required_lifecycle_fields",
+          "summary": "Closed state is missing delivery, closure, or required-work facts.",
+          "repair": "Review the lifecycle records. Automatic repair is not safe."
+        }
+      ]
+    }
+  ],
+  "research_path": "03_Matters/project-apex-ai/research/phase2-process.md",
+  "research_matter": "MAT-DEMO-APEX",
+  "review_packets": [
+    "PKT-PHASE2-1",
+    "PKT-PHASE2-2",
+    "PKT-PHASE2-3",
+    "PKT-PHASE2-4",
+    "PKT-PHASE2-5"
+  ],
+  "digest": "DIG-PHASE2",
+  "partial_scan": "SCAN-PHASE2-PARTIAL",
+  "fixture_note": "Stored synthetic states are not actions exercised in the browser."
+}

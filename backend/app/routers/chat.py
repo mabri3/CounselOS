@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 from datetime import date
+from copy import deepcopy
 import re
+import json
+import hashlib
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, Header
 from pydantic import BaseModel
 
 from app.models.api import ChatMessage, ChatRequest, ChatResponse, ChatRun, DecisionCreate, MatterUpdateCard
@@ -12,9 +15,37 @@ from app.runtime import AppContext
 from app.agents.runner import RunnerExecutionState
 from app.agents.output import clean_conversation_for_display, reconcile_user_facing_reply
 from app.services.recommendations import RecommendationService
+from app.models.workspace import ConversationTarget, ScenarioOutcome
+from app.services.workspace import WorkspaceConflict
+from app.utils.ids import new_id
+from app.services.dossier import serialized
+from app.services.workspace_actions import extract_claim_support
 
 
 router = APIRouter(tags=["chat"])
+
+
+def trusted_chat_actor(payload, context, person_id=None):
+    from app.models.continuity import ActionActor
+    # Public bodies never choose trusted human provenance or comparison context.
+    clean = payload.model_copy(update={"action_actor": None, "continuity_context": None, "frozen_context": None, "frozen_template_use": None})
+    if clean.matter_id and clean.source_action_key:
+        for run in context.chat_runs.list(clean.matter_id):
+            submitted = run.get("request") or {}
+            if submitted.get("source_action_key") == clean.source_action_key:
+                # start() checks exact command identity before returning this run.
+                saved = submitted.get("action_actor") or {"person_id": "historical-unknown", "display_name": "Unattributed lawyer", "mode": "single"}
+                return clean.model_copy(update={"action_actor": ActionActor.model_validate(saved).model_dump(), "lawyer_author": saved["display_name"]})
+    if clean.matter_id and clean.source_action_key:
+        for summary in context.chat_history.list(clean.matter_id):
+            conversation = context.chat_history.get(clean.matter_id, summary["conversation_id"])
+            for message in conversation["messages"]:
+                submitted = message.get("workspace_submission") or {}
+                if submitted.get("source_action_key") == clean.source_action_key:
+                    saved = submitted.get("action_actor") or {"person_id": "historical-unknown", "display_name": "Unattributed lawyer", "mode": "single"}
+                    return clean.model_copy(update={"action_actor": saved, "lawyer_author": saved["display_name"]})
+    actor = context.workspace_team.resolve_actor(person_id or None)
+    return clean.model_copy(update={"action_actor": actor.model_dump(), "lawyer_author": actor.display_name})
 
 
 class IntakeQuestionRecoveryRequest(BaseModel):
@@ -49,14 +80,17 @@ def get_daily_conversation(
 
 
 @router.post("/chat", response_model=ChatResponse)
-async def chat(payload: ChatRequest, context: AppContext = Depends(get_context)):
-    return await execute_chat(payload, context)
+async def chat(payload: ChatRequest, context: AppContext = Depends(get_context), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
+    payload = trusted_chat_actor(payload, context, person_id)
+    return await execute_chat(payload.model_copy(update={"frozen_context": None, "frozen_template_use": None, "trusted_user_message": None, "trusted_message_id": None}), context)
 
 
 @router.post("/matters/{matter_id}/chat-runs", response_model=ChatRun, status_code=202)
-async def start_chat_run(matter_id: str, payload: ChatRequest, context: AppContext = Depends(get_context)):
+async def start_chat_run(matter_id: str, payload: ChatRequest, context: AppContext = Depends(get_context), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     try:
-        return context.chat_runs.start(matter_id, payload)
+        return context.chat_runs.start(matter_id, trusted_chat_actor(payload, context, person_id))
+    except WorkspaceConflict as exc:
+        raise HTTPException(status_code=409, detail=exc.detail) from exc
     except (KeyError, FileNotFoundError) as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
@@ -76,6 +110,8 @@ async def recover_intake_question(
         latest = conversation["messages"][-1] if conversation["messages"] else None
         if not latest:
             raise ValueError("The active intake is waiting for its current turn to finish.")
+        if latest.get("workspace_action"):
+            raise ValueError("The latest turn is workspace work, not an intake question to recover.")
         if latest.get("role") == "assistant":
             if any(
                 card.get("type") == "question"
@@ -112,16 +148,36 @@ async def recover_intake_question(
             persist_user_message=False,
         )
         return ChatRun.model_validate(run)
+    except WorkspaceConflict as exc:
+        raise HTTPException(status_code=409, detail=exc.detail) from exc
     except (KeyError, FileNotFoundError) as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
 
 
+@router.get("/matters/{matter_id}/chat-runs", response_model=list[ChatRun])
+async def list_chat_runs(matter_id: str, conversation_id: str | None = None, context: AppContext = Depends(get_context)):
+    try:
+        return context.chat_runs.list(matter_id, conversation_id)
+    except (KeyError, FileNotFoundError) as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
 @router.get("/matters/{matter_id}/chat-runs/{run_id}", response_model=ChatRun)
 async def get_chat_run(matter_id: str, run_id: str, context: AppContext = Depends(get_context)):
     try:
         return context.chat_runs.get(matter_id, run_id)
+    except WorkspaceConflict as exc:
+        raise HTTPException(status_code=409, detail=exc.detail) from exc
+    except (KeyError, FileNotFoundError) as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@router.post("/matters/{matter_id}/chat-runs/{run_id}/cancel", response_model=ChatRun)
+async def cancel_chat_run(matter_id: str, run_id: str, context: AppContext = Depends(get_context)):
+    try:
+        return await context.chat_runs.cancel(matter_id, run_id)
     except (KeyError, FileNotFoundError) as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
@@ -130,10 +186,162 @@ async def get_chat_run(matter_id: str, run_id: str, context: AppContext = Depend
 async def retry_chat_run(matter_id: str, run_id: str, context: AppContext = Depends(get_context)):
     try:
         return context.chat_runs.retry(matter_id, run_id)
+    except WorkspaceConflict as exc:
+        raise HTTPException(status_code=409, detail=exc.detail) from exc
     except (KeyError, FileNotFoundError) as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
+
+
+@serialized
+def _remember_submission(context, saved, current_user, payload):
+    """Keep the frozen request beside its existing durable user message."""
+    if not current_user:
+        return
+    document = context.vault.read_markdown(saved["path"])
+    for message in document["metadata"].get("messages", []):
+        if message.get("message_id") == current_user.get("message_id"):
+            submission = message.setdefault("workspace_submission", payload.model_dump(exclude={"history"}))
+            submission.setdefault("frozen_context", payload.frozen_context)
+            submission.setdefault("frozen_template_use", payload.frozen_template_use)
+    context.vault.write_markdown(saved["path"], document["content"], document["metadata"])
+
+
+@serialized
+def _remember_scope(context, path, message_id, state):
+    scope = state.scope_state.get("scope")
+    if not scope or not message_id:
+        return
+    document = context.vault.read_markdown(path)
+    for message in document["metadata"].get("messages", []):
+        if message.get("message_id") == message_id:
+            submission = message.setdefault("workspace_submission", {})
+            if submission.get("scope") == scope:
+                return
+            if submission.get("scope") == "scenario":
+                state.scope_state["scope"] = "scenario"
+                return
+            submission["scope"] = scope
+            context.vault.write_markdown(path, document["content"], document["metadata"])
+            return
+
+
+def _replayed_submission(context, payload):
+    if not payload.matter_id or not payload.source_action_key:
+        return payload
+    for summary in context.chat_history.list(payload.matter_id):
+        conversation = context.chat_history.get(payload.matter_id, summary["conversation_id"])
+        for message in conversation["messages"]:
+            submission = message.get("workspace_submission") or {}
+            if submission.get("source_action_key") != payload.source_action_key:
+                continue
+            supplied_target = payload.target.model_dump() if payload.target else None
+            changed_payload = (
+                submission.get("message") != payload.message
+                or (supplied_target is not None and supplied_target != submission.get("target"))
+                or (payload.expected_question_revision is not None and payload.expected_question_revision != submission.get("expected_question_revision"))
+                or submission.get("attachments", []) != [item.model_dump() for item in payload.attachments]
+                or submission.get("card_action") != (payload.card_action.model_dump() if payload.card_action else None)
+                or submission.get("active_file") != payload.active_file
+                or any(submission.get(key, default) != getattr(payload, key) for key, default in [("context_selections", None), ("output_type", "general"), ("template_id", None), ("template_overrides", {}), ("preview", False), ("workspace_action", None), ("update_offer_id", None)])
+            )
+            if changed_payload:
+                raise WorkspaceConflict("This action key was already used for another message.", submission.get("expected_question_revision") or "", code="action_key_conflict")
+            return payload.model_copy(update={
+                "conversation_id": conversation["conversation_id"],
+                "target": ConversationTarget.model_validate(submission["target"]) if submission.get("target") else None,
+                "expected_question_revision": submission.get("expected_question_revision"),
+                "frozen_context": submission.get("frozen_context"), "frozen_template_use": submission.get("frozen_template_use"),
+            })
+    return payload
+
+
+def freeze_workspace_request(payload: ChatRequest, context: AppContext) -> ChatRequest:
+    if not payload.matter_id:
+        return payload
+    question = context.workspace.business_question(payload.matter_id)
+    target = payload.target or ConversationTarget(
+        matter_id=payload.matter_id, business_question_id=question["question_id"],
+        business_question_revision=question["revision"],
+    )
+    context.workspace.validate_target(payload.matter_id, target)
+    if payload.expected_question_revision and target.business_question_revision and payload.expected_question_revision != target.business_question_revision:
+        raise WorkspaceConflict("The selected target belongs to another question version. Clear or refresh the target.", question["revision"], code="target_conflict")
+    return payload.model_copy(update={
+        "expected_question_revision": payload.expected_question_revision or target.business_question_revision or question["revision"],
+        "target": target.model_copy(deep=True),
+    })
+
+
+def freeze_run_context(payload: ChatRequest, context: AppContext, run_id: str) -> ChatRequest:
+    """Capture reference text and reusable instructions once, before execution."""
+    if not payload.matter_id:
+        return payload
+    selections = payload.context_selections
+    if selections is None:
+        selections = context.workspace_evidence.selection(payload.matter_id)["selections"]
+    library = context.workspace_evidence.library(payload.matter_id)
+    selections = [dict(item) for item in selections]
+    for selection in selections:
+        if not selection.get("path"):
+            match = next((item for item in library if selection.get("reference_id") in {item.get("reference_id"), item.get("source_id")}), None)
+            if match:
+                selection["path"] = match["path"]
+    frozen = context.agent_context.build_run_context(context.agents.get(payload.agent_id),
+        matter_id=payload.matter_id, active_file=payload.active_file, run_id=run_id,
+        selections=selections, target=payload.target,
+        attachments=[item.model_dump() for item in payload.attachments],
+        applied_notes=context.workspace_reuse.applied_practice_notes(payload.matter_id),
+        expected_question_revision=payload.expected_question_revision)
+    templates = context.skills.list_output_templates()
+    frozen["templates"] = templates
+    frozen["sources"] = [context.workspace_evidence.source_record(item, internal=True) for item in context.matter_records.get(payload.matter_id)["sources"]]
+    frozen["template_uses"] = {item["template_id"]: context.skills.resolve_template_use(item["template_id"], output_type=item["output_type"]).model_dump(mode="json") for item in templates if item.get("output_type")}
+    if payload.target and payload.target.scenario_id:
+        overlay = context.workspace_scenarios.readonly_overlay(payload.matter_id, payload.target.scenario_id)
+        # Canonical facts already passed the context builder's source exclusions.
+        # Keep private scenario state for version checks, but never re-supply raw facts.
+        frozen["scenario"] = overlay
+        visible_overlay = {key: value for key, value in overlay.items() if key != "canonical_facts"}
+        if frozen.get("withhold_unattributed_history"):
+            visible_overlay = {"scenario_id": payload.target.scenario_id, "historical_material_withheld": True,
+                               "reason": "Use only the eligible facts and current hypothetical instruction in the submitted context."}
+        overlay_text = json.dumps(visible_overlay, ensure_ascii=False)
+        remaining = max(0, 60000 - sum(entry.get("supplied_chars", 0) for entry in frozen["manifest"]["entries"]))
+        supplied_overlay = overlay_text[:remaining]
+        state = "included" if len(supplied_overlay) == len(overlay_text) else "truncated" if supplied_overlay else "omitted"
+        overlay_id = "scenario:" + payload.target.scenario_id
+        version = hashlib.sha256(supplied_overlay.encode()).hexdigest()
+        frozen["manifest"]["entries"].append({"reference_id": overlay_id, "path": overlay["scenario"].get("path"),
+            "role": "historical_scenario", "selected": True, "mandatory": False, "revision": version, "state": state,
+            "source_version": overlay["scenario"].get("revision"), "supplied_chars": len(supplied_overlay), "available_chars": len(overlay_text),
+            "reason": "Historical material withheld by source exclusions; only scope metadata supplied." if frozen.get("withhold_unattributed_history") else "Saved hypothetical overlay supplied as reference data; never current facts."})
+        if supplied_overlay:
+            frozen["manifest"]["source_revisions"][overlay_id] = version
+            frozen["context"] += "\n\nSaved hypothetical overlay (untrusted historical reference, never current facts):\n" + supplied_overlay
+        frozen["context"] += (
+            "\n\nFor this explicit scenario analysis, keep the useful answer in normal prose. "
+            "You may add one final fenced claim-support JSON object with claims and optional "
+            "affected_issue_ids, affected_branch_ids, proposed_outcomes, unresolved_conditions, "
+            "and source_links. Use only saved record IDs and sources actually supplied above. "
+            "The optional object must never replace the prose answer. "
+            "For each material legal conclusion, distinguish the rule text from its application to "
+            "the regulated actor, jurisdiction, and changed facts. A definition alone does not "
+            "establish coverage, a duty, or an exception. Cite the actual supporting passage using "
+            "[source:SOURCE_ID|exact locator] when available. If the available sources do not "
+            "support that step, identify that specific support gap and give the best conditional "
+            "analysis without implying it was verified. Do not treat hypothetical outcomes as "
+            "recorded issue dispositions or decisions."
+        )
+    chosen = next((item for item in templates if item["template_id"] == payload.template_id), None)
+    output_type = chosen["output_type"] if chosen and payload.output_type == "general" else payload.output_type
+    use = context.skills.resolve_template_use(payload.template_id, output_type=output_type, overrides=payload.template_overrides).model_dump(mode="json")
+    if payload.continuity_context:
+        frozen["continuity"] = deepcopy(payload.continuity_context)
+    if payload.action_actor:
+        frozen["action_actor"] = deepcopy(payload.action_actor)
+    return payload.model_copy(update={"frozen_context": frozen, "frozen_template_use": use, "workspace_run_id": run_id})
 
 
 async def execute_chat(
@@ -149,6 +357,13 @@ async def execute_chat(
     try:
         if not payload.message.strip() and not payload.card_action and not payload.attachments:
             raise ValueError("Send a message, card action, or attachment.")
+        if not run_id and payload.matter_id and payload.source_action_key:
+            payload = _replayed_submission(context, payload)
+            run_id = "HTTP-" + hashlib.sha256((payload.matter_id + payload.source_action_key).encode()).hexdigest()[:24]
+        payload = freeze_workspace_request(payload, context)
+        run_id = run_id or new_id("RUN")
+        if not payload.frozen_context:
+            payload = freeze_run_context(payload, context, run_id)
         user_content = payload.message.strip() or _action_text(payload)
         try:
             skill_id, model_content = context.skills.parse_invocation(user_content)
@@ -167,6 +382,7 @@ async def execute_chat(
             else None
         )
         run_state = execution_state or RunnerExecutionState()
+        run_state.frozen_context = run_state.frozen_context or deepcopy(payload.frozen_context or {})
         if payload.matter_id:
             if payload.workspace_day:
                 raise ValueError("A chat cannot be both matter-scoped and day-scoped.")
@@ -201,6 +417,18 @@ async def execute_chat(
             conversation_id = saved["conversation_id"]
             conversation = context.chat_history.get(payload.matter_id, conversation_id)
             current_user = existing_user or (conversation["messages"][-1] if persist_user_message else None)
+            _remember_submission(context, saved, current_user, payload)
+            saved_scope = (current_user or {}).get("workspace_submission", {}).get("scope")
+            if saved_scope in {"actual", "scenario"}:
+                run_state.scope_state["scope"] = saved_scope
+            previous_checkpoint = checkpoint
+            submission_path = saved["path"]
+            submission_message_id = (current_user or {}).get("message_id")
+            def persist_scope(state):
+                _remember_scope(context, submission_path, submission_message_id, state)
+                if previous_checkpoint:
+                    previous_checkpoint(state)
+            checkpoint = persist_scope
             trusted_source_id = (
                 next(iter(current_user.get("source_ids") or []), current_user.get("message_id"))
                 if current_user else None
@@ -208,6 +436,7 @@ async def execute_chat(
             intake_active = (
                 conversation.get("conversation_kind") == "intake"
                 and conversation.get("intake_state") == "active"
+                and not (payload.target and payload.target.scenario_id)
             )
             resolved_answers = (
                 _resolved_question_answers(conversation, payload)
@@ -220,6 +449,7 @@ async def execute_chat(
                     or (current_user or {}).get("message_id")
                     or "intake-answer"
                 )
+                before_answer_revisions = context.workspace.source_revisions(payload.matter_id)
                 answer_result = context.matter_records.record_intake_answers(
                     payload.matter_id,
                     resolved_answers,
@@ -227,6 +457,8 @@ async def execute_chat(
                     source_action_key=answer_action_key,
                 )
                 if answer_result["changed"]:
+                    if run_state.frozen_context.get("publication_baseline") == before_answer_revisions:
+                        run_state.frozen_context["intake_publication_baseline"] = context.workspace.source_revisions(payload.matter_id)
                     run_state.changed_paths.extend(answer_result["changed_paths"])
                     run_state.refresh.extend(["matter", "tree"])
                     run_state.operation_results.append({
@@ -275,7 +507,7 @@ async def execute_chat(
             _confirm_saved_operation(
                 context, payload, saved, execution_state=run_state,
             )
-            if payload.matter_id else None
+            if payload.matter_id and not (payload.target and payload.target.scenario_id) else None
         )
         if response is None:
             response = (
@@ -284,10 +516,10 @@ async def execute_chat(
                     intake_active=intake_active,
                     execution_state=run_state,
                 )
-                if payload.matter_id else None
+                if payload.matter_id and not (payload.target and payload.target.scenario_id) else None
             )
         if response is None:
-            routed_agent_id = _route_matter_agent(
+            routed_agent_id = resolved_provider.selection.agent_id if resolved_provider else _route_matter_agent(
                 payload,
                 intake_active=bool(payload.matter_id and intake_active),
                 recovery=not persist_user_message,
@@ -304,19 +536,26 @@ async def execute_chat(
                         ),
                         "trusted_source_id": trusted_source_id if payload.matter_id else None,
                         "expected_dossier_hash": expected_dossier_hash,
+                        "trusted_user_message": user_content if persist_user_message else None,
+                        "trusted_message_id": (current_user or {}).get("message_id") if payload.matter_id else None,
+                        "workspace_run_id": run_id,
+                        "source_action_key": payload.source_action_key or ((current_user or {}).get("message_id") if payload.matter_id else None),
                     }
                 ),
                 execution_state=run_state,
                 checkpoint=checkpoint,
                 resolved_provider=resolved_provider,
             )
+        if payload.matter_id and run_state.scope_state.get("scope") == "scenario":
+            response.cards = []
         if payload.matter_id:
-            _apply_matter_actions(
-                context, payload, saved, response,
-                execution_state=run_state, run_id=run_id,
-            )
+            if run_state.scope_state.get("scope") != "scenario":
+                _apply_matter_actions(
+                    context, payload, saved, response,
+                    execution_state=run_state, run_id=run_id,
+                )
             intake_record = context.matter_records.get(payload.matter_id)
-            if conversation.get("conversation_kind") == "intake":
+            if conversation.get("conversation_kind") == "intake" and run_state.scope_state.get("scope") != "scenario":
                 intake_state = intake_record.get("intake_state", "active")
                 context.chat_history.update_state(
                     payload.matter_id,
@@ -335,6 +574,13 @@ async def execute_chat(
             response.reply = reconcile_user_facing_reply(
                 response.reply, response.operation_results
             )
+        claim_structure = None
+        if response.reply.strip():
+            visible_reply, claim_structure, _claim_warnings = extract_claim_support(response.reply)
+            # A malformed block stays visible. A valid metadata block is hidden
+            # only when useful prose remains for the lawyer.
+            if visible_reply.strip():
+                response.reply = visible_reply
         if payload.matter_id:
             if response.reply.strip():
                 if run_id:
@@ -361,9 +607,94 @@ async def execute_chat(
                 applied_skills=[item.model_dump() for item in response.applied_skills],
                 operation_results=response.operation_results,
             )
+        if payload.matter_id and run_state.frozen_context:
+            frozen = run_state.frozen_context
+            if execution_state is None:
+                try:
+                    context.workspace_evidence.save_manifest(frozen["manifest"])
+                except (OSError, ValueError):
+                    response.reply += "\n\nThe answer is saved. Its context record could not be saved."
+
+            if payload.workspace_action in {"prepare_handoff", "draft"}:
+                # Communication and draft output stay in their conversation and
+                # editable work. They are not replacement matter inquiry answers.
+                pass
+            elif response.reply.strip() and payload.workspace_action == "analyze_change_impact" and frozen.get("continuity"):
+                try:
+                    impact = context.change_impact.publish(payload.matter_id, frozen["continuity"]["comparison_id"], {"run_id": run_id, "text": response.reply})
+                    response.changed_paths.append(impact["path"])
+                except (OSError, ValueError, KeyError):
+                    response.reply += "\n\nThe useful comparison remains in this conversation. Its comparison record could not be updated."
+            elif response.reply.strip() and payload.target and payload.target.scenario_id:
+                scenario = frozen.get("scenario", {})
+                try:
+                    result = claim_structure if isinstance(claim_structure, dict) else {}
+                    structured_claims = result.get("claims") if isinstance(result.get("claims"), list) else []
+                    known_claim_ids = {item["claim_id"] for item in context.workspace_review.claims(payload.matter_id)}
+                    claim_ids = [str(item.get("claim_id")) for item in structured_claims if isinstance(item, dict) and item.get("claim_id") in known_claim_ids]
+                    frozen_source_links = [
+                        str(item.get("url") or item.get("path")) for item in frozen.get("sources", [])
+                        if isinstance(item, dict) and (item.get("url") or item.get("path"))
+                    ]
+                    proposed_source_links = result.get("source_links") if isinstance(result.get("source_links"), list) else []
+                    source_links = [str(item) for item in proposed_source_links if str(item) in frozen_source_links]
+                    known_issue_ids = {item["issue_id"] for item in context.workspace.issues(payload.matter_id)}
+                    known_work_ids = {item["work_item_id"] for item in context.workspace_review.work_items(payload.matter_id)}
+                    affected_issue_ids = [str(item) for item in result.get("affected_issue_ids", []) if str(item) in known_issue_ids] if isinstance(result.get("affected_issue_ids"), list) else []
+                    proposed_outcomes = []
+                    for raw_outcome in result.get("proposed_outcomes", []) if isinstance(result.get("proposed_outcomes"), list) else []:
+                        try:
+                            outcome = ScenarioOutcome.model_validate(raw_outcome).model_dump()
+                        except (TypeError, ValueError):
+                            continue
+                        if (set(outcome["issue_ids"]) <= known_issue_ids
+                                and set(outcome["work_item_ids"]) <= known_work_ids
+                                and set(outcome["claim_ids"]) <= known_claim_ids):
+                            proposed_outcomes.append(outcome)
+                    analysis = context.workspace_scenarios.persist_analysis(payload.matter_id, payload.target.scenario_id, response.reply,
+                        expected_revision=scenario.get("scenario", {}).get("revision", ""), source_action_key=payload.source_action_key,
+                        run_id=run_id,
+                        analysis_baseline_revisions=scenario.get("scenario", {}).get("analysis_baseline_revisions") or scenario.get("scenario", {}).get("baseline_revisions") or {},
+                        affected_issue_ids=affected_issue_ids or scenario.get("scenario", {}).get("issue_ids", []),
+                        affected_branch_ids=result.get("affected_branch_ids") if isinstance(result.get("affected_branch_ids"), list) else [],
+                        claim_ids=claim_ids,
+                        proposed_outcomes=proposed_outcomes,
+                        unresolved_conditions=result.get("unresolved_conditions") if isinstance(result.get("unresolved_conditions"), list) else scenario.get("scenario", {}).get("unresolved_conditions", []),
+                        source_links=source_links)
+                    response.operation_results.append({"action": "save_scenario_analysis", "operation": "save_scenario_analysis", "status": "changed", "summary": "Saved historical scenario analysis.", "changed_paths": [analysis.get("historical_analysis_path") or analysis.get("path")] if analysis.get("historical_analysis_path") or analysis.get("path") else []})
+                except (OSError, ValueError, WorkspaceConflict):
+                    response.reply += "\n\nThe useful analysis is retained in this conversation. The saved scenario analysis could not be updated."
+                    try:
+                        context.workspace_scenarios.fail_analysis(
+                            payload.matter_id, payload.target.scenario_id,
+                            source_action_key=payload.source_action_key,
+                            failure_detail="The useful analysis was retained, but its scenario record could not be updated.",
+                            run_id=run_id,
+                        )
+                    except (OSError, ValueError, WorkspaceConflict, KeyError):
+                        pass
+                    response.operation_results.append({
+                        "action": "save_scenario_analysis",
+                        "operation": "save_scenario_analysis",
+                        "status": "failed",
+                        "summary": "Useful analysis was retained, but the scenario record was not updated.",
+                        "changed_paths": [],
+                    })
+
+            elif response.reply.strip() and frozen.get("intake_publication_baseline") and not payload.preview and not (payload.target and payload.target.artifact_path) and run_state.scope_state.get("scope") != "scenario" and all(item.tool in {"select_conversation_scope", "read_file", "search_vault", "list_files", "update_matter_intake"} for item in response.trace):
+                context.workspace_actions.publish_result(payload.matter_id, run_id=run_id, text=response.reply, frozen_context=frozen,
+                    source_revisions=frozen["intake_publication_baseline"], expected_question_revision=payload.expected_question_revision or "",
+                    structure=claim_structure, source_action_key=payload.source_action_key, target=payload.target, sources=frozen.get("sources", []))
+            elif response.reply.strip() and run_state.scope_state.get("scope") != "scenario" and not payload.preview and all(item.tool in {"select_conversation_scope", "read_file", "search_vault", "list_files"} or (item.tool == "workspace_action" and frozen.get("workspace_tool_actions") and all(action in {"inspect", "prior_work", "draft_practice_note"} for action in frozen["workspace_tool_actions"])) for item in response.trace) and not any(item.get("status") == "changed" for item in response.operation_results):
+                context.workspace_actions.publish_result(payload.matter_id, run_id=run_id, text=response.reply, frozen_context=frozen,
+                    source_revisions=frozen["publication_baseline"], expected_question_revision=payload.expected_question_revision or "",
+                    structure=claim_structure, source_action_key=payload.source_action_key, target=payload.target, sources=frozen.get("sources", []),
+                    update_current_snapshot=not bool(payload.target and payload.target.artifact_path))
         response.conversation_id = conversation_id
         response.changed_paths = list(dict.fromkeys([*response.changed_paths, saved["path"]]))
         return response
+    except WorkspaceConflict as exc:
+        raise HTTPException(status_code=409, detail=exc.detail) from exc
     except (KeyError, FileNotFoundError) as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
@@ -393,6 +724,8 @@ def _route_matter_agent(
         return payload.agent_id
     if recovery or payload.card_action is not None:
         return "intake-agent"
+    if payload.workspace_action == "draft":
+        return "counsel-copilot"
     if _SUBSTANTIVE_INTAKE_REQUEST.search(payload.message):
         return "counsel-copilot"
     return "intake-agent"

@@ -1,0 +1,244 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 83.99857330322266,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": -1087.272705078125
+    },
+    {
+      "font": "13px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 237.7627716064453,
+      "x": 756.7826538085938,
+      "y": -1020.4190063476562
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 763.68603515625,
+      "y": -994.7301025390624
+    },
+    {
+      "font": "16px",
+      "height": 2094.119140625,
+      "tag": "MAIN",
+      "text": "Work on a scheduleSet automations to run on a cadence so you",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": -1003.2741088867188
+    },
+    {
+      "font": "16px",
+      "height": 89.2897720336914,
+      "tag": "HEADER",
+      "text": "Work on a scheduleSet automations to run on a cadence so you",
+      "width": 934.54541015625,
+      "x": 40,
+      "y": -965.2769775390624
+    },
+    {
+      "font": "48px",
+      "height": 53.749996185302734,
+      "tag": "H1",
+      "text": "Work on a schedule",
+      "width": 934.54541015625,
+      "x": 40,
+      "y": -965.2769775390624
+    },
+    {
+      "font": "16px",
+      "height": 576.803955078125,
+      "tag": "SECTION",
+      "text": "Running on scheduleThese are working. Nothing is asked of yo",
+      "width": 934.54541015625,
+      "x": 40,
+      "y": -779.54541015625
+    },
+    {
+      "font": "18px",
+      "height": 23.636362075805664,
+      "tag": "H2",
+      "text": "Running on schedule",
+      "width": 930.553955078125,
+      "x": 41.9957389831543,
+      "y": -779.54541015625
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Pause schedule",
+      "width": 152.6704559326172,
+      "x": 800.9658813476562,
+      "y": -696.0084838867188
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Run it now",
+      "width": 152.6704559326172,
+      "x": 800.9658813476562,
+      "y": -645.01416015625
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Pause schedule",
+      "width": 152.6704559326172,
+      "x": 800.9658813476562,
+      "y": -527.9261474609375
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Run it now",
+      "width": 152.6704559326172,
+      "x": 800.9658813476562,
+      "y": -476.9317932128906
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Pause schedule",
+      "width": 152.6704559326172,
+      "x": 800.9658813476562,
+      "y": -355.33380126953125
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Run it now",
+      "width": 152.6704559326172,
+      "x": 800.9658813476562,
+      "y": -304.3394775390625
+    },
+    {
+      "font": "16px",
+      "height": 576.803955078125,
+      "tag": "SECTION",
+      "text": "PausedThese keep their settings but will not run until you r",
+      "width": 934.54541015625,
+      "x": 40,
+      "y": -176.7471466064453
+    },
+    {
+      "font": "18px",
+      "height": 23.636362075805664,
+      "tag": "H2",
+      "text": "Paused",
+      "width": 930.553955078125,
+      "x": 41.9957389831543,
+      "y": -176.7471466064453
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Resume schedule",
+      "width": 167.25851440429688,
+      "x": 786.3778076171875,
+      "y": -88.70027923583984
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Run it now",
+      "width": 167.25851440429688,
+      "x": 786.3778076171875,
+      "y": -37.705963134765625
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Resume schedule",
+      "width": 167.25851440429688,
+      "x": 786.3778076171875,
+      "y": 83.89204406738281
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Run it now",
+      "width": 167.25851440429688,
+      "x": 786.3778076171875,
+      "y": 134.8863525390625
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Resume schedule",
+      "width": 167.25851440429688,
+      "x": 786.3778076171875,
+      "y": 251.97442626953125
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Run it now",
+      "width": 167.25851440429688,
+      "x": 786.3778076171875,
+      "y": 302.96875
+    },
+    {
+      "font": "16px",
+      "height": 600.79541015625,
+      "tag": "FORM",
+      "text": "New automationSay what you want done and how often. Themis.a",
+      "width": 934.54541015625,
+      "x": 40,
+      "y": 426.0511169433594
+    },
+    {
+      "font": "15px",
+      "height": 19.545454025268555,
+      "tag": "H2",
+      "text": "New automation",
+      "width": 575.9943237304688,
+      "x": 64.90766906738281,
+      "y": 450.9588012695313
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Close",
+      "width": 78.2883529663086,
+      "x": 871.3494262695312,
+      "y": 450.9588012695313
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Create the automation",
+      "width": 201.81817626953125,
+      "x": 747.819580078125,
+      "y": 958.9417114257812
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 1087.272705078125,
+  "url": "http://localhost:3134/automations",
+  "width": 1024
+}

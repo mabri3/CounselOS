@@ -1,0 +1,292 @@
+{
+  "run": {
+    "action_actor": {
+      "person_id": "jordan",
+      "display_name": "Jordan Lee",
+      "mode": "demo"
+    },
+    "run_id": "RUN-20260905-34b117",
+    "matter_id": "MAT-20260905-329d59",
+    "conversation_id": "CONV-20260905-95d1c0",
+    "state": "completed",
+    "status": "Chat is complete.",
+    "created_at": "2026-09-05T09:23:34+00:00",
+    "started_at": "2026-09-05T09:23:34+00:00",
+    "finished_at": "2026-09-05T09:23:43+00:00",
+    "failure_detail": null,
+    "failure_class": null,
+    "correlation_id": "COR-20260905-fe65d5",
+    "milestone": "Completed.",
+    "response": {
+      "reply": "Here's my analysis of how the changed loan duration and named extension approver affect the earlier advice. This is scenario analysis only \u2014 I've made no edits to facts, decisions, or drafts.\n## What changed (literal, from the supplied versions)\n**Version 1 (the basis of the earlier advice):**\n- US office employees may borrow one laptop for **14 days**.\n- **No extension approval process is specified.**\n**Version 2 (the changed version):**\n- US office employees may borrow one laptop for **30 days**.\n- **The facilities manager may approve one extension of 14 days.**\nSo two things changed: the base loan period (14 \u2192 30 days) and the extension gap was filled (a named approver \u2014 the facilities manager \u2014 plus a defined cap of one 14-day extension).\n## Effect on the earlier advice\n**1. The core gap you asked me to identify is now resolved in the source.** The earlier advice's central point \u2014 that the policy is silent on who approves an extension \u2014 no longer holds against version 2. Version 2 names the facilities manager and caps extensions at one 14-day extension. So the \"single most decision-changing missing fact\" is now supplied, and the earlier advice's framing of it as an open gap is superseded for this version.\n**2. The earlier advice's recommended shape is largely confirmed, not contradicted.** My earlier first pass suggested the policy should specify (a) whether extensions are permitted, (b) a cap, and (c) who approves. Version 2 does all three: extensions are permitted, capped at one 14-day extension, and approved by the facilities manager. So the changed version aligns with the structure I recommended \u2014 the earlier advice anticipated this shape.\n**3. What remains open / may need review (uncertainty preserved):**\n- **The approver choice itself.** The earlier advice floated direct manager, IT/equipment, HR, or a single owner. Version 2 picks the **facilities manager** \u2014 a role that wasn't in my earlier options. That's a reasonable single-owner choice for asset tracking, but it's worth confirming the facilities manager is the right owner for *business-need* judgment (a manager might better judge whether the extension is justified) versus *asset custody* (facilities/IT better tracks the device). The earlier advice's point about separating business-need approval from asset tracking still stands as a review consideration.\n- **The cap's interaction with the longer base period.** With a 30-day base plus a 14-day extension, the maximum loan is now 44 days \u2014 more than triple the original 14-day policy. The earlier advice's concern about an \"effectively meaningless\" duration rule is less acute now that a cap exists, but the *total* holding period is materially longer. Whether 44 days is acceptable for a single laptop (data security, asset availability, departing-employee risk) is a judgment the earlier advice flagged and that still warrants review.\n- **Overdue-return handling.** Version 2 still doesn't address what happens on overdue return (escalation, recovery, data wipe) \u2014 a point the earlier advice raised and that remains unaddressed.\n- **Scope.** Neither version addresses whether the policy covers only laptops or other equipment; that earlier open question is unchanged.\n## Bottom line\nThe changed version **resolves the specific gap the earlier advice centered on** (extension approval authority and cap), and it does so in a way consistent with the structure the earlier advice recommended. What remains for review is not the missing approver but the *choice* of approver (facilities manager vs. business-need owner), the longer total holding period (up to 44 days), and the still-unaddressed overdue-return handling and scope questions.\nNo edits were made to facts, decisions, or drafts.",
+      "conversation_id": "CONV-20260905-95d1c0",
+      "trace": [
+        {
+          "tool": "select_conversation_scope",
+          "status": "success",
+          "summary": "Scenario analysis; actual matter unchanged.",
+          "mutation_status": null
+        }
+      ],
+      "changed_paths": [
+        "03_Matters/cedar-desk-policy-review-329d59/continuity/impacts/CMP-a7d3c5434176df2705aed4c3.md",
+        "03_Matters/cedar-desk-policy-review-329d59/conversations/CONV-20260905-95d1c0.md"
+      ],
+      "refresh": [],
+      "cards": [],
+      "applied_skills": [],
+      "review_author": "Themis.ai",
+      "operation_results": [
+        {
+          "action": "continuity-live-cedar-analysis-v1:tool:90ae84792137ab2e4a9cf77f",
+          "source_action_key": "continuity-live-cedar-analysis-v1:tool:90ae84792137ab2e4a9cf77f",
+          "operation": "select_conversation_scope",
+          "status": "no_change",
+          "summary": "Scenario analysis; actual matter unchanged.",
+          "matter_id": "MAT-20260905-329d59",
+          "entity_refs": [],
+          "changed_paths": [],
+          "resulting_matter_state": {
+            "stage": "intake",
+            "next_action": "Who should be authorized to approve an extension of the 14-day laptop loan period?",
+            "work_state": {
+              "next_action": "Who should be authorized to approve an extension of the 14-day laptop loan period?",
+              "next_work_item_id": "WI-20260905-c6faab",
+              "next_owner": "Jordan Lee",
+              "next_actor": "named_owner",
+              "due_at": null,
+              "execution_state": "not_running",
+              "active_run_id": null,
+              "execution_note": "",
+              "signal": {
+                "kind": "waiting_on_owner",
+                "label": "Waiting on Jordan Lee"
+              }
+            },
+            "consistency_issues": []
+          },
+          "available_next_actions": [],
+          "required_user_action": null,
+          "error": null,
+          "recovery": null
+        }
+      ]
+    },
+    "operation_results": [
+      {
+        "action": "continuity-live-cedar-analysis-v1:tool:90ae84792137ab2e4a9cf77f",
+        "source_action_key": "continuity-live-cedar-analysis-v1:tool:90ae84792137ab2e4a9cf77f",
+        "operation": "select_conversation_scope",
+        "status": "no_change",
+        "summary": "Scenario analysis; actual matter unchanged.",
+        "matter_id": "MAT-20260905-329d59",
+        "entity_refs": [],
+        "changed_paths": [],
+        "resulting_matter_state": {
+          "stage": "intake",
+          "next_action": "Who should be authorized to approve an extension of the 14-day laptop loan period?",
+          "work_state": {
+            "next_action": "Who should be authorized to approve an extension of the 14-day laptop loan period?",
+            "next_work_item_id": "WI-20260905-c6faab",
+            "next_owner": "Jordan Lee",
+            "next_actor": "named_owner",
+            "due_at": null,
+            "execution_state": "not_running",
+            "active_run_id": null,
+            "execution_note": "",
+            "signal": {
+              "kind": "waiting_on_owner",
+              "label": "Waiting on Jordan Lee"
+            }
+          },
+          "consistency_issues": []
+        },
+        "available_next_actions": [],
+        "required_user_action": null,
+        "error": null,
+        "recovery": null
+      }
+    ],
+    "path": "03_Matters/cedar-desk-policy-review-329d59/conversations/runs/RUN-20260905-34b117.md",
+    "selection": {
+      "agent_id": "counsel-copilot",
+      "provider": "openai_compatible",
+      "model": "deepseek-v4-flash",
+      "reasoning_effort": "default"
+    }
+  },
+  "impact": {
+    "comparison_id": "CMP-a7d3c5434176df2705aed4c3",
+    "matter_id": "MAT-20260905-329d59",
+    "path": "03_Matters/cedar-desk-policy-review-329d59/continuity/impacts/CMP-a7d3c5434176df2705aed4c3.md",
+    "revision": "e99de8daf4d9c5cebf4278e187b9d20b74fc83cc78ec704aa02190bfc18af2ab",
+    "actor": {
+      "person_id": "jordan",
+      "display_name": "Jordan Lee",
+      "mode": "demo"
+    },
+    "source_action_key": "continuity-live-cedar-comparison-v1",
+    "before": {
+      "reference_id": "source:SRC-853067E7B93C965C:14e1e383b59d",
+      "kind": "source",
+      "title": "cedar-policy-v1.txt",
+      "path": "03_Matters/cedar-desk-policy-review-329d59/documents/cedar-policy-v1.txt.extracted.md",
+      "revision": "3ac30dfa4658bb0d89e72873c39663ab51f84ed32df2eaa2aa25559bf82970f9",
+      "content_hash": "853067e7b93c965c3b6b1d3e3eb772e5e579e6989328f7a663391038e248ab36",
+      "text": "Cedar Desk equipment loan policy \u2014 supplied version 1\nFictional acceptance source.\nUS office employees may borrow one laptop for 14 days.\nNo extension approval process is specified.\n",
+      "snapshot_path": "03_Matters/cedar-desk-policy-review-329d59/continuity/snapshots/REF-b1efdac554de1fa49abb9e90.md",
+      "source_id": "SRC-853067E7B93C965C",
+      "original_path": "03_Matters/cedar-desk-policy-review-329d59/documents/cedar-policy-v1.txt",
+      "original_hash": "853067e7b93c965c3b6b1d3e3eb772e5e579e6989328f7a663391038e248ab36",
+      "extraction_state": "complete"
+    },
+    "after": {
+      "reference_id": "source:SRC-EC3FFCEE51F89839:23d7b496bb9a",
+      "kind": "source",
+      "title": "cedar-policy-v2.txt",
+      "path": "03_Matters/cedar-desk-policy-review-329d59/documents/cedar-policy-v2.txt.extracted.md",
+      "revision": "c470f2e64409fcd433449f49e2863ee54102fb7286ce332ca1860edbe272725c",
+      "content_hash": "ec3ffcee51f89839199b0faaa9b6ba5599f3aee83bf3118d80a8ef0117e68d6d",
+      "text": "Cedar Desk equipment loan policy \u2014 supplied version 2\nFictional acceptance source.\nUS office employees may borrow one laptop for 30 days.\nThe facilities manager may approve one extension of 14 days.\n",
+      "snapshot_path": "03_Matters/cedar-desk-policy-review-329d59/continuity/snapshots/REF-d31138e08b4eded9b4c4c573.md",
+      "source_id": "SRC-EC3FFCEE51F89839",
+      "original_path": "03_Matters/cedar-desk-policy-review-329d59/documents/cedar-policy-v2.txt",
+      "original_hash": "ec3ffcee51f89839199b0faaa9b6ba5599f3aee83bf3118d80a8ef0117e68d6d",
+      "extraction_state": "complete"
+    },
+    "targets": [
+      {
+        "reference_id": "inquiry:RUN-20260905-3e0180",
+        "kind": "advice",
+        "title": "Saved inquiry \u00b7 RUN-20260905-3e0180",
+        "path": "03_Matters/cedar-desk-policy-review-329d59/conversations/inquiries/RUN-20260905-3e0180.md",
+        "revision": "9600587035b5621fc0b27af0431ee43471fa42a8286724f46496cc41f96ede81",
+        "content_hash": "313073e9b7ba1b347b797cd59d96e71f9cdd0f48574825b41d08290037f9bc48",
+        "text": "Here's my useful first pass on the proposed equipment-loan policy.\n## Useful first pass\n**What the policy covers (as reported):** Employees at the US office may borrow a laptop for 14 days. The policy is internal and doesn't currently state who can approve an extension.\n**The core gap you flagged is the right one.** An equipment-loan policy that allows a 14-day loan but is silent on extension approval creates two practical problems:\n1. **Unclear authority \u2192 inconsistent outcomes.** Without a named approver, extensions get granted ad hoc (or not at all), which is unfair and hard to audit.\n2. **No accountability for the asset.** A laptop is company property; an open-ended extension with no owner means no one is responsible for tracking return, condition, or data security (e.g., a departing employee holding a device).\n**What the policy should ideally specify around extensions** (beyond just naming an approver):\n- Whether extensions are permitted at all, and if so, a cap (e.g., one extension of up to 14 more days) so the \"14-day\" rule isn't effectively meaningless.\n- Who approves \u2014 typically the employee's direct manager (for business need) plus IT/equipment (for asset tracking), or a single owner.\n- What happens on overdue return (escalation, recovery, data wipe).\n**The single most decision-changing missing fact** is who is authorized to approve an extension. That's the gap you asked me to identify, and it's the one I'd resolve first.\n**Note on scope:** This is an internal employment/asset-management matter, not a customer-facing or regulatory one, so no external authority is needed for the first pass. No legal decision or draft is requested yet, so I've stopped at analysis.\n---\nTo move this forward, I have a few questions. The most important one first:\n**1. Who should be authorized to approve an extension of the 14-day laptop loan period?**\n- Employee's direct manager\n- IT / equipment team\n- HR\n- Any of the above (manager, IT, or HR)\n- Not yet decided \u2014 this is the gap to fill\n**2. Should extensions be permitted at all, and if so, should there be a cap?** *(optional)*\n- No extensions \u2014 14 days is firm\n- One extension allowed, with a defined additional period\n- Extensions allowed without a stated cap\n- Not yet decided\n**3. Does the policy cover only laptops, or other equipment as well?** *(optional)*\n- Laptops only\n- Laptops and other equipment (e.g., monitors, phones, peripherals)\n- Not yet decided\n",
+        "snapshot_path": "03_Matters/cedar-desk-policy-review-329d59/continuity/snapshots/REF-4cc42882548dc6a582d032bf.md",
+        "source_id": null,
+        "original_path": null,
+        "original_hash": null,
+        "extraction_state": "not_applicable"
+      }
+    ],
+    "question": {
+      "reference_id": "BQ-3c0c93005ef7be31",
+      "kind": "question",
+      "title": "Current business question",
+      "path": "03_Matters/cedar-desk-policy-review-329d59/dossier.md",
+      "revision": "legacy:426a2dfb56060677a40d2165e55837cfc7f23848ceec9b8319331e5f84f72fd1",
+      "content_hash": "426a2dfb56060677a40d2165e55837cfc7f23848ceec9b8319331e5f84f72fd1",
+      "text": "Review a proposed internal equipment-loan policy for the US office. Employees may borrow a laptop for 14 days. The current policy does not say who can approve an extension. Provide a useful first pass and identify the missing business fact (who approves an extension). No legal decision or draft requested yet.",
+      "snapshot_path": "03_Matters/cedar-desk-policy-review-329d59/continuity/snapshots/REF-03e8b19ddc53dc634de59ee6.md",
+      "source_id": null,
+      "original_path": null,
+      "original_hash": null,
+      "extraction_state": "not_applicable"
+    },
+    "basis": [
+      {
+        "reference_id": "FACT-20260905-5fd9ac",
+        "kind": "fact",
+        "title": "Fact",
+        "path": "03_Matters/cedar-desk-policy-review-329d59/facts.md",
+        "revision": "c39acca06e0dbfdd8aa48ff3d252268012fb6c6a591aebe35cb214169ff24b8f",
+        "content_hash": "c9fabffc14002cfbd9eaa6cc6a15933bfdb5279dd1a5541ac2093ef6020e2d32",
+        "text": "Mosaic Relay is reviewing a proposed internal equipment-loan policy for its US office.",
+        "snapshot_path": "03_Matters/cedar-desk-policy-review-329d59/continuity/snapshots/REF-6658c6e67458aff6128aed58.md",
+        "source_id": null,
+        "original_path": null,
+        "original_hash": null,
+        "extraction_state": "not_applicable"
+      },
+      {
+        "reference_id": "FACT-20260905-5a0934",
+        "kind": "fact",
+        "title": "Fact",
+        "path": "03_Matters/cedar-desk-policy-review-329d59/facts.md",
+        "revision": "b9e44e7f86eea081ae5f706d8fae112eb8097540362b2b9db2c890637a611c5c",
+        "content_hash": "4bb550859d53339a1e5460a5ab944a9cfb57f960a1406f86c63be2c61c808c93",
+        "text": "Under the proposed policy, employees may borrow a laptop for 14 days.",
+        "snapshot_path": "03_Matters/cedar-desk-policy-review-329d59/continuity/snapshots/REF-d075ba4d5f8e1458f437eec2.md",
+        "source_id": null,
+        "original_path": null,
+        "original_hash": null,
+        "extraction_state": "not_applicable"
+      },
+      {
+        "reference_id": "FACT-20260905-cf73ab",
+        "kind": "fact",
+        "title": "Fact",
+        "path": "03_Matters/cedar-desk-policy-review-329d59/facts.md",
+        "revision": "80ba8cda92e635b281d9f40f7f2b55a82c966f5ba9ad12ef65b53bfa6076a6aa",
+        "content_hash": "98dfbc1bee24f058b83e22018cd3d7cf4eb9c86d91bc19cfcadbdce621807688",
+        "text": "The current policy does not specify who can approve an extension of the loan period.",
+        "snapshot_path": "03_Matters/cedar-desk-policy-review-329d59/continuity/snapshots/REF-356e9f14a811b0dfcb81de5a.md",
+        "source_id": null,
+        "original_path": null,
+        "original_hash": null,
+        "extraction_state": "not_applicable"
+      },
+      {
+        "reference_id": "ASM-20260905-321454",
+        "kind": "assumption",
+        "title": "Assumption",
+        "path": "03_Matters/cedar-desk-policy-review-329d59/facts.md",
+        "revision": "21748700615044e2abf1b76f8ddd997613ef6bf56fae9b34b8eeecd563ecff17",
+        "content_hash": "cdb4353e177368d9f923bbc8b34cb326c14701f888157da458518b4d4284572d",
+        "text": "The policy is internal and applies only to the US office.",
+        "snapshot_path": "03_Matters/cedar-desk-policy-review-329d59/continuity/snapshots/REF-11a59acfccbdc640be0977a7.md",
+        "source_id": null,
+        "original_path": null,
+        "original_hash": null,
+        "extraction_state": "not_applicable"
+      },
+      {
+        "reference_id": "ASM-20260905-041945",
+        "kind": "assumption",
+        "title": "Assumption",
+        "path": "03_Matters/cedar-desk-policy-review-329d59/facts.md",
+        "revision": "7369aba00fe42e92889f4dbf9bc386e1f1bf708f924a079a56f5a4cf06122d68",
+        "content_hash": "2d214922ec6637441d342d8fb1b3a9b49364c0561a4442a0244619e8dea3c4c4",
+        "text": "The laptop loan is an internal equipment loan to employees, not a customer-facing product.",
+        "snapshot_path": "03_Matters/cedar-desk-policy-review-329d59/continuity/snapshots/REF-ef03280e5ec3bcbf18364aac.md",
+        "source_id": null,
+        "original_path": null,
+        "original_hash": null,
+        "extraction_state": "not_applicable"
+      }
+    ],
+    "baseline_revisions": {
+      "business_question": "legacy:426a2dfb56060677a40d2165e55837cfc7f23848ceec9b8319331e5f84f72fd1",
+      "fact_basis": "fd706b05f1a7c634fdf242e4a5bcaf464904d3fef7de52b01e1f0590a623aed0"
+    },
+    "state": "complete",
+    "difference": "text_changed",
+    "passages": [
+      {
+        "passage_id": "PASS-c678bca4bea40ccaea47",
+        "kind": "changed",
+        "before_text": "Cedar Desk equipment loan policy \u2014 supplied version 1\n",
+        "after_text": "Cedar Desk equipment loan policy \u2014 supplied version 2\n",
+        "before_locator": "03_Matters/cedar-desk-policy-review-329d59/documents/cedar-policy-v1.txt.extracted.md \u00b7 source text lines 1\u20131",
+        "after_locator": "03_Matters/cedar-desk-policy-review-329d59/documents/cedar-policy-v2.txt.extracted.md \u00b7 source text lines 1\u20131"
+      },
+      {
+        "passage_id": "PASS-4f9db8fc92e8aebb9fd3",
+        "kind": "changed",
+        "before_text": "US office employees may borrow one laptop for 14 days.\nNo extension approval process is specified.\n",
+        "after_text": "US office employees may borrow one laptop for 30 days.\nThe facilities manager may approve one extension of 14 days.\n",
+        "before_locator": "03_Matters/cedar-desk-policy-review-329d59/documents/cedar-policy-v1.txt.extracted.md \u00b7 source text lines 3\u20134",
+        "after_locator": "03_Matters/cedar-desk-policy-review-329d59/documents/cedar-policy-v2.txt.extracted.md \u00b7 source text lines 3\u20134"
+      }
+    ],
+    "analysis": "Here's my analysis of how the changed loan duration and named extension approver affect the earlier advice. This is scenario analysis only \u2014 I've made no edits to facts, decisions, or drafts.\n## What changed (literal, from the supplied versions)\n**Version 1 (the basis of the earlier advice):**\n- US office employees may borrow one laptop for **14 days**.\n- **No extension approval process is specified.**\n**Version 2 (the changed version):**\n- US office employees may borrow one laptop for **30 days**.\n- **The facilities manager may approve one extension of 14 days.**\nSo two things changed: the base loan period (14 \u2192 30 days) and the extension gap was filled (a named approver \u2014 the facilities manager \u2014 plus a defined cap of one 14-day extension).\n## Effect on the earlier advice\n**1. The core gap you asked me to identify is now resolved in the source.** The earlier advice's central point \u2014 that the policy is silent on who approves an extension \u2014 no longer holds against version 2. Version 2 names the facilities manager and caps extensions at one 14-day extension. So the \"single most decision-changing missing fact\" is now supplied, and the earlier advice's framing of it as an open gap is superseded for this version.\n**2. The earlier advice's recommended shape is largely confirmed, not contradicted.** My earlier first pass suggested the policy should specify (a) whether extensions are permitted, (b) a cap, and (c) who approves. Version 2 does all three: extensions are permitted, capped at one 14-day extension, and approved by the facilities manager. So the changed version aligns with the structure I recommended \u2014 the earlier advice anticipated this shape.\n**3. What remains open / may need review (uncertainty preserved):**\n- **The approver choice itself.** The earlier advice floated direct manager, IT/equipment, HR, or a single owner. Version 2 picks the **facilities manager** \u2014 a role that wasn't in my earlier options. That's a reasonable single-owner choice for asset tracking, but it's worth confirming the facilities manager is the right owner for *business-need* judgment (a manager might better judge whether the extension is justified) versus *asset custody* (facilities/IT better tracks the device). The earlier advice's point about separating business-need approval from asset tracking still stands as a review consideration.\n- **The cap's interaction with the longer base period.** With a 30-day base plus a 14-day extension, the maximum loan is now 44 days \u2014 more than triple the original 14-day policy. The earlier advice's concern about an \"effectively meaningless\" duration rule is less acute now that a cap exists, but the *total* holding period is materially longer. Whether 44 days is acceptable for a single laptop (data security, asset availability, departing-employee risk) is a judgment the earlier advice flagged and that still warrants review.\n- **Overdue-return handling.** Version 2 still doesn't address what happens on overdue return (escalation, recovery, data wipe) \u2014 a point the earlier advice raised and that remains unaddressed.\n- **Scope.** Neither version addresses whether the policy covers only laptops or other equipment; that earlier open question is unchanged.\n## Bottom line\nThe changed version **resolves the specific gap the earlier advice centered on** (extension approval authority and cap), and it does so in a way consistent with the structure the earlier advice recommended. What remains for review is not the missing approver but the *choice* of approver (facilities manager vs. business-need owner), the longer total holding period (up to 44 days), and the still-unaddressed overdue-return handling and scope questions.\nNo edits were made to facts, decisions, or drafts.",
+    "findings": [],
+    "coverage_limits": [
+      "Analysis covers only the selected supplied material and saved work. No external research was performed."
+    ],
+    "run_id": "RUN-20260905-34b117",
+    "created_at": "2026-09-05T09:23:33+00:00",
+    "offer_ids": []
+  }
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import styles from "./TodayPhase2.module.css";
 import { useState } from "react";
 import LinkifiedText from "@/components/LinkifiedText";
 import { VISIBLE_LIMIT, type BriefingItem } from "@/lib/briefing";
@@ -9,11 +10,11 @@ import { VISIBLE_LIMIT, type BriefingItem } from "@/lib/briefing";
  * Canvas 3a. A ranked list of five, not a board. Every item says what needs
  * you, why, and the one thing to do.
  */
-export default function BriefingList({ items, limit = VISIBLE_LIMIT }: { items: BriefingItem[]; limit?: number }) {
+export default function BriefingList({ items, limit = VISIBLE_LIMIT, startIndex = 0 }: { items: BriefingItem[]; limit?: number; startIndex?: number }) {
   const [expanded, setExpanded] = useState(false);
   if (!items.length) {
     return (
-      <div className="card">
+      <div className={styles.orientation}>
         <div className="row" style={{ display: "block", padding: "26px 24px" }}>
           <div className="brief-title" style={{ marginTop: 0 }}>Nothing is waiting on your judgment.</div>
           <div className="brief-why">
@@ -28,15 +29,15 @@ export default function BriefingList({ items, limit = VISIBLE_LIMIT }: { items: 
   const hidden = items.length - visible.length;
 
   return (
-    <div className="card">
+    <div className={styles.orientation}>
       <div className="row-list">
         {visible.map((item, index) => (
           <div
-            className={`row brief-row${item.late ? " is-late" : ""}`}
+            className={styles.fallbackRow}
             key={item.id}
-            style={{ borderLeftColor: item.color, background: item.rowBg }}
+
           >
-            <div className="brief-index">{index + 1}</div>
+            <div className={styles.rank} style={{ color: item.pillInk, background: item.pillBg }}>{startIndex + index + 1}</div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div className="brief-meta">
                 <span className="brief-status" style={{ background: item.pillBg, color: item.pillInk }}>
@@ -48,7 +49,7 @@ export default function BriefingList({ items, limit = VISIBLE_LIMIT }: { items: 
               <div className="brief-why"><LinkifiedText text={item.why} /></div>
             </div>
             <div style={{ flex: "none", paddingTop: 24 }}>
-              <Link className={`btn brief-action ${item.primary ? "primary" : ""}`} href={item.href}>
+              <Link className={styles.primary} href={item.href}>
                 {item.action}
               </Link>
             </div>

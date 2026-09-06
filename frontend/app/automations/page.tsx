@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import styles from "@/components/AdminPhase2.module.css";
 import AppShell from "@/components/AppShell";
 import AutomationPanel from "@/components/AutomationPanel";
 import { createSchedule, getAutomations, runSchedule, updateSchedule } from "@/lib/api";
@@ -35,15 +36,12 @@ export default function AutomationsPage() {
 
   return (
     <AppShell>
-      <main className="page narrow">
+      <main className={styles.page}>
         <header className="page-header">
           <div className="page-header-main">
-            <div className="eyebrow">Standing work</div>
-            <h1 className="headline">Automations</h1>
-            <p className="page-lede">
-              Jobs Themis.ai runs on its own, on a schedule. They watch folders, scan sources, and re-check
-              recorded decisions, then bring what they find to you.
-              <strong> An automation never sends anything and never records a decision.</strong>
+            <h1 className={styles.heading}>Work on a schedule</h1>
+            <p className={styles.lede}>
+              Set automations to run on a cadence so your work progresses without you having to remember.
             </p>
           </div>
         </header>

@@ -1,0 +1,226 @@
+{
+  "height": 1536,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 83.99857330322266,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 763.68603515625,
+      "y": 92.54261016845705
+    },
+    {
+      "font": "16px",
+      "height": 1690.6533203125,
+      "tag": "MAIN",
+      "text": "Work on a scheduleSet automations to run on a cadence so you",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": 83.99857330322266
+    },
+    {
+      "font": "16px",
+      "height": 89.2897720336914,
+      "tag": "HEADER",
+      "text": "Work on a scheduleSet automations to run on a cadence so you",
+      "width": 934.54541015625,
+      "x": 40,
+      "y": 121.99573516845705
+    },
+    {
+      "font": "48px",
+      "height": 53.749996185302734,
+      "tag": "H1",
+      "text": "Work on a schedule",
+      "width": 934.54541015625,
+      "x": 40,
+      "y": 121.99573516845705
+    },
+    {
+      "font": "16px",
+      "height": 231.6193084716797,
+      "tag": "SECTION",
+      "text": "Failed on its last runThese stopped doing their job. Read th",
+      "width": 934.54541015625,
+      "x": 40,
+      "y": 307.7272644042969
+    },
+    {
+      "font": "18px",
+      "height": 23.636362075805664,
+      "tag": "H2",
+      "text": "Failed on its last run",
+      "width": 930.553955078125,
+      "x": 41.9957389831543,
+      "y": 307.7272644042969
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Pause schedule",
+      "width": 152.6704559326172,
+      "x": 800.9658813476562,
+      "y": 391.2641906738281
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Retry now",
+      "width": 152.6704559326172,
+      "x": 800.9658813476562,
+      "y": 442.2585144042969
+    },
+    {
+      "font": "16px",
+      "height": 408.7215881347656,
+      "tag": "SECTION",
+      "text": "Running on scheduleThese are working. Nothing is asked of yo",
+      "width": 934.54541015625,
+      "x": 40,
+      "y": 565.3408813476562
+    },
+    {
+      "font": "18px",
+      "height": 23.636362075805664,
+      "tag": "H2",
+      "text": "Running on schedule",
+      "width": 930.553955078125,
+      "x": 41.9957389831543,
+      "y": 565.3408813476562
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Pause schedule",
+      "width": 152.6704559326172,
+      "x": 800.9658813476562,
+      "y": 648.8778076171875
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Run it now",
+      "width": 152.6704559326172,
+      "x": 800.9658813476562,
+      "y": 699.8721313476562
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Pause schedule",
+      "width": 152.6704559326172,
+      "x": 800.9658813476562,
+      "y": 821.4701538085938
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Run it now",
+      "width": 152.6704559326172,
+      "x": 800.9658813476562,
+      "y": 872.4644775390625
+    },
+    {
+      "font": "16px",
+      "height": 576.803955078125,
+      "tag": "SECTION",
+      "text": "PausedThese keep their settings but will not run until you r",
+      "width": 934.54541015625,
+      "x": 40,
+      "y": 1000.0567626953124
+    },
+    {
+      "font": "18px",
+      "height": 23.636362075805664,
+      "tag": "H2",
+      "text": "Paused",
+      "width": 930.553955078125,
+      "x": 41.9957389831543,
+      "y": 1000.0567626953124
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Resume schedule",
+      "width": 167.25851440429688,
+      "x": 786.3778076171875,
+      "y": 1088.1036376953125
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Run it now",
+      "width": 167.25851440429688,
+      "x": 786.3778076171875,
+      "y": 1139.0980224609375
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Resume schedule",
+      "width": 167.25851440429688,
+      "x": 786.3778076171875,
+      "y": 1260.6959228515625
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Run it now",
+      "width": 167.25851440429688,
+      "x": 786.3778076171875,
+      "y": 1311.6903076171875
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Resume schedule",
+      "width": 167.25851440429688,
+      "x": 786.3778076171875,
+      "y": 1428.7783203125
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "Run it now",
+      "width": 167.25851440429688,
+      "x": 786.3778076171875,
+      "y": 1479.772705078125
+    },
+    {
+      "font": "16px",
+      "height": 42.99715805053711,
+      "tag": "BUTTON",
+      "text": "New automation",
+      "width": 158.6221466064453,
+      "x": 795.01416015625,
+      "y": 1648.8919677734375
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 0,
+  "url": "http://localhost:3134/automations",
+  "width": 1024
+}

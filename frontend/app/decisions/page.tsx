@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import AppShell from "@/components/AppShell";
 import DataLoadStatus from "@/components/DataLoadStatus";
+import styles from "@/components/DecisionsPhase2.module.css";
 import DecisionTable from "@/components/DecisionTable";
 import LinkifiedText from "@/components/LinkifiedText";
 import ReviewPacketPanel from "@/components/ReviewPacketPanel";
@@ -82,13 +83,13 @@ export default function DecisionsPage() {
 
   return (
     <AppShell>
-      <main className="page">
-        <div className="page-header">
+      <main className={styles.page}>
+        <div className={styles.header}>
           <div>
-            <h1>Decision register</h1>
+            <h1>Recorded decisions</h1>
             <p>{loaded ? `${decisions.length} recorded${flagged ? ` · ${flagged} need review` : ""}` : loadError ? "Current decision data is unavailable." : "Loading decisions…"}</p>
           </div>
-          {loaded ? <div className="btn-row">
+          {loaded ? <div className={styles.controls}>
             <fieldset className="segmented">
               <legend className="sr-only">Decision filter</legend>
               {[
@@ -123,12 +124,12 @@ export default function DecisionsPage() {
         {error ? <div className="error">{error}</div> : null}
 
         {loaded && openRecommendations.length ? (
-          <div className="recommendation-band" style={{ marginTop: 22 }}>
+          <div className={styles.recommendations}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 9 }}>
               <span className="agent-label">
                 <span className="agent-mark" />
                 <span className="record-meta" style={{ color: "var(--agent)" }}>
-                  {openRecommendations.length} open recommendation{openRecommendations.length === 1 ? "" : "s"}
+                  {openRecommendations.length} open recommendation{openRecommendations.length === 1 ? "" : "s"} · Agent work
                 </span>
               </span>
             </div>
@@ -150,11 +151,13 @@ export default function DecisionsPage() {
           </div>
         ) : null}
 
-        {loaded && packets.length ? <section style={{ marginTop: 22 }}><h2>Decision review packets</h2>{packets.map((packet) => <details key={packet.packet_id} open={selectedPacket === packet.packet_id}><summary>{packet.status === "open" ? "Needs review" : packet.status === "monitoring" ? "Monitoring" : "Resolved"} · {packet.what_happened}</summary><ReviewPacketPanel packet={packet} matterId={packet.affected_matters[0]} onChanged={load} /></details>)}</section> : null}
+
 
         {loaded ? (
-          <DecisionTable decisions={visible} matterTitles={matterTitles} packets={packets} selectedDecision={selectedDecision} />
+          <div className={styles.register} role="region" aria-label="Recorded decisions table" tabIndex={0}><DecisionTable decisions={visible} matterTitles={matterTitles} packets={packets} selectedDecision={selectedDecision} /></div>
         ) : null}
+
+        {loaded ? <section className={styles.packets}><h2>Decision review packets</h2>{packets.length ? packets.map((packet) => <details key={packet.packet_id} open={selectedPacket === packet.packet_id}><summary>{packet.status === "open" ? "Needs review" : packet.status === "monitoring" ? "Monitoring" : "Resolved"} · {packet.what_happened}</summary><ReviewPacketPanel presentation="phase2" packet={packet} matterId={packet.affected_matters[0]} onChanged={load} /></details>) : <p>No review packets</p>}</section> : null}
 
         {loaded ? <p style={{ font: "400 13.5px/1.5 var(--sans)", color: "var(--ink-4)", marginTop: 14, maxWidth: "90ch" }}>
           Recommendations stay separate from recorded decisions until a lawyer records the decision.

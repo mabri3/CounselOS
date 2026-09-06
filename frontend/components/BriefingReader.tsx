@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import styles from "./BriefingPhase2.module.css";
 import { useEffect, useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -20,7 +21,7 @@ export default function BriefingReader({ itemId, digestId, returnQuery = {} }: {
   const [error, setError] = useState(""); const [loading, setLoading] = useState(true);
   const backHref = useMemo(() => { const params = new URLSearchParams(); for (const [key, value] of Object.entries(returnQuery)) for (const part of Array.isArray(value) ? value : value ? [value] : []) params.append(key, part); return `/briefing${params.size ? `?${params}` : ""}`; }, [returnQuery]);
 
-  useEffect(() => { let live = true; setLoading(true); const load = digestId ? getDigest(digestId).then(async (value) => { const snapshots = await Promise.all(value.item_ids.map((id) => getBriefingItem(id).catch(() => null))); if (live) { setDigest(value); setDigestItems(snapshots.filter((entry): entry is BriefingItem => entry !== null)); } }) : getBriefingItem(itemId!).then((value) => live && setItem(value)); Promise.all([load, getIntelligenceSources().then((page) => live && setCatalog(page.items))]).catch((reason: unknown) => live && setError(message(reason))).finally(() => live && setLoading(false)); return () => { live = false; }; }, [digestId, itemId]);
+  useEffect(() => { let live = true; setLoading(true); const load = digestId ? getDigest(digestId).then(async (value) => { const snapshots = await Promise.all(value.item_ids.map((id) => getBriefingItem(id).catch(() => null))); if (live) { setDigest(value); setDigestItems(snapshots.filter((entry): entry is BriefingItem => entry !== null)); } }) : getBriefingItem(itemId!).then((value) => live && setItem(value)); Promise.all([load, getIntelligenceSources().then((page) => live && setCatalog(page.items)).catch(() => undefined)]).catch((reason: unknown) => live && setError(message(reason))).finally(() => live && setLoading(false)); return () => { live = false; }; }, [digestId, itemId]);
 
   /* Watch titles are orientation only. A failure here never blocks the record. */
   useEffect(() => {
@@ -39,29 +40,28 @@ export default function BriefingReader({ itemId, digestId, returnQuery = {} }: {
 }
 
 function DigestReader({ digest, items, catalog, watchNames }: { digest: Digest; items: BriefingItem[]; catalog: WatchSource[]; watchNames: Record<string, string> }) {
-  return <main className="page narrow">
+  return <main className={styles.digest}>
     <div className="reader-back"><Link href="/briefing">← Back to Briefing</Link></div>
     <header className="reader-head">
       <div className="eyebrow">Digest · frozen {formatDateTime(digest.created_at)}</div>
-      <h1 className="reader-title">{digest.title}</h1>
-      <p className="reader-summary">{digest.summary}</p>
-      <p className="page-lede">
-        This is a fixed record of what the saved view <strong>{digest.view_name}</strong> showed on that date.
-        It never changes, even when the underlying items do.
-      </p>
+      <div className={styles.digestTitle}><h1 className="reader-title">{digest.title}</h1><div className={styles.savedIdentity}>Saved view<strong>{digest.view_name}</strong></div></div>
     </header>
-    {digest.warnings.map((warning) => <div className="warning-callout" key={warning} style={{ marginTop: 16 }}>{warning}</div>)}
-    <div className="reading-column" style={{ marginTop: 24, display: "grid", gap: 14 }}>
-      {items.map((item) => <article className="card responsive-card" key={item.item_id} style={{ padding: 22 }}>
-        <div className="briefing-item-meta">{formatShortDate(item.published_at || item.created_at)} · {watchNames[item.watch_id] ?? item.watch_id}</div>
-        <h2 style={{ font: "600 21px/1.3 var(--serif)", margin: "8px 0 0" }}>{item.title}</h2>
-        <p className="reader-prose" style={{ marginTop: 8 }}>{item.summary}</p>
-        <div style={{ marginTop: 14 }}><SourceList item={item} catalog={catalog} showEmpty={false} /></div>
-        <Link className="btn compact" href={`/briefing/${encodeURIComponent(item.item_id)}`} style={{ marginTop: 14, display: "inline-block" }}>Open the current item</Link>
-      </article>)}
+    <p className={styles.fixedNotice}>The saved digest record is fixed. Links below open current item records.</p>
+    <section className={styles.digestSummary}><div className="state-label state-agent">Agent work · Digest summary</div><p>{digest.summary}</p><span>{formatDateTime(digest.created_at)}</span></section>
+    {digest.warnings.map((warning) => <div className="warning-callout" key={warning}>{warning}</div>)}
+    <div className={styles.digestItems}>
+      {digest.item_ids.map((id, index) => {
+        const item = items.find((entry) => entry.item_id === id);
+        return <article className={styles.digestItem} key={id}>
+          <div className={styles.digestItemMeta}><span className={styles.sequence}>{index + 1}</span><div>{item ? formatShortDate(item.published_at || item.created_at) : "Date unavailable"}<p>{item ? watchNames[item.watch_id] ?? item.watch_id : "Current record missing"}</p></div></div>
+          <div><h2>{item?.title ?? "Current item unavailable"}</h2><p>{item?.summary ?? "The saved digest still includes this item. Its current record could not be loaded."}</p>
+            {item ? <><details className={styles.digestSources}><summary>Source support · {item.sources.length ? [...new Set(item.sources.map((source) => supportLabel(source.support_state)))].join(", ") : "No cited sources"}</summary><SourceList item={item} catalog={catalog} showEmpty={false} /></details><Link href={`/briefing/${encodeURIComponent(id)}`}>Open the current item →</Link></> : <span className="state-label state-attention">Unavailable</span>}
+          </div>
+        </article>;
+      })}
     </div>
-    {items.some((item) => item.sources.length === 0) && <p className="faint" style={{ marginTop: 14 }}>No cited sources</p>}
-    {items.length < digest.item_ids.length && <div className="warning-callout" style={{ marginTop: 18 }}>Some current item records are unavailable. The digest record and its saved item IDs remain unchanged.</div>}
+    <details className="reader-details"><summary>Digest metadata &amp; item list</summary><p>Created {formatDateTime(digest.created_at)}</p><ul>{digest.item_ids.map((id) => <li key={id}>{id}</li>)}</ul></details>
+    <details className="reader-details"><summary>Saved view details</summary><p>{digest.view_name}</p></details>
   </main>;
 }
 
@@ -153,7 +153,7 @@ function ItemReader({ item, setItem, catalog, backHref, watchNames }: { item: Br
   const needsReview = item.attention_state === "required" && Boolean(item.review_packet_id);
   const connection = item.company_connection;
 
-  return <main className="page reader">
+  return <main className={styles.reader}>
     <div className="reader-back"><Link href={backHref}>← Back to Briefing</Link></div>
 
     <header className="reader-head">
@@ -176,16 +176,16 @@ function ItemReader({ item, setItem, catalog, backHref, watchNames }: { item: Br
 
     {error && <div className="error" role="alert">{error}</div>}
 
-    <div className="work-rail-layout rail-roomy" style={{ marginTop: 26 }}>
+    <div className={styles.readerBody}>
       <article className="work-main">
-        <section className="agent-note" aria-label="Why this appeared">
-          <span className="state-label state-agent">Themis.ai</span>
-          <h2 style={{ margin: "12px 0 8px", font: "600 19px var(--serif)" }}>Why this reached you</h2>
+        <section className="reader-section"><h2>What changed</h2><p className="reader-prose">{item.summary}</p></section>
+        <section className="reader-section" aria-label="Why this appeared">
+          <h2>Why this was shown</h2>
           <p className="reader-prose">{item.why_shown}</p>
         </section>
 
         <section className="reader-section">
-          <h2>What this touches at your company</h2>
+          <h2>Connection to your work</h2>
           {connection ? <>
             <p className="reader-prose" style={{ marginBottom: 14 }}>{connection.reason}</p>
             <dl className="reader-grid">
@@ -224,10 +224,10 @@ function ItemReader({ item, setItem, catalog, backHref, watchNames }: { item: Br
           <h2 className="rail-card-title">What you can do</h2>
           <p className="rail-card-help">Triage is yours alone. None of this changes a matter or a recorded decision.</p>
           <div className="action-list">
-            {sourceUrl && <a className="btn primary" href={sourceUrl} rel="noreferrer" target="_blank">Read the original source ↗</a>}
-            <button className="btn" disabled={busy} onClick={() => act(() => triageBriefingItem(item.item_id, { expected_revision: item.revision, read: !item.read }), setItem)}>{item.read ? "Mark as unread" : "Mark as read"}</button>
+            <button className="btn primary" disabled={busy} onClick={() => act(() => triageBriefingItem(item.item_id, { expected_revision: item.revision, read: !item.read }), setItem)}>{item.read ? "Mark as unread" : "Mark as read"}</button>
             <button className="btn" disabled={busy} onClick={() => act(() => triageBriefingItem(item.item_id, { expected_revision: item.revision, saved: !item.saved }), setItem)}>{item.saved ? "Remove from saved" : "Save for later"}</button>
             <button className="btn" disabled={busy} onClick={() => act(() => triageBriefingItem(item.item_id, { expected_revision: item.revision, usefulness: "not_useful" }), setItem)}>Not useful</button>
+            {sourceUrl && <a className="btn" href={sourceUrl} rel="noreferrer" target="_blank">Open original ↗</a>}
           </div>
           <p className="rail-card-help" style={{ marginTop: 11 }}>
             <strong>Not useful</strong> records your judgment on this item. It does not delete it.
@@ -236,7 +236,7 @@ function ItemReader({ item, setItem, catalog, backHref, watchNames }: { item: Br
 
         <section className="rail-card wash-agent ask-panel">
           <span className="state-label state-agent">Themis.ai</span>
-          <h2 className="rail-card-title" style={{ marginTop: 12 }}>Ask about this development</h2>
+          <h2 className="rail-card-title" style={{ marginTop: 12 }}>Themis.ai conversation</h2>
           <p className="rail-card-help">Themis.ai keeps this item in context. Answers are drafts for you to judge — they are never recorded decisions.</p>
           {turns.length ? <div className="ask-thread">{turns.map((turn, index) => turn.role === "user" ? <div className="bubble-you" key={index}>{turn.content}</div> : <div className="assistant-message" key={index}><div className="agent-label">Themis.ai</div><div className="bubble-agent"><ReactMarkdown remarkPlugins={[remarkGfm]}>{turn.content}</ReactMarkdown>{turn.result?.warnings.map((warning) => <div className="warning-callout" key={warning}>{warning}</div>)}{turn.result?.sources.length ? <details><summary>Sources used ({turn.result.sources.length})</summary>{turn.result.sources.map((source) => <div key={source.canonical_url}><a href={source.canonical_url} rel="noreferrer" target="_blank">{source.title}</a></div>)}</details> : null}</div></div>)}</div> : null}
           <div className="composer-suggestions" style={{ marginTop: 13 }}>{BRIEFING_PROMPTS.map((prompt) => <button className="suggestion" disabled={busy} key={prompt} onClick={() => void usePrompt(prompt)} type="button">{prompt}</button>)}</div>

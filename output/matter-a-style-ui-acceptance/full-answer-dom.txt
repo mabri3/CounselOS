@@ -1,0 +1,306 @@
+- banner:
+  - link "Themis.ai":
+    - /url: /
+    - img "Themis.ai"
+  - navigation "Main navigation":
+    - link "Today":
+      - /url: /
+    - link "Briefing":
+      - /url: /briefing
+    - link "Workspace":
+      - /url: /workspace
+    - link "Matters":
+      - /url: /matters
+    - link "Decisions":
+      - /url: /decisions
+    - link "Skills":
+      - /url: /skills
+    - link "Automations":
+      - /url: /automations
+    - link "Agents":
+      - /url: /agents
+    - link "Settings":
+      - /url: /settings
+  - region "View as":
+    - paragraph: Local demo
+    - heading "View as" [level=2]
+    - generic: View workspace as
+    - combobox "View workspace as":
+      - option "Alex Morgan · alex-morgan" [selected]
+      - option "Jamie Lee · jamie-lee"
+    - generic "About"
+- banner:
+  - generic: Waiting on you
+  - link "Matters":
+    - /url: /matters
+  - 'heading "Lumen Learning: US family launch with analytics and shared-device accounts" [level=1]'
+  - term: Stage
+  - definition: Respond
+  - term: Risk
+  - definition:
+    - generic: Lawyer-set risk
+    - combobox "Lawyer-set risk":
+      - option "Set risk" [selected]
+      - option "Low"
+      - option "Moderate"
+      - option "High"
+  - term: Due
+  - definition: No date
+  - generic "Tools and history"
+- region "Matter workspace":
+  - group "Matter workspace view":
+    - generic: Matter workspace view
+    - radio "Understand" [checked]
+    - generic "Read the current matter": Understand
+    - radio "Discuss"
+    - generic "Continue one matter conversation": Discuss
+    - radio "Draft"
+    - generic "Review and prepare work product": Draft
+  - generic "Discussion help"
+  - button "Show discussion"
+  - region "Matter understanding":
+    - status:
+      - text: Some saved analysis is based on an earlier question or source version. It remains available while you refresh it.
+      - button "Refresh matter"
+    - region "Matter review orientation":
+      - text: Business question
+      - heading "Can Lumen launch its US family learning app with analytics?" [level=2]
+      - generic: Working answer · Agent work · No cited sources
+      - paragraph:
+        - text: Confirm the launch audience and the purpose of the persistent identifier before choosing the controls. This working answer uses supplied fixture material. The child definition is narrow
+        - 'button "Source: SRC-COPPA · Child · unavailable" [disabled]'
+        - text: .
+      - paragraph: The audience issue remains open. Product has not confirmed whether the US launch includes children under thirteen. A commercial service and a family audience do not alone settle the coverage analysis. Keep the audience fact request separate from the legal question about identifiers.
+      - paragraph:
+        - text: The identifier issue concerns recognition across sessions. The supplied personal-information definition describes certain persistent identifiers
+        - 'button "Source: SRC-COPPA · Personal information (7) · unavailable" [disabled]'
+        - text: . The saved passage does not establish whether an internal-operations exception applies. Engineering must explain the identifier purpose and the data flow.
+      - paragraph: The launch controls can then address notice, consent, retention, vendor use, and support access. Advertising use remains outside the recorded launch scope. That recorded choice does not resolve the other five issues. Ask Product to confirm the audience and ask Engineering to explain identifier use. END OF FULL FIXTURE ANSWER.
+      - paragraph: The full saved answer is shown.
+      - button "Show shorter answer" [expanded] [active]
+      - note:
+        - strong: Material qualification
+        - generic: Working analysis. Audience coverage and the internal-operations question remain open.
+      - generic: One next action
+      - button "View all issues (6)"
+      - paragraph:
+        - strong: Audience changes which launch controls require legal review.
+      - generic: Needs attention
+      - generic: "Owner: Lawyer"
+      - button "Review and record a disposition"
+    - region "Needs your review":
+      - heading "Needs your review" [level=2]
+      - generic: Up to 3 items
+      - 'article "Review item: Audience age and the proposed launch to families with children younger than thirteen"':
+        - text: Issue to review
+        - heading "Audience age and the proposed launch to families with children younger than thirteen" [level=4]
+        - paragraph: Audience changes which launch controls require legal review.
+        - generic "State and owner":
+          - generic: Needs attention
+          - generic: "Owner: Lawyer"
+        - generic "Review actions":
+          - button "Review and record a disposition"
+          - button "Close panel without completing work": Close panel
+      - 'article "Review item: Persistent analytics identifiers on shared devices"':
+        - text: Issue to review
+        - heading "Persistent analytics identifiers on shared devices" [level=4]
+        - paragraph: A device identifier can connect learning activity over time.
+        - generic "State and owner":
+          - generic: Needs attention
+          - generic: "Owner: Lawyer"
+        - generic "Review actions":
+          - button "Review and record a disposition"
+          - button "Close panel without completing work": Close panel
+      - 'article "Review item: Parental notice and consent before collection"':
+        - text: Issue to review
+        - heading "Parental notice and consent before collection" [level=4]
+        - paragraph: The team needs an implementation choice before release.
+        - generic "State and owner":
+          - generic: Needs attention
+          - generic: "Owner: Lawyer"
+        - generic "Review actions":
+          - button "Review and record a disposition"
+          - button "Close panel without completing work": Close panel
+    - navigation "More matter sections":
+      - button "Evidence & question history"
+      - button "Explore & business flow"
+      - button "Prior work & watches"
+      - button "Research & work"
+      - button "Materials & activity"
+    - 'article "Issue review: Audience age and the proposed launch to families with children younger than thirteen"':
+      - text: What needs your judgment
+      - heading "Audience age and the proposed launch to families with children younger than thirteen" [level=2]
+      - generic: Mitigation in progress
+      - paragraph:
+        - strong: "Next action:"
+        - text: Review the saved analysis and record the next position.
+      - paragraph:
+        - strong: "Owner:"
+        - text: Unassigned
+      - button "Open decision map"
+      - button "Discuss this issue"
+      - generic "Edit issue details"
+      - region "Business effect":
+        - text: Why this matters
+        - heading "Business effect" [level=3]
+        - paragraph: Audience changes which launch controls require legal review.
+      - region "Claims and applicability":
+        - text: Legal basis
+        - heading "Claims and applicability" [level=3]
+        - article:
+          - generic: Agent claim
+          - paragraph: The rule defines a child as an individual under 13.
+          - term: Regulated actor
+          - definition: Lumen, proposed online service operator
+          - term: Jurisdiction
+          - definition: United States
+          - term: Application
+          - definition: Lumen proposes a commercial US online service. Audience age is unknown. This definition alone does not establish coverage or a consent duty.
+          - status:
+            - strong: "Support gap:"
+            - text: Coverage and exceptions require further analysis.
+          - button "16 CFR 312.2 — definitions · Child · Supplied"
+      - region "Facts and legal questions":
+        - text: Questions that change the answer
+        - heading "Facts and legal questions" [level=3]
+        - article:
+          - generic: Open
+          - generic: Factual question
+          - generic: Shared with 2 issues
+          - paragraph: Will the US launch include children under 13?
+          - paragraph: The answer can change the required launch controls.
+          - generic: Reported fact
+          - textbox "Reported fact":
+            - /placeholder: Record the answer as a reported fact.
+          - button "Save reported fact" [disabled]
+          - button "Leave open"
+      - region "Options and mitigation":
+        - text: Ways forward
+        - heading "Options and mitigation" [level=3]
+        - article:
+          - generic: proposed
+          - generic: OPT-DEMO-NOTICE
+          - heading "Prepare parental notice and consent controls" [level=4]
+          - paragraph:
+            - strong: "Condition:"
+            - text: If the launch includes a covered child audience
+        - article:
+          - strong: Review audience and identifier controls before launch
+          - generic: Completed
+          - generic: "Owner: Alex Morgan"
+          - generic: Required
+        - button "Create mitigation work"
+        - button "Record formal decision"
+      - region "Mitigation in progress":
+        - text: Your recorded position
+        - heading "Mitigation in progress" [level=3]
+        - paragraph: "Fixture review: confirm the launch audience and identifier controls before release."
+        - paragraph: No formal decision is linked to this issue.
+        - button "Change or reopen disposition"
+        - generic "Disposition history (1)"
+    - region "Issue navigator":
+      - heading "All issues" [level=2]
+      - generic: 6 issues
+      - article:
+        - button "Audience age and the proposed launch to families with children younger than thirteen Mitigation in progress Open":
+          - generic: Audience age and the proposed launch to families with children younger than thirteen
+          - generic: Mitigation in progress
+          - generic: Open
+        - paragraph: Audience changes which launch controls require legal review.
+      - article:
+        - button "Persistent analytics identifiers on shared devices No disposition recorded Open":
+          - generic: Persistent analytics identifiers on shared devices
+          - generic: No disposition recorded
+          - generic: Open
+        - paragraph: A device identifier can connect learning activity over time.
+      - article:
+        - button "Parental notice and consent before collection No disposition recorded Open":
+          - generic: Parental notice and consent before collection
+          - generic: No disposition recorded
+          - generic: Open
+        - paragraph: The team needs an implementation choice before release.
+      - article:
+        - button "Data retention and deletion requests No disposition recorded Open":
+          - generic: Data retention and deletion requests
+          - generic: No disposition recorded
+          - generic: Open
+        - paragraph: Retention affects the data remaining after a family leaves.
+      - article:
+        - button "Vendor use of learning events for its own advertising No disposition recorded Open":
+          - generic: Vendor use of learning events for its own advertising
+          - generic: No disposition recorded
+          - generic: Open
+        - paragraph: Vendor use may differ from the team’s stated product purpose.
+      - article:
+        - button "Support access and account recovery No disposition recorded Open":
+          - generic: Support access and account recovery
+          - generic: No disposition recorded
+          - generic: Open
+        - paragraph: Support needs a usable process without unnecessary disclosure.
+    - generic "Supporting material and history"
+  - generic "Explain, stress-test or ask the business"
+  - generic "Scenarios and business flow"
+  - option "Add a new reported fact" [selected]
+  - option "Lumen plans a commercial online learning service in the United States."
+  - option "The product uses a persistent device identifier across sessions."
+  - option "Support will handle account recovery through the family account owner."
+  - option "The initial release is limited to the United States."
+  - option "Families use one account owner for account settings."
+  - option "Learning events include activity type and session time."
+  - option "Product has not set the minimum account age."
+  - option "The analytics processor receives a pseudonymous device identifier."
+  - option "The launch has no advertising placement."
+  - option "The app has no sale of learning-event data."
+  - option "Engineering owns the event schema."
+  - option "Support owns the account-recovery process."
+  - option "Privacy review must address retention separately from analytics purpose."
+  - option "The launch notice is still a draft."
+  - option "The processor contract is supplied by Procurement."
+  - option "Product expects shared devices in family homes."
+  - option "Account deletion removes the family profile."
+  - option "The analytics deletion process needs an Engineering description."
+  - option "The proposed launch separates family-account recovery from ordinary analytics processing. Support staff ask the account owner to confirm the recovery request. Product has not yet selected the precise notice and escalation text, and that open implementation choice must remain visible when the full matter map shows this long operational fact."
+  - option "Family account" [selected]
+  - option "Lumen service"
+  - option "Analytics processor"
+  - option "Family account"
+  - option "Lumen service" [selected]
+  - option "Analytics processor"
+  - option "Family account"
+  - option "Lumen service" [selected]
+  - option "Analytics processor"
+  - option "Family account"
+  - option "Lumen service"
+  - option "Analytics processor" [selected]
+  - generic "Prior work, practice notes and assumption watches"
+  - generic "Research, work items, decisions and matter records"
+  - complementary "Available work product":
+    - heading "Available work product" [level=2]
+    - article:
+      - strong: Business reply
+      - paragraph: general · version 2e8b04795e5c6665b2b84dc814f6ac44bd23f8cd2af785182ac0e8204d198005
+      - generic: Saved work product
+      - button "Open work"
+    - article:
+      - strong: Launch advice
+      - paragraph: general · version 6201292b4e1b1b7bac34e23bf47d77904203dc84d4999d0894c40059624cc34b
+      - generic: Saved work product
+      - button "Open work"
+    - article:
+      - strong: Launch advice
+      - paragraph: general · version 9d68e059ff28795485c098633f23973c40be4804be6a34413f0b3a5d7bb0dc56
+      - generic: Pending attorney review
+      - button "Open work"
+      - generic "Why this version changed"
+    - article:
+      - strong: Product control checklist
+      - paragraph: general · version ef96de891a73207f34dc4ffc9ffd99178fb24832b997265621f036e81fbedb20
+      - generic: Saved work product
+      - button "Open work"
+    - article:
+      - strong: Working draft
+      - paragraph: short_business_email · version a50d47db055d9a56183417d4cda44cb80c6bd95d1169c8ebc30dd7bd51ff6896
+      - generic: Saved work product
+      - button "Open work"
+- button "Open Next.js Dev Tools":
+- alert

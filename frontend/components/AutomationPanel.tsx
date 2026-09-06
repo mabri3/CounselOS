@@ -1,5 +1,7 @@
 "use client";
 
+import styles from "@/components/AdminPhase2.module.css";
+import Phase2Icon from "@/components/Phase2Icon";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import LinkifiedText from "@/components/LinkifiedText";
@@ -83,11 +85,9 @@ export default function AutomationPanel({
   ];
 
   return (
-    <>
+    <div className={styles.panel}>
       {schedules.length === 0 ? (
-        <div className="empty-state">
-          Nothing runs on a schedule yet. Describe the job below and Themis.ai will run it for you.
-        </div>
+        <div className={styles.empty}><div><span className={styles.emptyIcon}><Phase2Icon name="Automations" size={28} /></span><h2>No automation has run yet</h2><p>Create your first automation to get started.</p></div><div><span className={styles.emptyIcon}><Phase2Icon name="Workspace" size={28} /></span><h2>No saved schedules</h2><p>Your saved schedules will appear here.</p></div></div>
       ) : null}
 
       {sections.filter((section) => section.entries.length).map((section) => (
@@ -100,8 +100,8 @@ export default function AutomationPanel({
             {section.entries.map((schedule) => {
               const isFailing = scheduleIsFailing(schedule);
               const isPaused = scheduleIsPaused(schedule);
-              const status = isFailing ? "Failing" : isPaused ? "Paused" : schedule.last_run_at ? "Healthy" : "Never run";
-              const stateClass = isFailing ? "state-failure" : isPaused ? "state-quiet" : schedule.last_run_at ? "state-healthy" : "state-quiet";
+              const status = isFailing ? "Failed" : isPaused ? "Paused" : schedule.last_status === "running" ? "Running" : schedule.last_run_at ? "Healthy" : "Never run";
+              const stateClass = isFailing ? "state-failure" : isPaused ? "state-quiet" : schedule.last_status === "running" ? "state-agent" : schedule.last_run_at ? "state-healthy" : "state-quiet";
               const cardClass = isFailing ? "failing" : isPaused ? "paused" : "running";
               const watchId = "target_watch_id" in schedule ? schedule.target_watch_id : null;
               const failureMessage = "last_message" in schedule ? schedule.last_message : "";
@@ -109,7 +109,7 @@ export default function AutomationPanel({
 
               return (
                 <article className={`automation-card ${cardClass}`} key={schedule.schedule_id}>
-                  <div className="automation-card-head">
+                  <div className={styles.scheduleRow}><div className="automation-card-head">
                     <div style={{ minWidth: 0 }}>
                       <div className="automation-kicker">{KIND_LABEL[schedule.kind] ?? "Runs on a schedule"}</div>
                       <h3 className="automation-title"><LinkifiedText text={schedule.title} /></h3>
@@ -117,6 +117,27 @@ export default function AutomationPanel({
                     <span className={`state-label ${stateClass}`} style={{ flex: "none" }}>{status}</span>
                   </div>
 
+                  <div className={styles.runDate}><small>Last run</small>{schedule.last_run_at ? formatDateTime(schedule.last_run_at) : "Never"}</div>
+                  <div className={styles.runDate}><small>Next run</small>{isPaused ? "Paused" : schedule.next_run_at ? formatDateTime(schedule.next_run_at) : "Not scheduled"}</div>
+                  <div className="automation-actions">
+                    <button
+                      className="btn tiny"
+                      disabled={busySchedule === schedule.schedule_id}
+                      onClick={() => void onUpdate(schedule.schedule_id, isPaused)}
+                      type="button"
+                    >
+                      {isPaused ? "Resume schedule" : "Pause schedule"}
+                    </button>
+                    <button
+                      className={`btn tiny ${isFailing ? "primary" : ""}`}
+                      disabled={busySchedule === schedule.schedule_id}
+                      onClick={() => void onRun(schedule.schedule_id)}
+                      type="button"
+                    >
+                      {busySchedule === schedule.schedule_id ? "Running…" : isFailing ? "Retry now" : "Run it now"}
+                    </button>
+                  </div></div>
+                  <details className={styles.runDetails}><summary>Details and latest run</summary>
                   <p className="automation-effect"><LinkifiedText text={effectOf(schedule)} /></p>
 
                   {isFailing && failureMessage ? (
@@ -135,24 +156,7 @@ export default function AutomationPanel({
                     ) : null}
                   </dl>
 
-                  <div className="automation-actions">
-                    <button
-                      className="btn tiny"
-                      disabled={busySchedule === schedule.schedule_id}
-                      onClick={() => void onUpdate(schedule.schedule_id, isPaused)}
-                      type="button"
-                    >
-                      {isPaused ? "Resume schedule" : "Pause schedule"}
-                    </button>
-                    <button
-                      className={`btn tiny ${isFailing ? "primary" : ""}`}
-                      disabled={busySchedule === schedule.schedule_id}
-                      onClick={() => void onRun(schedule.schedule_id)}
-                      type="button"
-                    >
-                      {busySchedule === schedule.schedule_id ? "Running…" : isFailing ? "Retry now" : "Run it now"}
-                    </button>
-                  </div>
+                  </details>
                 </article>
               );
             })}
@@ -197,7 +201,7 @@ export default function AutomationPanel({
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 20, marginBottom: 18 }}>
               <div>
-                <h2 className="form-heading">Describe it in plain language</h2>
+                <h2 className="form-heading">New automation</h2>
                 <p className="form-heading-help">Say what you want done and how often. Themis.ai turns it into a standing job you can pause at any time.</p>
               </div>
               <button className="btn compact quiet" type="button" onClick={() => setOpen(false)}>Close</button>
@@ -215,7 +219,7 @@ export default function AutomationPanel({
                 />
                 <p className="form-help">Write it as an instruction. This text is what the agent follows on every run.</p>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 14 }}>
+              <div className={styles.composeFields}>
                 <div>
                   <div className="field-label">Name it</div>
                   <input aria-label="Automation name" className="text-input" onChange={(event) => setTitle(event.target.value)} placeholder="Weekly decision review" required value={title} />
@@ -266,6 +270,6 @@ export default function AutomationPanel({
           </>
         )}
       </div>
-    </>
+    </div>
   );
 }

@@ -1,0 +1,150 @@
+- button "Open Next.js Dev Tools":
+- alert: Decision register
+- banner:
+  - link "Themis.ai":
+    - /url: /
+    - img "Themis.ai"
+  - navigation "Main navigation":
+    - link "Today":
+      - /url: /
+    - link "Briefing":
+      - /url: /briefing
+    - link "Workspace":
+      - /url: /workspace
+    - link "Matters":
+      - /url: /matters
+    - link "Decisions":
+      - /url: /decisions
+    - link "Skills":
+      - /url: /skills
+    - link "Automations":
+      - /url: /automations
+    - link "Agents":
+      - /url: /agents
+    - link "Settings":
+      - /url: /settings
+  - region "View as":
+    - paragraph: Local demo
+    - heading "View as" [level=2]
+    - generic: View workspace as
+    - combobox "View workspace as":
+      - option "Alex Morgan · alex-morgan" [selected]
+      - option "Jamie Lee · jamie-lee"
+    - generic "About"
+- main:
+  - heading "Decision register" [level=1]
+  - paragraph: 4 recorded · 2 need review
+  - group "Decision filter":
+    - generic: Decision filter
+    - radio "All" [checked]
+    - generic: All
+    - radio "Needs review"
+    - generic: Needs review
+    - radio "Mine (configured lawyer)"
+    - generic: Mine (configured lawyer)
+  - button "Check sources again"
+  - generic: 2 open recommendations
+  - generic: Choose the consent migration path and approve the proposed data-use limits.
+  - generic: "Relay: Open-Banking Reauthentication and Data Use · updated August 28, 2026"
+  - link "Review":
+    - /url: /matters/MAT-DEMO-RELAY
+  - generic: Choose the viable launch path and confirm the retention fact that changes the recommendation.
+  - generic: "Project Apex: AI Voice Telemetry · updated August 25, 2026"
+  - link "Review":
+    - /url: /matters/MAT-DEMO-APEX
+  - heading "Decision review packets" [level=2]
+  - generic "Needs review · A synthetic demo signal links public adverse-action explanation guidance to an existing company decision about an AI pilot and its data limits." [active]
+  - region "Review packet":
+    - generic: Themis.ai · Not yet reviewed by an attorney
+    - heading "Review packet" [level=2]
+    - paragraph:
+      - strong: Needs review
+      - text: · today · high potential impact
+    - paragraph: A synthetic demo signal links public adverse-action explanation guidance to an existing company decision about an AI pilot and its data limits.
+    - paragraph:
+      - strong: "Why it appeared:"
+      - text: CounselOS matched the alternative-data topic to DEC-DEMO-APEX-RETENTION inside the local vault.
+    - strong: Prior decision basis
+    - list:
+      - listitem: The pilot was allowed with notice and a 30-day raw-audio retention cap because it could test value without indefinite retention or external model training.
+    - strong: Existing mitigations
+    - list:
+      - listitem: Explicit employee notice
+      - listitem: 30-day raw-audio retention cap
+    - strong: Possible tension
+    - list:
+      - listitem: The prior decision addresses collection and retention. It does not record whether decision explanations are specific enough if pilot data later affects eligibility or credit outcomes.
+    - strong: Timing
+    - list:
+      - listitem: Review before any expansion of the pilot into an eligibility or credit decision.
+    - strong: Sources
+    - list:
+      - link "CFPB Circular 2022-03":
+        - /url: https://www.consumerfinance.gov/compliance/circulars/circular-2022-03-adverse-action-notification-requirements-in-connection-with-credit-decisions-based-on-complex-algorithms/
+      - text: · retrieved · Retrieved, but no stored claim-to-excerpt verification was completed.
+      - link "CFPB Circular 2022-03":
+        - /url: https://www.consumerfinance.gov/compliance/circulars/circular-2022-03-adverse-action-notification-requirements-in-connection-with-credit-decisions-based-on-complex-algorithms/
+      - text: · supplied · Themis · Not reviewed. Supplied support is not verified support.
+    - strong: Warnings
+    - list:
+      - listitem: Synthetic demo packet. It recommends review but records no lawyer outcome.
+    - generic "Review packet actions":
+      - button "Keep current"
+      - button "Revise decision"
+      - button "Create follow-up work"
+      - button "Not relevant"
+      - button "Keep monitoring"
+      - button "Record mitigation"
+  - generic: Recorded
+  - generic: Decision
+  - generic: Matter
+  - generic: Decider
+  - generic "The recorded reason for the decision.": Basis
+  - generic "Shows when or why this decision must be checked again.": Review
+  - generic: February 1, 2026
+  - link "Allow the internal pilot with explicit employee notice and a 30-day raw-audio retention cap.":
+    - /url: /matters/MAT-DEMO-APEX
+  - generic: "Project Apex: AI Voice Telemetry"
+  - generic: General Counsel
+  - generic: The pilot value could be tested without indefinite retention or external model training.
+  - 'link "Needs review: Scheduled review date passed on 2026-07-01."':
+    - /url: /matters/MAT-DEMO-APEX
+    - strong: Needs review
+    - text: ": Scheduled review date passed on 2026-07-01."
+  - strong: "Revisit:"
+  - text: July 1, 2026
+  - link "Review packet · Needs review":
+    - /url: /decisions?packet=PKT-DEMO-ALTERNATIVE-DATA
+  - generic: July 12, 2026
+  - link "Approve with advertising disabled, limited event collection, and annual vendor review.":
+    - /url: /matters/MAT-DEMO-MASON
+  - generic: "Mason: Analytics SDK Review"
+  - generic: General Counsel
+  - generic: The restricted configuration supports product analytics without behavioral advertising or broad profiling.
+  - 'link "Needs review: Linked source changed after the decision: 00_System/company.md."':
+    - /url: /matters/MAT-DEMO-MASON
+    - strong: Needs review
+    - text: ": Linked source changed after the decision: 00_System/company.md."
+  - strong: "Revisit:"
+  - text: July 12, 2027
+  - generic: August 22, 2026
+  - link "Launch the eight-bank sweep with qualified insurance language, daily reconciliation, customer-visible allocations, and tested failure operations.":
+    - /url: /matters/MAT-DEMO-CEDAR
+  - generic: "Cedar: Cash Sweep and Deposit Insurance Disclosures"
+  - generic: Brian Harris
+  - generic: The approved records, account structure, disclosures, and operating controls support a useful customer product without making an unconditional insurance promise.
+  - generic: Recorded
+  - strong: "Conditions:"
+  - text: Reconcile customer and administrator allocation records each business day.; Stop new placement into an affected bank for a material unresolved exception.; Recheck the disclosure before changing the network or maximum advertised coverage.
+  - strong: "Revisit:"
+  - text: November 23, 2026
+  - generic: September 5, 2026
+  - link "Keep advertising use outside the initial launch scope.":
+    - /url: /matters/MAT-20260905-f025e4
+  - generic: "Lumen Learning: US family launch with analytics and shared-device accounts"
+  - generic: Alex Morgan
+  - generic: Product has not selected an advertising vendor. Any later use needs a separate review.
+  - generic: Recorded
+  - strong: "Not decided:"
+  - text: Audience coverage and parental consent remain open.
+  - paragraph: Recommendations stay separate from recorded decisions until a lawyer records the decision.

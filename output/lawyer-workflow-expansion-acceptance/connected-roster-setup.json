@@ -1,0 +1,48 @@
+{
+  "command": {
+    "enabled": true,
+    "people": [
+      {
+        "person_id": "alex",
+        "display_name": "Alex Morgan",
+        "specialty": "Commercial"
+      },
+      {
+        "person_id": "jordan",
+        "display_name": "Jordan Lee",
+        "specialty": "Commercial"
+      },
+      {
+        "person_id": "casey",
+        "display_name": "Casey Chen"
+      }
+    ],
+    "expected_revision": "6c6e92ac19e670c577934faa488b1d6c6954adec1c72acb756eeda815c534355",
+    "source_action_key": "continuity-acceptance-roster-v1"
+  },
+  "result": {
+    "status": 200,
+    "body": {
+      "enabled": true,
+      "people": [
+        {
+          "person_id": "alex",
+          "display_name": "Alex Morgan",
+          "specialty": "Commercial"
+        },
+        {
+          "person_id": "jordan",
+          "display_name": "Jordan Lee",
+          "specialty": "Commercial"
+        },
+        {
+          "person_id": "casey",
+          "display_name": "Casey Chen",
+          "specialty": null
+        }
+      ],
+      "revision": "2453019f25005c4994413ff5c3a126ff6c860f8a243306989935dba5165b0bb8",
+      "vault_key": "9b73b8e8cc1516024ea8efed"
+    }
+  }
+}

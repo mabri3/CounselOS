@@ -1,0 +1,244 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 83.99857330322266,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "font": "13px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 237.7627716064453,
+      "x": 756.7826538085938,
+      "y": 66.85369110107422
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 763.68603515625,
+      "y": 92.54261016845705
+    },
+    {
+      "font": "15px",
+      "height": 3496.391845703125,
+      "tag": "MAIN",
+      "text": "Daily attention queueSeptember 6, 2026Nine things need your ",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": 83.99857330322266
+    },
+    {
+      "font": "50px",
+      "height": 57.99715805053711,
+      "tag": "H1",
+      "text": "Nine things need your attention",
+      "width": 966.5482788085938,
+      "x": 23.998579025268555,
+      "y": 203.37356567382812
+    },
+    {
+      "font": "15px",
+      "height": 73.81391906738281,
+      "tag": "SECTION",
+      "text": "\n.team-work { min-width: 0; display: grid; gap: 12px; }\n.tea",
+      "width": 966.5482788085938,
+      "x": 23.998579025268555,
+      "y": 371.7116394042969
+    },
+    {
+      "font": "20px",
+      "height": 27.727272033691406,
+      "tag": "H2",
+      "text": "Team work",
+      "width": 105.42613220214844,
+      "x": 23.998579025268555,
+      "y": 386.257080078125
+    },
+    {
+      "font": "24px",
+      "height": 59.98579406738281,
+      "tag": "H2",
+      "text": "Harbor: Account Hold Support Response",
+      "width": 472.7556762695313,
+      "x": 108.8991470336914,
+      "y": 490.4261169433594
+    },
+    {
+      "font": "30px",
+      "height": 165.3764190673828,
+      "tag": "BUTTON",
+      "text": "⌄",
+      "width": 20,
+      "x": 949.6377563476562,
+      "y": 486.4275512695313
+    },
+    {
+      "font": "24px",
+      "height": 29.992897033691406,
+      "tag": "H2",
+      "text": "Pulse: Earned Wage Access Expansion",
+      "width": 472.7556762695313,
+      "x": 108.8991470336914,
+      "y": 1074.140625
+    },
+    {
+      "font": "30px",
+      "height": 166.92471313476562,
+      "tag": "BUTTON",
+      "text": "›",
+      "width": 20,
+      "x": 949.6377563476562,
+      "y": 1070.1419677734375
+    },
+    {
+      "font": "24px",
+      "height": 59.98579406738281,
+      "tag": "H2",
+      "text": "Relay: Open-Banking Reauthentication and Data Use",
+      "width": 472.7556762695313,
+      "x": 108.8991470336914,
+      "y": 1409.0552978515625
+    },
+    {
+      "font": "30px",
+      "height": 223.37356567382812,
+      "tag": "BUTTON",
+      "text": "›",
+      "width": 20,
+      "x": 949.6377563476562,
+      "y": 1405.0567626953125
+    },
+    {
+      "font": "18px",
+      "height": 49.18323516845703,
+      "tag": "BUTTON",
+      "text": "Read full question›",
+      "width": 193.21731567382812,
+      "x": 44.90766906738281,
+      "y": 1628.4302978515625
+    },
+    {
+      "font": "15px",
+      "height": 757.9260864257812,
+      "tag": "SECTION",
+      "text": "Other matter orientationsView all →Draft same-day payout dis",
+      "width": 924.7301025390624,
+      "x": 44.90766906738281,
+      "y": 1909.4176025390625
+    },
+    {
+      "font": "18px",
+      "height": 23.636362075805664,
+      "tag": "H2",
+      "text": "Other matter orientations",
+      "width": 205.5539703369141,
+      "x": 44.90766906738281,
+      "y": 1909.4176025390625
+    },
+    {
+      "font": "15px",
+      "height": 95.17044830322266,
+      "tag": "SECTION",
+      "text": "Your other mattersShowing 1 of 1All matters →Beacon: Instant",
+      "width": 966.5482788085938,
+      "x": 23.998579025268555,
+      "y": 1938.3238525390625
+    },
+    {
+      "font": "15px",
+      "height": 470.6036682128906,
+      "tag": "SECTION",
+      "text": "The practiceJust came in4Being researched2Waiting on your ju",
+      "width": 966.5482788085938,
+      "x": 23.998579025268555,
+      "y": 2097.48583984375
+    },
+    {
+      "font": "18px",
+      "height": 23.636362075805664,
+      "tag": "H2",
+      "text": "The practice",
+      "width": 966.5482788085938,
+      "x": 23.998579025268555,
+      "y": 2097.48583984375
+    },
+    {
+      "font": "15px",
+      "height": 90.40482330322266,
+      "tag": "BUTTON",
+      "text": "＋Create a new matterStart intake and triage⌄",
+      "width": 966.5482788085938,
+      "x": 23.998579025268555,
+      "y": 2580.085205078125
+    },
+    {
+      "font": "15px",
+      "height": 835.9090576171875,
+      "tag": "SECTION",
+      "text": "Ask about your workThemis.ai can search the workspace, compa",
+      "width": 966.5482788085938,
+      "x": 23.998579025268555,
+      "y": 2688.487060546875
+    },
+    {
+      "font": "15px",
+      "height": 51.3636360168457,
+      "tag": "BUTTON",
+      "text": "What needs my attention today?",
+      "width": 314.1832275390625,
+      "x": 23.998579025268555,
+      "y": 2833.75
+    },
+    {
+      "font": "15px",
+      "height": 51.3636360168457,
+      "tag": "BUTTON",
+      "text": "Summarize my active matters.",
+      "width": 314.1903381347656,
+      "x": 350.17755126953125,
+      "y": 2833.75
+    },
+    {
+      "font": "15px",
+      "height": 51.3636360168457,
+      "tag": "BUTTON",
+      "text": "Which decisions need review?",
+      "width": 314.1832275390625,
+      "x": 676.3635864257812,
+      "y": 2833.75
+    },
+    {
+      "font": "20px",
+      "height": 29.999998092651367,
+      "tag": "BUTTON",
+      "text": "+",
+      "width": 29.999998092651367,
+      "x": 40.9019889831543,
+      "y": 3317.428955078125
+    },
+    {
+      "font": "13.5px",
+      "height": 33.0823860168457,
+      "tag": "BUTTON",
+      "text": "Send",
+      "width": 59.211647033691406,
+      "x": 914.4317626953124,
+      "y": 3314.346435546875
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 0,
+  "url": "http://localhost:3134/",
+  "width": 1024
+}

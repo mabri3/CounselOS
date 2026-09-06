@@ -1,0 +1,8 @@
+{
+  "checks": [
+    "Regenerated map preserves old decision basis",
+    "Source passage and return retain exact path and unsent composer",
+    "Scenario runs through existing service; actual facts/analysis unchanged; composer retained"
+  ],
+  "errors": []
+}

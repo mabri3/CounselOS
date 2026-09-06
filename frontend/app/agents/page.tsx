@@ -1,11 +1,12 @@
 "use client";
 
+import styles from "@/components/AdminPhase2.module.css";
+import Phase2Icon from "@/components/Phase2Icon";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import DataLoadStatus from "@/components/DataLoadStatus";
-import LinkifiedText from "@/components/LinkifiedText";
 import { effortLabel, getAudiences, getAutomations, getSettings, getTools, saveAgentDetail } from "@/lib/api";
 import { role } from "@/lib/design";
 import { FIXED_AGENT_RULES, agentDetailFrom, agentStateColor } from "@/lib/stubs";
@@ -165,40 +166,41 @@ export default function AgentsPage() {
 
   return (
     <AppShell>
-      <div className="admin-shell">
-        <aside className="admin-rail admin-rail-wide">
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "0 8px 14px" }}>
-            <span style={{ font: "600 15px var(--serif)", color: "var(--ink)" }}>Agents</span>
+      <div className={styles.agents}>
+        <aside className={styles.rail}>
+          <div className={styles.railTitle}>
+            <span>Agents</span>
             <span style={{ font: "400 13.5px var(--sans)", color: "var(--ink-5)" }}>{agents.length}</span>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <div className={styles.railList}>
             {agents.map((agent) => (
               <button
-                className={`agent-rail-item ${agent.agent_id === draft.agent_id ? "active" : ""}`}
+                className={styles.railItem}
+                aria-current={agent.agent_id === draft.agent_id ? "true" : undefined}
                 key={agent.agent_id}
                 onClick={() => selectAgent(agent)}
               >
-                <span className="agent-rail-name">{displayName(agent)}</span>
-                <span className="agent-rail-role"><LinkifiedText text={displayRole(agent)} /></span>
+                <span className={styles.railIcon}><Phase2Icon name={agent.agent_id === "decision-monitor" ? "Decisions" : agent.agent_id === "intake-agent" ? "Briefing" : "Agents"} /></span><span><span className={styles.railName}>{displayName(agent)}</span>
+                <span className={styles.railRole}>{agent.runtime_managed ? "Built-in" : "Custom agent"}</span>
                 <span className="signal" style={{ marginTop: 6, fontSize: 13, fontWeight: 400, color: agentStateColor(agent.state) }}>
                   <span className="dot sm" style={{ background: agentStateColor(agent.state) }} />
                   {agent.state}
-                </span>
+                </span></span>
               </button>
             ))}
           </div>
         </aside>
 
-        <div className="admin-main">
-          <div className="admin-scroll">
-            <div className="admin-body">
+        <div className={styles.main}>
+          <div className={styles.body}>
+            <div className={styles.body}>
               <DataLoadStatus error={loadError} loading={loading} loadingLabel="Refreshing agents…" onRetry={load} />
-              <div style={{ font: "400 14px var(--sans)", color: "var(--ink-4)" }}>Editing an agent</div>
-              <h1 style={{ margin: "5px 0 0" }}>{displayName(draft)}</h1>
+              <div style={{ font: "400 14px var(--sans)", color: "var(--ink-4)" }}>Agent administration</div>
+              <div className={styles.agentMeta}><h1>{displayName(draft)}</h1><span className={styles.agentBadge}>{draft.runtime_managed ? "Built-in" : "Custom agent"}</span></div>
               <p style={{ margin: "5px 0 0", color: "var(--ink-3)" }}><strong>Role:</strong> {displayRole(draft)}</p>
               <p style={{ margin: "9px 0 0", color: "var(--ink-2)", maxWidth: "68ch" }}><strong>Purpose:</strong> {draft.description}</p>
 
-              {draft.agent_id !== "counsel-copilot" ? <div style={{ marginTop: 24, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              {draft.agent_id !== "counsel-copilot" ? <div className={styles.nameFields}>
                 <div>
                   <div className="field-label">Name</div>
                   <input aria-label="Agent name" className="text-input" onChange={(event) => patch({ name: event.target.value })} value={draft.name} />
@@ -214,19 +216,56 @@ export default function AgentsPage() {
                 </div>
               </div> : null}
 
-              <div className="agent-note" style={{ marginTop: 26 }}>
-                <div className="agent-label">
-                  Fixed for every agent
-                </div>
-                <div style={{ marginTop: 9, display: "flex", flexDirection: "column", gap: 5, font: "400 15px/1.6 var(--sans)", color: "var(--ink-2)" }}>
-                  {FIXED_AGENT_RULES.map((rule) => <span key={rule}>{rule}</span>)}
-                </div>
-              </div>
+              <section className={styles.fixed}><h2>Fixed application rules</h2><ul>{FIXED_AGENT_RULES.map((rule, index) => <li key={rule}><Phase2Icon name={index === 0 ? "Decisions" : "Briefing"} size={26} /><span>{rule}</span></li>)}</ul></section>
+              <section className={styles.modelSummary}><h2>Model summary</h2><strong>{draft.provider ? [selectedProvider?.label || draft.provider, draft.model, draft.reasoning_effort ? effortLabel(draft.reasoning_effort) : ""].filter(Boolean).join(" · ") : "Workspace default"}</strong><p>{!draft.provider ? workspaceDefault(settings) : selectedProvider?.readiness_detail || "Saved provider selection"}</p><p>Provider, model, and reasoning effort can be set in Advanced controls.</p></section>
 
+
+                <div className="field-block">
+                  <div className="section-heading">Standing instructions</div>
+                  <p>Markdown guidance used whenever this agent runs.</p>
+                  <textarea
+                    aria-label="Agent instructions"
+                    className="text-input prose"
+                    onChange={(event) => patch({ instructions: event.target.value })}
+                    style={{ minHeight: 150 }}
+                    value={draft.instructions}
+                  />
+                </div>
+              <details className={`field-block ${styles.advanced}`}>
+                <summary className="section-heading" style={{ cursor: "pointer" }}>Advanced controls</summary>
+                <div className="field-block">
+                  <div className="section-heading">
+                    Written for{draft.audience_prompt && !draft.audience_id ? " · edited" : ""}
+                  </div>
+                  <p>Who reads this. Choose a starting point, then say it in your own words.</p>
+                  <div className="btn-row" style={{ marginTop: 10, flexWrap: "wrap" }}>
+                    {audiences.map((audience) => (
+                      <button
+                        className={`btn compact ${draft.audience_id === audience.audience_id ? "primary" : ""}`}
+                        key={audience.audience_id}
+                        onClick={() => patch({ audience_id: audience.audience_id, audience_prompt: audience.prompt })}
+                      >
+                        {audience.label}
+                      </button>
+                    ))}
+                  </div>
+                  <textarea
+                    aria-label="Written for"
+                    className="text-input prose"
+                    onChange={(event) => {
+                      const audiencePrompt = event.target.value;
+                      const match = audiences.find((audience) => audience.prompt === audiencePrompt);
+                      patch({ audience_prompt: audiencePrompt, audience_id: match?.audience_id ?? "" });
+                    }}
+                    placeholder="No audience set — the agent writes for the record by default."
+                    style={{ minHeight: 120, marginTop: 10 }}
+                    value={draft.audience_prompt}
+                  />
+                </div>
               <div className="field-block">
-                <div className="section-heading">Model</div>
+                <div className="section-heading">Advanced model options</div>
                 <p>Choose this agent&apos;s provider, model, and reasoning effort. Empty fields use the workspace default.</p>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: 14, marginTop: 12 }}>
+                <div className={styles.modelFields}>
                   <label>
                     <span className="field-label">Provider</span>
                     <select
@@ -314,53 +353,13 @@ export default function AgentsPage() {
                 ) : null}
               </div>
 
-              <details className="field-block">
-                <summary className="section-heading" style={{ cursor: "pointer" }}>Advanced controls</summary>
-                <div className="field-block">
-                  <div className="section-heading">Standing instructions</div>
-                  <p>Markdown guidance used whenever this agent runs.</p>
-                  <textarea
-                    aria-label="Agent instructions"
-                    className="text-input prose"
-                    onChange={(event) => patch({ instructions: event.target.value })}
-                    style={{ minHeight: 150 }}
-                    value={draft.instructions}
-                  />
-                </div>
-                <div className="field-block">
-                  <div className="section-heading">
-                    Written for{draft.audience_prompt && !draft.audience_id ? " · edited" : ""}
-                  </div>
-                  <p>Who reads this. Choose a starting point, then say it in your own words.</p>
-                  <div className="btn-row" style={{ marginTop: 10, flexWrap: "wrap" }}>
-                    {audiences.map((audience) => (
-                      <button
-                        className={`btn compact ${draft.audience_id === audience.audience_id ? "primary" : ""}`}
-                        key={audience.audience_id}
-                        onClick={() => patch({ audience_id: audience.audience_id, audience_prompt: audience.prompt })}
-                      >
-                        {audience.label}
-                      </button>
-                    ))}
-                  </div>
-                  <textarea
-                    aria-label="Written for"
-                    className="text-input prose"
-                    onChange={(event) => {
-                      const audiencePrompt = event.target.value;
-                      const match = audiences.find((audience) => audience.prompt === audiencePrompt);
-                      patch({ audience_prompt: audiencePrompt, audience_id: match?.audience_id ?? "" });
-                    }}
-                    placeholder="No audience set — the agent writes for the record by default."
-                    style={{ minHeight: 120, marginTop: 10 }}
-                    value={draft.audience_prompt}
-                  />
-                </div>
+              </details>
+              <div className="field-block">
                 <div className="section-heading">{draft.runtime_managed ? "Effective tool access" : "Tool permissions"}</div>
                 <p>{draft.runtime_managed
                   ? "Application-managed · Read-only"
                   : "Anything not selected is unavailable to this agent."}</p>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 24px" }}>
+                <div className={styles.tools}>
                   {tools.map((tool) => {
                     const checked = draft.allowed_tools.includes(tool.tool_id);
                     const label = tool.description.match(/^.*?[.!?](?:\s|$)/)?.[0].trim() || tool.description || tool.tool_id;
@@ -382,12 +381,12 @@ export default function AgentsPage() {
                 </div>
                 <div className="section-heading" style={{ marginTop: 20 }}>File path</div>
                 <p className="mono" style={{ marginTop: 8, fontSize: 13 }}>{draft.path}</p>
-              </details>
+              </div>
 
               <div className="field-block">
                 <div className="section-heading">How it starts</div>
                 <p>The agent does not control its timing. Recurring work is configured as an automation.</p>
-                <div className="agent-note" style={{ marginTop: 10 }}>
+                <div className={styles.start}>
                   <div style={{ font: "400 15px/1.6 var(--sans)", color: "var(--ink-2)" }}>
                     {draft.start_description}
                   </div>
@@ -402,7 +401,7 @@ export default function AgentsPage() {
             </div>
           </div>
 
-          <div className="admin-foot">
+          <div className={styles.foot}>
             <span className={error ? "error" : "stub-note"} style={{ display: "block", maxWidth: "70ch", lineHeight: 1.5 }}>
               {error || (!dirty ? "Saved" : "Agent settings have unsaved changes.")}
             </span>

@@ -1,0 +1,18 @@
+{
+  "checked_at": "2026-09-05T19:12:12.599355+00:00",
+  "roots": {
+    "/Users/bharris/Programs/counsel-os-mvp/vault": {
+      "baseline_files": 718,
+      "changed": [],
+      "added": []
+    },
+    "/Users/bharris/Programs/counsel-os-mvp/Mosaic Relay UX Experiment 2026-09-03 R3": {
+      "baseline_files": 1026,
+      "changed": [
+        ".counsel_os_cache.db"
+      ],
+      "added": []
+    }
+  },
+  "pointer_unchanged": true
+}

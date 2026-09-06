@@ -1,0 +1,30 @@
+{
+  "checks": [
+    {
+      "route": "/",
+      "status": 200
+    },
+    {
+      "route": "/context",
+      "status": 200
+    },
+    {
+      "route": "/files",
+      "status": 200
+    },
+    {
+      "route": "/scenarios",
+      "status": 200
+    },
+    {
+      "route": "/flow",
+      "status": 200
+    },
+    {
+      "route": "/reuse",
+      "status": 200
+    }
+  ],
+  "changed_authoritative_files": [],
+  "passed": true
+}

@@ -1,3 +1,4 @@
+import styles from "@/components/WatchesPhase2.module.css";
 import type { AuthorityStatus, SourceRole, SourceType, WatchSource } from "@/lib/watchTypes";
 
 const roles: SourceRole[] = ["primary", "secondary", "discovery_only", "excluded"];
@@ -5,14 +6,14 @@ const types: SourceType[] = ["case", "statute", "regulation", "regulator_materia
 const authority: AuthorityStatus[] = ["binding", "persuasive", "proposed", "official_nonbinding", "none", "unknown"];
 const label = (value: string) => value.replaceAll("_", " ").replace(/^./, (letter) => letter.toUpperCase());
 
-export default function SourceRoleEditor({ onChange, sources }: { onChange: (sources: WatchSource[]) => void; sources: WatchSource[] }) {
+export default function SourceRoleEditor({ onChange, sources, presentation = "matter" }: { presentation?: "matter" | "phase2"; onChange: (sources: WatchSource[]) => void; sources: WatchSource[] }) {
   function patch(index: number, change: Partial<WatchSource>) { onChange(sources.map((source, itemIndex) => itemIndex === index ? { ...source, ...change } : source)); }
   function add() {
     onChange([...sources, { source_id: `source-${Date.now()}`, name: "", canonical_url: "https://", publisher: "", jurisdiction: "", source_type: "other", role: "discovery_only", authority_status: "unknown", coverage_status: "configured" }]);
   }
-  return <div className="stack-list">
+  return <div className={`stack-list ${presentation === "phase2" ? styles.sources : ""}`}>
     {sources.map((source, index) => <div className="card card-pad responsive-card" key={source.source_id}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12 }}>
+      <div className={presentation === "phase2" ? styles.sourceGrid : undefined} style={presentation === "phase2" ? undefined : { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12 }}>
         <label className="field-label">Source name<input className="text-input" onChange={(event) => patch(index, { name: event.target.value })} value={source.name} /></label>
         <label className="field-label">Public URL<input className="text-input" onChange={(event) => patch(index, { canonical_url: event.target.value })} type="url" value={source.canonical_url} /></label>
         <label className="field-label">Publisher<input className="text-input" onChange={(event) => patch(index, { publisher: event.target.value })} value={source.publisher} /></label>

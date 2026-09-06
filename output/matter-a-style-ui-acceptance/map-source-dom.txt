@@ -1,0 +1,231 @@
+- banner:
+  - link "Themis.ai":
+    - /url: /
+    - img "Themis.ai"
+  - navigation "Main navigation":
+    - link "Today":
+      - /url: /
+    - link "Briefing":
+      - /url: /briefing
+    - link "Workspace":
+      - /url: /workspace
+    - link "Matters":
+      - /url: /matters
+    - link "Decisions":
+      - /url: /decisions
+    - link "Skills":
+      - /url: /skills
+    - link "Automations":
+      - /url: /automations
+    - link "Agents":
+      - /url: /agents
+    - link "Settings":
+      - /url: /settings
+  - region "View as":
+    - paragraph: Local demo
+    - heading "View as" [level=2]
+    - generic: View workspace as
+    - combobox "View workspace as":
+      - option "Alex Morgan · alex-morgan" [selected]
+      - option "Jamie Lee · jamie-lee"
+    - generic "About"
+- main:
+  - link "Back to matter issue":
+    - /url: /matters/MAT-20260905-f025e4?issue=ISS-c7fd36e074-beceace28ad3b977&conversation=CONV-20260905-1a8401
+  - generic: Saved matter records
+  - 'heading "Lumen Learning: US family launch with analytics and shared-device accounts · Decision map" [level=1]'
+  - generic "Read full business question"
+  - generic: Agent analysis stays proposed
+  - button "Close evidence"
+  - dialog "Claim evidence":
+    - text: Evidence for claim
+    - heading "16 CFR 312.2 — definitions" [level=2]
+    - button "Close evidence drawer" [active]: Close
+    - generic: Supplied
+    - term: Claim ID
+    - definition: CLM-DEMO-CHILD
+    - term: Claim revision
+    - definition: demo-claim-1
+    - term: Output revision
+    - definition: demo-output-1
+    - term: Source ID
+    - definition: SRC-COPPA
+    - term: Location
+    - definition: Child
+    - term: Retrieved
+    - definition: Unknown
+    - term: Version
+    - definition: Unknown
+    - paragraph: Source support and legal applicability are separate. Supplied or Retrieved does not mean Verified, and no source status proves that the rule applies to this matter.
+    - text: Exact available passage
+    - blockquote: Child means an individual under the age of 13.
+    - text: Generated explanation · How this source supports this claim
+    - paragraph: The saved passage supports this narrow definition. It does not establish applicability.
+    - text: Open source
+    - link "Open public source":
+      - /url: https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-312/section-312.2
+    - button "Open saved source"
+    - paragraph: Opening a link does not verify the source.
+  - region "Decision map":
+    - region "Local neighborhood map visual":
+      - region "Decision map controls and visual":
+        - heading "Decision map" [level=2]
+        - paragraph: Local neighborhood · 7 visible records
+        - button "Local neighborhood" [pressed]
+        - button "Show whole matter"
+        - generic "Map viewport controls":
+          - button "Zoom out"
+          - generic: Zoom 100%
+          - button "Zoom in"
+          - button "Fit map"
+          - button "Reset view"
+        - paragraph: Select a record for details. Drag empty space to pan. The outline below has the same records and relationships.
+        - generic "Decision map visual":
+          - button "Can Lumen launch its US family learning app with analytics?. Business question. Current.":
+            - generic: Business question
+            - strong: Can Lumen launch its US family learning app with analyt…
+            - generic: Current
+          - button "Audience age and the proposed launch to families with children younger than thirteen. Issue. Mitigation In Progress.":
+            - generic: Issue
+            - strong: Audience age and the proposed launch to families with c…
+            - generic: Mitigation In Progress
+          - button "Prepare parental notice and consent controls. Option. Proposed.":
+            - generic: Option
+            - strong: Prepare parental notice and consent controls
+            - generic: Proposed
+          - button "Will the US launch include children under 13?. Question. Open.":
+            - generic: Question
+            - strong: Will the US launch include children under 13?
+            - generic: Open
+          - button "Working scenario — The launch is limited to adults.. Scenario. Hypothetical · Completed.":
+            - generic: Scenario
+            - strong: Working scenario — The launch is limited to adults.
+            - generic: Hypothetical · Completed
+          - button "Historical adult-only launch option. Scenario. Hypothetical · Not Started.":
+            - generic: Scenario
+            - strong: Historical adult-only launch option
+            - generic: Hypothetical · Not Started
+          - button "Review audience and identifier controls before launch. Work item. Done.":
+            - generic: Work item
+            - strong: Review audience and identifier controls before launch
+            - generic: Done
+    - complementary "Selected map record":
+      - generic: Selected Issue
+      - heading "Audience age and the proposed launch to families with children younger than thirteen" [level=2]
+      - paragraph: Mitigation In Progress
+      - button "Clear selection"
+      - paragraph: Audience changes which launch controls require legal review.
+      - paragraph: "Claim references: CLM-DEMO-CHILD. Source details are shown when a saved document target is available."
+      - article:
+        - paragraph: The rule defines a child as an individual under 13.
+        - paragraph: Applies to Lumen, proposed online service operator in United States. Lumen proposes a commercial US online service. Audience age is unknown. This definition alone does not establish coverage or a consent duty.
+        - button "Review 16 CFR 312.2 — definitions · Child"
+      - button "Discuss this path"
+      - button "Try a different assumption"
+      - button "Back to issue"
+    - region "Decision map outline":
+      - heading "Map outline" [level=2]
+      - paragraph: Use this list to reach every visible record and relationship without the visual map.
+      - list:
+        - button "Can Lumen launch its US family learning app with analytics? Business question · Current":
+          - strong: Can Lumen launch its US family learning app with analytics?
+          - generic: Business question · Current
+        - button "Discuss this path"
+        - button "Audience age and the proposed launch to families with children younger than thirteen Issue · Mitigation In Progress":
+          - strong: Audience age and the proposed launch to families with children younger than thirteen
+          - generic: Issue · Mitigation In Progress
+        - button "Discuss this path"
+        - button "Prepare parental notice and consent controls Option · Proposed":
+          - strong: Prepare parental notice and consent controls
+          - generic: Option · Proposed
+        - button "Discuss this path"
+        - button "Will the US launch include children under 13? Question · Open":
+          - strong: Will the US launch include children under 13?
+          - generic: Question · Open
+        - button "Discuss this path"
+        - button "Working scenario — The launch is limited to adults. Scenario · Hypothetical · Completed":
+          - strong: Working scenario — The launch is limited to adults.
+          - generic: Scenario · Hypothetical · Completed
+        - button "Discuss this path"
+        - button "Historical adult-only launch option Scenario · Hypothetical · Not Started":
+          - strong: Historical adult-only launch option
+          - generic: Scenario · Hypothetical · Not Started
+        - button "Discuss this path"
+        - button "Review audience and identifier controls before launch Work item · Done":
+          - strong: Review audience and identifier controls before launch
+          - generic: Work item · Done
+        - button "Discuss this path"
+      - heading "Visible relationships" [level=3]
+      - list:
+        - strong: Audience age and the proposed launch to families with children younger than thirteen
+        - text: Hypothetical
+        - strong: Working scenario — The launch is limited to adults.
+        - text: · Historical
+        - strong: Audience age and the proposed launch to families with children younger than thirteen
+        - text: Depends on
+        - strong: Will the US launch include children under 13?
+        - text: · Unknown
+        - strong: Audience age and the proposed launch to families with children younger than thirteen
+        - text: Hypothetical
+        - strong: Historical adult-only launch option
+        - text: · Historical
+        - strong: Audience age and the proposed launch to families with children younger than thirteen
+        - text: If the launch includes a covered child audience
+        - strong: Prepare parental notice and consent controls
+        - text: · Unknown
+        - strong: Audience age and the proposed launch to families with children younger than thirteen
+        - text: Mitigated by
+        - strong: Review audience and identifier controls before launch
+        - text: · Active
+        - strong: Can Lumen launch its US family learning app with analytics?
+        - text: Includes issue
+        - strong: Audience age and the proposed launch to families with children younger than thirteen
+        - text: · Active
+  - heading "Discuss the selected path" [level=2]
+  - generic "Conversation and composer"
+  - strong: "Inquiry target:"
+  - text: Selected issue
+  - button "Jump to latest answer"
+  - status:
+    - generic: Themis.ai · Completed
+    - generic: Chat is complete. Review the saved result below.
+  - generic: What must Product confirm before choosing the launch controls?
+  - generic: Themis.ai
+  - paragraph: Confirm audience age and the purpose of the persistent identifier. These facts determine the next analysis. Earlier fixture answer; no legal conclusion has been recorded.
+  - generic: Keep the identifier question separate from audience age.
+  - generic: Themis.ai
+  - paragraph:
+    - text: "Latest fixture answer: keep the audience and identifier questions separate. The supplied definitions explain child and persistent identifier terms"
+    - 'button "Source: SRC-COPPA · Child · source"'
+    - text: . Coverage and exceptions remain open. Read the [product specification](the saved file).
+  - generic: What would change your view?
+  - generic: Themis.ai
+  - paragraph:
+    - text: "Here is the useful first-pass view: start with the business objective and the decision that must be made, then identify the two or three facts that could change the path. The active matter context and source files are available in the workspace. In mock mode I can also move the matter, run a scaffolded research pass, create work items, audit decisions, and create basic schedules. Configure an OpenAI-compatible provider in"
+    - code: .env
+    - text: for model-generated analysis.
+  - generic: Create an editable preview using the Short Business Email template with this matter.
+  - generic: Themis.ai
+  - paragraph:
+    - text: "Here is the useful first-pass view: start with the business objective and the decision that must be made, then identify the two or three facts that could change the path. The active matter context and source files are available in the workspace. In mock mode I can also move the matter, run a scaffolded research pass, create work items, audit decisions, and create basic schedules. Configure an OpenAI-compatible provider in"
+    - code: .env
+    - text: for model-generated analysis.
+  - generic: Workspace action · Recorded
+  - generic: Saved the complete model response as an editable working draft. Review its content.
+  - generic: "Updated records: Working Draft 5a7be3 · Activity history"
+  - button "Open Working Draft 5a7be3"
+  - button "Open Activity history"
+  - generic: Work Product · Preview · Not kept
+  - generic: Working draft
+  - generic: Saved the complete model response as an editable working draft. Review its content.
+  - button "Open artifact"
+  - 'button "Run inquiry: Which other matters does this touch?"'
+  - 'button "Run inquiry: What would change your view?"'
+  - button "Add files": +
+  - 'textbox "Ask Themis.ai about Lumen Learning: US family launch with analytics and shared-device accounts…"': "Explore a different assumption for this saved question (Q-DEMO-AUDIENCE): Audience age and the proposed launch to families with children younger than thirteen. No single linked reported fact is known; keep that uncertainty visible. Keep its linked issue context."
+  - button "Send"
+  - text: Themis.ai can research, draft and move this matter. It records a decision only when you explicitly ask it to.
+  - link "Build a skill":
+    - /url: /skills
+- button "Open Next.js Dev Tools":
+- alert

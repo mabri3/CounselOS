@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import styles from "@/components/PortfolioPhase2.module.css";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import AppShell from "@/components/AppShell";
 import LinkifiedText from "@/components/LinkifiedText";
@@ -84,7 +85,7 @@ export default function MattersPage() {
     const matterId = dragId;
     setDragId(null);
     setOverGroup(null);
-    if (!matterId) return;
+    if (!matterId || stage === "closed" || matters.find((matter) => matter.matter_id === matterId)?.status === "closed") return;
     setError("");
     try {
       await moveMatter(matterId, stage, "Moved on the matters list");
@@ -108,35 +109,35 @@ export default function MattersPage() {
   }
 
   function toggleStage(stage: StageId) {
-    setCollapsedStages((current) => ({ ...current, [stage]: !current[stage] }));
+    setCollapsedStages((current) => ({ ...current, [stage]: !(current[stage] ?? (visible.filter((matter) => matter.status === stage).length === 0 || stage === "closed")) }));
   }
 
   return (
     <AppShell>
-      <main className="page">
+      <main className={styles.page}>
         <div className="page-header">
           <div>
-            <h1>Matters</h1>
-            {loaded ? <p>{inFlight} in flight, {closed} closed.</p> : null}
+            <h1>{view === "table" ? "Your matters" : "All matters by stage"}</h1>
+            {loaded ? <p>{inFlight} in flight / {closed} closed</p> : null}
           </div>
           <div className="btn-row">
             <fieldset className="segmented">
               <legend className="sr-only">Matter view</legend>
-              <input checked={view === "stages"} className="segmented-input" id="matter-view-stages" name="matter-view" onChange={() => setView("stages")} type="radio" value="stages" />
-              <label htmlFor="matter-view-stages" title="Group matters by their current workflow stage.">Stages</label>
               <input checked={view === "table"} className="segmented-input" id="matter-view-table" name="matter-view" onChange={() => setView("table")} type="radio" value="table" />
               <label htmlFor="matter-view-table" title="Compare and sort matters in rows.">Table</label>
+              <input checked={view === "stages"} className="segmented-input" id="matter-view-stages" name="matter-view" onChange={() => setView("stages")} type="radio" value="stages" />
+              <label htmlFor="matter-view-stages" title="Group matters by their current workflow stage.">Stages</label>
             </fieldset>
-            <Link className="btn primary" href="/workspace">New matter</Link>
+            <Link className="btn primary" href="/workspace#new-matter">New matter</Link>
           </div>
         </div>
 
         {loaded ? (
           <>
-            <div className="stat-chips" style={{ marginTop: 20 }}>
+            <div className={styles.countsAndFilters}>
               {stats.map((stat) => (
                 <button
-                  className={`stat-chip ${countFilter === stat.key ? "active" : ""}`}
+                  className={styles.countCard}
                   key={stat.key}
                   style={{ background: stat.tint }}
                   onClick={() => setCountFilter((current) => (current === stat.key ? "" : stat.key))}
@@ -147,8 +148,7 @@ export default function MattersPage() {
                   <span style={{ color: stat.color }}>{stat.label}</span>
                 </button>
               ))}
-              <span style={{ flex: 1 }} />
-              <div style={{ display: "flex", gap: 9, alignItems: "center", flexWrap: "wrap" }}>
+              <div className={styles.filters}>
                 <label className="field-label">
                   Owner
                   <select aria-label="Filter matters by owner" className="select-input" onChange={(event) => setOwnerFilter(event.target.value)} value={ownerFilter}>
@@ -187,7 +187,7 @@ export default function MattersPage() {
         {!loaded && !error ? <div className="loading">Loading matters…</div> : null}
 
         {view === "stages" ? (
-          <div className="stage-groups" style={{ marginTop: 24 }}>
+          <div className={styles.stageGroups}>
             {loaded && STAGES.map((stage) => {
             const items = visible.filter((matter) => matter.status === stage.id);
             const signals = items.map(signalFor);
@@ -202,21 +202,21 @@ export default function MattersPage() {
             const signalTextColor = overdue > 0 ? role.failure : role.attentionDeep;
             const over = overGroup === stage.id;
             const acceptsDrop = stage.id !== "closed";
-            const collapsed = Boolean(collapsedStages[stage.id]);
+            const collapsed = collapsedStages[stage.id] ?? (items.length === 0 || stage.id === "closed");
             const contentId = `stage-${stage.id}-matters`;
 
             return (
               <section
                 className="stage-group"
                 key={stage.id}
-                style={{ background: over ? "#FAEDCB" : "transparent" }}
+                style={{ background: over ? "var(--rail)" : "transparent" }}
                 onDragOver={(event) => { if (acceptsDrop) { event.preventDefault(); setOverGroup(stage.id); } }}
                 onDragLeave={() => setOverGroup((current) => (current === stage.id ? null : current))}
                 onDrop={(event) => { event.preventDefault(); if (acceptsDrop) void drop(stage.id); }}
               >
-                <div className="stage-spine" style={{ background: "#d6d1c7" }} />
+
                 <div className="stage-body">
-                  <header className="stage-head" style={{ background: "#f2efe8" }}>
+                  <header className="stage-head">
                     <button
                       aria-controls={contentId}
                       aria-expanded={!collapsed}
@@ -227,7 +227,7 @@ export default function MattersPage() {
                     >
                       <span aria-hidden="true" className={`stage-toggle-icon ${collapsed ? "" : "open"}`}>›</span>
                       <span className="stage-head-label">{stage.label}</span>
-                      <span className="stage-head-sub">{stage.sub}</span>
+                      <span className={styles.stageNumber}>{STAGES.findIndex((entry) => entry.id === stage.id) + 1}</span>
                     </button>
                     <span style={{ flex: 1 }} />
                     <span
@@ -252,10 +252,10 @@ export default function MattersPage() {
                       return (
                         <div
                           className="matter-row"
-                          draggable
+                          draggable={matter.status !== "closed"}
                           key={matter.matter_id}
                           style={{
-                            background: "#fffefb",
+                            background: "white",
                             borderLeftColor: signal.rail,
                             opacity: dragId === matter.matter_id ? 0.4 : 1,
                           }}
@@ -288,6 +288,7 @@ export default function MattersPage() {
                           </div>
                           <span className="matter-row-owner">{matterNextOwner(matter)}</span>
                           <span className="matter-row-due" style={{ color: due.color }}>{due.text}</span>
+                          <span className={styles.rowRisk}>{riskLabel(matter.risk_level)}</span>
                           {(matter.consistency_issues ?? []).map((issue) => (
                             <div key={issue.code} style={{ flexBasis: "100%", margin: "0 12px 10px", padding: 8, background: role.attentionTint, color: role.attentionDeep }}>
                               <strong>Consistency issue: {consistencyIssueLabel(issue)}</strong>
@@ -316,6 +317,7 @@ export default function MattersPage() {
             <MattersTable matters={visible} onRepair={repair} repairingMatterId={repairingMatterId} />
           </div>
         ) : null}
+        {loaded ? <p className={styles.showing}>Showing {visible.length} of {matters.length} matters{view === "stages" ? " · 6 stages" : ""}</p> : null}
       </main>
     </AppShell>
   );

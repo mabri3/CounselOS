@@ -1,0 +1,1 @@
+{"label": "journey-open-offer-after-correction", "actions": [{"op": "click", "selector": "label[for=\"workspace-view-MAT-20260905-0a2378-draft\"]"}, {"op": "wait", "ms": 1200}]}

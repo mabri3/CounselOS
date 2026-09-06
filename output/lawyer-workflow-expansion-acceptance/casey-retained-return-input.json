@@ -1,0 +1,10 @@
+[
+  {
+    "name": "themis.continuity.v1:9b73b8e8cc1516024ea8efed:casey:MAT-20260905-0a2378:view",
+    "value": "{\"version\":1,\"view\":\"understand\",\"activeArtifactPath\":null,\"selectedTemplateId\":null,\"instruction\":\"\",\"overrides\":{},\"sourceActionKey\":null,\"sourceActionFingerprint\":null}"
+  },
+  {
+    "name": "themis.continuity.v1:9b73b8e8cc1516024ea8efed:casey:MAT-20260905-0a2378:panels",
+    "value": "{\"__panel\":\"handoff\",\"__continuity.retry.v1:handoff:handoff-accept:HOF-c3593b48708688b1c0863892\":\"\",\"handoff.reason:HOF-c3593b48708688b1c0863892\":\"Coordination review complete. Version 2 and its formatting copy are supplied separately. The saved comparison assesses the original advice. Return whole-matter ownership to Alex; keep the existing work-item owner unchanged.\",\"__continuity.retry.v1:handoff:handoff-return:HOF-c3593b48708688b1c0863892\":\"{\\\"version\\\":1,\\\"intent_signature\\\":\\\"{\\\\\\\"handoff_id\\\\\\\":\\\\\\\"HOF-c3593b48708688b1c0863892\\\\\\\",\\\\\\\"action\\\\\\\":\\\\\\\"return\\\\\\\",\\\\\\\"reason\\\\\\\":\\\\\\\"Coordination review complete. Version 2 and its formatting copy are supplied separately. The saved comparison assesses the original advice. Return whole-matter ownership to Alex; keep the existing work-item owner unchanged.\\\\\\\"}\\\",\\\"command\\\":{\\\"action\\\":\\\"return\\\",\\\"expected_revision\\\":\\\"7d2ad7dffbd42ae7322c94c3d47df678d180b210f02b52daa5e75636289f7de8\\\",\\\"expected_ownership_revision\\\":\\\"4711873dceac9a7a40f2839bae6f5bb547af46e9f69c82589965d991894bccb9\\\",\\\"expected_content_revision\\\":\\\"c8bb80c9d71b07ad76983a6181b910a635a0760ea09b1f7a98fda982187b454f\\\",\\\"reason\\\":\\\"Coordination review complete. Version 2 and its formatting copy are supplied separately. The saved comparison assesses the original advice. Return whole-matter ownership to Alex; keep the existing work-item owner unchanged.\\\",\\\"source_action_key\\\":\\\"handoff-return:HOF-c3593b48708688b1c0863892:2efac4af-6d72-4dae-8485-06485d309053\\\"}}\"}"
+  }
+]

@@ -1,0 +1,480 @@
+.page {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  max-width: var(--content-wide);
+}
+
+.routeHeader { display: flex; min-width: 0; max-width: 100%; min-height: 52px; align-items: center; justify-content: space-between; gap: 20px; padding-left: 205px; border-bottom: 1px solid var(--line-soft); }
+.routeContext { display: flex; min-width: 0; align-items: center; gap: 22px; color: var(--ink-2); font: 400 15px/1.4 var(--sans); }
+.routeContext a { flex: 0 0 auto; color: var(--ink-3); text-decoration: underline; text-underline-offset: 3px; }
+.routeContext span { overflow: hidden; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+.routeBack { color: var(--ink-2); font: 500 14px/1.4 var(--sans); }
+
+.pageHeader {
+  display: flex;
+  min-width: 0;
+  max-width: 100%;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 2px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.pageHeader[hidden] { display: none !important; }
+
+.backLink {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  font: 500 15px/1.5 var(--sans);
+  color: var(--ink-2);
+}
+
+.pageKicker,
+.meta {
+  display: block;
+  color: var(--ink-4);
+  font: 500 12px/1.4 var(--sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pageTitle {
+  margin: 8px 0 0;
+  font: 400 clamp(28px, 3.4vw, 38px)/1.12 var(--serif);
+  letter-spacing: -.02em;
+  overflow-wrap: anywhere;
+}
+
+.viewNav { display: flex; min-width: 0; max-width: 100%; width: 100%; align-items: center; gap: 32px; margin-top: 12px; }
+.viewNav a, .viewNav span { display: inline-flex; min-height: 38px; align-items: center; gap: 8px; color: var(--ink-3); font: 400 16px/1.4 var(--sans); }
+.viewNav a { color: var(--ink-2); }
+.viewNav [aria-current="page"] { border-bottom: 3px solid var(--ink); color: var(--ink); font-weight: 500; }
+.viewNavMuted { color: var(--ink-4) !important; }
+
+.questionDisclosure {
+  margin-top: 8px;
+  max-width: 74ch;
+}
+
+.questionDisclosure > summary,
+.mapDisclosure > summary,
+.conversationDisclosure > summary {
+  min-height: 36px;
+  cursor: pointer;
+  color: var(--ink-2);
+  font: 500 15px/1.5 var(--sans);
+}
+
+.questionText,
+.muted,
+.outlineRelationship {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.questionText {
+  margin: 8px 0 0;
+  color: var(--ink-2);
+  font: 400 16px/1.65 var(--serif);
+}
+
+.shell {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.card {
+  min-width: 0;
+  max-width: 100%;
+  padding: 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+}
+
+.sectionTitle {
+  margin: 0;
+  font: 600 22px/1.25 var(--serif);
+}
+
+.muted {
+  margin: 4px 0 0;
+  color: var(--ink-3);
+  font: 400 15px/1.5 var(--sans);
+}
+
+.controlRow,
+.headerRow,
+.selectedActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.headerRow {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.controlRow {
+  align-items: center;
+  margin-top: 12px;
+}
+
+.scopeControls { display: flex; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: var(--raised); }
+.scopeControls :global(.btn) { border: 0; border-radius: 0; }
+.scopeControls :global(.btn + .btn) { border-left: 1px solid var(--line); }
+.mapToolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin: 16px -24px -22px; padding: 14px 24px; border-top: 1px solid var(--line-soft); }
+.mapToolbar :global(.btn) { display: inline-flex; align-items: center; gap: 7px; padding: 4px 0; border: 0; background: transparent; }
+.visualCard { overflow: hidden; }
+.scenarioSurface { min-width: 0; padding-top: 8px; }
+
+.mapHeader { display: flex; min-width: 0; max-width: 100%; align-items: center; justify-content: space-between; gap: 18px; padding-block: 15px; }
+.mapHeader > * { min-width: 0; }
+.mapSummary { max-width: 92ch; margin: 4px 0 0; color: var(--ink-2); font: 400 14px/1.42 var(--sans); }
+.businessEffect { max-width: 92ch; margin: 3px 0 0; color: var(--ink-3) !important; font: 400 13px/1.4 var(--sans); }
+.analysisState { margin-top: 10px; text-transform: capitalize; }
+.focusedViewport { height: 380px; max-width: 100%; overflow: auto; border: 1px solid var(--line-faint); border-radius: 8px; background: var(--raised); touch-action: pan-x pan-y; }
+.focusedViewportContent { width: max-content; min-width: 100%; transform-origin: 0 0; }
+.pathGraph { min-width: 1112px; padding: 0; }
+.pathGraphScroll { position: relative; min-width: 100%; }
+.pathGraphContent { position: relative; isolation: isolate; }
+.pathLanes { position: absolute; z-index: 0; top: 0; left: 0; height: 100%; pointer-events: none; }
+.pathLanes > span { position: absolute; top: 112px; padding: 0 0 7px; border-bottom: 1px solid var(--line); color: var(--ink-4); font: 500 11px/1.35 var(--sans); letter-spacing: .05em; text-transform: uppercase; }
+.pathEdges { position: absolute; inset: 0; z-index: 1; overflow: visible; pointer-events: none; }
+.pathEdgeLabelBack { fill: var(--paper); stroke: var(--line-soft); }
+.pathEdgeLabel { fill: var(--ink-3); font: 500 11px/1.25 var(--sans); }
+.pathEdgeState { fill: var(--ink-4); font: 400 10px/1.2 var(--sans); }
+.pathEdgeLabelInactive { opacity: .72; }
+.pathNode { position: absolute; z-index: 2; display: block; box-sizing: border-box; padding: 11px 13px; border: 1px solid var(--line); border-radius: 8px; background: var(--raised); color: var(--ink); text-align: left; white-space: normal; overflow-wrap: anywhere; box-shadow: var(--shadow-card); }
+.pathNode[aria-current="true"] { outline: 2px solid var(--ink); outline-offset: 2px; }
+.pathNodeType, .pathNodeState { display: block; font: 500 11px/1.35 var(--sans); letter-spacing: .04em; text-transform: uppercase; }
+.pathNodeTitle { display: block; margin-top: 4px; color: var(--ink); font: 400 16px/1.28 var(--sans); overflow-wrap: anywhere; }
+.pathNodeState { margin-top: 7px; }
+.pathContext { padding: 7px 10px; }
+.pathContext .pathNodeType, .pathContext .pathNodeState { font-size: 10px; }
+.pathContext .pathNodeTitle { margin-top: 2px; font-size: 14px; line-height: 1.2; }
+.pathAttention { border-left: 4px solid var(--attention); background: var(--attention-wash); }
+.pathAttention .pathNodeType, .pathAttention .pathNodeState { color: var(--attention-deep); }
+.pathAgent { border-left: 4px solid var(--agent); background: var(--agent-wash); }
+.pathAgent .pathNodeType, .pathAgent .pathNodeState { color: var(--agent); }
+.pathRecorded { border-left: 4px solid var(--ink-3); background: var(--raised); }
+.pathRecorded .pathNodeType, .pathRecorded .pathNodeState { color: var(--ink-3); }
+.pathFailure { border-left: 4px solid var(--failure); background: var(--failure-wash); }
+.pathFailure .pathNodeType, .pathFailure .pathNodeState { color: var(--failure); }
+.inspector { border-left: 4px solid var(--ink); }
+.inspectorHead, .inspectorActions { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.inspectorState { margin-top: 7px; }
+.inspectorColumns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 18px; }
+.inspectorColumns section { min-width: 0; }
+.inspectorColumns h3, .inspectorSources h3 { margin: 0; font: 600 16px/1.35 var(--serif); }
+.inspectorColumns h3 + p, .inspectorColumns p, .inspectorColumns ul { margin: 5px 0 13px; color: var(--ink-3); font: 400 14px/1.5 var(--sans); overflow-wrap: anywhere; }
+.inspectorDetail, .unknownNote { margin: 16px 0 0; color: var(--ink-3); font: 400 15px/1.55 var(--sans); }
+.unknownNote { color: var(--attention-deep); }
+.inspectorBusinessEffect { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line-soft); }
+.inspectorBusinessEffect h3 { margin: 0; font: 600 16px/1.35 var(--serif); }
+.inspectorBusinessEffect p { margin: 5px 0 0; color: var(--ink-3); font: 400 14px/1.5 var(--sans); }
+.inspectorActions { margin-top: 18px; justify-content: flex-start; }
+.inspectorSources { display: grid; gap: 8px; margin-top: 16px; }
+.inspectorSources > div { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; color: var(--ink-3); font: 400 14px/1.4 var(--sans); }
+.selectedSupport { padding-block: 16px; }
+.outlineGroup, .outlineEdges { margin-top: 18px; }
+.outlineGroup > h3, .outlineEdges > h3 { margin: 0; padding: 0 16px; font: 600 17px/1.3 var(--serif); }
+
+.shell :global(.btn) {
+  min-height: 36px;
+  font: 500 15px/1.5 var(--sans);
+}
+
+.scopeButton[aria-pressed="true"] {
+  border-color: var(--ink);
+  background: var(--rail);
+  color: var(--ink);
+}
+
+.viewport {
+  margin-top: 22px;
+}
+
+.canvas {
+  position: relative;
+  min-height: 360px;
+  max-width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--line-faint);
+  border-radius: 8px;
+  background: linear-gradient(180deg, var(--raised), var(--paper));
+  touch-action: none;
+}
+
+.canvasContent {
+  position: absolute;
+  transform-origin: 0 0;
+}
+
+.canvasNode {
+  position: absolute;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 12px 14px;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.canvasNodeType {
+  display: block;
+  color: var(--node-state);
+  font: 500 12px/1.4 var(--sans);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.canvasNodeTitle {
+  display: block;
+  margin-top: 4px;
+  overflow: hidden;
+  color: var(--ink);
+  font: 400 17px/1.3 var(--sans);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.canvasNodeState {
+  display: block;
+  margin-top: 7px;
+  color: var(--node-state);
+  font: 400 14px/1.35 var(--sans);
+}
+
+.outline {
+  min-width: 0;
+  padding: 0;
+}
+
+.outlineList,
+.relationshipList {
+  display: grid;
+  gap: 0;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.relationshipList {
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.outlineRow {
+  padding: 0 16px;
+  border-top: 1px solid var(--line-soft);
+  border-left: 4px solid var(--line-soft);
+}
+
+.outlineRow:has(button[aria-current="true"]) {
+  border-left-color: var(--ink);
+  background: var(--rail);
+}
+
+.outlineSelect {
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+  padding: 14px 0;
+  border: 0;
+  text-align: left;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.outlineName {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.outlineNodeMeta {
+  display: block;
+  margin-top: 4px;
+  color: var(--ink-4);
+  font: 500 12px/1.4 var(--sans);
+}
+
+.outlineDiscuss {
+  min-width: 0;
+  max-width: 100%;
+  margin: 0 0 12px;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.relationshipHeading {
+  margin: 18px 0 0;
+  font: 600 18px/1.3 var(--serif);
+}
+
+.relationshipDisclosure { margin-top: 18px; }
+.relationshipDisclosure > summary { cursor: pointer; color: var(--ink-2); font: 500 15px/1.5 var(--sans); }
+
+.outlineRelationship {
+  min-width: 0;
+  color: var(--ink-3);
+  font: 400 15px/1.5 var(--sans);
+}
+
+.mapDisclosure {
+  padding: 0;
+}
+
+.mapDisclosure > summary,
+.conversationDisclosure > summary {
+  padding: 12px 14px;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.mapDisclosure[open] > summary,
+.conversationDisclosure[open] > summary {
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.mapDisclosureBody,
+.conversationBody {
+  padding: 14px;
+}
+
+.selectedHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.selectedTitle {
+  margin: 4px 0 0;
+  font: 400 22px/1.25 var(--serif);
+  overflow-wrap: anywhere;
+}
+
+.selectedFullTitle { margin: 6px 0; color: var(--ink-3); font: 400 14px/1.5 var(--sans); }
+.selectedFullTitle > summary { cursor: pointer; color: var(--agent); font-weight: 500; }
+.selectedFullTitle > p { margin: 8px 0 0; overflow-wrap: anywhere; }
+.selectedTopActions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+
+.selectedActions {
+  margin-top: 18px;
+}
+
+.emptyState {
+  margin: 0;
+}
+
+.claims {
+  display: grid;
+  gap: 9px;
+  margin-top: 12px;
+}
+
+.claims > article {
+  padding: 10px;
+  border: 1px dashed var(--agent-edge);
+  border-radius: 8px;
+  background: var(--agent-wash);
+}
+
+.discussion {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+}
+
+.selectedCard { border-left: 4px solid var(--ink); }
+
+.discussionHeading {
+  margin: 0;
+  padding: 12px 14px 0;
+  font: 600 22px/1.25 var(--serif);
+}
+
+.conversationDisclosure {
+  margin-top: 4px;
+}
+
+@media (max-width: 1099px) {
+  .pageHeader {
+    padding: 14px 16px;
+  }
+}
+
+@media (max-width: 760px) {
+  .routeHeader {
+    min-height: 0;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+    padding: 54px 12px 10px;
+  }
+  .routeContext { width: 100%; gap: 12px; font-size: 14px; overflow: hidden; }
+  .routeBack { max-width: 100%; font-size: 13px; overflow-wrap: anywhere; }
+  .page {
+    gap: 12px;
+  }
+
+  .pageHeader,
+  .card,
+  .mapDisclosureBody,
+  .conversationBody {
+    padding: 12px;
+  }
+
+  .pageHeader > * { min-width: 0; max-width: 100%; }
+
+  .viewNav {
+    gap: 18px;
+    margin-top: 14px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+  }
+  .viewNav a, .viewNav span { flex: 0 0 auto; min-height: 38px; font-size: 14px; white-space: nowrap; }
+
+  .pageTitle {
+    font-size: 26px;
+    max-width: 100%;
+  }
+
+  .shell :global(.btn),
+  .questionDisclosure > summary,
+  .mapDisclosure > summary,
+  .conversationDisclosure > summary,
+  .backLink {
+    min-height: 44px;
+  }
+
+  .controlRow > :global(.btn) {
+    flex: 1 1 132px;
+  }
+
+  .mapHeader { flex-wrap: wrap; }
+  .mapHeader > :first-child { width: 100%; }
+  .scopeControls { width: 100%; max-width: 100%; }
+  .scopeControls :global(.btn) { flex: 1 1 0; min-width: 0; padding-inline: 8px; white-space: normal; }
+  .mapToolbar { gap: 10px 18px; margin: 14px -12px -12px; padding: 12px; }
+
+  .canvas {
+    min-height: 400px;
+  }
+
+  .mapHeader { align-items: flex-start; }
+  .focusedViewport { min-height: 380px; }
+  .inspectorColumns { grid-template-columns: 1fr; gap: 4px; }
+}
+.discussion[hidden] { display: none; }

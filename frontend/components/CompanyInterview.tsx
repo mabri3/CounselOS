@@ -1,6 +1,7 @@
 "use client";
 
 import { KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import styles from "@/components/SettingsPhase2.module.css";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import { advanceCompanyInterview, getCompanyInterview, saveCompanyProfile } from "@/lib/api";
 import type {
@@ -230,7 +231,7 @@ export default function CompanyInterview({ profile, onSaved }: Props) {
   );
 
   return (
-    <section className="company-interview" aria-label="Company profile interview">
+    <section className={`company-interview ${styles.company}`} aria-label="Company profile interview">
       <div className="company-interview-thread" aria-live="polite">
         {replacementInProgress && !reviewing ? <p className="company-interview-warning" role="status"><strong>Saved profile remains active.</strong> The replacement will not be used until you save it.</p> : null}
         {!reviewing ? <AssistantTurn>{interview.opening}</AssistantTurn> : null}
@@ -377,7 +378,7 @@ function ReviewCard({ draft, draftEditedByLawyer, error, generatedDraft, saveSta
                 className="text-input"
                 id={`company-draft-${field.key}`}
                 onChange={(event) => onChange({ ...draft, [field.key]: event.target.value })}
-                rows={field.key === "summary" || field.key === "regulatory_context" || field.key === "data_practices" ? 7 : 5}
+                rows={3}
                 value={draft[field.key]}
               />
             )}</dd>

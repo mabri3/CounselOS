@@ -1,0 +1,146 @@
+- banner:
+  - link "Themis.ai":
+    - /url: /
+    - img "Themis.ai"
+  - navigation "Main navigation":
+    - link "Today":
+      - /url: /
+    - link "Briefing":
+      - /url: /briefing
+    - link "Workspace":
+      - /url: /workspace
+    - link "Matters":
+      - /url: /matters
+    - link "Decisions":
+      - /url: /decisions
+    - link "Skills":
+      - /url: /skills
+    - link "Automations":
+      - /url: /automations
+    - link "Agents":
+      - /url: /agents
+    - link "Settings":
+      - /url: /settings
+  - region "View as":
+    - paragraph: Local demo
+    - heading "View as" [level=2]
+    - generic: View workspace as
+    - combobox "View workspace as":
+      - option "Alex Morgan · alex-morgan" [selected]
+      - option "Jamie Lee · jamie-lee"
+    - generic "About"
+- main:
+  - heading "Output templates" [level=1]
+  - paragraph: Choose how your business receives legal work. Each draft keeps the template version used to create it.
+  - text: Matter for preview
+  - combobox "Matter for preview":
+    - option "Select a matter" [selected]
+    - 'option "Lumen Learning: US family launch with analytics and shared-device accounts"'
+    - option "Empty acceptance matter"
+    - 'option "Orbit: Bank-Transaction Data Expansion"'
+    - 'option "Pulse: Earned Wage Access Expansion"'
+    - 'option "Northstar: AI Credit-Line Increase Model"'
+    - 'option "Relay: Open-Banking Reauthentication and Data Use"'
+    - 'option "Beacon: Instant Business Onboarding"'
+    - 'option "Cedar: Cash Sweep and Deposit Insurance Disclosures"'
+    - 'option "Harbor: Account Hold Support Response"'
+    - 'option "Project Apex: AI Voice Telemetry"'
+    - 'option "Delta: Same-Day Payout Pricing"'
+    - 'option "Mason: Analytics SDK Review"'
+  - region "Output templates":
+    - heading "Output templates" [level=2]
+    - paragraph: Templates set reusable structure and guidance. Instructions below apply to one preview only.
+    - button "Create blank template"
+    - navigation "Output template list":
+      - heading "Business Decision Brief" [level=3]
+      - generic: "Default: Business Decision Brief"
+      - button "Business Decision Brief output-business-decision-brief · version 1:aef14aa0f2c4cd34 Default":
+        - strong: Business Decision Brief
+        - generic: output-business-decision-brief · version 1:aef14aa0f2c4cd34
+        - generic: Default
+      - heading "Change Impact Note" [level=3]
+      - generic: "Default: Change Impact Note"
+      - button "Change Impact Note output-change-impact-note · version 1:fa45066717dd9ef7 Default":
+        - strong: Change Impact Note
+        - generic: output-change-impact-note · version 1:fa45066717dd9ef7
+        - generic: Default
+      - heading "Contract Clause Revision" [level=3]
+      - generic: "Default: Contract Clause Revision"
+      - button "Contract Clause Revision output-contract-clause-revision · version 1:ce083059d6e63b9f Default":
+        - strong: Contract Clause Revision
+        - generic: output-contract-clause-revision · version 1:ce083059d6e63b9f
+        - generic: Default
+      - heading "Decision Record" [level=3]
+      - generic: "Default: Draft Decision Rationale"
+      - button "Draft Decision Rationale output-decision-record · version 1:91fb2db87ecab3b7 Default":
+        - strong: Draft Decision Rationale
+        - generic: output-decision-record · version 1:91fb2db87ecab3b7
+        - generic: Default
+      - heading "Fact Confirmation Request" [level=3]
+      - generic: "Default: Fact Confirmation Request"
+      - button "Fact Confirmation Request output-fact-confirmation-request · version 1:a4a853d4744fa5cd Default":
+        - strong: Fact Confirmation Request
+        - generic: output-fact-confirmation-request · version 1:a4a853d4744fa5cd
+        - generic: Default
+      - heading "Implementation Requirements" [level=3]
+      - generic: "Default: Implementation Requirements"
+      - button "Implementation Requirements output-implementation-requirements · version 1:635b7c47ea021a88 Default":
+        - strong: Implementation Requirements
+        - generic: output-implementation-requirements · version 1:635b7c47ea021a88
+        - generic: Default
+      - heading "Meeting Preparation Brief" [level=3]
+      - generic: "Default: Meeting Preparation Brief"
+      - button "Meeting Preparation Brief output-meeting-preparation-brief · version 1:2081f1d249df8798 Default":
+        - strong: Meeting Preparation Brief
+        - generic: output-meeting-preparation-brief · version 1:2081f1d249df8798
+        - generic: Default
+      - heading "Outside Counsel Brief" [level=3]
+      - generic: "Default: Outside Counsel Brief"
+      - button "Outside Counsel Brief output-outside-counsel-brief · version 1:2359ac8ce9f69f76 Default":
+        - strong: Outside Counsel Brief
+        - generic: output-outside-counsel-brief · version 1:2359ac8ce9f69f76
+        - generic: Default
+      - heading "Regulatory Memorandum" [level=3]
+      - generic: "Default: Regulatory Memorandum"
+      - button "Regulatory Memorandum output-regulatory-memorandum · version 1:29d154f5f4a22253 Default":
+        - strong: Regulatory Memorandum
+        - generic: output-regulatory-memorandum · version 1:29d154f5f4a22253
+        - generic: Default
+      - heading "Short Business Email" [level=3]
+      - generic: "Default: Short Business Email"
+      - button "Short Business Email output-short-business-email · version 1:8841c21be3e06957 Default" [active] [pressed]:
+        - strong: Short Business Email
+        - generic: output-short-business-email · version 1:8841c21be3e06957
+        - generic: Default
+      - heading "Transaction Checklist" [level=3]
+      - generic: "Default: Transaction Checklist"
+      - button "Transaction Checklist output-transaction-checklist · version 1:7548a7fad25b8661 Default":
+        - strong: Transaction Checklist
+        - generic: output-transaction-checklist · version 1:7548a7fad25b8661
+        - generic: Default
+    - generic: short_business_email
+    - heading "Short Business Email" [level=3]
+    - paragraph: output-short-business-email · version 1:8841c21be3e06957
+    - generic: Available
+    - paragraph: Write a direct email with a useful subject line. Lead with the answer or request. Give only the facts and reasoning needed for the recipient to act. State uncertainty briefly when it changes the action. Do not invent recipients, commitments, or attachments.
+    - generic "Current version and history"
+    - button "Edit or rename"
+    - button "Make a copy"
+    - button "Current default" [disabled]
+    - group "Only for this preview":
+      - generic: Only for this preview
+      - paragraph: These values do not change the reusable template.
+      - generic: Audience
+      - textbox "Audience"
+      - generic: Purpose
+      - textbox "Purpose"
+      - generic: Tone
+      - textbox "Tone"
+      - generic: Length
+      - textbox "Length"
+      - generic: Extra instruction for this preview
+      - textbox "Extra instruction for this preview"
+      - button "Preview with this matter"
+  - generic "Reusable skills"
+- button "Open Next.js Dev Tools":
+- alert

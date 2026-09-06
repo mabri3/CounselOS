@@ -1,0 +1,181 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 83.99857330322266,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": -606.8181762695312
+    },
+    {
+      "font": "13px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 237.7627716064453,
+      "x": 756.7826538085938,
+      "y": -539.9644775390625
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 763.68603515625,
+      "y": -514.2755737304688
+    },
+    {
+      "font": "15px",
+      "height": 1551.7044677734375,
+      "tag": "ASIDE",
+      "text": "SettingsModelAnswer contractDocument reviewResearchFiles and",
+      "width": 237.9971466064453,
+      "x": 18.90625,
+      "y": -501.9104919433594
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Model",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": -425.92327880859375
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Answer contract",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": -366.9317932128906
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Document review",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": -307.9403381347656
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Research",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": -248.9488525390625
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Files and outputs",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": -189.95738220214844
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Model providers",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": -130.96591186523438
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Watch providers",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": -71.97442626953125
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Company",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": -12.982954025268556
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Vaults",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": 46.008522033691406
+    },
+    {
+      "font": "48px",
+      "height": 53.749996185302734,
+      "tag": "H1",
+      "text": "Company profile",
+      "width": 665.7385864257812,
+      "x": 295.9019775390625,
+      "y": -463.913330078125
+    },
+    {
+      "font": "15px",
+      "height": 1347.6207275390625,
+      "tag": "SECTION",
+      "text": "Company profile · SavedSynthetic Process CompanySaved and in",
+      "width": 665.7385864257812,
+      "x": 295.9019775390625,
+      "y": -333.8210144042969
+    },
+    {
+      "font": "15px",
+      "height": 1305.802490234375,
+      "tag": "SECTION",
+      "text": "Company profile · SavedSynthetic Process CompanySaved and in",
+      "width": 623.92041015625,
+      "x": 316.8110656738281,
+      "y": -312.91192626953125
+    },
+    {
+      "font": "23px",
+      "height": 29.893465042114254,
+      "tag": "H2",
+      "text": "Synthetic Process Company",
+      "width": 623.92041015625,
+      "x": 316.8110656738281,
+      "y": -285.3692932128906
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "No unsaved changes",
+      "width": 165.2911834716797,
+      "x": 316.8110656738281,
+      "y": 954.8934326171876
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Start replacement interview",
+      "width": 213.14630126953125,
+      "x": 490.0994262695313,
+      "y": 954.8934326171876
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 606.8181762695312,
+  "url": "http://localhost:3134/settings",
+  "width": 1024
+}

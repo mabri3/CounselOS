@@ -1,0 +1,406 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 50,
+      "tag": "HEADER",
+      "text": "themis.ai⌄TodayBriefingWorkspaceMattersDecisionsSkillsAutoma",
+      "width": 177.39346313476562,
+      "x": 31.995737075805664,
+      "y": -1579.6376953125
+    },
+    {
+      "font": "15px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 194.1903381347656,
+      "x": 44.90056610107422,
+      "y": -1096.73291015625
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 51.80397415161133,
+      "y": -1071.0439453125
+    },
+    {
+      "font": "15px",
+      "height": 4179.07666015625,
+      "tag": "MAIN",
+      "text": "MattersProject Apex: AI Voice TelemetryBack to matterMatterP",
+      "width": 938.1817626953124,
+      "x": 0,
+      "y": -1593.6363525390625
+    },
+    {
+      "font": "15px",
+      "height": 51.99573516845703,
+      "tag": "HEADER",
+      "text": "MattersProject Apex: AI Voice TelemetryBack to matter",
+      "width": 898.1817626953125,
+      "x": 20,
+      "y": -1569.6376953125
+    },
+    {
+      "font": "15px",
+      "height": 4053.08935546875,
+      "tag": "SECTION",
+      "text": "Decision mapThis issuenot mappedThis issueAll issues (11 rec",
+      "width": 898.1817626953125,
+      "x": 20,
+      "y": -1501.647705078125
+    },
+    {
+      "font": "15px",
+      "height": 116.29971313476562,
+      "tag": "SECTION",
+      "text": "Decision mapThis issuenot mappedThis issueAll issues (11 rec",
+      "width": 898.1817626953125,
+      "x": 20,
+      "y": -1501.647705078125
+    },
+    {
+      "font": "22px",
+      "height": 27.499998092651367,
+      "tag": "H2",
+      "text": "This issue",
+      "width": 104.0625,
+      "x": 44.90766906738281,
+      "y": -1468.9345703125
+    },
+    {
+      "font": "15px",
+      "height": 40.49715805053711,
+      "tag": "BUTTON",
+      "text": "This issue",
+      "width": 100.01419830322266,
+      "x": 607.3153076171875,
+      "y": -1463.75
+    },
+    {
+      "font": "15px",
+      "height": 40.49715805053711,
+      "tag": "BUTTON",
+      "text": "All issues (11 records)",
+      "width": 185.03550720214844,
+      "x": 707.3295288085938,
+      "y": -1463.75
+    },
+    {
+      "font": "15px",
+      "height": 484.7088012695313,
+      "tag": "SECTION",
+      "text": "Law or testWhat changes the answerPossible pathsIncludes iss",
+      "width": 898.1817626953125,
+      "x": 20,
+      "y": -1369.3536376953125
+    },
+    {
+      "font": "15px",
+      "height": 291.9957275390625,
+      "tag": "SECTION",
+      "text": "Law or testWhat changes the answerPossible pathsIncludes iss",
+      "width": 1111.9957275390625,
+      "x": 45.8167610168457,
+      "y": -1345.5396728515625
+    },
+    {
+      "font": "15px",
+      "height": 75.99431610107422,
+      "tag": "BUTTON",
+      "text": "Business questionBQ-09622fc729219256Current",
+      "width": 479.9999694824219,
+      "x": 77.8125,
+      "y": -1333.5439453125
+    },
+    {
+      "font": "15px",
+      "height": 75.99431610107422,
+      "tag": "BUTTON",
+      "text": "IssueWhat notice and choice should precede collection?Open",
+      "width": 479.9999694824219,
+      "x": 575.8167114257812,
+      "y": -1333.5439453125
+    },
+    {
+      "font": "15px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Zoom out",
+      "width": 65.01420593261719,
+      "x": 44.90766906738281,
+      "y": -935.5468139648438
+    },
+    {
+      "font": "15px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Zoom in",
+      "width": 55.09943008422851,
+      "x": 193.77130126953125,
+      "y": -935.5468139648438
+    },
+    {
+      "font": "15px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Fit this issue",
+      "width": 86.37783813476562,
+      "x": 272.8692932128906,
+      "y": -935.5468139648438
+    },
+    {
+      "font": "15px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Reset view",
+      "width": 74.54544830322266,
+      "x": 383.2457275390625,
+      "y": -935.5468139648438
+    },
+    {
+      "font": "15px",
+      "height": 256.413330078125,
+      "tag": "ASIDE",
+      "text": "Selected recordWhat notice and choice should precede collect",
+      "width": 898.1817626953125,
+      "x": 20,
+      "y": -868.6505126953125
+    },
+    {
+      "font": "22px",
+      "height": 27.499998092651367,
+      "tag": "H2",
+      "text": "What notice and choice should precede collection?",
+      "width": 517.2230224609375,
+      "x": 47.63494110107422,
+      "y": -824.9431762695312
+    },
+    {
+      "font": "15px",
+      "height": 42.315338134765625,
+      "tag": "BUTTON",
+      "text": "Clear selection",
+      "width": 135.97300720214844,
+      "x": 624.8721313476562,
+      "y": -827.74853515625
+    },
+    {
+      "font": "15px",
+      "height": 42.315338134765625,
+      "tag": "BUTTON",
+      "text": "Back to issue",
+      "width": 124.43181610107422,
+      "x": 768.84228515625,
+      "y": -827.74853515625
+    },
+    {
+      "font": "15px",
+      "height": 42.315338134765625,
+      "tag": "BUTTON",
+      "text": "Analyze paths",
+      "width": 130.1349334716797,
+      "x": 47.63494110107422,
+      "y": -737.7698364257812
+    },
+    {
+      "font": "15px",
+      "height": 42.315338134765625,
+      "tag": "BUTTON",
+      "text": "Discuss this path",
+      "width": 150.390625,
+      "x": 47.63494110107422,
+      "y": -677.4573364257812
+    },
+    {
+      "font": "15px",
+      "height": 42.315338134765625,
+      "tag": "BUTTON",
+      "text": "Try a different assumption",
+      "width": 213.97726440429688,
+      "x": 206.0227203369141,
+      "y": -677.4573364257812
+    },
+    {
+      "font": "15px",
+      "height": 431.54827880859375,
+      "tag": "SECTION",
+      "text": "All recordsComplete saved titles and the same relationships ",
+      "width": 898.1817626953125,
+      "x": 20,
+      "y": -596.2428588867188
+    },
+    {
+      "font": "22px",
+      "height": 27.499998092651367,
+      "tag": "H2",
+      "text": "All records",
+      "width": 896.3635864257812,
+      "x": 20.909090042114254,
+      "y": -595.3338012695312
+    },
+    {
+      "font": "15px",
+      "height": 287.1377868652344,
+      "tag": "SECTION",
+      "text": "Current analysisBQ-09622fc729219256business question · Curre",
+      "width": 896.3635864257812,
+      "x": 20.909090042114254,
+      "y": -523.3380737304688
+    },
+    {
+      "font": "15px",
+      "height": 71.29971313476562,
+      "tag": "BUTTON",
+      "text": "BQ-09622fc729219256business question · Current",
+      "width": 860.7385864257812,
+      "x": 40.539772033691406,
+      "y": -488.3309631347656
+    },
+    {
+      "font": "15px",
+      "height": 42.315338134765625,
+      "tag": "BUTTON",
+      "text": "Discuss this path",
+      "width": 150.390625,
+      "x": 40.539772033691406,
+      "y": -417.03125
+    },
+    {
+      "font": "15px",
+      "height": 71.29971313476562,
+      "tag": "BUTTON",
+      "text": "What notice and choice should precede collection?issue · Ope",
+      "width": 860.7385864257812,
+      "x": 40.539772033691406,
+      "y": -361.8110656738281
+    },
+    {
+      "font": "15px",
+      "height": 42.315338134765625,
+      "tag": "BUTTON",
+      "text": "Discuss this path",
+      "width": 150.390625,
+      "x": 40.539772033691406,
+      "y": -290.5113525390625
+    },
+    {
+      "font": "15px",
+      "height": 52.59943008422851,
+      "tag": "SECTION",
+      "text": "Visible relationships (1)BQ-09622fc729219256 → Includes issu",
+      "width": 896.3635864257812,
+      "x": 20.909090042114254,
+      "y": -218.20310974121097
+    },
+    {
+      "font": "15px",
+      "height": 2700.141845703125,
+      "tag": "SECTION",
+      "text": "Hypothetical analysisTry a different assumptionHypothetical ",
+      "width": 898.1817626953125,
+      "x": 20,
+      "y": -148.7002716064453
+    },
+    {
+      "font": "15px",
+      "height": 2692.144775390625,
+      "tag": "SECTION",
+      "text": "Hypothetical analysisTry a different assumptionHypothetical ",
+      "width": 898.1817626953125,
+      "x": 20,
+      "y": -140.703125
+    },
+    {
+      "font": "37.9273px",
+      "height": 41.71875,
+      "tag": "H2",
+      "text": "Try a different assumption",
+      "width": 456.00140380859375,
+      "x": 23.998579025268555,
+      "y": -107.16619110107422
+    },
+    {
+      "font": "15px",
+      "height": 42.315338134765625,
+      "tag": "BUTTON",
+      "text": "← Back to map",
+      "width": 137.7627716064453,
+      "x": 776.42041015625,
+      "y": -132.70596313476562
+    },
+    {
+      "font": "17px",
+      "height": 50,
+      "tag": "BUTTON",
+      "text": "Analyze scenario",
+      "width": 162.2443084716797,
+      "x": 565.0426025390625,
+      "y": 589.3252563476562
+    },
+    {
+      "font": "17px",
+      "height": 50,
+      "tag": "BUTTON",
+      "text": "Cancel",
+      "width": 145.9943084716797,
+      "x": 739.2826538085938,
+      "y": 589.3252563476562
+    },
+    {
+      "font": "15px",
+      "height": 49.36079406738281,
+      "tag": "BUTTON",
+      "text": "Working scenario — The feature is optional.Baseline complete",
+      "width": 890.1846313476562,
+      "x": 23.998579025268555,
+      "y": 706.02978515625
+    },
+    {
+      "font": "17px",
+      "height": 50,
+      "tag": "BUTTON",
+      "text": "Analyze scenario",
+      "width": 162.2443084716797,
+      "x": 493.70025634765625,
+      "y": 1431.441650390625
+    },
+    {
+      "font": "17px",
+      "height": 50,
+      "tag": "BUTTON",
+      "text": "Adopt selected facts",
+      "width": 190.4332275390625,
+      "x": 667.9403076171875,
+      "y": 1431.441650390625
+    },
+    {
+      "font": "17px",
+      "height": 50,
+      "tag": "BUTTON",
+      "text": "Save scenario",
+      "width": 145.9943084716797,
+      "x": 712.3792114257812,
+      "y": 1604.5738525390625
+    },
+    {
+      "font": "15px",
+      "height": 42.315338134765625,
+      "tag": "BUTTON",
+      "text": "Correct a fact",
+      "width": 126.32811737060548,
+      "x": 52.90482711791992,
+      "y": 2452.222900390625
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 1593.6363525390625,
+  "url": "http://localhost:3134/matters/MAT-DEMO-APEX/decision-map?back=%2Fmatters%2FMAT-DEMO-APEX&conversation=CONV-20260906-22bc04",
+  "width": 948
+}

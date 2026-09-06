@@ -1,0 +1,475 @@
+{
+  "configured_provider": "openai_compatible",
+  "configured_model": "deepseek-v4-flash",
+  "search": "disabled",
+  "matter_id": "MAT-20260906-1b2102",
+  "start_status": 200,
+  "run_id": "RUN-20260906-0df180",
+  "state": "completed",
+  "selection": {
+    "agent_id": "counsel-copilot",
+    "provider": "openai_compatible",
+    "model": "deepseek-v4-flash",
+    "reasoning_effort": "default"
+  },
+  "failure_detail": null,
+  "response": {
+    "reply": "I have the contract and issue context. This is scenario scope, so I'll provide conditional analysis without mutating the matter. Let me write the analysis.\n## Issue: Screening before release (ISS-TIMING)\n**Why it matters.** The contract's Section 4 makes screening a *precondition* to release: \"The operator must complete screening before releasing a payment.\" Whether screening actually completes before release therefore determines which release path is even available. If screening is not done first, a full release would breach the contract; only the pilot exception (or a delayed release that waits for screening) stays compliant.\n**The rule.** Section 4 imposes a sequencing requirement \u2014 screening must be *completed* before any payment is released. This is a mandatory condition, not a recommendation. Section 5 reinforces it operationally: the operator must keep a *dated* screening record, which implies the record must exist and be dateable at the point of release so the sequencing can be audited.\n**The actor.** The regulated actor is the **operator** (Harbor, in this fictional scenario). The obligation runs to the operator, and the audit record in Section 5 is the operator's responsibility. So the compliance question is Harbor's, not the supplier's.\n**The exception.** Section 4 carves out a **limited pilot**: at most ten test accounts may use *manual* screening. Two things matter about the exception:\n1. It is capped at ten test accounts.\n2. It does **not** waive screening \u2014 it only changes the *method* (manual instead of automated) and, by implication, the timing. The exception still requires screening to occur; it just permits manual screening for the pilot. So even under the pilot, screening must still happen before release \u2014 the exception is about *how* screening is done, not *whether* it precedes release.\n**The unknown timing.** The open fact is whether screening completes before release. This is the pivot: it determines which route is compliant.\n**Two conditional routes.**\n- **Route A \u2014 Delayed release (full release after screening).** If screening completes before release, Harbor can release payments generally. This is the compliant default path under Section 4. The cost is timing: release waits on screening completion. This route is available *only if* the timing fact resolves in Harbor's favor (screening first).\n- **Route B \u2014 Limited pilot (manual screening, \u226410 test accounts).** If screening timing is *not* confirmed, the pilot exception is the only path that keeps Harbor compliant without waiting. But it is narrow: at most ten *test* accounts, and screening is still required (manual). It does not authorize a wider rollout. So Route B preserves learning and limits exposure, but it cannot be the vehicle for a full release.\n**Business alternative.** A third, non-contractual option sits alongside the two legal routes: **run the pilot now to generate the screening evidence and operational data, then use that to confirm timing and unlock the delayed full release.** This is a sequencing strategy rather than a distinct legal path \u2014 it uses the pilot as a bridge to Route A. It is the practical recommendation if timing is genuinely unknown: the pilot is compliant today, and its output (dated screening records under Section 5) is exactly what would let Harbor later confirm screening-before-release and move to a wider rollout.\n**Contrast in one line.** Delayed release waits for certainty and then goes wide; the pilot goes narrow now and builds the evidence to go wide later \u2014 and only the pilot is available while timing is unconfirmed.\n```decision-paths\n{\"issue_analysis\":{\"issue_id\":\"ISS-TIMING\",\"explanation\":\"Section 4 makes screening a precondition to release; whether screening completes before release determines which path is compliant.\",\"tests\":[{\"id\":\"T1\",\"text\":\"Does screening complete before release?\"}],\"conditions\":[{\"id\":\"C1\",\"text\":\"Screening completes before release\",\"state\":\"unknown\"},{\"id\":\"C2\",\"text\":\"Screening does not complete before release\",\"state\":\"unknown\"}],\"options\":[{\"id\":\"OPT-DELAYED\",\"text\":\"Delayed release: full release after screening completes\",\"requirements\":{\"all\":[\"C1\"]}},{\"id\":\"OPT-PILOT\",\"text\":\"Limited pilot: manual screening for at most ten test accounts\",\"requirements\":{\"all\":[]}},{\"id\":\"OPT-BRIDGE\",\"text\":\"Business alternative: run pilot now to generate screening evidence, then unlock delayed full release\",\"requirements\":{\"all\":[]}}]}}\n```\n**Bottom line.** While screening timing is unconfirmed, the only compliant release path is the limited pilot (\u226410 test accounts, manual screening, screening still required). Once screening-before-release is confirmed, the delayed full release becomes available. The practical route is to use the pilot as the bridge: it is compliant now and produces the dated screening records that would justify the wider rollout later. The material open question remains whether screening completes before release \u2014 that single fact determines which of the two legal routes is open.",
+    "conversation_id": "CONV-20260906-66c4a7",
+    "trace": [
+      {
+        "tool": "select_conversation_scope",
+        "status": "success",
+        "summary": "Scenario analysis; actual matter unchanged.",
+        "mutation_status": null
+      },
+      {
+        "tool": "list_files",
+        "status": "success",
+        "summary": "Listed files under 03_Matters/harbor-sandbox-release-timing-1b2102.",
+        "mutation_status": null
+      },
+      {
+        "tool": "search_vault",
+        "status": "success",
+        "summary": "Found 10 internal result(s).",
+        "mutation_status": null
+      },
+      {
+        "tool": "read_file",
+        "status": "success",
+        "summary": "Read 03_Matters/harbor-sandbox-release-timing-1b2102/documents/fictional-supplier-contract.md.",
+        "mutation_status": null
+      },
+      {
+        "tool": "read_file",
+        "status": "success",
+        "summary": "Read 03_Matters/harbor-sandbox-release-timing-1b2102/issues.md.",
+        "mutation_status": null
+      }
+    ],
+    "changed_paths": [
+      "03_Matters/harbor-sandbox-release-timing-1b2102/conversations/CONV-20260906-66c4a7.md"
+    ],
+    "refresh": [],
+    "cards": [],
+    "applied_skills": [],
+    "review_author": "Themis.ai",
+    "operation_results": [
+      {
+        "action": "map-configured-analysis-1:tool:aa473a8e7ca8351e8af49fbe",
+        "source_action_key": "map-configured-analysis-1:tool:aa473a8e7ca8351e8af49fbe",
+        "operation": "select_conversation_scope",
+        "status": "no_change",
+        "summary": "Scenario analysis; actual matter unchanged.",
+        "matter_id": "MAT-20260906-1b2102",
+        "entity_refs": [],
+        "changed_paths": [],
+        "resulting_matter_state": {
+          "stage": "explore",
+          "next_action": "Orient to the request",
+          "work_state": {
+            "next_action": "Orient to the request",
+            "next_work_item_id": "WI-20260906-5a3a38",
+            "next_owner": "Alex Morgan",
+            "next_actor": "named_owner",
+            "due_at": null,
+            "execution_state": "not_running",
+            "active_run_id": null,
+            "execution_note": "",
+            "signal": {
+              "kind": "waiting_on_owner",
+              "label": "Waiting on Alex Morgan"
+            }
+          },
+          "consistency_issues": []
+        },
+        "available_next_actions": [],
+        "required_user_action": null,
+        "error": null,
+        "recovery": null
+      },
+      {
+        "action": "map-configured-analysis-1:tool:309172f7a215ab0b50685a57",
+        "source_action_key": "map-configured-analysis-1:tool:309172f7a215ab0b50685a57",
+        "operation": "list_files",
+        "status": "no_change",
+        "summary": "Listed files under 03_Matters/harbor-sandbox-release-timing-1b2102.",
+        "matter_id": "MAT-20260906-1b2102",
+        "entity_refs": [],
+        "changed_paths": [],
+        "resulting_matter_state": {
+          "stage": "explore",
+          "next_action": "Orient to the request",
+          "work_state": {
+            "next_action": "Orient to the request",
+            "next_work_item_id": "WI-20260906-5a3a38",
+            "next_owner": "Alex Morgan",
+            "next_actor": "named_owner",
+            "due_at": null,
+            "execution_state": "not_running",
+            "active_run_id": null,
+            "execution_note": "",
+            "signal": {
+              "kind": "waiting_on_owner",
+              "label": "Waiting on Alex Morgan"
+            }
+          },
+          "consistency_issues": []
+        },
+        "available_next_actions": [],
+        "required_user_action": null,
+        "error": null,
+        "recovery": null
+      },
+      {
+        "action": "map-configured-analysis-1:tool:a495be0e95716652bbb1a7b7",
+        "source_action_key": "map-configured-analysis-1:tool:a495be0e95716652bbb1a7b7",
+        "operation": "search_vault",
+        "status": "no_change",
+        "summary": "Found 10 internal result(s).",
+        "matter_id": "MAT-20260906-1b2102",
+        "entity_refs": [],
+        "changed_paths": [],
+        "resulting_matter_state": {
+          "stage": "explore",
+          "next_action": "Orient to the request",
+          "work_state": {
+            "next_action": "Orient to the request",
+            "next_work_item_id": "WI-20260906-5a3a38",
+            "next_owner": "Alex Morgan",
+            "next_actor": "named_owner",
+            "due_at": null,
+            "execution_state": "not_running",
+            "active_run_id": null,
+            "execution_note": "",
+            "signal": {
+              "kind": "waiting_on_owner",
+              "label": "Waiting on Alex Morgan"
+            }
+          },
+          "consistency_issues": []
+        },
+        "available_next_actions": [],
+        "required_user_action": null,
+        "error": null,
+        "recovery": null
+      },
+      {
+        "action": "map-configured-analysis-1:tool:70dfb45c27e7fa16dc279583",
+        "source_action_key": "map-configured-analysis-1:tool:70dfb45c27e7fa16dc279583",
+        "operation": "read_file",
+        "status": "no_change",
+        "summary": "Read 03_Matters/harbor-sandbox-release-timing-1b2102/documents/fictional-supplier-contract.md.",
+        "matter_id": "MAT-20260906-1b2102",
+        "entity_refs": [],
+        "changed_paths": [],
+        "resulting_matter_state": {
+          "stage": "explore",
+          "next_action": "Orient to the request",
+          "work_state": {
+            "next_action": "Orient to the request",
+            "next_work_item_id": "WI-20260906-5a3a38",
+            "next_owner": "Alex Morgan",
+            "next_actor": "named_owner",
+            "due_at": null,
+            "execution_state": "not_running",
+            "active_run_id": null,
+            "execution_note": "",
+            "signal": {
+              "kind": "waiting_on_owner",
+              "label": "Waiting on Alex Morgan"
+            }
+          },
+          "consistency_issues": []
+        },
+        "available_next_actions": [],
+        "required_user_action": null,
+        "error": null,
+        "recovery": null
+      },
+      {
+        "action": "map-configured-analysis-1:tool:9831636a6d761f3a30a6f95b",
+        "source_action_key": "map-configured-analysis-1:tool:9831636a6d761f3a30a6f95b",
+        "operation": "read_file",
+        "status": "no_change",
+        "summary": "Read 03_Matters/harbor-sandbox-release-timing-1b2102/issues.md.",
+        "matter_id": "MAT-20260906-1b2102",
+        "entity_refs": [],
+        "changed_paths": [],
+        "resulting_matter_state": {
+          "stage": "explore",
+          "next_action": "Orient to the request",
+          "work_state": {
+            "next_action": "Orient to the request",
+            "next_work_item_id": "WI-20260906-5a3a38",
+            "next_owner": "Alex Morgan",
+            "next_actor": "named_owner",
+            "due_at": null,
+            "execution_state": "not_running",
+            "active_run_id": null,
+            "execution_note": "",
+            "signal": {
+              "kind": "waiting_on_owner",
+              "label": "Waiting on Alex Morgan"
+            }
+          },
+          "consistency_issues": []
+        },
+        "available_next_actions": [],
+        "required_user_action": null,
+        "error": null,
+        "recovery": null
+      }
+    ]
+  },
+  "map": {
+    "issue_analyses": {},
+    "matter_id": "MAT-20260906-1b2102",
+    "revision": "628ceb24ba26fb64fd8abf8b9a47fcaecfecf550087f15efd8bf3671dd41e784",
+    "source_revisions": {
+      "03_Matters/harbor-sandbox-release-timing-1b2102/matter.md": "d7ee6f8b42faf589223df132a6c3b1d0922e503e59aa8ee8549cbd56b12f7fad",
+      "03_Matters/harbor-sandbox-release-timing-1b2102/dossier.md": "a17797f27058636cfef1cfe0bb775530fdf741dacdb3f4b65181174a30aefc65",
+      "03_Matters/harbor-sandbox-release-timing-1b2102/facts.md": "dc44f458da1111cdd1f074fe1f55ccbe1f15b503429e3ca77f0177378dbec884",
+      "03_Matters/harbor-sandbox-release-timing-1b2102/issues.md": "df54a0197bd18a79f18f27326bfa54cfc009b9754dfa6bed46982f5529129daf",
+      "03_Matters/harbor-sandbox-release-timing-1b2102/recommendations.md": "fad758b27e73ce41e1f1f71ee6b1ef698800ab0b7dcdeed058444f3baf4dba4e",
+      "business_question": "legacy:9daa566e96142bcca3e63a7f094f836946f9a5535198bb036b2c79cf54754f38"
+    },
+    "nodes": [
+      {
+        "analysis_id": null,
+        "analysis_revision": null,
+        "output_revision": null,
+        "analysis_path": null,
+        "group": "current",
+        "data": {},
+        "node_id": "business_question:BQ-87ca7ff718a35ed5",
+        "record_type": "business_question",
+        "record_id": "BQ-87ca7ff718a35ed5",
+        "label": "Which release path can Harbor use under its fictional supplier contract?",
+        "state": "current",
+        "detail": "",
+        "source_revision": "legacy:9daa566e96142bcca3e63a7f094f836946f9a5535198bb036b2c79cf54754f38",
+        "issue_ids": [],
+        "claim_ids": [],
+        "hypothetical": false,
+        "missing_reference": false
+      },
+      {
+        "analysis_id": null,
+        "analysis_revision": null,
+        "output_revision": null,
+        "analysis_path": null,
+        "group": "current",
+        "data": {},
+        "node_id": "issue:ISS-TIMING",
+        "record_type": "issue",
+        "record_id": "ISS-TIMING",
+        "label": "Screening before release",
+        "state": "open",
+        "detail": "The order of screening and release changes the available launch path.",
+        "source_revision": "df54a0197bd18a79f18f27326bfa54cfc009b9754dfa6bed46982f5529129daf",
+        "issue_ids": [
+          "ISS-TIMING"
+        ],
+        "claim_ids": [],
+        "hypothetical": false,
+        "missing_reference": false
+      },
+      {
+        "analysis_id": null,
+        "analysis_revision": null,
+        "output_revision": null,
+        "analysis_path": null,
+        "group": "current",
+        "data": {},
+        "node_id": "issue:ISS-PILOT",
+        "record_type": "issue",
+        "record_id": "ISS-PILOT",
+        "label": "A limited pilot with a long title about the vendor exception and the operational work required before a wider rollout",
+        "state": "open",
+        "detail": "A pilot may preserve learning while limiting the first release.",
+        "source_revision": "df54a0197bd18a79f18f27326bfa54cfc009b9754dfa6bed46982f5529129daf",
+        "issue_ids": [
+          "ISS-PILOT"
+        ],
+        "claim_ids": [],
+        "hypothetical": false,
+        "missing_reference": false
+      },
+      {
+        "analysis_id": null,
+        "analysis_revision": null,
+        "output_revision": null,
+        "analysis_path": null,
+        "group": "current",
+        "data": {},
+        "node_id": "issue:ISS-UNMAPPED",
+        "record_type": "issue",
+        "record_id": "ISS-UNMAPPED",
+        "label": "Support access",
+        "state": "open",
+        "detail": "Support needs an access process.",
+        "source_revision": "df54a0197bd18a79f18f27326bfa54cfc009b9754dfa6bed46982f5529129daf",
+        "issue_ids": [
+          "ISS-UNMAPPED"
+        ],
+        "claim_ids": [],
+        "hypothetical": false,
+        "missing_reference": false
+      },
+      {
+        "analysis_id": null,
+        "analysis_revision": null,
+        "output_revision": null,
+        "analysis_path": null,
+        "group": "current",
+        "data": {},
+        "node_id": "fact:FACT-20260906-5f6cae",
+        "record_type": "fact",
+        "record_id": "FACT-20260906-5f6cae",
+        "label": "Product has not confirmed whether screening completes before release.",
+        "state": "active",
+        "detail": "",
+        "source_revision": null,
+        "issue_ids": [],
+        "claim_ids": [],
+        "hypothetical": false,
+        "missing_reference": false
+      },
+      {
+        "analysis_id": null,
+        "analysis_revision": null,
+        "output_revision": null,
+        "analysis_path": null,
+        "group": "current",
+        "data": {},
+        "node_id": "fact:FACT-20260906-c18380",
+        "record_type": "fact",
+        "record_id": "FACT-20260906-c18380",
+        "label": "Product has not confirmed whether screening completes before release.",
+        "state": "active",
+        "detail": "",
+        "source_revision": null,
+        "issue_ids": [],
+        "claim_ids": [],
+        "hypothetical": false,
+        "missing_reference": false
+      },
+      {
+        "analysis_id": null,
+        "analysis_revision": null,
+        "output_revision": null,
+        "analysis_path": null,
+        "group": "current",
+        "data": {},
+        "node_id": "question:Q-SCREENING",
+        "record_type": "question",
+        "record_id": "Q-SCREENING",
+        "label": "Does screening complete before release?",
+        "state": "open",
+        "detail": "",
+        "source_revision": "9e7637e50528743d9a54b9aa0e235361bded48aeb98355c31ffb6bdfe523c60a",
+        "issue_ids": [
+          "ISS-TIMING",
+          "ISS-PILOT"
+        ],
+        "claim_ids": [],
+        "hypothetical": false,
+        "missing_reference": false
+      },
+      {
+        "analysis_id": null,
+        "analysis_revision": null,
+        "output_revision": null,
+        "analysis_path": null,
+        "group": "current",
+        "data": {},
+        "node_id": "work:WI-20260906-5a3a38",
+        "record_type": "work",
+        "record_id": "WI-20260906-5a3a38",
+        "label": "Orient to the request",
+        "state": "open",
+        "detail": "Owner: Alex Morgan",
+        "source_revision": null,
+        "issue_ids": [],
+        "claim_ids": [],
+        "hypothetical": false,
+        "missing_reference": false
+      },
+      {
+        "analysis_id": null,
+        "analysis_revision": null,
+        "output_revision": null,
+        "analysis_path": null,
+        "group": "current",
+        "data": {},
+        "node_id": "work:WI-ee6bbb9a1c07",
+        "record_type": "work",
+        "record_id": "WI-ee6bbb9a1c07",
+        "label": "Confirm screening timing",
+        "state": "open",
+        "detail": "Owner: Sam Patel",
+        "source_revision": null,
+        "issue_ids": [
+          "ISS-TIMING"
+        ],
+        "claim_ids": [],
+        "hypothetical": false,
+        "missing_reference": false
+      }
+    ],
+    "edges": [
+      {
+        "edge_id": "edge:fc50af03c7e57ea25d05f2f7",
+        "from_node_id": "business_question:BQ-87ca7ff718a35ed5",
+        "to_node_id": "issue:ISS-TIMING",
+        "relationship": "depends_on",
+        "label": "Includes issue",
+        "state": "active"
+      },
+      {
+        "edge_id": "edge:9093807e793e8e838b09fc3b",
+        "from_node_id": "business_question:BQ-87ca7ff718a35ed5",
+        "to_node_id": "issue:ISS-PILOT",
+        "relationship": "depends_on",
+        "label": "Includes issue",
+        "state": "active"
+      },
+      {
+        "edge_id": "edge:f7941d9c071a69cc03b15b6b",
+        "from_node_id": "business_question:BQ-87ca7ff718a35ed5",
+        "to_node_id": "issue:ISS-UNMAPPED",
+        "relationship": "depends_on",
+        "label": "Includes issue",
+        "state": "active"
+      },
+      {
+        "edge_id": "edge:f74640cb4a9f164365217af6",
+        "from_node_id": "issue:ISS-TIMING",
+        "to_node_id": "question:Q-SCREENING",
+        "relationship": "depends_on",
+        "label": "Depends on",
+        "state": "unknown"
+      },
+      {
+        "edge_id": "edge:ede8eae0e02aa9c4302d2b94",
+        "from_node_id": "issue:ISS-PILOT",
+        "to_node_id": "question:Q-SCREENING",
+        "relationship": "depends_on",
+        "label": "Depends on",
+        "state": "unknown"
+      },
+      {
+        "edge_id": "edge:9f4d779f2592852a37d45e16",
+        "from_node_id": "issue:ISS-TIMING",
+        "to_node_id": "work:WI-ee6bbb9a1c07",
+        "relationship": "mitigated_by",
+        "label": "Mitigated by",
+        "state": "active"
+      }
+    ],
+    "selected_issue_id": null,
+    "missing_references": []
+  }
+}

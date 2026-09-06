@@ -1,0 +1,117 @@
+.surface { display: grid; gap: 16px; min-width: 0; }
+.card { min-width: 0; max-width: 100%; box-sizing: border-box; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); }
+.compactCard { padding: 14px; }
+.reading { margin: 8px 0; overflow-wrap: anywhere; color: var(--ink-2); font: 400 16px/1.65 var(--serif); }
+.copy { margin: 5px 0; overflow-wrap: anywhere; color: var(--ink-3); font: 400 15px/1.5 var(--sans); }
+.muted { margin: 5px 0; overflow-wrap: anywhere; color: var(--ink-4); font: 400 15px/1.5 var(--sans); }
+.sectionTitle { margin: 0; font: 600 22px/1.25 var(--serif); }
+.questionTitle { margin: 5px 0; overflow-wrap: anywhere; font: 600 28px/1.2 var(--serif); }
+.stack { display: grid; gap: 12px; min-width: 0; }
+.orientation { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(280px, .75fr); gap: 10px 14px; min-width: 0; padding: 12px; }
+.orientationQuestion { grid-column: 1 / -1; }
+.orientationQuestion .questionTitle { margin: 2px 0; }
+.orientationAction { display: grid; align-content: start; gap: 8px; min-width: 0; }
+.row { display: flex; align-items: baseline; gap: 8px; min-width: 0; flex-wrap: wrap; }
+.between { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; min-width: 0; flex-wrap: wrap; }
+.agentAnswer { min-width: 0; padding: 12px; border: 1px dashed var(--agent-edge); border-radius: var(--radius); background: var(--agent-wash); }
+.agentAnswer .reading { margin: 5px 0; }
+.answerNarrow { display: none; }
+.qualification { display: flex; align-items: baseline; gap: 8px; margin-top: 8px; padding: 7px 10px; border-left: 3px solid var(--attention); background: var(--attention-wash); color: var(--ink-2); font: 400 15px/1.5 var(--sans); }
+.qualificationText { min-width: 0; overflow-wrap: anywhere; }
+.nextAction { display: grid; gap: 6px; min-width: 0; padding: 10px; border: 1px solid var(--line); border-left: 3px solid var(--ink); border-radius: 8px; background: var(--raised); }
+.nextActionButton { margin-top: 0; }
+.reviewBlock { display: grid; gap: 12px; }
+.reviewRows { display: grid; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); }
+.reviewRow { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 12px; min-width: 0; padding: 12px 14px; border-bottom: 1px solid var(--line-soft); }
+.reviewRow:last-child { border-bottom: 0; }
+.reviewRow > div { min-width: 0; }
+.reviewTitle { margin: 3px 0; overflow-wrap: anywhere; font: 600 18px/1.32 var(--serif); }
+.reviewActions { display: flex; align-items: center; justify-content: flex-end; gap: 7px; min-width: 0; flex-wrap: wrap; }
+.reviewAction { min-height: 36px; max-width: 100%; white-space: normal; overflow-wrap: anywhere; text-align: left; }
+.issueNav { display: grid; gap: 12px; }
+.issueList { display: grid; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); }
+.issueRow { min-width: 0; padding: 0; border: 0; border-bottom: 1px solid var(--line-soft); background: var(--raised); }
+.issueRow:last-child { border-bottom: 0; }
+.issueRowSelected { background: var(--paper); box-shadow: inset 3px 0 var(--ink); }
+.issueButton { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 11px 14px; border: 0; background: transparent; color: var(--ink); cursor: pointer; text-align: left; }
+.issueButton:hover { background: var(--hover); }
+.issueName { overflow-wrap: anywhere; font: 600 16px/1.35 var(--serif); }
+.issueEdit { display: grid; gap: 8px; padding: 12px 14px 14px; border-top: 1px solid var(--line-soft); }
+.detail { display: grid; gap: 16px; min-width: 0; }
+.detailHead { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, .6fr); gap: 18px; align-items: start; }
+.detailActions { display: grid; gap: 8px; }
+.detailSection { padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); }
+.detailSection + .detailSection { margin-top: 10px; }
+.detailSection summary { cursor: pointer; }
+.detailGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); }
+.detailGrid > section { min-width: 0; padding: 16px; border-bottom: 1px solid var(--line-soft); }
+.detailGrid > section:nth-child(odd) { border-right: 1px solid var(--line-soft); }
+.detailGrid > section:nth-last-child(-n + 2) { border-bottom: 0; }
+.position { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, .7fr); gap: 16px; align-items: center; }
+.supporting { display: grid; gap: 14px; margin-top: 10px; }
+.historyRow { padding-top: 8px; border-top: 1px solid var(--line-faint); }
+.answerCard { border-style: dashed; border-color: var(--agent-edge); background: var(--agent-wash); }
+.details { min-width: 0; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); }
+.details > summary { cursor: pointer; font: 600 15px/1.4 var(--sans); color: var(--ink-2); }
+.recapList { margin: 8px 0; padding-left: 18px; color: var(--ink-3); font: 400 15px/1.5 var(--sans); }
+.tableScroll { max-width: 100%; overflow-x: auto; margin: 10px 0 22px; }
+.codeBlock { max-width: 100%; overflow-x: auto; padding: 10px 12px; border: 1px solid var(--line-faint); border-radius: 8px; background: var(--paper); }
+@media (max-width: 760px) {
+  .card, .details { padding: 12px; }
+  .agentAnswer { padding: 8px; }
+  .orientation { grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 10px; }
+  .orientationQuestion { grid-column: auto; }
+  .orientationQuestion .questionTitle { margin: 0; }
+  .qualification { align-items: flex-start; flex-direction: column; gap: 2px; margin-top: 6px; padding: 5px 8px; }
+  .orientationAction { display: flex; flex-direction: column; }
+  .answerDesktop { display: none; }
+  .answerNarrow { display: inline; }
+  .answerPreviewStatus { display: none; }
+  .orientationAction .between { order: 2; margin-top: 8px; }
+  .orientationAction .nextAction { order: 1; }
+  .nextAction { display: flex; flex-direction: column; padding: 8px; }
+  .nextActionButton { order: -1; }
+  .questionTitle { font-size: 25px; }
+  .reviewRow, .issueButton { grid-template-columns: minmax(0, 1fr); gap: 7px; min-height: 0; }
+  .reviewActions { justify-content: flex-start; }
+  .detailHead, .detailGrid, .position { grid-template-columns: minmax(0, 1fr); }
+  .detailGrid > section { border-right: 0; }
+  .detailGrid > section:nth-last-child(2) { border-bottom: 1px solid var(--line-soft); }
+  .reviewAction { min-height: 44px; }
+}
+
+/* Matter A reference: a reading page, with a full-width answer and action row. */
+.orientation { grid-template-columns: minmax(0, 1fr); gap: 24px; padding: 0; border: 0; }
+.orientationQuestion .questionTitle { margin: 10px 0 8px; font: 500 42px/1.15 var(--serif); letter-spacing: -1.2px; }
+.orientationQuestion :global(.record-meta) { color: var(--ink); font: 500 13px/1.4 var(--sans); letter-spacing: .09em; }
+.agentAnswer { padding: 22px 20px; }
+.agentAnswer > :global(.record-meta) { color: var(--agent); font: 500 12px/1.5 var(--sans); letter-spacing: .08em; }
+.answerWithIcon { display: flex; gap: 16px; align-items: flex-start; margin-top: 12px; }
+.agentIcon { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--agent-edge); border-radius: 50%; background: var(--agent-tint); color: var(--agent); flex-shrink: 0; }
+.agentAnswer .reading, .agentAnswer .reading p { margin: 0; font: 400 21px/1.5 var(--sans); color: var(--ink); }
+.agentAnswer > :global(.btn) { margin-left: 58px; }
+.answerPreviewStatus { font-size: 12px; margin-left: 58px; }
+.qualification { margin: 0; padding: 14px 18px; border: 1px solid var(--line); border-radius: 7px; background: var(--raised); gap: 20px; font-size: 17px; }
+.qualification > svg { color: var(--attention-deep); padding: 5px; box-sizing: content-box; border: 1px solid var(--attention-edge); border-radius: 4px; background: var(--attention-wash); }
+.orientationAction { display: block; position: relative; }
+.orientationAction > .between { display: none; }
+.nextAction { grid-template-columns: auto minmax(160px,auto) 1fr; align-items: center; gap: 18px; padding: 12px 18px; border: 1px solid var(--line); border-radius: 7px; }
+.nextAction::before { content: "NEXT ACTION"; font: 500 12px var(--sans); letter-spacing: .09em; }
+.nextAction > .copy { grid-column: 1 / -1; grid-row: 2; font-size: 13px; }
+.nextAction > .row { grid-column: 3; grid-row: 1; justify-content: center; }
+.nextActionButton { grid-column: 2; grid-row: 1; min-height: 44px; padding: 10px 22px; }
+.issueNav { padding: 0; border: 0; }
+.issueName { font: 400 17px/1.45 var(--sans); }
+.issueRow > .muted { padding: 0 16px 10px; font-size: 13px; }
+@media (max-width: 760px) { .orientationQuestion .questionTitle { font-size: 32px; } .nextAction { display: flex; flex-wrap: wrap; } .agentAnswer .reading, .agentAnswer .reading p { font-size: 18px; } }
+.issueButton { grid-template-columns: 32px 26px minmax(0,1fr) 90px minmax(130px,.55fr) 18px; gap: 20px; min-height: 54px; }
+.issueNumber { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--attention-edge); background: var(--attention-wash); font: 400 17px var(--sans); }
+.issueListTitle { margin: 4px 0; font: 500 13px var(--sans); letter-spacing: .08em; text-transform: uppercase; }
+.issueDisposition { color: var(--ink-3); font: 400 14px/1.4 var(--sans); }
+.issueButton :global(.state-label) { width: fit-content; padding: 5px 9px; border: 1px solid var(--attention-edge); border-radius: 5px; background: var(--attention-wash); color: var(--attention-deep); font: 400 14px var(--sans); }
+.reviewBlock { padding: 12px 16px; }
+.reviewBlock > summary { cursor: pointer; }
+.reviewBlock .sectionTitle { font: 400 16px var(--sans); }
+@media (max-width: 760px) { .issueButton { grid-template-columns: 28px 1fr auto; gap: 10px; } .issueButton > svg:first-of-type { display: none; } .issueDisposition { grid-column: 2; } .issueButton > svg:last-child { display: none; } }
+.surface[data-issue-selected="true"] > :not(article[aria-label^="Issue review:"]):not(.backToIssues):not([role="status"]):not([role="alert"]) { display: none; }
+.backToIssues { justify-self: start; margin-bottom: 8px; font-size: 16px; }

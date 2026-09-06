@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import styles from "@/components/PortfolioPhase2.module.css";
 import { useState } from "react";
 import LinkifiedText from "@/components/LinkifiedText";
 import { repairMatterConsistency } from "@/lib/api";
@@ -39,7 +40,7 @@ export default function StageBoard({
   }
 
   return (
-    <div className="board">
+    <div className={styles.board}>
       {STAGES.map((stage) => {
         const items = matters.filter((matter) => matter.status === stage.id);
         const signals = items.map(signalFor);
@@ -59,7 +60,7 @@ export default function StageBoard({
           <section
             className="board-column"
             key={stage.id}
-            style={{ background: over ? "#FAEDCB" : "transparent" }}
+            style={{ background: over ? "var(--rail)" : "transparent" }}
             onDragOver={(event) => { if (acceptsDrop) { event.preventDefault(); setOverColumn(stage.id); } }}
             onDragLeave={() => setOverColumn((current) => (current === stage.id ? null : current))}
             onDrop={async (event) => {
@@ -67,12 +68,12 @@ export default function StageBoard({
               setOverColumn(null);
               const matterId = event.dataTransfer.getData("text/matter-id") || dragId;
               setDragId(null);
-              if (matterId && acceptsDrop) await onMove(matterId, stage.id);
+              if (matterId && acceptsDrop && matters.some((matter) => matter.matter_id === matterId && matter.status !== "closed")) await onMove(matterId, stage.id);
             }}
           >
             <header
               className="board-head"
-              style={{ borderBottom: attentionParts.length > 0 ? `2px solid ${signalColor}` : "1px solid var(--line)" }}
+
               title={stage.sub}
             >
               <span style={{ color: attentionParts.length > 0 ? "var(--ink)" : "var(--ink-4)" }}>{stage.label}</span>
@@ -86,16 +87,17 @@ export default function StageBoard({
               </span>
             ) : null}
 
+            {items.length === 0 ? <p className={styles.emptyStage}>No matters in this stage.</p> : null}
             {items.map((matter) => {
               const signal = signalFor(matter);
               const due = dueWord(matter);
               return (
                 <article
                   className="board-card"
-                  draggable
+                  draggable={matter.status !== "closed"}
                   key={matter.matter_id}
                   style={{
-                    background: signal.bg,
+                    background: "white",
                     borderLeftColor: signal.rail,
                     opacity: dragId === matter.matter_id ? 0.4 : 1,
                   }}
@@ -127,6 +129,14 @@ export default function StageBoard({
                     <span>{matterNextOwner(matter)}</span>
                     <span style={{ color: due.color }}>{due.text}</span>
                   </span>
+                  {matter.status !== "closed" ? (
+                    <details className={styles.moveControl}>
+                      <summary>Move matter</summary>
+                      <select aria-label={`Move ${matter.title} to stage`} value={matter.status} onChange={(event) => void onMove(matter.matter_id, event.target.value as StageId)}>
+                        {STAGES.filter((target) => target.id !== "closed").map((target) => <option key={target.id} value={target.id}>{target.label}</option>)}
+                      </select>
+                    </details>
+                  ) : null}
                   {(matter.consistency_issues ?? []).map((issue) => (
                     <div key={issue.code} style={{ marginTop: 8, padding: 8, background: role.attentionTint, color: role.attentionDeep }}>
                       <strong>Consistency issue: {consistencyIssueLabel(issue)}</strong>

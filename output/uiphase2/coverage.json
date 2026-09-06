@@ -1,0 +1,176 @@
+[
+  {
+    "id": "01-today",
+    "title": "Today: attention queue",
+    "route": "/",
+    "evidence": "Live route and controls; illustrative queue content."
+  },
+  {
+    "id": "02-today-practice",
+    "title": "Today: practice and conversation",
+    "route": "/",
+    "evidence": "Live lower sections; illustrative conversation."
+  },
+  {
+    "id": "03-workspace-board",
+    "title": "Workspace: stage board",
+    "route": "/workspace",
+    "evidence": "Live stage board; sample matter cards."
+  },
+  {
+    "id": "04-workspace-quarter",
+    "title": "Workspace: quarter and activity",
+    "route": "/workspace",
+    "evidence": "Live lower sections; populated activity sample."
+  },
+  {
+    "id": "05-matters-table",
+    "title": "Matters: table",
+    "route": "/matters",
+    "evidence": "Live table and filters; sample rows."
+  },
+  {
+    "id": "06-matters-stages",
+    "title": "Matters: stages",
+    "route": "/matters",
+    "evidence": "Live Stages view and controls; sample rows."
+  },
+  {
+    "id": "07-new-matter",
+    "title": "New matter",
+    "route": "/workspace",
+    "evidence": "Live blank form; illustrative filled request. No submission."
+  },
+  {
+    "id": "08-decisions",
+    "title": "Recorded decisions",
+    "route": "/decisions",
+    "evidence": "Live register, recommendations, empty packets; sample decision wording."
+  },
+  {
+    "id": "09-decision-review",
+    "title": "Decision review packet",
+    "route": "ReviewPacket component",
+    "evidence": "Source-derived populated state. No live packet available in selected vault."
+  },
+  {
+    "id": "10-briefing",
+    "title": "Briefing: overview",
+    "route": "/briefing",
+    "evidence": "Live empty route and expanded filters. Populated rows, saved views and digests are illustrative."
+  },
+  {
+    "id": "11-briefing-reader",
+    "title": "Briefing: reader",
+    "route": "/briefing/[itemId]",
+    "evidence": "Source-derived populated reader. No live item opened."
+  },
+  {
+    "id": "12-briefing-digest",
+    "title": "Briefing: digest",
+    "route": "/briefing/digests/[digestId]",
+    "evidence": "Source-derived digest and unavailable-item state. No live digest opened."
+  },
+  {
+    "id": "13-watches",
+    "title": "Watches: empty and populated states",
+    "route": "/watches",
+    "evidence": "Live empty state. Populated watch rows are illustrative."
+  },
+  {
+    "id": "14-watch-assignment",
+    "title": "Watch: assignment and sources",
+    "route": "/watches/new",
+    "evidence": "Live empty builder and source controls; sample named-source row."
+  },
+  {
+    "id": "15-watch-schedule",
+    "title": "Watch: scope, schedule and output",
+    "route": "/watches/new",
+    "evidence": "Live lower form and cadence options; alternate cadence fields shown together for coverage."
+  },
+  {
+    "id": "16-watch-detail",
+    "title": "Watch: partial run and retained results",
+    "route": "/watches/[watchId]",
+    "evidence": "Source-derived active watch and partial provider failure. No scan or live detail opened."
+  },
+  {
+    "id": "17-templates",
+    "title": "Output templates: library",
+    "route": "/skills",
+    "evidence": "Live 11-template library and selected detail; sample preview form."
+  },
+  {
+    "id": "18-template-editor",
+    "title": "Output template: full editor",
+    "route": "/skills",
+    "evidence": "Live upper and lower editor controls; sample content and selected preview matter."
+  },
+  {
+    "id": "19-skills",
+    "title": "Reusable skill: editor",
+    "route": "/skills",
+    "evidence": "Live saved-skill editor and blank guided start; sample skill content."
+  },
+  {
+    "id": "20-agents",
+    "title": "Agents: overview",
+    "route": "/agents",
+    "evidence": "Live four built-in agents and advanced details; summarized sample instructions."
+  },
+  {
+    "id": "21-agent-advanced",
+    "title": "Agent: advanced settings",
+    "route": "/agents",
+    "evidence": "Live built-in controls; sample audience text and illustrative file path. No custom-agent fixture."
+  },
+  {
+    "id": "22-automations",
+    "title": "Automations: composer and run states",
+    "route": "/automations",
+    "evidence": "Live empty route and weekly composer. Failed/running/paused examples source-derived."
+  },
+  {
+    "id": "23-settings-models",
+    "title": "Settings: model and providers",
+    "route": "/settings",
+    "evidence": "Live model controls and model/watch provider status; composite of separate settings sections."
+  },
+  {
+    "id": "24-settings-research",
+    "title": "Settings: research, files and review",
+    "route": "/settings",
+    "evidence": "Live research advanced fields, file paths and review identity; composite."
+  },
+  {
+    "id": "25-settings-content",
+    "title": "Settings: company and answer contract",
+    "route": "/settings",
+    "evidence": "Live saved company and contract editor; illustrative profile content; composite."
+  },
+  {
+    "id": "26-settings-vaults",
+    "title": "Settings: vaults and local team",
+    "route": "/settings",
+    "evidence": "Live vault controls and local-team form; sample path and names."
+  },
+  {
+    "id": "27-research-reader",
+    "title": "Research: saved packet and source",
+    "route": "/matters/[matterId]/research",
+    "evidence": "Live saved-packet route and source rail; nonlegal illustrative source passage."
+  },
+  {
+    "id": "28-research-notes",
+    "title": "Research: queue, notes and questions",
+    "route": "/matters/[matterId]/research",
+    "evidence": "Live queue and empty notes. Answered/unanswered notes are illustrative."
+  },
+  {
+    "id": "29-skill-guided",
+    "title": "Reusable skill: guided creation",
+    "route": "/skills",
+    "evidence": "Live initial goal form. Question and generated-guidance previews source-derived."
+  }
+]

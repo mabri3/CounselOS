@@ -6,6 +6,9 @@ import { formatLongDay } from "@/lib/design";
 import type { MatterDetail } from "@/lib/types";
 import type { RecommendationDisposition } from "@/lib/types";
 import { recommendationNeedsReason } from "@/lib/recommendations";
+import type { DecisionMapBasis, DecisionPathPrefill } from "@/lib/decisionMapTypes";
+
+type DecisionSubmission = { payload: Record<string, unknown>; sourceActionKey: string };
 
 /**
  * Canvas 2b / 1h. The modal makes the explicit record action clear: the
@@ -17,6 +20,7 @@ export default function RecordDecisionModal({
   basis,
   basisLabels = {},
   lawyerAuthor,
+  pathPrefill,
   onClose,
   onRecorded,
 }: {
@@ -25,15 +29,16 @@ export default function RecordDecisionModal({
   basis: string[];
   basisLabels?: Record<string, string>;
   lawyerAuthor?: string;
+  pathPrefill?: DecisionPathPrefill;
   onClose: () => void;
   onRecorded: () => Promise<void>;
 }) {
-  const initialDecision = suggestion.trim();
+  const initialDecision = pathPrefill?.option.title.trim() || suggestion.trim();
   const [chosenPath, setChosenPath] = useState(initialDecision);
   const [rationale, setRationale] = useState("");
   const [disposition, setDisposition] = useState<RecommendationDisposition>(detail.recommendation?.current_version_id ? "followed" : "not_applicable");
   const [dispositionReason, setDispositionReason] = useState("");
-  const [conditions, setConditions] = useState("");
+  const [conditions, setConditions] = useState(() => pathPrefill ? pathConditions(pathPrefill) : "");
   const [notDecided, setNotDecided] = useState("");
   const [linkedBasis, setLinkedBasis] = useState(basis);
   const [failedPublicResearch, setFailedPublicResearch] = useState<string[]>([]);
@@ -44,7 +49,21 @@ export default function RecordDecisionModal({
   const [createdId, setCreatedId] = useState<string | null>(null);
   const [recorded, setRecorded] = useState(false);
   const [error, setError] = useState("");
+  const [historicalBasisAccepted, setHistoricalBasisAccepted] = useState(false);
+  const [basisConflict, setBasisConflict] = useState(false);
+  const [uncertainSave, setUncertainSave] = useState(false);
   const sourceActionKey = useRef<string | null>(null);
+  const pendingSubmission = useRef<DecisionSubmission | null>(null);
+  const historicalBasisRequired = Boolean(pathPrefill && (basisConflict || pathPrefill.state === "needs_review" || pathPrefill.state === "historical"));
+  const formLocked = busy || created || recorded || uncertainSave;
+
+  function edit(update: () => void) {
+    if (uncertainSave) return;
+    pendingSubmission.current = null;
+    sourceActionKey.current = null;
+    setError("");
+    update();
+  }
 
   useEffect(() => {
     let active = true;
@@ -72,8 +91,9 @@ export default function RecordDecisionModal({
     setError("");
     try {
       if (!created) {
-        sourceActionKey.current ||= `decision:ui:${crypto.randomUUID()}`;
-        const saved = await createDecision({
+        const submission = pendingSubmission.current ?? (() => {
+          sourceActionKey.current ||= `decision:ui:${crypto.randomUUID()}`;
+          const payload = {
           matter_id: detail.matter_id,
           title: detail.title,
           chosen_path: chosenPath.trim(),
@@ -88,11 +108,17 @@ export default function RecordDecisionModal({
           recommendation_disposition: disposition,
           recommendation_disposition_reason: dispositionReason.trim(),
           recommendation_version_id: detail.recommendation?.current_version_id ?? null,
-        });
+          ...(pathPrefill ? { map_basis: submittedMapBasis(pathPrefill.map_basis, historicalBasisAccepted) } : {}),
+          };
+          return { payload, sourceActionKey: sourceActionKey.current };
+        })();
+        pendingSubmission.current = submission;
+        const saved = await createDecision(submission.payload);
         decisionCreated = true;
         decisionId = saved.decision_id;
         setCreated(true);
         setCreatedId(saved.decision_id);
+        setUncertainSave(false);
       }
       const register = await getDecisions();
       if (!decisionId || !register.decisions.some((decision) => decision.decision_id === decisionId)) {
@@ -102,13 +128,28 @@ export default function RecordDecisionModal({
       setRecorded(true);
       setBusy(false);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : decisionCreated ? "The decision was saved, but the matter did not refresh." : "Could not record the decision.");
+      const message = errorMessage(caught, decisionCreated ? "The decision was saved, but the matter did not refresh." : "Could not record the decision.");
+      const status = errorStatus(caught);
+      const code = errorCode(caught);
+      if (!decisionCreated && status === 409 && code !== "action_key_conflict") {
+        pendingSubmission.current = null;
+        sourceActionKey.current = null;
+        setBasisConflict(Boolean(pathPrefill));
+        setUncertainSave(false);
+      } else if (!decisionCreated && (status === 400 || status === 404 || status === 422)) {
+        pendingSubmission.current = null;
+        sourceActionKey.current = null;
+        setUncertainSave(false);
+      } else if (!decisionCreated) {
+        setUncertainSave(true);
+      }
+      setError(message);
       setBusy(false);
     }
   }
 
   return (
-    <div className="modal-scrim" onClick={(event) => { if (!busy && event.target === event.currentTarget) onClose(); }}>
+    <div className="modal-scrim" onClick={(event) => { if (!busy && !uncertainSave && event.target === event.currentTarget) onClose(); }}>
       <div className="modal" role="dialog" aria-modal="true" aria-label="Record durable decision">
         <div className="modal-head">
           <h3>Record a durable decision</h3>
@@ -127,23 +168,32 @@ export default function RecordDecisionModal({
               aria-label="Decision"
               autoFocus
               className="text-input prose"
-              disabled={busy || created || recorded}
-              onChange={(event) => setChosenPath(event.target.value)}
+              disabled={formLocked}
+              onChange={(event) => edit(() => setChosenPath(event.target.value))}
               style={{ minHeight: 96 }}
               value={chosenPath}
             />
+            {pathPrefill && chosenPath.trim() !== pathPrefill.option.title.trim() ? <div className="field-help">Your wording differs from the saved path. The exact saved path remains linked as the decision map basis.</div> : null}
           </div>
+
+          {pathPrefill ? (
+            <div className="warning-callout" role="status">
+              <div className="btn-row"><strong>Decision map basis</strong><span className={`state-label ${historicalBasisRequired || pathPrefill.hypothetical ? "state-attention" : "state-agent"}`}>{pathPrefill.hypothetical ? "Hypothetical" : historicalBasisRequired ? pathPrefill.state === "historical" ? "Historical" : "Needs review" : "Saved"}</span></div>
+              <p style={{ margin: "7px 0 0" }}>{pathPrefill.analysis.display_title || pathPrefill.option.title} · analysis {pathPrefill.analysis.analysis_revision}</p>
+              {historicalBasisRequired ? <label style={{ display: "flex", gap: 8, marginTop: 10 }}><input checked={historicalBasisAccepted} disabled={formLocked} onChange={(event) => edit(() => setHistoricalBasisAccepted(event.target.checked))} type="checkbox" /> Use this saved historical basis even though newer analysis may be needed.</label> : null}
+            </div>
+          ) : null}
 
           <div>
             <div className="field-label">Recommendation disposition</div>
-            <select aria-label="Recommendation disposition" className="text-input" disabled={busy || created || recorded} onChange={(event) => setDisposition(event.target.value as RecommendationDisposition)} value={disposition}>
+            <select aria-label="Recommendation disposition" className="text-input" disabled={formLocked} onChange={(event) => edit(() => setDisposition(event.target.value as RecommendationDisposition))} value={disposition}>
               <option value="followed">Followed</option>
               <option value="modified">Modified</option>
               <option value="not_followed">Not followed</option>
               <option value="not_applicable">Not applicable</option>
             </select>
             {recommendationNeedsReason(disposition) ? (
-              <input aria-label="Reason for recommendation disposition" className="text-input" disabled={busy || created || recorded} onChange={(event) => setDispositionReason(event.target.value)} placeholder="Short reason" value={dispositionReason} />
+              <input aria-label="Reason for recommendation disposition" className="text-input" disabled={formLocked} onChange={(event) => edit(() => setDispositionReason(event.target.value))} placeholder="Short reason" value={dispositionReason} />
             ) : null}
           </div>
 
@@ -152,8 +202,8 @@ export default function RecordDecisionModal({
             <textarea
               aria-label="Rationale"
               className="text-input prose"
-              disabled={busy || created || recorded}
-              onChange={(event) => setRationale(event.target.value)}
+              disabled={formLocked}
+              onChange={(event) => edit(() => setRationale(event.target.value))}
               style={{ minHeight: 88 }}
               value={rationale}
             />
@@ -163,11 +213,11 @@ export default function RecordDecisionModal({
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
             <div>
               <div className="field-label">Conditions</div>
-              <textarea aria-label="Conditions" className="text-input prose" disabled={busy || created || recorded} onChange={(event) => setConditions(event.target.value)} placeholder="One condition per line" value={conditions} />
+              <textarea aria-label="Conditions" className="text-input prose" disabled={formLocked} onChange={(event) => edit(() => setConditions(event.target.value))} placeholder="One condition per line" value={conditions} />
             </div>
             <div>
               <div className="field-label">Issues this decision does not resolve</div>
-              <textarea aria-label="Issues this decision does not resolve" className="text-input prose" disabled={busy || created || recorded} onChange={(event) => setNotDecided(event.target.value)} placeholder="One open point per line" value={notDecided} />
+              <textarea aria-label="Issues this decision does not resolve" className="text-input prose" disabled={formLocked} onChange={(event) => edit(() => setNotDecided(event.target.value))} placeholder="One open point per line" value={notDecided} />
               <div className="field-help">Optional. List issues that remain open after this decision.</div>
             </div>
           </div>
@@ -175,11 +225,11 @@ export default function RecordDecisionModal({
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
             <div>
               <div className="field-label">Decided by</div>
-              <input aria-label="Decided by" className="text-input" disabled={busy || created || recorded} onChange={(event) => setDecider(event.target.value)} value={decider} />
+              <input aria-label="Decided by" className="text-input" disabled={formLocked} onChange={(event) => edit(() => setDecider(event.target.value))} value={decider} />
             </div>
             <div>
               <div className="field-label">Revisit on</div>
-              <input aria-label="Revisit on" className="text-input" disabled={busy || created || recorded} onChange={(event) => setReviewAt(event.target.value)} type="date" value={reviewAt} />
+              <input aria-label="Revisit on" className="text-input" disabled={formLocked} onChange={(event) => edit(() => setReviewAt(event.target.value))} type="date" value={reviewAt} />
               <div style={{ marginTop: 6, font: "400 13px var(--sans)", color: "var(--ink-5)" }}>
                 {reviewAt ? formatLongDay(reviewAt) : "No review date"}
               </div>
@@ -196,7 +246,7 @@ export default function RecordDecisionModal({
                 <span className="basis-tag" key={path} title={path}>
                   {basisLabel(path, basisLabels)}
                   {failedPublicResearch.includes(path) ? " · Public research failed" : ""}
-                  <button aria-label={`Remove ${basisLabel(path, basisLabels)}`} disabled={busy || created || recorded} onClick={() => setLinkedBasis((current) => current.filter((item) => item !== path))} type="button">×</button>
+                  <button aria-label={`Remove ${basisLabel(path, basisLabels)}`} disabled={formLocked} onClick={() => edit(() => setLinkedBasis((current) => current.filter((item) => item !== path)))} type="button">×</button>
                 </span>
               ))}
             </div>
@@ -207,13 +257,13 @@ export default function RecordDecisionModal({
 
         <div className="modal-foot">
           <span style={{ font: "400 13.5px var(--sans)", color: "var(--ink-4)" }}>
-            {recorded ? "Saved and confirmed after the matter reloaded." : created ? "Decision saved. Refresh confirmation is still needed." : "Recorded against this matter and the decision register."}
+            {recorded ? "Saved and confirmed after the matter reloaded." : created ? "Decision saved. Refresh confirmation is still needed." : uncertainSave ? "The save result is uncertain. Retry uses the same request and action key." : "Recorded against this matter and the decision register."}
           </span>
           <div className="btn-row">
-            <button className={recorded ? "btn primary" : "btn"} disabled={busy} onClick={onClose}>{created ? "Close" : "Cancel"}</button>
+            <button className={recorded ? "btn primary" : "btn"} disabled={busy || uncertainSave} onClick={onClose}>{created ? "Close" : "Cancel"}</button>
             {recorded ? null : (
-              <button className="btn primary" disabled={busy || !chosenPath.trim() || !decider.trim() || (recommendationNeedsReason(disposition) && !dispositionReason.trim())} onClick={() => void record()}>
-                {busy ? created ? "Refreshing…" : "Recording and refreshing…" : created ? "Retry refresh" : "Record durable decision"}
+              <button className="btn primary" disabled={busy || !chosenPath.trim() || !decider.trim() || (historicalBasisRequired && !historicalBasisAccepted) || (recommendationNeedsReason(disposition) && !dispositionReason.trim())} onClick={() => void record()}>
+                {busy ? created ? "Refreshing…" : "Recording and refreshing…" : created ? "Retry refresh" : uncertainSave ? "Retry recording" : "Record durable decision"}
               </button>
             )}
           </div>
@@ -234,6 +284,35 @@ function defaultReview(): string {
 
 function lines(value: string): string[] {
   return value.split("\n").map((item) => item.replace(/^[-*]\s*/, "").trim()).filter(Boolean);
+}
+
+export function submittedMapBasis(basis: DecisionMapBasis, useHistoricalBasis: boolean): DecisionMapBasis {
+  const { canonical_option: _canonicalOption, input_basis: _inputBasis, use_historical_basis: _historical, ...identifiers } = basis;
+  return useHistoricalBasis ? { ...identifiers, use_historical_basis: true } : identifiers;
+}
+
+export function pathConditions(prefill: DecisionPathPrefill): string {
+  const rows = [prefill.option.condition_summary.trim()];
+  for (const requirement of prefill.option.requirements) {
+    const condition = prefill.analysis.conditions.find((item) => item.condition_id === requirement.condition_id);
+    rows.push(`${condition?.question || requirement.condition_id} — must be ${requirement.state === "met" ? "met" : "not met"}`);
+  }
+  return [...new Set(rows.filter(Boolean))].join("\n");
+}
+
+function errorMessage(caught: unknown, fallback: string): string {
+  if (caught && typeof caught === "object" && "message" in caught && typeof caught.message === "string") return caught.message;
+  return fallback;
+}
+
+function errorStatus(caught: unknown): number | null {
+  if (!caught || typeof caught !== "object" || !("status" in caught) || typeof caught.status !== "number") return null;
+  return caught.status;
+}
+
+function errorCode(caught: unknown): string | null {
+  if (!caught || typeof caught !== "object" || !("detail" in caught) || !caught.detail || typeof caught.detail !== "object" || !("code" in caught.detail) || typeof caught.detail.code !== "string") return null;
+  return caught.detail.code;
 }
 
 function basisLabel(path: string, labels: Record<string, string>): string {

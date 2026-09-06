@@ -1,0 +1,218 @@
+[
+  {
+    "comparison_id": "CMP-a4c631a0d478e3b70db97124",
+    "matter_id": "MAT-20260905-0a2378",
+    "path": "03_Matters/harbor-relay-specification-review-0a2378/continuity/impacts/CMP-a4c631a0d478e3b70db97124.md",
+    "revision": "eec3972420bd335a68be6df4a9ef26da1b9670b35c86286bf27f73f9842e806f",
+    "actor": {
+      "person_id": "alex",
+      "display_name": "Alex Morgan",
+      "mode": "demo"
+    },
+    "source_action_key": "impact.prepare:6a77e06e-8abe-4a83-9d2b-ed69951fb7e6",
+    "before": {
+      "reference_id": "source:SRC-0AAFF467A728978B:81720b134013",
+      "kind": "source",
+      "title": "harbor-spec-v1.txt",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v1.txt.extracted.md",
+      "revision": "764be8ca1d53a9625809a1f992d97daa3d9f6352002fcdcbead80f45e46c81cc",
+      "content_hash": "0aaff467a728978b9659a79e93b352e0176be0132a4de7427e65567004ee5f68",
+      "text": "Harbor Relay \u2014 supplied specification version 1\nFictional acceptance-test source.\nPilot date: 21 October 2026.\nReport retention: 30 days.\nAccess: only the customer can open account activity reports.\nSupport staff cannot open report content.\nScope: US pilot only.\n",
+      "snapshot_path": "03_Matters/harbor-relay-specification-review-0a2378/continuity/snapshots/REF-23ba84c417907ba5c05fae74.md",
+      "source_id": "SRC-0AAFF467A728978B",
+      "original_path": "03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v1.txt",
+      "original_hash": "0aaff467a728978b9659a79e93b352e0176be0132a4de7427e65567004ee5f68",
+      "extraction_state": "complete"
+    },
+    "after": {
+      "reference_id": "source:SRC-0ACEAC9A0F1D87F0:985be499a11e",
+      "kind": "source",
+      "title": "harbor-spec-v2.txt",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v2.txt.extracted.md",
+      "revision": "2adcf5bb1d1f757fb8b37ddf92a8a0a4a3cc3d35fa88180e8ea7041c9750791f",
+      "content_hash": "0aceac9a0f1d87f0eae9a4ca3761edfed0a2493ceda59e3bfce04b891048febc",
+      "text": "Harbor Relay \u2014 supplied specification version 2\nFictional acceptance-test source.\nPilot date: 21 October 2026.\nReport retention: 180 days.\nAccess: customers and support staff can open account activity reports.\nSupport access requires a customer support ticket and is logged.\nScope: US pilot only.\n",
+      "snapshot_path": "03_Matters/harbor-relay-specification-review-0a2378/continuity/snapshots/REF-c50a98dae49db6ec119a1717.md",
+      "source_id": "SRC-0ACEAC9A0F1D87F0",
+      "original_path": "03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v2.txt",
+      "original_hash": "0aceac9a0f1d87f0eae9a4ca3761edfed0a2493ceda59e3bfce04b891048febc",
+      "extraction_state": "complete"
+    },
+    "targets": [
+      {
+        "reference_id": "MSG-20260905-89cd85",
+        "kind": "advice",
+        "title": "Saved assistant advice \u00b7 MSG-20260905-89cd85",
+        "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/CONV-20260905-9d68db.md",
+        "revision": "63be52a4c090fd4697f72d4ccc114f1387242572be88368d14dbe3503c762a11",
+        "content_hash": "638506ea09a90e99a219f2813c5faebb8ffab02cbf6ffd007b9ed71e0ef8bb04",
+        "text": "Here's my initial advice on the Harbor Relay US pilot.\n## Initial advice \u2014 Harbor Relay account activity report\n**What you've told me:** A US pilot of Harbor Relay launches 21 October 2026. The product sends an account activity report to the customer, retained 30 days, and the supplied spec says only the customer can open it. Business hasn't confirmed whether support staff can open reports.\n**Working assessment (preliminary, no authority retrieved):** The report almost certainly contains customer transaction/account data, so the two design choices you've flagged \u2014 30-day retention and customer-only access \u2014 are privacy and data-access controls, not just product features. The material question is whether the \"only the customer can open\" statement is an accurate description of the product's actual access model.\n- **If support staff can open reports**, then the spec's \"only the customer can open them\" is inaccurate as written, and you'd want to reconcile it before the pilot. That's not necessarily a blocker \u2014 support access under defined conditions (e.g., a verified customer request or troubleshooting) is common and defensible \u2014 but the spec and any customer-facing disclosure should reflect the real access model. Unrestricted support access would be the harder position, since it undercuts the customer-only promise and widens exposure of customer data.\n- **If support cannot open reports**, the spec is accurate and the main remaining item is confirming the 30-day retention is deliberate (data minimization) and documented.\n**The one supporting question that matters most** is the support-access one, because it determines whether the stated access promise is accurate and whether additional controls or disclosures are needed before launch:\n> **Can support staff open customer account activity reports, and if so under what conditions?**\n> - No \u2014 only the customer can open reports; support cannot\n> - Yes \u2014 support can open reports only under defined conditions (e.g., verified customer request, troubleshooting)\n> - Yes \u2014 support can open reports without restriction\n> - Not yet decided \u2014 business is still determining this\nI've recorded the reported facts and this question in the matter. Per your instruction, I have **not** recorded a legal decision or created a draft. Once you answer the support-access question, I can give a more concrete read on what (if anything) needs to change in the spec or disclosures before the pilot.",
+        "snapshot_path": "03_Matters/harbor-relay-specification-review-0a2378/continuity/snapshots/REF-c1607235acbf82fbee09dde0.md",
+        "source_id": null,
+        "original_path": null,
+        "original_hash": null,
+        "extraction_state": "not_applicable"
+      }
+    ],
+    "question": {
+      "reference_id": "BQ-eb300f7c7f4180c6",
+      "kind": "question",
+      "title": "Current business question",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/dossier.md",
+      "revision": "legacy:78c0caaa1faac9054ba6f20782acf60cb89adc183bcd383f4b114a3646a8aa24",
+      "content_hash": "78c0caaa1faac9054ba6f20782acf60cb89adc183bcd383f4b114a3646a8aa24",
+      "text": "Assess the US pilot of Harbor Relay (launch 21 Oct 2026), which sends an account activity report to the customer, retained 30 days and openable only by the customer, for privacy/data-access and related considerations \u2014 including whether support staff may open reports.",
+      "snapshot_path": "03_Matters/harbor-relay-specification-review-0a2378/continuity/snapshots/REF-f1cf2b751b716d3b18a98bc8.md",
+      "source_id": null,
+      "original_path": null,
+      "original_hash": null,
+      "extraction_state": "not_applicable"
+    },
+    "basis": [
+      {
+        "reference_id": "FACT-20260905-04f415",
+        "kind": "fact",
+        "title": "Fact",
+        "path": "03_Matters/harbor-relay-specification-review-0a2378/facts.md",
+        "revision": "699688cd0afce7a5d3f9518680bc5d2a27c80ecea480248c1a23755083732b23",
+        "content_hash": "b8b6dfc2fec7eded7a55287ef0f07ab8934689b00a8317519ff768186f6f1818",
+        "text": "Harbor Relay is planned for a US pilot launching on 21 October 2026.",
+        "snapshot_path": "03_Matters/harbor-relay-specification-review-0a2378/continuity/snapshots/REF-4cbd11dba356456f75d03075.md",
+        "source_id": null,
+        "original_path": null,
+        "original_hash": null,
+        "extraction_state": "not_applicable"
+      },
+      {
+        "reference_id": "FACT-20260905-2377a7",
+        "kind": "fact",
+        "title": "Fact",
+        "path": "03_Matters/harbor-relay-specification-review-0a2378/facts.md",
+        "revision": "3305bf13362b4cdb5b570fa3049c2e46a8723093fa350755546cdad22ae290e2",
+        "content_hash": "76fa3075aa202b3966a66bc8216212438c75d742d218c012308df830fcc4439b",
+        "text": "The product sends an account activity report to the customer.",
+        "snapshot_path": "03_Matters/harbor-relay-specification-review-0a2378/continuity/snapshots/REF-4636abe1baebe7fed07c2cb5.md",
+        "source_id": null,
+        "original_path": null,
+        "original_hash": null,
+        "extraction_state": "not_applicable"
+      },
+      {
+        "reference_id": "FACT-20260905-790d7a",
+        "kind": "fact",
+        "title": "Fact",
+        "path": "03_Matters/harbor-relay-specification-review-0a2378/facts.md",
+        "revision": "12ee1f36a2910fbfa4845b4e43b8573899bc245718f8ab26bed68bc490349879",
+        "content_hash": "3cb2c4941e936041803f50e95437592cdd332ef983146d0fe0255b763293ed31",
+        "text": "The supplied specification states reports are retained for 30 days.",
+        "snapshot_path": "03_Matters/harbor-relay-specification-review-0a2378/continuity/snapshots/REF-f0ba509d0f02c9870536c7f8.md",
+        "source_id": null,
+        "original_path": null,
+        "original_hash": null,
+        "extraction_state": "not_applicable"
+      },
+      {
+        "reference_id": "FACT-20260905-da4e74",
+        "kind": "fact",
+        "title": "Fact",
+        "path": "03_Matters/harbor-relay-specification-review-0a2378/facts.md",
+        "revision": "9343101736c9a1ea0d962ff07263a60325de61e15975224529bb165b79d87da8",
+        "content_hash": "435575d391b5599149e022a26703eaf6dfef548e680571d774a62c502a128ff1",
+        "text": "The supplied specification states only the customer can open the reports.",
+        "snapshot_path": "03_Matters/harbor-relay-specification-review-0a2378/continuity/snapshots/REF-a5eb132bded5ab7c4d176d02.md",
+        "source_id": null,
+        "original_path": null,
+        "original_hash": null,
+        "extraction_state": "not_applicable"
+      },
+      {
+        "reference_id": "FACT-20260905-a217a6",
+        "kind": "fact",
+        "title": "Fact",
+        "path": "03_Matters/harbor-relay-specification-review-0a2378/facts.md",
+        "revision": "5d27f78b4192bd7aa65f101778943ae3e4eec40dbd8229c4ef81311a9af72b8c",
+        "content_hash": "27595b1cfa7726c2bd81e179ed2d717c060627b7ec496eb56483ccd15fcff915",
+        "text": "Business has not confirmed whether support staff can open reports.",
+        "snapshot_path": "03_Matters/harbor-relay-specification-review-0a2378/continuity/snapshots/REF-2966ea31a4bde8eaee40ad77.md",
+        "source_id": null,
+        "original_path": null,
+        "original_hash": null,
+        "extraction_state": "not_applicable"
+      },
+      {
+        "reference_id": "FACT-20260905-233a65",
+        "kind": "fact",
+        "title": "Fact",
+        "path": "03_Matters/harbor-relay-specification-review-0a2378/facts.md",
+        "revision": "a36330f9d5d15ae9af86069a4fd49220da6aeb3552dd00774a5499d833fc5ca2",
+        "content_hash": "425fb5368963a0532fb308c661379407cc50cd581a77b2d52eb60978e2edee5c",
+        "text": "Sam Patel reports that support can open a report only for a customer support ticket and every access is logged.",
+        "snapshot_path": "03_Matters/harbor-relay-specification-review-0a2378/continuity/snapshots/REF-27a934ffc4ba18ca11b5be0a.md",
+        "source_id": null,
+        "original_path": null,
+        "original_hash": null,
+        "extraction_state": "not_applicable"
+      },
+      {
+        "reference_id": "ASM-20260905-777e7e",
+        "kind": "assumption",
+        "title": "Assumption",
+        "path": "03_Matters/harbor-relay-specification-review-0a2378/facts.md",
+        "revision": "705414aed7e427ec28429963db23ab51433de04f8783f22e0e0eb6c46573a9f5",
+        "content_hash": "3be0c3d747f27458511becd4c1f9d1a595f979fb9216d44d1b961ca9ec4a88ae",
+        "text": "The report contains customer transaction/account data, so access to it implicates privacy and data-protection commitments.",
+        "snapshot_path": "03_Matters/harbor-relay-specification-review-0a2378/continuity/snapshots/REF-a57b963c29a02889ba7d2fe4.md",
+        "source_id": null,
+        "original_path": null,
+        "original_hash": null,
+        "extraction_state": "not_applicable"
+      },
+      {
+        "reference_id": "ASM-20260905-a1afa8",
+        "kind": "assumption",
+        "title": "Assumption",
+        "path": "03_Matters/harbor-relay-specification-review-0a2378/facts.md",
+        "revision": "115580d6b775e267ce9ac725747617826df27ca8c5e8d5ba6ce93405193fe7fe",
+        "content_hash": "dc679edf5e5f2a9f4d7e9d4e893bbf0fe75d92fb4600f25f33f8a0193e16ea87",
+        "text": "The 'only the customer can open' statement is a product/contractual access promise that support access would need to be reconciled with.",
+        "snapshot_path": "03_Matters/harbor-relay-specification-review-0a2378/continuity/snapshots/REF-9d20cde2b8c7275d6caa9165.md",
+        "source_id": null,
+        "original_path": null,
+        "original_hash": null,
+        "extraction_state": "not_applicable"
+      }
+    ],
+    "baseline_revisions": {
+      "business_question": "legacy:78c0caaa1faac9054ba6f20782acf60cb89adc183bcd383f4b114a3646a8aa24",
+      "fact_basis": "f4580a4ae5a1f9139d9965452d98b5f5eb8a289c558afdcccb3246409b2d1683"
+    },
+    "state": "prepared",
+    "difference": "text_changed",
+    "passages": [
+      {
+        "passage_id": "PASS-67775a61a1c4f5a7391a",
+        "kind": "changed",
+        "before_text": "Harbor Relay \u2014 supplied specification version 1\n",
+        "after_text": "Harbor Relay \u2014 supplied specification version 2\n",
+        "before_locator": "03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v1.txt.extracted.md \u00b7 source text lines 1\u20131",
+        "after_locator": "03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v2.txt.extracted.md \u00b7 source text lines 1\u20131"
+      },
+      {
+        "passage_id": "PASS-e3b51b13ca9f5280bf0a",
+        "kind": "changed",
+        "before_text": "Report retention: 30 days.\nAccess: only the customer can open account activity reports.\nSupport staff cannot open report content.\n",
+        "after_text": "Report retention: 180 days.\nAccess: customers and support staff can open account activity reports.\nSupport access requires a customer support ticket and is logged.\n",
+        "before_locator": "03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v1.txt.extracted.md \u00b7 source text lines 4\u20136",
+        "after_locator": "03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v2.txt.extracted.md \u00b7 source text lines 4\u20136"
+      }
+    ],
+    "analysis": "",
+    "findings": [],
+    "coverage_limits": [
+      "Analysis covers only the selected supplied material and saved work. No external research was performed."
+    ],
+    "run_id": null,
+    "created_at": "2026-09-05T11:02:23+00:00",
+    "offer_ids": []
+  }
+]

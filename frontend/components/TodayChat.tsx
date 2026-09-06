@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import styles from "./TodayPhase2.module.css";
 import { useRouter } from "next/navigation";
 import { KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
@@ -61,6 +62,12 @@ export default function TodayChat({ onRefresh }: Props) {
   const [uploading, setUploading] = useState(false);
   const [skills, setSkills] = useState<SkillDefinition[]>([]);
   const isToday = selectedDay === today;
+  const drafts = useRef<Record<string, { input: string; attachments: AttachmentReference[] }>>({});
+  const conversationRequest = useRef(0);
+  const selectedDayRef = useRef(selectedDay);
+  // Keep the current draft in memory under its daily conversation key.
+  drafts.current[selectedDay] = { input, attachments };
+  selectedDayRef.current = selectedDay;
 
   useEffect(() => { void getSkills().then(({ skills: saved }) => setSkills(saved)).catch(() => setSkills([])); }, []);
 
@@ -71,16 +78,25 @@ export default function TodayChat({ onRefresh }: Props) {
   }, []);
 
   const loadConversation = useCallback(async (day: string, knownDays: DailyConversationSummary[]) => {
+    const requestId = ++conversationRequest.current;
+    const draft = drafts.current[day];
+    selectedDayRef.current = day;
     setSelectedDay(day);
-    setHistoryOpen(day !== today);
-    setInput("");
+    setHistoryOpen(true);
+    setInput(draft?.input ?? "");
+    setAttachments(draft?.attachments ?? []);
     setError("");
     if (!knownDays.some((item) => item.day === day)) {
       setMessages([]);
       return;
     }
-    const conversation = await getDailyConversation(day);
-    setMessages(conversation.messages);
+    setMessages([]);
+    try {
+      const conversation = await getDailyConversation(day);
+      if (requestId === conversationRequest.current) setMessages(conversation.messages);
+    } catch (caught) {
+      if (requestId === conversationRequest.current) setError(caught instanceof Error ? caught.message : "Could not load this conversation.");
+    }
   }, [today]);
 
   useEffect(() => {
@@ -136,11 +152,16 @@ export default function TodayChat({ onRefresh }: Props) {
   }
 
   async function addFiles(files: File[]) {
+    const uploadDay = selectedDay;
     setUploading(true);
     setError("");
     try {
       const result = await uploadWorkspaceDocuments(files);
-      setAttachments(result.attachments);
+      if (selectedDayRef.current === uploadDay) setAttachments(current => [...current, ...result.attachments]);
+      else {
+        const draft = drafts.current[uploadDay] ?? { input: "", attachments: [] };
+        drafts.current[uploadDay] = { ...draft, attachments: [...draft.attachments, ...result.attachments] };
+      }
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Could not upload the selected files.");
     } finally { setUploading(false); }
@@ -154,7 +175,7 @@ export default function TodayChat({ onRefresh }: Props) {
   }
 
   return (
-    <section className="card today-chat" aria-labelledby="today-chat-title">
+    <section className={`today-chat ${styles.chat}`} aria-labelledby="today-chat-title">
       <div className="today-chat-head">
         <div>
           <div className="section-heading" id="today-chat-title">Ask about your work</div>
@@ -163,34 +184,28 @@ export default function TodayChat({ onRefresh }: Props) {
         <span className="agent-label"><span className="agent-mark" />Themis.ai</span>
       </div>
 
-      <div className="today-chat-day-row">
-        <label htmlFor="today-chat-day">Conversation</label>
-        <select
-          id="today-chat-day"
-          value={selectedDay}
-          disabled={busy || loading}
-          onChange={(event) => void loadConversation(event.target.value, days)}
-        >
-          <option value={today}>{dayLabel(today, today)}</option>
-          {days.filter((item) => item.day !== today).map((item) => (
-            <option key={item.day} value={item.day}>{dayLabel(item.day, today)}</option>
-          ))}
-        </select>
-        {!isToday ? <span>Previous days are read-only.</span> : <span>Saved to today&apos;s Markdown file.</span>}
-      </div>
-
       {error ? <p className="error today-chat-status">{error}</p> : null}
       {loading ? <p className="today-chat-status">Loading today&apos;s conversation…</p> : null}
+      {isToday ? <>
+          <p className={styles.inquiryLabel}>Run inquiry</p>
+          <div className="today-chat-suggestions">
+            {SUGGESTIONS.map((suggestion) => (
+              <button className="suggestion" disabled={busy || loading} key={suggestion} onClick={() => void submit(suggestion)}>
+                {suggestion}
+              </button>
+            ))}
+          </div>
+      </> : null}
       {messages.length ? (
         <details className="today-chat-history" open={historyOpen} onToggle={(event) => setHistoryOpen(event.currentTarget.open)}>
           <summary>Saved conversation · {messages.length} messages</summary>
           <p className="today-chat-history-note">Saved replies reflect the workspace when written. The attention list above is current.</p>
           <div className="today-chat-thread" aria-live="polite">
             {messages.map((message, index) => message.role === "user" ? (
-              <div className="bubble-you" key={message.message_id ?? index}><LinkifiedText text={message.content} /></div>
+              <div className="bubble-you" key={message.message_id ?? index}><div className="today-chat-saved-label">You</div><LinkifiedText text={message.content} /></div>
             ) : (
               <div className="bubble-agent" key={message.message_id ?? index}>
-                <div className="today-chat-saved-label">{savedReplyLabel(message.created_at)}</div>
+                <div className="today-chat-saved-label">Themis.ai · {savedReplyLabel(message.created_at)}</div>
                 {message.applied_skills?.map((skill) => <div className="applied-skill-label" key={skill.skill_id}>Applied skill: {skill.name}</div>)}
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
                 {message.trace?.length ? (
@@ -214,13 +229,6 @@ export default function TodayChat({ onRefresh }: Props) {
       {isToday ? (
         <>
           <UploadIntentCard attachments={attachments} busy={busy} onClear={() => setAttachments([])} onSend={(intent) => submit(intent, undefined, attachments)} />
-          <div className="today-chat-suggestions">
-            {SUGGESTIONS.map((suggestion) => (
-              <button className="suggestion" disabled={busy || loading} key={suggestion} onClick={() => void submit(suggestion)}>
-                {suggestion}
-              </button>
-            ))}
-          </div>
           <div className="composer-field">
             <AttachmentPicker disabled={busy || loading || uploading} onSelect={addFiles} />
             <textarea
@@ -233,7 +241,7 @@ export default function TodayChat({ onRefresh }: Props) {
               rows={1}
               value={input}
             />
-            <button className="btn primary compact" disabled={busy || loading || !input.trim()} onClick={() => void submit(input)}>
+            <button className="btn primary compact" disabled={busy || loading || uploading || (!input.trim() && !attachments.length)} onClick={() => void submit(input)}>
               {uploading ? "Uploading…" : "Send"}
             </button>
           </div>
@@ -241,6 +249,22 @@ export default function TodayChat({ onRefresh }: Props) {
           <div className="composer-note"><Link className="build-skill-link" href="/skills">Build a skill</Link></div>
         </>
       ) : null}
+      <div className="today-chat-day-row">
+        <label htmlFor="today-chat-day">Conversation</label>
+        <select
+          id="today-chat-day"
+          value={selectedDay}
+          disabled={busy || loading || uploading}
+          onChange={(event) => void loadConversation(event.target.value, days)}
+        >
+          <option value={today}>{dayLabel(today, today)}</option>
+          {days.filter((item) => item.day !== today).map((item) => (
+            <option key={item.day} value={item.day}>{dayLabel(item.day, today)}</option>
+          ))}
+        </select>
+        {!isToday ? <span>Previous days are read-only.</span> : <span>Saved to today&apos;s Markdown file.</span>}
+      </div>
+
     </section>
   );
 }

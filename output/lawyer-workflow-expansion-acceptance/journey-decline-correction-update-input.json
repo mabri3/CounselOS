@@ -1,0 +1,1 @@
+{"label": "journey-decline-correction-update", "actions": [{"op": "click", "name": "Decline update"}, {"op": "wait", "ms": 12000}, {"op": "visible", "text": "Update offer \u00b7 declined"}]}

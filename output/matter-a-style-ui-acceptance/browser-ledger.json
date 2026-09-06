@@ -1,0 +1,236 @@
+{
+  "B01": {
+    "status": "pass",
+    "evidence": [
+      "desktop-upper-final.png"
+    ],
+    "observation": "At measured 1280\u00d7900, next action top 499.78px; full question/answer/qualification/state/owner visible. Normal reload after work completion."
+  },
+  "B02": {
+    "status": "pass",
+    "evidence": [
+      "full-answer-dom.txt",
+      "answer-source-dom.txt"
+    ],
+    "observation": "Long-answer fixture exposes full end marker and both source markers. Short answer and six full issue entries checked. Fixture claims restored to support source links; without them links honestly unavailable."
+  },
+  "B03": {
+    "status": "pass",
+    "evidence": [
+      "issue-dom.txt",
+      "claim-evidence-dom.txt",
+      "claim-evidence.png"
+    ],
+    "observation": "Audience claim uses CLM-DEMO-CHILD/demo-claim-1/demo-output-1 and literal Child passage; explicit support gap and one shared factual question linked to 2 issues."
+  },
+  "B04": {
+    "status": "pass",
+    "evidence": [
+      "decision-form-dom.txt",
+      "decision-form.png",
+      "disposition-form.png",
+      "after-cancel-forms-changes.json"
+    ],
+    "observation": "Disposition and formal decision forms opened and cancelled. Authoritative fixture hashes unchanged."
+  },
+  "B05": {
+    "status": "pass",
+    "evidence": [
+      "disposition-result-dom.txt"
+    ],
+    "observation": "Explicit submit records mitigation_in_progress with supplied reason and history 1. No formal decision is linked automatically."
+  },
+  "B06": {
+    "status": "pass",
+    "evidence": [
+      "work-before-dom.txt",
+      "work-completed-dom.txt",
+      "after-complete-work-changes.json"
+    ],
+    "observation": "Explicit Complete changed only the linked work-item Markdown. Issue, matter, and decision files were unchanged."
+  },
+  "B07": {
+    "status": "pass",
+    "evidence": [
+      "map-local.png",
+      "map-whole-34.png",
+      "map-whole-34-dom.txt"
+    ],
+    "observation": "Local 6 records and whole 34 records render. Native outline Enter selects the stable shared-question record; all full labels and Unknown edge conditions are exposed."
+  },
+  "B08": {
+    "status": "pass",
+    "evidence": [
+      "hypothetical-form.png",
+      "after-cancel-scenario-changes.json",
+      "scenario-result-dom.txt",
+      "after-analyze-scenario-changes.json"
+    ],
+    "observation": "Cancel changed no files. One run RUN-20260905-413437 saved explicitly labelled mock hypothetical analysis; actual facts, decisions and drafts remained byte-identical."
+  },
+  "B09": {
+    "status": "pass",
+    "evidence": [
+      "scenario-history-dom.txt"
+    ],
+    "observation": "Historical scenario is Earlier baseline with 4 changed revisions; explicit adoption remains separate from actual-fact correction. No adoption was submitted."
+  },
+  "B10": {
+    "status": "pass",
+    "evidence": [
+      "conversation-before-dom.txt"
+    ],
+    "observation": "Back URL retains original issue and CONV-20260905-1a8401. Discuss shows one composer and selected-issue scope/target. A click before initial restore settled was retried after reading the settled UI."
+  },
+  "B11": {
+    "status": "pass",
+    "evidence": [
+      "conversation-pending-dom.txt",
+      "conversation-result-dom.txt",
+      "suggestion-requests.json",
+      "conversation.png"
+    ],
+    "observation": "One explicit suggestion created one chat run; pending disabled actions and completed mock result were shown with earlier history retained."
+  },
+  "B12": {
+    "status": "pass",
+    "evidence": [
+      "draft-source-dom.txt",
+      "draft-B-retained-dom.txt",
+      "draft-source.png"
+    ],
+    "observation": "A and B local edits survived switching and source reading. B remains unsaved after explicit A save/export."
+  },
+  "B13": {
+    "status": "pass",
+    "evidence": [
+      "document-versions-dom.txt"
+    ],
+    "observation": "Duplicate titles retain distinct full paths; final version is read-only and current draft remains separate."
+  },
+  "B14": {
+    "status": "pass",
+    "evidence": [
+      "answer-source-dom.txt",
+      "claim-evidence-dom.txt",
+      "draft-source-dom.txt",
+      "map-source-dom.txt",
+      "missing-source-dom.txt"
+    ],
+    "observation": "Answer, issue, editor and map references use evidence/source surfaces. Temporarily absent isolated source shows exact requested revision/locator and useful map parent; original bytes restored."
+  },
+  "B15": {
+    "status": "pass",
+    "evidence": [
+      "one-change-accepted-dom.txt",
+      "editor-comments-dom.txt"
+    ],
+    "observation": "No Markup was initial mode. One accepted change reduced three changes to two. Existing Alex Morgan comment remained."
+  },
+  "B16": {
+    "status": "pass-with-limit",
+    "evidence": [
+      "export-requests.json",
+      "export-A.docx",
+      "export-A.pdf",
+      "export-A-word-render/page-1.png",
+      "export-A-pdf-1.png",
+      "draft-B-retained-dom.txt"
+    ],
+    "observation": "UI export requests identify saved A and exact content/review revisions. Rendered Word/PDF show A marker, no B marker, and references. PDF long reference path clips at right edge; backend export code unchanged. Tool download handle had no file path; evidence bytes fetched from the exact observed export URLs."
+  },
+  "B17": {
+    "status": "pass",
+    "evidence": [
+      "template-form-dom.txt",
+      "after-template-keep.json",
+      "mobile-source-dom.txt"
+    ],
+    "observation": "Reusable template fields/version inspected; local tone edit cancelled. Preview completed on real chat-run path while B stayed active and dirty. Closed library without keeping; artifact showed Preview \u00b7 Not kept. Separate Keep preview click changed it to Saved work product. Deterministic mock fixture output."
+  },
+  "B18": {
+    "status": "pass",
+    "evidence": [
+      "files-context-dom.txt"
+    ],
+    "observation": "Opening file context left sources Available. Explicit Add to next inquiry made only coppa-definitions Selected. Library and inquiry upload actions remain distinct."
+  },
+  "B19": {
+    "status": "pass",
+    "evidence": [
+      "business-request-dom.txt",
+      "business-request-recorded-dom.txt"
+    ],
+    "observation": "Prepared request to Sam Patel. Copy clipboard matched text and did not send anything. Separate Record external request clicked in isolated fixture; no message sent to a person."
+  },
+  "B20": {
+    "status": "pass",
+    "evidence": [
+      "handoff-dom.txt",
+      "handoff-no-recipient-dom.txt",
+      "comparison-history-dom.txt",
+      "comparison-source-only-dom.txt"
+    ],
+    "observation": "Handoff scope/owner/ask/references/history preserved; valid disabled empty roster shows No configured people and disabled Create. Settings bytes restored. Source-only CMP36446707c60b466f24c37139 prepared without prior work."
+  },
+  "B21": {
+    "status": "partial",
+    "evidence": [
+      "navigation-final.json",
+      "lower-sections-dom.txt",
+      "materials-dom.txt"
+    ],
+    "observation": "All five section destinations were opened. Final Enter activation opens the two direct Explore disclosures and leaves Correct a fact closed. Focus lands on the first summary inside Explore. Materials opens its ancestor and own disclosure. Local note and handoff input survived view changes. New chat is covered by the retained callback check; its final browser click was not run."
+  },
+  "B22": {
+    "status": "pass",
+    "evidence": [
+      "final-approval-dom.txt",
+      "manual-delivery-dom.txt",
+      "delivery-closure-dom.txt",
+      "materials-dom.txt"
+    ],
+    "observation": "Explicit fixture Finalize created a final version; explicit Approve revealed manual delivery. Delivery confirmation states nothing is sent; separate submit revealed Close matter. Add participant, manual New draft, decision rationale, materials, research and maintenance remain. Matter left open."
+  },
+  "B23": {
+    "status": "partial",
+    "evidence": [
+      "mobile-form.png",
+      "mobile-evidence.png",
+      "mobile-source.png",
+      "source-900.png",
+      "mobile-final-measurement.json"
+    ],
+    "observation": "Earlier 390-pixel issue, evidence, form and source checks had no page overflow. Editor and source stack at 900 pixels. Final normal-answer DOM measurement is 433\u00d7938: action top 727.19 and bottom 771.19, after the full qualification. The final 390\u00d7844 rerun is NOT RUN: viewport override stopped applying. Latest screenshot is corrupt and excluded. User clarified that phone support is optional and tests should remain proportional."
+  },
+  "B24": {
+    "status": "partial",
+    "evidence": [
+      "navigation-final.json",
+      "claim-evidence-dom.txt"
+    ],
+    "observation": "Tab, Space, Enter and Escape were exercised on views, section navigation, map selection and source/evidence controls. Evidence Escape returned focus to its source button. Final Enter navigation focuses the Explore summary. This was a focused keyboard check, not an exhaustive accessibility audit. 200% zoom was waived."
+  },
+  "B25": {
+    "status": "pass",
+    "evidence": [
+      "empty-matter-dom.txt",
+      "empty-matter.png",
+      "optional-support-failed-dom.txt",
+      "optional-support-reopened-dom.txt",
+      "missing-source-dom.txt"
+    ],
+    "observation": "Empty matter is readable. Acceptance-only 503 responses for reuse/handoff references retained answer, map, history and forms. Reopening after flag removal loaded references; the old notice persists until reload (C0 behavior). No duplicate inquiry or new retry control. Source bytes and settings restored."
+  },
+  "B26": {
+    "status": "pass-with-limit",
+    "evidence": [
+      "protected-final.json",
+      "outside-application-scope-final.json",
+      "console-final.json",
+      "network-errors-final.json",
+      "health-final.json"
+    ],
+    "observation": "All previously hashed files in both protected vault roots and the active pointer are unchanged. Only disposable cache lock files appeared. Final captured console has no errors or warnings. API errors were the existing outside-counsel packet 422 probe and two intentional isolated 503 failures. Earlier test-service restarts produced connection errors; these are not treated as application regressions. All fixture actions used the isolated mock vault."
+  }
+}

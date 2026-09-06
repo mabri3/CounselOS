@@ -1,0 +1,168 @@
+{
+  "elapsedMs": 16739,
+  "errors": [],
+  "network": [
+    {
+      "url": "http://localhost:8117/api/team",
+      "status": 200,
+      "elapsedMs": 12
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378",
+      "status": 200,
+      "elapsedMs": 1999
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/conversations",
+      "status": 200,
+      "elapsedMs": 243
+    },
+    {
+      "url": "http://localhost:8117/api/skills",
+      "status": 200,
+      "elapsedMs": 304
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/scope",
+      "status": 200,
+      "elapsedMs": 804
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/context",
+      "status": 200,
+      "elapsedMs": 950
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/scenarios",
+      "status": 200,
+      "elapsedMs": 1010
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/fact-requests",
+      "status": 200,
+      "elapsedMs": 1082
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/flow",
+      "status": 200,
+      "elapsedMs": 1105
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/reuse",
+      "status": 200,
+      "elapsedMs": 1374
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/handoffs",
+      "status": 200,
+      "elapsedMs": 1815
+    },
+    {
+      "url": "http://localhost:8117/api/settings/research-queue/MAT-20260905-0a2378",
+      "status": 200,
+      "elapsedMs": 1819
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/recommendation",
+      "status": 200,
+      "elapsedMs": 1823
+    },
+    {
+      "url": "http://localhost:8117/api/skills/output-templates",
+      "status": 200,
+      "elapsedMs": 1824
+    },
+    {
+      "url": "http://localhost:8117/api/review-packets?limit=100",
+      "status": 200,
+      "elapsedMs": 1887
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/files",
+      "status": 200,
+      "elapsedMs": 2466
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/conversations/CONV-20260905-9d68db",
+      "status": 200,
+      "elapsedMs": 2733
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/chat-runs?conversation_id=CONV-20260905-9d68db",
+      "status": 200,
+      "elapsedMs": 609
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/conversations/CONV-20260905-9d68db",
+      "status": 200,
+      "elapsedMs": 619
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/mitigations",
+      "status": 200,
+      "elapsedMs": 6542
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace",
+      "status": 200,
+      "elapsedMs": 7109
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace",
+      "status": 200,
+      "elapsedMs": 8174
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/orientation",
+      "status": 200,
+      "elapsedMs": 9002
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/fact-requests",
+      "status": 200,
+      "elapsedMs": 842
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/handoffs",
+      "status": 200,
+      "elapsedMs": 1428
+    },
+    {
+      "url": "http://localhost:8117/api/settings",
+      "status": 200,
+      "elapsedMs": 11453
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/impact-candidates",
+      "status": 200,
+      "elapsedMs": 4339
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/impacts",
+      "status": 200,
+      "elapsedMs": 4379
+    }
+  ],
+  "orientationOutcome": {
+    "kind": "response",
+    "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/orientation",
+    "status": 200,
+    "elapsedMs": 9002
+  },
+  "state": {
+    "closed": true,
+    "waiting": false,
+    "useful": true,
+    "stale": true,
+    "timeout": false
+  },
+  "history": 3,
+  "hasDraftAction": true,
+  "hasLawyerNote": true,
+  "impact": "CHANGE IMPACT\n\nCompare supplied versions\nStale\n\nRead what changed first. Then assess what remains supported, what changes, and what may need review. This analysis does not edit earlier work.\n\nharbor-spec-v2.txt\nStale · Text changed\nharbor-spec-v2-formatting.txt\nStale · Formatting only\nharbor-spec-v2.txt\nStale · Text changed\nChoose versions and earlier work\nharbor-spec-v1.txt → harbor-spec-v2.txt\n\nSAVED COMPARISON · CMP-F5DE3E24ED40F4AE1479E17A\n\nOpen comparison record\n\nStale: The source, selected work, question, facts, or assumptions changed after this comparison was prepared.\n\nText changed: Read the exact changed passages before you assess their effect on earlier work.\n\nSelected work: Analysis covers the supplied source change and 2 selected items of saved work.\n\nExact changed passages\nChanged text\nPASS-67775a61a1c4f5a7391a\nBefore · 03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v1.txt.extracted.md · source text lines 1–1\nOpen evidence\nHarbor Relay — supplied specification version 1\n\nAfter · 03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v2.txt.extracted.md · source text lines 1–1\nOpen evidence\nHarbor Relay — supplied specification version 2\n\nChanged text\nPASS-e3b51b13ca9f5280bf0a\nBefore · 03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v1.txt.extracted.md · source text lines 4–6\nOpen evidence\nReport retention: 30 days.\nAccess: only the customer can open account activity reports.\nSupport staff cannot open report content.\n\nAfter · 03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v2.txt.extracted.md · source text lines 4–6\nOpen evidence\nReport retention: 180 days.\nAccess: customers and support staff can open account activity reports.\nSupport access requires a customer support ticket and is logged.\n\nThemis.ai · Generated analysis\nEffect summary\n\nHere is my analysis. This is analysis only — I have not edited the draft, adopted facts, recorded a decision, or finalized any work.\n\nWhat the supplied versions say (literal)\n\nSpec v1 (the internal record): retention 30 days; access \"only the customer can open account activity reports\"; \"Support staff cannot open report content.\" Spec v2 (the internal record): retention 180 days; access \"customers and support staff can open account activity reports\"; \"Support access requires a customer support ticket and is logged.\" The changed passages (PASS-67775a61a1c4f5a7391a, PASS-e3b51b13ca9f5280bf0a) capture exactly these edits: version label, retention 30→180 days, and the access model from customer-only/no-support to customer-plus-support with ticket-gated, logged support access.\n\nThe selected draft and original advice (baseline)\n\nThe draft (the internal record) is explicitly a version 1 working baseline built from spec v1 and the original saved advice (the internal record). It reflects 30-day retention, customer-only access, and support access unconfirmed. The original advice was written on that same v1 record and centered its analysis on the support-access question and the \"only the customer can open\" promise.\n\nWhat remains supported\nPilot facts unchanged: US pilot, 21 October 2026, product sends an account activity report to the customer — identical in both spec versions and in the draft. These remain supported.\nCore privacy/data-access framing: The assumption (the internal record) that the report contains customer transaction/account data, so access implicates privacy and data-protection commitments, is not undermined by v2. If anything, the longer retention and broader (support) access make the data-access and retention controls more material, not less.\nThe reported-not-verified qualification: Sam Patel's report (the internal record) that support can open a report only for a customer support ticket, with every access logged, is now consistent with v2's stated access model. That consistency strengthens its plausibility as the intended model, but it remains a reported fact, not independently verified. The draft's qualification stands and should be preserved.\nWhat changes under v2 — and the needed draft edits\n\nRetention section. The draft's Retention section is built on the 30-day baseline and flags 180 days only as a \"review point.\" Under v2, 180 days is no longer hypothetical — it is the current supplied specification. The section should be updated so that 180 days is the operative baseline (with 30 days as the superseded v1 figure), and the review focus shifts from \"confirm 30 days is deliberate\" to \"confirm the 180-day window: the business rationale, consistency with any deletion/data-minimization commitments, and whether the longer window is disclosed.\" The draft's current framing (30 days as baseline, 180 as a future review point) is now backwards relative to the supplied record. Support access section. The draft's Support access section is built on the v1 premise that support access is unconfirmed and that the \"only the customer can open\" statement is a promise needing reconciliation. Under v2, support access is specified (ticket-only, logged), and the customer-only language is gone. The section should be updated so that v2's access model (customers and support staff; support requires a ticket and is logged) is the operative baseline, with the v1 customer-only/no-support language as the superseded version. The draft's framing that the customer-only statement \"needs reconciling\" is now based on a superseded spec version and should be reframed: the reconciliation has effectively occurred at the spec level, and the remaining question is whether the ticket-gating and logging controls are sufficient and implemented as described, and whether any customer-facing disclosure reflects the new access model.\n\nWhat may need review (open items)\nThe 180-day retention is the single biggest new item. It was not part of the original advice and is not yet explained. The draft's Open items already list confirming the retention rationale — that remains the right open item, now anchored to 180 days as the operative figure.\nWhether the ticket-gating and logging are implemented as described. v2 states them; Sam Patel reports them; neither is independently verified. This stays an open item.\nWhether the access statement is accurate and disclosed. v2's \"customers and support staff can open\" language supersedes the customer-only phrasing; whether any customer-facing disclosure needs updating is a review point, not a settled conclusion.\nUncertainty preserved\nBoth spec versions are supplied specification text, not verified actual facts. v2 supersedes v1 as the current supplied spec, but that does not make the 180-day retention or the support-access model verified — it means the current supplied specification says so.\nI have not confirmed why retention changed to 180 days, whether the ticket-gating/logging is implemented as described, or whether v2 is final. Those remain open.\nNo external authority was retrieved; this is analysis of the supplied material only.\nBottom line\n\nThe draft is a sound v1 baseline but is now partly superseded by v2. The two sections needing changes are Retention (180 days becomes the operative baseline, 30 days the superseded figure) and Support access (v2's ticket-only, logged support access becomes the operative model, replacing the \"unconfirmed\"/customer-only framing). The exact Lawyer note — \"Sam Patel reported ticket-only logged support access; implementation and the retention rationale remain unverified\" — and the reported-not-verified qualification must be preserved unchanged. I have not edited the draft; these are the identified changes for a future revision if you want one.\n\nNo structured affected-work links\n\nThe useful analysis remains available. No precise saved-work link was recorded.\n\nUpdate selected drafts\nHarbor Relay pilot review memo\n\nDRAFT WORK PRODUCT · FROZEN REVISION A96D5894E4EE7F8D69752906E23A7651B380B7D15BC767350234999E38A4CC8E\n\nRequest draft update\nExisting draft update offers\nUpdate offer · accepted\n\nReview proposed updates from saved comparison CMP-f5de3e24ed40f4ae1479e17a\n\nAccepted · Open the existing editor to review changes\nCoverage and limits\nAnalysis covers only the selected supplied material and saved work. No external research was performed.\nThe current question, facts or assumptions changed after preparation.\nSelected draft changed or became unavailable: Harbor Relay pilot review memo.",
+  "metrics": {
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "scrollHeight": 4630
+  }
+}

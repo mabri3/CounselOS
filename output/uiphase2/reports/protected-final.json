@@ -1,0 +1,20 @@
+{
+  "at": "2026-09-06T03:42:25.689730+00:00",
+  "roots": {
+    "/Users/bharris/Programs/counsel-os-mvp/vault": {
+      "before_count": 718,
+      "after_count": 718,
+      "changed": [],
+      "added": [],
+      "removed": []
+    },
+    "/Users/bharris/Programs/counsel-os-mvp/Mosaic Relay UX Experiment 2026-09-03 R3": {
+      "before_count": 1033,
+      "after_count": 1033,
+      "changed": [],
+      "added": [],
+      "removed": []
+    }
+  },
+  "pointer_unchanged": true
+}

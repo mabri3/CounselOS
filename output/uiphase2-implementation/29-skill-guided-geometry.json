@@ -1,0 +1,109 @@
+{
+  "height": 1536,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 83.99857330322266,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 1024.54541015625,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 773.68603515625,
+      "y": 92.54261016845705
+    },
+    {
+      "font": "15px",
+      "height": 840.4616088867188,
+      "tag": "MAIN",
+      "text": "Output templatesReusable skills‹ Back to templatesOutput tem",
+      "width": 721.81103515625,
+      "x": 151.36363220214844,
+      "y": 389.95025634765625
+    },
+    {
+      "font": "15px",
+      "height": 46.26420211791992,
+      "tag": "BUTTON",
+      "text": "Output templates",
+      "width": 118.5014190673828,
+      "x": 191.36363220214844,
+      "y": 417.9474182128906
+    },
+    {
+      "font": "15px",
+      "height": 46.26420211791992,
+      "tag": "BUTTON",
+      "text": "Reusable skills",
+      "width": 100.35511016845705,
+      "x": 337.8622131347656,
+      "y": 417.9474182128906
+    },
+    {
+      "font": "15px",
+      "height": 202.1875,
+      "tag": "HEADER",
+      "text": "‹ All skillsReusable skill builderLet’s build your skill1The",
+      "width": 641.81103515625,
+      "x": 191.36363220214844,
+      "y": 487.116455078125
+    },
+    {
+      "font": "14px",
+      "height": 41.9957389831543,
+      "tag": "BUTTON",
+      "text": "‹ All skills",
+      "width": 95.02130126953124,
+      "x": 191.36363220214844,
+      "y": 487.116455078125
+    },
+    {
+      "font": "48px",
+      "height": 53.749996185302734,
+      "tag": "H1",
+      "text": "Let’s build your skill",
+      "width": 641.81103515625,
+      "x": 191.36363220214844,
+      "y": 580.56103515625
+    },
+    {
+      "font": "26px",
+      "height": 32.5,
+      "tag": "H1",
+      "text": "What do you want to make easier?",
+      "width": 503.9985656738281,
+      "x": 260.2698669433594,
+      "y": 788.75
+    },
+    {
+      "font": "14px",
+      "height": 41.9957389831543,
+      "tag": "BUTTON",
+      "text": "Continue",
+      "width": 91.49147033691406,
+      "x": 260.2698669433594,
+      "y": 1079.5098876953125
+    },
+    {
+      "font": "14px",
+      "height": 41.9957389831543,
+      "tag": "BUTTON",
+      "text": "Cancel",
+      "width": 77.29402923583984,
+      "x": 360.7599182128906,
+      "y": 1079.5098876953125
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 0,
+  "url": "http://localhost:3134/skills",
+  "width": 1024
+}

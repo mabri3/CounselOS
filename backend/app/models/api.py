@@ -4,6 +4,7 @@ from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, Field, model_validator
 
+from app.models.workspace import DecisionMapBasis
 from app.models.awareness import ScheduleRecurrence, WatchDraftCard, WatchScanCard
 
 
@@ -146,6 +147,9 @@ class FileUpdate(BaseModel):
 
 
 class DocumentReviewAction(BaseModel):
+    source_action_key: SourceActionKey | None = None
+    expected_revision: str | None = None
+    expected_review_revision: str | None = None
     action: Literal[
         "set_tracking",
         "save_revision",
@@ -192,6 +196,7 @@ class WorkItemCreate(BaseModel):
 
 
 class DecisionCreate(BaseModel):
+    map_basis: DecisionMapBasis | None = None
     matter_id: str
     title: str
     chosen_path: str
@@ -434,6 +439,7 @@ class ResearchStatusCard(BaseModel):
 
 
 class WorkProductCard(BaseModel):
+    preview: bool = False
     type: Literal["work_product"] = "work_product"
     title: str
     vault_path: str
@@ -471,6 +477,9 @@ class CardAction(BaseModel):
     answers: list[CardAnswer] = Field(default_factory=list, max_length=5)
 
 
+from app.models.workspace import ConversationTarget
+
+
 class ChatRequest(BaseModel):
     message: str = Field(default="", max_length=MAX_CHAT_MESSAGE_CHARS)
     matter_id: str | None = None
@@ -487,6 +496,22 @@ class ChatRequest(BaseModel):
     source_action_key: SourceActionKey | None = None
     trusted_source_id: str | None = Field(default=None, exclude=True)
     expected_dossier_hash: str | None = Field(default=None, exclude=True)
+    expected_question_revision: str | None = None
+    target: ConversationTarget | None = None
+    trusted_user_message: str | None = Field(default=None, exclude=True)
+    trusted_message_id: str | None = Field(default=None, exclude=True)
+    workspace_run_id: str | None = Field(default=None, exclude=True)
+    context_selections: list[dict[str, Any]] | None = None
+    output_type: str = "general"
+    template_id: str | None = None
+    template_overrides: dict[str, str] = Field(default_factory=dict)
+    preview: bool = False
+    workspace_action: str | None = None
+    action_actor: dict[str, Any] | None = None
+    continuity_context: dict[str, Any] | None = None
+    update_offer_id: str | None = None
+    frozen_context: dict[str, Any] | None = Field(default=None, exclude=True)
+    frozen_template_use: dict[str, Any] | None = Field(default=None, exclude=True)
     intake_recovery: bool = False
 
 
@@ -522,6 +547,7 @@ ChatRunFailureClass = Literal[
 
 
 class ChatRun(BaseModel):
+    action_actor: dict[str, Any] | None = None
     run_id: str
     matter_id: str
     conversation_id: str | None = None
@@ -586,6 +612,7 @@ class WorkProductFinalizeRequest(BaseModel):
 
 
 class ResearchRunStart(BaseModel):
+    issue_id: str | None = None
     questions: list[str] = Field(default_factory=list)
     question: str = ""
     source_action_key: SourceActionKey | None = None

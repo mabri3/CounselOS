@@ -1,0 +1,1328 @@
+{
+  "label": "journey-final-today-closed",
+  "url": "http://localhost:3117/",
+  "completed": [
+    {
+      "op": "wait",
+      "ms": 12000
+    }
+  ],
+  "failure": null,
+  "errors": [],
+  "responses": [],
+  "network": [
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/handoffs",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612616487.546,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.771,
+        "responseStart": 2311.291,
+        "responseEnd": 2314.658
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/review-packets?limit=100",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612616488.997,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 2310.291,
+        "responseStart": 2355.246,
+        "responseEnd": 2359.125
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/handoff-references",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612616487.686,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 1.452,
+        "responseStart": 7146.004,
+        "responseEnd": 7149.549
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/mitigations",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612616489.073,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 2355.383,
+        "responseStart": 9428.574,
+        "responseEnd": 9432.511
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612616488.2368,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 961.392,
+        "responseStart": 10112.227,
+        "responseEnd": 10115.502
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/impact-candidates",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612616487.787,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 1.394,
+        "responseStart": 10950.742,
+        "responseEnd": 10953.969
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/orientation",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612616486.912,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 1.036,
+        "responseStart": 13512.614,
+        "responseEnd": 13515.643
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/impacts",
+      "method": "GET",
+      "timing": {
+        "startTime": 0,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": -1,
+        "responseEnd": -1
+      },
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/media/03fc1b4a8d284b5e-s.p.0wiir8udbzjvx.woff2",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638138.6052,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.028,
+        "responseEnd": 0.028
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/media/68d403cf9f2c68c5-s.p.20at88_q9f_kt.woff2",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638138.826,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.021,
+        "responseEnd": 0.021
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/media/99e609270109b47d-s.p.40sczeszzbjw1.woff2",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638138.856,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.011,
+        "responseEnd": 0.011
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/media/ea3421846039b7f3-s.p.23jyvdx2mwxjn.woff2",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638138.8718,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.01,
+        "responseEnd": 0.01
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/media/effe91970fc4db64-s.p.0oace-s_gkfks.woff2",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638138.886,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.018,
+        "responseEnd": 0.018
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/1ff3qr1bgppsr.css",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638139.185,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.013,
+        "responseEnd": 0.013
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/3q576hlfnuh0n.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638139.2068,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.009,
+        "responseEnd": 0.009
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/1z99mlp5cofct.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638139.222,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.008,
+        "responseEnd": 0.008
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/2y95wh155rj1_.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638139.235,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.037,
+        "responseEnd": 0.037
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/turbopack-41gbzzdmniu6k.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638139.2778,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.01,
+        "responseEnd": 0.01
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/0ehjiuuxbbhq9.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638139.294,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.008,
+        "responseEnd": 0.008
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/0r7yvc6llx03y.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638139.3481,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.012,
+        "responseEnd": 0.012
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/2tubwj99lc6u6.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638139.366,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.008,
+        "responseEnd": 0.008
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/149vhymybpq1n.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638139.379,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.01,
+        "responseEnd": 0.01
+      }
+    },
+    {
+      "url": "http://localhost:3117/brand/themis-ai-logo-detailed-vibrant-red-v7.png",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638139.404,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.475,
+        "responseStart": 1.973,
+        "responseEnd": 2.344
+      }
+    },
+    {
+      "url": "http://localhost:3117/",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638083.65,
+        "domainLookupStart": 0.338,
+        "domainLookupEnd": 0.494,
+        "connectStart": 0.494,
+        "secureConnectionStart": -1,
+        "connectEnd": 0.701,
+        "requestStart": 0.783,
+        "responseStart": 17.538,
+        "responseEnd": 18.362
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/010rcmbdpy62d.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638139.7131,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.022,
+        "responseStart": 0.231,
+        "responseEnd": 1.078
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/102hq6ukr2mte.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638141.8538,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.034,
+        "responseStart": 0.068,
+        "responseEnd": 2.767
+      }
+    },
+    {
+      "url": "http://localhost:3117/briefing?_rsc=5CB68i4pnAekjehf",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638157.667,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.463,
+        "responseStart": 2.715,
+        "responseEnd": 7.208
+      },
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://localhost:3117/?_rsc=5CB68i4pnAekjehf",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638157.374,
+        "domainLookupStart": 0.386,
+        "domainLookupEnd": 0.39,
+        "connectStart": 0.39,
+        "secureConnectionStart": -1,
+        "connectEnd": 0.972,
+        "requestStart": 1.056,
+        "responseStart": 3.916,
+        "responseEnd": 7.83
+      }
+    },
+    {
+      "url": "http://localhost:3117/workspace?_rsc=5CB68i4pnAekjehf",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638157.8228,
+        "domainLookupStart": 0.369,
+        "domainLookupEnd": 0.465,
+        "connectStart": 0.465,
+        "secureConnectionStart": -1,
+        "connectEnd": 0.596,
+        "requestStart": 0.608,
+        "responseStart": 6.385,
+        "responseEnd": 7.989
+      }
+    },
+    {
+      "url": "http://localhost:3117/matters?_rsc=5CB68i4pnAekjehf",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638157.877,
+        "domainLookupStart": 0.455,
+        "domainLookupEnd": 0.456,
+        "connectStart": 0.456,
+        "secureConnectionStart": -1,
+        "connectEnd": 0.546,
+        "requestStart": 0.574,
+        "responseStart": 7.039,
+        "responseEnd": 8.457
+      }
+    },
+    {
+      "url": "http://localhost:3117/decisions?_rsc=5CB68i4pnAekjehf",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638165.085,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.048,
+        "responseStart": 1.563,
+        "responseEnd": 3.82
+      }
+    },
+    {
+      "url": "http://localhost:3117/skills?_rsc=5CB68i4pnAekjehf",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638165.382,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.042,
+        "responseStart": 1.539,
+        "responseEnd": 3.477
+      }
+    },
+    {
+      "url": "http://localhost:3117/agents?_rsc=5CB68i4pnAekjehf",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638165.9958,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.033,
+        "responseStart": 2.318,
+        "responseEnd": 2.987
+      }
+    },
+    {
+      "url": "http://localhost:3117/automations?_rsc=5CB68i4pnAekjehf",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638165.511,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.042,
+        "responseStart": 2.314,
+        "responseEnd": 3.473
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/review-packets?limit=100",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638162.811,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.066,
+        "responseStart": 8.607,
+        "responseEnd": 16.975
+      }
+    },
+    {
+      "url": "http://localhost:3117/settings?_rsc=5CB68i4pnAekjehf",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638169.0469,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.153,
+        "responseStart": 1.127,
+        "responseEnd": 3.438
+      }
+    },
+    {
+      "url": "http://localhost:3117/workspace?_rsc=0G8KOUA82-VMLnLf",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638169.409,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.024,
+        "responseStart": 2.567,
+        "responseEnd": 3.07
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/0wwx_22_p54ea.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638172.631,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.025,
+        "responseEnd": 0.025
+      }
+    },
+    {
+      "url": "http://localhost:3117/?_rsc=8nTjltbQWvg6NcbE",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638169.1619,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.072,
+        "responseStart": 1.383,
+        "responseEnd": 3.442
+      }
+    },
+    {
+      "url": "http://localhost:3117/briefing?_rsc=tXyZJ52UQVBCVsD3",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638169.334,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.03,
+        "responseStart": 2.334,
+        "responseEnd": 3.87
+      },
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/team",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638159.4631,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.108,
+        "responseStart": 14.888,
+        "responseEnd": 20.681
+      }
+    },
+    {
+      "url": "http://localhost:3117/matters?_rsc=CgXq0SS0bsyDIRKk",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638172.6038,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.083,
+        "responseStart": 0.979,
+        "responseEnd": 2.895
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/2yltmx7hmpi85.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638176.905,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.027,
+        "responseEnd": 0.027
+      }
+    },
+    {
+      "url": "http://localhost:3117/decisions?_rsc=PA-_8q13qnUg625f",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638173.029,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.088,
+        "responseStart": 1.585,
+        "responseEnd": 2.669
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/3i8ml475q3tnt.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638177.237,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.017,
+        "responseEnd": 0.017
+      }
+    },
+    {
+      "url": "http://localhost:3117/skills?_rsc=Oj3uHFiv4bKyfoyK",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638173.2122,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.145,
+        "responseStart": 1.694,
+        "responseEnd": 2.649
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/1-ag0_8p7c454.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638177.439,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.015,
+        "responseEnd": 0.015
+      }
+    },
+    {
+      "url": "http://localhost:3117/automations?_rsc=P-P2FcMeNirbPICB",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638173.315,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.062,
+        "responseStart": 1.893,
+        "responseEnd": 2.561
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/0w7_05tjmjdpi.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638177.805,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.015,
+        "responseEnd": 0.015
+      }
+    },
+    {
+      "url": "http://localhost:3117/agents?_rsc=HrqX86xskcl1ciyE",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638177.232,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.051,
+        "responseStart": 1.091,
+        "responseEnd": 2.246
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/3hv1x-pofznn8.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638179.476,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.022,
+        "responseEnd": 0.022
+      }
+    },
+    {
+      "url": "http://localhost:3117/settings?_rsc=DROqpzYuhFJcAG-b",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638177.507,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.272,
+        "responseStart": 1.621,
+        "responseEnd": 2.179
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/24g_sljiih0hw.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638179.648,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.014,
+        "responseEnd": 0.014
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/1_ed_v4jb8zf3.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638177.645,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.02,
+        "responseStart": 0.155,
+        "responseEnd": 0.648
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/automations",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638161.725,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.074,
+        "responseStart": 57.295,
+        "responseEnd": 64.878
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/decisions",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638159.8281,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.052,
+        "responseStart": 61.204,
+        "responseEnd": 67.016
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/matters",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638159.6128,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.033,
+        "responseStart": 897.223,
+        "responseEnd": 903.045
+      }
+    },
+    {
+      "url": "http://localhost:3117/matters/MAT-20260904-abf788?_rsc=5CB68i4pnAekjehf",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612639067.253,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.135,
+        "responseStart": 3.868,
+        "responseEnd": 6.835
+      },
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://localhost:3117/matters/MAT-20260904-1986d3?_rsc=5CB68i4pnAekjehf",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612639067.312,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.133,
+        "responseStart": 4.568,
+        "responseEnd": 7.109
+      },
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://localhost:3117/matters/MAT-20260904-6f3f88?focus=research&_rsc=5CB68i4pnAekjehf",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612639067.3542,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.108,
+        "responseStart": 5.222,
+        "responseEnd": 7.202
+      },
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://localhost:3117/matters/MAT-20260904-1d6535?_rsc=5CB68i4pnAekjehf",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612639067.423,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.058,
+        "responseStart": 5.947,
+        "responseEnd": 7.296
+      },
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://localhost:3117/matters/MAT-20260904-abf788?_rsc=tXyZJ52UQVBCVsD3",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612639074.2979,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.054,
+        "responseStart": 1.429,
+        "responseEnd": 4.807
+      },
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://localhost:3117/matters/MAT-20260904-1986d3?_rsc=tXyZJ52UQVBCVsD3",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612639074.436,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.042,
+        "responseStart": 1.963,
+        "responseEnd": 4.963
+      },
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://localhost:3117/matters/MAT-20260904-6f3f88?focus=research&_rsc=tXyZJ52UQVBCVsD3",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612639074.531,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.028,
+        "responseStart": 2.468,
+        "responseEnd": 4.929
+      },
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://localhost:3117/matters/MAT-20260904-1d6535?_rsc=tXyZJ52UQVBCVsD3",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612639074.627,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.031,
+        "responseStart": 3.001,
+        "responseEnd": 4.944
+      },
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://localhost:3117/matters/MAT-20260904-6f3f88?_rsc=5CB68i4pnAekjehf",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612639079.552,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.029,
+        "responseStart": 1.335,
+        "responseEnd": 1.778
+      },
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://localhost:3117/matters/MAT-20260904-55d44e?_rsc=tXyZJ52UQVBCVsD3",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612639079.387,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.058,
+        "responseStart": 1.14,
+        "responseEnd": 2.16
+      },
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/daily-conversations",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612639070.7532,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.124,
+        "responseStart": 12.492,
+        "responseEnd": 16.604
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/skills",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612639070.6548,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.283,
+        "responseStart": 40.157,
+        "responseEnd": 44.621
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/team/work?view=my_work",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638179.1357,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.079,
+        "responseStart": 1611.007,
+        "responseEnd": 1613.596
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/team/orientations",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612638179.013,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.06,
+        "responseStart": 8573.174,
+        "responseEnd": 8576.017
+      }
+    }
+  ],
+  "text": "Today\nBriefing\nWorkspace\nMatters\nDecisions\nSkills\nAutomations\nAgents\nSettings\n\nLOCAL DEMO\n\nView as\nView workspace as\nAlex Morgan · Commercial · alex\nJordan Lee · Commercial · jordan\nCasey Chen · casey\nAbout\nSeptember 5, 2026\nThree things need your attention\n\n2 unassigned · 1 awaiting your judgment.\n\nWORK\n\nTeam work\nTeam work view\nMy work\nWaiting on others\nTeam\n\nNo items in my work.\n\nInstant payouts Q1\nMATTER ORIENTATION\nCan Mosaic Relay ship Instant Payouts for marketplace sellers in Q1, given the proposed onboarding (email + bank account only, full identity deferred to $3,000 cumulative payouts), ACH payouts initiated by Mosaic Relay via the bank partner…\nRead full question\n\nThis saved advice has an earlier or unknown question basis. Confirm it against the current question.\n\nThe $3,000 cumulative payout threshold has no legal basis (confirmed as an engineering/product choice). Under BSA/AML, a money transmitter must collect CIP before establishing the account relationship. Design a compliant onboarding that collects full identity at onboarding rather than deferring to a payout threshold.\n\nReady\n\nRedesign identity collection: collect CIP at onboarding, not at $3,000 payout threshold\nDiscuss\nDraft\nMosaic Relay UX Test — 10 — International Expansion and Local Payment Methods\nMATTER ORIENTATION\nWhich specific countries can Mosaic Relay add to its international launch list, and what minimum facts and documentation must each candidate country clear — covering licensing/agent structure, funds flow, AML/KYC, privacy, consumer, tax…\nRead full question\n\nThis saved advice has an earlier or unknown question basis. Confirm it against the current question.\n\nDetermine whether Mosaic Relay ever takes custody of funds or whether acquiring/local payment providers and payout providers hold and move all funds. This determines whether the matter is a Mosaic Relay licensing matter or an agent/partner-of-record matter.\n\nReady\n\nConfirm funds-flow and custody model\nDiscuss\nDraft\nMosaic Relay UX Test — 09 — Targeted Product Emails Using Transaction and Identity Data\nMATTER ORIENTATION\nCan Mosaic Relay lawfully use fraud-risk scores and other service data to target marketing emails to business contacts in the US, UK, and EU, and if so, under what legal basis, with what suppression and preference controls, and subject to…\nRead full question\n\nThis saved advice has an earlier or unknown question basis. Confirm it against the current question.\n\nThis is the next step in the saved matter lifecycle. For Lawyer.\n\nReady\n\nReview the research packet and choose the legal path to test.\nDiscuss\nDraft\nOther matter orientations\n9 available outside today's attention list\nAll matters →\nYour other matters\nShowing 2 of 2\nAll matters →\nMosaic Relay UX Test — 08 — Marketing Claims About Fraud Prevention and Compliance — close the matter.\nRespond\nMosaic Relay UX Test — 05 — Deactivation of a High-Risk Merchant — record manual delivery.\nRespond\nThe practice\n6 in flight\nJust came in\n1\nBeing researched\n0\nWaiting on your judgment\n2\nBeing drafted\n0\nRespond\n3\nNothing is with Themis.ai right now.\n3 decisions recorded.\nOpen the workspace\nPaste a request — a Slack thread, an email, or a redline note…\nNew matter\nAsk about your work\n\nThemis.ai can search the workspace, compare matters, and take actions that you request.\n\nThemis.ai\nConversation\nToday — September 5, 2026\nSeptember 3, 2026\nSaved to today's Markdown file.\nWhat needs my attention today?\nSummarize my active matters.\nWhich decisions need review?\n+\nSend\nBuild a skill",
+  "controls": [
+    {
+      "tag": "SELECT",
+      "id": "demo-lawyer-person",
+      "text": "Alex Morgan · Commercial · alex\nJordan Lee · Commercial · jordan\nCasey Chen · casey",
+      "value": "alex",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "INPUT",
+      "id": "team-view-my_work",
+      "text": "",
+      "value": "on",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "team-view-waiting",
+      "text": "",
+      "value": "on",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "team-view-team",
+      "text": "",
+      "value": "on",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Read full question",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Redesign identity collection: collect CIP at onboarding, not at $3,000 payout threshold",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Discuss",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Draft",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Read full question",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Confirm funds-flow and custody model",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Discuss",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Draft",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Read full question",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Review the research packet and choose the legal path to test.",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Discuss",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Draft",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "New matter",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "SELECT",
+      "id": "today-chat-day",
+      "text": "Today — September 5, 2026\nSeptember 3, 2026",
+      "value": "2026-09-05",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "What needs my attention today?",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Summarize my active matters.",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Which decisions need review?",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "+",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "file"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Send",
+      "value": "",
+      "disabled": true,
+      "type": "submit"
+    }
+  ],
+  "editors": [],
+  "dimensions": {
+    "width": 1440,
+    "scrollWidth": 1440,
+    "reducedMotion": true
+  }
+}

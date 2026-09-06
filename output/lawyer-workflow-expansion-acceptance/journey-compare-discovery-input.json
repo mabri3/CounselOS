@@ -1,0 +1,1 @@
+{"label": "journey-compare-discovery", "width": 768, "actions": [{"op": "click", "name": "Compare supplied versions"}, {"op": "wait", "ms": 5000}]}

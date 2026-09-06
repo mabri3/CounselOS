@@ -1,0 +1,262 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 83.99857330322266,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "font": "13px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 237.7627716064453,
+      "x": 756.7826538085938,
+      "y": 66.85369110107422
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 763.68603515625,
+      "y": 92.54261016845705
+    },
+    {
+      "font": "15px",
+      "height": 1996.6903076171875,
+      "tag": "MAIN",
+      "text": "All matters by stage10 in flight / 2 closedMatter viewTableS",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": 83.99857330322266
+    },
+    {
+      "font": "48px",
+      "height": 54.71590805053711,
+      "tag": "H1",
+      "text": "All matters by stage",
+      "width": 422.4360656738281,
+      "x": 31.995737075805664,
+      "y": 123.99857330322266
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "6overdue",
+      "width": 177.31533813476562,
+      "x": 31.995737075805664,
+      "y": 324.1548156738281
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "4waiting",
+      "width": 177.31533813476562,
+      "x": 225.30538940429688,
+      "y": 324.1548156738281
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "0with Themis.ai",
+      "width": 177.31533813476562,
+      "x": 418.6150512695313,
+      "y": 324.1548156738281
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "0needs assignment",
+      "width": 177.31533813476562,
+      "x": 611.9246826171875,
+      "y": 324.1548156738281
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "0no action needed",
+      "width": 177.31533813476562,
+      "x": 805.234375,
+      "y": 324.1548156738281
+    },
+    {
+      "font": "15px",
+      "height": 438.4161682128906,
+      "tag": "SECTION",
+      "text": "›Just came in11 overdue · 3 waiting4Phase 2 controlled retry",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 591.1576538085938
+    },
+    {
+      "font": "15px",
+      "height": 72.90482330322266,
+      "tag": "HEADER",
+      "text": "›Just came in11 overdue · 3 waiting4",
+      "width": 948.7357788085938,
+      "x": 32.90482711791992,
+      "y": 592.0667114257812
+    },
+    {
+      "font": "15px",
+      "height": 31.995737075805664,
+      "tag": "BUTTON",
+      "text": "›Just came in1",
+      "width": 366.2997131347656,
+      "x": 50.90198516845703,
+      "y": 612.0667114257812
+    },
+    {
+      "font": "15px",
+      "height": 256.569580078125,
+      "tag": "SECTION",
+      "text": "›Being researched21 overdue · 1 waiting2Northstar: AI Credit",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 1041.569580078125
+    },
+    {
+      "font": "15px",
+      "height": 72.90482330322266,
+      "tag": "HEADER",
+      "text": "›Being researched21 overdue · 1 waiting2",
+      "width": 948.7357788085938,
+      "x": 32.90482711791992,
+      "y": 1042.4786376953125
+    },
+    {
+      "font": "15px",
+      "height": 31.995737075805664,
+      "tag": "BUTTON",
+      "text": "›Being researched2",
+      "width": 366.2997131347656,
+      "x": 50.90198516845703,
+      "y": 1062.4786376953125
+    },
+    {
+      "font": "15px",
+      "height": 234.0695953369141,
+      "tag": "SECTION",
+      "text": "›Waiting on your judgment32 overdue2Relay: Open-Banking Reau",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 1310.1348876953125
+    },
+    {
+      "font": "15px",
+      "height": 72.90482330322266,
+      "tag": "HEADER",
+      "text": "›Waiting on your judgment32 overdue2",
+      "width": 948.7357788085938,
+      "x": 32.90482711791992,
+      "y": 1311.0439453125
+    },
+    {
+      "font": "15px",
+      "height": 31.995737075805664,
+      "tag": "BUTTON",
+      "text": "›Waiting on your judgment3",
+      "width": 396.7755432128906,
+      "x": 50.90198516845703,
+      "y": 1331.0439453125
+    },
+    {
+      "font": "15px",
+      "height": 154.39630126953125,
+      "tag": "SECTION",
+      "text": "›Being drafted41 overdue1Delta: Same-Day Payout Pricingmarke",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 1556.2001953125
+    },
+    {
+      "font": "15px",
+      "height": 72.90482330322266,
+      "tag": "HEADER",
+      "text": "›Being drafted41 overdue1",
+      "width": 948.7357788085938,
+      "x": 32.90482711791992,
+      "y": 1557.109375
+    },
+    {
+      "font": "15px",
+      "height": 31.995737075805664,
+      "tag": "BUTTON",
+      "text": "›Being drafted4",
+      "width": 396.7755432128906,
+      "x": 50.90198516845703,
+      "y": 1577.109375
+    },
+    {
+      "font": "15px",
+      "height": 154.39630126953125,
+      "tag": "SECTION",
+      "text": "›Respond51 overdue1Harbor: Account Hold Support Responsecons",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 1722.59228515625
+    },
+    {
+      "font": "15px",
+      "height": 72.90482330322266,
+      "tag": "HEADER",
+      "text": "›Respond51 overdue1",
+      "width": 948.7357788085938,
+      "x": 32.90482711791992,
+      "y": 1723.5013427734375
+    },
+    {
+      "font": "15px",
+      "height": 31.995737075805664,
+      "tag": "BUTTON",
+      "text": "›Respond5",
+      "width": 396.7755432128906,
+      "x": 50.90198516845703,
+      "y": 1743.5013427734375
+    },
+    {
+      "font": "15px",
+      "height": 74.72300720214844,
+      "tag": "SECTION",
+      "text": "›Closed6Closed2Cedar: Cash Sweep and Deposit Insurance Discl",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 1888.9842529296875
+    },
+    {
+      "font": "15px",
+      "height": 72.90482330322266,
+      "tag": "HEADER",
+      "text": "›Closed6Closed2",
+      "width": 948.7357788085938,
+      "x": 32.90482711791992,
+      "y": 1889.8934326171875
+    },
+    {
+      "font": "15px",
+      "height": 31.995737075805664,
+      "tag": "BUTTON",
+      "text": "›Closed6",
+      "width": 405.4403381347656,
+      "x": 50.90198516845703,
+      "y": 1909.8934326171875
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 0,
+  "url": "http://localhost:3134/matters",
+  "width": 1024
+}

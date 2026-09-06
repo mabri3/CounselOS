@@ -1,0 +1,17 @@
+{
+  "profile_root": "/var/folders/xb/kzc31shn1pz2s_5l2fy6d7rh0000gn/T/themis-continuity-profile-j_aldtgt",
+  "results": {
+    "workspace": {
+      "seconds": 3.129699833923951,
+      "result_type": "dict"
+    },
+    "orientation": {
+      "seconds": 5.707694583106786,
+      "result_type": "dict"
+    },
+    "impact_candidates": {
+      "seconds": 4.205491875065491,
+      "result_type": "dict"
+    }
+  }
+}

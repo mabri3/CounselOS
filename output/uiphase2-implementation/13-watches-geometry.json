@@ -1,0 +1,64 @@
+{
+  "height": 1536,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 83.99857330322266,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 1024.54541015625,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 773.68603515625,
+      "y": 92.54261016845705
+    },
+    {
+      "font": "16px",
+      "height": 775.0709838867188,
+      "tag": "MAIN",
+      "text": "Standing questions, kept in viewWatches keep the questions t",
+      "width": 1024.54541015625,
+      "x": 0,
+      "y": 83.99857330322266
+    },
+    {
+      "font": "48px",
+      "height": 53.749996185302734,
+      "tag": "H1",
+      "text": "Standing questions, kept in view",
+      "width": 688.8991088867188,
+      "x": 63.99857711791992,
+      "y": 131.98863220214844
+    },
+    {
+      "font": "16px",
+      "height": 205.1420440673828,
+      "tag": "SECTION",
+      "text": "Save draft, Scan now, or Start WatchSave draftSave your ques",
+      "width": 896.5482788085938,
+      "x": 63.99857711791992,
+      "y": 577.9332275390625
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Save draft, Scan now, or Start Watch",
+      "width": 850.7385864257812,
+      "x": 86.90340423583984,
+      "y": 600.8380737304688
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 0,
+  "url": "http://localhost:3134/watches",
+  "width": 1024
+}

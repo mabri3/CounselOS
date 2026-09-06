@@ -1,0 +1,42 @@
+{
+  "errors": [],
+  "orientation": [
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/orientation",
+      "status": 200,
+      "startedAt": 1788615560312,
+      "elapsedMs": 9096,
+      "kind": "response"
+    }
+  ],
+  "first": {
+    "closed": true,
+    "waiting": false,
+    "useful": true,
+    "stale": true,
+    "timeout": false,
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "scrollHeight": 4630
+  },
+  "returned": {
+    "closed": true,
+    "waiting": false,
+    "useful": false,
+    "stale": false,
+    "timeout": false,
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "scrollHeight": 1253
+  },
+  "history": 0,
+  "hasDraftAction": false,
+  "hasLawyerNote": false,
+  "openVisible": false,
+  "editor": {
+    "text": "Today\nBriefing\nWorkspace\nMatters\nDecisions\nSkills\nAutomations\nAgents\nSettings\n\nLOCAL DEMO\n\nView as\nView workspace as\nAlex Morgan · Commercial · alex\nJordan Lee · Commercial · jordan\nCasey Chen · casey\nAbout\nClosed\nMatters\nHarbor Relay specification review\nSTAGE\nClosed\nRISK\nLawyer-set risk\nSet risk\nLow\nModerate\nHigh\nDUE\nNo date\nFiles & context\nOutput templates\nBusiness replies\nHand off work\nCompare supplied versions\nMatter workspace view\nUnderstand\nDiscuss\nDraft\n\nOne matter conversation stays available while you read and draft.\n\nMatter understanding\n\nNo saved matter understanding is available.\n\nExplain, stress-test or ask the business\nScenarios and business flow\nPrior work, practice notes and assumption watches\nResearch, work items, decisions and matter records\nCONVERSATION SCOPE\nMatter context\nTarget: Harbor Relay specification review\n\nLoading saved chat…\n\nWhich other matters does this touch?\nWhat would change your view?\n+\nSend\nThemis.ai can research, draft and move this matter. It records a decision only when you explicitly ask it to. Build a skill\nAvailable work product\n\nNo saved work product is available yet.\n\nMATTER WORKSPACE\nFiles & context\nClose\nMatter files\nInquiry context\nAdd files to library\nAdd files to inquiry\n\nYou can add several files now and add another batch while earlier files are preparing. Dropped files go to the current view.\n\nFind by name or folder\nFolder view\n\nNo files match this search.",
+    "loading": false,
+    "lawyerNote": false,
+    "editor": false
+  }
+}

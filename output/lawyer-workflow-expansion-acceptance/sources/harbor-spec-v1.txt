@@ -1,0 +1,7 @@
+Harbor Relay — supplied specification version 1
+Fictional acceptance-test source.
+Pilot date: 21 October 2026.
+Report retention: 30 days.
+Access: only the customer can open account activity reports.
+Support staff cannot open report content.
+Scope: US pilot only.

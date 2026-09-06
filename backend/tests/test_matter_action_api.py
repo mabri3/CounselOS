@@ -112,18 +112,20 @@ def test_create_matter_source_action_key_prevents_repeat_duplicate(app_context):
     ]) == 1
 
 
-def test_research_run_api_forwards_source_action_key(app_context, monkeypatch):
+@pytest.mark.parametrize("issue_id", [None, "ISS-TARGET"])
+def test_research_run_api_forwards_source_action_key(app_context, monkeypatch, issue_id):
     app = FastAPI()
     app.state.context = app_context
     app.include_router(matters.router, prefix="/api")
     client = TestClient(app)
     captured = {}
 
-    def start(matter_id, questions, *, source_action_key=None):
+    def start(matter_id, questions, *, source_action_key=None, issue_id=None):
         captured.update({
             "matter_id": matter_id,
             "questions": questions,
             "source_action_key": source_action_key,
+            "issue_id": issue_id,
         })
         return {"run_id": "RUN-1", "source_action_key": source_action_key}
 
@@ -131,7 +133,7 @@ def test_research_run_api_forwards_source_action_key(app_context, monkeypatch):
 
     response = client.post(
         "/api/matters/MAT-DEMO-BEACON/research-runs",
-        json={"question": "Check the rule", "source_action_key": "chat:RUN-1:tool-2"},
+        json={"question": "Check the rule", "source_action_key": "chat:RUN-1:tool-2", "issue_id": issue_id},
     )
 
     assert response.status_code == 202
@@ -140,6 +142,7 @@ def test_research_run_api_forwards_source_action_key(app_context, monkeypatch):
         "matter_id": "MAT-DEMO-BEACON",
         "questions": ["Check the rule"],
         "source_action_key": "chat:RUN-1:tool-2",
+        "issue_id": issue_id,
     }
 
 

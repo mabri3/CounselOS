@@ -1,0 +1,127 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 222.05255126953125,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 380,
+      "x": 0,
+      "y": -1531.818115234375
+    },
+    {
+      "font": "13px",
+      "height": 48.38068008422851,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 145.41192626953125,
+      "x": 218.59373474121097,
+      "y": -1471.5126953125
+    },
+    {
+      "font": "10px",
+      "height": 21.988636016845703,
+      "tag": "H2",
+      "text": "View as",
+      "width": 27.60653305053711,
+      "x": 223.5014190673828,
+      "y": -1449.0269775390625
+    },
+    {
+      "font": "15px",
+      "height": 2936.143310546875,
+      "tag": "MAIN",
+      "text": "Your matters10 in flight / 2 closedMatter viewTableStagesNew",
+      "width": 380,
+      "x": 0,
+      "y": -1309.765625
+    },
+    {
+      "font": "36px",
+      "height": 41.03693008422851,
+      "tag": "H1",
+      "text": "Your matters",
+      "width": 204.78692626953125,
+      "x": 15.994318008422852,
+      "y": -1275.7669677734375
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "6overdue",
+      "width": 166.00851440429688,
+      "x": 15.994318008422852,
+      "y": -1089.2896728515625
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "4waiting",
+      "width": 166.00851440429688,
+      "x": 197.9971466064453,
+      "y": -1089.2896728515625
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "0with Themis.ai",
+      "width": 166.00851440429688,
+      "x": 15.994318008422852,
+      "y": -984.2897338867188
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "0needs assignment",
+      "width": 166.00851440429688,
+      "x": 197.9971466064453,
+      "y": -984.2897338867188
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "0no action needed",
+      "width": 166.00851440429688,
+      "x": 15.994318008422852,
+      "y": -879.2897338867188
+    },
+    {
+      "font": "12px",
+      "height": 18.004261016845703,
+      "tag": "BUTTON",
+      "text": "Stage",
+      "width": 30.44744300842285,
+      "x": 242.42185974121097,
+      "y": -425.9161682128906
+    },
+    {
+      "font": "12px",
+      "height": 18.004261016845703,
+      "tag": "BUTTON",
+      "text": "Next owner",
+      "width": 61.74005508422851,
+      "x": 525.9588012695312,
+      "y": -425.9161682128906
+    },
+    {
+      "font": "12px",
+      "height": 18.004261016845703,
+      "tag": "BUTTON",
+      "text": "Due ↑",
+      "width": 34.140625,
+      "x": 658.359375,
+      "y": -425.9161682128906
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 1531.818115234375,
+  "url": "http://localhost:3134/matters",
+  "width": 390
+}

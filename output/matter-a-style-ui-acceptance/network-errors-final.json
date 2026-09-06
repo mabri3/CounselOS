@@ -1,0 +1,20 @@
+[
+  {
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/outside-counsel-packet",
+    "status": 422,
+    "count": 19
+  },
+  {
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/reuse",
+    "status": 503,
+    "count": 1
+  },
+  {
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/handoff-references",
+    "status": 503,
+    "count": 1
+  }
+]

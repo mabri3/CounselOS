@@ -154,6 +154,8 @@ export type DossierProjection = {
 export type WorkItem = {
   work_item_id: string;
   matter_id: string;
+  issue_id?: string | null;
+  issue_ids?: string[];
   path: string;
   title: string;
   description: string;
@@ -269,6 +271,8 @@ export type WorkProductDraftResult = OperationResult & {
 };
 
 export type Decision = {
+  map_basis?: import("./decisionMapTypes").DecisionMapBasis | null;
+  request_fingerprint?: string;
   decision_id: string;
   matter_id: string;
   path: string;
@@ -373,6 +377,8 @@ export type DocumentComment = {
 };
 
 export type DocumentReview = {
+  revision?: string;
+  artifact_revision?: string;
   path: string;
   tracking: boolean;
   authors: ReviewAuthor[];
@@ -383,6 +389,9 @@ export type DocumentReview = {
 };
 
 export type DocumentReviewAction = {
+  source_action_key?: string;
+  expected_revision?: string;
+  expected_review_revision?: string;
   action: "set_tracking" | "save_revision" | "save_untracked" | "set_author_color" | "add_comment" | "reply_comment" | "edit_comment" | "delete_comment_entry" | "resolve_comment" | "reopen_comment" | "delete_comment_thread" | "delete_resolved_comments" | "accept_change" | "reject_change";
   enabled?: boolean;
   content?: string;
@@ -425,7 +434,7 @@ export type ChatCard =
   | { type: "question"; question_id: string; text: string; reason?: string | null; selection_mode: "single" | "multiple" | "free_text"; choices: ChatChoice[]; progress_current?: number | null; progress_total?: number | null; allow_skip: boolean; allow_stop: boolean; conflict: boolean; record_target?: "fact" | "jurisdiction_scope" | "product_area" | "business_team" | "matter_type" | "target_date" | "requester" | "business_owner" | "risk_level" }
   | { type: "matter_update"; action_id: string; summary: string; changed_sections: string[]; can_edit: boolean; can_undo: boolean }
   | { type: "research_status"; run_id: string; state: "queued" | "running" | "completed" | "failed" | "interrupted"; total: number; completed: number; status: string; dossier_effect: string }
-  | { type: "work_product"; title: string; vault_path: string; state: "draft" | "final"; summary: string }
+  | { type: "work_product"; preview?: boolean; title: string; vault_path: string; state: "draft" | "final"; summary: string }
   | AwarenessChatCard;
 
 export type AttachmentReference = { source_id: string; path: string; name: string; version?: string };
@@ -473,6 +482,7 @@ export type ChatRun = {
 };
 
 export type ChatHistoryMessage = {
+  workspace_action?: string | null;
   message_id: string;
   role: "user" | "assistant";
   content: string;
@@ -528,6 +538,7 @@ export type CompanyProfile = {
 };
 
 export type AnswerContract = {
+  update_proposal?: { state: string; content: string; reason: string };
   path: string;
   content: string;
   metadata: Record<string, unknown>;

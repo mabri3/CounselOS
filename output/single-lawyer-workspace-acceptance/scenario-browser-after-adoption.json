@@ -1,0 +1,337 @@
+{
+  "changed": [
+    "03_Matters/beacon-instant-onboarding/facts.md"
+  ],
+  "workspace": {
+    "matter_id": "MAT-DEMO-BEACON",
+    "revision": "b6727904358222e5c85e10bb53dede4111871622c9017166ba9d8f07b5cecb5d",
+    "source_revisions": {
+      "03_Matters/beacon-instant-onboarding/matter.md": "eef26983d1c37f5ee3d7f6c5ae6b75fd33c650f77d3f5a71180d17b0a972bc2c",
+      "03_Matters/beacon-instant-onboarding/dossier.md": "e1619258a65238bc70ca29c24707730e29739f3c05fb3d4b50d8925d785f7d37",
+      "03_Matters/beacon-instant-onboarding/facts.md": "841ce1fb390a9ef57216eef95c917d41fa912adbc7de8a62438fea31af5ebfbd",
+      "03_Matters/beacon-instant-onboarding/issues.md": "d3387b39f9ef28e3187a84de1501256bad97323d6b4b24be2846d7fd636ab4b0",
+      "03_Matters/beacon-instant-onboarding/recommendations.md": "7092165be5780f2d2c1ffa032b86e29f642632b3190d061ed855a7ca817e157d",
+      "03_Matters/beacon-instant-onboarding/flow.md": "f82699cfb7faa4623e2b5177eaa36ad72d4c9b83e297f8f85f44e5c192389998",
+      "03_Matters/beacon-instant-onboarding/documents/settlement-flow.txt.extracted.md": "01bdba90bf50a97954ac58ad5b9b0b445d534ec6960e2bf59737266084f1dfc3",
+      "03_Matters/beacon-instant-onboarding/documents/settlement-flow.txt": "d499d7b9770b3dfb945edbe4fdc7ab169837edc9e6021ff9927879174249148e",
+      "03_Matters/beacon-instant-onboarding/documents/transaction-checklist.md.extracted.md": "0c283ff0302e15d0a76fc2077ebce7978ef42fd5cb9852c426b15441f30222e1",
+      "03_Matters/beacon-instant-onboarding/documents/transaction-checklist.md": "7de6e64467b333a6977be7106fe8e4dd18d29c7b34d6680f9a9fda9a84378a97",
+      "03_Matters/beacon-instant-onboarding/documents/notice-clause.txt.extracted.md": "d320ef88405c740adb82ab76b7404fa3325a52b5d0b8d69ed9410e69f5c270e9",
+      "03_Matters/beacon-instant-onboarding/documents/notice-clause.txt": "08bc38ea54a7204188727bb443792ea9b21090178c1b3c5e751f1ef067207629",
+      "03_Matters/beacon-instant-onboarding/documents/same-name-b4d7ef30f9fb019a.txt.extracted.md": "fd9a3ce4fb2dff1c6d55d82528222b4d89c65491ee2c989dc88351c545c76a15",
+      "03_Matters/beacon-instant-onboarding/documents/same-name-b4d7ef30f9fb019a.txt": "b4d7ef30f9fb019a3bb3dd24c699abb92b3d76b3db8c70e1205397c6fc2b3a11",
+      "03_Matters/beacon-instant-onboarding/documents/same-name.txt.extracted.md": "782c90ba8f72b5e5b7b11ff30ee0f8ac46d6c77908840beb0e9e2a63141e9db9",
+      "03_Matters/beacon-instant-onboarding/documents/same-name.txt": "83d7a242f917d63457e9b713f469ea609944ebb888080eec83a174c13e04fe94",
+      "03_Matters/beacon-instant-onboarding/documents/batch-valid.txt.extracted.md": "9822a10e7b01257ed4f37433ec6813dc3934d742eedd3af47ade2a0327535c7c",
+      "03_Matters/beacon-instant-onboarding/documents/batch-valid.txt": "608f10911744be873ac5a3b66e7eea9fb0519f54a5f3fd0e238d80975586add7",
+      "03_Matters/beacon-instant-onboarding/documents/partial-settlement-notes.pdf.extracted.md": "155f16d6436361040fac12b98ffcb5daa85c2f1b46302c261e3941c4d1c37ca3",
+      "03_Matters/beacon-instant-onboarding/documents/partial-settlement-notes.pdf": "82566301606e15b7675e9287a9743cddf3c33a7c8c140e39ac679c3bf2f3181f",
+      "business_question": "2a600fd29efcc847f78b2b7e:4ea9fcd39b7b54f5a129d35cebd0a0b7d1897b4db9ef7ee57518f6ea012c1bcc"
+    },
+    "question": {
+      "question_id": "BQ-096297ff82afae7e",
+      "text": "Can Beacon launch the revised onboarding flow with partner approval?",
+      "revision": "2a600fd29efcc847f78b2b7e:4ea9fcd39b7b54f5a129d35cebd0a0b7d1897b4db9ef7ee57518f6ea012c1bcc",
+      "dossier_revision": "7def3e1b34a427b001b65202f047e5ff99ee18ab1afd5774350cc84dd4e8c0ea",
+      "origin": "explicit_lawyer",
+      "source_message_id": null,
+      "source_action_key": "workspace:87a3d078-7007-4a45-8b12-eb869dda074c",
+      "updated_at": "2026-09-05T01:59:18+00:00"
+    },
+    "short_answer": "",
+    "issues": [
+      {
+        "issue_id": "ISS-096297ff82-52900cbeb5f10bd8",
+        "parent_issue_id": null,
+        "title": "What legal characterization applies to the automated decision?",
+        "why_it_matters": "",
+        "fact_ids": [],
+        "assumption_ids": [],
+        "claim_ids": [],
+        "lawyer_state": "open",
+        "updated_at": "2026-09-05T04:35:15+00:00"
+      },
+      {
+        "issue_id": "ISS-096297ff82-6200be17844a86e3",
+        "parent_issue_id": null,
+        "title": "What notice or explanation follows a non-approval?",
+        "why_it_matters": "",
+        "fact_ids": [],
+        "assumption_ids": [],
+        "claim_ids": [],
+        "lawyer_state": "open",
+        "updated_at": "2026-09-05T04:35:15+00:00"
+      },
+      {
+        "issue_id": "ISS-096297ff82-5ed0c2e934e5fd6f",
+        "parent_issue_id": null,
+        "title": "Does partner approval constrain the rollout?",
+        "why_it_matters": "",
+        "fact_ids": [],
+        "assumption_ids": [],
+        "claim_ids": [],
+        "lawyer_state": "explored",
+        "updated_at": "2026-09-05T04:35:15+00:00"
+      }
+    ],
+    "issues_revision": "d3387b39f9ef28e3187a84de1501256bad97323d6b4b24be2846d7fd636ab4b0",
+    "questions": [],
+    "supporting_question": null,
+    "pending_reframes": [],
+    "question_changes": [],
+    "receipts": [
+      {
+        "receipt_id": "IRC-2a600fd29efcc847f78b2b7e",
+        "source_action_key": "workspace:87a3d078-7007-4a45-8b12-eb869dda074c",
+        "operation": "change_business_question",
+        "target": {
+          "matter_id": "MAT-DEMO-BEACON",
+          "business_question_id": "BQ-096297ff82afae7e",
+          "business_question_revision": null,
+          "issue_id": null,
+          "source_id": null,
+          "scenario_id": null,
+          "artifact_path": null,
+          "artifact_revision": null,
+          "selected_range": null,
+          "local_draft_snapshot": null
+        },
+        "state": "applied",
+        "before_revision": "legacy:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "after_revision": "2a600fd29efcc847f78b2b7e:4ea9fcd39b7b54f5a129d35cebd0a0b7d1897b4db9ef7ee57518f6ea012c1bcc",
+        "source_message_id": null,
+        "run_id": null,
+        "changed_links": [
+          "03_Matters/beacon-instant-onboarding/dossier.md"
+        ],
+        "completed_parts": [
+          "business_question"
+        ],
+        "failure_detail": null,
+        "created_at": "2026-09-05T01:59:18+00:00",
+        "request_fingerprint": "8b16eeed911d41f29ea010944fff03491f6695d8add937da409bc93fd5d6f58e"
+      }
+    ],
+    "context_selection": [
+      {
+        "reference_id": "SRC-D499D7B9770B3DFB",
+        "path": "03_Matters/beacon-instant-onboarding/documents/settlement-flow.txt",
+        "role": "supplied",
+        "selected": true,
+        "mandatory": false,
+        "revision": null
+      },
+      {
+        "reference_id": "SRC-F57BB95A66B0D64A",
+        "path": "03_Matters/beacon-instant-onboarding/documents/transaction-checklist.md",
+        "role": "supplied",
+        "selected": true,
+        "mandatory": false,
+        "revision": null
+      },
+      {
+        "reference_id": "SRC-08BC38EA54A72041",
+        "path": "03_Matters/beacon-instant-onboarding/documents/notice-clause.txt",
+        "role": "supplied",
+        "selected": true,
+        "mandatory": false,
+        "revision": null
+      },
+      {
+        "reference_id": "03_Matters/relay-open-banking/dossier.md",
+        "path": "03_Matters/relay-open-banking/dossier.md",
+        "role": "prior_work",
+        "selected": true,
+        "mandatory": false,
+        "revision": null
+      }
+    ],
+    "recap": {
+      "previous_seen_revision": "a461a13fce0ba40b5aee2334e5fb4f0b590ac160db1467a4bd5e9cf52734c9eb",
+      "current_revision": "b1eba690e00fa86f9a09e74a6ee4a258661ca77ec996ff14b6e58b4502668db9",
+      "changes": [
+        {
+          "path": "03_Matters/beacon-instant-onboarding/facts.md",
+          "before_revision": "daa0a8cdf35d6fbc616445703a1751912f6a70cfed61085b4f397dc52048ea96",
+          "after_revision": "841ce1fb390a9ef57216eef95c917d41fa912adbc7de8a62438fea31af5ebfbd"
+        }
+      ],
+      "new_outputs": [],
+      "output_read_failures": []
+    },
+    "stale": false,
+    "answer_links": [],
+    "work_products": [
+      {
+        "work_product_id": "WP-002d2d6a5ab3",
+        "path": "03_Matters/beacon-instant-onboarding/work-product/draft/beacon-product-lead-memo-onboarding-flow-launch-6a5ab3.md",
+        "title": "Beacon product lead memo \u2014 onboarding flow launch",
+        "output_type": "regulatory_memorandum",
+        "revision": "26257bc8afa1b08242ceab73ff6152bb71d2f908ff85967b6d961e367950efa8",
+        "review_revision": "bf6e5ff9d441139491bc768fa89fd93ccba579322776fce0bf40ace4a6d7a397",
+        "pending_review": true,
+        "source_run_id": "RUN-20260905-fcc4bf",
+        "claim_ids": [],
+        "template_use": {
+          "template_id": "output-regulatory-memorandum-copy-ffd7a44f",
+          "output_type": "regulatory_memorandum",
+          "revision": "2:c685c686d0d8bf08",
+          "content_hash": "c685c686d0d8bf0871ad1648de8ad1ba6d9adddaa579760ff4fafeac3536ef12",
+          "revision_path": "00_System/skills/output_templates/history/output-regulatory-memorandum-copy-ffd7a44f/2-c685c686d0d8bf08.md",
+          "instructions_snapshot": "Use the three headings in the specified order. Lead with a supported conditional recommendation. Use the current business question and reported facts. State what remains unknown. Preserve source limits and do not treat examples or hypotheticals as actual facts.",
+          "section_outline_snapshot": "## Recommendation\n\n## Next product steps\n\n## Evidence and open facts",
+          "defaults_snapshot": {
+            "audience": "Product lead",
+            "purpose": "Decide the next safe step for this matter",
+            "length": "Under 350 words"
+          },
+          "overrides": {
+            "length": "Under 200 words"
+          },
+          "state": "applied",
+          "failure_detail": null,
+          "path": "00_System/skills/output-regulatory-memorandum-copy-ffd7a44f.md",
+          "status": "applied"
+        },
+        "preview": false,
+        "version_changes": [
+          {
+            "reason": "save untracked",
+            "action": "save_untracked",
+            "actor": "Lawyer",
+            "created_at": "2026-09-05T04:30:00+00:00",
+            "before_revision": "b38be8a02a5212425d8a2420c964a5e89ee718fd0cb53746d7e150b9ce3c9289",
+            "after_revision": "5fce8b9468ae9d116f52ff3f4b6f760d8921b72aca3bc1fa5df06a5f5347fe49",
+            "revision_path": "03_Matters/beacon-instant-onboarding/work-product/draft/.history/beacon-product-lead-memo-onboarding-flow-launch-6a5ab3/096bc5dbc620134380ffa7c48a1b29b715e9dec55fd8afef455dcffd3c54597a.md"
+          },
+          {
+            "reason": "save untracked",
+            "action": "save_untracked",
+            "actor": "Lawyer",
+            "created_at": "2026-09-05T04:32:03+00:00",
+            "before_revision": "5fce8b9468ae9d116f52ff3f4b6f760d8921b72aca3bc1fa5df06a5f5347fe49",
+            "after_revision": "f6234eb94a95f768ab4861005f7019aa4ef19fdc34ae864658f3132274e09757",
+            "revision_path": "03_Matters/beacon-instant-onboarding/work-product/draft/.history/beacon-product-lead-memo-onboarding-flow-launch-6a5ab3/f962817f94b4316b889a68114f6b1acbb85a14627e2535893b111de81e0a1eaa.md"
+          },
+          {
+            "reason": "Rebase the saved proposal (less absolute recommendation) onto the current draft, preserving the lawyer note and all source links.",
+            "action": "propose_revision",
+            "actor": "Themis.ai",
+            "created_at": "2026-09-05T04:33:52+00:00",
+            "before_revision": "f6234eb94a95f768ab4861005f7019aa4ef19fdc34ae864658f3132274e09757",
+            "after_revision": "26257bc8afa1b08242ceab73ff6152bb71d2f908ff85967b6d961e367950efa8",
+            "revision_path": "03_Matters/beacon-instant-onboarding/work-product/draft/.history/beacon-product-lead-memo-onboarding-flow-launch-6a5ab3/d3ae0c41545d0c2ad7c1127abee65d87d9815150ab2a5941e499c33267c59ccd.md"
+          },
+          {
+            "reason": "accept change",
+            "action": "accept_change",
+            "actor": "Themis.ai",
+            "created_at": "2026-09-05T04:35:45+00:00",
+            "before_revision": "26257bc8afa1b08242ceab73ff6152bb71d2f908ff85967b6d961e367950efa8",
+            "after_revision": "26257bc8afa1b08242ceab73ff6152bb71d2f908ff85967b6d961e367950efa8",
+            "revision_path": "03_Matters/beacon-instant-onboarding/work-product/draft/.history/beacon-product-lead-memo-onboarding-flow-launch-6a5ab3/a7d3a0e3997c818da9eb1b84eca57d986bf7fb81d7005a84b29dde358b4be780.md"
+          }
+        ],
+        "proposal_paths": [
+          "03_Matters/beacon-instant-onboarding/work-product/draft/.proposals/beacon-product-lead-memo-onboarding-flow-launch-6a5ab3/fd9c31ca75869d0573ef08e91fa76b36e21b5095f688c37425a0e81f12d7a478.md"
+        ],
+        "update_offer": null
+      },
+      {
+        "work_product_id": "WP-eaf3e3763e01",
+        "path": "03_Matters/beacon-instant-onboarding/work-product/draft/notice-clause-revision-45-day-notice-period-763e01.md",
+        "title": "Notice Clause Revision (45-Day Notice Period)",
+        "output_type": "contract_clause_revision",
+        "revision": "db0e32cebbbbf528bf7f19c8342d02fb7bb1dd5252849d76123722934024b36a",
+        "review_revision": "046054915d0e3786a818fc9ad6f2f53b0955277108f4400326797513236de052",
+        "pending_review": false,
+        "source_run_id": "RUN-20260905-d1ba3b",
+        "claim_ids": [],
+        "template_use": {
+          "template_id": "output-contract-clause-revision",
+          "output_type": "contract_clause_revision",
+          "revision": "1:ce083059d6e63b9f",
+          "content_hash": "ce083059d6e63b9f06d26dba5ac76bd23bfb6f8fa3ea93a5094b059140f7141d",
+          "revision_path": "00_System/skills/output_templates/history/output-contract-clause-revision/1-ce083059d6e63b9f.md",
+          "instructions_snapshot": "Revise only the selected language. Preserve defined terms unless the instruction explicitly changes them. Put the proposed clause first, then separately explain each material change. Do not create a complete agreement or alter surrounding text that was not selected.",
+          "section_outline_snapshot": "Proposed clause; Changes explained",
+          "defaults_snapshot": {
+            "exclusions": "Preserve defined terms and untouched language"
+          },
+          "overrides": {},
+          "state": "applied",
+          "failure_detail": null,
+          "path": "00_System/skills/output-contract-clause-revision.md",
+          "status": "applied"
+        },
+        "preview": false,
+        "version_changes": [],
+        "proposal_paths": [],
+        "update_offer": null
+      },
+      {
+        "work_product_id": "WP-a38166323995",
+        "path": "03_Matters/beacon-instant-onboarding/work-product/draft/notice-clause-revision-60-day-notice-period-323995.md",
+        "title": "Notice Clause Revision (60-Day Notice Period)",
+        "output_type": "contract_clause_revision",
+        "revision": "eafbcabf5a03219d5714f659eaf4d31daa8509695188817612b99f0bf87b5d35",
+        "review_revision": "8a8788a932df59a08d8d97877b369dce11a85a29047494e3c5b236f63046b9d8",
+        "pending_review": true,
+        "source_run_id": "RUN-20260905-3bdbd4",
+        "claim_ids": [],
+        "template_use": {
+          "template_id": "output-contract-clause-revision",
+          "output_type": "contract_clause_revision",
+          "revision": "1:ce083059d6e63b9f",
+          "content_hash": "ce083059d6e63b9f06d26dba5ac76bd23bfb6f8fa3ea93a5094b059140f7141d",
+          "revision_path": "00_System/skills/output_templates/history/output-contract-clause-revision/1-ce083059d6e63b9f.md",
+          "instructions_snapshot": "Revise only the selected language. Preserve defined terms unless the instruction explicitly changes them. Put the proposed clause first, then separately explain each material change. Do not create a complete agreement or alter surrounding text that was not selected.",
+          "section_outline_snapshot": "Proposed clause; Changes explained",
+          "defaults_snapshot": {
+            "exclusions": "Preserve defined terms and untouched language"
+          },
+          "overrides": {},
+          "state": "applied",
+          "failure_detail": null,
+          "path": "00_System/skills/output-contract-clause-revision.md",
+          "status": "applied"
+        },
+        "preview": false,
+        "version_changes": [
+          {
+            "reason": "Requested revision of the supplied document",
+            "action": "propose_revision",
+            "actor": "Themis.ai",
+            "created_at": "2026-09-05T04:42:07+00:00",
+            "before_revision": "72065a23a0a8c9fccc61c3f190ce77036d9ae13f914f06edce28d56f305efe89",
+            "after_revision": "eafbcabf5a03219d5714f659eaf4d31daa8509695188817612b99f0bf87b5d35",
+            "revision_path": "03_Matters/beacon-instant-onboarding/work-product/draft/.history/notice-clause-revision-60-day-notice-period-323995/999131009075b117f7266751b565db94b331f134885bd68480cb5d55743aaabb.md"
+          }
+        ],
+        "proposal_paths": [],
+        "update_offer": {
+          "offer_id": "OFFER-c31fc594b80ec1a433f7",
+          "artifact_path": "03_Matters/beacon-instant-onboarding/work-product/draft/notice-clause-revision-60-day-notice-period-323995.md",
+          "base_revision": "eafbcabf5a03219d5714f659eaf4d31daa8509695188817612b99f0bf87b5d35",
+          "reason": "Reported facts changed. Review whether the draft needs an update.",
+          "state": "offered",
+          "change": {
+            "reason": "Reported facts changed. Review whether the draft needs an update.",
+            "before_revision": "eafbcabf5a03219d5714f659eaf4d31daa8509695188817612b99f0bf87b5d35",
+            "after_revision": null,
+            "trigger_fact_ids": [
+              "FACT-20260905-605cfb"
+            ],
+            "trigger_source_ids": [],
+            "instruction": "Selected actual fact changes.",
+            "affected_analysis": [
+              "03_Matters/beacon-instant-onboarding/work-product/draft/notice-clause-revision-60-day-notice-period-323995.md"
+            ]
+          }
+        }
+      }
+    ],
+    "run_id": null,
+    "generated_at": null
+  }
+}

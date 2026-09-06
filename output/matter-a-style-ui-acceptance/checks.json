@@ -1,0 +1,636 @@
+[
+  {
+    "label": "typecheck",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "exit": 2,
+    "seconds": 6.12,
+    "log": "output/matter-a-style-ui-acceptance/typecheck-20260905-144536.log"
+  },
+  {
+    "label": "typecheck",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "exit": 0,
+    "seconds": 1.83,
+    "log": "output/matter-a-style-ui-acceptance/typecheck-20260905-144633.log"
+  },
+  {
+    "label": "typecheck",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "exit": 0,
+    "seconds": 3.57,
+    "log": "output/matter-a-style-ui-acceptance/typecheck-20260905-145524.log"
+  },
+  {
+    "label": "single-lawyer",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:single-lawyer-workspace"
+    ],
+    "exit": 1,
+    "seconds": 0.49,
+    "log": "output/matter-a-style-ui-acceptance/single-lawyer-20260905-145528.log"
+  },
+  {
+    "label": "review-map",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:matter-review-decision-map"
+    ],
+    "exit": 1,
+    "seconds": 0.36,
+    "log": "output/matter-a-style-ui-acceptance/review-map-20260905-145528.log"
+  },
+  {
+    "label": "workspace-ux",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:workspace-ux"
+    ],
+    "exit": 1,
+    "seconds": 0.51,
+    "log": "output/matter-a-style-ui-acceptance/workspace-ux-20260905-145528.log"
+  },
+  {
+    "label": "continuity",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:lawyer-continuity"
+    ],
+    "exit": 0,
+    "seconds": 1.16,
+    "log": "output/matter-a-style-ui-acceptance/continuity-20260905-145529.log"
+  },
+  {
+    "label": "accordion",
+    "cwd": "frontend",
+    "command": [
+      "node",
+      "--experimental-strip-types",
+      "scripts/check-middle-pane-accordion.ts"
+    ],
+    "exit": 1,
+    "seconds": 0.05,
+    "log": "output/matter-a-style-ui-acceptance/accordion-20260905-145530.log"
+  },
+  {
+    "label": "matter-a-navigation",
+    "cwd": "frontend",
+    "command": [
+      "node",
+      "--experimental-strip-types",
+      "scripts/check-matter-a-navigation.ts"
+    ],
+    "exit": 0,
+    "seconds": 0.18,
+    "log": "output/matter-a-style-ui-acceptance/matter-a-navigation-20260905-145530.log"
+  },
+  {
+    "label": "build",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "exit": 0,
+    "seconds": 11.58,
+    "log": "output/matter-a-style-ui-acceptance/build-20260905-145530.log"
+  },
+  {
+    "label": "backend",
+    "cwd": "backend",
+    "command": [
+      ".venv/bin/pytest"
+    ],
+    "exit": 1,
+    "seconds": 590.03,
+    "log": "output/matter-a-style-ui-acceptance/backend-20260905-145542.log"
+  },
+  {
+    "label": "single-lawyer",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:single-lawyer-workspace"
+    ],
+    "exit": 1,
+    "seconds": 0.83,
+    "log": "output/matter-a-style-ui-acceptance/single-lawyer-20260905-145750.log"
+  },
+  {
+    "label": "review-map",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:matter-review-decision-map"
+    ],
+    "exit": 1,
+    "seconds": 3.76,
+    "log": "output/matter-a-style-ui-acceptance/review-map-20260905-145751.log"
+  },
+  {
+    "label": "workspace-ux",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:workspace-ux"
+    ],
+    "exit": 1,
+    "seconds": 0.52,
+    "log": "output/matter-a-style-ui-acceptance/workspace-ux-20260905-145754.log"
+  },
+  {
+    "label": "accordion",
+    "cwd": "frontend",
+    "command": [
+      "node",
+      "--experimental-strip-types",
+      "scripts/check-middle-pane-accordion.ts"
+    ],
+    "exit": 1,
+    "seconds": 0.21,
+    "log": "output/matter-a-style-ui-acceptance/accordion-20260905-145755.log"
+  },
+  {
+    "label": "single-lawyer",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:single-lawyer-workspace"
+    ],
+    "exit": 1,
+    "seconds": 1.36,
+    "log": "output/matter-a-style-ui-acceptance/single-lawyer-20260905-145837.log"
+  },
+  {
+    "label": "review-map",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:matter-review-decision-map"
+    ],
+    "exit": 1,
+    "seconds": 1.98,
+    "log": "output/matter-a-style-ui-acceptance/review-map-20260905-145839.log"
+  },
+  {
+    "label": "workspace-ux",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:workspace-ux"
+    ],
+    "exit": 1,
+    "seconds": 1.2,
+    "log": "output/matter-a-style-ui-acceptance/workspace-ux-20260905-145841.log"
+  },
+  {
+    "label": "accordion",
+    "cwd": "frontend",
+    "command": [
+      "node",
+      "--experimental-strip-types",
+      "scripts/check-middle-pane-accordion.ts"
+    ],
+    "exit": 1,
+    "seconds": 0.32,
+    "log": "output/matter-a-style-ui-acceptance/accordion-20260905-145842.log"
+  },
+  {
+    "label": "single-lawyer",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:single-lawyer-workspace"
+    ],
+    "exit": 1,
+    "seconds": 3.42,
+    "log": "output/matter-a-style-ui-acceptance/single-lawyer-20260905-145935.log"
+  },
+  {
+    "label": "review-map",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:matter-review-decision-map"
+    ],
+    "exit": 1,
+    "seconds": 2.44,
+    "log": "output/matter-a-style-ui-acceptance/review-map-20260905-145938.log"
+  },
+  {
+    "label": "workspace-ux",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:workspace-ux"
+    ],
+    "exit": 0,
+    "seconds": 3.88,
+    "log": "output/matter-a-style-ui-acceptance/workspace-ux-20260905-145941.log"
+  },
+  {
+    "label": "accordion",
+    "cwd": "frontend",
+    "command": [
+      "node",
+      "--experimental-strip-types",
+      "scripts/check-middle-pane-accordion.ts"
+    ],
+    "exit": 0,
+    "seconds": 0.33,
+    "log": "output/matter-a-style-ui-acceptance/accordion-20260905-145945.log"
+  },
+  {
+    "label": "single-lawyer",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:single-lawyer-workspace"
+    ],
+    "exit": 1,
+    "seconds": 2.55,
+    "log": "output/matter-a-style-ui-acceptance/single-lawyer-20260905-150137.log"
+  },
+  {
+    "label": "review-map",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:matter-review-decision-map"
+    ],
+    "exit": 1,
+    "seconds": 2.08,
+    "log": "output/matter-a-style-ui-acceptance/review-map-20260905-150139.log"
+  },
+  {
+    "label": "single-lawyer",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:single-lawyer-workspace"
+    ],
+    "exit": 0,
+    "seconds": 3.56,
+    "log": "output/matter-a-style-ui-acceptance/single-lawyer-20260905-150156.log"
+  },
+  {
+    "label": "review-map",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:matter-review-decision-map"
+    ],
+    "exit": 1,
+    "seconds": 2.66,
+    "log": "output/matter-a-style-ui-acceptance/review-map-20260905-150200.log"
+  },
+  {
+    "label": "review-map",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:matter-review-decision-map"
+    ],
+    "exit": 0,
+    "seconds": 3.48,
+    "log": "output/matter-a-style-ui-acceptance/review-map-20260905-150238.log"
+  },
+  {
+    "label": "matter-a-navigation",
+    "cwd": "frontend",
+    "command": [
+      "node",
+      "--experimental-strip-types",
+      "scripts/check-matter-a-navigation.ts"
+    ],
+    "exit": 0,
+    "seconds": 0.26,
+    "log": "output/matter-a-style-ui-acceptance/matter-a-navigation-20260905-150406.log"
+  },
+  {
+    "label": "typecheck",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "exit": 0,
+    "seconds": 5.51,
+    "log": "output/matter-a-style-ui-acceptance/typecheck-20260905-150536.log"
+  },
+  {
+    "label": "build",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "exit": 0,
+    "seconds": 5.11,
+    "log": "output/matter-a-style-ui-acceptance/build-20260905-150542.log"
+  },
+  {
+    "label": "backend-focused-retry",
+    "cwd": "backend",
+    "command": [
+      ".venv/bin/pytest",
+      "tests/test_research.py::test_external_provider_hang_uses_one_total_budget_and_saves_partial_packet",
+      "tests/test_research.py::test_timeout_research_run_finishes_and_does_not_move_respond_backward"
+    ],
+    "exit": 0,
+    "seconds": 1.16,
+    "log": "output/matter-a-style-ui-acceptance/backend-focused-retry.log"
+  },
+  {
+    "label": "typecheck",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "exit": 0,
+    "seconds": 1.43,
+    "log": "output/matter-a-style-ui-acceptance/typecheck-20260905-152937.log"
+  },
+  {
+    "label": "review-map",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:matter-review-decision-map"
+    ],
+    "exit": 0,
+    "seconds": 1.81,
+    "log": "output/matter-a-style-ui-acceptance/review-map-20260905-152938.log"
+  },
+  {
+    "label": "accordion",
+    "cwd": "frontend",
+    "command": [
+      "node",
+      "--experimental-strip-types",
+      "scripts/check-middle-pane-accordion.ts"
+    ],
+    "exit": 0,
+    "seconds": 0.19,
+    "log": "output/matter-a-style-ui-acceptance/accordion-20260905-152940.log"
+  },
+  {
+    "label": "matter-a-navigation",
+    "cwd": "frontend",
+    "command": [
+      "node",
+      "--experimental-strip-types",
+      "scripts/check-matter-a-navigation.ts"
+    ],
+    "exit": 0,
+    "seconds": 0.2,
+    "log": "output/matter-a-style-ui-acceptance/matter-a-navigation-20260905-152940.log"
+  },
+  {
+    "label": "build",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "exit": 0,
+    "seconds": 4.75,
+    "log": "output/matter-a-style-ui-acceptance/build-20260905-152941.log"
+  },
+  {
+    "label": "typecheck",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "exit": 0,
+    "seconds": 2.26,
+    "log": "output/matter-a-style-ui-acceptance/typecheck-20260905-153507.log"
+  },
+  {
+    "label": "workspace-ux",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:workspace-ux"
+    ],
+    "exit": 0,
+    "seconds": 1.6,
+    "log": "output/matter-a-style-ui-acceptance/workspace-ux-20260905-153510.log"
+  },
+  {
+    "label": "accordion",
+    "cwd": "frontend",
+    "command": [
+      "node",
+      "--experimental-strip-types",
+      "scripts/check-middle-pane-accordion.ts"
+    ],
+    "exit": 0,
+    "seconds": 0.2,
+    "log": "output/matter-a-style-ui-acceptance/accordion-20260905-153511.log"
+  },
+  {
+    "label": "matter-a-navigation",
+    "cwd": "frontend",
+    "command": [
+      "node",
+      "--experimental-strip-types",
+      "scripts/check-matter-a-navigation.ts"
+    ],
+    "exit": 0,
+    "seconds": 0.23,
+    "log": "output/matter-a-style-ui-acceptance/matter-a-navigation-20260905-153512.log"
+  },
+  {
+    "label": "build",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "exit": 0,
+    "seconds": 5.15,
+    "log": "output/matter-a-style-ui-acceptance/build-20260905-153512.log"
+  },
+  {
+    "label": "typecheck",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "exit": 0,
+    "seconds": 1.9,
+    "log": "output/matter-a-style-ui-acceptance/typecheck-20260905-154808.log"
+  },
+  {
+    "label": "single-lawyer",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:single-lawyer-workspace"
+    ],
+    "exit": 0,
+    "seconds": 1.2,
+    "log": "output/matter-a-style-ui-acceptance/single-lawyer-20260905-154810.log"
+  },
+  {
+    "label": "review-map",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:matter-review-decision-map"
+    ],
+    "exit": 1,
+    "seconds": 1.66,
+    "log": "output/matter-a-style-ui-acceptance/review-map-20260905-154811.log"
+  },
+  {
+    "label": "workspace-ux",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:workspace-ux"
+    ],
+    "exit": 0,
+    "seconds": 1.46,
+    "log": "output/matter-a-style-ui-acceptance/workspace-ux-20260905-154813.log"
+  },
+  {
+    "label": "accordion",
+    "cwd": "frontend",
+    "command": [
+      "node",
+      "--experimental-strip-types",
+      "scripts/check-middle-pane-accordion.ts"
+    ],
+    "exit": 0,
+    "seconds": 0.17,
+    "log": "output/matter-a-style-ui-acceptance/accordion-20260905-154815.log"
+  },
+  {
+    "label": "matter-a-navigation",
+    "cwd": "frontend",
+    "command": [
+      "node",
+      "--experimental-strip-types",
+      "scripts/check-matter-a-navigation.ts"
+    ],
+    "exit": 0,
+    "seconds": 0.19,
+    "log": "output/matter-a-style-ui-acceptance/matter-a-navigation-20260905-154815.log"
+  },
+  {
+    "label": "build",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "exit": 0,
+    "seconds": 4.2,
+    "log": "output/matter-a-style-ui-acceptance/build-20260905-154815.log"
+  },
+  {
+    "label": "typecheck",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "typecheck"
+    ],
+    "exit": 0,
+    "seconds": 1.01,
+    "log": "output/matter-a-style-ui-acceptance/typecheck-20260905-155524.log"
+  },
+  {
+    "label": "review-map",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:matter-review-decision-map"
+    ],
+    "exit": 1,
+    "seconds": 1.73,
+    "log": "output/matter-a-style-ui-acceptance/review-map-20260905-155525.log"
+  },
+  {
+    "label": "build",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "exit": 0,
+    "seconds": 3.19,
+    "log": "output/matter-a-style-ui-acceptance/build-20260905-155526.log"
+  },
+  {
+    "label": "review-map",
+    "cwd": "frontend",
+    "command": [
+      "npm",
+      "run",
+      "check:matter-review-decision-map"
+    ],
+    "exit": 0,
+    "seconds": 1.79,
+    "log": "output/matter-a-style-ui-acceptance/review-map-20260905-155621.log"
+  }
+]

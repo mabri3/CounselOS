@@ -1,0 +1,1 @@
+{"label": "journey-draft-markdown-editor", "width": 1440, "actions": [{"op": "visible", "selector": "[contenteditable=\"true\"]"}, {"op": "click", "name": "Markdown"}, {"op": "wait", "ms": 1000}]}

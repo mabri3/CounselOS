@@ -31,7 +31,7 @@ const warning = "Development only — do not use confidential matter data.";
 assert.match(settings, new RegExp(warning), "Settings must show the Antigravity warning");
 assert.match(agents, new RegExp(warning), "Agent editing must show the Antigravity warning");
 
-const modelSection = agents.indexOf('<div className="section-heading">Model</div>');
+const modelSection = agents.indexOf('<h2>Model summary</h2>');
 const advancedSection = agents.indexOf("Advanced controls");
 assert.ok(modelSection >= 0 && modelSection < advancedSection, "the Model section must appear before Advanced controls");
 assert.match(agents, /<option value="">Use workspace default<\/option>/, "agents must offer workspace-default inheritance");

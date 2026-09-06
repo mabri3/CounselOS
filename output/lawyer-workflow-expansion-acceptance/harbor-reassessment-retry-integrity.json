@@ -1,0 +1,18 @@
+{
+  "state": "completed",
+  "run_id": "RUN-20260905-91436f",
+  "conversation_id": "CONV-20260905-9d68db",
+  "actor": {
+    "person_id": "alex",
+    "display_name": "Alex Morgan",
+    "mode": "demo"
+  },
+  "fact_ids": [
+    "FACT-20260905-233a65"
+  ],
+  "reply_fact_ids": [
+    "FACT-20260905-233a65"
+  ],
+  "remaining": "What retention period applies, and how is deletion enforced?",
+  "response_length": 3042
+}

@@ -1,0 +1,13 @@
+{
+  "conversation_id": "CONV-20260905-9d68db",
+  "initial_advice": [
+    {
+      "message_id": "MSG-20260905-89cd85",
+      "sha256": "638506ea09a90e99a219f2813c5faebb8ffab02cbf6ffd007b9ed71e0ef8bb04",
+      "length": 2454
+    }
+  ],
+  "immutable_files": {
+    "03_Matters/harbor-relay-specification-review-0a2378/request.md": "a38c8eaafdf2d20a54dc7ef62439c767eb703e2c80b1d8a2ea41e57e5dc9063c"
+  }
+}

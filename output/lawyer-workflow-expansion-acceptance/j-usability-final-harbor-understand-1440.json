@@ -1,0 +1,10 @@
+{
+  "errors": [
+    "pageerror: The request timed out. The save may have completed. Reload to check the saved result, or retry the same action."
+  ],
+  "url": "http://localhost:3117/matters/MAT-20260905-0a2378",
+  "text": "Today\nBriefing\nWorkspace\nMatters\nDecisions\nSkills\nAutomations\nAgents\nSettings\n\nLOCAL DEMO\n\nView as\nView workspace as\nAlex Morgan · Commercial · alex\nJordan Lee · Commercial · jordan\nCasey Chen · casey\nAbout\nWaiting on you\nMatters\nHarbor Relay specification review\nSTAGE\nRespond\nRISK\nLawyer-set risk\nSet risk\nLow\nModerate\nHigh\nDUE\nNo date\nFiles & context\nOutput templates\nBusiness replies\nHand off work\nCompare supplied versions\n\nWorkspace could not refresh. Saved text is still available.\n\nMatter workspace view\nUnderstand\nDiscuss\nDraft\n\nOne matter conversation stays available while you read and draft.\n\nMatter understanding\n\nNo saved matter understanding is available.\n\nExplain, stress-test or ask the business\nScenarios and business flow\nPrior work, practice notes and assumption watches\nResearch, work items, decisions and matter records\nCONVERSATION SCOPE\nMatter context\nTarget: Harbor Relay specification review\nTHEMIS.AI · COMPLETED\nChat is complete. Review the saved result below.\nWhich other matters does this touch?\nWhat would change your view?\n+\nSend\nThemis.ai can research, draft and move this matter. It records a decision only when you explicitly ask it to. Build a skill\nAvailable work product\n\nNo saved work product is available yet.",
+  "scrollWidth": 1440,
+  "clientWidth": 1440,
+  "scrollHeight": 1287
+}

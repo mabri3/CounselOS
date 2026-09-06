@@ -1,0 +1,68 @@
+{
+  "results": [
+    {
+      "path": "/",
+      "status": 200,
+      "title": "Themis.ai",
+      "body": "September 5, 2026\nOne thing needs your attention\n\n1 awaiting your judgment.\n\nHarbor sandbox: release timing\nMATTER ORIENTATION\nWhich release path can Harbor use under its fictional supplier contract?\n\nConfirm the business objective, timing, and facts needed to frame the legal work. For Alex Morgan.\n\nReady\n\nOrient to the request\nDiscuss\nDraft\nThe practice\n1 in flight\nJust came in\n0\nBeing researched\n0\nWaiting on your judgment\n1\nBeing drafted\n0\nRespond\n0\nNothing is with Themis.ai right now.\n0 decisions recorded.\nOpen the workspace\nPaste a request — a Slack thread, an email, or a redline note…\nNew matter\nAsk about your work\n\nThemis.ai can search the workspace, compare matters, and take actions that you request.\n\nThemis.ai\nConversation\nToday — September 5, 2026\nSaved to today's Markdown file.\nWhat needs my attention today?\nSummarize my active matters.\nWhich decisions need review?\n+\nSend\nBuild a skill",
+      "overflow": false
+    },
+    {
+      "path": "/workspace",
+      "status": 200,
+      "title": "Themis.ai",
+      "body": "Workspace\n\n1 matter in flight. 1 matter awaits your judgment.\n\nPaste a request — a Slack thread, an email, or a redline note…\nNew matter\nThe board\nDrag to move active work. Close a matter from its page after delivery.\nOverdue\nWaiting on you\nThemis.ai is working\nNo action needed\nJust came in\n0\nBeing researched\n0\nWaiting on your judgment\n1\n1 waiting\nWaiting on Alex Morgan\nHarbor sandbox: release timing\nOrient to the request\nAlex Morgan\nNo date\nBeing drafted\n0\nRespond\n0\nClosed\n0\nThis quarter\n0\nmatters closed\n1\nmatters in flight\n0\ndecisions recorded\n0\ndecisions need review\nWhat the agents did\nAll activity\nNo automation has run yet.",
+      "overflow": false
+    },
+    {
+      "path": "/matters",
+      "status": 200,
+      "title": "Themis.ai",
+      "body": "Matters\n\n1 in flight, 0 closed.\n\nMatter view\nStages\nTable\nNew matter\n0\noverdue\n1\nwaiting\n0\nwith Themis.ai\n0\nneeds assignment\n0\nno action needed\nOwner\nAll owners\nAlex Morgan\nArea\nAll areas\nRisk\nAll risk levels\nNot assessed\n\nRisk is the recorded level of legal or business impact.\n\nMatter\nStage\nNext action\nDue ↑\nRisk\nHarbor sandbox: release timing\ngeneral advice\nWaiting on your judgment\nWaiting on Alex Morgan\nOrient to the request\nNo date\nNot assessed",
+      "overflow": false
+    },
+    {
+      "path": "/decisions",
+      "status": 200,
+      "title": "Themis.ai",
+      "body": "Decision register\n\n0 recorded\n\nDecision filter\nAll\nNeeds review\nMine (configured lawyer)\nCheck sources again\n1 OPEN RECOMMENDATION\nOrient to the request and identify the first missing facts.\nHarbor sandbox: release timing · updated September 5, 2026\nReview\nNo decisions match this view.\n\nRecommendations stay separate from recorded decisions until a lawyer records the decision.",
+      "overflow": false
+    },
+    {
+      "path": "/agents",
+      "status": 200,
+      "title": "Themis.ai",
+      "body": "Today\nBriefing\nWorkspace\nMatters\nDecisions\nSkills\nAutomations\nAgents\nSettings\nUn\nAgents\n4\nThemis.ai\nWorkspace assistant\nOn request\nDecision Monitor\nDecision Monitor\nOn request\nIntake Agent\nIntake Agent\nOn request\nResearch Agent\nResearch Agent\nOn request\nEditing an agent\nThemis.ai\n\nRole: Workspace assistant\n\nPurpose: General workspace assistant for product counsel.\n\nFixed for every agent\nIt records a decision only when you explicitly instruct it to do so.\nIt can draft a reply. It can never send one to a counterparty.\nEverything it writes is labelled as agent-authored work.\nModel\n\nChoose this agent's provider, model, and reasoning effort. Empty fields use the workspace default.\n\nProvider\nUse workspace default\nMock (offline)\nNeuralWatt\nOpenCode Go\nCodex CLI\nAntigravity CLI\nModel\nWorkspace default\nReasoning effort\nWorkspace default\nUses workspace default: NeuralWatt · DeepSeek V4 Flash · Default\nAdvanced controls\nHow it starts\n\nThe agent does not control its timing. Recurring work is configured as an automation.\n\nStarts when you send a message in Today or inside a matter. No automation is assigned.\nManage automations\nSaved\nDiscard changes\nSave agent",
+      "overflow": false
+    },
+    {
+      "path": "/skills",
+      "status": 200,
+      "title": "Themis.ai",
+      "body": "Output templates\n\nChoose how your business receives legal work. Each draft keeps the template version used to create it.\n\nMatter for preview \nSelect a matter\nHarbor sandbox: release timing\nOutput templates\n\nTemplates set reusable structure and guidance. Instructions below apply to one preview only.\n\nCreate blank template\nBusiness Decision Brief\nDefault: Business Decision Brief\nBusiness Decision Brief\noutput-business-decision-brief · version 1:aef14aa0f2c4cd34\nDefault\nChange Impact Note\nDefault: Change Impact Note\nChange Impact Note\noutput-change-impact-note · version 1:fa45066717dd9ef7\nDefault\nContract Clause Revision\nDefault: Contract Clause Revision\nContract Clause Revision\noutput-contract-clause-revision · version 1:ce083059d6e63b9f\nDefault\nDecision Record\nDefault: Draft Decision Rationale\nDraft Decision Rationale\noutput-decision-record · version 1:91fb2db87ecab3b7\nDefault\nFact Confirmation Request\nDefault: Fact Confirmation Request\nFact Confirmation Request\noutput-fact-confirmation-request · version 1:a4a853d4744fa5cd\nDefault\nImplementation Requirements\nDefault: Implementation Requirements\nImplementation Requirements\noutput-implementation-requirements · version 1:635b7c47ea021a88\nDefault\nMeeting Preparation Brief\nDefault: Meeting Preparation Brief\nMeeting Preparation Brief\noutput-meeting-preparation-brief · version 1:2081f1d249df8798\nDefault\nOutside Counsel Brief\nDefault: Outside Counsel Brief\nOutside Counsel Brief\noutput-outside-counsel-brief · version 1:2359ac8ce9f69f76\nDefault\nRegulatory Memorandum\nDefault: Regulatory Memorandum\nRegulatory Memorandum\noutput-regulatory-memorandum · version 1:29d154f5f4a22253\nDefault\nShort Business Email\nDefault: Short Business Email\nShort Business Email\noutput-short-business-email · version 1:8841c21be3e06957\nDefault\nTransaction C",
+      "overflow": false
+    },
+    {
+      "path": "/automations",
+      "status": 200,
+      "title": "Themis.ai",
+      "body": "STANDING WORK\nAutomations\n\nJobs Themis.ai runs on its own, on a schedule. They watch folders, scan sources, and re-check recorded decisions, then bring what they find to you. An automation never sends anything and never records a decision.\n\nNothing runs on a schedule yet. Describe the job below and Themis.ai will run it for you.\n\nWant something to happen on its own? Describe it and it will run on a schedule.\n\nAutomation instructions\nNew automation",
+      "overflow": false
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "title": "Themis.ai",
+      "body": "Today\nBriefing\nWorkspace\nMatters\nDecisions\nSkills\nAutomations\nAgents\nSettings\nUn\nSettings\nModel\nAnswer contract\nDocument review\nResearch\nFiles and outputs\nModel providers\nWatch providers\nCompany\nVaults\nModel\n\nChoose the provider and model that Themis.ai uses.\n\nCurrent model\nDeepSeek V4 Flash\n\nThis model is used for new requests. Changes apply after you save.\n\nAdvanced model options\nSaved\nDiscard\nSave changes\nLocal team demonstration\n\nOptional people share this vault. Switch the current person to show their work and preserve who made each change.\n\nThis is a local simulation. It does not add accounts or access controls.\n\nPeople, one name per line\nSave and enable people\nSingle lawyer mode",
+      "overflow": false
+    },
+    {
+      "path": "/matters/MAT-20260906-1b2102",
+      "status": 200,
+      "title": "Themis.ai",
+      "body": "themis.ai\n⌄\nWaiting on Alex Morgan\nMatters\nHarbor sandbox: release timing\nMatter details\nTools and history\nMatter workspace view\nUnderstand\nDiscuss\nDraft\nDecision map\nBUSINESS QUESTION\nWhich release path can Harbor use under its fictional supplier contract?\nWORKING ANSWER · AGENT WORK · NO CITED SOURCES\n\nI have the full picture. The dossier already contains a thorough analysis.\n\nShowing a short section of the saved answer.\n\nRead full answer\n\nThe order of screening and release changes the available launch path.\n\nNeeds attention\nOwner: Sam Patel\nConfirm screening timing\nNeeds your review\nUP TO 3 ITEMS\nISSUES (3)\nALL ISSUES\n1\nScreening before release\nOpen\nNo disposition recorded\n2\nA limited pilot with a long title about the vendor exception and…\nOpen\nNo disposition recorded\n3\nSupport access\nOpen\nNo disposition recorded\nEvidence & question history\nExplore & business flow\nPrior work & watches\nResearch & work\nMaterials & activity\nSOURCES\n1\nView sources \nDECISION\nNot recorded\nRecord decision \nSupporting material and history\nDiscussion help\nShow discussion",
+      "overflow": false
+    }
+  ],
+  "errors": []
+}

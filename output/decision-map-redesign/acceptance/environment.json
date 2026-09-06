@@ -1,0 +1,18 @@
+{
+  "temporary_root": "/var/folders/xb/kzc31shn1pz2s_5l2fy6d7rh0000gn/T/themis-map-redesign-6xq8wg44",
+  "vault": "/var/folders/xb/kzc31shn1pz2s_5l2fy6d7rh0000gn/T/themis-map-redesign-6xq8wg44/vault",
+  "backend_port": 8137,
+  "frontend_port": 3137,
+  "matter_id": "MAT-20260906-1b2102",
+  "matter_path": "03_Matters/harbor-sandbox-release-timing-1b2102",
+  "issue_ids": [
+    "ISS-TIMING",
+    "ISS-PILOT",
+    "ISS-UNMAPPED",
+    "ISS-AUDIT",
+    "ISS-RETENTION",
+    "ISS-OWNER"
+  ],
+  "source_path": "03_Matters/harbor-sandbox-release-timing-1b2102/documents/fictional-supplier-contract.md",
+  "legacy_decision_id": "DEC-F953E728F40C5DEEC18B"
+}

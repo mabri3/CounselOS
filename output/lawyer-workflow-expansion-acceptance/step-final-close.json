@@ -1,0 +1,1 @@
+{"label": "journey-final-explicit-closure", "actions": [{"op": "click", "name": "Close matter"}, {"op": "wait", "ms": 10000}]}

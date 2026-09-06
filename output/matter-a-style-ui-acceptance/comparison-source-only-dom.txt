@@ -1,0 +1,578 @@
+- banner:
+  - link "Themis.ai":
+    - /url: /
+    - img "Themis.ai"
+  - navigation "Main navigation":
+    - link "Today":
+      - /url: /
+    - link "Briefing":
+      - /url: /briefing
+    - link "Workspace":
+      - /url: /workspace
+    - link "Matters":
+      - /url: /matters
+    - link "Decisions":
+      - /url: /decisions
+    - link "Skills":
+      - /url: /skills
+    - link "Automations":
+      - /url: /automations
+    - link "Agents":
+      - /url: /agents
+    - link "Settings":
+      - /url: /settings
+  - region "View as":
+    - paragraph: Local demo
+    - heading "View as" [level=2]
+    - generic: View workspace as
+    - combobox "View workspace as":
+      - option "Alex Morgan · alex-morgan" [selected]
+      - option "Jamie Lee · jamie-lee"
+    - generic "About"
+- banner:
+  - generic: No action needed
+  - link "Matters":
+    - /url: /matters
+  - 'heading "Lumen Learning: US family launch with analytics and shared-device accounts" [level=1]'
+  - term: Stage
+  - definition: Respond
+  - term: Risk
+  - definition:
+    - generic: Lawyer-set risk
+    - combobox "Lawyer-set risk":
+      - option "Set risk" [selected]
+      - option "Low"
+      - option "Moderate"
+      - option "High"
+  - term: Due
+  - definition: No date
+  - generic "Tools and history"
+  - button "Files & context"
+  - button "Output templates"
+  - button "Business replies"
+  - button "Hand off work"
+  - button "Compare supplied versions"
+- button "Close"
+- region "Compare supplied versions":
+  - paragraph: Change impact
+  - heading "Compare supplied versions" [level=2]
+  - generic: Prepared
+  - paragraph: Read what changed first. Then assess what remains supported, what changes, and what may need review. This analysis does not edit earlier work.
+  - status:
+    - strong: "Prepared:"
+    - text: Exact source versions and selected work were frozen. No advice, decision, or draft changed.
+  - generic "Saved comparisons":
+    - button "product-spec-revised.md Prepared · Text changed" [pressed]:
+      - generic: product-spec-revised.md
+      - generic: Prepared · Text changed
+    - button "product-spec-revised.md Stale · Text changed":
+      - generic: product-spec-revised.md
+      - generic: Stale · Text changed
+  - generic "Choose versions and earlier work"
+  - generic: Earlier version (optional)
+  - combobox "Earlier version (optional)":
+    - option "Earlier text not supplied"
+    - option "product-spec.md" [selected]
+    - option "product-spec-revised.md"
+    - option "map-size-fixture.md"
+    - option "coppa-definitions.md"
+  - generic: Current supplied version
+  - combobox "Current supplied version":
+    - option "Choose current version"
+    - option "product-spec.md"
+    - option "product-spec-revised.md" [selected]
+    - option "map-size-fixture.md"
+    - option "coppa-definitions.md"
+  - group "Earlier saved work to assess (optional)":
+    - generic: Earlier saved work to assess (optional)
+    - checkbox "Saved workspace answer Earlier advice · revision 9d89d94fff62ab47ccbb6330c43239abdf3a10cefe9c841b33e4113597853589"
+    - strong: Saved workspace answer
+    - generic: Earlier advice · revision 9d89d94fff62ab47ccbb6330c43239abdf3a10cefe9c841b33e4113597853589
+    - checkbox "Working recommendation Recommendation · revision 06f792d40fdf1808ed3bf311b96c74b05f910b2e1cee2c9a34bfb83cbb055b8a"
+    - strong: Working recommendation
+    - generic: Recommendation · revision 06f792d40fdf1808ed3bf311b96c74b05f910b2e1cee2c9a34bfb83cbb055b8a
+    - checkbox "Do not add advertising use to this launch Recorded decision · revision 1d8689e4e7a4e5321eeb4aef19fe075fef3f3080e49e524733e10a40992e4961"
+    - strong: Do not add advertising use to this launch
+    - generic: Recorded decision · revision 1d8689e4e7a4e5321eeb4aef19fe075fef3f3080e49e524733e10a40992e4961
+    - checkbox "Saved assistant advice · MSG-20260905-81db7c Earlier advice · revision dc30cb8bcbdb820c9b039779934ab305fa9ced0df757b82efd26c81d97e11e24"
+    - strong: Saved assistant advice · MSG-20260905-81db7c
+    - generic: Earlier advice · revision dc30cb8bcbdb820c9b039779934ab305fa9ced0df757b82efd26c81d97e11e24
+    - checkbox "Saved assistant advice · MSG-20260905-13c56d Earlier advice · revision 06b7c2adca7604bb8aa7dc82d7d177f592100abb5e696e937ccee499f4f181e6"
+    - strong: Saved assistant advice · MSG-20260905-13c56d
+    - generic: Earlier advice · revision 06b7c2adca7604bb8aa7dc82d7d177f592100abb5e696e937ccee499f4f181e6
+    - checkbox "Saved assistant advice · MSG-20260905-fbc06e Earlier advice · revision 3f8a27a0187c16632eb35e2f165f69d3d53a0c181e90f60381ffddd8ace13aed"
+    - strong: Saved assistant advice · MSG-20260905-fbc06e
+    - generic: Earlier advice · revision 3f8a27a0187c16632eb35e2f165f69d3d53a0c181e90f60381ffddd8ace13aed
+    - checkbox "Saved assistant advice · MSG-20260905-4a3453 Earlier advice · revision 2a7eec9552024d4b613ca58f32cf1505183d37bbd5856a4bb1f9b04e5b470b65"
+    - strong: Saved assistant advice · MSG-20260905-4a3453
+    - generic: Earlier advice · revision 2a7eec9552024d4b613ca58f32cf1505183d37bbd5856a4bb1f9b04e5b470b65
+    - checkbox "Saved assistant advice · MSG-20260905-10e98c Earlier advice · revision 0bc51ab68e98df9af5c9984ed3ed2378843139d32f2a7f0625b4733659d199f3"
+    - strong: Saved assistant advice · MSG-20260905-10e98c
+    - generic: Earlier advice · revision 0bc51ab68e98df9af5c9984ed3ed2378843139d32f2a7f0625b4733659d199f3
+    - checkbox "Saved inquiry · RUN-20260905-811892 Earlier advice · revision bb5a935668b27d6cdfc8da4e65856e887ac5930aaef395c6d6e3264f2cd7a309"
+    - strong: Saved inquiry · RUN-20260905-811892
+    - generic: Earlier advice · revision bb5a935668b27d6cdfc8da4e65856e887ac5930aaef395c6d6e3264f2cd7a309
+    - checkbox "Working draft Draft work product · revision a50d47db055d9a56183417d4cda44cb80c6bd95d1169c8ebc30dd7bd51ff6896"
+    - strong: Working draft
+    - generic: Draft work product · revision a50d47db055d9a56183417d4cda44cb80c6bd95d1169c8ebc30dd7bd51ff6896
+    - checkbox "Launch advice Draft work product · revision 9d68e059ff28795485c098633f23973c40be4804be6a34413f0b3a5d7bb0dc56"
+    - strong: Launch advice
+    - generic: Draft work product · revision 9d68e059ff28795485c098633f23973c40be4804be6a34413f0b3a5d7bb0dc56
+    - checkbox "Launch advice Draft work product · revision 6201292b4e1b1b7bac34e23bf47d77904203dc84d4999d0894c40059624cc34b"
+    - strong: Launch advice
+    - generic: Draft work product · revision 6201292b4e1b1b7bac34e23bf47d77904203dc84d4999d0894c40059624cc34b
+    - checkbox "Business reply Draft work product · revision 2e8b04795e5c6665b2b84dc814f6ac44bd23f8cd2af785182ac0e8204d198005"
+    - strong: Business reply
+    - generic: Draft work product · revision 2e8b04795e5c6665b2b84dc814f6ac44bd23f8cd2af785182ac0e8204d198005
+    - checkbox "Product control checklist Draft work product · revision ef96de891a73207f34dc4ffc9ffd99178fb24832b997265621f036e81fbedb20"
+    - strong: Product control checklist
+    - generic: Draft work product · revision ef96de891a73207f34dc4ffc9ffd99178fb24832b997265621f036e81fbedb20
+    - checkbox "Launch advice Draft work product · revision 6201292b4e1b1b7bac34e23bf47d77904203dc84d4999d0894c40059624cc34b"
+    - strong: Launch advice
+    - generic: Draft work product · revision 6201292b4e1b1b7bac34e23bf47d77904203dc84d4999d0894c40059624cc34b
+  - paragraph:
+    - strong: "Source-only scope:"
+    - text: No earlier advice, recommendation, decision, or draft will be assessed.
+  - button "Prepare comparison"
+  - heading "product-spec.md → product-spec-revised.md" [level=3]
+  - paragraph: Saved comparison · CMP-36446707c60b466f24c37139
+  - button "Open comparison record"
+  - status:
+    - strong: "Prepared:"
+    - text: Exact source versions are frozen. Analysis has not changed earlier advice, decisions, or drafts.
+  - status:
+    - strong: "Text changed:"
+    - text: Read the exact changed passages before you assess their effect on earlier work.
+  - status:
+    - strong: "Source-only scope:"
+    - text: Analysis covers the supplied source change. No earlier advice, recommendation, decision, or draft was selected.
+  - region "Exact changed passages":
+    - heading "Exact changed passages" [level=3]
+    - article:
+      - strong: Changed text
+      - generic: PASS-dcdb926b217cd10eb1fc
+      - generic: Before · 03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec.md · source text lines 3–3
+      - button "Open evidence"
+      - generic: "title: Lumen product specification"
+      - generic: After · 03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec-revised.md · source text lines 3–3
+      - button "Open evidence"
+      - generic: "title: Revised Lumen product specification"
+    - article:
+      - strong: Changed text
+      - generic: PASS-d07d7bdc4eaca338e325
+      - generic: Before · 03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec.md · source text lines 6–6
+      - button "Open evidence"
+      - generic: "source_id: SRC-LUMEN-SPEC"
+      - generic: After · 03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec-revised.md · source text lines 6–6
+      - button "Open evidence"
+      - generic: "source_id: SRC-LUMEN-REVISED"
+    - article:
+      - strong: Changed text
+      - generic: PASS-23ec204ff5034e6d0ebc
+      - generic: Before · 03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec.md · source text lines 9–9
+      - button "Open evidence"
+      - generic: "# Lumen product specification"
+      - generic: After · 03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec-revised.md · source text lines 9–9
+      - button "Open evidence"
+      - generic: "# Revised Lumen product specification"
+    - button "Show all 5 passages"
+  - generic: Analysis not started
+  - generic: Focus for this analysis (optional)
+  - textbox "Focus for this analysis (optional)":
+    - /placeholder: "For example: Focus on the notice section of the draft."
+  - button "Analyze effect on selected work"
+  - generic "Coverage and limits"
+- region "Matter workspace":
+  - group "Matter workspace view":
+    - generic: Matter workspace view
+    - radio "Understand" [checked]
+    - generic "Read the current matter": Understand
+    - radio "Discuss"
+    - generic "Continue one matter conversation": Discuss
+    - radio "Draft"
+    - generic "Review and prepare work product": Draft
+  - generic "Discussion help"
+  - button "Show discussion"
+  - region "Matter understanding":
+    - status:
+      - text: Some saved analysis is based on an earlier question or source version. It remains available while you refresh it.
+      - button "Refresh matter"
+    - region "Matter review orientation":
+      - text: Business question
+      - heading "Can Lumen launch its US family learning app with analytics?" [level=2]
+      - generic: Working answer · Agent work · No cited sources
+      - paragraph:
+        - text: "Here is the useful first-pass view: start with the business objective and the decision that must be made, then identify the two or three facts that could change the path. The active matter context and source files are available in the workspace. In mock mode I can also move the matter, run a scaffolded research pass, create work items, audit decisions, and create basic schedules. Configure an OpenAI-compatible provider in"
+        - code: .env
+        - text: for model-generated analysis.
+      - note:
+        - strong: Material qualification
+        - generic: Working analysis. Audience coverage and the internal-operations question remain open.
+      - generic: One next action
+      - button "View all issues (6)"
+      - paragraph:
+        - strong: Audience changes which launch controls require legal review.
+      - generic: Needs attention
+      - generic: "Owner: Lawyer"
+      - button "Review and record a disposition"
+    - region "Needs your review":
+      - heading "Needs your review" [level=2]
+      - generic: Up to 3 items
+      - 'article "Review item: Audience age and the proposed launch to families with children younger than thirteen"':
+        - text: Issue to review
+        - heading "Audience age and the proposed launch to families with children younger than thirteen" [level=4]
+        - paragraph: Audience changes which launch controls require legal review.
+        - generic "State and owner":
+          - generic: Needs attention
+          - generic: "Owner: Lawyer"
+        - generic "Review actions":
+          - button "Review and record a disposition"
+          - button "Close panel without completing work": Close panel
+      - 'article "Review item: Persistent analytics identifiers on shared devices"':
+        - text: Issue to review
+        - heading "Persistent analytics identifiers on shared devices" [level=4]
+        - paragraph: A device identifier can connect learning activity over time.
+        - generic "State and owner":
+          - generic: Needs attention
+          - generic: "Owner: Lawyer"
+        - generic "Review actions":
+          - button "Review and record a disposition"
+          - button "Close panel without completing work": Close panel
+      - 'article "Review item: Parental notice and consent before collection"':
+        - text: Issue to review
+        - heading "Parental notice and consent before collection" [level=4]
+        - paragraph: The team needs an implementation choice before release.
+        - generic "State and owner":
+          - generic: Needs attention
+          - generic: "Owner: Lawyer"
+        - generic "Review actions":
+          - button "Review and record a disposition"
+          - button "Close panel without completing work": Close panel
+    - navigation "More matter sections":
+      - button "Evidence & question history"
+      - button "Explore & business flow"
+      - button "Prior work & watches"
+      - button "Research & work"
+      - button "Materials & activity"
+    - 'article "Issue review: Audience age and the proposed launch to families with children younger than thirteen"':
+      - text: What needs your judgment
+      - heading "Audience age and the proposed launch to families with children younger than thirteen" [level=2]
+      - generic: Mitigation in progress
+      - paragraph:
+        - strong: "Next action:"
+        - text: Review the saved analysis and record the next position.
+      - paragraph:
+        - strong: "Owner:"
+        - text: Unassigned
+      - button "Open decision map"
+      - button "Discuss this issue"
+      - generic "Edit issue details"
+      - region "Business effect":
+        - text: Why this matters
+        - heading "Business effect" [level=3]
+        - paragraph: Audience changes which launch controls require legal review.
+      - region "Claims and applicability":
+        - text: Legal basis
+        - heading "Claims and applicability" [level=3]
+        - article:
+          - generic: Agent claim
+          - paragraph: The rule defines a child as an individual under 13.
+          - term: Regulated actor
+          - definition: Lumen, proposed online service operator
+          - term: Jurisdiction
+          - definition: United States
+          - term: Application
+          - definition: Lumen proposes a commercial US online service. Audience age is unknown. This definition alone does not establish coverage or a consent duty.
+          - status:
+            - strong: "Support gap:"
+            - text: Coverage and exceptions require further analysis.
+          - button "16 CFR 312.2 — definitions · Child · Supplied"
+      - region "Facts and legal questions":
+        - text: Questions that change the answer
+        - heading "Facts and legal questions" [level=3]
+        - article:
+          - generic: Open
+          - generic: Factual question
+          - generic: Shared with 2 issues
+          - paragraph: Will the US launch include children under 13?
+          - paragraph: The answer can change the required launch controls.
+          - generic: Reported fact
+          - textbox "Reported fact":
+            - /placeholder: Record the answer as a reported fact.
+          - button "Save reported fact" [disabled]
+          - button "Leave open"
+      - region "Options and mitigation":
+        - text: Ways forward
+        - heading "Options and mitigation" [level=3]
+        - article:
+          - generic: proposed
+          - generic: OPT-DEMO-NOTICE
+          - heading "Prepare parental notice and consent controls" [level=4]
+          - paragraph:
+            - strong: "Condition:"
+            - text: If the launch includes a covered child audience
+        - article:
+          - strong: Review audience and identifier controls before launch
+          - generic: Completed
+          - generic: "Owner: Alex Morgan"
+          - generic: Required
+        - button "Create mitigation work"
+        - button "Record formal decision"
+      - region "Mitigation in progress":
+        - text: Your recorded position
+        - heading "Mitigation in progress" [level=3]
+        - paragraph: "Fixture review: confirm the launch audience and identifier controls before release."
+        - paragraph: No formal decision is linked to this issue.
+        - button "Change or reopen disposition"
+        - generic "Disposition history (1)"
+    - region "Issue navigator":
+      - heading "All issues" [level=2]
+      - generic: 6 issues
+      - article:
+        - button "Audience age and the proposed launch to families with children younger than thirteen Mitigation in progress Open":
+          - generic: Audience age and the proposed launch to families with children younger than thirteen
+          - generic: Mitigation in progress
+          - generic: Open
+        - paragraph: Audience changes which launch controls require legal review.
+      - article:
+        - button "Persistent analytics identifiers on shared devices No disposition recorded Open":
+          - generic: Persistent analytics identifiers on shared devices
+          - generic: No disposition recorded
+          - generic: Open
+        - paragraph: A device identifier can connect learning activity over time.
+      - article:
+        - button "Parental notice and consent before collection No disposition recorded Open":
+          - generic: Parental notice and consent before collection
+          - generic: No disposition recorded
+          - generic: Open
+        - paragraph: The team needs an implementation choice before release.
+      - article:
+        - button "Data retention and deletion requests No disposition recorded Open":
+          - generic: Data retention and deletion requests
+          - generic: No disposition recorded
+          - generic: Open
+        - paragraph: Retention affects the data remaining after a family leaves.
+      - article:
+        - button "Vendor use of learning events for its own advertising No disposition recorded Open":
+          - generic: Vendor use of learning events for its own advertising
+          - generic: No disposition recorded
+          - generic: Open
+        - paragraph: Vendor use may differ from the team’s stated product purpose.
+      - article:
+        - button "Support access and account recovery No disposition recorded Open":
+          - generic: Support access and account recovery
+          - generic: No disposition recorded
+          - generic: Open
+        - paragraph: Support needs a usable process without unnecessary disclosure.
+    - generic "Supporting material and history"
+  - generic "Explain, stress-test or ask the business"
+  - region "Ask about product-control-checklist-7960e7.md":
+    - paragraph: Explore
+    - heading "Ask about product-control-checklist-7960e7.md" [level=2]
+    - generic: Agent work
+    - paragraph: These shortcuts use the same saved conversation and matter context. They do not start a separate assistant or history.
+    - group "Inquiry type":
+      - generic: Inquiry type
+      - radio "Explain"
+      - text: Explain
+      - radio "Stress-test"
+      - text: Stress-test
+      - radio "Ask the business" [checked]
+      - text: Ask the business
+      - radio "Explore question"
+      - text: Explore question
+    - generic: Question or instruction
+    - textbox "Question or instruction":
+      - /placeholder: What would change if the funds remained in the account for two days?
+    - generic "Inquiry actions":
+      - button "Start inquiry"
+      - button "Copy question"
+    - paragraph: "Selected action: Ask the business. Draft a focused question for the business. It is not sent."
+  - generic "Scenarios and business flow"
+  - region "Saved scenarios":
+    - paragraph: Explore
+    - heading "Saved scenarios" [level=2]
+    - button "Try a different assumption"
+    - paragraph: A scenario tests changed assumptions. It does not change actual facts, decisions, or drafts.
+    - generic "Saved scenarios":
+      - button "Working scenario — The launch is limited to adults. Earlier baseline":
+        - generic: Working scenario — The launch is limited to adults.
+        - generic: Earlier baseline
+      - button "Historical adult-only launch option Earlier baseline":
+        - generic: Historical adult-only launch option
+        - generic: Earlier baseline
+    - paragraph: Select a saved scenario to compare it with the current matter.
+    - generic "Correct a fact"
+    - paragraph: Use this for an actual reported fact. It is separate from adopting a hypothetical scenario.
+    - text: Fact to replace
+    - combobox "Fact to replace":
+      - option "Add a new reported fact" [selected]
+      - option "Lumen plans a commercial online learning service in the United States."
+      - option "The product uses a persistent device identifier across sessions."
+      - option "Support will handle account recovery through the family account owner."
+      - option "The initial release is limited to the United States."
+      - option "Families use one account owner for account settings."
+      - option "Learning events include activity type and session time."
+      - option "Product has not set the minimum account age."
+      - option "The analytics processor receives a pseudonymous device identifier."
+      - option "The launch has no advertising placement."
+      - option "The app has no sale of learning-event data."
+      - option "Engineering owns the event schema."
+      - option "Support owns the account-recovery process."
+      - option "Privacy review must address retention separately from analytics purpose."
+      - option "The launch notice is still a draft."
+      - option "The processor contract is supplied by Procurement."
+      - option "Product expects shared devices in family homes."
+      - option "Account deletion removes the family profile."
+      - option "The analytics deletion process needs an Engineering description."
+      - option "The proposed launch separates family-account recovery from ordinary analytics processing. Support staff ask the account owner to confirm the recovery request. Product has not yet selected the precise notice and escalation text, and that open implementation choice must remain visible when the full matter map shows this long operational fact."
+    - text: Corrected fact
+    - textbox "Corrected fact":
+      - /placeholder: Funds remained in the account for two days.
+    - button "Correct a fact"
+  - region "Business flow":
+    - paragraph: Explore
+    - heading "Business flow" [level=2]
+    - generic: Saved
+    - paragraph: Map the people and ordered relationships. This sketch does not reach a legal conclusion by itself.
+    - region "Flow sketch":
+      - heading "Flow sketch" [level=3]
+      - paragraph: This diagram mirrors the editable ordered relationship list below.
+      - list:
+        - generic: Step 1
+        - generic: From
+        - strong: Family account
+        - generic: →
+        - generic: Relationship
+        - strong: Learning activity
+        - generic: →
+        - generic: To
+        - strong: Lumen service
+        - term: Timing
+        - definition: During a session
+        - term: Custody
+        - definition: Lumen
+        - term: Ownership
+        - definition: Product
+        - term: Uncertainty
+        - definition: Audience age is unconfirmed
+        - generic: Step 2
+        - generic: From
+        - strong: Lumen service
+        - generic: →
+        - generic: Relationship
+        - strong: Device identifier and learning events
+        - generic: →
+        - generic: To
+        - strong: Analytics processor
+        - term: Timing
+        - definition: After each event
+        - term: Custody
+        - definition: Processor
+        - term: Ownership
+        - definition: Engineering
+        - term: Uncertainty
+        - definition: Retention period is unconfirmed
+    - heading "Actors" [level=3]
+    - button "Add actor"
+    - textbox "Actor name": Family account
+    - button "Remove"
+    - textbox "Actor name": Lumen service
+    - button "Remove"
+    - textbox "Actor name": Analytics processor
+    - button "Remove"
+    - heading "Ordered relationships" [level=3]
+    - button "Add relationship"
+    - article:
+      - generic: Step 1
+      - button "Earlier" [disabled]
+      - button "Later"
+      - button "Remove"
+      - generic: From
+      - combobox "From":
+        - option "Family account" [selected]
+        - option "Lumen service"
+        - option "Analytics processor"
+      - generic: To
+      - combobox "To":
+        - option "Family account"
+        - option "Lumen service" [selected]
+        - option "Analytics processor"
+      - generic: Relationship
+      - textbox "Relationship": Learning activity
+      - generic: Timing
+      - textbox "Timing": During a session
+      - generic: Custody
+      - textbox "Custody": Lumen
+      - generic: Ownership
+      - textbox "Ownership": Product
+      - generic: Uncertainty
+      - textbox "Uncertainty": Audience age is unconfirmed
+      - paragraph: No linked facts.
+    - article:
+      - generic: Step 2
+      - button "Earlier"
+      - button "Later" [disabled]
+      - button "Remove"
+      - generic: From
+      - combobox "From":
+        - option "Family account"
+        - option "Lumen service" [selected]
+        - option "Analytics processor"
+      - generic: To
+      - combobox "To":
+        - option "Family account"
+        - option "Lumen service"
+        - option "Analytics processor" [selected]
+      - generic: Relationship
+      - textbox "Relationship": Device identifier and learning events
+      - generic: Timing
+      - textbox "Timing": After each event
+      - generic: Custody
+      - textbox "Custody": Processor
+      - generic: Ownership
+      - textbox "Ownership": Engineering
+      - generic: Uncertainty
+      - textbox "Uncertainty": Retention period is unconfirmed
+      - paragraph: No linked facts.
+    - button "Save flow"
+    - generic: Saved means the flow record was written.
+    - heading "Accept selected facts" [level=3]
+    - paragraph: A flow edit can propose facts. Choose only the facts you want to add to the matter.
+    - checkbox "Audience age is unconfirmed"
+    - generic: Audience age is unconfirmed
+    - checkbox "Retention period is unconfirmed"
+    - generic: Retention period is unconfirmed
+    - button "Accept selected facts" [disabled]
+  - generic "Prior work, practice notes and assumption watches"
+  - generic "Research, work items, decisions and matter records"
+  - complementary "Available work product":
+    - heading "Available work product" [level=2]
+    - article:
+      - strong: Business reply
+      - paragraph: general · version 2e8b04795e5c6665b2b84dc814f6ac44bd23f8cd2af785182ac0e8204d198005
+      - generic: Saved work product
+      - button "Open work"
+    - article:
+      - strong: Launch advice
+      - paragraph: general · version 6201292b4e1b1b7bac34e23bf47d77904203dc84d4999d0894c40059624cc34b
+      - generic: Saved work product
+      - button "Open work"
+    - article:
+      - strong: Launch advice
+      - paragraph: general · version 9d68e059ff28795485c098633f23973c40be4804be6a34413f0b3a5d7bb0dc56
+      - generic: Pending attorney review
+      - button "Open work"
+      - generic "Why this version changed"
+    - article:
+      - strong: Product control checklist
+      - paragraph: general · version ef96de891a73207f34dc4ffc9ffd99178fb24832b997265621f036e81fbedb20
+      - generic: Saved work product
+      - button "Open"
+    - article:
+      - strong: Working draft
+      - paragraph: short_business_email · version a50d47db055d9a56183417d4cda44cb80c6bd95d1169c8ebc30dd7bd51ff6896
+      - generic: Saved work product
+      - button "Open work"
+- button "Open Next.js Dev Tools":
+- alert

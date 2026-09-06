@@ -1,0 +1,1 @@
+{"label": "journey-recover-saved-draft", "width": 1440, "actions": [{"op": "click", "selector": "label[for=\"workspace-view-MAT-20260905-0a2378-draft\"]"}, {"op": "visible", "name": "Request draft"}, {"op": "click", "name": "Request draft"}, {"op": "visible", "text": "Draft ready", "timeout": 60000}, {"op": "wait", "ms": 1500}]}

@@ -1,0 +1,424 @@
+- banner:
+  - link "Themis.ai":
+    - /url: /
+    - img "Themis.ai"
+  - navigation "Main navigation":
+    - link "Today":
+      - /url: /
+    - link "Briefing":
+      - /url: /briefing
+    - link "Workspace":
+      - /url: /workspace
+    - link "Matters":
+      - /url: /matters
+    - link "Decisions":
+      - /url: /decisions
+    - link "Skills":
+      - /url: /skills
+    - link "Automations":
+      - /url: /automations
+    - link "Agents":
+      - /url: /agents
+    - link "Settings":
+      - /url: /settings
+  - region "View as":
+    - paragraph: Local demo
+    - heading "View as" [level=2]
+    - generic: View workspace as
+    - combobox "View workspace as":
+      - option "Alex Morgan · alex-morgan" [selected]
+      - option "Jamie Lee · jamie-lee"
+    - generic "About"
+- main:
+  - link "Back to matter issue":
+    - /url: /matters/MAT-20260905-f025e4?issue=ISS-c7fd36e074-beceace28ad3b977&conversation=CONV-20260905-1a8401
+  - generic: Saved matter records
+  - 'heading "Lumen Learning: US family launch with analytics and shared-device accounts · Decision map" [level=1]'
+  - generic "Read full business question"
+  - generic: Agent analysis stays proposed
+  - region "Decision map":
+    - region "Whole matter map controls":
+      - heading "Whole matter" [level=2]
+      - paragraph: 34 visible records. The outline is shown first for readable review.
+      - button "Local neighborhood"
+      - button "Show whole matter" [pressed]
+    - region "Whole matter map outline":
+      - region "Decision map outline":
+        - heading "Map outline" [level=2]
+        - paragraph: Use this list to reach every visible record and relationship without the visual map.
+        - list:
+          - button "Can Lumen launch its US family learning app with analytics? Business question · Current":
+            - strong: Can Lumen launch its US family learning app with analytics?
+            - generic: Business question · Current
+          - button "Discuss this path"
+          - button "Do not add advertising use to this launch Decision · Recorded":
+            - strong: Do not add advertising use to this launch
+            - generic: Decision · Recorded
+          - button "Discuss this path"
+          - button "Lumen plans a commercial online learning service in the United States. Fact · Active":
+            - strong: Lumen plans a commercial online learning service in the United States.
+            - generic: Fact · Active
+          - button "Discuss this path"
+          - button "The launch notice is still a draft. Fact · Active":
+            - strong: The launch notice is still a draft.
+            - generic: Fact · Active
+          - button "Discuss this path"
+          - button "The product uses a persistent device identifier across sessions. Fact · Active":
+            - strong: The product uses a persistent device identifier across sessions.
+            - generic: Fact · Active
+          - button "Discuss this path"
+          - button "The initial release is limited to the United States. Fact · Active":
+            - strong: The initial release is limited to the United States.
+            - generic: Fact · Active
+          - button "Discuss this path"
+          - button "Product has not set the minimum account age. Fact · Active":
+            - strong: Product has not set the minimum account age.
+            - generic: Fact · Active
+          - button "Discuss this path"
+          - button "Families use one account owner for account settings. Fact · Active":
+            - strong: Families use one account owner for account settings.
+            - generic: Fact · Active
+          - button "Discuss this path"
+          - button "Account deletion removes the family profile. Fact · Active":
+            - strong: Account deletion removes the family profile.
+            - generic: Fact · Active
+          - button "Discuss this path"
+          - button "The analytics processor receives a pseudonymous device identifier. Fact · Active":
+            - strong: The analytics processor receives a pseudonymous device identifier.
+            - generic: Fact · Active
+          - button "Discuss this path"
+          - button "The analytics deletion process needs an Engineering description. Fact · Active":
+            - strong: The analytics deletion process needs an Engineering description.
+            - generic: Fact · Active
+          - button "Discuss this path"
+          - button "Support will handle account recovery through the family account owner. Fact · Active":
+            - strong: Support will handle account recovery through the family account owner.
+            - generic: Fact · Active
+          - button "Discuss this path"
+          - button "The launch has no advertising placement. Fact · Active":
+            - strong: The launch has no advertising placement.
+            - generic: Fact · Active
+          - button "Discuss this path"
+          - button "Support owns the account-recovery process. Fact · Active":
+            - strong: Support owns the account-recovery process.
+            - generic: Fact · Active
+          - button "Discuss this path"
+          - button "Engineering owns the event schema. Fact · Active":
+            - strong: Engineering owns the event schema.
+            - generic: Fact · Active
+          - button "Discuss this path"
+          - button "Learning events include activity type and session time. Fact · Active":
+            - strong: Learning events include activity type and session time.
+            - generic: Fact · Active
+          - button "Discuss this path"
+          - button "The processor contract is supplied by Procurement. Fact · Active":
+            - strong: The processor contract is supplied by Procurement.
+            - generic: Fact · Active
+          - button "Discuss this path"
+          - button "Privacy review must address retention separately from analytics purpose. Fact · Active":
+            - strong: Privacy review must address retention separately from analytics purpose.
+            - generic: Fact · Active
+          - button "Discuss this path"
+          - button "The proposed launch separates family-account recovery from ordinary analytics processing. Support staff ask the account owner to confirm the recovery request. Product has not yet selected the precise notice and escalation text, and that open implementation choice must remain visible when the full matter map shows this long operational fact. Fact · Active":
+            - strong: The proposed launch separates family-account recovery from ordinary analytics processing. Support staff ask the account owner to confirm the recovery request. Product has not yet selected the precise notice and escalation text, and that open implementation choice must remain visible when the full matter map shows this long operational fact.
+            - generic: Fact · Active
+          - button "Discuss this path"
+          - button "The app has no sale of learning-event data. Fact · Active":
+            - strong: The app has no sale of learning-event data.
+            - generic: Fact · Active
+          - button "Discuss this path"
+          - button "Product expects shared devices in family homes. Fact · Active":
+            - strong: Product expects shared devices in family homes.
+            - generic: Fact · Active
+          - button "Discuss this path"
+          - button "Data retention and deletion requests Issue · Open":
+            - strong: Data retention and deletion requests
+            - generic: Issue · Open
+          - button "Discuss this path"
+          - button "Support access and account recovery Issue · Open":
+            - strong: Support access and account recovery
+            - generic: Issue · Open
+          - button "Discuss this path"
+          - button "Audience age and the proposed launch to families with children younger than thirteen Issue · Mitigation In Progress":
+            - strong: Audience age and the proposed launch to families with children younger than thirteen
+            - generic: Issue · Mitigation In Progress
+          - button "Discuss this path"
+          - button "Persistent analytics identifiers on shared devices Issue · Open":
+            - strong: Persistent analytics identifiers on shared devices
+            - generic: Issue · Open
+          - button "Discuss this path"
+          - button "Parental notice and consent before collection Issue · Open":
+            - strong: Parental notice and consent before collection
+            - generic: Issue · Open
+          - button "Discuss this path"
+          - button "Vendor use of learning events for its own advertising Issue · Open":
+            - strong: Vendor use of learning events for its own advertising
+            - generic: Issue · Open
+          - button "Discuss this path"
+          - button "Prepare parental notice and consent controls Option · Proposed":
+            - strong: Prepare parental notice and consent controls
+            - generic: Option · Proposed
+          - button "Discuss this path"
+          - button "Will the US launch include children under 13? Question · Open":
+            - strong: Will the US launch include children under 13?
+            - generic: Question · Open
+          - button "Discuss this path"
+          - button "Does this identifier use fit a permitted internal-operations purpose under the rule? Question · Open":
+            - strong: Does this identifier use fit a permitted internal-operations purpose under the rule?
+            - generic: Question · Open
+          - button "Discuss this path"
+          - button "Who handles family account recovery? Question · Answered":
+            - strong: Who handles family account recovery?
+            - generic: Question · Answered
+          - button "Discuss this path"
+          - button "Historical adult-only launch option Scenario · Hypothetical · Not Started":
+            - strong: Historical adult-only launch option
+            - generic: Scenario · Hypothetical · Not Started
+          - button "Discuss this path"
+          - button "Orient to the request Work item · Done":
+            - strong: Orient to the request
+            - generic: Work item · Done
+          - button "Discuss this path"
+          - button "Review audience and identifier controls before launch Work item · Done":
+            - strong: Review audience and identifier controls before launch
+            - generic: Work item · Done
+          - button "Discuss this path"
+        - heading "Visible relationships" [level=3]
+        - list:
+          - strong: Support access and account recovery
+          - text: Depends on
+          - strong: Who handles family account recovery?
+          - text: · Active
+          - strong: Audience age and the proposed launch to families with children younger than thirteen
+          - text: Depends on
+          - strong: Will the US launch include children under 13?
+          - text: · Unknown
+          - strong: Audience age and the proposed launch to families with children younger than thirteen
+          - text: Hypothetical
+          - strong: Historical adult-only launch option
+          - text: · Historical
+          - strong: Vendor use of learning events for its own advertising
+          - text: Decided by
+          - strong: Do not add advertising use to this launch
+          - text: · Active
+          - strong: Can Lumen launch its US family learning app with analytics?
+          - text: Includes issue
+          - strong: Vendor use of learning events for its own advertising
+          - text: · Active
+          - strong: Can Lumen launch its US family learning app with analytics?
+          - text: Includes issue
+          - strong: Persistent analytics identifiers on shared devices
+          - text: · Active
+          - strong: Can Lumen launch its US family learning app with analytics?
+          - text: Includes issue
+          - strong: Support access and account recovery
+          - text: · Active
+          - strong: Parental notice and consent before collection
+          - text: If the launch includes a covered child audience
+          - strong: Prepare parental notice and consent controls
+          - text: · Unknown
+          - strong: Can Lumen launch its US family learning app with analytics?
+          - text: Includes issue
+          - strong: Parental notice and consent before collection
+          - text: · Active
+          - strong: Can Lumen launch its US family learning app with analytics?
+          - text: Includes issue
+          - strong: Data retention and deletion requests
+          - text: · Active
+          - strong: Audience age and the proposed launch to families with children younger than thirteen
+          - text: If the launch includes a covered child audience
+          - strong: Prepare parental notice and consent controls
+          - text: · Unknown
+          - strong: Parental notice and consent before collection
+          - text: Depends on
+          - strong: Will the US launch include children under 13?
+          - text: · Unknown
+          - strong: Persistent analytics identifiers on shared devices
+          - text: Depends on
+          - strong: Does this identifier use fit a permitted internal-operations purpose under the rule?
+          - text: · Unknown
+          - strong: Audience age and the proposed launch to families with children younger than thirteen
+          - text: Mitigated by
+          - strong: Review audience and identifier controls before launch
+          - text: · Active
+          - strong: Can Lumen launch its US family learning app with analytics?
+          - text: Includes issue
+          - strong: Audience age and the proposed launch to families with children younger than thirteen
+          - text: · Active
+    - complementary "Selected map record":
+      - generic: Selected Question
+      - heading "Will the US launch include children under 13?" [level=2]
+      - paragraph: Open
+      - button "Clear selection"
+      - paragraph: The answer can change the required launch controls.
+      - button "Discuss this path"
+      - button "Try a different assumption"
+      - button "Back to issue"
+    - region "Saved scenarios":
+      - paragraph: Explore
+      - heading "Saved scenarios" [level=2]
+      - button "Try a different assumption" [expanded]
+      - paragraph: A scenario tests changed assumptions. It does not change actual facts, decisions, or drafts.
+      - status: "Saved: Scenario analysis saved against its original baseline."
+      - generic: Current reported fact
+      - combobox "Current reported fact":
+        - option "No linked fact" [selected]
+        - option "Lumen plans a commercial online learning service in the United States."
+        - option "The product uses a persistent device identifier across sessions."
+        - option "Support will handle account recovery through the family account owner."
+        - option "The initial release is limited to the United States."
+        - option "Families use one account owner for account settings."
+        - option "Learning events include activity type and session time."
+        - option "Product has not set the minimum account age."
+        - option "The analytics processor receives a pseudonymous device identifier."
+        - option "The launch has no advertising placement."
+        - option "The app has no sale of learning-event data."
+        - option "Engineering owns the event schema."
+        - option "Support owns the account-recovery process."
+        - option "Privacy review must address retention separately from analytics purpose."
+        - option "The launch notice is still a draft."
+        - option "The processor contract is supplied by Procurement."
+        - option "Product expects shared devices in family homes."
+        - option "Account deletion removes the family profile."
+        - option "The analytics deletion process needs an Engineering description."
+        - option "The proposed launch separates family-account recovery from ordinary analytics processing. Support staff ask the account owner to confirm the recovery request. Product has not yet selected the precise notice and escalation text, and that open implementation choice must remain visible when the full matter map shows this long operational fact."
+      - generic: Hypothetical value, one change per line
+      - textbox "Hypothetical value, one change per line":
+        - /placeholder: Funds remain in the account for two days
+        - text: The launch is limited to adults.
+      - generic: Question for the analysis
+      - textbox "Question for the analysis":
+        - /placeholder: How would this change the current analysis?
+        - text: "Fixture analysis: explain what changes if only adults can register."
+      - paragraph: Analyze creates a temporary baseline record. It does not save a named user scenario. Actual matter facts are unchanged.
+      - button "Analyze scenario"
+      - button "Cancel"
+      - generic "Saved scenarios":
+        - button "Working scenario — The launch is limited to adults. Baseline complete":
+          - generic: Working scenario — The launch is limited to adults.
+          - generic: Baseline complete
+        - button "Historical adult-only launch option Earlier baseline" [pressed]:
+          - generic: Historical adult-only launch option
+          - generic: Earlier baseline
+      - article:
+        - heading "Historical adult-only launch option" [level=3]
+        - generic: Baseline needs review
+        - paragraph: Saved 2026-09-05T21:25:41+00:00. 4 source or fact revisions have changed.
+        - paragraph: "Not analyzed: Hypothetical analysis"
+        - generic "Baseline revisions"
+        - heading "Current baseline facts" [level=4]
+        - list:
+          - generic: Lumen plans a commercial online learning service in the United States.
+          - code: FACT-20260905-2daaa1
+          - generic: The product uses a persistent device identifier across sessions.
+          - code: FACT-20260905-34e2c9
+          - generic: Support will handle account recovery through the family account owner.
+          - code: FACT-20260905-a196eb
+          - generic: The initial release is limited to the United States.
+          - code: FACT-20260905-3aae5b
+          - generic: Families use one account owner for account settings.
+          - code: FACT-20260905-61131f
+          - generic: Learning events include activity type and session time.
+          - code: FACT-20260905-c142d7
+          - generic: Product has not set the minimum account age.
+          - code: FACT-20260905-43fdd1
+          - generic: The analytics processor receives a pseudonymous device identifier.
+          - code: FACT-20260905-871b64
+          - generic: The launch has no advertising placement.
+          - code: FACT-20260905-a1af35
+          - generic: The app has no sale of learning-event data.
+          - code: FACT-20260905-e2abb3
+          - generic: Engineering owns the event schema.
+          - code: FACT-20260905-b8e189
+          - generic: Support owns the account-recovery process.
+          - code: FACT-20260905-ae71d1
+          - generic: Privacy review must address retention separately from analytics purpose.
+          - code: FACT-20260905-c6b4d1
+          - generic: The launch notice is still a draft.
+          - code: FACT-20260905-32b724
+          - generic: The processor contract is supplied by Procurement.
+          - code: FACT-20260905-c5afb8
+          - generic: Product expects shared devices in family homes.
+          - code: FACT-20260905-ef576a
+          - generic: Account deletion removes the family profile.
+          - code: FACT-20260905-839ca0
+          - generic: The analytics deletion process needs an Engineering description.
+          - code: FACT-20260905-9c85c9
+          - generic: The proposed launch separates family-account recovery from ordinary analytics processing. Support staff ask the account owner to confirm the recovery request. Product has not yet selected the precise notice and escalation text, and that open implementation choice must remain visible when the full matter map shows this long operational fact.
+          - code: FACT-20260905-dab80a
+        - heading "Changed assumptions" [level=4]
+        - checkbox "The launch audience is limited to adults."
+        - generic: The launch audience is limited to adults.
+        - generic: Explore this scenario
+        - textbox "Explore this scenario":
+          - /placeholder: How would this affect the current answer?
+          - text: "Fixture analysis: explain what changes if only adults can register."
+        - button "Analyze scenario"
+        - button "Adopt selected facts" [disabled]
+        - generic: Scenario name
+        - textbox "Scenario name":
+          - /placeholder: Two-day funds hold
+        - button "Save scenario" [disabled]
+        - heading "Hypothetical · Agent analysis" [level=4]
+        - paragraph: "Earlier facts: This result stays attached to its original baseline."
+        - paragraph: An adult-only audience would change the audience analysis. This saved hypothetical is not an actual fact.
+        - status: No claim-level citations saved. The analysis remains available; source links alone do not establish that its conclusions apply.
+        - heading "Still uncertain" [level=4]
+        - list:
+          - listitem: Product has not selected this option.
+      - generic "Correct a fact" [active]
+      - paragraph: Use this for an actual reported fact. It is separate from adopting a hypothetical scenario.
+      - text: Fact to replace
+      - combobox "Fact to replace":
+        - option "Add a new reported fact" [selected]
+        - option "Lumen plans a commercial online learning service in the United States."
+        - option "The product uses a persistent device identifier across sessions."
+        - option "Support will handle account recovery through the family account owner."
+        - option "The initial release is limited to the United States."
+        - option "Families use one account owner for account settings."
+        - option "Learning events include activity type and session time."
+        - option "Product has not set the minimum account age."
+        - option "The analytics processor receives a pseudonymous device identifier."
+        - option "The launch has no advertising placement."
+        - option "The app has no sale of learning-event data."
+        - option "Engineering owns the event schema."
+        - option "Support owns the account-recovery process."
+        - option "Privacy review must address retention separately from analytics purpose."
+        - option "The launch notice is still a draft."
+        - option "The processor contract is supplied by Procurement."
+        - option "Product expects shared devices in family homes."
+        - option "Account deletion removes the family profile."
+        - option "The analytics deletion process needs an Engineering description."
+        - option "The proposed launch separates family-account recovery from ordinary analytics processing. Support staff ask the account owner to confirm the recovery request. Product has not yet selected the precise notice and escalation text, and that open implementation choice must remain visible when the full matter map shows this long operational fact."
+      - text: Corrected fact
+      - textbox "Corrected fact":
+        - /placeholder: Funds remained in the account for two days.
+      - button "Correct a fact"
+    - generic "Show visual map (34 records)"
+  - heading "Discuss the selected path" [level=2]
+  - generic "Conversation and composer"
+  - strong: "Inquiry target:"
+  - text: Selected issue
+  - button "Jump to latest answer"
+  - generic: What must Product confirm before choosing the launch controls?
+  - generic: Themis.ai
+  - paragraph: Confirm audience age and the purpose of the persistent identifier. These facts determine the next analysis. Earlier fixture answer; no legal conclusion has been recorded.
+  - generic: Keep the identifier question separate from audience age.
+  - generic: Themis.ai
+  - paragraph:
+    - text: "Latest fixture answer: keep the audience and identifier questions separate. The supplied definitions explain child and persistent identifier terms"
+    - 'button "Source: SRC-COPPA · Child · source"'
+    - text: . Coverage and exceptions remain open. Read the [product specification](the saved file).
+  - status:
+    - strong: Prepared request · Not sent.
+    - text: Review it, then select Send.
+  - 'button "Run inquiry: Which other matters does this touch?"'
+  - 'button "Run inquiry: What would change your view?"'
+  - button "Add files": +
+  - 'textbox "Ask Themis.ai about Lumen Learning: US family launch with analytics and shared-device accounts…"': "Explore a different assumption for this saved question (Q-DEMO-AUDIENCE): Audience age and the proposed launch to families with children younger than thirteen. No single linked reported fact is known; keep that uncertainty visible. Keep its linked issue context."
+  - button "Send"
+  - text: Themis.ai can research, draft and move this matter. It records a decision only when you explicitly ask it to.
+  - link "Build a skill":
+    - /url: /skills
+- button "Open Next.js Dev Tools":
+- alert

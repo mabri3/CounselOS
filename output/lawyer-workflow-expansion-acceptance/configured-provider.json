@@ -1,0 +1,5 @@
+{
+  "agents.provider": "openai_compatible",
+  "agents.reasoning_model": "deepseek-v4-flash",
+  "agents.reasoning_effort": "default"
+}

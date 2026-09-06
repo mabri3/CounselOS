@@ -1,0 +1,1 @@
+{"label":"journey-reassessment-retry","actions":[{"op":"wait","ms":4000},{"op":"click","name":"Retry"},{"op":"visible","selector":".chat-card.wash-agent[role=status]","timeout":20000},{"op":"visible","selector":".chat-card.wash-healthy[role=status], .chat-card.wash-failure[role=status]","timeout":180000},{"op":"wait","ms":1000}]}

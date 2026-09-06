@@ -1,0 +1,537 @@
+{
+  "label": "journey-person-drafts-reload",
+  "url": "http://localhost:3117/matters/MAT-20260905-0a2378",
+  "completed": [
+    {
+      "op": "wait",
+      "ms": 5000
+    },
+    {
+      "op": "assertValue",
+      "selector": ".composer textarea",
+      "value": "Alex unsent note: retain the customer access qualification."
+    },
+    {
+      "op": "select",
+      "selector": "#demo-lawyer-person",
+      "value": "jordan"
+    },
+    {
+      "op": "wait",
+      "ms": 2500
+    },
+    {
+      "op": "assertValue",
+      "selector": ".composer textarea",
+      "value": "Jordan unsent note: check support access logging."
+    },
+    {
+      "op": "select",
+      "selector": "#demo-lawyer-person",
+      "value": "alex"
+    },
+    {
+      "op": "wait",
+      "ms": 1000
+    }
+  ],
+  "failure": null,
+  "errors": [],
+  "responses": [],
+  "text": "Today\nBriefing\nWorkspace\nMatters\nDecisions\nSkills\nAutomations\nAgents\nSettings\n\nLOCAL DEMO\n\nView as\nView workspace as\nAlex Morgan · Commercial · alex\nJordan Lee · Commercial · jordan\nCasey Chen · casey\n\nThis changes the local demo view. It is not a sign-in or access control.\n\nWaiting on Alex Morgan\nMatters\nHarbor Relay specification review\nSTAGE\nJust came in\nRISK\nLawyer-set risk\nSet risk\nLow\nModerate\nHigh\nDUE\nNo date\nFiles & context\nOutput templates\nBusiness replies\nHand off work\nCompare supplied versions\nMatter workspace view\nUnderstand\nDiscuss\nDraft\n\nOne matter conversation stays available while you read and draft.\n\nMatter understanding\n\nNo saved matter understanding is available.\n\nExplain, stress-test or ask the business\nScenarios and business flow\nPrior work, practice notes and assumption watches\nResearch, work items, decisions and matter records\nCONVERSATION SCOPE\nMatter context\nTarget: Harbor Relay specification review\n\nLoading saved chat…\n\nWhich other matters does this touch?\nWhat would change your view?\n+\nSend\nThemis.ai can research, draft and move this matter. It records a decision only when you explicitly ask it to. Build a skill\nAvailable work product\n\nNo saved work product is available yet.",
+  "controls": [
+    {
+      "tag": "SELECT",
+      "id": "demo-lawyer-person",
+      "text": "Alex Morgan · Commercial · alex\nJordan Lee · Commercial · jordan\nCasey Chen · casey",
+      "value": "alex",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "SELECT",
+      "id": "matter-risk",
+      "text": "Set risk\nLow\nModerate\nHigh",
+      "value": "",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Files & context",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Output templates",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Business replies",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Hand off work",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Compare supplied versions",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "INPUT",
+      "id": "workspace-view-MAT-20260905-0a2378-understand",
+      "text": "",
+      "value": "understand",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "workspace-view-MAT-20260905-0a2378-discuss",
+      "text": "",
+      "value": "discuss",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "workspace-view-MAT-20260905-0a2378-draft",
+      "text": "",
+      "value": "draft",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "explain",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "stress_test",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "ask_business",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "explore_question",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "inquiry-question",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "SELECT",
+      "id": "correct-fact-id",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "correct-fact-text",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": true,
+      "type": "button"
+    },
+    {
+      "tag": "INPUT",
+      "id": "prior-work-query",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "text"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": true,
+      "type": "submit"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": true,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": true,
+      "type": "button"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "text"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "participant",
+      "disabled": false,
+      "type": "text"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": true,
+      "type": "button"
+    },
+    {
+      "tag": "SELECT",
+      "id": "",
+      "text": "",
+      "value": "normal",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "INPUT",
+      "id": "current-work-item-owner",
+      "text": "",
+      "value": "Alex Morgan",
+      "disabled": false,
+      "type": "text"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Which other matters does this touch?",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "What would change your view?",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "+",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "file"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "",
+      "text": "",
+      "value": "Alex unsent note: retain the customer access qualification.",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Send",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Output templates",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Request draft",
+      "value": "",
+      "disabled": true,
+      "type": "button"
+    }
+  ],
+  "dimensions": {
+    "width": 1440,
+    "scrollWidth": 1440,
+    "reducedMotion": true
+  }
+}

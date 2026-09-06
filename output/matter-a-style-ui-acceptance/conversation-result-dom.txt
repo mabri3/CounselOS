@@ -1,0 +1,121 @@
+- banner:
+  - link "Themis.ai":
+    - /url: /
+    - img "Themis.ai"
+  - navigation "Main navigation":
+    - link "Today":
+      - /url: /
+    - link "Briefing":
+      - /url: /briefing
+    - link "Workspace":
+      - /url: /workspace
+    - link "Matters":
+      - /url: /matters
+    - link "Decisions":
+      - /url: /decisions
+    - link "Skills":
+      - /url: /skills
+    - link "Automations":
+      - /url: /automations
+    - link "Agents":
+      - /url: /agents
+    - link "Settings":
+      - /url: /settings
+  - region "View as":
+    - paragraph: Local demo
+    - heading "View as" [level=2]
+    - generic: View workspace as
+    - combobox "View workspace as":
+      - option "Alex Morgan · alex-morgan" [selected]
+      - option "Jamie Lee · jamie-lee"
+    - generic "About"
+- banner:
+  - generic: Waiting on you
+  - link "Matters":
+    - /url: /matters
+  - 'heading "Lumen Learning: US family launch with analytics and shared-device accounts" [level=1]'
+  - term: Stage
+  - definition: Respond
+  - term: Risk
+  - definition:
+    - generic: Lawyer-set risk
+    - combobox "Lawyer-set risk":
+      - option "Set risk" [selected]
+      - option "Low"
+      - option "Moderate"
+      - option "High"
+  - term: Due
+  - definition: No date
+  - generic "Tools and history"
+- region "Matter workspace":
+  - group "Matter workspace view":
+    - generic: Matter workspace view
+    - radio "Understand"
+    - generic "Read the current matter": Understand
+    - radio "Discuss" [checked]
+    - generic "Continue one matter conversation": Discuss
+    - radio "Draft"
+    - generic "Review and prepare work product": Draft
+  - generic "Discussion help"
+  - region "Matter conversation":
+    - status:
+      - generic: Inquiry scope
+      - strong: Matter context
+      - strong: Selected issue
+      - button "Clear scope"
+    - generic "Recent saved actions"
+    - strong: "Inquiry target:"
+    - text: Selected issue
+    - button "Clear target"
+    - button "Jump to latest answer"
+    - status:
+      - generic: Themis.ai · Completed
+      - generic: Chat is complete. Review the saved result below.
+    - generic: What must Product confirm before choosing the launch controls?
+    - generic: Themis.ai
+    - paragraph: Confirm audience age and the purpose of the persistent identifier. These facts determine the next analysis. Earlier fixture answer; no legal conclusion has been recorded.
+    - generic: Keep the identifier question separate from audience age.
+    - generic: Themis.ai
+    - paragraph:
+      - text: "Latest fixture answer: keep the audience and identifier questions separate. The supplied definitions explain child and persistent identifier terms"
+      - 'button "Source: SRC-COPPA · Child · source"'
+      - text: . Coverage and exceptions remain open. Read the [product specification](the saved file).
+    - generic: What would change your view?
+    - generic: Themis.ai
+    - paragraph:
+      - text: "Here is the useful first-pass view: start with the business objective and the decision that must be made, then identify the two or three facts that could change the path. The active matter context and source files are available in the workspace. In mock mode I can also move the matter, run a scaffolded research pass, create work items, audit decisions, and create basic schedules. Configure an OpenAI-compatible provider in"
+      - code: .env
+      - text: for model-generated analysis.
+    - 'button "Run inquiry: Which other matters does this touch?"'
+    - 'button "Run inquiry: What would change your view?"'
+    - button "Add files": +
+    - 'textbox "Ask Themis.ai about Lumen Learning: US family launch with analytics and shared-device accounts…"': "Explore a different assumption for this saved question (Q-DEMO-AUDIENCE): Audience age and the proposed launch to families with children younger than thirteen. No single linked reported fact is known; keep that uncertainty visible. Keep its linked issue context."
+    - button "Send"
+    - text: Themis.ai can research, draft and move this matter. It records a decision only when you explicitly ask it to.
+    - link "Build a skill":
+      - /url: /skills
+  - complementary "Available work product":
+    - heading "Available work product" [level=2]
+    - article:
+      - strong: Business reply
+      - paragraph: general · version 2e8b04795e5c6665b2b84dc814f6ac44bd23f8cd2af785182ac0e8204d198005
+      - generic: Saved work product
+      - button "Open work"
+    - article:
+      - strong: Launch advice
+      - paragraph: general · version 6201292b4e1b1b7bac34e23bf47d77904203dc84d4999d0894c40059624cc34b
+      - generic: Saved work product
+      - button "Open work"
+    - article:
+      - strong: Launch advice
+      - paragraph: general · version 17641835f7423853578086011671f84a7ab27ad866b99be98b919b64159578ea
+      - generic: Pending attorney review
+      - button "Open work"
+      - generic "Why this version changed"
+    - article:
+      - strong: Product control checklist
+      - paragraph: general · version ef96de891a73207f34dc4ffc9ffd99178fb24832b997265621f036e81fbedb20
+      - generic: Saved work product
+      - button "Open work"
+- button "Open Next.js Dev Tools":
+- alert

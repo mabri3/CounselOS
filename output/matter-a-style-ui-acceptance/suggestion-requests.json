@@ -1,0 +1,338 @@
+[
+  {
+    "time": "2026-09-05T22:18:26.364514+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/chat-runs",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:27.667816+00:00",
+    "method": "POST",
+    "path": "/api/matters/MAT-20260905-f025e4/chat-runs",
+    "query": "",
+    "status": 202
+  },
+  {
+    "time": "2026-09-05T22:18:27.993442+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/conversations/CONV-20260905-1a8401",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:27.993578+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/chat-runs",
+    "query": "conversation_id=CONV-20260905-1a8401",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:27.993689+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/chat-runs/RUN-20260905-811892",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:28.040956+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/chat-runs",
+    "query": "conversation_id=CONV-20260905-1a8401",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:28.062458+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/chat-runs/RUN-20260905-811892",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:28.084666+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/conversations/CONV-20260905-1a8401",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:28.086221+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/conversations/CONV-20260905-1a8401",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:28.110552+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/conversations/CONV-20260905-1a8401",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:28.123791+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:28.124148+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/conversations",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:28.124368+00:00",
+    "method": "OPTIONS",
+    "path": "/api/settings/research-queue/MAT-20260905-f025e4",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:28.125257+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/files",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:28.125520+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:28.207583+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/conversations",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:28.209107+00:00",
+    "method": "GET",
+    "path": "/api/settings/research-queue/MAT-20260905-f025e4",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:28.981311+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/files",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:29.173606+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:29.236271+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/scope",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:29.237019+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/orientation",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:29.237167+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/fact-requests",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:29.238621+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/handoffs",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:29.241053+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/mitigations",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:29.241250+00:00",
+    "method": "OPTIONS",
+    "path": "/api/review-packets",
+    "query": "limit=100",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:29.259134+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/fact-requests",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:29.272867+00:00",
+    "method": "GET",
+    "path": "/api/review-packets",
+    "query": "limit=100",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:29.287319+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/scope",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:29.321498+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/handoffs",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:30.103062+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/mitigations",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:30.233840+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:30.238191+00:00",
+    "method": "OPTIONS",
+    "path": "/api/skills/output-templates",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:30.239774+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/context",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:30.240256+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/scenarios",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:30.243053+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/flow",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:30.243581+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/reuse",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:30.245943+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/decision-map",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:30.248497+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/context/RUN-20260905-811892",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:30.288005+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/context",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:30.293078+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/flow",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:30.382880+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/context/RUN-20260905-811892",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:30.436611+00:00",
+    "method": "OPTIONS",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/drafts",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:30.578038+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/reuse",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:30.712361+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/scenarios",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:30.740113+00:00",
+    "method": "GET",
+    "path": "/api/skills/output-templates",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:30.902164+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/decision-map",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:30.926576+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/drafts",
+    "query": "",
+    "status": 200
+  },
+  {
+    "time": "2026-09-05T22:18:31.246930+00:00",
+    "method": "GET",
+    "path": "/api/matters/MAT-20260905-f025e4/workspace/orientation",
+    "query": "",
+    "status": 200
+  }
+]

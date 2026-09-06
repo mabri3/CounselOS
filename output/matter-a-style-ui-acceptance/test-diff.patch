@@ -1,0 +1,519 @@
+--- C0/frontend/scripts/check-decision-map.ts
++++ current/frontend/scripts/check-decision-map.ts
+@@ -3,6 +3,8 @@
+ import { runInNewContext } from "node:vm";
+ import ts from "typescript";
+ 
++const mapStyles = await readFile(new URL("../components/workspace/MatterMap.module.css", import.meta.url), "utf8");
++function cssRule(name: string) { return [...mapStyles.matchAll(new RegExp(`\\.${name}\\s*\\{([^}]+)\\}`, "g"))].map(match => match[1]).join(";"); }
+ type ElementNode = { type: unknown; props: Record<string, unknown> };
+ type ModuleExports = Record<string, unknown> & { default?: (props: Record<string, unknown>) => ElementNode };
+ 
+@@ -13,6 +15,7 @@
+   runInNewContext(output, { exports: module.exports, module, require: (name: string) => {
+     if (name === "react/jsx-runtime") return { Fragment: "Fragment", jsx, jsxs: jsx };
+     if (name === "react") return { useEffect: () => undefined, useMemo: (fn: () => unknown) => fn(), useRef: (value: unknown) => ({ current: value }), useState: (value: unknown) => [value, () => undefined] };
++    if (name.endsWith(".module.css")) return { __esModule: true, default: new Proxy({}, { get: (_target, key) => String(key) }) };
+     return modules[name] ?? {};
+   } });
+   return module.exports;
+@@ -125,7 +128,8 @@
+ assert.match(mapText, /Resolved source detail slot[\s\S]*Hypothetical · Agent analysis/, "selected detail and scenario content render outside the canvas");
+ assert.match(mapText, /Claim references: CLM-AGE, CLM-OPERATOR/, "claim IDs remain a truthful fallback without an invented document target");
+ assert.match(mapText, /This condition is unknown\. It does not select an active path\./, "the selected unknown condition does not imply an active branch");
+-assert.ok(mapText.indexOf("Selected question") < mapText.indexOf("Map outline"), "selected details appear before the long whole-matter outline");
++assert.ok(mapText.indexOf("Map outline") < mapText.indexOf("Selected Question"), "whole-matter mode leads with the complete readable outline");
++assert.ok(mapText.indexOf("Resolved source detail slot") < mapText.indexOf("Show visual map"), "selected support remains outside the optional visual map");
+ assert.ok(mapNodes.some((node) => node.type === "button" && String(node.props["aria-label"] || "").includes("Who is the audience?")), "the visual map has a keyboard-selectable node");
+ (mapNodes.find((node) => node.type === "button" && text(node) === "Try a different assumption")!.props.onClick as () => void)();
+ assert.equal(JSON.stringify(scenario), JSON.stringify({ issue_id: "ISS-AGE", question_id: "Q-AUDIENCE", fact_id: null }), "hypothetical action reports only the selected saved IDs");
+@@ -143,35 +147,36 @@
+ const presentationMap = layoutDecisionMap(presentationSnapshot);
+ const presentationTree = DecisionMap({ snapshot: presentationSnapshot, layout: presentationMap, selectedNodeId: null, scope: "whole_matter", onSelectNode: () => undefined, onScopeChange: () => undefined, onFit: () => undefined, onOpenDocument: () => undefined, onDiscuss: () => undefined, onTryDifferentAssumption: () => undefined, onBackToIssue: () => undefined });
+ const presentationNodesTree = expand(presentationTree);
+-const outlineSummary = presentationNodesTree.find((node) => node.type === "summary" && text(node).includes("Map outline"))!;
+-const outlineSummaryStyle = outlineSummary.props.style as Record<string, unknown>;
+-assert.equal(outlineSummaryStyle.whiteSpace, "normal", "the collapsed outline control can wrap at narrow widths");
+-assert.equal(outlineSummaryStyle.overflowWrap, "anywhere", "the collapsed outline control breaks unspaced record counts safely");
++const visualSummary = presentationNodesTree.find((node) => node.type === "summary" && text(node).includes("Show visual map"));
++assert.ok(visualSummary, "the visual map is optional while the full outline stays available");
++assert.ok(presentationNodesTree.some(node => node.type === "h2" && text(node) === "Map outline"));
+ const longLabelButton = presentationNodesTree.find((node) => node.type === "button" && String(node.props["aria-label"] || "").includes(longLabel))!;
+ const longLabelStyle = longLabelButton.props.style as Record<string, unknown>;
+ assert.equal(longLabelButton.props.title, longLabel, "the canvas keeps the full source label in its title");
+ assert.equal(longLabelStyle.height, presentationMap.nodes.find((node) => node.node_id === "issue:UNRESOLVED")!.height, "a long canvas label cannot grow beyond its allocated layout height");
+-assert.equal(longLabelStyle.overflow, "hidden", "a long canvas label is clipped inside its allocated layout bounds");
++assert.ok(String(longLabelButton.props.className).includes("canvasNode"));
++assert.match(cssRule("canvasNode"), /overflow:\s*hidden/, "a long canvas label is clipped inside its allocated layout bounds");
+ assert.notEqual(longLabelStyle.background, "var(--healthy-wash)", "the exact unresolved semantic state is not styled as healthy");
+ assert.match(text(longLabelButton), /…/, "the canvas uses a deterministic short label while the full label remains available elsewhere");
+ const presentationOutline = DecisionMapOutline({ nodes: presentationMap.nodes, edges: presentationMap.edges, selectedNodeId: null, onSelectNode: () => undefined, onOpenDocument: () => undefined, onDiscuss: () => undefined, matterId: "MAT-PRESENTATION" });
+ assert.match(text(presentationOutline), new RegExp(longLabel), "the outline retains the full source label");
+ const presentationOutlineNodes = expand(presentationOutline);
+ const outlineRecord = presentationOutlineNodes.find((node) => node.type === "button" && text(node).includes(longLabel))!;
+-const outlineRecordStyle = outlineRecord.props.style as Record<string, unknown>;
+-assert.equal(outlineRecordStyle.whiteSpace, "normal", "outline record controls override the shared no-wrap button style");
+-assert.equal(outlineRecordStyle.overflowWrap, "anywhere", "outline record controls wrap long saved labels");
+-assert.equal(outlineRecordStyle.minWidth, 0, "outline record controls can shrink to the card width");
++assert.ok(String(outlineRecord.props.className).includes("outlineSelect"));
++for (const selector of ["outlineSelect", "outlineDiscuss"]) {
++  assert.match(cssRule(selector), /white-space:\s*normal/, "outline controls wrap");
++  assert.match(cssRule(selector), /overflow-wrap:\s*anywhere/, "unspaced labels wrap");
++  assert.match(cssRule(selector), /min-width:\s*0/, "controls can shrink");
++  assert.match(cssRule(selector), /max-width:\s*100%/, "controls remain bounded");
++}
+ const outlineDiscuss = presentationOutlineNodes.find((node) => node.type === "button" && text(node) === "Discuss this path")!;
+-const outlineDiscussStyle = outlineDiscuss.props.style as Record<string, unknown>;
+-assert.equal(outlineDiscussStyle.whiteSpace, "normal", "outline action controls wrap at narrow widths");
+-assert.equal(outlineDiscussStyle.maxWidth, "100%", "outline action controls stay within the card width");
++assert.ok(String(outlineDiscuss.props.className).includes("outlineDiscuss"));
+ const longRelationship = "supports this deliberately long relationship label that must remain fully visible inside the outline card";
+ const relationshipOutline = DecisionMapOutline({ nodes: presentationMap.nodes, edges: [{ edge_id: "LONG-RELATIONSHIP", from_node_id: "issue:UNRESOLVED", to_node_id: "issue:NEXT", relationship: "supports", label: longRelationship, state: "historical" }], selectedNodeId: null, onSelectNode: () => undefined, onOpenDocument: () => undefined, onDiscuss: () => undefined, matterId: "MAT-PRESENTATION" });
+ const relationshipRow = expand(relationshipOutline).find((node) => node.type === "li" && text(node).includes(longRelationship))!;
+-const relationshipRowStyle = relationshipRow.props.style as Record<string, unknown>;
+-assert.equal(relationshipRowStyle.overflowWrap, "anywhere", "relationship rows wrap long saved labels");
+-assert.equal(relationshipRowStyle.minWidth, 0, "relationship rows can shrink to the card width");
++assert.ok(String(relationshipRow.props.className).includes("outlineRelationship"));
++assert.match(mapStyles, /\.outlineRelationship\s*\{[^}]*overflow-wrap:\s*anywhere/, "relationship labels wrap");
++assert.match(cssRule("outlineRelationship"), /min-width:\s*0/, "relationship rows can shrink");
+ 
+ for (const source of [layoutSource, componentSource]) {
+   assert.doesNotMatch(source, /localStorage|fetch\(|saveDocument|deleteDocument/, "map presentation does not persist or infer records");
+--- C0/frontend/scripts/check-document-navigation.ts
++++ current/frontend/scripts/check-document-navigation.ts
+@@ -119,9 +119,9 @@
+   onDiscardLocalEdit: (documentId: string) => { discarded = documentId; },
+ });
+ const tabNodes = expand(tabsTree);
+-assert.equal(text(tabsTree).includes("Local edits retained"), true, "a dirty tab says its local edit is retained");
++assert.equal(text(tabsTree).includes("Unsaved"), true, "a dirty tab explicitly says its edit is unsaved");
+ assert.equal(text(tabsTree).includes("More open documents (1)"), true, "overflow remains accessible by a native disclosure");
+-const currentTab = tabNodes.find((node) => node.type === "button" && text(node).includes("Launch replyEditing draft · Local edits retained"))!;
++const currentTab = tabNodes.find((node) => node.type === "button" && text(node).includes("Launch replyEditing draft· Unsaved"))!;
+ (currentTab.props.onClick as () => void)();
+ assert.equal(selected, "DOC-DRAFT-CURRENT");
+ const closeDirty = tabNodes.find((node) => node.type === "button" && String(node.props["aria-label"] || "").includes("Local edits will be retained"))!;
+--- C0/frontend/scripts/check-matter-a-navigation.ts
++++ current/frontend/scripts/check-matter-a-navigation.ts
+@@ -0,0 +1,103 @@
++import assert from "node:assert/strict";
++import { readFileSync } from "node:fs";
++import { runInNewContext } from "node:vm";
++import ts from "typescript";
++
++type Node = { type: unknown; props: Record<string, unknown> };
++const jsx = (type: unknown, props: Record<string, unknown>) => ({ type, props });
++const source = readFileSync(new URL("../components/workspace/MatterSectionNav.tsx", import.meta.url), "utf8");
++const module = { exports: {} as { default: (props: Record<string, unknown>) => Node } };
++runInNewContext(ts.transpileModule(source, {
++  fileName: "MatterSectionNav.tsx",
++  compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true },
++}).outputText, { module, exports: module.exports, require: (name: string) => {
++  if (name === "react/jsx-runtime") return { jsx, jsxs: jsx, Fragment: "Fragment" };
++  if (name.endsWith(".module.css")) return {};
++  throw new Error(`Unexpected dependency in presentation-only section navigation: ${name}`);
++} });
++function flatten(value: unknown): Node[] {
++  if (Array.isArray(value)) return value.flatMap(flatten);
++  if (!value || typeof value !== "object") return [];
++  const node = value as Node;
++  return [node, ...flatten(node.props?.children)];
++}
++function text(value: unknown): string {
++  if (typeof value === "string" || typeof value === "number") return String(value);
++  if (Array.isArray(value)) return value.map(text).join("");
++  if (!value || typeof value !== "object") return "";
++  return text((value as Node).props?.children);
++}
++const entries = Object.freeze([
++  { id: "matter-A-evidence", label: "Evidence and question history" },
++  { id: "matter-A-explore", label: "Explore and business flow" },
++  { id: "matter-A-materials", label: "Materials and activity" },
++]);
++const calls: string[] = [];
++const tree = module.exports.default({ entries, onReveal: (id: string) => calls.push(id) });
++assert.equal(calls.length, 0, "rendering the section index must not execute an action");
++const buttons = flatten(tree).filter(node => node.type === "button");
++assert.equal(buttons.length, entries.length, "every supplied destination gets exactly one native button");
++for (const [index, button] of buttons.entries()) {
++  assert.equal(button.props.type, "button", "section navigation must not submit an enclosing form");
++  assert.ok(text(button).includes(entries[index].label), "each destination retains its full supplied label");
++  (button.props.onClick as () => void)();
++  assert.equal(calls.length, index + 1, "one click must invoke reveal exactly once");
++  assert.equal(calls[index], entries[index].id, "reveal receives the exact stable matter destination ID");
++}
++assert.deepEqual(entries.map(e => e.id), ["matter-A-evidence", "matter-A-explore", "matter-A-materials"], "navigation must not mutate its supplied entries");
++console.log("Matter A section navigation behavior checks passed.");
++
++const workspaceSource = readFileSync(new URL("../components/MatterWorkspace.tsx", import.meta.url), "utf8");
++const workspaceAst = ts.createSourceFile("MatterWorkspace.tsx", workspaceSource, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
++let revealSource = "";
++function findReveal(node: import("typescript").Node) {
++  if (ts.isVariableDeclaration(node) && node.name.getText(workspaceAst) === "revealMatterSection" && node.initializer && ts.isCallExpression(node.initializer)) revealSource = node.initializer.arguments[0].getText(workspaceAst);
++  ts.forEachChild(node, findReveal);
++}
++findReveal(workspaceAst);
++assert.ok(revealSource, "test the actual integration callback");
++for (const destination of ["evidence", "explore", "reuse", "work", "materials"]) {
++  const events: string[] = [];
++  class Details {
++    parentElement: any;
++    private opened = false;
++    set open(value: boolean) { this.opened = value; events.push("open"); }
++    get open() { return this.opened; }
++  }
++  const root = { contains: (value: unknown) => value === target };
++  const ancestor = new Details(); ancestor.parentElement = root;
++  const children = [new Details(), new Details()];
++  const nestedClosed = new Details();
++  const nestedOpen = new Details(); nestedOpen.open = true;
++  const focusTarget = { tagName: "SUMMARY", hasAttribute: () => false, focus: () => events.push("focus") };
++  const target = Object.assign(destination === "explore" ? {} : new Details(), {
++    parentElement: ancestor,
++    children,
++    querySelector: () => focusTarget,
++    querySelectorAll: (selector: string) => selector === ":scope > details" ? children : [...children, nestedClosed, nestedOpen],
++    scrollIntoView: (options: { behavior: string }) => { assert.equal(options.behavior, "auto", "new section jumps must not force animation for reduced motion"); events.push("scroll"); },
++  });
++  let frame: (() => void) | null = null;
++  const sandbox = {
++    detail: { matter_id: "A" }, HTMLDetailsElement: Details,
++    document: { getElementById: (id: string) => id === "matter-A" ? root : id === `matter-A-${destination}` ? target : null },
++    window: { requestAnimationFrame: (fn: () => void) => { frame = fn; } },
++    reveal: null as any,
++  };
++  runInNewContext(ts.transpileModule(`reveal = ${revealSource};`, { compilerOptions: { target: ts.ScriptTarget.ES2022 } }).outputText, sandbox);
++  sandbox.reveal(`matter-A-${destination}`);
++  assert.equal(ancestor.open, true, "closed ancestors must open before focus");
++  if (destination === "explore") {
++    assert.ok(children.every(child => child.open), "both direct exploration disclosures must open");
++    assert.equal(nestedClosed.open, false, "section navigation must not expand nested fact correction or scenario details");
++    assert.equal(nestedOpen.open, true, "section navigation must preserve already-open nested disclosures");
++  }
++  else assert.equal((target as Details).open, true);
++  assert.ok(!events.includes("focus"), "focus waits until the disclosure layout can update");
++  assert.ok(frame); (frame as () => void)();
++  assert.deepEqual(events.slice(-2), ["focus", "scroll"]);
++  const count = events.length;
++  sandbox.reveal("matter-OTHER-materials");
++  assert.equal(events.length, count, "another matter cannot be revealed");
++}
++console.log("Matter A integration reveals closed ancestors before focus and scroll.");
+--- C0/frontend/scripts/check-middle-pane-accordion.ts
++++ current/frontend/scripts/check-middle-pane-accordion.ts
+@@ -1,48 +1,59 @@
+ import assert from "node:assert/strict";
+ import { readFileSync } from "node:fs";
++import { runInNewContext } from "node:vm";
++import ts from "typescript";
++import React from "react";
++import { renderToStaticMarkup } from "react-dom/server";
+ 
+ const workspace = readFileSync(new URL("../components/MatterWorkspace.tsx", import.meta.url), "utf8");
++const layout = readFileSync(new URL("../components/workspace/DraftWorkspace.tsx", import.meta.url), "utf8");
+ const documentPanel = readFileSync(new URL("../components/DocumentPanel.tsx", import.meta.url), "utf8");
+-const styles = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
++const styles = readFileSync(new URL("../components/workspace/MatterA.module.css", import.meta.url), "utf8");
+ 
+-assert.match(workspace, /useState<"overview" \| "chat">\(\(\) =>/);
+-assert.match(workspace, /detail\.intake_state === "active" \? "chat" : "overview"/, "only active intake opens Chat initially");
+-assert.doesNotMatch(workspace, /detail\.intake_conversation_id \|\| detail\.intake_state === "active"/, "a saved intake conversation alone must not hide Overview");
+-assert.match(workspace, />\s*Overview\s*</);
+-assert.match(workspace, />\s*Chat\s*</);
+-assert.match(workspace, /aria-controls="matter-overview-panel"/);
+-assert.match(workspace, /aria-controls="matter-chat-panel"/);
+-assert.match(workspace, /id="matter-overview-panel"[\s\S]*?role="region"/);
+-assert.match(workspace, /id="matter-chat-panel"[\s\S]*?role="region"/);
+-assert.match(workspace, /aria-labelledby="matter-overview-toggle"/);
+-assert.match(workspace, /aria-labelledby="matter-chat-toggle"/);
+-assert.equal((workspace.match(/<ChatPanel/g) ?? []).length, 1, "ChatPanel must have one persistent instance");
+-assert.doesNotMatch(workspace, /Focus conversation/);
++// The old Overview/Chat accordion has become three persistent view slots.
++assert.equal((workspace.match(/<ChatPanel\b/g) ?? []).length, 1, "one persistent conversation");
++assert.equal((workspace.match(/<DraftWorkspace\b/g) ?? []).length, 1, "one workspace frame");
++assert.match(workspace, /detail\.intake_state === "active" \? "chat" : "overview"/);
++assert.doesNotMatch(workspace, /detail\.intake_conversation_id \|\| detail\.intake_state === "active"/);
++assert.match(workspace, /onNewChat=\{\(\) => \{[\s\S]*?setWorkspaceView\("discuss"\)[\s\S]*?setConversationSeed/);
++assert.match(workspace, /function openChatWithSeed\(text: string\)[\s\S]*?setMiddleSection\("chat"\)[\s\S]*?setChatSeed/);
++assert.match(workspace, /function selectMatterItem\(path: string\)[\s\S]*?openDocument\(path\)/);
++assert.match(workspace, /onOpenDocument=\{openDocument\}/);
++assert.doesNotMatch(workspace, /focusResearch && researchPath \? researchPath : canonicalDraftPath/);
++assert.match(documentPanel, /if \(!activePath\) return null;/, "no blank document pane");
++assert.match(workspace, /onClose=\{\(\) => \{[\s\S]*?setActivePath\(null\)/);
++assert.match(documentPanel, /aria-label="Close document"/);
++assert.match(documentPanel, /function requestClose\(\)[\s\S]*?if \(dirty\)[\s\S]*?onSnapshot\?\.\(recoverableLocalEditorSnapshot\([\s\S]*?dirty: true[\s\S]*?onClose\(\)/, "closing dirty text preserves a recoverable snapshot before closing");
++assert.match(layout, /type="radio" value=\{item.id\}/);
++assert.match(layout, /onChange=\{\(\) => props.onViewChange\(item.id\)\}/);
+ 
+-const savedConversation = workspace.indexOf("const conversationId = conversationIdFromPath(path)");
+-const savedConversationOpensChat = workspace.indexOf('setMiddleSection("chat")', savedConversation);
+-const savedConversationSeed = workspace.indexOf("setConversationSeed", savedConversation);
+-assert.ok(savedConversationOpensChat > savedConversation && savedConversationOpensChat < savedConversationSeed);
+-
+-const newChat = workspace.indexOf("onNewChat={() =>");
+-assert.ok(workspace.indexOf('setMiddleSection("chat")', newChat) > newChat);
+-assert.match(workspace, /function openChatWithSeed\(text: string\)[\s\S]*?setMiddleSection\("chat"\)[\s\S]*?setChatSeed/);
+-assert.match(workspace, /const documentVisible = Boolean\(activePath\)/, "the document pane must depend on an actual selected path");
+-assert.match(workspace, /\.\.\.\(documentVisible[\s\S]*?paneWeights\.document/, "the grid must not reserve an empty document column");
+-assert.match(workspace, /\{documentVisible \? \([\s\S]*?document-pane-shell[\s\S]*?DocumentPanel/, "the work surface must render only for a selected document");
+-assert.match(workspace, /function selectMatterItem\(path: string\)[\s\S]*?openDocument\(path\)/, "a file click in the left pane must open the work surface");
+-assert.match(workspace, /onOpenDocument=\{openDocument\}/, "agent and user artifact actions must open the work surface through the same path");
+-assert.doesNotMatch(workspace, /focusResearch && researchPath \? researchPath : canonicalDraftPath/, "an existing draft must not open the work surface without a request");
+-assert.match(documentPanel, /if \(!activePath\) return null;/, "DocumentPanel must not render an empty placeholder");
+-assert.match(workspace, /onClose=\{\(\) => \{[\s\S]*?setActivePath\(null\)[\s\S]*?setTreeActivePath\(null\)/, "closing a document must clear the selected work surface");
+-assert.match(documentPanel, /aria-label="Close document"/, "the document bar must provide a clear close control");
+-assert.match(documentPanel, /dirty[\s\S]*?setClosePromptOpen\(true\)/, "closing a modified document must ask what to do");
+-assert.match(documentPanel, /Save and close/, "the close prompt must offer to save changes");
+-assert.match(documentPanel, />Close without saving</, "the close prompt must offer to discard changes");
+-assert.match(documentPanel, />Cancel</, "the close prompt must let the user keep editing");
+-assert.match(styles, /\.middle-section\.active\s*\{[^}]*flex:\s*1 1 0/);
+-assert.match(styles, /\.middle-section-panel\[hidden\]\s*\{\s*display:\s*none/);
+-assert.match(styles, /@media \(max-width: 1024px\)[\s\S]*?\.middle-section\.active\s*\{[^}]*min-height:\s*min\(640px, calc\(100vh - 140px\)\)/);
+-assert.match(styles, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.matter-panes\s*\{\s*transition:\s*none/);
+-
+-console.log("Middle-pane accordion checks passed.");
++const ast = ts.createSourceFile("DraftWorkspace.tsx", layout, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
++const wrappers: Record<string, string> = {};
++function visit(node: import("typescript").Node) {
++  if (ts.isJsxElement(node)) for (const attr of node.openingElement.attributes.properties) {
++    if (ts.isJsxAttribute(attr) && attr.name.getText(ast) === "className" && attr.initializer && ts.isStringLiteral(attr.initializer)) {
++      const slot = attr.initializer.text.replace("draft-workspace__", "");
++      if (["understand", "editor", "conversation"].includes(slot)) wrappers[slot] = node.getText(ast);
++    }
++  }
++  ts.forEachChild(node, visit);
++}
++visit(ast);
++assert.deepEqual(Object.keys(wrappers).sort(), ["conversation", "editor", "understand"]);
++for (const view of ["understand", "draft", "discuss"]) for (const expanded of [false, true]) {
++  const conversationVisible = view === "discuss" || expanded;
++  for (const [slot, jsx] of Object.entries(wrappers)) {
++    const props = { view, understand: "READING RETAINED", editor: "EDIT RETAINED", conversation: "CHAT RETAINED" };
++    const code = ts.transpileModule(`result = (${jsx});`, { compilerOptions: { jsx: ts.JsxEmit.React, target: ts.ScriptTarget.ES2022 } }).outputText;
++    const sandbox = { React, props, conversationVisible, result: null as any };
++    runInNewContext(code, sandbox);
++    const html = renderToStaticMarkup(sandbox.result);
++    const hidden = slot === "understand" ? view !== "understand" : slot === "editor" ? view !== "draft" : !conversationVisible;
++    assert.equal(html.includes('hidden=""'), hidden, `${view}/${slot} visibility`);
++    assert.equal(sandbox.result.props["aria-hidden"], hidden);
++    assert.ok(html.includes(slot === "understand" ? props.understand : slot === "editor" ? props.editor : props.conversation), "hidden slots must retain their child");
++  }
++}
++assert.match(styles, /@media \(max-width: 900px\)[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)/, "narrow editor and reference stack");
++assert.match(styles, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?transition:\s*none/);
++console.log("Persistent workspace view, document close, and responsive checks passed.");
+--- C0/frontend/scripts/check-output-templates.ts
++++ current/frontend/scripts/check-output-templates.ts
+@@ -1,10 +1,11 @@
+ import assert from "node:assert/strict";
+ import { readFile } from "node:fs/promises";
+ 
+-const [library, editor, types] = await Promise.all([
++const [library, editor, types, toolStyles] = await Promise.all([
+   readFile(new URL("../components/workspace/OutputTemplateLibrary.tsx", import.meta.url), "utf8"),
+   readFile(new URL("../components/workspace/OutputTemplateEditor.tsx", import.meta.url), "utf8"),
+   readFile(new URL("../lib/workspaceTypes.ts", import.meta.url), "utf8"),
++  readFile(new URL("../components/workspace/MatterTools.module.css", import.meta.url), "utf8"),
+ ]);
+ 
+ assert.match(library, /new Set\(templates\.map/, "the library must show output types from actual template records");
+@@ -48,9 +49,10 @@
+ assert.match(types, /status\?: string;[\s\S]*failure_detail\?: string \| null;[\s\S]*template_id/, "malformed template state must be part of the shared contract");
+ 
+ for (const source of [library, editor]) {
++  assert.match(source, /import styles from "\.\/MatterTools\.module\.css"/);
+   assert.doesNotMatch(source, /#[0-9a-fA-F]{3,8}/, "template UI must use shared semantic color tokens");
+-  assert.match(source, /@media \(max-width:/, "template UI must adapt to a small screen");
+-  assert.match(source, /prefers-reduced-motion/, "template UI must respect reduced motion");
++  assert.match(toolStyles, /@media \(max-width:/, "template UI must adapt to a small screen");
++  assert.match(toolStyles, /prefers-reduced-motion/, "template UI must respect reduced motion");
+ }
+ 
+ console.log("Output template checks passed.");
+--- C0/frontend/scripts/check-review-layout.ts
++++ current/frontend/scripts/check-review-layout.ts
+@@ -117,11 +117,11 @@
+ });
+ const orientationNodes = children(orientationTree) as ElementNode[];
+ const orientationButtons = orientationNodes.filter((node) => node.type === "button");
+-assert.match(textContent(orientationTree), /Business question[\s\S]*Working answer · Agent work[\s\S]*Qualification[\s\S]*One next action/, "orientation keeps question, answer, qualification, and one action in reading order");
+-assert.equal(textContent(orientationTree).includes("All issues (6)"), true, "the complete issue list remains one action away");
++assert.match(textContent(orientationTree), /Business question[\s\S]*Working answer · Agent work[\s\S]*Material qualification[\s\S]*One next action/, "orientation keeps question, answer, qualification, and one action in reading order");
++assert.equal(textContent(orientationTree).includes("View all issues (6)"), true, "the complete issue list remains one action away");
+ (orientationButtons.find((button) => textContent(button) === "Review age question")!.props.onClick as () => void)();
+ assert.equal(reviewOpen, "ISS-AGE");
+-(orientationButtons.find((button) => textContent(button) === "All issues (6)")!.props.onClick as () => void)();
++(orientationButtons.find((button) => textContent(button) === "View all issues (6)")!.props.onClick as () => void)();
+ assert.equal(showedAll, 1);
+ 
+ const supportedOpening = `The service can launch only after the school confirms the age route [source:SRC-COPPA|16 C.F.R. 312.2].\n\n${"Later analysis must stay below the fold. ".repeat(40)}`;
+@@ -142,7 +142,7 @@
+ const longOrientationText = textContent(longOrientationTree);
+ assert.equal(collapsedRenderedText, supportedPreview.text, "the collapsed source renderer receives only the complete preview");
+ assert.equal(longOrientationText.includes("Later analysis must stay below the fold"), false, "later answer paragraphs are not mounted while collapsed");
+-assert.match(longOrientationText, /Read full answer[\s\S]*Qualification[\s\S]*One next action/, "the next action remains in the collapsed first-screen tree");
++assert.match(longOrientationText, /Read full answer[\s\S]*Material qualification[\s\S]*One next action/, "the next action remains in the collapsed first-screen tree");
+ assert.equal((children(longOrientationTree) as ElementNode[]).filter((node) => node.type === "a").length, 1, "only preview citation content can be focusable while collapsed");
+ 
+ const expandedOrientationModule = loadComponent(orientationSource, "OrientationSummary.tsx", {
+--- C0/frontend/scripts/check-transport-preservation.ts
++++ current/frontend/scripts/check-transport-preservation.ts
+@@ -294,7 +294,7 @@
+   React, ...parentBase, contextKey: "vault-a:alex:MAT-1", actor: { person_id: "alex", display_name: "Alex Morgan", mode: "demo" }, recommendationSelected: false, selectedSavedDraft: selectedArtifact,
+   workspace: { documents: [selectedDocument], question: { revision: "question-v1" } }, activeDocument: selectedDocument, openDocuments: [selectedDocument], localEdits: { [selectedDocument.document_id]: selectedLocalEdit }, referenceTarget: null,
+   researchQueue: [{ state: "running" }], savedResearch: { activeCount: 1, savedPacketCount: 2 }, busy: false,
+-  prepareResearchDraftUpdate: () => {}, activePath: selectedArtifact.path, editorRefresh: 0, setEditorSnapshot: () => {}, openDocumentIdentity: () => {},
++  prepareResearchDraftUpdate: () => {}, activePath: selectedArtifact.path, editorRefresh: 0, setEditorSnapshot: () => {}, handleEditorSnapshot: () => {}, openDocumentIdentity: () => {},
+   reviewAuthor: { name: "Lawyer", setName: () => {} }, reviewSettings: { lawyer: "Lawyer" }, upload: () => {},
+   DocumentNavigator: (props: any) => { assert.equal(props.documents[0].document_id, selectedDocument.document_id); assert.equal(props.activeDocumentId, selectedDocument.document_id); assert.equal(props.activeDocumentRevision, "content-v2"); return React.createElement("nav", { "aria-label": "Documents" }, "Selected clause"); },
+   DocumentTabs: (props: any) => { assert.equal(props.documents[0].document_id, selectedDocument.document_id); assert.equal(props.activeDocumentId, selectedDocument.document_id); assert.equal(props.localEdits[selectedDocument.document_id].base_revision, "content-v2"); return React.createElement("nav", { "aria-label": "Open documents" }, "Selected clause · Local edits retained"); },
+@@ -333,7 +333,7 @@
+ findSeedCallbacks(chatAst); assert.ok(seedEffect); assert.ok(appendRequest);
+ for (const existingText of ["", "My unsent next message"]) {
+   let composerText = existingText; let pendingSeed: string | null = null;
+-  const bindings: Record<string, any> = { seed: { text: preparedSeed, revision: 1 }, composerValue: { current: existingText }, setInput: (value: any) => { composerText = typeof value === "function" ? value(composerText) : value; }, setPreparedRequest: (value: string | null) => { pendingSeed = value; }, requestAnimationFrame: () => {}, inputRef: { current: null } };
++  const bindings: Record<string, any> = { window: { localStorage: { getItem: () => null } }, inputStorageKey: "test-composer", seed: { text: preparedSeed, revision: 1 }, composerValue: { current: existingText }, setInput: (value: any) => { composerText = typeof value === "function" ? value(composerText) : value; }, setPreparedRequest: (value: string | null) => { pendingSeed = value; }, requestAnimationFrame: () => {}, inputRef: { current: null } };
+   const effect = parentModule(`export const receiveSeed = ${seedEffect}`, bindings);
+   await effect.receiveSeed();
+   assert.equal(composerText, existingText || preparedSeed, "a seed must preserve a nonempty composer and still fill an empty composer");
+--- C0/frontend/scripts/check-workspace-drafting.ts
++++ current/frontend/scripts/check-workspace-drafting.ts
+@@ -3,10 +3,11 @@
+ import { runInNewContext } from "node:vm";
+ import { canPersistWorkspaceDraftingPreferences, defaultWorkspaceDraftingPreferences, matchingLocalEditorSnapshot, newWorkspaceDraftActionKey, normalizeWorkspaceDraftingPreferences, readWorkspaceDraftingPreferences, restoredOutputTemplate, reusableWorkspaceDraftActionKey, shouldOpenCompletedDraft, WorkspaceDraftingActionTracker, workspaceDraftRequestFingerprint, workspaceDraftingStorageKey, writeWorkspaceDraftingPreferences } from "../lib/workspaceDrafting.ts";
+ 
+-const [dock, workspace, types] = await Promise.all([
++const [dock, workspace, types, frameStyles] = await Promise.all([
+   readFile(new URL("../components/workspace/ConversationDock.tsx", import.meta.url), "utf8"),
+   readFile(new URL("../components/workspace/DraftWorkspace.tsx", import.meta.url), "utf8"),
+   readFile(new URL("../lib/workspaceTypes.ts", import.meta.url), "utf8"),
++  readFile(new URL("../components/workspace/MatterA.module.css", import.meta.url), "utf8"),
+ ]);
+ 
+ class MemoryStorage {
+@@ -99,8 +100,8 @@
+ assert.match(workspace, /offerState === "declined"[\s\S]*Earlier facts · Draft retained[\s\S]*Ask in the conversation to request an update\./, "a declined update must keep the earlier-facts indicator and point to the normal conversation path");
+ assert.match(workspace, /Retain copy[\s\S]*Open current[\s\S]*Rebase draft/, "proposal conflicts must offer recoverable choices");
+ assert.match(workspace, /draftResult\.proposal_path[\s\S]*submittedArtifact\.current[\s\S]*Retain copy/, "a returned draft conflict must keep recovery choices beside its saved proposal");
+-assert.match(workspace, /@media \(max-width: 430px\)/, "the layout must have a 390px-safe small-screen rule");
+-assert.match(workspace, /@media \(max-width: 760px\)[\s\S]*?\.draft-workspace__conversation \{ position: static;[\s\S]*?max-height: none;[\s\S]*?overflow: visible;/, "narrow reading views must keep the one conversation in normal flow instead of overlaying the question");
++assert.match(frameStyles, /@media \(max-width: 760px\)/, "the layout must have a 390px-safe small-screen rule");
++assert.match(frameStyles, /@media \(max-width: 900px\)[\s\S]*?\.draft-workspace__conversation[\s\S]*?position: static;[\s\S]*?max-height: none;[\s\S]*?overflow: visible;/, "narrow reading views must keep the one conversation in normal flow instead of overlaying the question");
+ assert.match(types, /onKeepPreview[\s\S]*onUpdateOfferAction[\s\S]*onResolveDraftConflict/, "the draft layout must use the shared explicit action callbacks");
+ 
+ const React = await import("react");
+@@ -118,7 +119,7 @@
+   .replace(/import type \{[^;]+;\n/, "")
+   .replace("<style jsx>{", "<style>{");
+ runInNewContext(ts.transpileModule(renderedSource, { fileName: "DraftWorkspace.tsx", compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.React } }).outputText, {
+-  React, exports: renderedModule.exports,
++  React, exports: renderedModule.exports, require: (name: string) => { assert.ok(name.endsWith(".module.css")); return { default: {} }; },
+   workspaceDrafting: {
+     canPersistWorkspaceDraftingPreferences: () => false, matchingLocalEditorSnapshot: () => null, newWorkspaceDraftActionKey: () => "draft:1", readWorkspaceDraftingPreferences: () => ({}), restoredOutputTemplate: () => null, reusableWorkspaceDraftActionKey: () => "draft:1", shouldOpenCompletedDraft: () => false, WorkspaceDraftingActionTracker: ActionTracker, workspaceDraftRequestFingerprint: () => "", writeWorkspaceDraftingPreferences: () => {},
+   },
+--- C0/frontend/scripts/check-workspace-exploration.ts
++++ current/frontend/scripts/check-workspace-exploration.ts
+@@ -3,11 +3,12 @@
+ import { resolve } from "node:path";
+ 
+ const root = resolve(import.meta.dirname, "..");
++const explorationStyles = readFileSync(resolve(root, "components/workspace/MatterExplore.module.css"), "utf8");
+ const scenario = readFileSync(resolve(root, "components/workspace/ScenarioPanel.tsx"), "utf8");
+ const flow = readFileSync(resolve(root, "components/workspace/BusinessFlow.tsx"), "utf8");
+ const inquiry = readFileSync(resolve(root, "components/workspace/InquiryActions.tsx"), "utf8");
+ 
+-assert.match(scenario, /onCreate\(\{[\s\S]*baseline_revisions: currentRevisions/, "scenario creation must freeze the current baseline");
++assert.match(scenario, /onCreate\(\{[\s\S]*baseline_revisions: input.currentRevisions/, "scenario creation must freeze the current baseline");
+ assert.match(scenario, /Actual matter facts are unchanged/, "scenario creation must state its historical boundary");
+ assert.match(scenario, /new Set\(\[\.\.\.Object\.keys\(scenario\.baseline_revisions\), \.\.\.Object\.keys\(current\)\]\)/, "stale comparison must include sources added after a scenario baseline");
+ assert.match(scenario, /hasCompleteBaseline[\s\S]*Baseline unavailable/, "a missing baseline must not be labelled complete");
+@@ -19,8 +20,8 @@
+ assert.match(scenario, /LONG_ANALYSIS_CHARACTER_LIMIT[\s\S]*Read full analysis/, "long saved analysis must have a reversible reading control");
+ assert.match(scenario, /const previewIsOneLongBlock = analysisIsLong && !analysisExpanded && visibleAnalysis === savedAnalysis/, "only long one-block analysis may use the height clamp, so short tall Markdown remains fully visible");
+ assert.match(scenario, /style=\{previewIsOneLongBlock \? \{ maxHeight: "30rem", overflow: "hidden" \} : undefined\}[\s\S]*analysisIsLong \?/, "a long single-block preview must clamp and keep its expansion control");
+-assert.match(scenario, /scenario-analysis__table[\s\S]*overflow-x: auto[\s\S]*scenario-analysis__code[\s\S]*overflow-x: auto/, "wide analysis tables and code must scroll inside the analysis card");
+-assert.match(scenario, /scenario-analysis \.reading[\s\S]*overflow-wrap: anywhere/, "long analysis words must wrap within the reading width");
++assert.match(explorationStyles, /scenario-analysis__table[\s\S]*scenario-analysis__code[^}]*overflow-x: auto/, "wide analysis tables and code must scroll inside the analysis card");
++assert.match(explorationStyles, /scenario-analysis \.reading[\s\S]*overflow-wrap: anywhere/, "long analysis words must wrap within the reading width");
+ assert.match(scenario, /onAdopt\(selected\.scenario_id, selectedChanges, currentRevisions/, "adoption must send only selected changes with revision checks");
+ assert.match(scenario, /Correct a fact[\s\S]*separate from adopting a hypothetical scenario/, "actual fact correction must remain separate from scenarios");
+ assert.match(scenario, /const expectedRevisions = correctionRevisions \?\? currentRevisions/, "a correction must keep its original revision baseline");
+@@ -34,7 +35,7 @@
+ assert.match(flow, /Flow sketch[\s\S]*This diagram mirrors the editable ordered relationship list below/, "flow must pair its editable list with an equivalent diagram");
+ assert.match(flow, /business-flow__sketch-route[\s\S]*From[\s\S]*Relationship[\s\S]*To/, "each diagram step must show the named from, relationship, and to route");
+ assert.match(flow, /edgeDetails[\s\S]*Timing[\s\S]*Custody[\s\S]*Ownership[\s\S]*Uncertainty/, "the diagram must surface recorded operational details without inventing them");
+-assert.match(flow, /@media \(max-width: 420px\)[\s\S]*business-flow__sketch-route \{ grid-template-columns: 1fr;/, "the diagram must stack safely on a narrow screen");
++assert.match(explorationStyles, /@media \(max-width: 760px\)[\s\S]*business-flow__sketch-route[\s\S]*grid-template-columns: 1fr;/, "the diagram must stack safely on a narrow screen");
+ assert.doesNotMatch(flow, /dangerouslySetInnerHTML/, "flow labels must remain React text, not injected HTML");
+ assert.match(flow, /Timing[\s\S]*Custody[\s\S]*Ownership[\s\S]*Uncertainty/, "each flow relationship needs material operational fields");
+ assert.match(flow, /onSave\([\s\S]*baseRevision/, "flow save must carry its expected revision");
+--- C0/frontend/scripts/check-workspace-reuse.ts
++++ current/frontend/scripts/check-workspace-reuse.ts
+@@ -1,11 +1,12 @@
+ import assert from "node:assert/strict";
+ import { readFile } from "node:fs/promises";
+ 
+-const [priorWork, practiceNotes, assumptionWatches, types] = await Promise.all([
++const [priorWork, practiceNotes, assumptionWatches, types, exploreStyles] = await Promise.all([
+   readFile(new URL("../components/workspace/PriorWorkPanel.tsx", import.meta.url), "utf8"),
+   readFile(new URL("../components/workspace/PracticeNotePanel.tsx", import.meta.url), "utf8"),
+   readFile(new URL("../components/workspace/AssumptionWatchPanel.tsx", import.meta.url), "utf8"),
+   readFile(new URL("../lib/workspaceTypes.ts", import.meta.url), "utf8"),
++  readFile(new URL("../components/workspace/MatterExplore.module.css", import.meta.url), "utf8"),
+ ]);
+ 
+ assert.match(priorWork, /await onSearch\(query\.trim\(\)\)/, "prior work must be searched only on demand");
+@@ -35,7 +36,8 @@
+ 
+ for (const source of [priorWork, practiceNotes, assumptionWatches]) {
+   assert.doesNotMatch(source, /#[0-9a-fA-F]{3,8}/, "reuse panels must use shared semantic color tokens");
+-  assert.match(source, /prefers-reduced-motion/, "reuse panels must respect reduced motion");
++  assert.match(source, /import styles from "\.\/MatterExplore\.module\.css"/, "reuse panels must bind the shared style module");
++  assert.match(exploreStyles, /prefers-reduced-motion[\s\S]*transition: none/, "reuse panels must respect reduced motion");
+ }
+ 
+ console.log("Workspace reuse checks passed.");
+--- C0/frontend/scripts/check-workspace-understand.ts
++++ current/frontend/scripts/check-workspace-understand.ts
+@@ -3,11 +3,12 @@
+ import { runInNewContext } from "node:vm";
+ import ts from "typescript";
+ 
+-const [understand, issues, recap, types] = await Promise.all([
++const [understand, issues, recap, types, reviewStyles] = await Promise.all([
+   readFile(new URL("../components/workspace/UnderstandPanel.tsx", import.meta.url), "utf8"),
+   readFile(new URL("../components/workspace/IssueNavigator.tsx", import.meta.url), "utf8"),
+   readFile(new URL("../components/workspace/ChangeRecap.tsx", import.meta.url), "utf8"),
+   readFile(new URL("../lib/workspaceTypes.ts", import.meta.url), "utf8"),
++  readFile(new URL("../components/workspace/MatterReview.module.css", import.meta.url), "utf8"),
+ ]);
+ 
+ assert.match(understand, /Current business question/, "Understand must lead with the canonical business question");
+@@ -35,8 +36,8 @@
+ assert.match(understand, /const previewIsOneLongBlock = answerIsLong && !answerExpanded && visibleAnswer === savedAnswer\.text/, "only a long one-block answer may use the fixed-height disclosure");
+ assert.match(understand, /maxHeight: "30rem", overflow: "hidden"/, "one long Markdown block must use a bounded disclosure instead of a character cut");
+ assert.doesNotMatch(understand, /answer\.slice\(0, LONG_ANSWER_CHARACTER_LIMIT\)/, "a long answer must never use a hard character cut");
+-assert.match(understand, /table: \(\{ children \}: \{ children\?: React\.ReactNode \}\)[\s\S]*?overflowX: "auto"/, "wide Markdown tables must scroll within the reading card");
+-assert.match(understand, /pre: \(\{ children \}: \{ children\?: React\.ReactNode \}\)[\s\S]*?overflowX: "auto"/, "wide Markdown code blocks must scroll within the reading card");
++assert.match(understand, /table: \(\{ children \}: \{ children\?: React\.ReactNode \}\)[\s\S]*?className=\{styles.tableScroll\}/, "wide Markdown tables must scroll within the reading card");
++assert.match(understand, /pre: \(\{ children \}: \{ children\?: React\.ReactNode \}\)[\s\S]*?className=\{styles.codeBlock\}/, "wide Markdown code blocks must scroll within the reading card");
+ assert.match(understand, /aria-controls=\{answerId\} aria-expanded=\{answerExpanded\}/, "the long-answer control must expose its expanded state to assistive technology");
+ assert.match(understand, /Show less[\s\S]*?Read full answer/, "a long answer must provide both expand and collapse actions");
+ assert.match(understand, /Proposed reframe[\s\S]*?Apply[\s\S]*?Reject/, "a proposed reframe needs explicit durable actions");
+@@ -105,3 +106,5 @@
+ assert.deepEqual(pending, [], "both controls unlock only after both deferred saves finish");
+ 
+ console.log("Workspace Understand checks passed.");
++
++for (const className of ["tableScroll", "codeBlock"]) assert.match(reviewStyles, new RegExp(`\\.${className}\\s*\\{[^}]*max-width:\\s*100%[^}]*overflow-x:\\s*auto`), "wide answer content must scroll inside its bounded wrapper");
+--- C0/frontend/scripts/check-workspace-ux.ts
++++ current/frontend/scripts/check-workspace-ux.ts
+@@ -263,7 +263,7 @@
+ assert.match(cards, /result\.summary/, "failed durable operation cards must show their durable summary");
+ assert.match(cards, /result\.recovery/, "failed durable operation cards must show their durable recovery action");
+ assert.match(workspace, /detail\.intake_state === "active" \? "chat" : "overview"/, "only active intake matters must land with Chat open");
+-assert.match(workspace, /initialConversationId=\{detail\.intake_conversation_id\}/, "the workspace must open the durable intake conversation");
++assert.match(workspace, /initialConversationId=\{initialConversationId \?\? detail\.intake_conversation_id\}/, "the workspace must open the durable intake conversation");
+ assert.match(workspace, /initialRunId=\{detail\.intake_run_id\}/, "the workspace must reconnect to the initial intake run");
+ assert.match(chat, /Themis.ai is reading your request…/, "the initial intake run must have a clear reading state");
+ assert.match(chat, /agent_id:\s*chatAgentId\(intakeActive, activeAgentId\)/, "chat must route turns through the active intake or copilot agent");

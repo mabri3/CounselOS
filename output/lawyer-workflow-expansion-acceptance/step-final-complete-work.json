@@ -1,0 +1,1 @@
+{"label": "journey-final-required-work-complete", "route": "/matters/MAT-20260905-0a2378", "actions": [{"op": "click", "text": "Research, work items, decisions and matter records"}, {"op": "click", "name": "Complete this work item"}, {"op": "wait", "ms": 10000}]}

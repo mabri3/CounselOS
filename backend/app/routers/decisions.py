@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.models.api import DecisionCreate
 from app.routers.dependencies import get_context
 from app.runtime import AppContext
+from app.services.workspace import WorkspaceConflict
 
 
 router = APIRouter(prefix="/decisions", tags=["decisions"])
@@ -22,6 +23,8 @@ def list_decisions(
 def record_decision(payload: DecisionCreate, context: AppContext = Depends(get_context)):
     try:
         return context.decisions.record(payload)
+    except WorkspaceConflict as exc:
+        raise HTTPException(status_code=409, detail=exc.detail) from exc
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
@@ -32,6 +35,8 @@ def record_decision(payload: DecisionCreate, context: AppContext = Depends(get_c
 def get_decision(decision_id: str, context: AppContext = Depends(get_context)):
     try:
         return context.decisions.get(decision_id)
+    except WorkspaceConflict as exc:
+        raise HTTPException(status_code=409, detail=exc.detail) from exc
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
@@ -44,6 +49,8 @@ def revise_decision(
 ):
     try:
         return context.decisions.revise(decision_id, payload)
+    except WorkspaceConflict as exc:
+        raise HTTPException(status_code=409, detail=exc.detail) from exc
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:

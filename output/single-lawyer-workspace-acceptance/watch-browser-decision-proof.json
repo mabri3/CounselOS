@@ -1,0 +1,7 @@
+{
+  "decision_id": "DEC-FEE18DCBAFB60451981E",
+  "sha256_before": "4da7cc64c74f4ea5a35d7904239462ca6e3587f75c4f09fbd03f97e8e90e92b7",
+  "sha256_after_browser": "4da7cc64c74f4ea5a35d7904239462ca6e3587f75c4f09fbd03f97e8e90e92b7",
+  "packet_id": "PKT-20260905-258654",
+  "development_provider": "simulated; real pipeline and browser"
+}

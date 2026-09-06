@@ -1,0 +1,10 @@
+{
+  "checks": {
+    "03_Matters/cedar-desk-policy-review-329d59/documents/cedar-policy-v1.txt": true,
+    "03_Matters/cedar-desk-policy-review-329d59/documents/cedar-policy-v2.txt": true,
+    "earlier_advice_exact": false,
+    "same_conversation": true
+  },
+  "message_count": 4,
+  "target_kind": "advice"
+}

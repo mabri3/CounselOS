@@ -23,6 +23,16 @@
 
 > "Themis helps lawyers feel clear, capable, and supported when their judgment matters most."
 
+> "I understand the options. I see what could change the answer. I know why I recommend this path."
+
+> "Themis helps lawyers see what matters, explore what could change, and reach a decision they can stand behind."
+
+> "Small legal teams already have access to powerful AI. They still need help seeing what the question leaves out. Themis is built to explore the matter with them, surface what could change the answer, and help them reach a decision they understand and can stand behind."
+
+> **Lawyers should not need to become AI systems designers to get a capable working partner.**
+
+> "Themis equips lawyers to advise with confidence—and gives them more time to be present in the room, shaping business decisions."
+
 ### What the essence means
 
 **Clear**  

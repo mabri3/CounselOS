@@ -1,0 +1,174 @@
+ M CODEX_HANDOFF.md
+ M backend/app/agents/context.py
+ M backend/app/agents/output.py
+ M backend/app/agents/runner.py
+ M backend/app/blank_vault_template/00_System/agents/counsel-copilot.md
+ M backend/app/blank_vault_template/00_System/agents/intake-agent.md
+ M backend/app/blank_vault_template/00_System/tools/save_work_product.md
+ M backend/app/blank_vault_template/manifest.json
+ M backend/app/main.py
+ M backend/app/models/api.py
+ M backend/app/models/awareness.py
+ M backend/app/routers/chat.py
+ M backend/app/routers/files.py
+ M backend/app/routers/matters.py
+ M backend/app/routers/skills.py
+ M backend/app/runtime.py
+ M backend/app/services/answer_contract.py
+ M backend/app/services/chat_history.py
+ M backend/app/services/chat_runs.py
+ M backend/app/services/document_export.py
+ M backend/app/services/document_review.py
+ M backend/app/services/dossier.py
+ M backend/app/services/ingestion.py
+ M backend/app/services/matter_lifecycle.py
+ M backend/app/services/matter_records.py
+ M backend/app/services/matter_work_items.py
+ M backend/app/services/matters.py
+ M backend/app/services/research.py
+ M backend/app/services/research_runs.py
+ M backend/app/services/review_packets.py
+ M backend/app/services/settings.py
+ M backend/app/services/watches.py
+ M backend/app/services/work_product.py
+ M backend/app/skills/registry.py
+ M backend/app/tools/capabilities.py
+ M backend/app/tools/handlers.py
+ M backend/app/tools/registry.py
+ M backend/tests/test_agents.py
+ M backend/tests/test_answer_contract.py
+ M backend/tests/test_blank_vault_parity.py
+ M backend/tests/test_chat_history.py
+ M backend/tests/test_chat_runs.py
+ M backend/tests/test_document_review.py
+ M backend/tests/test_dossier.py
+ M backend/tests/test_ingestion_limits.py
+ M backend/tests/test_matter_lifecycle.py
+ M backend/tests/test_research.py
+ M backend/tests/test_work_product.py
+ M brand_pitch.md
+ M contextmap.md
+ M current.md
+ M docs/ACCEPTANCE_TESTS.md
+ M docs/DESIGN_LANGUAGE.md
+ M docs/single-lawyer-workspace.handoff-plan.md
+ M docs/single-lawyer-workspace.handoff-progress.md
+ M docs/single-lawyer-workspace.handoff-prompt.md
+ M frontend/app/globals.css
+ M frontend/app/page.tsx
+ M frontend/app/settings/page.tsx
+ M frontend/app/skills/page.tsx
+ M frontend/components/AppShell.tsx
+ M frontend/components/BriefingList.tsx
+ M frontend/components/ChatCards.tsx
+ M frontend/components/ChatPanel.tsx
+ M frontend/components/DocumentPanel.tsx
+ M frontend/components/MatterWorkspace.tsx
+ M frontend/components/RevisionPlugin.tsx
+ M frontend/components/SkillBuilder.tsx
+ M frontend/lib/api.ts
+ M frontend/lib/chatRunLogic.ts
+ M frontend/lib/research.ts
+ M frontend/lib/reviewAuthor.ts
+ M frontend/lib/types.ts
+ M frontend/package.json
+ M frontend/scripts/check-chat-run-recovery.ts
+ M frontend/scripts/check-confirmation-dialogs.ts
+ M frontend/scripts/check-initial-load-integrity.ts
+ M frontend/scripts/check-matter-brief.ts
+ M frontend/scripts/check-matter-creation.ts
+ M frontend/scripts/check-transport-preservation.ts
+ M frontend/scripts/check-workspace-ux.ts
+?? .tmp/
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/"
+?? backend/app/blank_vault_template/00_System/skills/
+?? backend/app/blank_vault_template/00_System/tools/act_on_question_proposal.md
+?? backend/app/blank_vault_template/00_System/tools/answer_workspace_question.md
+?? backend/app/blank_vault_template/00_System/tools/change_business_question.md
+?? backend/app/blank_vault_template/00_System/tools/manage_output_template.md
+?? backend/app/blank_vault_template/00_System/tools/propose_business_question.md
+?? backend/app/blank_vault_template/00_System/tools/restore_business_question.md
+?? backend/app/blank_vault_template/00_System/tools/select_conversation_scope.md
+?? backend/app/blank_vault_template/00_System/tools/workspace_action.md
+?? backend/app/models/continuity.py
+?? backend/app/models/workspace.py
+?? backend/app/routers/team.py
+?? backend/app/routers/workspace.py
+?? backend/app/services/change_impact.py
+?? backend/app/services/fact_requests.py
+?? backend/app/services/workspace.py
+?? backend/app/services/workspace_actions.py
+?? backend/app/services/workspace_evidence.py
+?? backend/app/services/workspace_flow.py
+?? backend/app/services/workspace_orientation.py
+?? backend/app/services/workspace_reuse.py
+?? backend/app/services/workspace_scenarios.py
+?? backend/app/services/workspace_team.py
+?? backend/tests/test_change_impact.py
+?? backend/tests/test_continuity_identity.py
+?? backend/tests/test_continuity_integration.py
+?? backend/tests/test_continuity_recovery.py
+?? backend/tests/test_fact_requests.py
+?? backend/tests/test_output_templates.py
+?? backend/tests/test_workspace_actions.py
+?? backend/tests/test_workspace_context.py
+?? backend/tests/test_workspace_drafting.py
+?? backend/tests/test_workspace_evidence.py
+?? backend/tests/test_workspace_files.py
+?? backend/tests/test_workspace_flow.py
+?? backend/tests/test_workspace_interactions.py
+?? backend/tests/test_workspace_lifecycle.py
+?? backend/tests/test_workspace_orientation.py
+?? backend/tests/test_workspace_records.py
+?? backend/tests/test_workspace_reuse.py
+?? backend/tests/test_workspace_scenarios.py
+?? backend/tests/test_workspace_team.py
+?? docs/lawyer-workflow-expansion.contract.md
+?? docs/lawyer-workflow-expansion.handoff-plan.md
+?? docs/lawyer-workflow-expansion.handoff-progress.md
+?? docs/lawyer-workflow-expansion.handoff-prompt.md
+?? docs/lawyer-workflow-expansion.usability.md
+?? docs/lawyer-workflow-expansion.verification.md
+?? docs/matter-review-decision-map.plan.md
+?? docs/single-lawyer-workspace.contract.md
+?? docs/single-lawyer-workspace.verification.md
+?? frontend/components/workspace/
+?? frontend/lib/continuityApi.ts
+?? frontend/lib/continuityTypes.ts
+?? frontend/lib/impactPresentation.ts
+?? frontend/lib/orientationPresentation.ts
+?? frontend/lib/teamPresentation.ts
+?? frontend/lib/workspaceApi.ts
+?? frontend/lib/workspaceDrafting.ts
+?? frontend/lib/workspaceTypes.ts
+?? frontend/scripts/check-change-impact-presentation.ts
+?? frontend/scripts/check-continuity-integrity.ts
+?? frontend/scripts/check-orientation-presentation.ts
+?? frontend/scripts/check-output-templates.ts
+?? frontend/scripts/check-team-interactions.ts
+?? frontend/scripts/check-workspace-drafting.ts
+?? frontend/scripts/check-workspace-evidence.ts
+?? frontend/scripts/check-workspace-exploration.ts
+?? frontend/scripts/check-workspace-file-drop.ts
+?? frontend/scripts/check-workspace-reuse.ts
+?? frontend/scripts/check-workspace-understand.ts
+?? output/deck/Themis-Lean-Canvas-September-2026-v2.pptx
+?? output/deck/Themis-Lean-Canvas-September-2026-v3.pptx
+?? output/deck/Themis-Lean-Canvas-September-2026-v4.pptx
+?? output/deck/Themis-Lean-Canvas-September-2026.pptx
+?? "output/deck/vc/BDV - Lean Canvas (Themis).pptx"
+?? output/deck/vc/Themis-VC-Pitch-September-2026-v10.pptx
+?? output/deck/vc/Themis-VC-Pitch-September-2026-v11.pptx
+?? output/deck/vc/Themis-VC-Pitch-September-2026-v12.pptx
+?? output/deck/vc/Themis-VC-Pitch-September-2026-v13.pdf
+?? output/deck/vc/Themis-VC-Pitch-September-2026-v13.pptx
+?? output/deck/vc/Themis-VC-Pitch-September-2026-v3.pptx
+?? output/deck/vc/Themis-VC-Pitch-September-2026-v4.pptx
+?? output/deck/vc/Themis-VC-Pitch-September-2026-v5.pptx
+?? output/deck/vc/Themis-VC-Pitch-September-2026-v6.pptx
+?? output/deck/vc/Themis-VC-Pitch-September-2026-v7.pptx
+?? output/deck/vc/Themis-VC-Pitch-September-2026-v8.pptx
+?? output/deck/vc/Themis-VC-Pitch-September-2026-v9.pptx
+?? output/lawyer-workflow-expansion-acceptance/
+?? output/matter-review-decision-map-acceptance/
+?? output/single-lawyer-workspace-acceptance/

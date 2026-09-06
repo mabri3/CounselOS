@@ -1,0 +1,478 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 50,
+      "tag": "HEADER",
+      "text": "themis.ai⌄TodayBriefingWorkspaceMattersDecisionsSkillsAutoma",
+      "width": 177.39346313476562,
+      "x": 31.995737075805664,
+      "y": -711.0014038085938
+    },
+    {
+      "font": "15px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 194.1903381347656,
+      "x": 44.90056610107422,
+      "y": -228.0965881347656
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 51.80397415161133,
+      "y": -202.4076690673828
+    },
+    {
+      "font": "15px",
+      "height": 97.1022720336914,
+      "tag": "HEADER",
+      "text": "OverdueMattersProject Apex: AI Voice TelemetryMatter details",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": -725
+    },
+    {
+      "font": "19px",
+      "height": 53.196022033691406,
+      "tag": "H1",
+      "text": "Project Apex: AI Voice Telemetry",
+      "width": 252.61363220214844,
+      "x": 316.0085144042969,
+      "y": -702.0028076171875
+    },
+    {
+      "font": "16px",
+      "height": 44.53834915161133,
+      "tag": "BUTTON",
+      "text": "Tools and history",
+      "width": 178.27413940429688,
+      "x": 804.2755126953125,
+      "y": -699.1760864257812
+    },
+    {
+      "font": "15px",
+      "height": 2302.158935546875,
+      "tag": "SECTION",
+      "text": "Matter workspace viewUnderstandDiscussDraftDecision mapBusin",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": -627.897705078125
+    },
+    {
+      "font": "15px",
+      "height": 67.99715423583984,
+      "tag": "HEADER",
+      "text": "Matter workspace viewUnderstandDiscussDraftDecision map",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": -627.897705078125
+    },
+    {
+      "font": "16px",
+      "height": 46.35653305053711,
+      "tag": "BUTTON",
+      "text": "Decision map",
+      "width": 120.79544830322266,
+      "x": 861.7542114257812,
+      "y": -617.5354614257812
+    },
+    {
+      "font": "15px",
+      "height": 176.49147033691406,
+      "tag": "SECTION",
+      "text": "Work products (2)Working draftMD · Editing draft · Saved03_M",
+      "width": 916.7471313476562,
+      "x": 48.899147033691406,
+      "y": -518.99853515625
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Working draft",
+      "width": 86.71875,
+      "x": 103.79971313476562,
+      "y": -461.2997131347656
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Working draft",
+      "width": 86.71875,
+      "x": 103.79971313476562,
+      "y": -403.4019775390625
+    },
+    {
+      "font": "15px",
+      "height": 118.59374237060548,
+      "tag": "SECTION",
+      "text": "Sources (1)phase2-processMD · Reading source · Saved03_Matte",
+      "width": 916.7471313476562,
+      "x": 48.899147033691406,
+      "y": -326.5127868652344
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "phase2-process",
+      "width": 103.08238220214844,
+      "x": 103.79971313476562,
+      "y": -268.81390380859375
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Create working copy",
+      "width": 129.61647033691406,
+      "x": 819.1264038085938,
+      "y": -268.81390380859375
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Confirm whether audio is used for model training",
+      "width": 307.5,
+      "x": 101.80397033691406,
+      "y": -73.125
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "facts",
+      "width": 32.60653305053711,
+      "x": 101.80397033691406,
+      "y": -15.227272033691406
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "issues",
+      "width": 41.328125,
+      "x": 101.80397033691406,
+      "y": 42.67045211791992
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "participants",
+      "width": 76.84658813476562,
+      "x": 101.80397033691406,
+      "y": 100.56817626953124
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "phase2-process",
+      "width": 103.08238220214844,
+      "x": 101.80397033691406,
+      "y": 158.4658966064453
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Pilot voice logging with a 30-day cap",
+      "width": 230.5255584716797,
+      "x": 101.80397033691406,
+      "y": 216.36363220214844
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Project Apex: AI Voice Telemetry",
+      "width": 207.25851440429688,
+      "x": 101.80397033691406,
+      "y": 274.2613525390625
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "recommendations",
+      "width": 116.07244110107422,
+      "x": 101.80397033691406,
+      "y": 332.1590881347656
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "request",
+      "width": 49.96448516845703,
+      "x": 101.80397033691406,
+      "y": 390.0567932128906
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "RES-MAT-DEMO-APEX",
+      "width": 143.6860809326172,
+      "x": 101.80397033691406,
+      "y": 447.95452880859375
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Review first-pass privacy research",
+      "width": 215.79544067382812,
+      "x": 101.80397033691406,
+      "y": 505.8522644042969
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Review Synthetic process review 2: confirm the review owner ",
+      "width": 482.0667419433594,
+      "x": 101.80397033691406,
+      "y": 563.75
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "RUN-PHASE2-1",
+      "width": 101.6264190673828,
+      "x": 101.80397033691406,
+      "y": 621.647705078125
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "RUN-PHASE2-2",
+      "width": 101.6264190673828,
+      "x": 101.80397033691406,
+      "y": 679.54541015625
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "RUN-PHASE2-3",
+      "width": 101.6264190673828,
+      "x": 101.80397033691406,
+      "y": 737.4431762695312
+    },
+    {
+      "font": "14px",
+      "height": 48.84232711791992,
+      "tag": "BUTTON",
+      "text": "Working draftEditing draft · Saved",
+      "width": 217.9758453369141,
+      "x": 39.90056610107422,
+      "y": -49.58806610107422
+    },
+    {
+      "font": "14px",
+      "height": 48.84232711791992,
+      "tag": "BUTTON",
+      "text": "×",
+      "width": 10.220170021057127,
+      "x": 263.8707275390625,
+      "y": -49.58806610107422
+    },
+    {
+      "font": "15px",
+      "height": 114.62357330322266,
+      "tag": "SECTION",
+      "text": "This draft is a saved snapshotNew research does not change t",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 21.15056800842285
+    },
+    {
+      "font": "16px",
+      "height": 36.71875,
+      "tag": "BUTTON",
+      "text": "Update draft from saved research",
+      "width": 242.18748474121097,
+      "x": 46.90340805053711,
+      "y": 84.1477279663086
+    },
+    {
+      "font": "13.5px",
+      "height": 33.99857711791992,
+      "tag": "BUTTON",
+      "text": "Editing",
+      "width": 62.86931610107422,
+      "x": 782.116455078125,
+      "y": 164.6732940673828
+    },
+    {
+      "font": "13.5px",
+      "height": 33.99857711791992,
+      "tag": "BUTTON",
+      "text": "Markdown",
+      "width": 84.66619110107422,
+      "x": 848.984375,
+      "y": 164.6732940673828
+    },
+    {
+      "font": "18px",
+      "height": 33.99857711791992,
+      "tag": "BUTTON",
+      "text": "×",
+      "width": 27.99715805053711,
+      "x": 937.6491088867188,
+      "y": 164.6732940673828
+    },
+    {
+      "font": "16px",
+      "height": 36.71875,
+      "tag": "BUTTON",
+      "text": "Word",
+      "width": 66.82527923583984,
+      "x": 415.3053894042969,
+      "y": 859.2542114257812
+    },
+    {
+      "font": "16px",
+      "height": 36.71875,
+      "tag": "BUTTON",
+      "text": "PDF",
+      "width": 57.890621185302734,
+      "x": 491.1292419433594,
+      "y": 859.2542114257812
+    },
+    {
+      "font": "16px",
+      "height": 36.71875,
+      "tag": "BUTTON",
+      "text": "Reload saved file",
+      "width": 152.28692626953125,
+      "x": 558.0184326171875,
+      "y": 859.2542114257812
+    },
+    {
+      "font": "16px",
+      "height": 36.71875,
+      "tag": "BUTTON",
+      "text": "Save",
+      "width": 62.97584915161133,
+      "x": 184.5383453369141,
+      "y": 859.2542114257812
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Show discussion",
+      "width": 106.0085220336914,
+      "x": 876.5411376953125,
+      "y": 920.87353515625
+    },
+    {
+      "font": "15px",
+      "height": 306.2641906738281,
+      "tag": "SECTION",
+      "text": "Work productDraft controlsRequestOutput templateNo template ",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 972.8621826171876
+    },
+    {
+      "font": "20px",
+      "height": 27.727272033691406,
+      "tag": "H2",
+      "text": "Draft controls",
+      "width": 131.6548309326172,
+      "x": 48.899147033691406,
+      "y": 1013.3096313476562
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Output templates",
+      "width": 112.42186737060548,
+      "x": 608.6434326171875,
+      "y": 1159.5098876953125
+    },
+    {
+      "font": "16px",
+      "height": 40.72443008422851,
+      "tag": "BUTTON",
+      "text": "Request draft",
+      "width": 133.45880126953125,
+      "x": 48.899147033691406,
+      "y": 1221.49853515625
+    },
+    {
+      "font": "15px",
+      "height": 379.140625,
+      "tag": "ASIDE",
+      "text": "Available work productWorking draftbusiness_decision_brief ·",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 1295.1207275390625
+    },
+    {
+      "font": "20px",
+      "height": 27.727272033691406,
+      "tag": "H2",
+      "text": "Available work product",
+      "width": 916.7471313476562,
+      "x": 48.899147033691406,
+      "y": 1316.022705078125
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Open",
+      "width": 35.490055084228516,
+      "x": 59.893463134765625,
+      "y": 1453.5653076171875
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Keep preview",
+      "width": 110.80255126953124,
+      "x": 104.38209533691406,
+      "y": 1453.5653076171875
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Open work",
+      "width": 69.8366470336914,
+      "x": 59.893463134765625,
+      "y": 1610.3692626953125
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Keep preview",
+      "width": 110.80255126953124,
+      "x": 138.7286834716797,
+      "y": 1610.3692626953125
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 725,
+  "url": "http://localhost:3134/matters/MAT-DEMO-APEX?view=draft&file=03_Matters%2Fproject-apex-ai%2Fwork-product%2Fdraft%2Fworking-draft-16a0e1.md",
+  "width": 1024
+}

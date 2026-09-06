@@ -1,0 +1,29 @@
+Record a durable decision
+
+Use this for a material position, recurring risk, future advice, or a condition that must be monitored.
+
+Decision
+Your wording differs from the saved path. The exact saved path remains linked as the decision map basis.
+Decision map basis
+Saved
+
+A limited screening pilot · analysis 7a270f9bd2312c8f48735a5b6335564c65e079fb7f34e6c8a262d0f48b665bd2
+
+Recommendation disposition
+Followed
+Modified
+Not followed
+Not applicable
+Rationale
+Optional. Explain why this decision was made.
+Conditions
+Issues this decision does not resolve
+Optional. List issues that remain open after this decision.
+Decided by
+Revisit on
+December 5, 2026
+What it rests on
+RUN 20260906 848a0b×
+Recorded against this matter and the decision register.
+Cancel
+Record durable decision

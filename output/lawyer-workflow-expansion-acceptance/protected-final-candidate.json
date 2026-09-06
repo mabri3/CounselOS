@@ -1,0 +1,17 @@
+{
+  "/Users/bharris/Programs/counsel-os-mvp/vault": {
+    "changes": [],
+    "baseline_count": 718,
+    "current_count": 718
+  },
+  "pointer": {
+    "unchanged": true
+  },
+  "/Users/bharris/Programs/counsel-os-mvp/Mosaic Relay UX Experiment 2026-09-03 R3": {
+    "changes": [
+      ".counsel_os_cache.db"
+    ],
+    "baseline_count": 1011,
+    "current_count": 1011
+  }
+}

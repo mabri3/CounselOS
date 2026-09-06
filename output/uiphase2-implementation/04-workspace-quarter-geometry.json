@@ -1,0 +1,199 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 83.99857330322266,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": -1578.6363525390625
+    },
+    {
+      "font": "13px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 237.7627716064453,
+      "x": 756.7826538085938,
+      "y": -1511.7825927734375
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 763.68603515625,
+      "y": -1486.09375
+    },
+    {
+      "font": "15px",
+      "height": 2585.7314453125,
+      "tag": "MAIN",
+      "text": "Portfolio boardSee where the work stands10 matters in flight",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": -1494.6376953125
+    },
+    {
+      "font": "48px",
+      "height": 54.71590805053711,
+      "tag": "H1",
+      "text": "See where the work stands",
+      "width": 568.84228515625,
+      "x": 31.995737075805664,
+      "y": -1435.1419677734375
+    },
+    {
+      "font": "15px",
+      "height": 1692.74853515625,
+      "tag": "SECTION",
+      "text": "Drag to move active work. Close a matter from its page after",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": -1312.43603515625
+    },
+    {
+      "font": "15px",
+      "height": 960.3408813476562,
+      "tag": "SECTION",
+      "text": "Just came in41 overdue · 3 waitingWaiting on LawyerPhase 2 c",
+      "width": 227.1377716064453,
+      "x": 31.995737075805664,
+      "y": -1268.8919677734375
+    },
+    {
+      "font": "14px",
+      "height": 36.80397415161133,
+      "tag": "HEADER",
+      "text": "Just came in4",
+      "width": 201.328125,
+      "x": 44.90056610107422,
+      "y": -1255.9871826171875
+    },
+    {
+      "font": "15px",
+      "height": 960.3408813476562,
+      "tag": "SECTION",
+      "text": "Being researched21 overdue · 1 waitingOverdueNorthstar: AI C",
+      "width": 227.1377716064453,
+      "x": 273.132080078125,
+      "y": -1268.8919677734375
+    },
+    {
+      "font": "14px",
+      "height": 36.80397415161133,
+      "tag": "HEADER",
+      "text": "Being researched2",
+      "width": 201.328125,
+      "x": 286.03692626953125,
+      "y": -1255.9871826171875
+    },
+    {
+      "font": "15px",
+      "height": 960.3408813476562,
+      "tag": "SECTION",
+      "text": "Waiting on your judgment22 overdueOverdueRelay: Open-Banking",
+      "width": 227.1377716064453,
+      "x": 514.2684326171875,
+      "y": -1268.8919677734375
+    },
+    {
+      "font": "14px",
+      "height": 36.80397415161133,
+      "tag": "HEADER",
+      "text": "Waiting on your judgment2",
+      "width": 201.328125,
+      "x": 527.1732788085938,
+      "y": -1255.9871826171875
+    },
+    {
+      "font": "15px",
+      "height": 960.3408813476562,
+      "tag": "SECTION",
+      "text": "Being drafted11 overdueOverdueDelta: Same-Day Payout Pricing",
+      "width": 227.14488220214844,
+      "x": 755.40478515625,
+      "y": -1268.8919677734375
+    },
+    {
+      "font": "14px",
+      "height": 36.80397415161133,
+      "tag": "HEADER",
+      "text": "Being drafted1",
+      "width": 201.3352203369141,
+      "x": 768.3096313476562,
+      "y": -1255.9871826171875
+    },
+    {
+      "font": "15px",
+      "height": 674.8650512695312,
+      "tag": "SECTION",
+      "text": "Respond11 overdueOverdueHarbor: Account Hold Support Respons",
+      "width": 307.5141906738281,
+      "x": 31.995737075805664,
+      "y": -294.55255126953125
+    },
+    {
+      "font": "14px",
+      "height": 36.80397415161133,
+      "tag": "HEADER",
+      "text": "Respond1",
+      "width": 281.70452880859375,
+      "x": 44.90056610107422,
+      "y": -281.647705078125
+    },
+    {
+      "font": "15px",
+      "height": 674.8650512695312,
+      "tag": "SECTION",
+      "text": "Closed2ClosedCedar: Cash Sweep and Deposit Insurance Disclos",
+      "width": 307.52130126953125,
+      "x": 353.5085144042969,
+      "y": -294.55255126953125
+    },
+    {
+      "font": "14px",
+      "height": 36.80397415161133,
+      "tag": "HEADER",
+      "text": "Closed2",
+      "width": 281.7116394042969,
+      "x": 366.413330078125,
+      "y": -281.647705078125
+    },
+    {
+      "font": "15px",
+      "height": 452.8905944824219,
+      "tag": "SECTION",
+      "text": "This quarter2matters closed10matters in flight3decisions rec",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 408.30963134765625
+    },
+    {
+      "font": "15px",
+      "height": 129.9005584716797,
+      "tag": "SECTION",
+      "text": "New matter＋Create a new matterStart intake and triage⌄",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 905.1988525390624
+    },
+    {
+      "font": "15px",
+      "height": 90.40482330322266,
+      "tag": "BUTTON",
+      "text": "＋Create a new matterStart intake and triage⌄",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 944.694580078125
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 1578.6363525390625,
+  "url": "http://localhost:3134/workspace",
+  "width": 1024
+}

@@ -1,0 +1,267 @@
+- banner:
+  - link "Themis.ai":
+    - /url: /
+    - img "Themis.ai"
+  - navigation "Main navigation":
+    - link "Today":
+      - /url: /
+    - link "Briefing":
+      - /url: /briefing
+    - link "Workspace":
+      - /url: /workspace
+    - link "Matters":
+      - /url: /matters
+    - link "Decisions":
+      - /url: /decisions
+    - link "Skills":
+      - /url: /skills
+    - link "Automations":
+      - /url: /automations
+    - link "Agents":
+      - /url: /agents
+    - link "Settings":
+      - /url: /settings
+  - region "View as":
+    - paragraph: Local demo
+    - heading "View as" [level=2]
+    - generic: View workspace as
+    - combobox "View workspace as":
+      - option "Alex Morgan · alex-morgan" [selected]
+      - option "Jamie Lee · jamie-lee"
+    - generic "About"
+- banner:
+  - generic: Waiting on you
+  - link "Matters":
+    - /url: /matters
+  - 'heading "Lumen Learning: US family launch with analytics and shared-device accounts" [level=1]'
+  - term: Stage
+  - definition: Respond
+  - term: Risk
+  - definition:
+    - generic: Lawyer-set risk
+    - combobox "Lawyer-set risk":
+      - option "Set risk" [selected]
+      - option "Low"
+      - option "Moderate"
+      - option "High"
+  - term: Due
+  - definition: No date
+  - generic "Tools and history"
+- region "Matter orientation":
+  - text: Matter orientation
+  - heading "Can Lumen launch its US family learning app with analytics?" [level=2]
+  - paragraph:
+    - strong: This is the next step in the saved matter lifecycle.
+    - text: For Alex Morgan.
+  - paragraph: Ready
+  - button "Approve the final response."
+  - button "Discuss"
+  - button "Draft"
+- region "Matter workspace":
+  - group "Matter workspace view":
+    - generic: Matter workspace view
+    - radio "Understand"
+    - generic "Read the current matter": Understand
+    - radio "Discuss"
+    - generic "Continue one matter conversation": Discuss
+    - radio "Draft" [checked]
+    - generic "Review and prepare work product": Draft
+  - generic "Discussion help"
+  - button "Show discussion"
+  - navigation "Documents":
+    - heading "Documents" [level=2]
+    - generic: Document picker · Work products (4) · Sources (4)
+    - combobox "Document picker · Work products (4) · Sources (4)":
+      - option "Choose a document"
+      - option "Do not add advertising use to this launch · Matter record"
+      - option "dossier · Matter record"
+      - option "facts · Matter record"
+      - option "flow · Matter record"
+      - option "issues · Matter record"
+      - 'option "Lumen Learning: US family launch with analytics and shared-device accounts · Matter record"'
+      - option "Orient to the request · Matter record"
+      - option "participants · Matter record"
+      - option "recommendations · Matter record"
+      - option "request · Matter record"
+      - option "Review audience and identifier controls before launch · Matter record"
+      - option "RUN-20260905-87948e · Matter record"
+      - option "RUN-20260905-b5b57e · Matter record"
+      - option "Supplied definitions research · Matter record"
+      - option "workspace · Matter record"
+      - option "16 CFR 312.2 — definitions · Reading source"
+      - option "Additional supplied acceptance fixture facts · Reading source"
+      - option "Lumen product specification · Reading source"
+      - option "Revised Lumen product specification · Reading source"
+      - option "Business reply · Editing draft"
+      - option "Launch advice · Editing draft · 03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/draft/launch-advice-bd4145.md" [selected]
+      - option "Launch advice · Editing draft · 03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/draft/launch-advice-97628f.md"
+      - option "Launch advice · Final · 03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/final/launch-advice-97628f-4d52f1.md"
+      - option "Product control checklist · Editing draft"
+    - region "Work products (4)":
+      - heading "Work products (4)" [level=3]
+      - list:
+        - button "Business reply"
+        - generic: MD · Editing draft · Saved
+        - button "Launch advice"
+        - generic: MD · Editing draft · Saved
+        - generic: 03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/draft/launch-advice-bd4145.md
+        - button "Launch advice"
+        - generic: MD · Editing draft · Saved
+        - generic: 03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/draft/launch-advice-97628f.md
+        - generic "Earlier versions (1)"
+        - button "Product control checklist"
+        - generic: MD · Editing draft · Saved
+    - region "Sources (4)":
+      - heading "Sources (4)" [level=3]
+      - list:
+        - button "16 CFR 312.2 — definitions"
+        - generic: MD · Reading source · Saved
+        - button "Create working copy"
+        - button "Additional supplied acceptance fixture facts"
+        - generic: MD · Reading source · Saved
+        - button "Create working copy"
+        - button "Lumen product specification"
+        - generic: MD · Reading source · Saved
+        - button "Create working copy"
+        - button "Revised Lumen product specification"
+        - generic: MD · Reading source · Saved
+        - button "Create working copy"
+    - generic "Matter records (15)"
+  - navigation "Open documents":
+    - button "Product control checklistEditing draft · Unsaved":
+      - strong: Product control checklist
+      - text: Editing draft
+      - generic: · Unsaved
+    - button "Close Product control checklist. Local edits will be retained.": Close
+    - button "Discard local edits"
+    - button "Launch adviceFinal · Saved":
+      - strong: Launch advice
+      - generic: Final · Saved
+    - button "Close Launch advice.": Close
+    - button "Launch adviceEditing draft · Saved":
+      - strong: Launch advice
+      - generic: Editing draft · Saved
+    - button "Close Launch advice.": Close
+  - region "Saved research snapshot":
+    - strong: This draft is a saved snapshot
+    - paragraph: New research does not change this draft automatically. 2 saved packets are available.
+    - button "Update draft from saved research"
+  - text: Export version
+  - combobox "Export version":
+    - option "Saved changes as markup" [selected]
+    - option "Accepted text only"
+  - generic: launch-advice-bd4145.md
+  - generic: Editing draft · saved
+  - button "Editing"
+  - button "Markdown"
+  - button "Close document": ×
+  - toolbar "Document review":
+    - button "All Markup"
+    - button "No Markup"
+    - button "Original"
+    - button "Redline on" [pressed]
+    - button "Review 2 changes" [active]
+    - generic "Reviewers (2) +"
+    - option "#2F5597" [selected]
+    - option "#7030A0"
+    - option "#008272"
+    - option "#A64B00"
+    - option "#C0006F"
+    - option "#5B6573"
+    - option "#7A3E00"
+    - option "#006B8F"
+    - option "#2F5597"
+    - option "#7030A0" [selected]
+    - option "#008272"
+    - option "#A64B00"
+    - option "#C0006F"
+    - option "#5B6573"
+    - option "#7A3E00"
+    - option "#006B8F"
+    - button "Comments on (1)" [pressed]
+    - text: Author
+    - combobox "Active review author":
+      - option "Alex Morgan" [selected]
+      - option "Themis.ai"
+      - option "Custom name…"
+  - toolbar "Document formatting":
+    - combobox "Block style":
+      - option "Body text" [selected]
+      - option "Heading"
+      - option "Quote"
+    - button "Bold": B
+    - button "Italic": I
+    - button "Underline": U
+    - button "Bullet list": List
+    - button "Numbered list": Numbered
+    - button "Quote"
+    - button "Add or remove link": Link
+    - button "Add a comment to the selected text": Comment
+    - button "Ask Themis.ai to redraft"
+  - textbox:
+    - heading "Launch advice" [level=1]
+    - paragraph: Confirm audience and identifier use before the US release.
+    - paragraph: Keep the advertising use outside this launch.
+    - paragraph:
+      - text: Read the
+      - link "product specification":
+        - /url: https://03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec.md
+      - text: and
+      - link "definitions":
+        - /url: https://03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/coppa-definitions.md
+      - text: .
+    - paragraph: "A_ONLY_UNSAVED: confirm audience with Product."
+  - complementary "Document comments":
+    - strong: Comments
+    - generic: 1 open
+    - button "Hide comments": ›
+    - article:
+      - button:
+        - blockquote: Confirm audience
+      - strong: Alex Morgan
+      - paragraph: Confirm this point with Product before final review.
+      - button "Reply"
+      - button "Resolve thread"
+      - button "Delete thread permanently…"
+  - generic: Saved
+  - generic: Redline on
+  - button "Word"
+  - button "PDF"
+  - button "Reload saved file"
+  - button "Save" [disabled]
+  - region "Draft controls":
+    - text: Work product
+    - heading "Draft controls" [level=2]
+    - generic: Request
+    - textbox "Request":
+      - /placeholder: "For example: Draft a concise business memo for the current question."
+    - generic: Output template
+    - strong: No template selected
+    - generic: A template is optional for a direct request.
+    - button "Output templates"
+    - button "Request draft" [disabled]
+  - complementary "Available work product":
+    - heading "Available work product" [level=2]
+    - article:
+      - strong: Business reply
+      - paragraph: general · version 2e8b04795e5c6665b2b84dc814f6ac44bd23f8cd2af785182ac0e8204d198005
+      - generic: Saved work product
+      - button "Open work"
+    - article:
+      - strong: Launch advice
+      - paragraph: general · version 6201292b4e1b1b7bac34e23bf47d77904203dc84d4999d0894c40059624cc34b
+      - generic: Saved work product
+      - button "Open work"
+    - article:
+      - strong: Launch advice
+      - paragraph: general · version 9d68e059ff28795485c098633f23973c40be4804be6a34413f0b3a5d7bb0dc56
+      - generic: Pending attorney review
+      - button "Open"
+      - generic "Why this version changed"
+    - article:
+      - strong: Product control checklist
+      - paragraph: general · version ef96de891a73207f34dc4ffc9ffd99178fb24832b997265621f036e81fbedb20
+      - generic: Saved work product
+      - button "Open work"
+- button "Open Next.js Dev Tools":
+- alert

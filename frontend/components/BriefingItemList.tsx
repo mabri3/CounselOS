@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import styles from "./BriefingPhase2.module.css";
 import { formatShortDate } from "@/lib/design";
 import type { BriefingGroup, BriefingItem } from "@/lib/watchTypes";
 
@@ -35,7 +36,7 @@ export default function BriefingItemList({ items, group, queryString, watchNames
   const grouped = new Map<string, BriefingItem[]>();
   for (const item of items) for (const name of groupNames(item, group, watchNames)) grouped.set(name, [...(grouped.get(name) ?? []), item]);
 
-  return <div>{[...grouped].map(([name, entries]) => <section className="briefing-group" key={name || "all"} aria-label={name || "Developments"}>
+  return <div className={styles.items}>{[...grouped].map(([name, entries]) => <section className="briefing-group" key={name || "all"} aria-label={name || "Developments"}>
     {name ? <div className="briefing-group-head">
       <h2>{name}</h2><span>{entries.length === 1 ? "1 development" : `${entries.length} developments`}</span>
     </div> : null}
@@ -47,12 +48,14 @@ export default function BriefingItemList({ items, group, queryString, watchNames
         href={`/briefing/${encodeURIComponent(item.item_id)}${queryString ? `?${queryString}` : ""}`}
         key={item.item_id}
       >
+        <div className={styles.itemState}>{needsReview ? "Required review" : !item.read ? "● Unread" : item.saved ? "Saved" : "Briefing only"}</div>
         <div className="briefing-item-meta">
           {formatShortDate(item.published_at || item.created_at)} · {watch}
           {item.jurisdictions.length ? ` · ${item.jurisdictions[0]}` : ""}
         </div>
         <div className="briefing-item-title">{item.title}</div>
         <p className="briefing-item-summary">{item.summary}</p>
+        <div className={styles.sourceMeta}>{item.sources.map((source) => `${source.publisher || source.title} · ${source.support_state.replaceAll("_", " ")}`).join(" · ") || "No cited sources"}</div>
         <div className="briefing-item-foot">
           {needsReview ? <span className="state-label state-attention">Needs your review</span> : null}
           {item.read ? <span className="state-label state-quiet">Read</span> : <span className="state-label state-plain">Unread</span>}

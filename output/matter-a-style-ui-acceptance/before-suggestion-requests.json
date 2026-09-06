@@ -1,0 +1,33 @@
+{
+  "count": 624,
+  "posts": [
+    {
+      "time": "2026-09-05T22:09:59.324673+00:00",
+      "method": "POST",
+      "path": "/api/matters/MAT-20260905-f025e4/workspace/issues/ISS-c7fd36e074-beceace28ad3b977/disposition",
+      "query": "",
+      "status": 200
+    },
+    {
+      "time": "2026-09-05T22:10:39.560147+00:00",
+      "method": "POST",
+      "path": "/api/matters/MAT-20260905-f025e4/work-items/complete",
+      "query": "",
+      "status": 200
+    },
+    {
+      "time": "2026-09-05T22:16:40.114684+00:00",
+      "method": "POST",
+      "path": "/api/matters/MAT-20260905-f025e4/workspace/scenarios",
+      "query": "",
+      "status": 200
+    },
+    {
+      "time": "2026-09-05T22:16:41.084082+00:00",
+      "method": "POST",
+      "path": "/api/matters/MAT-20260905-f025e4/workspace/scenarios/SCN-5328d29504417959eacf9fda/analyze",
+      "query": "",
+      "status": 200
+    }
+  ]
+}

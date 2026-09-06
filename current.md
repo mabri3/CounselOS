@@ -1,16 +1,68 @@
 # Current Project State
 
-Last updated: 2026-09-01
+Last updated: 2026-09-06
 
-## Active Goal
+## Phase 2 UI checkpoint — September 6, 2026
 
-The Themis.ai workflow reconciliation build is complete. The normal matter
-workflow now adds durable research queues, versioned recommendations,
-recommendation disposition, participant and work-queue controls, target dates,
-typed confirmation actions, and safe lifecycle repair to the prior reliability
-baseline. Only the explicit Later backlog remains.
+The Phase 2 pages now use the selected A-style references. This includes Today,
+portfolio and intake, Decisions, Briefing and Watches, templates and skills,
+agent administration, automations, Settings, and the research reader. Matter
+and decision-map interiors keep their compact presentation. Shared components
+use optional Phase 2 variants and preserve their default Matter presentation.
 
-## Why This Goal Now
+Evidence and measured differences are in
+`output/uiphase2-implementation/visual-matrix.md` and `browser-demo.md`.
+Required backend tests passed 1,222 cases; final frontend typecheck and build
+passed. One focused continuity check still expects three refresh endpoints,
+while unchanged baseline code uses a fourth (`/handoff-references`). This is
+recorded as a failure, not a passed check. Browser mutation tests used an isolated
+vault and mock providers. The user waived 200% zoom. Real vault files and the
+active pointer are unchanged. See `docs/uiphase2-a-style-ui.handoff-progress.md`
+for the final review state and exact model routing.
+
+## Completed Goal
+
+The decision map redesign is complete. Normal inquiry and issue research save
+optional analysis beside useful prose. The map and issue review share the exact
+saved tests, conditions and paths. Preview is separate from an explicit decision,
+which retains the exact analysis and option basis beside the lawyer's wording.
+
+The final backend suite passed 1,222 tests. Frontend typecheck, map checks and
+production build passed. The fresh Sol Medium review's three material findings
+were fixed and rechecked. Browser proof includes configured-model publication,
+source/scenario/decision return, responsive widths and clear regenerated paths.
+Native 200% browser zoom remains unverified; CSS enlargement passed separately.
+The graph updated, but its HTML view exceeded the tool's size limit.
+
+Only owned test servers and build outputs were removed. Original services,
+protected authoritative vault files and the active-vault pointer are preserved.
+See `docs/decision-map-redesign.verification.md` for evidence and tool limits.
+Earlier checkpoint details below remain historical.
+
+## Previous Completed Goal
+
+The lawyer workflow expansion is complete. It covers clear orientation,
+business fact replies, generic local lawyer handoffs, and changed specification
+impact through one matter conversation and the existing editor.
+
+Independent review and material usability repairs passed. The connected Harbor
+browser/model story completed reply, handoff, comparison, proposed revision,
+selected Word/PDF export, explicit approval/delivery/work completion/closure,
+and return with the saved answer and lawyer edits intact.
+
+The final backend suite passed 1,149 tests. Frontend typecheck, all three required
+groups, production build, graph update and whitespace checks passed. Final
+browser checks covered 1440/1024/768/390 pixels, native 200% zoom, keyboard and
+reduced motion. The normal frontend build is restored. Only owned test servers
+were stopped. Protected authoritative vault files and the selection pointer
+are unchanged; the selected vault has only its known disposable cache delta.
+
+Use `docs/lawyer-workflow-expansion.verification.md` for exact evidence and
+limits, including two unregistered legacy source-string checks. The progress
+and usability reports distinguish failed attempts from completed proof.
+Older checkpoints below remain historical.
+
+## Previous Goal Context
 
 The previous closure checkpoint proved broad feature coverage. The reliability
 build removed the remaining false-success, stale-state, artifact-identity,
@@ -21,11 +73,11 @@ finishing one matter without reconstructing state by hand.
 
 ### Now
 
-- None.
+- None. The requested decision map redesign is complete.
 
 ### Next
 
-- None.
+- No new feature work is queued.
 
 ### Later
 
@@ -77,6 +129,8 @@ finishing one matter without reconstructing state by hand.
 
 ## Recent Changes
 
+- Added exact saved issue analysis, conditional map paths, explicit decision basis, frozen research inputs and source/scenario return. See `docs/decision-map-redesign.contract.md` and `docs/decision-map-redesign.verification.md`.
+
 - Repaired modified-End placement and canonical save read-back, typed lifecycle wording and close recovery, safe chat failure classes and durable progress, saved-state intake recovery, canonical recommendation precedence, shared dossier work-state projection, required/optional work labels, scoped mutation feedback, and compact guided-intake history.
 - Added a runtime-owned contract for built-in agents, while preserving old-vault workspace guidance and custom-agent permissions.
 - Made active intake-card answers durable before model analysis. Saved answers now close their question, retain source links, and can project an explicitly named matter field.
@@ -112,5 +166,5 @@ finishing one matter without reconstructing state by hand.
 
 ## Next Resume Action
 
-No resume action is required. Start new work only from an explicit Later item
-or a new user request.
+Read `docs/decision-map-redesign.tracking.md` before resuming.
+Do not start a competing writer on an assigned file.

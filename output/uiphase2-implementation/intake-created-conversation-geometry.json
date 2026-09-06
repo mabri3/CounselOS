@@ -1,0 +1,334 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 50,
+      "tag": "HEADER",
+      "text": "themis.ai⌄TodayBriefingWorkspaceMattersDecisionsSkillsAutoma",
+      "width": 177.39346313476562,
+      "x": 31.995737075805664,
+      "y": 13.998579025268556
+    },
+    {
+      "font": "15px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 194.1903381347656,
+      "x": 44.90056610107422,
+      "y": 496.90338134765625
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 51.80397415161133,
+      "y": 522.59228515625
+    },
+    {
+      "font": "15px",
+      "height": 97.1022720336914,
+      "tag": "HEADER",
+      "text": "Waiting on LawyerMattersPhase 2 controlled retryMatter detai",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 0
+    },
+    {
+      "font": "19px",
+      "height": 53.196022033691406,
+      "tag": "H1",
+      "text": "Phase 2 controlled retry",
+      "width": 191.40625,
+      "x": 316.0085144042969,
+      "y": 22.99715805053711
+    },
+    {
+      "font": "16px",
+      "height": 44.53834915161133,
+      "tag": "BUTTON",
+      "text": "Tools and history",
+      "width": 178.27413940429688,
+      "x": 804.2755126953125,
+      "y": 25.823862075805664
+    },
+    {
+      "font": "42px",
+      "height": 48.30255508422851,
+      "tag": "H1",
+      "text": "Phase 2 controlled retry",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 148.28125
+    },
+    {
+      "font": "15px",
+      "height": 1486.2215576171875,
+      "tag": "SECTION",
+      "text": "Matter workspace viewUnderstandDiscussDraftDecision mapBusin",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 204.5809631347656
+    },
+    {
+      "font": "15px",
+      "height": 67.99715423583984,
+      "tag": "HEADER",
+      "text": "Matter workspace viewUnderstandDiscussDraftDecision map",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 204.5809631347656
+    },
+    {
+      "font": "16px",
+      "height": 46.35653305053711,
+      "tag": "BUTTON",
+      "text": "Decision map",
+      "width": 120.79544830322266,
+      "x": 861.7542114257812,
+      "y": 214.94317626953125
+    },
+    {
+      "font": "15px",
+      "height": 1350.234375,
+      "tag": "SECTION",
+      "text": "Inquiry scopeMatter contextBusiness questionClear scopeRecen",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 296.5766906738281
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Clear scope",
+      "width": 75.34800720214844,
+      "x": 890.2982788085938,
+      "y": 307.48577880859375
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Open RUN-20260906-5fed69.md",
+      "width": 214.9857940673828,
+      "x": 269.296875,
+      "y": 1646.81103515625
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Clear target",
+      "width": 75.04261016845703,
+      "x": 284.1974182128906,
+      "y": 360.3835144042969
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Jump to latest answer",
+      "width": 140.9517059326172,
+      "x": 367.2372131347656,
+      "y": 360.3835144042969
+    },
+    {
+      "font": "15px",
+      "height": 34.79403305053711,
+      "tag": "SECTION",
+      "text": "Themis.ai · CompletedChat is complete. Review the saved resu",
+      "width": 922.5567626953124,
+      "x": 45.99431610107422,
+      "y": 413.28125
+    },
+    {
+      "font": "15px",
+      "height": 814.0553588867188,
+      "tag": "SECTION",
+      "text": "Latest answerThemis.aiHere is the useful first-pass view: st",
+      "width": 570.5681762695312,
+      "x": 45.99431610107422,
+      "y": 462.9829406738281
+    },
+    {
+      "font": "12px",
+      "height": 27.443180084228516,
+      "tag": "BUTTON",
+      "text": "Guided",
+      "width": 58.38068008422851,
+      "x": 440.7954406738281,
+      "y": 901.49853515625
+    },
+    {
+      "font": "12px",
+      "height": 27.443180084228516,
+      "tag": "BUTTON",
+      "text": "Answer a set",
+      "width": 88.6647720336914,
+      "x": 499.1761169433594,
+      "y": 901.49853515625
+    },
+    {
+      "font": "21px",
+      "height": 310.234375,
+      "tag": "SECTION",
+      "text": "Follow-up questionWhat business result should Phase 2 contro",
+      "width": 536.7613525390625,
+      "x": 62.89772415161133,
+      "y": 949.9005126953124
+    },
+    {
+      "font": "16px",
+      "height": 36.71875,
+      "tag": "BUTTON",
+      "text": "Send answer",
+      "width": 122.29402923583984,
+      "x": 77.8053970336914,
+      "y": 1209.5098876953125
+    },
+    {
+      "font": "14px",
+      "height": 35.99431610107422,
+      "tag": "BUTTON",
+      "text": "Finish intake",
+      "width": 81.34232330322266,
+      "x": 207.0951690673828,
+      "y": 1209.8720703125
+    },
+    {
+      "font": "15px",
+      "height": 126.59800720214844,
+      "tag": "SECTION",
+      "text": "Your questionSynthetic retry test: keep all fields after an ",
+      "width": 570.5681762695312,
+      "x": 45.99431610107422,
+      "y": 1289.0340576171875
+    },
+    {
+      "font": "15px",
+      "height": 767.4005126953125,
+      "tag": "ASIDE",
+      "text": "Run an inquiryAsk about This matterAgent workThese shortcuts",
+      "width": 335.9942932128906,
+      "x": 632.5568237304688,
+      "y": 462.0738525390625
+    },
+    {
+      "font": "15px",
+      "height": 536.0653076171875,
+      "tag": "SECTION",
+      "text": "Run an inquiryAsk about This matterAgent workThese shortcuts",
+      "width": 334.1761169433594,
+      "x": 633.4658813476562,
+      "y": 462.9829406738281
+    },
+    {
+      "font": "22px",
+      "height": 0.9943181276321412,
+      "tag": "H2",
+      "text": "Ask about This matter",
+      "width": 0.9943181276321412,
+      "x": 651.4630737304688,
+      "y": 505.7954406738281
+    },
+    {
+      "font": "16px",
+      "height": 40.72443008422851,
+      "tag": "BUTTON",
+      "text": "Start inquiry",
+      "width": 124.79402923583984,
+      "x": 651.4630737304688,
+      "y": 882.2869262695312
+    },
+    {
+      "font": "16px",
+      "height": 40.72443008422851,
+      "tag": "BUTTON",
+      "text": "Copy question",
+      "width": 104.17613220214844,
+      "x": 784.2542114257812,
+      "y": 882.2869262695312
+    },
+    {
+      "font": "15px",
+      "height": 229.5170440673828,
+      "tag": "SECTION",
+      "text": "Tools & historyBusiness repliesHand off workCompare supplied",
+      "width": 334.1761169433594,
+      "x": 633.4658813476562,
+      "y": 999.0482788085938
+    },
+    {
+      "font": "16px",
+      "height": 41.81107711791992,
+      "tag": "BUTTON",
+      "text": "Business replies",
+      "width": 294.1761169433594,
+      "x": 653.4658813476562,
+      "y": 1051.1363525390625
+    },
+    {
+      "font": "16px",
+      "height": 41.81107711791992,
+      "tag": "BUTTON",
+      "text": "Hand off work",
+      "width": 294.1761169433594,
+      "x": 653.4658813476562,
+      "y": 1106.9459228515625
+    },
+    {
+      "font": "16px",
+      "height": 41.81107711791992,
+      "tag": "BUTTON",
+      "text": "Compare supplied versions",
+      "width": 294.1761169433594,
+      "x": 653.4658813476562,
+      "y": 1162.755615234375
+    },
+    {
+      "font": "13.5px",
+      "height": 29.09090805053711,
+      "tag": "BUTTON",
+      "text": "Run inquiry: Which other matters does this touch?",
+      "width": 327.421875,
+      "x": 58.899147033691406,
+      "y": 1442.535400390625
+    },
+    {
+      "font": "13.5px",
+      "height": 29.09090805053711,
+      "tag": "BUTTON",
+      "text": "Run inquiry: What would change your view?",
+      "width": 288.0823669433594,
+      "x": 393.3167419433594,
+      "y": 1442.535400390625
+    },
+    {
+      "font": "20px",
+      "height": 29.999998092651367,
+      "tag": "BUTTON",
+      "text": "+",
+      "width": 29.999998092651367,
+      "x": 71.8039779663086,
+      "y": 1498.2528076171875
+    },
+    {
+      "font": "16px",
+      "height": 36.71875,
+      "tag": "BUTTON",
+      "text": "Send",
+      "width": 65.02840423583984,
+      "x": 877.7130126953125,
+      "y": 1491.5340576171875
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 0,
+  "url": "http://localhost:3134/matters/MAT-20260906-c35af8?view=discuss",
+  "width": 1024
+}

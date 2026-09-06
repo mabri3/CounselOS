@@ -1,0 +1,53 @@
+{
+  "name": "themis.ai-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "check:provider-admin": "node --experimental-strip-types scripts/check-provider-admin.ts",
+    "check:adaptive-intake": "node --experimental-strip-types scripts/check-adaptive-intake.ts",
+    "check:chat-run-recovery": "node --experimental-strip-types scripts/check-chat-run-recovery.ts",
+    "check:matter-workspace-helpers": "node --experimental-strip-types scripts/check-matter-workspace-helpers.ts",
+    "check:initial-load-integrity": "node --experimental-strip-types scripts/check-initial-load-integrity.ts",
+    "check:research-queue": "node --experimental-strip-types scripts/check-research-queue.ts",
+    "check:workspace-ux": "node --experimental-strip-types scripts/check-transport-preservation.ts && node --experimental-strip-types scripts/check-workspace-ux.ts && npm run check:initial-load-integrity && npm run check:provider-admin && npm run check:adaptive-intake && npm run check:chat-run-recovery && npm run check:research-queue",
+    "check:workspace-understand": "node --experimental-strip-types scripts/check-workspace-understand.ts",
+    "check:workspace-exploration": "node --experimental-strip-types scripts/check-workspace-exploration.ts",
+    "check:workspace-evidence": "node --experimental-strip-types scripts/check-workspace-evidence.ts",
+    "check:workspace-reuse": "node --experimental-strip-types scripts/check-workspace-reuse.ts",
+    "check:workspace-drafting": "node --experimental-strip-types scripts/check-workspace-drafting.ts",
+    "check:output-templates": "node --experimental-strip-types scripts/check-output-templates.ts",
+    "check:single-lawyer-workspace": "npm run check:workspace-understand && npm run check:workspace-exploration && npm run check:workspace-evidence && npm run check:workspace-reuse && npm run check:workspace-drafting && npm run check:output-templates",
+    "check:workspace-file-drop": "node --experimental-strip-types scripts/check-workspace-file-drop.ts",
+    "check:lawyer-continuity": "node --experimental-strip-types scripts/check-orientation-presentation.ts && node --experimental-strip-types scripts/check-team-interactions.ts && node --experimental-strip-types scripts/check-change-impact-presentation.ts && node --experimental-strip-types scripts/check-continuity-integrity.ts",
+    "check:review-layout": "node --experimental-strip-types scripts/check-review-layout.ts",
+    "check:issue-review": "node --experimental-strip-types scripts/check-issue-review.ts",
+    "check:decision-map": "node --experimental-strip-types scripts/check-decision-map.ts",
+    "check:document-navigation": "node --experimental-strip-types scripts/check-document-navigation.ts",
+    "check:document-reference-behavior": "node --experimental-strip-types scripts/check-document-reference-behavior.ts",
+    "check:matter-review-integration": "node --experimental-strip-types scripts/check-matter-review-integration.ts",
+    "check:matter-review-decision-map": "npm run check:review-layout && npm run check:issue-review && npm run check:decision-map && npm run check:document-navigation && npm run check:document-reference-behavior && npm run check:matter-review-integration"
+  },
+  "dependencies": {
+    "@lexical/link": "^0.49.0",
+    "@lexical/list": "^0.49.0",
+    "@lexical/markdown": "^0.49.0",
+    "@lexical/react": "^0.49.0",
+    "@lexical/rich-text": "^0.49.0",
+    "lexical": "^0.49.0",
+    "next": "16.3.3",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "typescript": "^5.9.2"
+  }
+}

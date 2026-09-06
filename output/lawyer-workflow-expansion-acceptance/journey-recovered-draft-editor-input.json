@@ -1,0 +1,1 @@
+{"label": "journey-recovered-draft-editor", "width": 1440, "actions": [{"op": "click", "selector": "label[for=\"workspace-view-MAT-20260905-0a2378-draft\"]"}, {"op": "visible", "selector": ".artifact-row"}, {"op": "click", "selector": ".artifact-row .btn-row button:first-child"}, {"op": "wait", "ms": 4500}]}

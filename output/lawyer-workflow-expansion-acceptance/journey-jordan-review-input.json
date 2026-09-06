@@ -1,0 +1,1 @@
+{"label": "journey-jordan-review", "route": "/", "width": 1024, "actions": [{"op": "visible", "name": "Review handoff"}, {"op": "click", "name": "Review handoff"}, {"op": "visible", "name": "Accept handoff"}, {"op": "wait", "ms": 1000}]}

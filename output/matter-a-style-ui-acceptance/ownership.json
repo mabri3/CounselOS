@@ -1,0 +1,65 @@
+{
+  "C1": [
+    "frontend/components/workspace/UnderstandPanel.tsx",
+    "frontend/components/workspace/OrientationSummary.tsx",
+    "frontend/components/workspace/WorkItemSummary.tsx",
+    "frontend/components/workspace/IssueNavigator.tsx",
+    "frontend/components/workspace/IssueReviewDetail.tsx",
+    "frontend/components/workspace/ChangeRecap.tsx",
+    "frontend/components/workspace/MatterReview.module.css"
+  ],
+  "C2": [
+    "frontend/components/workspace/DocumentNavigator.tsx",
+    "frontend/components/workspace/DocumentTabs.tsx",
+    "frontend/components/workspace/ReferencePreview.tsx",
+    "frontend/components/workspace/EvidenceDrawer.tsx",
+    "frontend/components/workspace/ClaimMarkdown.tsx",
+    "frontend/components/DocumentPanel.tsx",
+    "frontend/components/workspace/MatterDocuments.module.css"
+  ],
+  "C3": [
+    "frontend/components/ChatPanel.tsx",
+    "frontend/components/workspace/ConversationDock.tsx",
+    "frontend/components/workspace/MatterConversation.module.css"
+  ],
+  "C4": [
+    "frontend/components/workspace/MatterFilesPanel.tsx",
+    "frontend/components/workspace/ContextTray.tsx",
+    "frontend/components/workspace/OutputTemplateLibrary.tsx",
+    "frontend/components/workspace/OutputTemplateEditor.tsx",
+    "frontend/components/workspace/MatterTools.module.css"
+  ],
+  "C5": [
+    "frontend/components/workspace/FactRequestPanel.tsx",
+    "frontend/components/workspace/HandoffPanel.tsx",
+    "frontend/components/workspace/ChangeImpactPanel.tsx",
+    "frontend/components/workspace/MatterContinuity.module.css"
+  ],
+  "C6": [
+    "frontend/components/workspace/ScenarioPanel.tsx",
+    "frontend/components/workspace/InquiryActions.tsx",
+    "frontend/components/workspace/BusinessFlow.tsx",
+    "frontend/components/workspace/PriorWorkPanel.tsx",
+    "frontend/components/workspace/PracticeNotePanel.tsx",
+    "frontend/components/workspace/AssumptionWatchPanel.tsx",
+    "frontend/components/workspace/MatterExplore.module.css"
+  ],
+  "C7": [
+    "frontend/components/workspace/DecisionMap.tsx",
+    "frontend/app/matters/[matterId]/decision-map/page.tsx",
+    "frontend/components/workspace/MatterMap.module.css"
+  ],
+  "C8": [
+    "frontend/components/ResearchQueuePanel.tsx",
+    "frontend/components/RecommendationPanel.tsx",
+    "frontend/components/ReviewPacketPanel.tsx",
+    "frontend/components/workspace/MatterWork.module.css"
+  ],
+  "C9": [
+    "frontend/components/MatterWorkspace.tsx",
+    "frontend/components/workspace/DraftWorkspace.tsx",
+    "frontend/components/workspace/MatterSectionNav.tsx",
+    "frontend/components/workspace/MatterA.module.css",
+    "frontend/app/globals.css"
+  ]
+}

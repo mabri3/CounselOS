@@ -1,0 +1,127 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 83.99857330322266,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "font": "13px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 237.7627716064453,
+      "x": 756.7826538085938,
+      "y": 66.85369110107422
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 763.68603515625,
+      "y": 92.54261016845705
+    },
+    {
+      "font": "16px",
+      "height": 1441.3778076171875,
+      "tag": "MAIN",
+      "text": "‹ All WatchesSynthetic process WatchSave draftScan nowStart ",
+      "width": 895.3551025390625,
+      "x": 59.59516906738281,
+      "y": 83.99857330322266
+    },
+    {
+      "font": "46px",
+      "height": 51.5198860168457,
+      "tag": "H1",
+      "text": "Synthetic process Watch",
+      "width": 496.9886169433594,
+      "x": 93.59375,
+      "y": 164.9005584716797
+    },
+    {
+      "font": "15px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Save draft",
+      "width": 95.6178970336914,
+      "x": 608.5795288085938,
+      "y": 164.9005584716797
+    },
+    {
+      "font": "15px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Scan now",
+      "width": 91.91761016845705,
+      "x": 713.1959838867188,
+      "y": 164.9005584716797
+    },
+    {
+      "font": "15px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Start Watch",
+      "width": 106.83948516845705,
+      "x": 814.1121826171875,
+      "y": 164.9005584716797
+    },
+    {
+      "font": "16px",
+      "height": 32.897727966308594,
+      "tag": "BUTTON",
+      "text": "Change something",
+      "width": 133.31675720214844,
+      "x": 93.59375,
+      "y": 316.40625
+    },
+    {
+      "font": "16px",
+      "height": 906.725830078125,
+      "tag": "SECTION",
+      "text": "Durable scan previewScan resultsPartial0 developments · 0 Br",
+      "width": 827.35791015625,
+      "x": 93.59375,
+      "y": 554.6519775390625
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Scan results",
+      "width": 100.58948516845705,
+      "x": 116.49857330322266,
+      "y": 608.4658813476562
+    },
+    {
+      "font": "16px",
+      "height": 140.4474334716797,
+      "tag": "SECTION",
+      "text": "Run historyDraft scanSep 6, 2026, 1:14 AM · SCAN-20260906-c7",
+      "width": 827.35791015625,
+      "x": 93.59375,
+      "y": 396.2073669433594
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Run history",
+      "width": 785.5397338867188,
+      "x": 114.50283813476562,
+      "y": 417.116455078125
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 0,
+  "url": "http://localhost:3134/watches/WATCH-20260906-05727c",
+  "width": 1024
+}

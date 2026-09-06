@@ -1,0 +1,1 @@
+{"label":"journey-handoff-open","width":1024,"actions":[{"op":"wait","ms":4000},{"op":"click","name":"Hand off work"},{"op":"select","label":"Work to hand off","value":"WI-20260905-177aed"},{"op":"wait","ms":1000}]}

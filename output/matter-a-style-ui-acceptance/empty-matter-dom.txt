@@ -1,0 +1,102 @@
+- banner:
+  - link "Themis.ai":
+    - /url: /
+    - img "Themis.ai"
+  - navigation "Main navigation":
+    - link "Today":
+      - /url: /
+    - link "Briefing":
+      - /url: /briefing
+    - link "Workspace":
+      - /url: /workspace
+    - link "Matters":
+      - /url: /matters
+    - link "Decisions":
+      - /url: /decisions
+    - link "Skills":
+      - /url: /skills
+    - link "Automations":
+      - /url: /automations
+    - link "Agents":
+      - /url: /agents
+    - link "Settings":
+      - /url: /settings
+  - region "View as":
+    - paragraph: Local demo
+    - heading "View as" [level=2]
+    - generic: View workspace as
+    - combobox "View workspace as":
+      - option "Alex Morgan · alex-morgan" [selected]
+      - option "Jamie Lee · jamie-lee"
+    - generic "About"
+- banner:
+  - generic: Waiting on Alex Morgan
+  - link "Matters":
+    - /url: /matters
+  - heading "Empty acceptance matter" [level=1]
+  - term: Stage
+  - definition: Just came in
+  - term: Risk
+  - definition:
+    - generic: Lawyer-set risk
+    - combobox "Lawyer-set risk":
+      - option "Set risk" [selected]
+      - option "Low"
+      - option "Moderate"
+      - option "High"
+  - term: Due
+  - definition: No date
+  - generic "Tools and history"
+- region "Matter workspace":
+  - group "Matter workspace view":
+    - generic: Matter workspace view
+    - radio "Understand" [checked]
+    - generic "Read the current matter": Understand
+    - radio "Discuss"
+    - generic "Continue one matter conversation": Discuss
+    - radio "Draft"
+    - generic "Review and prepare work product": Draft
+  - generic "Discussion help"
+  - button "Show discussion"
+  - region "Matter understanding":
+    - region "Matter review orientation":
+      - text: Business question
+      - heading "No business question is saved yet." [level=2]
+      - generic: Working answer · Agent work · No cited sources
+      - generic: No working answer is saved yet.
+      - generic: One next action
+      - button "View all issues (0)"
+      - paragraph: No issue needs review.
+    - region "Needs your review":
+      - heading "Needs your review" [level=2]
+      - generic: Up to 3 items
+      - paragraph: No saved item needs your review.
+    - navigation "More matter sections":
+      - button "Evidence & question history"
+      - button "Explore & business flow"
+      - button "Prior work & watches"
+      - button "Research & work"
+      - button "Materials & activity"
+    - article:
+      - text: Useful current answer
+      - paragraph: No saved answer is available. Refresh the matter or open the next saved work item to recover local context.
+      - button "Refresh matter"
+    - region "Issue navigator":
+      - heading "All issues" [level=2]
+      - generic: 0 issues
+      - paragraph: No issues are saved yet.
+    - generic "Supporting material and history"
+  - generic "Explain, stress-test or ask the business"
+  - generic "Scenarios and business flow"
+  - option "Add a new reported fact" [selected]
+  - generic "Prior work, practice notes and assumption watches"
+  - generic "Research, work items, decisions and matter records"
+  - option "Low"
+  - option "Normal" [selected]
+  - option "High"
+  - option "Urgent"
+  - complementary "Available work product":
+    - heading "Available work product" [level=2]
+    - paragraph: No saved work product is available yet.
+- button "Open Next.js Dev Tools":
+- alert

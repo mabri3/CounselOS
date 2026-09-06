@@ -1,0 +1,191 @@
+{
+  "at": "2026-09-06T09:14:50.587236+00:00",
+  "protected": {
+    "checked": 1752,
+    "roots": [
+      "Mosaic Relay UX Experiment 2026-09-03 R3",
+      "vault"
+    ],
+    "differences": [],
+    "new_paths": []
+  },
+  "outside_ownership": {
+    "checked": 6643,
+    "differences": [],
+    "excluded": "Phase 2 ownership from section 8 plus assigned focused checks and section 14 handoff/design context updates; graphify-out/**; output/**; frontend/.next* generated builds; next-env.d.ts; tsconfig.tsbuildinfo. Baseline covers existing paths only.",
+    "ownership": [
+      "CODEX_HANDOFF.md",
+      "current.md",
+      "docs/DESIGN_LANGUAGE.md",
+      "docs/uiphase2-a-style-ui.handoff-plan.md",
+      "docs/uiphase2-a-style-ui.handoff-progress.md",
+      "docs/uiphase2-a-style-ui.handoff-prompt.md",
+      "frontend/app/agents/page.tsx",
+      "frontend/app/automations/page.tsx",
+      "frontend/app/briefing/[itemId]/page.tsx",
+      "frontend/app/briefing/digests/[digestId]/page.tsx",
+      "frontend/app/briefing/page.tsx",
+      "frontend/app/decisions/page.tsx",
+      "frontend/app/globals.css",
+      "frontend/app/matters/[matterId]/research/page.tsx",
+      "frontend/app/matters/page.tsx",
+      "frontend/app/page.tsx",
+      "frontend/app/settings/page.tsx",
+      "frontend/app/skills/page.tsx",
+      "frontend/app/watches/[watchId]/page.tsx",
+      "frontend/app/watches/new/page.tsx",
+      "frontend/app/watches/page.tsx",
+      "frontend/app/workspace/page.tsx",
+      "frontend/components/AdminPhase2.module.css",
+      "frontend/components/AppShell.tsx",
+      "frontend/components/AutomationPanel.tsx",
+      "frontend/components/BriefingItemList.tsx",
+      "frontend/components/BriefingList.tsx",
+      "frontend/components/BriefingPhase2.module.css",
+      "frontend/components/BriefingQueryBar.tsx",
+      "frontend/components/BriefingReader.tsx",
+      "frontend/components/BriefingWorkspace.tsx",
+      "frontend/components/CompanyInterview.tsx",
+      "frontend/components/DecisionsPhase2.module.css",
+      "frontend/components/MattersTable.tsx",
+      "frontend/components/NewMatterForm.tsx",
+      "frontend/components/Phase2.module.css",
+      "frontend/components/Phase2Icon.tsx",
+      "frontend/components/Phase2Shell.module.css",
+      "frontend/components/PortfolioPhase2.module.css",
+      "frontend/components/PracticeRail.tsx",
+      "frontend/components/ResearchPhase2.module.css",
+      "frontend/components/ResearchQueuePanel.tsx",
+      "frontend/components/ReviewPacketPanel.tsx",
+      "frontend/components/SettingsPhase2.module.css",
+      "frontend/components/SkillBuilder.tsx",
+      "frontend/components/SkillsPhase2.module.css",
+      "frontend/components/SourceRoleEditor.tsx",
+      "frontend/components/StageBoard.tsx",
+      "frontend/components/TemplatesPhase2.module.css",
+      "frontend/components/TodayChat.tsx",
+      "frontend/components/TodayOrientationCard.tsx",
+      "frontend/components/TodayPhase2.module.css",
+      "frontend/components/WatchBuilder.tsx",
+      "frontend/components/WatchList.tsx",
+      "frontend/components/WatchScanPreview.tsx",
+      "frontend/components/WatchesPhase2.module.css",
+      "frontend/components/workspace/OutputTemplateEditor.tsx",
+      "frontend/components/workspace/OutputTemplateLibrary.tsx",
+      "frontend/lib/design.ts",
+      "frontend/next-env.d.ts",
+      "frontend/next.config.ts",
+      "frontend/scripts/check-initial-load-integrity.ts",
+      "frontend/scripts/check-provider-admin.ts",
+      "frontend/tsconfig.tsbuildinfo",
+      "graphify-out/",
+      "output/uiphase2-implementation/"
+    ]
+  },
+  "scenario_facts": {
+    "scenario_id": "SCN-aa831078a9d7760d321e9822",
+    "expected": "d8c4b1f57b8711d7c42c7b8e45c9e0214f6bdcc055bb80106a2abb9ca177283d",
+    "current": "d8c4b1f57b8711d7c42c7b8e45c9e0214f6bdcc055bb80106a2abb9ca177283d",
+    "unchanged": true,
+    "method": "workspace.source_revisions canonical content+metadata digest; these facts metadata contain no excluded continuity fields"
+  },
+  "map_decisions": {
+    "checked": 1,
+    "differences": []
+  },
+  "source_view_log": {
+    "requests": [
+      {
+        "line": 159,
+        "method": "GET",
+        "path": "/api/matters/MAT-20260906-8e1575/workspace/context"
+      },
+      {
+        "line": 259,
+        "method": "GET",
+        "path": "/api/matters/MAT-20260906-c35af8/workspace/context"
+      },
+      {
+        "line": 319,
+        "method": "GET",
+        "path": "/api/intelligence/sources"
+      },
+      {
+        "line": 322,
+        "method": "GET",
+        "path": "/api/intelligence/sources"
+      },
+      {
+        "line": 342,
+        "method": "GET",
+        "path": "/api/intelligence/sources"
+      },
+      {
+        "line": 344,
+        "method": "GET",
+        "path": "/api/intelligence/sources"
+      },
+      {
+        "line": 842,
+        "method": "GET",
+        "path": "/api/intelligence/sources"
+      },
+      {
+        "line": 843,
+        "method": "GET",
+        "path": "/api/intelligence/sources"
+      },
+      {
+        "line": 859,
+        "method": "GET",
+        "path": "/api/intelligence/sources"
+      },
+      {
+        "line": 862,
+        "method": "GET",
+        "path": "/api/intelligence/sources"
+      },
+      {
+        "line": 1074,
+        "method": "GET",
+        "path": "/api/matters/MAT-DEMO-APEX/workspace/context"
+      },
+      {
+        "line": 1203,
+        "method": "GET",
+        "path": "/api/matters/MAT-DEMO-APEX/workspace/context"
+      },
+      {
+        "line": 1387,
+        "method": "GET",
+        "path": "/api/intelligence/sources"
+      },
+      {
+        "line": 1389,
+        "method": "GET",
+        "path": "/api/intelligence/sources"
+      },
+      {
+        "line": 1650,
+        "method": "GET",
+        "path": "/api/matters/MAT-DEMO-APEX/workspace/context"
+      },
+      {
+        "line": 1735,
+        "method": "GET",
+        "path": "/api/matters/MAT-20260906-c35af8/workspace/context"
+      },
+      {
+        "line": 1847,
+        "method": "GET",
+        "path": "/api/matters/MAT-DEMO-HARBOR/workspace/context"
+      },
+      {
+        "line": 1955,
+        "method": "GET",
+        "path": "/api/matters/MAT-DEMO-HARBOR/workspace/context"
+      }
+    ],
+    "limit": "Access log has no interaction IDs. GET source/evidence requests demonstrate reads, but cannot prove that each source click caused no other request. Hash checks independently verify the listed facts and decision records."
+  }
+}

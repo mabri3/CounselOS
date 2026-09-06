@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "Actual fact correction marks analysis Needs review",
+    "Updated analysis changes map while recorded basis stays exact"
+  ],
+  "errors": [
+    "Cannot read properties of null (reading 'removeChild')",
+    "Cannot read properties of null (reading 'removeChild')"
+  ],
+  "failure": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('complementary', { name: 'Decision path details' }).getByRole('button', { name: 'Open source', exact: true }).first()\u001b[22m\n"
+}

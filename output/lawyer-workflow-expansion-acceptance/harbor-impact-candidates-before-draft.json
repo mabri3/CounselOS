@@ -1,0 +1,104 @@
+{
+  "sources": [
+    {
+      "reference_id": "source:SRC-F8CB075433BD2D03:44bd394c436e",
+      "kind": "source",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v2-formatting.txt.extracted.md",
+      "expected_revision": "7181bd7c5031e1ec062b3291da5dbc3561d41c0623128646ef85640cdc522a9e",
+      "title": "harbor-spec-v2-formatting.txt"
+    },
+    {
+      "reference_id": "source:SRC-0AAFF467A728978B:81720b134013",
+      "kind": "source",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v1.txt.extracted.md",
+      "expected_revision": "764be8ca1d53a9625809a1f992d97daa3d9f6352002fcdcbead80f45e46c81cc",
+      "title": "harbor-spec-v1.txt"
+    },
+    {
+      "reference_id": "source:SRC-0ACEAC9A0F1D87F0:985be499a11e",
+      "kind": "source",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v2.txt.extracted.md",
+      "expected_revision": "2adcf5bb1d1f757fb8b37ddf92a8a0a4a3cc3d35fa88180e8ea7041c9750791f",
+      "title": "harbor-spec-v2.txt"
+    },
+    {
+      "reference_id": "source:SRC-2280d73c6c48921b3fd2b14d:ff52b14a54b8",
+      "kind": "source",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/continuity/replies/RPL-e0c3cafcf8e9b9661d851fd4.md",
+      "expected_revision": "e4f7e29654d125062c032b30239e381ac18108d0e226564768ab56542e691f20",
+      "title": "RPL-e0c3cafcf8e9b9661d851fd4.md"
+    }
+  ],
+  "targets": [
+    {
+      "reference_id": "snapshot:RUN-20260905-91436f",
+      "kind": "advice",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/workspace.md",
+      "expected_revision": "522767491dcdcc0e75f1925a084773639b144cf632e36e53b5b1d188350c3d19",
+      "title": "Saved workspace answer"
+    },
+    {
+      "reference_id": "recommendation:current",
+      "kind": "recommendation",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/recommendations.md",
+      "expected_revision": "06f792d40fdf1808ed3bf311b96c74b05f910b2e1cee2c9a34bfb83cbb055b8a",
+      "title": "Working recommendation"
+    },
+    {
+      "reference_id": "MSG-20260905-89cd85",
+      "kind": "advice",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/CONV-20260905-9d68db.md",
+      "expected_revision": "63be52a4c090fd4697f72d4ccc114f1387242572be88368d14dbe3503c762a11",
+      "title": "Saved assistant advice \u00b7 MSG-20260905-89cd85"
+    },
+    {
+      "reference_id": "MSG-20260905-9f2b6d",
+      "kind": "advice",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/CONV-20260905-9d68db.md",
+      "expected_revision": "d95869208c1ab3b27924727d3d81e8dc6a539fdab47cb03853226ce0f6042c12",
+      "title": "Saved assistant advice \u00b7 MSG-20260905-9f2b6d"
+    },
+    {
+      "reference_id": "MSG-20260905-a67bfb",
+      "kind": "advice",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/CONV-20260905-9d68db.md",
+      "expected_revision": "e8d7855926a9e736c4fc917bf58587bebf4376caf8e07dc4abaf5564463b3f50",
+      "title": "Saved assistant advice \u00b7 MSG-20260905-a67bfb"
+    },
+    {
+      "reference_id": "MSG-20260905-46f354",
+      "kind": "advice",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/CONV-20260905-9d68db.md",
+      "expected_revision": "4e11b0ae761b0c39b40ad5f32548ec16811275989b7bfc822b201c251e3a84ec",
+      "title": "Saved assistant advice \u00b7 MSG-20260905-46f354"
+    },
+    {
+      "reference_id": "MSG-20260905-e70102",
+      "kind": "advice",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/CONV-20260905-9d68db.md",
+      "expected_revision": "d846e17085dba2470b41a54562177e0f496c7643603925cee0e070892a18c9d9",
+      "title": "Saved assistant advice \u00b7 MSG-20260905-e70102"
+    },
+    {
+      "reference_id": "inquiry:RUN-20260905-91436f",
+      "kind": "advice",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/inquiries/RUN-20260905-91436f.md",
+      "expected_revision": "7689b470b275aec09b27cf3fef2511d46f72fb7b420d375ae8635d383a8f8c50",
+      "title": "Saved inquiry \u00b7 RUN-20260905-91436f"
+    },
+    {
+      "reference_id": "inquiry:RUN-20260905-0bfadb",
+      "kind": "advice",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/inquiries/RUN-20260905-0bfadb.md",
+      "expected_revision": "a81247876e95906f3106582654c748dfd5b3abf4d24a25eefa5f77d35d291f19",
+      "title": "Saved inquiry \u00b7 RUN-20260905-0bfadb"
+    },
+    {
+      "reference_id": "inquiry:RUN-20260905-2f3c8a",
+      "kind": "advice",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/inquiries/RUN-20260905-2f3c8a.md",
+      "expected_revision": "01b8f8cb6db317afe3845fa48277fbc6f3dc5fb0d83f6ca151e032ee12bf1529",
+      "title": "Saved inquiry \u00b7 RUN-20260905-2f3c8a"
+    }
+  ]
+}

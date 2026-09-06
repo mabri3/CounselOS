@@ -1,0 +1,235 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 50,
+      "tag": "HEADER",
+      "text": "themis.ai⌄TodayBriefingWorkspaceMattersDecisionsSkillsAutoma",
+      "width": 177.39346313476562,
+      "x": 31.995737075805664,
+      "y": 13.998579025268556
+    },
+    {
+      "font": "15px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 194.1903381347656,
+      "x": 44.90056610107422,
+      "y": 496.90338134765625
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 51.80397415161133,
+      "y": 522.59228515625
+    },
+    {
+      "font": "15px",
+      "height": 97.1022720336914,
+      "tag": "HEADER",
+      "text": "OverdueMattersHarbor: Account Hold Support ResponseMatter de",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 0
+    },
+    {
+      "font": "19px",
+      "height": 53.196022033691406,
+      "tag": "H1",
+      "text": "Harbor: Account Hold Support Response",
+      "width": 252.61363220214844,
+      "x": 316.0085144042969,
+      "y": 22.99715805053711
+    },
+    {
+      "font": "16px",
+      "height": 44.53834915161133,
+      "tag": "BUTTON",
+      "text": "Tools and history",
+      "width": 178.27413940429688,
+      "x": 804.2755126953125,
+      "y": 25.823862075805664
+    },
+    {
+      "font": "16px",
+      "height": 40.72443008422851,
+      "tag": "BUTTON",
+      "text": "← Back to Tools & history",
+      "width": 185.4474334716797,
+      "x": 31.995737075805664,
+      "y": 121.10084533691406
+    },
+    {
+      "font": "48px",
+      "height": 55.1917610168457,
+      "tag": "H1",
+      "text": "Business replies",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 179.8224334716797
+    },
+    {
+      "font": "16px",
+      "height": 40.80965805053711,
+      "tag": "BUTTON",
+      "text": "Understand",
+      "width": 116.89630126953124,
+      "x": 31.995737075805664,
+      "y": 271.0085144042969
+    },
+    {
+      "font": "16px",
+      "height": 40.80965805053711,
+      "tag": "BUTTON",
+      "text": "Discuss",
+      "width": 87.96875,
+      "x": 188.8920440673828,
+      "y": 271.0085144042969
+    },
+    {
+      "font": "16px",
+      "height": 40.80965805053711,
+      "tag": "BUTTON",
+      "text": "Draft",
+      "width": 68.70738220214844,
+      "x": 316.86077880859375,
+      "y": 271.0085144042969
+    },
+    {
+      "font": "16px",
+      "height": 40.80965805053711,
+      "tag": "BUTTON",
+      "text": "Decision map",
+      "width": 163.5440216064453,
+      "x": 819.0056762695312,
+      "y": 271.0085144042969
+    },
+    {
+      "font": "15px",
+      "height": 1786.988525390625,
+      "tag": "SECTION",
+      "text": "CloseRequest and record an answerPrepare text here, then cop",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 333.81390380859375
+    },
+    {
+      "font": "15px",
+      "height": 761.25,
+      "tag": "SECTION",
+      "text": "Request and record an answerPrepare text here, then copy it.",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 333.81390380859375
+    },
+    {
+      "font": "15px",
+      "height": 32.194602966308594,
+      "tag": "HEADER",
+      "text": "Request and record an answer",
+      "width": 912.741455078125,
+      "x": 50.90198516845703,
+      "y": 352.72015380859375
+    },
+    {
+      "font": "28px",
+      "height": 32.194602966308594,
+      "tag": "H2",
+      "text": "Request and record an answer",
+      "width": 385,
+      "x": 50.90198516845703,
+      "y": 352.72015380859375
+    },
+    {
+      "font": "15px",
+      "height": 121.99573516845705,
+      "tag": "SECTION",
+      "text": "Text preparationPreparation is localPreparing or copying tex",
+      "width": 450.3692932128906,
+      "x": 50.90198516845703,
+      "y": 898.1676025390625
+    },
+    {
+      "font": "15px",
+      "height": 121.99573516845705,
+      "tag": "SECTION",
+      "text": "Record external requestNot recordedRecord external request i",
+      "width": 450.37640380859375,
+      "x": 513.2670288085938,
+      "y": 898.1676025390625
+    },
+    {
+      "font": "16px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Prepare request",
+      "width": 451.3707275390625,
+      "x": 50.90198516845703,
+      "y": 1032.1590576171875
+    },
+    {
+      "font": "16px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Copy",
+      "width": 451.3707275390625,
+      "x": 512.272705078125,
+      "y": 1032.1590576171875
+    },
+    {
+      "font": "15px",
+      "height": 1007.741455078125,
+      "tag": "SECTION",
+      "text": "TeamHand off workActing as Alex TestCreate a pending local h",
+      "width": 950.553955078125,
+      "x": 31.995737075805664,
+      "y": 1113.06103515625
+    },
+    {
+      "font": "15px",
+      "height": 46.74005508422851,
+      "tag": "HEADER",
+      "text": "TeamHand off workActing as Alex Test",
+      "width": 912.741455078125,
+      "x": 50.90198516845703,
+      "y": 1131.96728515625
+    },
+    {
+      "font": "28px",
+      "height": 32.194602966308594,
+      "tag": "H2",
+      "text": "Hand off work",
+      "width": 183.5724334716797,
+      "x": 50.90198516845703,
+      "y": 1146.5126953125
+    },
+    {
+      "font": "16px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Create pending handoff",
+      "width": 451.3707275390625,
+      "x": 50.90198516845703,
+      "y": 2022.35791015625
+    },
+    {
+      "font": "16px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Draft handoff brief",
+      "width": 451.3707275390625,
+      "x": 512.272705078125,
+      "y": 2022.35791015625
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 0,
+  "url": "http://localhost:3134/matters/MAT-DEMO-HARBOR?continuity_kind=question&continuity_id=BQ-d246e6b46bad5876&view=discuss",
+  "width": 1024
+}

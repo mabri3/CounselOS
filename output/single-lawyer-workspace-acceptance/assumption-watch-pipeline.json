@@ -1,0 +1,34 @@
+{
+  "state": "passed",
+  "vault_path": "/private/var/folders/xb/kzc31shn1pz2s_5l2fy6d7rh0000gn/T/j-assumption-watch-acceptance-7s95gbbs/vault",
+  "matter_id": "MAT-20260905-763a44",
+  "matter_title": "Willow receipt retention verification",
+  "assumption_id": "ASM-20260905-eace0e",
+  "assumption_text": "Receipt retention assumption: archived customer receipts may be deleted after 30 days.",
+  "decision_id": "DEC-FEE18DCBAFB60451981E",
+  "decision_path": "03_Matters/willow-receipt-retention-verification-763a44/decisions/DEC-FEE18DCBAFB60451981E.md",
+  "decision_sha256_before": "4da7cc64c74f4ea5a35d7904239462ca6e3587f75c4f09fbd03f97e8e90e92b7",
+  "decision_sha256_after": "4da7cc64c74f4ea5a35d7904239462ca6e3587f75c4f09fbd03f97e8e90e92b7",
+  "all_recorded_decision_files_unchanged": 4,
+  "watch_id": "WATCH-20260905-63efe7",
+  "watch_path": "00_System/legal-awareness/watches/WATCH-20260905-63efe7.md",
+  "activation": "explicit_existing_activate_endpoint",
+  "scan_id": "SCAN-20260905-e843bc",
+  "scan_status": "success",
+  "packet_id": "PKT-20260905-258654",
+  "packet_path": "05_Briefing/review-packets/PKT-20260905-258654.md",
+  "attention_state": "required",
+  "affected_assumption_ids": [
+    "ASM-20260905-eace0e"
+  ],
+  "affected_decisions": [
+    "DEC-FEE18DCBAFB60451981E"
+  ],
+  "prior_decision_basis": "The receipt retention assumption permits deletion after 30 days.",
+  "possible_tension": "Lexical overlap with MAT-20260905-763a44: acceptance, receipt, retention. Lexical overlap with MAT-20260905-763a44: acceptance, archived, customer, days, deterministic, receipt. Lexical overlap with DEC-FEE18DCBAFB60451981E: acceptance, archived, customer, days, receipt, receipts. Affected assumption IDs: ASM-20260905-eace0e.",
+  "source_support": "supplied",
+  "provider_calls": 1,
+  "private_ids_absent_from_outbound_query": true,
+  "scheduler_enabled": false,
+  "backend_http_only": true
+}

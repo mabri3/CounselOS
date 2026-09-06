@@ -1,0 +1,7 @@
+{
+  "run_id": "RUN-20260905-0bfadb",
+  "state": "completed",
+  "reply_length": 2454,
+  "exact_saved_message_id": "MSG-20260905-89cd85",
+  "evidence": "Coordinator GET of chat-runs/RUN-20260905-0bfadb and conversations/CONV-20260905-9d68db found exact same run_id, reply content and non-empty saved message_id."
+}

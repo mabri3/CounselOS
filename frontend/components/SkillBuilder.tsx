@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import phase2 from "./SkillsPhase2.module.css";
 import DataLoadStatus from "@/components/DataLoadStatus";
 import {
   createSkill,
@@ -13,15 +14,15 @@ import {
 import type { SkillDefinition, SkillDraft, SkillQuestion, SkillSuggestion } from "@/lib/types";
 
 type View = "home" | "goal" | "question" | "draft" | "edit" | "saved";
-export default function SkillBuilder({ initialGoal }: { initialGoal: string }) {
+export default function SkillBuilder({ initialGoal, initialDraft, onSaveDraft, presentation = "matter" }: { initialGoal: string; initialDraft?: SkillDraft; onSaveDraft?: (draft: SkillDraft) => Promise<SkillDefinition>; presentation?: "matter" | "phase2" }) {
   const [skills, setSkills] = useState<SkillDefinition[]>([]);
   const [questions, setQuestions] = useState<SkillQuestion[]>([]);
-  const [view, setView] = useState<View>(initialGoal ? "goal" : "home");
+  const [view, setView] = useState<View>(initialDraft ? "draft" : initialGoal ? "goal" : "home");
   const [goal, setGoal] = useState(initialGoal);
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const [questionIndex, setQuestionIndex] = useState(0);
   const [customAnswer, setCustomAnswer] = useState("");
-  const [draft, setDraft] = useState<SkillDraft | null>(null);
+  const [draft, setDraft] = useState<SkillDraft | null>(initialDraft ?? null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [savedPath, setSavedPath] = useState("");
   const [suggestions, setSuggestions] = useState<SkillSuggestion[]>([]);
@@ -55,6 +56,7 @@ export default function SkillBuilder({ initialGoal }: { initialGoal: string }) {
   }
 
   function goHome() {
+    if (presentation === "phase2") { setView("home"); return; }
     setDraft(null); setEditingId(null); setSavedPath(""); setSuggestions([]); setReviewNote(""); setWarning(""); setError(""); setView("home");
   }
 
@@ -81,7 +83,7 @@ export default function SkillBuilder({ initialGoal }: { initialGoal: string }) {
     if (!draft) return;
     setBusy(true); setError("");
     try {
-      const saved = editingId
+      const saved = onSaveDraft ? await onSaveDraft(draft) : editingId
         ? await updateSkill(editingId, draft)
         : await createSkill(draft);
       await load(); setDraft(saved); setSavedPath(saved.path); setEditingId(saved.skill_id); setView("saved");
@@ -108,6 +110,8 @@ export default function SkillBuilder({ initialGoal }: { initialGoal: string }) {
     setSavedPath(skill.path); setSuggestions([]); setReviewNote(""); setWarning(""); setError(""); setView("edit");
   }
 
+  const guided = view === "goal" || view === "question" || view === "draft";
+  const step = view === "goal" ? 0 : view === "question" ? 1 : 2;
   const question = questions[questionIndex];
   const multiple = question?.selection_mode === "multiple";
   const selected = (answers[question?.question_id] ?? []) as string | string[];
@@ -119,7 +123,8 @@ export default function SkillBuilder({ initialGoal }: { initialGoal: string }) {
   }
 
   return (
-    <div className="admin-shell">
+    <div className={`admin-shell ${presentation === "phase2" ? `${phase2.shell} ${guided ? phase2.guided : ""} ${view === "draft" ? phase2.generated : ""}` : ""}`}>
+      {presentation === "phase2" && guided ? <header className={phase2.flowHeader}><button type="button" className="btn quiet" onClick={goHome}>‹ All skills</button><p>Reusable skill builder</p><h1>Let’s build your skill</h1><ol className={phase2.steps}>{["The work", "Five questions", "Review guidance"].map((label, index) => <li key={label} aria-current={step === index ? "step" : undefined}><span>{index + 1}</span>{label}</li>)}</ol></header> : null}
       <aside className="admin-rail admin-rail-wide">
         <div className="skill-rail-head">
           <span className="admin-rail-title" style={{ padding: 0 }}>Your skills</span>
@@ -136,6 +141,7 @@ export default function SkillBuilder({ initialGoal }: { initialGoal: string }) {
             </button>
           ))}
         </div>
+        {presentation === "phase2" ? <button className={`btn ${phase2.new}`} onClick={() => startGuided()} type="button">＋ New skill</button> : null}
       </aside>
 
       <div className="admin-main">
@@ -145,11 +151,10 @@ export default function SkillBuilder({ initialGoal }: { initialGoal: string }) {
             {view === "home" ? (
               <>
                 <div className="eyebrow">Reusable guidance</div>
-                <h1>Skills</h1>
+                <h1>{presentation === "phase2" ? "Reusable skills" : "Skills"}</h1>
+                {presentation === "phase2" && (draft || goal) ? <button type="button" className="btn" onClick={() => setView(draft ? editingId ? "edit" : "draft" : "goal")}>Resume current work</button> : null}
                 <p className="skill-intro">
-                  A skill is reusable guidance for one chat request. Save the way you want a recurring
-                  kind of work handled once, then type its command in chat and Themis.ai follows that
-                  guidance for that one message.
+                  {presentation === "phase2" ? "Save guidance for work you repeat. Use its command in chat to apply it to one request." : "A skill is reusable guidance for one chat request. Save the way you want a recurring kind of work handled once, then type its command in chat and Themis.ai follows that guidance for that one message."}
                 </p>
 
                 <div className="skill-start-grid">
@@ -170,7 +175,7 @@ export default function SkillBuilder({ initialGoal }: { initialGoal: string }) {
                   your request. The skill shapes that answer only. It never changes what Themis.ai is allowed to do.
                 </div>
 
-                <section className="skill-section">
+                {presentation === "matter" ? <section className="skill-section">
                   <div className="skill-section-head">
                     <h2>Saved skills</h2>
                     <span>{skills.length === 1 ? "1 skill" : `${skills.length} skills`} · select one to read or edit it</span>
@@ -190,7 +195,7 @@ export default function SkillBuilder({ initialGoal }: { initialGoal: string }) {
                       ))}
                     </div>
                   )}
-                </section>
+                </section> : <p className="skill-field-help">Select a saved skill in the list to read or edit its guidance.</p>}
               </>
             ) : view === "goal" ? (
               <>
@@ -266,7 +271,7 @@ export default function SkillBuilder({ initialGoal }: { initialGoal: string }) {
               </>
             ) : null}
 
-            {error ? <p className="error">{error}</p> : null}
+            {error ? <p role="alert" className="error">{error}</p> : null}
             {warning && view !== "draft" && view !== "saved" ? <p className="skill-warning">{warning}</p> : null}
             {reviewNote ? <p className="stub-note" style={{ marginTop: 16 }}>{reviewNote}</p> : null}
             {suggestions.length ? <section className="skill-section">

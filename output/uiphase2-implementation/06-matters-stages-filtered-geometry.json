@@ -1,0 +1,271 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 83.99857330322266,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "font": "13px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 237.7627716064453,
+      "x": 756.7826538085938,
+      "y": 66.85369110107422
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 763.68603515625,
+      "y": 92.54261016845705
+    },
+    {
+      "font": "15px",
+      "height": 1384.8011474609375,
+      "tag": "MAIN",
+      "text": "All matters by stage10 in flight / 2 closedMatter viewTableS",
+      "width": 997.4431762695312,
+      "x": 8.551136016845703,
+      "y": 83.99857330322266
+    },
+    {
+      "font": "48px",
+      "height": 54.71590805053711,
+      "tag": "H1",
+      "text": "All matters by stage",
+      "width": 422.4360656738281,
+      "x": 40.546875,
+      "y": 123.99857330322266
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "6overdue",
+      "width": 173.8920440673828,
+      "x": 40.546875,
+      "y": 324.1548156738281
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "4waiting",
+      "width": 173.8920440673828,
+      "x": 230.4332275390625,
+      "y": 324.1548156738281
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "0with Themis.ai",
+      "width": 173.89913940429688,
+      "x": 420.319580078125,
+      "y": 324.1548156738281
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "0needs assignment",
+      "width": 173.8920440673828,
+      "x": 610.2130737304688,
+      "y": 324.1548156738281
+    },
+    {
+      "font": "15px",
+      "height": 89.00567626953125,
+      "tag": "BUTTON",
+      "text": "0no action needed",
+      "width": 173.89913940429688,
+      "x": 800.0994262695312,
+      "y": 324.1548156738281
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Clear filters",
+      "width": 108.21732330322266,
+      "x": 223.66476440429688,
+      "y": 557.1590576171875
+    },
+    {
+      "font": "15px",
+      "height": 279.069580078125,
+      "tag": "SECTION",
+      "text": "›Just came in12 waiting2Phase 2 controlled retryproduct chan",
+      "width": 933.45166015625,
+      "x": 40.546875,
+      "y": 639.15478515625
+    },
+    {
+      "font": "15px",
+      "height": 72.90482330322266,
+      "tag": "HEADER",
+      "text": "›Just came in12 waiting2",
+      "width": 931.6334838867188,
+      "x": 41.455963134765625,
+      "y": 640.0639038085938
+    },
+    {
+      "font": "15px",
+      "height": 31.995737075805664,
+      "tag": "BUTTON",
+      "text": "›Just came in1",
+      "width": 390.2698669433594,
+      "x": 59.453121185302734,
+      "y": 660.0639038085938
+    },
+    {
+      "font": "15px",
+      "height": 74.72300720214844,
+      "tag": "SECTION",
+      "text": "›Being researched2No action needed0No matters match these fi",
+      "width": 933.45166015625,
+      "x": 40.546875,
+      "y": 930.2201538085938
+    },
+    {
+      "font": "15px",
+      "height": 72.90482330322266,
+      "tag": "HEADER",
+      "text": "›Being researched2No action needed0",
+      "width": 931.6334838867188,
+      "x": 41.455963134765625,
+      "y": 931.1292114257812
+    },
+    {
+      "font": "15px",
+      "height": 31.995737075805664,
+      "tag": "BUTTON",
+      "text": "›Being researched2",
+      "width": 367.3011169433594,
+      "x": 59.453121185302734,
+      "y": 951.1292114257812
+    },
+    {
+      "font": "15px",
+      "height": 74.72300720214844,
+      "tag": "SECTION",
+      "text": "›Waiting on your judgment3No action needed0No matters match ",
+      "width": 933.45166015625,
+      "x": 40.546875,
+      "y": 1016.9389038085938
+    },
+    {
+      "font": "15px",
+      "height": 72.90482330322266,
+      "tag": "HEADER",
+      "text": "›Waiting on your judgment3No action needed0",
+      "width": 931.6334838867188,
+      "x": 41.455963134765625,
+      "y": 1017.8479614257812
+    },
+    {
+      "font": "15px",
+      "height": 31.995737075805664,
+      "tag": "BUTTON",
+      "text": "›Waiting on your judgment3",
+      "width": 367.3011169433594,
+      "x": 59.453121185302734,
+      "y": 1037.8480224609375
+    },
+    {
+      "font": "15px",
+      "height": 74.72300720214844,
+      "tag": "SECTION",
+      "text": "›Being drafted4No action needed0No matters match these filte",
+      "width": 933.45166015625,
+      "x": 40.546875,
+      "y": 1103.6575927734375
+    },
+    {
+      "font": "15px",
+      "height": 72.90482330322266,
+      "tag": "HEADER",
+      "text": "›Being drafted4No action needed0",
+      "width": 931.6334838867188,
+      "x": 41.455963134765625,
+      "y": 1104.5667724609375
+    },
+    {
+      "font": "15px",
+      "height": 31.995737075805664,
+      "tag": "BUTTON",
+      "text": "›Being drafted4",
+      "width": 367.3011169433594,
+      "x": 59.453121185302734,
+      "y": 1124.5667724609375
+    },
+    {
+      "font": "15px",
+      "height": 74.72300720214844,
+      "tag": "SECTION",
+      "text": "›Respond5No action needed0No matters match these filters.",
+      "width": 933.45166015625,
+      "x": 40.546875,
+      "y": 1190.3763427734375
+    },
+    {
+      "font": "15px",
+      "height": 72.90482330322266,
+      "tag": "HEADER",
+      "text": "›Respond5No action needed0",
+      "width": 931.6334838867188,
+      "x": 41.455963134765625,
+      "y": 1191.2855224609375
+    },
+    {
+      "font": "15px",
+      "height": 31.995737075805664,
+      "tag": "BUTTON",
+      "text": "›Respond5",
+      "width": 367.3011169433594,
+      "x": 59.453121185302734,
+      "y": 1211.2855224609375
+    },
+    {
+      "font": "15px",
+      "height": 74.72300720214844,
+      "tag": "SECTION",
+      "text": "›Closed6Closed0No matters match these filters.",
+      "width": 933.45166015625,
+      "x": 40.546875,
+      "y": 1277.0950927734375
+    },
+    {
+      "font": "15px",
+      "height": 72.90482330322266,
+      "tag": "HEADER",
+      "text": "›Closed6Closed0",
+      "width": 931.6334838867188,
+      "x": 41.455963134765625,
+      "y": 1278.0042724609375
+    },
+    {
+      "font": "15px",
+      "height": 31.995737075805664,
+      "tag": "BUTTON",
+      "text": "›Closed6",
+      "width": 396.8891906738281,
+      "x": 59.453121185302734,
+      "y": 1298.0042724609375
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 0,
+  "url": "http://localhost:3134/matters",
+  "width": 1024
+}

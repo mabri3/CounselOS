@@ -1,0 +1,291 @@
+--- frontend/components/workspace/ScenarioPanel.tsx
++++ frontend/components/workspace/ScenarioPanel.tsx
+@@ -5,6 +5,7 @@
+ import ReactMarkdown from "react-markdown";
+ import remarkGfm from "remark-gfm";
+ import type { InteractionReceipt, WorkspaceClaim, Scenario, ScenarioAdoptCommand, ScenarioAnalyzeCommand, ScenarioCreateCommand, ScenarioFactChange, ScenarioInteractionProps, ScenarioPanelProps, WorkspaceActionResult } from "@/lib/workspaceTypes";
++import styles from "./MatterExplore.module.css";
+ 
+ const keyFor = (prefix: string) => `${prefix}:${crypto.randomUUID()}`;
+ type Notice = { tone: "healthy" | "agent" | "attention" | "failure"; word: string; message: string };
+@@ -319,8 +320,7 @@
+   }
+ 
+   return (
+-    <section aria-labelledby="scenario-title" className="exploration-panel">
+-      <style>{componentCss}</style>
++    <section aria-labelledby="scenario-title" className={`${styles.scenarioPanel} exploration-panel`}>
+       <div className="exploration-panel__header">
+         <div><p className="eyebrow">Explore</p><h2 id="scenario-title">Saved scenarios</h2></div>
+         <button className="btn agent compact" type="button" onClick={toggleNewScenario} aria-expanded={creating} disabled={locked}>Try a different assumption</button>
+@@ -382,41 +382,3 @@
+     </section>
+   );
+ }
+-
+-const componentCss = `
+-.exploration-panel { min-width: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); padding: 18px; color: var(--ink); }
+-.exploration-panel__header { display: flex; justify-content: space-between; gap: 14px; align-items: start; }
+-.exploration-panel__intro { margin: 8px 0 16px; font: 400 15px/1.55 var(--sans); color: var(--ink-3); }
+-.exploration-state { margin: 10px 0; padding: 9px 11px; border-radius: 7px; font: 500 13.5px/1.45 var(--sans); }
+-.exploration-state--healthy { border: 1px solid var(--healthy); color: var(--healthy); background: var(--healthy-wash); }
+-.exploration-state--agent { border: 1px dashed var(--agent-edge); color: var(--agent); background: var(--agent-wash); }
+-.exploration-state--attention { border: 1px solid var(--attention-edge); color: var(--attention-deepest); background: var(--attention-wash); }
+-.exploration-state--failure { border: 1px solid var(--failure-edge); color: var(--failure); background: var(--failure-wash); }
+-.exploration-form { display: grid; gap: 8px; margin: 14px 0; padding: 14px; border: 1px dashed var(--agent-edge); border-radius: 9px; }
+-.exploration-layout { display: grid; grid-template-columns: minmax(170px, .55fr) minmax(0, 1.45fr); gap: 14px; align-items: start; }
+-.scenario-list { display: grid; gap: 7px; }
+-.scenario-list__item { width: 100%; display: grid; gap: 7px; text-align: left; padding: 11px; border: 1px solid var(--line); border-radius: 7px; background: var(--raised); color: var(--ink); cursor: pointer; font: 500 14px/1.4 var(--sans); }
+-.scenario-list__item:hover, .scenario-list__item.is-selected { border-color: var(--agent-edge); background: var(--agent-wash); }
+-.scenario-list__item small, .scenario-detail > .exploration-panel__header > span { width: fit-content; border-radius: 10px; padding: 2px 7px; font: 500 11px var(--sans); }
+-.scenario-detail { min-width: 0; padding: 14px; border: 1px solid var(--line-soft); border-radius: 8px; background: var(--raised); }
+-.scenario-detail--empty { min-height: 120px; display: grid; place-items: center; }
+-.scenario-detail h4 { margin: 18px 0 7px; font: 600 15px var(--serif); }
+-.scenario-detail summary, .correction-panel summary { cursor: pointer; font: 500 14px var(--sans); color: var(--ink-2); }
+-.exploration-list { display: grid; gap: 7px; margin: 8px 0; padding: 0; list-style: none; font: 400 13.5px/1.45 var(--sans); }
+-.exploration-list li { display: flex; justify-content: space-between; gap: 10px; padding: 7px 8px; border-radius: 5px; background: var(--sunken); overflow-wrap: anywhere; }
+-.exploration-list code { font: 400 11.5px var(--mono); overflow-wrap: anywhere; }
+-.scenario-analysis { min-width: 0; padding-top: 2px; }
+-.scenario-analysis .reading { margin: 0; font-size: 15px; overflow-wrap: anywhere; word-break: break-word; }
+-.scenario-analysis__content > :first-child { margin-top: 0; }
+-.scenario-analysis__content > :last-child { margin-bottom: 0; }
+-.scenario-analysis__table { max-width: 100%; overflow-x: auto; margin: 10px 0 22px; border: 1px solid var(--line-faint); border-radius: 7px; }
+-.scenario-analysis__table table { width: max-content; min-width: 100%; border-collapse: collapse; font: 400 14px/1.45 var(--sans); }
+-.scenario-analysis__table th, .scenario-analysis__table td { padding: 7px 9px; border: 1px solid var(--line-soft); text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+-.scenario-analysis__table th { background: var(--rail); font-weight: 600; }
+-.scenario-analysis__code { max-width: 100%; overflow-x: auto; padding: 10px 12px; border: 1px solid var(--line-faint); border-radius: 7px; background: var(--canvas); }
+-.quiet-link { border: 0; padding: 0; background: transparent; color: var(--agent); text-align: left; text-decoration: underline; cursor: pointer; overflow-wrap: anywhere; }
+-.correction-panel { margin-top: 16px; padding: 13px; border: 1px solid var(--attention-edge); border-radius: 8px; background: var(--attention-wash); }
+-.correction-panel[open] { display: grid; gap: 8px; }
+-@media (max-width: 620px) { .exploration-layout { grid-template-columns: 1fr; } .exploration-panel { padding: 14px; } .exploration-panel__header { align-items: stretch; flex-direction: column; } .exploration-panel__header .btn { width: 100%; } }
+-@media (prefers-reduced-motion: reduce) { .exploration-panel * { transition: none !important; animation: none !important; } }
+-`;
+--- frontend/components/workspace/InquiryActions.tsx
++++ frontend/components/workspace/InquiryActions.tsx
+@@ -3,6 +3,7 @@
+ import { useRef, useState } from "react";
+ import type { InquiryActionsProps, WorkspaceAction } from "@/lib/workspaceTypes";
+ import type { ContinuityInquiryActionsProps } from "@/lib/continuityTypes";
++import styles from "./MatterExplore.module.css";
+ 
+ const labels: Record<WorkspaceAction, string> = {
+   explain: "Explain",
+@@ -73,8 +74,7 @@
+     }
+   }
+ 
+-  return <section aria-labelledby="inquiry-actions-title" className="inquiry-actions">
+-    <style>{componentCss}</style>
++  return <section aria-labelledby="inquiry-actions-title" className={`${styles.inquiryActions} inquiry-actions`}>
+     <div className="inquiry-actions__header"><div><p className="eyebrow">Explore</p><h2 id="inquiry-actions-title">Ask about {targetLabel(target)}</h2></div><span className="state-agent">Agent work</span></div>
+     <p className="inquiry-actions__intro">These shortcuts use the same saved conversation and matter context. They do not start a separate assistant or history.</p>
+     {notice ? <p className={`inquiry-actions__state inquiry-actions__state--${notice.tone}`} role="status">{notice.word}: {notice.message}</p> : null}
+@@ -90,22 +90,3 @@
+     <p className="small muted">Selected action: {labels[selectedAction]}. {descriptions[selectedAction]}</p>
+   </section>;
+ }
+-
+-const componentCss = `
+-.inquiry-actions { min-width: 0; display: grid; gap: 9px; padding: 18px; border: 1px dashed var(--agent-edge); border-radius: var(--radius); background: var(--agent-wash); }
+-.inquiry-actions__header { display: flex; justify-content: space-between; gap: 12px; align-items: start; }
+-.inquiry-actions__header h2 { max-width: 28ch; }
+-.inquiry-actions__header > span { flex: none; padding: 3px 8px; border-radius: 11px; font: 500 12px var(--sans); }
+-.inquiry-actions__intro { margin: 0 0 4px; font: 400 15px/1.55 var(--sans); color: var(--ink-3); }
+-.inquiry-actions__state { margin: 0; padding: 9px 11px; border-radius: 7px; font: 500 13.5px/1.45 var(--sans); }
+-.inquiry-actions__state--healthy { border: 1px solid var(--healthy); background: var(--healthy-wash); color: var(--healthy); }
+-.inquiry-actions__state--agent { border: 1px dashed var(--agent-edge); background: var(--agent-wash); color: var(--agent); }
+-.inquiry-actions__state--attention { border: 1px solid var(--attention-edge); background: var(--attention-wash); color: var(--attention-deepest); }
+-.inquiry-actions__state--failure { border: 1px solid var(--failure-edge); background: var(--failure-wash); color: var(--failure); }
+-.inquiry-actions__buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+-.inquiry-actions__choices { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; border: 0; margin: 0; }
+-.inquiry-actions__choices label { display: inline-flex; align-items: center; gap: 5px; font: 500 13px var(--sans); color: var(--ink-3); }
+-.inquiry-actions__context { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
+-@media (max-width: 620px) { .inquiry-actions { padding: 14px; } .inquiry-actions__header { flex-direction: column; } .inquiry-actions__buttons .btn { width: 100%; } }
+-@media (prefers-reduced-motion: reduce) { .inquiry-actions * { transition: none !important; animation: none !important; } }
+-`;
+--- frontend/components/workspace/BusinessFlow.tsx
++++ frontend/components/workspace/BusinessFlow.tsx
+@@ -2,6 +2,7 @@
+ 
+ import { useEffect, useRef, useState } from "react";
+ import type { BusinessFlowProps, Flow, FlowActor, FlowEdge, InteractionReceipt } from "@/lib/workspaceTypes";
++import styles from "./MatterExplore.module.css";
+ 
+ const newId = (prefix: string) => `${prefix}-${crypto.randomUUID()}`;
+ const cloneFlow = (flow: Flow): Flow => ({ ...flow, actors: [...(flow.actors ?? [])], edges: [...(flow.edges ?? [])] });
+@@ -146,8 +147,7 @@
+ 
+   const initialUnsaved = !flow.revision && !dirty;
+ 
+-  return <section aria-labelledby="business-flow-title" className="business-flow">
+-    <style>{componentCss}</style>
++  return <section aria-labelledby="business-flow-title" className={`${styles.businessFlow} business-flow`}>
+     <div className="business-flow__header"><div><p className="eyebrow">Explore</p><h2 id="business-flow-title">Business flow</h2></div><span className={dirty || initialUnsaved ? "state-attention" : "state-healthy"}>{dirty ? "Needs save" : initialUnsaved ? "Not saved" : "Saved"}</span></div>
+     <p className="business-flow__intro">Map the people and ordered relationships. This sketch does not reach a legal conclusion by itself.</p>
+     {notice ? <p className={`business-flow__state business-flow__state--${notice.tone}`} role="status">{notice.word}: {notice.message}</p> : null}
+@@ -181,45 +181,3 @@
+     <div className="business-flow__acceptance"><h3>Accept selected facts</h3><p className="small muted">A flow edit can propose facts. Choose only the facts you want to add to the matter.</p>{proposedFactChanges.filter((change) => change.state === "proposed" || !change.state).length ? proposedFactChanges.filter((change) => change.state === "proposed" || !change.state).map((change) => <label className="checkbox-row" key={change.change_id}><input type="checkbox" checked={selectedChanges.includes(change.change_id)} disabled={locked} onChange={() => setSelectedChanges((current) => current.includes(change.change_id) ? current.filter((id) => id !== change.change_id) : [...current, change.change_id])} /><span>{change.text}</span></label>) : <p className="small muted">No proposed facts are ready to accept.</p>}<button className="btn review" type="button" onClick={() => void acceptSelectedFacts()} disabled={locked || !selectedChanges.length}>{pending === "accept" ? "Accepting facts…" : "Accept selected facts"}</button></div>
+   </section>;
+ }
+-
+-const componentCss = `
+-.business-flow { min-width: 0; display: grid; gap: 16px; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); }
+-.business-flow__header, .business-flow__section-heading, .business-flow__edge-order { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+-.business-flow__header > span { flex: none; padding: 3px 8px; border-radius: 11px; font: 500 12px var(--sans); }
+-.business-flow__intro { margin: -8px 0 0; color: var(--ink-3); font: 400 15px/1.55 var(--sans); }
+-.business-flow__state { margin: -6px 0 0; padding: 9px 11px; border-radius: 7px; font: 500 13.5px/1.45 var(--sans); }
+-.business-flow__state--healthy { border: 1px solid var(--healthy); background: var(--healthy-wash); color: var(--healthy); }
+-.business-flow__state--agent { border: 1px dashed var(--agent-edge); background: var(--agent-wash); color: var(--agent); }
+-.business-flow__state--attention { border: 1px solid var(--attention-edge); background: var(--attention-wash); color: var(--attention-deepest); }
+-.business-flow__state--failure { border: 1px solid var(--failure-edge); background: var(--failure-wash); color: var(--failure); }
+-.business-flow__actors, .business-flow__edges, .business-flow__acceptance, .business-flow__sketch { display: grid; gap: 9px; }
+-.business-flow__actor { display: flex; gap: 8px; }
+-.business-flow__sketch { padding: 14px; border: 1px solid var(--line-soft); border-radius: 8px; background: var(--quiet-wash); }
+-.business-flow__sketch .business-flow__section-heading > div { display: grid; gap: 3px; }
+-.business-flow__sketch .business-flow__section-heading p { margin: 0; }
+-.business-flow__sketch-list { display: grid; gap: 9px; margin: 0; padding: 0; list-style: none; }
+-.business-flow__sketch-step { display: grid; gap: 8px; padding: 11px; border: 1px solid var(--line-faint); border-radius: 7px; background: var(--raised); min-width: 0; }
+-.business-flow__sketch-order { font: 600 11px var(--mono); color: var(--ink-4); letter-spacing: .05em; text-transform: uppercase; }
+-.business-flow__sketch-route { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr); gap: 7px; align-items: stretch; min-width: 0; }
+-.business-flow__sketch-node { display: grid; align-content: start; gap: 3px; min-width: 0; padding: 8px; border: 1px solid var(--control); border-radius: 6px; background: var(--raised); }
+-.business-flow__sketch-node--relationship { background: var(--sunken); }
+-.business-flow__sketch-node span, .business-flow__sketch-details dt { font: 500 11px var(--sans); color: var(--ink-4); }
+-.business-flow__sketch-node strong, .business-flow__sketch-details dd { min-width: 0; overflow-wrap: anywhere; font: 600 13px/1.4 var(--sans); color: var(--ink-2); }
+-.business-flow__sketch-arrow { align-self: center; color: var(--ink-4); font: 600 18px/1 var(--sans); }
+-.business-flow__sketch-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin: 0; }
+-.business-flow__sketch-details > div { min-width: 0; padding: 7px 8px; border-radius: 5px; background: var(--sunken); }
+-.business-flow__sketch-details dt, .business-flow__sketch-details dd { margin: 0; }
+-.business-flow__edge { display: grid; gap: 10px; padding: 13px; border: 1px solid var(--line-soft); border-radius: 8px; background: var(--quiet-wash); }
+-.business-flow__edge-order > span { padding-top: 6px; font: 600 12px var(--mono); color: var(--ink-4); text-transform: uppercase; letter-spacing: .05em; }
+-.business-flow__edge-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+-.business-flow__edge-grid label { display: grid; gap: 4px; min-width: 0; font: 500 12px var(--sans); color: var(--ink-4); }
+-.business-flow__wide { grid-column: span 2; }
+-.business-flow__facts { display: flex; gap: 7px; flex-wrap: wrap; align-items: center; font: 500 12px var(--sans); color: var(--ink-4); }
+-.business-flow__acceptance { padding: 14px; border: 1px solid var(--attention-edge); border-radius: 8px; background: var(--attention-wash); }
+-.business-flow__conflict { display: grid; gap: 8px; padding: 14px; border: 1px solid var(--attention-edge); border-radius: 8px; background: var(--attention-wash); color: var(--ink-2); }
+-.business-flow__conflict p { margin: 0; }
+-.business-flow__acceptance h3, .business-flow__section-heading h3 { margin: 0; font: 600 17px var(--serif); }
+-@media (max-width: 620px) { .business-flow { padding: 14px; } .business-flow__header, .business-flow__edge-order { flex-direction: column; } .business-flow__edge-grid { grid-template-columns: 1fr; } .business-flow__wide { grid-column: auto; } .business-flow__actor { align-items: stretch; flex-direction: column; } }
+-@media (max-width: 420px) { .business-flow__sketch { padding: 12px; } .business-flow__sketch-route { grid-template-columns: 1fr; justify-items: stretch; } .business-flow__sketch-arrow { justify-self: center; transform: rotate(90deg); } .business-flow__sketch-details { grid-template-columns: 1fr; } }
+-@media (prefers-reduced-motion: reduce) { .business-flow * { transition: none !important; animation: none !important; } }
+-`;
+--- frontend/components/workspace/PriorWorkPanel.tsx
++++ frontend/components/workspace/PriorWorkPanel.tsx
+@@ -2,6 +2,7 @@
+ 
+ import { FormEvent, useState } from "react";
+ import type { PriorWorkPanelProps } from "@/lib/workspaceTypes";
++import styles from "./MatterExplore.module.css";
+ 
+ const titleCase = (value: string) => value.replaceAll("_", " ").replaceAll("-", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+ 
+@@ -39,7 +40,7 @@
+     } finally { setPendingPath(null); }
+   }
+ 
+-  return <section aria-labelledby="prior-work-title" className="reuse-panel">
++  return <section aria-labelledby="prior-work-title" className={`${styles.priorWorkPanel} reuse-panel`}>
+     <div className="reuse-panel__head"><div><h2 id="prior-work-title">Similar prior work</h2><p>Search when it is useful. A result affects the next inquiry only after you include it.</p></div></div>
+     <form className="reuse-search" onSubmit={(event) => void search(event)}>
+       <label className="label" htmlFor="prior-work-query">What work should match?</label>
+@@ -59,24 +60,5 @@
+         <div className="btn-row"><button className="btn quiet" onClick={() => onOpenArtifact(candidate.path)} type="button">Open source</button><button className="btn primary" disabled={busy || pendingPath === candidate.path || included} onClick={() => void include(candidate.path)} type="button">{pendingPath === candidate.path ? "Including…" : included ? "Included" : "Include in next inquiry"}</button></div>
+       </article>;
+     })}</div> : null}
+-    <style jsx>{`
+-      .reuse-panel { min-width: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); padding: 18px; color: var(--ink); }
+-      .reuse-panel__head p, .reuse-source { margin: 7px 0 0; color: var(--ink-3); font: 400 13.5px/1.45 var(--sans); overflow-wrap: anywhere; }
+-      .reuse-search { display: grid; gap: 7px; margin-top: 16px; }
+-      .reuse-search__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+-      .reuse-list { display: grid; gap: 12px; margin-top: 16px; }
+-      .reuse-item { min-width: 0; border: 1px solid var(--line-soft); border-radius: 8px; padding: 14px; background: var(--paper); }
+-      .reuse-item__head { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
+-      .reuse-item h3 { margin: 0; }
+-      .reuse-reading { margin: 13px 0 0; font-size: 15px; }
+-      .reuse-snippet { margin: 12px 0 0; padding-left: 12px; border-left: 2px solid var(--line-soft); color: var(--ink-3); font: italic 400 15px/1.55 var(--serif); }
+-      .reuse-differences { margin-top: 12px; color: var(--ink-2); font: 400 14px/1.5 var(--sans); }
+-      .reuse-differences ul { margin: 6px 0 0; padding-left: 20px; }
+-      .reuse-source-detail { margin-top: 10px; color: var(--ink-3); font-size: 12px; } .reuse-source-detail summary { cursor: pointer; font-weight: 600; } .reuse-source-detail p { margin: 6px 0 0; overflow-wrap: anywhere; }
+-      .reuse-notice { display: flex; gap: 8px; align-items: center; margin: 14px 0 0; }
+-      .empty-state { margin-top: 16px; }
+-      @media (max-width: 520px) { .reuse-panel { padding: 14px; } .reuse-search__row { grid-template-columns: 1fr; } .reuse-search__row .btn { width: 100%; } .reuse-item__head { flex-direction: column; } }
+-      @media (prefers-reduced-motion: reduce) { .reuse-panel * { transition: none !important; animation: none !important; } }
+-    `}</style>
+   </section>;
+ }
+--- frontend/components/workspace/PracticeNotePanel.tsx
++++ frontend/components/workspace/PracticeNotePanel.tsx
+@@ -2,6 +2,7 @@
+ 
+ import { useState } from "react";
+ import type { PracticeNotePanelProps } from "@/lib/workspaceTypes";
++import styles from "./MatterExplore.module.css";
+ 
+ export default function PracticeNotePanel({ links, busy = false, builder, onDraft, onApply, onOpen }: PracticeNotePanelProps) {
+   const [instruction, setInstruction] = useState("");
+@@ -31,7 +32,7 @@
+     finally { setPendingSkill(null); }
+   }
+ 
+-  return <section aria-labelledby="practice-note-title" className="note-panel">
++  return <section aria-labelledby="practice-note-title" className={`${styles.practiceNotePanel} note-panel`}>
+     <div><h2 id="practice-note-title">Practice notes</h2><p className="note-help">Turn a correction into reusable guidance. Nothing is learned or applied automatically.</p></div>
+     <label className="field-block"><span className="label">Working instruction</span><textarea className="text-input prose" onChange={(event) => { setInstruction(event.target.value); setNotice(""); }} placeholder="When reviewing launch dates, show the operational deadline before the legal explanation." rows={4} value={instruction} /></label>
+     <div className="btn-row"><button className="btn agent" disabled={busy || drafting || !instruction.trim()} onClick={() => void draft()} type="button">{drafting ? "Drafting…" : "Draft a practice note"}</button></div>
+@@ -42,18 +43,5 @@
+       const applied = !!link.applied_revision;
+       return <div className="note-link" key={`${link.skill_id}:${link.applied_revision ?? "available"}`}><div><strong>{link.name || "Unnamed practice note"}</strong><p>{link.applied_revision ? <>Applied version <span className="mono">{link.applied_revision}</span></> : "Available. It has not been applied to this matter."}</p></div><div className="btn-row"><button className="btn quiet" onClick={() => onOpen(link.skill_id)} type="button">Open and edit</button><button className="btn primary" disabled={busy || pendingSkill === link.skill_id || applied} onClick={() => void apply(link.skill_id)} type="button">{pendingSkill === link.skill_id ? "Applying…" : applied ? "Applied" : "Apply to this matter"}</button></div></div>;
+     })}</div>
+-    <style jsx>{`
+-      .note-panel { min-width: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); padding: 18px; }
+-      .note-help, .note-link p { margin: 7px 0 0; color: var(--ink-3); font: 400 13.5px/1.5 var(--sans); }
+-      .field-block { display: grid; gap: 7px; margin: 16px 0 10px; }
+-      .note-status { margin: 13px 0 0; padding: 10px 12px; border: 1px solid var(--agent-edge); border-radius: 8px; background: var(--agent-wash); color: var(--ink-2); }
+-      .note-builder { margin-top: 16px; border: 1px solid var(--agent-edge); border-radius: 8px; padding: 12px; background: var(--agent-wash); overflow: auto; }
+-      .note-builder__label { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; color: var(--ink-3); font-size: 13.5px; }
+-      .note-links { margin-top: 20px; }
+-      .note-link { display: flex; justify-content: space-between; gap: 14px; align-items: center; padding: 13px 0; border-top: 1px solid var(--line-soft); }
+-      .note-link strong { overflow-wrap: anywhere; }
+-      @media (max-width: 600px) { .note-panel { padding: 14px; } .note-link { align-items: stretch; flex-direction: column; } .note-link .btn-row, .note-link .btn { width: 100%; } }
+-      @media (prefers-reduced-motion: reduce) { .note-panel * { transition: none !important; animation: none !important; } }
+-    `}</style>
+   </section>;
+ }
+--- frontend/components/workspace/AssumptionWatchPanel.tsx
++++ frontend/components/workspace/AssumptionWatchPanel.tsx
+@@ -2,6 +2,7 @@
+ 
+ import { useState } from "react";
+ import type { AssumptionWatchPanelProps } from "@/lib/workspaceTypes";
++import styles from "./MatterExplore.module.css";
+ 
+ export default function AssumptionWatchPanel({ assumptions = [], links, busy = false, builder, onDraft, onOpen }: AssumptionWatchPanelProps) {
+   const [selected, setSelected] = useState<Set<string>>(new Set());
+@@ -20,26 +21,12 @@
+     finally { setDrafting(false); }
+   }
+ 
+-  return <section aria-labelledby="assumption-watch-title" className="watch-panel">
++  return <section aria-labelledby="assumption-watch-title" className={`${styles.assumptionWatchPanel} watch-panel`}>
+     <h2 id="assumption-watch-title">Watch an assumption</h2><p className="watch-help">Link a Watch to named assumptions. Open a linked Watch to inspect its current state and impact review.</p>
+     {assumptions.length ? <fieldset className="watch-options"><legend className="label">Assumptions to watch</legend>{assumptions.map((assumption) => <label className="checkbox-row" key={assumption.assumption_id}><input checked={selected.has(assumption.assumption_id)} onChange={() => toggle(assumption.assumption_id)} type="checkbox" /><span>{assumption.text}</span></label>)}</fieldset> : <p className="empty-state">No named assumption is available to watch.</p>}
+     <button className="btn agent" disabled={busy || drafting || !allSelected.length} onClick={() => void draft()} type="button">{drafting ? "Creating draft…" : "Create linked Watch draft"}</button>
+     {error ? <p className="error" role="alert">{error}</p> : null}{notice ? <p className="watch-status" role="status">{notice}</p> : null}
+     {showBuilder && builder ? <div className="watch-builder"><div className="watch-builder__label"><span className="state-label state-agent">Draft only</span><span>Start Watch is a separate action inside the builder.</span></div>{builder}</div> : null}
+     <div className="watch-links"><h3>Linked Watches</h3>{links.length === 0 ? <p className="empty-state">No Watch is linked to this matter.</p> : links.map((link) => <article className="watch-link" key={link.watch_id}><div><strong>{link.title || "Unnamed Watch"}</strong><p><span>Status: {link.state || "Inspect the Watch"}</span><span>Assumptions: {link.assumption_labels?.join(", ") || "No labels supplied"}</span><span>Linked decisions: {link.decision_titles?.join(", ") || "None"}</span></p></div><button className="btn quiet" onClick={() => onOpen(link.watch_id)} type="button">Inspect status and impact</button></article>)}</div>
+-    <style jsx>{`
+-      .watch-panel { min-width: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); padding: 18px; }
+-      .watch-help { margin: 7px 0 0; color: var(--ink-3); font: 400 13.5px/1.5 var(--sans); }
+-      .watch-options { border: 0; padding: 0; margin: 16px 0; }
+-      .watch-status { margin: 14px 0 0; padding: 10px 12px; border: 1px solid var(--agent-edge); border-radius: 8px; background: var(--agent-wash); color: var(--ink-2); }
+-      .watch-builder { margin-top: 16px; border: 1px solid var(--agent-edge); border-radius: 8px; padding: 12px; background: var(--agent-wash); overflow: auto; }
+-      .watch-builder__label { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; color: var(--ink-3); font-size: 13.5px; }
+-      .watch-links { margin-top: 20px; }
+-      .watch-link { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 13px 0; border-top: 1px solid var(--line-soft); }
+-      .watch-link strong { overflow-wrap: anywhere; }
+-      .watch-link p { display: grid; gap: 4px; margin: 7px 0 0; color: var(--ink-3); font-size: 13.5px; }
+-      @media (max-width: 600px) { .watch-panel { padding: 14px; } .watch-link { align-items: stretch; flex-direction: column; } .watch-link .btn { width: 100%; } }
+-      @media (prefers-reduced-motion: reduce) { .watch-panel * { transition: none !important; animation: none !important; } }
+-    `}</style>
+   </section>;
+ }

@@ -1,0 +1,27 @@
+{
+  "checks": [
+    "Determinate conditions activate only satisfied option requirements",
+    "Inactive connector remains visible with plain state text",
+    "Inactive option remains previewable",
+    "All visible connector label boxes are disjoint"
+  ],
+  "edges": [
+    {
+      "edge_id": "edge:e0ceab6c95adf664b1b14302",
+      "from_node_id": "condition:CON-40b0bc8be08e69c10350",
+      "to_node_id": "option:OPT-7055d911b535fb346671",
+      "relationship": "if",
+      "label": "All · if met",
+      "state": "active"
+    },
+    {
+      "edge_id": "edge:09a21ebe9cfc0f72416d76a9",
+      "from_node_id": "condition:CON-40b0bc8be08e69c10350",
+      "to_node_id": "option:OPT-b9d568d0f9f60b5f5efd",
+      "relationship": "if",
+      "label": "All · if not met",
+      "state": "inactive"
+    }
+  ],
+  "errors": []
+}

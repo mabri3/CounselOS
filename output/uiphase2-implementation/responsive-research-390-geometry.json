@@ -1,0 +1,244 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 222.05255126953125,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 380,
+      "x": 0,
+      "y": -408.6363525390625
+    },
+    {
+      "font": "13px",
+      "height": 48.38068008422851,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 145.41192626953125,
+      "x": 218.59373474121097,
+      "y": -348.3309631347656
+    },
+    {
+      "font": "10px",
+      "height": 21.988636016845703,
+      "tag": "H2",
+      "text": "View as",
+      "width": 27.60653305053711,
+      "x": 223.5014190673828,
+      "y": -325.84515380859375
+    },
+    {
+      "font": "15px",
+      "height": 3613.266845703125,
+      "tag": "MAIN",
+      "text": "‹ Back to matterBusiness question · Project Apex: AI Voice T",
+      "width": 380,
+      "x": 0,
+      "y": -186.58380126953125
+    },
+    {
+      "font": "15px",
+      "height": 207.12356567382812,
+      "tag": "HEADER",
+      "text": "Business question · Project Apex: AI Voice TelemetryReview t",
+      "width": 348.0113525390625,
+      "x": 15.994318008422852,
+      "y": -123.0397720336914
+    },
+    {
+      "font": "34px",
+      "height": 76.15056610107422,
+      "tag": "H1",
+      "text": "Review the proposed process",
+      "width": 348.0113525390625,
+      "x": 15.994318008422852,
+      "y": -76.13636016845703
+    },
+    {
+      "font": "15px",
+      "height": 214.44601440429688,
+      "tag": "SECTION",
+      "text": "Agent work · 3 cited sourcesThemis.ai prepared this working ",
+      "width": 348.0113525390625,
+      "x": 15.994318008422852,
+      "y": 110.07811737060548
+    },
+    {
+      "font": "15px",
+      "height": 815.944580078125,
+      "tag": "SECTION",
+      "text": "Research queue3 runs · 0 active · 3 saved packets6 saved sou",
+      "width": 348.0113525390625,
+      "x": 15.994318008422852,
+      "y": 352.52130126953125
+    },
+    {
+      "font": "15px",
+      "height": 71.43465423583984,
+      "tag": "HEADER",
+      "text": "Research queue3 runs · 0 active · 3 saved packets6 saved sou",
+      "width": 314.20452880859375,
+      "x": 32.897727966308594,
+      "y": 369.4247131347656
+    },
+    {
+      "font": "13.5px",
+      "height": 33.0823860168457,
+      "tag": "BUTTON",
+      "text": "Run research",
+      "width": 314.20452880859375,
+      "x": 32.897727966308594,
+      "y": 556.484375
+    },
+    {
+      "font": "25px",
+      "height": 32.5,
+      "tag": "H2",
+      "text": "Question",
+      "width": 314.20452880859375,
+      "x": 32.897727966308594,
+      "y": 1209.3677978515625
+    },
+    {
+      "font": "25px",
+      "height": 63.409088134765625,
+      "tag": "H2",
+      "text": "Working analysis",
+      "width": 314.20452880859375,
+      "x": 32.897727966308594,
+      "y": 1343.8564453125
+    },
+    {
+      "font": "14px",
+      "height": 18.18181800842285,
+      "tag": "BUTTON",
+      "text": "[1]",
+      "width": 23.487215042114254,
+      "x": 93.54402923583984,
+      "y": 1456.257080078125
+    },
+    {
+      "font": "14px",
+      "height": 18.18181800842285,
+      "tag": "BUTTON",
+      "text": "[2]",
+      "width": 23.487215042114254,
+      "x": 162.34375,
+      "y": 1484.254150390625
+    },
+    {
+      "font": "25px",
+      "height": 95.90908813476562,
+      "tag": "H2",
+      "text": "Facts that could change the answer",
+      "width": 314.20452880859375,
+      "x": 32.897727966308594,
+      "y": 1593.2457275390625
+    },
+    {
+      "font": "25px",
+      "height": 63.409088134765625,
+      "tag": "H2",
+      "text": "Next step",
+      "width": 314.20452880859375,
+      "x": 32.897727966308594,
+      "y": 1791.1434326171875
+    },
+    {
+      "font": "25px",
+      "height": 63.409088134765625,
+      "tag": "H2",
+      "text": "Sources",
+      "width": 314.20452880859375,
+      "x": 32.897727966308594,
+      "y": 1956.5411376953125
+    },
+    {
+      "font": "15px",
+      "height": 19.09090805053711,
+      "tag": "BUTTON",
+      "text": "[1]Phase2 Process",
+      "width": 314.20452880859375,
+      "x": 32.897727966308594,
+      "y": 2093.03271484375
+    },
+    {
+      "font": "15px",
+      "height": 19.09090805053711,
+      "tag": "BUTTON",
+      "text": "[2]Phase2 Process",
+      "width": 314.20452880859375,
+      "x": 32.897727966308594,
+      "y": 2119.119140625
+    },
+    {
+      "font": "15px",
+      "height": 19.09090805053711,
+      "tag": "BUTTON",
+      "text": "[3]Missing process reference",
+      "width": 314.20452880859375,
+      "x": 32.897727966308594,
+      "y": 2145.205810546875
+    },
+    {
+      "font": "15px",
+      "height": 1201.484375,
+      "tag": "ASIDE",
+      "text": "SourceNotes & questions (3)Operations reviews the request be",
+      "width": 348.0113525390625,
+      "x": 15.994318008422852,
+      "y": 2205.19873046875
+    },
+    {
+      "font": "14px",
+      "height": 59.90056610107422,
+      "tag": "BUTTON",
+      "text": "Source",
+      "width": 51.640625,
+      "x": 32.897727966308594,
+      "y": 2218.103515625
+    },
+    {
+      "font": "14px",
+      "height": 59.90056610107422,
+      "tag": "BUTTON",
+      "text": "Notes & questions (3)",
+      "width": 145.88067626953125,
+      "x": 96.53408813476562,
+      "y": 2218.103515625
+    },
+    {
+      "font": "13.5px",
+      "height": 33.0823860168457,
+      "tag": "BUTTON",
+      "text": "Ask Themis.ai",
+      "width": 114.11931610107422,
+      "x": 70.7102279663086,
+      "y": 2832.173095703125
+    },
+    {
+      "font": "13.5px",
+      "height": 33.0823860168457,
+      "tag": "BUTTON",
+      "text": "Ask Themis.ai",
+      "width": 114.11931610107422,
+      "x": 70.7102279663086,
+      "y": 3085.816650390625
+    },
+    {
+      "font": "13.5px",
+      "height": 33.0823860168457,
+      "tag": "BUTTON",
+      "text": "Add the note",
+      "width": 107.05255126953124,
+      "x": 217.1377716064453,
+      "y": 3267.69873046875
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 408.6363525390625,
+  "url": "http://localhost:3134/matters/MAT-DEMO-APEX/research?file=03_Matters%2Fproject-apex-ai%2Fresearch%2Fphase2-process.md",
+  "width": 390
+}

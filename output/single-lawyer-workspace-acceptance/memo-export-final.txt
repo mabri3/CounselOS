@@ -1,0 +1,14 @@
+Recommendation
+Beacon may be able to proceed toward launching the revised onboarding flow for the low-risk segment, 
+conditional on confirming partner approval before go-live
+. The change applies only to the low-risk segment and uses identity and fraud signals, so the scope is narrow. Do not launch until the partner approval requirement is confirmed and the non-approval path is settled.
+Next product steps
+Confirm with the partner whether approval is required before the revised flow launches.
+Decide the notice/explanation path for applicants the automation cannot approve (e.g., direct them to contact support).
+Confirm the legal characterization of the automated decision and the notice that follows a non-approval.
+Evidence and open facts
+Reported facts: the change applies only to the low-risk segment; the flow uses identity and fraud signals.
+Open: whether partner approval constrains the rollout; what notice or explanation follows a non-approval; the legal characterization of the automated decision.
+No external authority was retrieved for this preview; the memo reflects the current business question and reported facts only.
+Lawyer note: Product must confirm partner approval before the launch meeting.
+Drafting note added during generation: retain the planned product review.

@@ -1,0 +1,2307 @@
+{
+  "path": "03_Matters/harbor-relay-specification-review-0a2378/work-product/draft/harbor-relay-pilot-review-memo-55b2ed.md",
+  "revision": "13480a646117e65269ef6616ca0c60e78d6e260754cb290325f29146cb9e1759",
+  "artifact_revision": "db951d1613f1156f8df103163c5de3a1fc25ea307db5e8c9cd532d55a484da71",
+  "history": [
+    {
+      "reason": "save untracked",
+      "action": "save_untracked",
+      "actor": "Alex Morgan",
+      "created_at": "2026-09-05T11:35:11+00:00",
+      "before_revision": "ea0d8dabed73b2ba7668eee7301e530ce024096c81f3c1fcdcd68a05c715892c",
+      "after_revision": "a96d5894e4ee7f8d69752906e23a7651b380b7d15bc767350234999e38a4cc8e",
+      "revision_path": "03_Matters/harbor-relay-specification-review-0a2378/work-product/draft/.history/harbor-relay-pilot-review-memo-55b2ed/8c71fe1cf5bc633963e0cecde05cdbc975d3f85b3a059ab981475900e539c829.md"
+    },
+    {
+      "reason": "Proposed revision to reflect supplied specification v2 (180-day retention, ticket-only logged support access) while preserving the exact Lawyer note and reported-not-verified qualification.",
+      "action": "propose_revision",
+      "actor": "Themis.ai",
+      "created_at": "2026-09-05T11:42:37+00:00",
+      "before_revision": "a96d5894e4ee7f8d69752906e23a7651b380b7d15bc767350234999e38a4cc8e",
+      "after_revision": "6a228ea9f06cd991b522d29cca7922abe97a1a20fa67863dce2028d2e11c9542",
+      "revision_path": "03_Matters/harbor-relay-specification-review-0a2378/work-product/draft/.history/harbor-relay-pilot-review-memo-55b2ed/376d593c159ae495008d70d8413a969f36e3e96b44701586f611183ebe761928.md"
+    },
+    {
+      "reason": "accept change",
+      "action": "accept_change",
+      "actor": "Alex Morgan",
+      "created_at": "2026-09-05T12:09:30+00:00",
+      "before_revision": "6a228ea9f06cd991b522d29cca7922abe97a1a20fa67863dce2028d2e11c9542",
+      "after_revision": "6a228ea9f06cd991b522d29cca7922abe97a1a20fa67863dce2028d2e11c9542",
+      "revision_path": "03_Matters/harbor-relay-specification-review-0a2378/work-product/draft/.history/harbor-relay-pilot-review-memo-55b2ed/f627176c1bb7c227f42e84a2110623007ad8d61db3b44e5d4a0b492feb6f839b.md"
+    },
+    {
+      "reason": "accept change",
+      "action": "accept_change",
+      "actor": "Alex Morgan",
+      "created_at": "2026-09-05T12:09:36+00:00",
+      "before_revision": "6a228ea9f06cd991b522d29cca7922abe97a1a20fa67863dce2028d2e11c9542",
+      "after_revision": "6a228ea9f06cd991b522d29cca7922abe97a1a20fa67863dce2028d2e11c9542",
+      "revision_path": "03_Matters/harbor-relay-specification-review-0a2378/work-product/draft/.history/harbor-relay-pilot-review-memo-55b2ed/4eb6cccdc46fa0710ada35a3d3ad1489a47bd65a99b360a169d56d4f16551113.md"
+    },
+    {
+      "reason": "accept change",
+      "action": "accept_change",
+      "actor": "Alex Morgan",
+      "created_at": "2026-09-05T12:09:41+00:00",
+      "before_revision": "6a228ea9f06cd991b522d29cca7922abe97a1a20fa67863dce2028d2e11c9542",
+      "after_revision": "6a228ea9f06cd991b522d29cca7922abe97a1a20fa67863dce2028d2e11c9542",
+      "revision_path": "03_Matters/harbor-relay-specification-review-0a2378/work-product/draft/.history/harbor-relay-pilot-review-memo-55b2ed/f717e7f0065f48e891341faafa0509a901e7731cc49ddf6e5b58c72afe27cca5.md"
+    },
+    {
+      "reason": "reject change",
+      "action": "reject_change",
+      "actor": "Alex Morgan",
+      "created_at": "2026-09-05T12:09:47+00:00",
+      "before_revision": "6a228ea9f06cd991b522d29cca7922abe97a1a20fa67863dce2028d2e11c9542",
+      "after_revision": "db951d1613f1156f8df103163c5de3a1fc25ea307db5e8c9cd532d55a484da71",
+      "revision_path": "03_Matters/harbor-relay-specification-review-0a2378/work-product/draft/.history/harbor-relay-pilot-review-memo-55b2ed/6a5100ac6272674cf03143bd39d8ccf460ffc2e5337dd4ce018a1521efc8db19.md"
+    }
+  ],
+  "tracking": true,
+  "authors": [
+    {
+      "author_id": "author-themis",
+      "name": "Themis.ai",
+      "color": "#2F5597"
+    }
+  ],
+  "segments": [
+    {
+      "kind": "equal",
+      "text": "# Harbor Relay pilot review memo\n**Version ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "1",
+      "change_id": "CHG-20260905-cb7407",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "2",
+      "change_id": "CHG-20260905-cb7407",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " working baseline \u2014 for review against version ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": "2",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": "**\n*Matter: the internal record \u00b7 US pilot launch 21 October 2026*\n> **Status note:** This memo is a **version ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "1",
+      "change_id": "CHG-20260905-cbebe6",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "2",
+      "change_id": "CHG-20260905-cbebe6",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " working baseline** built from the supplied specification ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "v1",
+      "change_id": "CHG-20260905-2448fc",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "v2",
+      "change_id": "CHG-20260905-2448fc",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " and the original saved advice. It reflects a **",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "30",
+      "change_id": "CHG-20260905-2fd2bf",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "180",
+      "change_id": "CHG-20260905-2fd2bf",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": "-day report",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "insert",
+      "text": " retention, customer-and-support access, and ticket-only, logged support access**. It supersedes the version 1 baseline (30-day",
+      "change_id": "CHG-20260905-c3f223",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " retention, customer-only access, ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "and ",
+      "change_id": "CHG-20260905-6fc3e5",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": "support access unconfirmed",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "**.",
+      "change_id": "CHG-20260905-5086cc",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": ")",
+      "change_id": "CHG-20260905-5086cc",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "It",
+      "change_id": "CHG-20260905-d60c61",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "and",
+      "change_id": "CHG-20260905-d60c61",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "must",
+      "change_id": "CHG-20260905-c9346d",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "should",
+      "change_id": "CHG-20260905-c9346d",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " be reviewed against ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "specification",
+      "change_id": "CHG-20260905-1a147f",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "that earlier",
+      "change_id": "CHG-20260905-1a147f",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " version",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": " 2 (which changes retention to 180 days and specifies ticket-only, logged support access)",
+      "change_id": "CHG-20260905-552a78",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " before any conclusion is relied on. No legal decision is recorded and no final draft exists.\n## Summary\nHarbor Relay is planned for a US pilot launching 21 October 2026. The product sends an account activity report to the customer. Under the version ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "1",
+      "change_id": "CHG-20260905-04eb76",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "2",
+      "change_id": "CHG-20260905-04eb76",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " baseline, reports are retained for ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "30",
+      "change_id": "CHG-20260905-739776",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "180",
+      "change_id": "CHG-20260905-739776",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " days and ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "only",
+      "change_id": "CHG-20260905-3a111b",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "both",
+      "change_id": "CHG-20260905-3a111b",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "the",
+      "change_id": "CHG-20260905-816dbd",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "customers",
+      "change_id": "CHG-20260905-816dbd",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "customer can open them; whether",
+      "change_id": "CHG-20260905-062b8f",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "and",
+      "change_id": "CHG-20260905-062b8f",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " support staff can open ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "reports",
+      "change_id": "CHG-20260905-20dfc8",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "them,",
+      "change_id": "CHG-20260905-20dfc8",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "is",
+      "change_id": "CHG-20260905-6db002",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "with",
+      "change_id": "CHG-20260905-6db002",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "unconfirmed",
+      "change_id": "CHG-20260905-7ac732",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "support access requiring a customer support ticket and being logged",
+      "change_id": "CHG-20260905-7ac732",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": ". Because the report contains customer transaction/account data, the retention period and the access model are privacy and data-access controls that should be confirmed and documented before launch. This memo is a ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "insert",
+      "text": "working ",
+      "change_id": "CHG-20260905-994efa",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": "baseline",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": " only",
+      "change_id": "CHG-20260905-71ce4e",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " and ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "needs",
+      "change_id": "CHG-20260905-810217",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "should",
+      "change_id": "CHG-20260905-810217",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "review",
+      "change_id": "CHG-20260905-6488fb",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "be reviewed",
+      "change_id": "CHG-20260905-6488fb",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " against version ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "2",
+      "change_id": "CHG-20260905-5e30f4",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "1",
+      "change_id": "CHG-20260905-5e30f4",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": ".\n## Retention\n- **Baseline (",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": "v2",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": "):** Reports are retained for **",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": "180",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": " days**.\n- The ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": "180",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": "-day window should be confirmed as deliberate and consistent with any data-minimization or deletion commitments",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "insert",
+      "text": ", and whether the longer window is disclosed",
+      "change_id": "CHG-20260905-517d14",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": ".\n- **Review point:** Version ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "2",
+      "change_id": "CHG-20260905-9e8905",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "1",
+      "change_id": "CHG-20260905-9e8905",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "changes retention to",
+      "change_id": "CHG-20260905-1afddb",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "specified",
+      "change_id": "CHG-20260905-1afddb",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " **",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "180",
+      "change_id": "CHG-20260905-6854e0",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "30",
+      "change_id": "CHG-20260905-6854e0",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " days**. ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "That",
+      "change_id": "CHG-20260905-83e71d",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "The change to 180 days",
+      "change_id": "CHG-20260905-83e71d",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " is a materially longer window and must be reviewed on its own \u2014 the business rationale, consistency with deletion/data-minimization commitments, and whether the longer window is disclosed.\n## Support access\n- **Baseline (",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "v1",
+      "change_id": "CHG-20260905-e91496",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "v2",
+      "change_id": "CHG-20260905-e91496",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": "):** The supplied specification states ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "only",
+      "change_id": "CHG-20260905-ad92da",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "customers",
+      "change_id": "CHG-20260905-ad92da",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "the",
+      "change_id": "CHG-20260905-6f2a96",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "and",
+      "change_id": "CHG-20260905-6f2a96",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "customer",
+      "change_id": "CHG-20260905-b7e27e",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "support staff",
+      "change_id": "CHG-20260905-b7e27e",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " can open reports",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": ";",
+      "change_id": "CHG-20260905-7c4a38",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": ", with",
+      "change_id": "CHG-20260905-7c4a38",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " support access ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "is",
+      "change_id": "CHG-20260905-90c923",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "requiring",
+      "change_id": "CHG-20260905-90c923",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "**unconfirmed**",
+      "change_id": "CHG-20260905-be3d18",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "a customer support ticket and being logged",
+      "change_id": "CHG-20260905-be3d18",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": ".\n- **Reported (not independently verified):** Sam Patel reports that support can open a report only for a customer support ticket, and every access is logged. This is ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "insert",
+      "text": "consistent with the v2 access model but remains ",
+      "change_id": "CHG-20260905-0e1b04",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": "a reported fact, not a verified one.\n- **Review point:** Version ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "2",
+      "change_id": "CHG-20260905-45a9d7",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "1",
+      "change_id": "CHG-20260905-45a9d7",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "specifies",
+      "change_id": "CHG-20260905-b0e5a2",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "stated",
+      "change_id": "CHG-20260905-b0e5a2",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "that",
+      "change_id": "CHG-20260905-e1e202",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "only",
+      "change_id": "CHG-20260905-e1e202",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "customers",
+      "change_id": "CHG-20260905-5e971f",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "the",
+      "change_id": "CHG-20260905-5e971f",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "and support staff",
+      "change_id": "CHG-20260905-08b343",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "customer",
+      "change_id": "CHG-20260905-08b343",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " can open reports",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": ",",
+      "change_id": "CHG-20260905-355fd7",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "with",
+      "change_id": "CHG-20260905-7397ac",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "and that",
+      "change_id": "CHG-20260905-7397ac",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " support ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "access",
+      "change_id": "CHG-20260905-60d41f",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "staff",
+      "change_id": "CHG-20260905-60d41f",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "requiring",
+      "change_id": "CHG-20260905-4534d1",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "cannot",
+      "change_id": "CHG-20260905-4534d1",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "a",
+      "change_id": "CHG-20260905-792f37",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "open",
+      "change_id": "CHG-20260905-792f37",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "customer",
+      "change_id": "CHG-20260905-7e2401",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "report",
+      "change_id": "CHG-20260905-7e2401",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "support ticket and being logged",
+      "change_id": "CHG-20260905-ac94c9",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "content",
+      "change_id": "CHG-20260905-ac94c9",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": ". If ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "that",
+      "change_id": "CHG-20260905-2c9805",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "the v2 model",
+      "change_id": "CHG-20260905-2c9805",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " is ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "the ",
+      "change_id": "CHG-20260905-24d21f",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": "intended",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": " model",
+      "change_id": "CHG-20260905-2b3ab5",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": ", the earlier \"only the customer can open\" language is superseded, and any customer-facing disclosure should reflect the actual access model.",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "insert",
+      "text": " The remaining question is whether the ticket-gating and logging controls are sufficient and implemented as described.",
+      "change_id": "CHG-20260905-803bd5",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": "\n## Open items\n- Confirm the intended retention period (",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "30",
+      "change_id": "CHG-20260905-57759c",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "180",
+      "change_id": "CHG-20260905-57759c",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " vs ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "180",
+      "change_id": "CHG-20260905-2b7616",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "30",
+      "change_id": "CHG-20260905-2b7616",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " days) and the rationale for any change.\n- Confirm the intended support-access model: ticket-only and logged (per ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "insert",
+      "text": "v2 and ",
+      "change_id": "CHG-20260905-4ae07a",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": "Sam Patel's report",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": " and v2",
+      "change_id": "CHG-20260905-e22c8f",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": ") versus customer-only (per v1)",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": ".\n- Confirm whether the \"only the customer can open\" access statement needs reconciling with any support access",
+      "change_id": "CHG-20260905-b0b24c",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": ".\n- Confirm whether the ticket-gating and logging controls are sufficient and implemented as described.\n- Confirm whether the ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "30/",
+      "change_id": "CHG-20260905-c18795",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": "180-day retention ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "delete",
+      "text": "is",
+      "change_id": "CHG-20260905-dc1355",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "insert",
+      "text": "and the access model are",
+      "change_id": "CHG-20260905-dc1355",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "kind": "equal",
+      "text": " disclosed to customers.",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": "\n\n## Lawyer note",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": "\n",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": "Preserve this exact qualification: Sam Patel reported ticket",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": "-",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": "only",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": "logged support access; implementation and",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": " the ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": "retention",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": "rationale",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": "remain",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": " ",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": "unverified",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    },
+    {
+      "kind": "equal",
+      "text": ".\n",
+      "change_id": "",
+      "author_id": "",
+      "author_name": "",
+      "author_color": "",
+      "created_at": ""
+    }
+  ],
+  "changes": [
+    {
+      "change_id": "CHG-20260905-cb7407",
+      "old_text": "1",
+      "new_text": "2",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-cbebe6",
+      "old_text": "1",
+      "new_text": "2",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-2448fc",
+      "old_text": "v1",
+      "new_text": "v2",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-2fd2bf",
+      "old_text": "30",
+      "new_text": "180",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-c3f223",
+      "old_text": "",
+      "new_text": " retention, customer-and-support access, and ticket-only, logged support access**. It supersedes the version 1 baseline (30-day",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-6fc3e5",
+      "old_text": "and ",
+      "new_text": "",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-d60c61",
+      "old_text": "It",
+      "new_text": "and",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-c9346d",
+      "old_text": "must",
+      "new_text": "should",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-1a147f",
+      "old_text": "specification",
+      "new_text": "that earlier",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-552a78",
+      "old_text": " 2 (which changes retention to 180 days and specifies ticket-only, logged support access)",
+      "new_text": "",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-04eb76",
+      "old_text": "1",
+      "new_text": "2",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-739776",
+      "old_text": "30",
+      "new_text": "180",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-3a111b",
+      "old_text": "only",
+      "new_text": "both",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-816dbd",
+      "old_text": "the",
+      "new_text": "customers",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-062b8f",
+      "old_text": "customer can open them; whether",
+      "new_text": "and",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-20dfc8",
+      "old_text": "reports",
+      "new_text": "them,",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-6db002",
+      "old_text": "is",
+      "new_text": "with",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-7ac732",
+      "old_text": "unconfirmed",
+      "new_text": "support access requiring a customer support ticket and being logged",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-994efa",
+      "old_text": "",
+      "new_text": "working ",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-71ce4e",
+      "old_text": " only",
+      "new_text": "",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-810217",
+      "old_text": "needs",
+      "new_text": "should",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-6488fb",
+      "old_text": "review",
+      "new_text": "be reviewed",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-5e30f4",
+      "old_text": "2",
+      "new_text": "1",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-517d14",
+      "old_text": "",
+      "new_text": ", and whether the longer window is disclosed",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-9e8905",
+      "old_text": "2",
+      "new_text": "1",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-1afddb",
+      "old_text": "changes retention to",
+      "new_text": "specified",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-6854e0",
+      "old_text": "180",
+      "new_text": "30",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-83e71d",
+      "old_text": "That",
+      "new_text": "The change to 180 days",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-e91496",
+      "old_text": "v1",
+      "new_text": "v2",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-ad92da",
+      "old_text": "only",
+      "new_text": "customers",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-6f2a96",
+      "old_text": "the",
+      "new_text": "and",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-b7e27e",
+      "old_text": "customer",
+      "new_text": "support staff",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-7c4a38",
+      "old_text": ";",
+      "new_text": ", with",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-90c923",
+      "old_text": "is",
+      "new_text": "requiring",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-be3d18",
+      "old_text": "**unconfirmed**",
+      "new_text": "a customer support ticket and being logged",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-0e1b04",
+      "old_text": "",
+      "new_text": "consistent with the v2 access model but remains ",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-45a9d7",
+      "old_text": "2",
+      "new_text": "1",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-b0e5a2",
+      "old_text": "specifies",
+      "new_text": "stated",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-e1e202",
+      "old_text": "that",
+      "new_text": "only",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-5e971f",
+      "old_text": "customers",
+      "new_text": "the",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-08b343",
+      "old_text": "and support staff",
+      "new_text": "customer",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-7397ac",
+      "old_text": "with",
+      "new_text": "and that",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-60d41f",
+      "old_text": "access",
+      "new_text": "staff",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-4534d1",
+      "old_text": "requiring",
+      "new_text": "cannot",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-792f37",
+      "old_text": "a",
+      "new_text": "open",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-7e2401",
+      "old_text": "customer",
+      "new_text": "report",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-ac94c9",
+      "old_text": "support ticket and being logged",
+      "new_text": "content",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-2c9805",
+      "old_text": "that",
+      "new_text": "the v2 model",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-24d21f",
+      "old_text": "the ",
+      "new_text": "",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-2b3ab5",
+      "old_text": " model",
+      "new_text": "",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-803bd5",
+      "old_text": "",
+      "new_text": " The remaining question is whether the ticket-gating and logging controls are sufficient and implemented as described.",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-57759c",
+      "old_text": "30",
+      "new_text": "180",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-2b7616",
+      "old_text": "180",
+      "new_text": "30",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-4ae07a",
+      "old_text": "",
+      "new_text": "v2 and ",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-e22c8f",
+      "old_text": " and v2",
+      "new_text": "",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-b0b24c",
+      "old_text": ".\n- Confirm whether the \"only the customer can open\" access statement needs reconciling with any support access",
+      "new_text": "",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-c18795",
+      "old_text": "30/",
+      "new_text": "",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    },
+    {
+      "change_id": "CHG-20260905-dc1355",
+      "old_text": "is",
+      "new_text": "and the access model are",
+      "author_id": "author-themis",
+      "author_name": "Themis.ai",
+      "author_color": "#2F5597",
+      "created_at": "2026-09-05T11:42:37+00:00"
+    }
+  ],
+  "comments": [],
+  "comment_events": []
+}

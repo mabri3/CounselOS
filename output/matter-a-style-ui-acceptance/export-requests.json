@@ -1,0 +1,16 @@
+{
+  "docx": {
+    "time": "2026-09-05T22:23:07.089413+00:00",
+    "method": "GET",
+    "path": "/api/files/export",
+    "query": "path=03_Matters%2Flumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4%2Fwork-product%2Fdraft%2Flaunch-advice-bd4145.md&format=docx&mode=markup&expected_revision=9d68e059ff28795485c098633f23973c40be4804be6a34413f0b3a5d7bb0dc56&expected_review_revision=28c84984e36cfac621dfd0652ec75088c73b1ae49670a9902c9f8e906be4cdba",
+    "status": 200
+  },
+  "pdf": {
+    "time": "2026-09-05T22:23:30.305016+00:00",
+    "method": "GET",
+    "path": "/api/files/export",
+    "query": "path=03_Matters%2Flumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4%2Fwork-product%2Fdraft%2Flaunch-advice-bd4145.md&format=pdf&mode=markup&expected_revision=9d68e059ff28795485c098633f23973c40be4804be6a34413f0b3a5d7bb0dc56&expected_review_revision=28c84984e36cfac621dfd0652ec75088c73b1ae49670a9902c9f8e906be4cdba",
+    "status": 200
+  }
+}

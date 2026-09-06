@@ -1,0 +1,439 @@
+{
+  "matter_id": "MAT-20260905-0a2378",
+  "path": "03_Matters/harbor-relay-specification-review-0a2378",
+  "title": "Harbor Relay specification review",
+  "description": "",
+  "matter_type": "general_advice",
+  "product_area": "",
+  "business_team": "",
+  "requester": "Morgan Patel",
+  "legal_owner": "Alex Morgan",
+  "business_owner": "",
+  "status": "intake",
+  "priority": "normal",
+  "risk_level": "unknown",
+  "target_date": null,
+  "privilege": "privileged_and_confidential",
+  "next_action": "Can support staff open customer account activity reports, and if so under what conditions?",
+  "created_at": "2026-09-05T08:10:26+00:00",
+  "updated_at": "2026-09-05T08:10:44+00:00",
+  "jurisdiction_scope": [],
+  "intake_state": "active",
+  "active_agent_id": "intake-agent",
+  "durable_decision_needed": false,
+  "response_approved_at": null,
+  "response_sent_at": null,
+  "closed_at": null,
+  "source_action_key": "continuity-acceptance-harbor-v1",
+  "current_work_product_final_path": null,
+  "original_request": "Fictional acceptance test. We plan a US pilot of Harbor Relay on 21 October 2026. The product sends an account activity report to the customer. Current supplied specification says reports are retained for 30 days and only the customer can open them. Business has not confirmed whether support staff can open reports. Give useful initial advice with that assumption and one supporting question about support access. Do not record a legal decision or create a draft yet.",
+  "current_work_product_draft_path": null,
+  "current_work_product_id": null,
+  "response_approved_by": null,
+  "response_approved_artifact_path": null,
+  "response_approved_artifact_id": null,
+  "response_approved_final_id": null,
+  "response_approval_event_path": null,
+  "response_sent_by": null,
+  "response_sent_artifact_path": null,
+  "response_sent_artifact_id": null,
+  "response_delivery_method": null,
+  "response_delivery_note": null,
+  "response_delivery_event_path": null,
+  "closed_by": null,
+  "closure_event_path": null,
+  "current_work_product_final_id": null,
+  "consistency_issues": [],
+  "latest_research_path": null,
+  "participants": [
+    {
+      "name": "Morgan Patel",
+      "role": "requester"
+    },
+    {
+      "name": "Alex Morgan",
+      "role": "legal_owner"
+    }
+  ],
+  "recommendation": {
+    "path": "03_Matters/harbor-relay-specification-review-0a2378/recommendations.md",
+    "content": "# Recommendations\n\nNo recommendation has been drafted yet.",
+    "current_version_id": null,
+    "proposal": null
+  },
+  "recommendation_review_needed": false,
+  "work_state": {
+    "next_action": "Can support staff open customer account activity reports, and if so under what conditions?",
+    "next_work_item_id": "WI-20260905-177aed",
+    "next_owner": "Alex Morgan",
+    "next_actor": "named_owner",
+    "due_at": null,
+    "execution_state": "not_running",
+    "active_run_id": null,
+    "execution_note": "",
+    "signal": {
+      "kind": "waiting_on_owner",
+      "label": "Waiting on Alex Morgan"
+    }
+  },
+  "orientation": {
+    "headline": "Can support staff open customer account activity reports, and if so under what conditions?",
+    "summary": "US pilot of Harbor Relay launching 21 Oct 2026; product sends an account activity report to the customer, retained 30 days, openable only by the customer; support access unconfirmed.",
+    "decision_question": "Assess the US pilot of Harbor Relay (launch 21 Oct 2026), which sends an account activity report to the customer, retained 30 days and openable only by the customer, for privacy/data-access and related considerations \u2014 including whether support staff may open reports.",
+    "open_questions": [
+      "Whether support staff can open reports and under what conditions (the key open question).",
+      "What data the account activity report contains (e.g., transaction details, personal data).",
+      "Whether the 'only the customer can open' statement is a contractual commitment to customers."
+    ],
+    "open_question_items": [
+      {
+        "id": "question-1",
+        "text": "Whether support staff can open reports and under what conditions (the key open question).",
+        "work_item_id": null
+      },
+      {
+        "id": "question-2",
+        "text": "What data the account activity report contains (e.g., transaction details, personal data).",
+        "work_item_id": null
+      },
+      {
+        "id": "question-3",
+        "text": "Whether the 'only the customer can open' statement is a contractual commitment to customers.",
+        "work_item_id": null
+      }
+    ],
+    "why_now": "1 required work item(s) remain open.",
+    "next_action": "Can support staff open customer account activity reports, and if so under what conditions?",
+    "attention": [
+      "Orient to the request"
+    ],
+    "recent_changes": [
+      "Uploaded harbor-spec-v1.txt",
+      "Matter Records Updated",
+      "Dossier updated",
+      "Matter Records Updated",
+      "Harbor Relay specification review"
+    ]
+  },
+  "work_items": [
+    {
+      "work_item_id": "WI-20260905-177aed",
+      "matter_id": "MAT-20260905-0a2378",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/work-items/WI-20260905-177aed.md",
+      "title": "Orient to the request",
+      "description": "Confirm the business objective, timing, and facts needed to frame the legal work.",
+      "item_type": "question",
+      "status": "open",
+      "priority": "normal",
+      "owner": "Alex Morgan",
+      "due_at": null,
+      "required": 1,
+      "issue_id": null,
+      "created_at": "2026-09-05T08:10:26+00:00",
+      "completed_at": null
+    }
+  ],
+  "decisions": [],
+  "tree": [
+    {
+      "name": "conversations",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations",
+      "type": "folder",
+      "children": [
+        {
+          "name": "context",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/context",
+          "type": "folder",
+          "children": [
+            {
+              "name": "RUN-20260905-0bfadb.md",
+              "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/context/RUN-20260905-0bfadb.md",
+              "type": "file",
+              "extension": ".md",
+              "updated_at": 1788595848.2167685
+            }
+          ]
+        },
+        {
+          "name": "inquiries",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/inquiries",
+          "type": "folder",
+          "children": [
+            {
+              "name": "RUN-20260905-0bfadb.md",
+              "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/inquiries/RUN-20260905-0bfadb.md",
+              "type": "file",
+              "extension": ".md",
+              "updated_at": 1788595848.1788619
+            }
+          ]
+        },
+        {
+          "name": "runs",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/runs",
+          "type": "folder",
+          "children": [
+            {
+              "name": "RUN-20260905-0bfadb.md",
+              "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/runs/RUN-20260905-0bfadb.md",
+              "type": "file",
+              "extension": ".md",
+              "updated_at": 1788595848.233643
+            }
+          ]
+        },
+        {
+          "name": "CONV-20260905-9d68db.md",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/CONV-20260905-9d68db.md",
+          "type": "file",
+          "extension": ".md",
+          "updated_at": 1788595848.1536722,
+          "label": "Fictional acceptance test. We plan a US pilot of Harbor R\u2026",
+          "record_type": "chat_transcript"
+        }
+      ]
+    },
+    {
+      "name": "decisions",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/decisions",
+      "type": "folder",
+      "children": []
+    },
+    {
+      "name": "documents",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/documents",
+      "type": "folder",
+      "children": [
+        {
+          "name": "harbor-spec-v1.txt",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v1.txt",
+          "type": "file",
+          "extension": ".txt",
+          "updated_at": 1788596427.7085967
+        },
+        {
+          "name": "harbor-spec-v1.txt.extracted.md",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v1.txt.extracted.md",
+          "type": "file",
+          "extension": ".md",
+          "updated_at": 1788596427.7093256
+        }
+      ]
+    },
+    {
+      "name": "dossier-revisions",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/dossier-revisions",
+      "type": "folder",
+      "children": [
+        {
+          "name": "DOS-20260905-d833fd.md",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/dossier-revisions/DOS-20260905-d833fd.md",
+          "type": "file",
+          "extension": ".md",
+          "updated_at": 1788595844.0798635,
+          "record_type": "dossier_revision",
+          "label": "Matter Update"
+        }
+      ]
+    },
+    {
+      "name": "drafts",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/drafts",
+      "type": "folder",
+      "children": []
+    },
+    {
+      "name": "events",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/events",
+      "type": "folder",
+      "children": [
+        {
+          "name": "2026-09-05-EVT-20260905-18cb30.md",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/events/2026-09-05-EVT-20260905-18cb30.md",
+          "type": "file",
+          "extension": ".md",
+          "updated_at": 1788595826.238091,
+          "record_type": "matter_record",
+          "label": "Harbor Relay specification review"
+        },
+        {
+          "name": "2026-09-05-EVT-20260905-1e4dff.md",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/events/2026-09-05-EVT-20260905-1e4dff.md",
+          "type": "file",
+          "extension": ".md",
+          "updated_at": 1788595844.07053,
+          "record_type": "matter_record",
+          "label": "Matter Records Updated"
+        },
+        {
+          "name": "2026-09-05-EVT-20260905-a054df.md",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/events/2026-09-05-EVT-20260905-a054df.md",
+          "type": "file",
+          "extension": ".md",
+          "updated_at": 1788595844.080927,
+          "record_type": "matter_record",
+          "label": "Dossier updated"
+        },
+        {
+          "name": "2026-09-05-EVT-20260905-ba8f04.md",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/events/2026-09-05-EVT-20260905-ba8f04.md",
+          "type": "file",
+          "extension": ".md",
+          "updated_at": 1788596427.7099826,
+          "record_type": "matter_record",
+          "label": "Uploaded harbor-spec-v1.txt"
+        },
+        {
+          "name": "2026-09-05-EVT-20260905-fa2732.md",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/events/2026-09-05-EVT-20260905-fa2732.md",
+          "type": "file",
+          "extension": ".md",
+          "updated_at": 1788595828.2555265,
+          "record_type": "matter_record",
+          "label": "Matter Records Updated"
+        }
+      ]
+    },
+    {
+      "name": "mitigations",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/mitigations",
+      "type": "folder",
+      "children": []
+    },
+    {
+      "name": "research",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/research",
+      "type": "folder",
+      "children": []
+    },
+    {
+      "name": "work-items",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/work-items",
+      "type": "folder",
+      "children": [
+        {
+          "name": "WI-20260905-177aed.md",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/work-items/WI-20260905-177aed.md",
+          "type": "file",
+          "extension": ".md",
+          "updated_at": 1788595826.2283852,
+          "record_type": "matter_record",
+          "label": "Orient to the request"
+        }
+      ]
+    },
+    {
+      "name": "work-product",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/work-product",
+      "type": "folder",
+      "children": [
+        {
+          "name": "draft",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/work-product/draft",
+          "type": "folder",
+          "children": []
+        },
+        {
+          "name": "final",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/work-product/final",
+          "type": "folder",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "dossier.md",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/dossier.md",
+      "type": "file",
+      "extension": ".md",
+      "updated_at": 1788595844.0804448
+    },
+    {
+      "name": "facts.md",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/facts.md",
+      "type": "file",
+      "extension": ".md",
+      "updated_at": 1788595844.0773554
+    },
+    {
+      "name": "issues.md",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/issues.md",
+      "type": "file",
+      "extension": ".md",
+      "updated_at": 1788595844.0749485
+    },
+    {
+      "name": "matter.md",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/matter.md",
+      "type": "file",
+      "extension": ".md",
+      "updated_at": 1788595844.0784593
+    },
+    {
+      "name": "participants.md",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/participants.md",
+      "type": "file",
+      "extension": ".md",
+      "updated_at": 1788595826.216305
+    },
+    {
+      "name": "recommendations.md",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/recommendations.md",
+      "type": "file",
+      "extension": ".md",
+      "updated_at": 1788595826.2173088
+    },
+    {
+      "name": "request.md",
+      "path": "03_Matters/harbor-relay-specification-review-0a2378/request.md",
+      "type": "file",
+      "extension": ".md",
+      "updated_at": 1788595826.2159145
+    }
+  ],
+  "events": [
+    {
+      "event_id": "EVT-20260905-ba8f04",
+      "matter_id": "MAT-20260905-0a2378",
+      "event_type": "document_uploaded",
+      "actor_type": "system",
+      "timestamp": "2026-09-05T08:20:27+00:00",
+      "title": "Uploaded harbor-spec-v1.txt"
+    },
+    {
+      "event_id": "EVT-20260905-1e4dff",
+      "matter_id": "MAT-20260905-0a2378",
+      "event_type": "matter_records_updated",
+      "actor_type": "assistant",
+      "timestamp": "2026-09-05T08:10:44+00:00",
+      "title": "Matter Records Updated"
+    },
+    {
+      "event_id": "EVT-20260905-a054df",
+      "matter_id": "MAT-20260905-0a2378",
+      "event_type": "dossier_updated",
+      "actor_type": "system",
+      "timestamp": "2026-09-05T08:10:44+00:00",
+      "title": "Dossier updated"
+    },
+    {
+      "event_id": "EVT-20260905-fa2732",
+      "matter_id": "MAT-20260905-0a2378",
+      "event_type": "matter_records_updated",
+      "actor_type": "system",
+      "timestamp": "2026-09-05T08:10:28+00:00",
+      "title": "Matter Records Updated"
+    },
+    {
+      "event_id": "EVT-20260905-18cb30",
+      "matter_id": "MAT-20260905-0a2378",
+      "event_type": "matter_created",
+      "actor_type": "system",
+      "timestamp": "2026-09-05T08:10:26+00:00",
+      "title": "Harbor Relay specification review"
+    }
+  ],
+  "intake_answers": [],
+  "intake_conversation_id": "CONV-20260905-9d68db",
+  "intake_run_id": "RUN-20260905-0bfadb"
+}

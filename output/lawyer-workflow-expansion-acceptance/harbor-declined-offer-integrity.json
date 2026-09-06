@@ -1,0 +1,60 @@
+{
+  "offers": [
+    {
+      "offer_id": "OFF-a37ded451a9af547e06c8085",
+      "artifact_path": "03_Matters/harbor-relay-specification-review-0a2378/work-product/draft/harbor-relay-pilot-review-memo-55b2ed.md",
+      "base_revision": "a96d5894e4ee7f8d69752906e23a7651b380b7d15bc767350234999e38a4cc8e",
+      "reason": "Review proposed updates from saved comparison CMP-f5de3e24ed40f4ae1479e17a",
+      "state": "accepted",
+      "change": {
+        "reason": "Proposed revision to reflect supplied specification v2 (180-day retention, ticket-only logged support access) while preserving the exact Lawyer note and reported-not-verified qualification.",
+        "before_revision": "a96d5894e4ee7f8d69752906e23a7651b380b7d15bc767350234999e38a4cc8e",
+        "after_revision": "6a228ea9f06cd991b522d29cca7922abe97a1a20fa67863dce2028d2e11c9542"
+      }
+    },
+    {
+      "offer_id": "OFFER-a57b6ad05e23073a7a63",
+      "artifact_path": "03_Matters/harbor-relay-specification-review-0a2378/work-product/draft/harbor-relay-pilot-review-memo-55b2ed.md",
+      "base_revision": "6a228ea9f06cd991b522d29cca7922abe97a1a20fa67863dce2028d2e11c9542",
+      "reason": "Reported facts changed. Review whether the draft needs an update.",
+      "state": "declined",
+      "change": {
+        "reason": "Reported facts changed. Review whether the draft needs an update.",
+        "before_revision": "6a228ea9f06cd991b522d29cca7922abe97a1a20fa67863dce2028d2e11c9542",
+        "after_revision": null,
+        "trigger_fact_ids": [
+          "FACT-20260905-7c76be"
+        ],
+        "trigger_source_ids": [],
+        "instruction": "Sam Patel reports that support can open a report only for a customer support ticket and every access is logged. This remains reported, not independently verified; the supplied version 2 is consistent with the report.",
+        "affected_analysis": [
+          "03_Matters/harbor-relay-specification-review-0a2378/work-product/draft/harbor-relay-pilot-review-memo-55b2ed.md"
+        ]
+      }
+    }
+  ],
+  "artifact_revision_unchanged": true,
+  "review_revision_unchanged": true,
+  "same_pending_changes": true,
+  "history": [
+    {
+      "reason": "save untracked",
+      "action": "save_untracked",
+      "actor": "Alex Morgan",
+      "created_at": "2026-09-05T11:35:11+00:00",
+      "before_revision": "ea0d8dabed73b2ba7668eee7301e530ce024096c81f3c1fcdcd68a05c715892c",
+      "after_revision": "a96d5894e4ee7f8d69752906e23a7651b380b7d15bc767350234999e38a4cc8e",
+      "revision_path": "03_Matters/harbor-relay-specification-review-0a2378/work-product/draft/.history/harbor-relay-pilot-review-memo-55b2ed/8c71fe1cf5bc633963e0cecde05cdbc975d3f85b3a059ab981475900e539c829.md"
+    },
+    {
+      "reason": "Proposed revision to reflect supplied specification v2 (180-day retention, ticket-only logged support access) while preserving the exact Lawyer note and reported-not-verified qualification.",
+      "action": "propose_revision",
+      "actor": "Themis.ai",
+      "created_at": "2026-09-05T11:42:37+00:00",
+      "before_revision": "a96d5894e4ee7f8d69752906e23a7651b380b7d15bc767350234999e38a4cc8e",
+      "after_revision": "6a228ea9f06cd991b522d29cca7922abe97a1a20fa67863dce2028d2e11c9542",
+      "revision_path": "03_Matters/harbor-relay-specification-review-0a2378/work-product/draft/.history/harbor-relay-pilot-review-memo-55b2ed/376d593c159ae495008d70d8413a969f36e3e96b44701586f611183ebe761928.md"
+    }
+  ],
+  "correction_fact_id": "FACT-20260905-7c76be"
+}

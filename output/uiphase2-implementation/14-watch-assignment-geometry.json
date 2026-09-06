@@ -1,0 +1,271 @@
+{
+  "height": 1636,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 174.33238220214844,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 877.272705078125,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 630.4190063476562,
+      "y": 85.99431610107422
+    },
+    {
+      "font": "16px",
+      "height": 3099.332275390625,
+      "tag": "MAIN",
+      "text": "‹ All WatchesWatch BuilderDefine the question to monitor, th",
+      "width": 877.272705078125,
+      "x": 0,
+      "y": 174.33238220214844
+    },
+    {
+      "font": "48px",
+      "height": 53.749996185302734,
+      "tag": "H1",
+      "text": "Watch Builder",
+      "width": 560.397705078125,
+      "x": 33.99857711791992,
+      "y": 255.23435974121097
+    },
+    {
+      "font": "16px",
+      "height": 712.8764038085938,
+      "tag": "SECTION",
+      "text": "AssignmentState what to watch and why it matters.Watch title",
+      "width": 807.4573364257812,
+      "x": 34.90766906738281,
+      "y": 465.3835144042969
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Assignment",
+      "width": 771.4630126953125,
+      "x": 52.90482711791992,
+      "y": 489.382080078125
+    },
+    {
+      "font": "16px",
+      "height": 537.819580078125,
+      "tag": "SECTION",
+      "text": "Public topics and scopeUse commas to separate values.Keyword",
+      "width": 807.4573364257812,
+      "x": 34.90766906738281,
+      "y": 1178.2598876953125
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Public topics and scope",
+      "width": 771.4630126953125,
+      "x": 52.90482711791992,
+      "y": 1202.2584228515625
+    },
+    {
+      "font": "16px",
+      "height": 171.03692626953125,
+      "tag": "SECTION",
+      "text": "Named sources and rolesSource type states what a source is. ",
+      "width": 807.4573364257812,
+      "x": 34.90766906738281,
+      "y": 1716.0794677734375
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Named sources and roles",
+      "width": 771.4630126953125,
+      "x": 52.90482711791992,
+      "y": 1740.0780029296875
+    },
+    {
+      "font": "16px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Add named source",
+      "width": 771.4630126953125,
+      "x": 52.90482711791992,
+      "y": 1818.210205078125
+    },
+    {
+      "font": "16px",
+      "height": 171.03692626953125,
+      "tag": "SECTION",
+      "text": "ProviderThe choice is saved on this Watch. A provider failur",
+      "width": 807.4573364257812,
+      "x": 34.90766906738281,
+      "y": 1887.116455078125
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Provider",
+      "width": 771.4630126953125,
+      "x": 52.90482711791992,
+      "y": 1911.114990234375
+    },
+    {
+      "font": "16px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Themis.ai native",
+      "width": 157.89772033691406,
+      "x": 52.90482711791992,
+      "y": 1989.2470703125
+    },
+    {
+      "font": "16px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Polaris",
+      "width": 88.14630126953125,
+      "x": 219.80113220214844,
+      "y": 1989.2470703125
+    },
+    {
+      "font": "16px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Both",
+      "width": 72.421875,
+      "x": 316.9460144042969,
+      "y": 1989.2470703125
+    },
+    {
+      "font": "16px",
+      "height": 300.2840881347656,
+      "tag": "SECTION",
+      "text": "Internal matching scopeThis private scope stays inside Themi",
+      "width": 807.4573364257812,
+      "x": 34.90766906738281,
+      "y": 2058.1533203125
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Internal matching scope",
+      "width": 771.4630126953125,
+      "x": 52.90482711791992,
+      "y": 2082.15185546875
+    },
+    {
+      "font": "16px",
+      "height": 162.0596466064453,
+      "tag": "SECTION",
+      "text": "Cadence and time zoneCadenceManual onlyIntervalDailySelected",
+      "width": 807.4573364257812,
+      "x": 34.90766906738281,
+      "y": 2358.4375
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Cadence and time zone",
+      "width": 771.4630126953125,
+      "x": 52.90482711791992,
+      "y": 2382.43603515625
+    },
+    {
+      "font": "16px",
+      "height": 274.9715881347656,
+      "tag": "SECTION",
+      "text": "Briefing and review behaviorCreate Briefing itemsCreate a di",
+      "width": 807.4573364257812,
+      "x": 34.90766906738281,
+      "y": 2520.4970703125
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Briefing and review behavior",
+      "width": 771.4630126953125,
+      "x": 52.90482711791992,
+      "y": 2544.49560546875
+    },
+    {
+      "font": "16px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Save draft",
+      "width": 112.27272033691406,
+      "x": 461.5269775390625,
+      "y": 2833.28125
+    },
+    {
+      "font": "16px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Scan now",
+      "width": 108.32386016845705,
+      "x": 582.7982788085938,
+      "y": 2833.28125
+    },
+    {
+      "font": "16px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Start Watch",
+      "width": 124.24715423583984,
+      "x": 700.1207275390625,
+      "y": 2833.28125
+    },
+    {
+      "font": "16px",
+      "height": 123.94175720214844,
+      "tag": "SECTION",
+      "text": "Scan previewScan preview is unavailable before the first sca",
+      "width": 809.2755126953125,
+      "x": 33.99857711791992,
+      "y": 2947.77685546875
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Scan preview",
+      "width": 763.4658813476562,
+      "x": 56.90340805053711,
+      "y": 2970.681640625
+    },
+    {
+      "font": "16px",
+      "height": 119.95027923583984,
+      "tag": "SECTION",
+      "text": "Run historyNo scans yet.",
+      "width": 809.2755126953125,
+      "x": 33.99857711791992,
+      "y": 3089.7158203125
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Run history",
+      "width": 767.4573364257812,
+      "x": 54.90766906738281,
+      "y": 3110.625
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 0,
+  "url": "http://localhost:3134/watches/new",
+  "width": 887
+}

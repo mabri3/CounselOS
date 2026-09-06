@@ -1,0 +1,60 @@
+[
+  {
+    "scenario_id": "SCN-29a0ffd8ff12f300a71b8638",
+    "matter_id": "MAT-20260906-1b2102",
+    "title": "Working scenario — Screening takes two days before release.",
+    "baseline_revisions": {
+      "03_Matters/harbor-sandbox-release-timing-1b2102/matter.md": "3eb7c0600612674f12a7f1dcb63a91a64a18489cd1e4ce4dfc6a490035fb9078",
+      "03_Matters/harbor-sandbox-release-timing-1b2102/dossier.md": "293d240f8e2f73fced0ba8054495f14b7902126f494d30cd0fc9d6638e171488",
+      "03_Matters/harbor-sandbox-release-timing-1b2102/facts.md": "7b0f2ee5811913cbee01af95887ab9e6d0591ff91acd842500e9ed4e97b65ac9",
+      "03_Matters/harbor-sandbox-release-timing-1b2102/issues.md": "6e8f081575962c5c22d60ab7e85877d50716be42b59ad79b0bd695f78c4fbcc5",
+      "03_Matters/harbor-sandbox-release-timing-1b2102/recommendations.md": "003877ad7c7395bfe465ccc28cee25bc7eb93dfd818709a583e9d330a227f2ae",
+      "03_Matters/harbor-sandbox-release-timing-1b2102/documents/pilot-contract.txt.extracted.md": "9a99b8f98fee59b1c643ffe4ef62b6b974061e6a4c87076acd63cc3286db4a12",
+      "03_Matters/harbor-sandbox-release-timing-1b2102/documents/pilot-contract.txt": "3d8befd2e880647c9332547cae24f9650d2b706fa3a6f1ac1933b84bf59cfa25",
+      "business_question": "legacy:9daa566e96142bcca3e63a7f094f836946f9a5535198bb036b2c79cf54754f38"
+    },
+    "issue_ids": [
+      "ISS-PILOT"
+    ],
+    "proposed_fact_changes": [
+      {
+        "change_id": "change-1-scenario-baseline:1a3a6b85-7e46-4131-9f8d-ea4a7c830841",
+        "fact_id": null,
+        "text": "Screening takes two days before release."
+      }
+    ],
+    "unresolved_conditions": [],
+    "analysis": "Hypothetical analysis: if screening took two days, delay the pilot release until screening is complete. This does not change actual facts.",
+    "source_links": [],
+    "created_at": "2026-09-06T05:22:45+00:00",
+    "adopted_fact_ids": [],
+    "related_analysis": [],
+    "analysis_state": "completed",
+    "analysis_run_id": "RUN-20260906-f89041",
+    "analysis_source_action_key": "scenario-analysis:9fa08f63-9e9b-4ef3-821e-af9f79721ecd",
+    "analysis_baseline_revisions": {
+      "03_Matters/harbor-sandbox-release-timing-1b2102/matter.md": "3eb7c0600612674f12a7f1dcb63a91a64a18489cd1e4ce4dfc6a490035fb9078",
+      "03_Matters/harbor-sandbox-release-timing-1b2102/dossier.md": "293d240f8e2f73fced0ba8054495f14b7902126f494d30cd0fc9d6638e171488",
+      "03_Matters/harbor-sandbox-release-timing-1b2102/facts.md": "7b0f2ee5811913cbee01af95887ab9e6d0591ff91acd842500e9ed4e97b65ac9",
+      "03_Matters/harbor-sandbox-release-timing-1b2102/issues.md": "6e8f081575962c5c22d60ab7e85877d50716be42b59ad79b0bd695f78c4fbcc5",
+      "03_Matters/harbor-sandbox-release-timing-1b2102/recommendations.md": "003877ad7c7395bfe465ccc28cee25bc7eb93dfd818709a583e9d330a227f2ae",
+      "03_Matters/harbor-sandbox-release-timing-1b2102/documents/pilot-contract.txt.extracted.md": "9a99b8f98fee59b1c643ffe4ef62b6b974061e6a4c87076acd63cc3286db4a12",
+      "03_Matters/harbor-sandbox-release-timing-1b2102/documents/pilot-contract.txt": "3d8befd2e880647c9332547cae24f9650d2b706fa3a6f1ac1933b84bf59cfa25",
+      "business_question": "legacy:9daa566e96142bcca3e63a7f094f836946f9a5535198bb036b2c79cf54754f38"
+    },
+    "affected_issue_ids": [
+      "ISS-PILOT"
+    ],
+    "affected_branch_ids": [],
+    "claim_ids": [],
+    "proposed_outcomes": [],
+    "failure_detail": null,
+    "stale": {
+      "is_stale": false,
+      "changed_revisions": {}
+    },
+    "updated_at": null,
+    "revision": "26b143e3d1b1b9329a4783f77442753859d183049e0be7b1ec37f1e40cd40591",
+    "source_action_key": "scenario-baseline:1a3a6b85-7e46-4131-9f8d-ea4a7c830841"
+  }
+]

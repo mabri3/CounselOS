@@ -1,0 +1,17 @@
+{
+  "protected_records": 9,
+  "changed": [],
+  "browser_observations": [
+    "Draft snapshot notice visible",
+    "Prepared request targets selected cover email",
+    "Unsent text preserved before explicit append",
+    "Explicit append preserves original message",
+    "No request submitted",
+    "Keep current message dismisses prepared request",
+    "Declined clause shows Earlier facts \u00b7 Draft retained after reload",
+    "Declined clause does not repeat Accept or Decline buttons",
+    "Mark seen then reload shows No new saved work",
+    "Understand and unsent message survive final reload",
+    "CUA viewport override reset"
+  ]
+}

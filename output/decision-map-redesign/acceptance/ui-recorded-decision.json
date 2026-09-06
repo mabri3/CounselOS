@@ -1,0 +1,72 @@
+{
+  "decision_id": "DEC-3793964076F372E311F1",
+  "matter_id": "MAT-20260906-1b2102",
+  "path": "03_Matters/harbor-sandbox-release-timing-1b2102/decisions/DEC-3793964076F372E311F1.md",
+  "title": "Harbor sandbox: release timing",
+  "chosen_path": "Run a ten-account pilot after manual screening.",
+  "rationale": "Keep screening first while the team checks release timing.",
+  "decision_maker": "Unattributed lawyer",
+  "decision_type": "legal_decision",
+  "decided_at": "2026-09-06T05:13:16+00:00",
+  "next_review_at": "2026-12-05",
+  "last_reviewed_at": "2026-09-06T05:13:16+00:00",
+  "risk_level": "unknown",
+  "review_status": "fresh",
+  "staleness_reason": "",
+  "linked_paths": "[\"03_Matters/harbor-sandbox-release-timing-1b2102/conversations/inquiries/RUN-20260906-848a0b.md\"]",
+  "conditions": [
+    "Screening completes before release",
+    "Does screening complete before release? — must be met"
+  ],
+  "not_decided": [],
+  "mitigation_ids": [],
+  "review_packet_ids": [],
+  "revises_decision_id": null,
+  "recommendation_disposition": "followed",
+  "recommendation_disposition_reason": "",
+  "recommendation_version_id": "REC-20260906-1de527",
+  "map_basis": {
+    "issue_id": "ISS-PILOT",
+    "analysis_id": "IAN-d3b85bfc9393af017e88f020",
+    "analysis_revision": "7a270f9bd2312c8f48735a5b6335564c65e079fb7f34e6c8a262d0f48b665bd2",
+    "analysis_path": "03_Matters/harbor-sandbox-release-timing-1b2102/conversations/inquiries/RUN-20260906-848a0b.md",
+    "output_revision": "26108bf9062d91109dc7a9243688f7626bc9cbf870ab2bbe3ba28b52757b68bf",
+    "selected_option_id": "OPT-ab8fbb8c67dc3501b9ba",
+    "selected_option_revision": "2571cbf3287be17d2f5cc2dcf88c41f87e0cfae69dc758d87d84aa282ae27524",
+    "use_historical_basis": false,
+    "canonical_option": {
+      "option_id": "OPT-ab8fbb8c67dc3501b9ba",
+      "option_revision": "2571cbf3287be17d2f5cc2dcf88c41f87e0cfae69dc758d87d84aa282ae27524",
+      "title": "Delayed full release (screening completes first)",
+      "kind": "conditional_path",
+      "condition_summary": "Screening completes before release",
+      "requirements": [
+        {
+          "condition_id": "CON-f6bf54668baf1400689a",
+          "state": "met"
+        }
+      ],
+      "combination": "all",
+      "consequence": "Harbor may release payments through the normal path, satisfying Section 4's sequencing requirement.",
+      "trade_off": "Release is delayed until screening finishes, pushing back launch timing.",
+      "remaining_work": [
+        "Confirm screening completes before release"
+      ],
+      "recommendation": "candidate",
+      "recommendation_reason": "This is the only route that permits a full (uncapped) release under the contract.",
+      "claim_ids": [
+        "CLM-PILOT"
+      ],
+      "work_item_ids": []
+    },
+    "input_basis": {
+      "business_question": "790f1fc5181a9db3af964850f6c32ef4a3162d9c830058b34f86d0b72fb3a4a0",
+      "issue": "d06e0bdcfcaa86d47b2ec9da0828edcb3b9068080bb704b70af3271d3d174295",
+      "facts": "e132126863700c0bd631bcff119d3cb3a611d6a7f49333669b7fae817389b8f1",
+      "assumptions": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "questions": "352221ebd27247d10d885757eb91c2c1fbc6f3b84a85531452fec7f8a69ebc13",
+      "projection:eyJpbmNsdWRlZF9yb2xlcyI6IFsiQWN0aXZlIG1hdHRlciByZWNvcmQiLCAiQ3VycmVudCBidXNpbmVzcyBxdWVzdGlvbiAoY2Fub25pY2FsIHNjb3BlKSIsICJDdXJyZW50IG1hdHRlciB3b3JrIHN0YXRlIiwgIlJlY29yZGVkIGR1cmFibGUgZGVjaXNpb25zIiwgIlN1cHBvcnRpbmcgcXVlc3Rpb25zIChhbnN3ZXJlZCBpcyBub3QgaW5kZXBlbmRlbnRseSB2ZXJpZmllZCBvciBpc3N1ZSByZXNvbHZlZCkiLCAiYWNjZXB0ZWRfbGF3eWVyX2NvbnRyaWJ1dGlvbnMiLCAiY29udmVyc2F0aW9uX3RhcmdldCIsICJjdXJyZW50X2ZhY3RzIiwgImhpc3RvcmljYWxfcXVlc3Rpb25fY2hhbmdlc19ub3RfY3VycmVudF9zY29wZSIsICJpc3N1ZXMiLCAibWF0dGVyX2xvY2FsX3ByZWZlcmVuY2VzIiwgIm9yaWdpbmFsX3JlcXVlc3RfaGlzdG9yaWNhbF9ub3RfY3VycmVudF9mYWN0cyIsICJ3b3JraW5nX2Fzc3VtcHRpb25zIl0sICJtYW5pZmVzdF9wcmVzZW50IjogdHJ1ZSwgInBhdGhzIjogW10sICJyZWZlcmVuY2VfaWRzIjogW119": "b97af52ebecd245ec037e938b7d7e5953ff418e32c3c5621672790c02e26f4dd"
+    }
+  },
+  "request_fingerprint": "a2c9bf43bc64081a7696930a305e6d07dba3061477f20e2e8e466ad99a2c4658"
+}

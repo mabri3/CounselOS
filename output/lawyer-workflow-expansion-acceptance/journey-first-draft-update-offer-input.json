@@ -1,0 +1,1 @@
+{"label": "journey-first-draft-update-offer", "width": 1024, "actions": [{"op": "click", "name": "Compare supplied versions"}, {"op": "visible", "name": "Request draft update", "timeout": 60000}, {"op": "click", "name": "Request draft update"}, {"op": "visible", "name": "Decline offer", "timeout": 60000}]}

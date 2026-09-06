@@ -242,3 +242,40 @@ same in the board, the matter header and chat.
 | `generate` | Being drafted | Work product is being written |
 | `respond` | Respond | Review, approve, and deliver |
 | `closed` | Closed | Decided and delivered |
+
+## Lawyer continuity surfaces
+
+- Today shows at most three ranked action cards. Preserve the briefing order. Link other matters without repeating the same high-attention cards.
+- A matter starts with a compact question, useful saved answer, material qualification, and one specific next action with its owner. Keep complete saved wording available. If an explicit Current answer section is shown first, keep all earlier text visible under a neutral label.
+- Fact requests, local handoffs, and source comparison use contextual controls. Do not keep all of these panels expanded by default. Use the same matter conversation and document editor.
+- Label the optional roster selector View as. Keep the explanation in a disclosure. It simulates a local lawyer identity; it does not represent authentication or permissions.
+- A copied request is not a sent request. A supplied reply is not verified evidence. A local handoff acceptance is not a legal approval. A proposed edit is not a recorded decision.
+- Show saved comparison history before the new-comparison form. Separate literal source passages from generated significance. Keep useful prose visible when precise affected-work links are unavailable. An explicitly selected draft must remain actionable in that case.
+- Show state words beside all attention colors. Wrap long action labels at narrow widths. Source paths, comparison tables, and code must stay inside their containers.
+- Preserve local input across matter and person changes. Explain timeouts without claiming that a durable save failed. Reuse the same action for safe retry. Never hide saved work because a later refresh failed.
+
+## Matter review and decision map
+
+- Understand leads with the business question, short working answer, qualification, and one owned action. Show at most three review items, with a reason and a link to all issues.
+- Keep issue explanations, claim support, shared questions, options, work, and the lawyer's disposition together. Collapse title/parent editing and supporting history.
+- The decision map has its own route and a keyboard-accessible outline. Show the same record identities and labeled conditions in both views. Unknown conditions stay Unknown. Hypothetical and historical analysis remain distinct from active facts and recorded decisions.
+- Show document names, counts, versions, and the active editable document before the editor. Source previews sit beside the draft on wide screens and stack on narrow screens. Reading a source does not select agent context or replace the draft action target.
+- Evidence shows the actual claim revision, source status, available passage, and applicability explanation or support gap. A source-only link must not imply exact claim support. Keep useful answers visible when optional evidence is missing.
+
+## Matter A reference alignment (September 5, 2026)
+
+The supplied Matter A images govern the current visual rebuild. Shared surface tokens now use white and cool neutral rules. Agent purple is vivid (#4922ff), with a light lavender wash and a visible dashed border. Attention uses orange text and a pale amber badge; state words remain mandatory. Primary actions use dark navy. Matter view tabs use line icons and an underline. Working answers span the reading width; qualifications and the next action each have their own row. These rules supersede the older beige surface values and muted iris values above. Existing record and action distinctions remain unchanged.
+
+
+## Phase 2 page presentation
+
+The Phase 2 full navigation applies to Today, Briefing, Workspace, Matters,
+Decisions, Skills, Automations, Agents, Settings, Watches, and the research
+reader route. Matter roots and decision maps keep compact chrome. The new
+page rules are scoped CSS modules; shared embedded components retain their
+default Matter presentation. Templates and reusable skills use separate local
+tabs. Existing output-template records can also serve as slash-command skills.
+
+Use `output/uiphase2-implementation/visual-matrix.md` for all 29 reference
+comparisons, measured widths, real scroll captures, and permitted differences.
+Narrow data tables scroll inside a labelled keyboard-focusable region.

@@ -1,0 +1,318 @@
+.researchQueue,
+.reviewPacket,
+.recommendation {
+  min-width: 0;
+  color: var(--ink-2);
+  font: 400 15px/1.5 var(--sans);
+}
+
+.researchQueue { margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; }
+.reviewPacket,
+.recommendation { margin: 16px 0; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); }
+
+.panelLabel,
+.recommendationLabel,
+.packetAgentLabel {
+  color: var(--ink-3);
+  font: 600 12px/1.5 var(--sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.queueSummary,
+.recordNote,
+.packetMeta,
+.queueSupport,
+.queueNotice,
+.packetEmpty {
+  margin: 6px 0 0;
+  color: var(--ink-3);
+  font: 400 15px/1.5 var(--sans);
+}
+
+.queueHeader,
+.recommendationHeader,
+.packetHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.researchQueue .queueHeader { padding: 0 0 12px; border-bottom: 1px solid var(--line-faint); }
+
+.queueSupportCount,
+.recommendationVersion {
+  color: var(--ink-3);
+  font: 400 12px/1.45 var(--sans);
+}
+
+.queueSupportCount {
+  flex: none;
+  padding: 4px 7px;
+  border-radius: 10px;
+  background: var(--agent-tint);
+  color: var(--agent);
+  font-weight: 600;
+}
+
+.recommendationHeader > svg,
+.packetHeader > svg { color: var(--agent); }
+
+.queueControls,
+.packetActions,
+.formActions {
+  margin-top: 12px;
+}
+
+.queueControls :global(.select-input),
+.queueControls :global(.text-input) {
+  min-height: 36px;
+  min-width: min(100%, 220px);
+}
+
+.researchQueue :global(.btn),
+.recommendation :global(.btn),
+.reviewPacket :global(.btn) {
+  min-height: 36px;
+}
+
+.snapshotNotice,
+.proposal {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background: var(--rail);
+}
+
+.queueItems {
+  display: grid;
+  gap: 0;
+  min-width: 0;
+  margin-top: 0;
+  border-top: 1px solid var(--line-faint);
+}
+
+.queueItem {
+  display: grid;
+  grid-template-columns: auto minmax(220px, 1fr) auto auto;
+  align-items: center;
+  gap: 8px 12px;
+  min-width: 0;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line-faint);
+  flex-wrap: wrap;
+}
+
+.queueIcon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--agent-edge);
+  border-radius: 50%;
+  background: var(--agent-wash);
+  color: var(--agent);
+}
+
+.queueItemTitle {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.queueItemTitle > span:first-child { color: var(--ink-2); font: 400 15px/1.45 var(--sans); }
+
+.queueState {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 3px 8px;
+  border: 1px solid currentColor;
+  border-radius: 11px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.queueItemActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: max-content;
+}
+
+.queueItemActions :global(a) { color: var(--agent); font: 500 14px/1.4 var(--sans); text-decoration: none; }
+.queueItemActions :global(.btn) { min-height: 34px; }
+
+.queueState[data-state="completed"] {
+  color: var(--healthy);
+}
+
+.queueState[data-state="partial"] {
+  color: var(--attention-deep);
+}
+
+.queueState[data-state="failed"] {
+  color: var(--failure);
+}
+
+.queueState[data-state="queued"],
+.queueState[data-state="running"] {
+  color: var(--agent);
+}
+
+.queueMetadata {
+  color: var(--ink-3);
+  font-size: 12px;
+}
+
+.queueSupport,
+.queueNotice {
+  margin: 0;
+  flex: 0 1 auto;
+}
+
+.recommendation {
+  display: grid;
+  gap: 12px;
+}
+
+.recommendationLabel,
+.recordNote,
+.recommendationEditor,
+.recommendationAction,
+.proposal,
+.errorMessage {
+  margin: 0;
+}
+
+.recommendationEditor {
+  width: 100%;
+  min-height: 180px;
+  color: var(--ink);
+  font: 400 16px/1.65 var(--serif);
+}
+
+.proposal p,
+.packetReading {
+  color: var(--ink-2);
+  font: 400 16px/1.65 var(--serif);
+}
+
+.proposal p {
+  margin: 8px 0 12px;
+}
+
+.packetTitle {
+  margin: 8px 0 4px;
+  color: var(--ink);
+  font: 600 21px/1.3 var(--serif);
+}
+
+.packetMeta {
+  margin-top: 0;
+}
+
+.packetReading {
+  margin: 10px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.packetSection,
+.packetSectionLabel {
+  margin-top: 12px;
+}
+
+.packetSection > strong,
+.packetSectionLabel > strong {
+  color: var(--ink);
+  font: 600 15px/1.5 var(--sans);
+}
+
+.packetList {
+  display: grid;
+  gap: 6px;
+  margin: 7px 0 0;
+  padding-left: 20px;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+
+.packetList li {
+  padding-left: 2px;
+}
+
+.successMessage {
+  margin: 12px 0 0;
+  color: var(--healthy);
+  font: 400 15px/1.5 var(--sans);
+}
+
+.packetForm {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 14px;
+  border-color: var(--line-soft);
+  background: var(--rail);
+}
+
+.packetForm label {
+  display: grid;
+  gap: 5px;
+  color: var(--ink-2);
+  font: 500 15px/1.5 var(--sans);
+}
+
+.packetForm input,
+.packetForm textarea {
+  width: 100%;
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--raised);
+  color: var(--ink);
+  font: 400 15px/1.5 var(--sans);
+}
+
+.packetForm textarea {
+  min-height: 96px;
+  padding: 8px 10px;
+  font: 400 16px/1.65 var(--serif);
+}
+
+@media (max-width: 760px) {
+  .researchQueue { margin: 0; padding: 0; }
+  .reviewPacket,
+  .recommendation { margin: 12px 0; padding: 12px; }
+
+  .researchQueue :global(.btn),
+  .recommendation :global(.btn),
+  .reviewPacket :global(.btn),
+  .queueControls :global(.select-input),
+  .queueControls :global(.text-input),
+  .packetForm input,
+  .packetForm textarea {
+    min-height: 44px;
+  }
+
+  .queueControls :global(.select-input),
+  .queueControls :global(.text-input) {
+    width: 100%;
+  }
+
+  .packetForm textarea {
+    min-height: 120px;
+  }
+
+  .queueHeader,
+  .recommendationHeader,
+  .packetHeader { gap: 8px; }
+  .queueItem { grid-template-columns: auto minmax(0, 1fr); align-items: start; }
+  .queueState { grid-column: 2; justify-self: start; margin-top: 3px; }
+  .queueItemActions { grid-column: 2; justify-content: flex-start; min-width: 0; flex-wrap: wrap; }
+}

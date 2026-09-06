@@ -1,0 +1,20 @@
+{
+  "active": "",
+  "sections": [
+    {
+      "open": true,
+      "parent": "matter-MAT-20260905-f025e4-explore",
+      "summary": "Explain, stress-test or ask the business"
+    },
+    {
+      "open": true,
+      "parent": "matter-MAT-20260905-f025e4-explore",
+      "summary": "Scenarios and business flow"
+    },
+    {
+      "open": false,
+      "parent": "",
+      "summary": "Correct a fact"
+    }
+  ]
+}

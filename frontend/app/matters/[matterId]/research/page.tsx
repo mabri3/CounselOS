@@ -2,16 +2,17 @@
 
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import AppShell from "@/components/AppShell";
 import LinkifiedText from "@/components/LinkifiedText";
 import ResearchQueuePanel from "@/components/ResearchQueuePanel";
+import styles from "@/components/ResearchPhase2.module.css";
 import { answerAnnotation, createAnnotation, getAnnotations, getFile, getMatter, getResearchQueue, reorderResearchQueue, resumeResearchQueue, retryResearchItem, startResearchRun, stopResearchQueue } from "@/lib/api";
 import { formatDateTime } from "@/lib/design";
 import { parseMemo, splitCitations } from "@/lib/research";
-import type { FileNode, MatterDetail, ResearchMemo, ResearchNote, ResearchRun } from "@/lib/types";
+import type { Citation as ResearchCitation, FileNode, MatterDetail, ResearchMemo, ResearchNote, ResearchRun } from "@/lib/types";
 import { movePending, researchQuestion, shouldPollResearchQueue } from "@/lib/researchQueue";
 
 type DisplayResearchMemo = ResearchMemo & {
@@ -33,10 +34,11 @@ export default function ResearchPage() {
 
   const [detail, setDetail] = useState<MatterDetail | null>(null);
   const [memo, setMemo] = useState<DisplayResearchMemo | null>(null);
-  const [openSource, setOpenSource] = useState<string>("s1");
+  const [openSource, setOpenSource] = useState<string>("");
   const [rail, setRail] = useState<"source" | "notes">("source");
   const [notes, setNotes] = useState<ResearchNote[]>([]);
   const [draftNote, setDraftNote] = useState("");
+  const [noteTarget, setNoteTarget] = useState<{ source: ResearchCitation | null; path: string } | null>(null);
   const [addingNote, setAddingNote] = useState(false);
   const [answeringId, setAnsweringId] = useState("");
   const [error, setError] = useState("");
@@ -44,8 +46,17 @@ export default function ResearchPage() {
   const [enteredQuestion, setEnteredQuestion] = useState("");
   const [selectedQuestion, setSelectedQuestion] = useState("");
   const [queueBusy, setQueueBusy] = useState(false);
+  const [returnClaim, setReturnClaim] = useState("research-claims");
+  const loadSequence = useRef(0);
+  const openCitation = (id: string, claim = "research-claims") => {
+    setOpenSource(id);
+    setRail("source");
+    setReturnClaim(claim);
+    if (window.innerWidth <= 800) requestAnimationFrame(() => document.getElementById("research-details")?.scrollIntoView({ block: "start" }));
+  };
 
   const load = useCallback(async () => {
+    const sequence = ++loadSequence.current;
     try {
       setError("");
       const [matter, { annotations }, queueResult] = await Promise.all([
@@ -53,14 +64,16 @@ export default function ResearchPage() {
         getAnnotations(matterId),
         getResearchQueue(matterId),
       ]);
+      if (sequence !== loadSequence.current) return;
       setDetail(matter);
       setNotes(annotations);
       setQueue(queueResult.items);
       const path = safeResearchPath(requestedFile, matter.path) ?? newestResearchPath(matter.tree);
       if (!path) { setMemo(null); return; }
-      setMemo(parseMemo(await getFile(path)));
+      const nextMemo = parseMemo(await getFile(path));
+      if (sequence === loadSequence.current) setMemo(nextMemo);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Could not open the research.");
+      if (sequence === loadSequence.current) setError(caught instanceof Error ? caught.message : "Could not open the research.");
     }
   }, [matterId, requestedFile]);
 
@@ -73,6 +86,7 @@ export default function ResearchPage() {
 
   const queuePanel = detail ? (
     <ResearchQueuePanel
+      presentation="phase2"
       busy={queueBusy}
       enteredQuestion={enteredQuestion}
       items={queue}
@@ -102,7 +116,7 @@ export default function ResearchPage() {
   ) : null;
 
   const source = useMemo(
-    () => memo?.citations.find((citation) => citation.id === openSource) ?? memo?.citations[0] ?? null,
+    () => (openSource ? memo?.citations.find((citation) => citation.id === openSource) : memo?.citations[0]) ?? null,
     [memo, openSource],
   );
   const memoByline = memo?.citations.length
@@ -133,41 +147,33 @@ export default function ResearchPage() {
 
   return (
     <AppShell>
-      <div className="research-shell">
-        <header className="research-head">
-          <div style={{ minWidth: 0 }}>
-            <div style={{ font: "400 13.5px var(--sans)", color: "var(--ink-4)" }}>
-              <Link href={`/matters/${encodeURIComponent(matterId)}`} style={{ textDecoration: "underline", textUnderlineOffset: 3 }}>
-                {detail.title}
-              </Link>
-              {" · research"}
-            </div>
-            <div style={{ font: "600 18px var(--serif)", color: "var(--ink)", marginTop: 2 }}>{memo.title}</div>
-            {memo.publicResearchStatus && memo.publicResearchStatus !== "retrieved" ? (
-              <div className="setting-help" style={{ color: "var(--attention-deep)", marginTop: 5 }}>
-                Public research {memo.publicResearchStatus === "failed" ? "failed" : "is unavailable"}. The saved analysis and internal support remain available.
-              </div>
-            ) : null}
+      <main className={styles.page}>
+        <Link className={styles.back} href={`/matters/${encodeURIComponent(matterId)}`}>‹ Back to matter</Link>
+        <header className={styles.header}>
+          <div>
+            <div className={styles.eyebrow}>Business question · {detail.title}</div>
+            <h1 className={styles.title}>{memo.title}</h1>
+            <p className={styles.byline}>{memoByline}</p>
           </div>
-          <div style={{ flex: "none", display: "flex", alignItems: "center", gap: 14 }}>
-            <span className="agent-label" style={{ fontWeight: 500 }}>
-              <span className="agent-mark" style={{ width: 10, height: 10 }} />
-              Themis.ai wrote this · {memo.citations.length
-                ? `${memo.citations.length} cited source${memo.citations.length === 1 ? "" : "s"}`
-                : "No cited sources"}
-            </span>
-            <Link className="btn compact" href={`/matters/${encodeURIComponent(matterId)}?file=${encodeURIComponent(memo.path)}`}>
-              Open in the matter
-            </Link>
-          </div>
+          <Link className="btn compact" href={`/matters/${encodeURIComponent(matterId)}?file=${encodeURIComponent(memo.path)}`}>
+            Open in the matter ↗
+          </Link>
         </header>
+        <section className={styles.summary} aria-label="Generated research summary">
+          <div className={styles.eyebrow}>Agent work · {memo.citations.length} cited {memo.citations.length === 1 ? "source" : "sources"}</div>
+          <p>Themis.ai prepared this working analysis to help you assess next steps.</p>
+          {memo.publicResearchStatus && memo.publicResearchStatus !== "retrieved" ? (
+            <div className="setting-help">
+              Public research {memo.publicResearchStatus === "not_requested" ? "was not requested" : memo.publicResearchStatus === "failed" ? "failed" : "is unavailable"}. The saved analysis remains available.
+            </div>
+          ) : null}
+        </section>
+        {error ? <p className="error" role="alert">{error}</p> : null}
         {queuePanel}
 
-        <div className="research-panes">
-          <div className="memo-scroll">
-            <article className="memo-sheet">
-              <h1>{memo.title}</h1>
-              <p className="memo-byline">{memoByline}</p>
+        <div className={styles.layout}>
+          <div>
+            <article className={styles.memo} id="research-claims" tabIndex={-1} aria-label="Research analysis">
               {memo.technicalDetails ? (
                 <details style={{ margin: "12px 0 20px" }}>
                   <summary className="setting-help" style={{ cursor: "pointer", fontWeight: 600 }}>Technical details</summary>
@@ -177,21 +183,16 @@ export default function ResearchPage() {
                 </details>
               ) : null}
 
-              <div className="memo-body reading">
+              <div className={styles.memoBody}>
                 {memo.blocks.map((block, index) => {
-                  const render = (text: string) =>
-                    splitCitations(text).map((run, runIndex) =>
-                      "citation" in run ? (
-                        <Citation
-                          active={openSource === `s${run.citation}`}
-                          key={runIndex}
-                          n={run.citation}
-                          onOpen={() => { setOpenSource(`s${run.citation}`); setRail("source"); }}
-                        />
-                      ) : (
-                        <span key={runIndex}><LinkifiedText text={run.text} /></span>
-                      ),
-                    );
+                  const render = (text: string, itemKey = "text") =>
+                    splitCitations(text).map((run, runIndex) => {
+                      if (!("citation" in run)) return <span key={runIndex}><LinkifiedText text={run.text} /></span>;
+                      const citation = memo.citations.find((item) => item.id === run.citation || item.n === run.citation);
+                      const target = citation?.id ?? `missing:${run.citation}`;
+                      return <Citation active={source?.id === target} key={runIndex} n={citation?.n ?? run.citation} id={`claim-${index}-${itemKey}-${runIndex}`}
+                        onOpen={() => openCitation(target, `claim-${index}-${itemKey}-${runIndex}`)} />;
+                    });
 
                   if (block.kind === "h") {
                     return block.level <= 2
@@ -201,7 +202,7 @@ export default function ResearchPage() {
                   if (block.kind === "list") {
                     return (
                       <ul key={index}>
-                        {block.items.map((item, itemIndex) => <li key={itemIndex}>{render(item)}</li>)}
+                        {block.items.map((item, itemIndex) => <li key={itemIndex}>{render(item, String(itemIndex))}</li>)}
                       </ul>
                     );
                   }
@@ -219,10 +220,10 @@ export default function ResearchPage() {
                     {memo.citations.map((citation) => (
                       <button
                         key={citation.id}
-                        onClick={() => { setOpenSource(citation.id); setRail("source"); }}
+                        onClick={() => openCitation(citation.id)}
                         style={{ display: "flex", gap: 11, alignItems: "baseline", background: "none", border: 0, padding: 0, cursor: "pointer", textAlign: "left" }}
                       >
-                        <Citation active={openSource === citation.id} n={citation.n} onOpen={() => {}} inline={false} />
+                        <span className={styles.citation}>[{citation.n}]</span>
                         <span style={{ font: "400 14.5px var(--sans)", color: "var(--ink-2)" }}>
                           {humanSourceLabel(citation.name, citation.kind)}
                         </span>
@@ -234,50 +235,52 @@ export default function ResearchPage() {
             </article>
           </div>
 
-          <div className="rail-pane">
-            <div className="rail-tabs">
-              <button className={rail === "source" ? "active" : ""} onClick={() => setRail("source")}>Source</button>
-              <button className={rail === "notes" ? "active" : ""} onClick={() => setRail("notes")}>
+          <aside className={styles.rail} id="research-details" aria-label="Sources and notes">
+            <div className={styles.tabs} aria-label="Research details">
+              <button aria-pressed={rail === "source"} onClick={() => setRail("source")}>Source</button>
+              <button aria-pressed={rail === "notes"} onClick={() => setRail("notes")}>
                 Notes &amp; questions{notes.length ? ` (${notes.length})` : ""}
               </button>
             </div>
 
-            <div className="rail-scroll">
+            <div className={styles.railBody}>
               {rail === "source" ? (
                 source ? (
                   <div>
-                    <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-                      <span style={{ font: "600 11px var(--sans)", background: "var(--agent)", color: "var(--paper)", borderRadius: 4, padding: "2px 7px" }}>
-                        {source.n}
-                      </span>
-                      <span style={{ font: "600 17px/1.3 var(--serif)", color: "var(--ink)" }}>
-                        {humanSourceLabel(source.name, source.kind)}
-                      </span>
+                    <div className={styles.sourcePosition}>
+                      <span>Source {memo.citations.indexOf(source) + 1} of {memo.citations.length}</span>
+                      <div>
+                        <button aria-label="Previous source" disabled={memo.citations.indexOf(source) === 0} onClick={() => setOpenSource(memo.citations[memo.citations.indexOf(source) - 1].id)}>‹</button>
+                        <button aria-label="Next source" disabled={memo.citations.indexOf(source) === memo.citations.length - 1} onClick={() => setOpenSource(memo.citations[memo.citations.indexOf(source) + 1].id)}>›</button>
+                      </div>
                     </div>
+                    <h2 className={styles.sourceTitle}>{humanSourceLabel(source.name, source.kind)}</h2>
                     <SourceDetails kind={source.kind} />
-                    <div className="source-quote"><LinkifiedText text={source.quote} /></div>
-                    {!source.kind.startsWith("Vault document · ") ? (
-                      <p style={{ margin: "14px 0 0", font: "400 14.5px/1.6 var(--sans)", color: "var(--ink-3)" }}>
-                        <LinkifiedText text={source.note} />
-                      </p>
-                    ) : null}
-                    <div className="btn-row" style={{ marginTop: 18 }}>
-                      <button
-                        className="btn agent compact"
-                        onClick={() => { setRail("notes"); setDraftNote(`About "${humanSourceLabel(source.name, source.kind)}": `); }}
-                      >
-                        Ask about this passage
-                      </button>
+                    <div className={styles.sourceQuote}>
+                      <div>{source.quote ? "Saved passage" : "No exact passage available"}</div>
+                      {source.quote ? <blockquote><LinkifiedText text={source.quote} /></blockquote> : null}
                     </div>
+                    <div className={styles.support}>
+                      <h3>Applicability &amp; support</h3>
+                      <p><LinkifiedText text={source.note} /></p>
+                      {/^(Internal matter support|Supplied)/.test(source.kind) ? <p>Supplied material supports the described facts. It does not by itself establish a legal rule.</p> : null}
+                    </div>
+                    <button className="btn compact" onClick={() => {
+                      setRail("notes");
+                      if (!draftNote.trim()) {
+                        setNoteTarget({ source, path: memo.path });
+                        setDraftNote(`About "${humanSourceLabel(source.name, source.kind)}": `);
+                      }
+                    }}>Ask about this passage</button>
                   </div>
                 ) : (
-                  <div className="note-empty">Select Notes &amp; questions to add a question about this research.</div>
+                  <div className={styles.noteInput}>{openSource ? "This citation has no saved source. No passage is available." : "No sources are cited in this research."} Select Notes &amp; questions to add a question.</div>
                 )
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
                   {notes.map((note) => (
-                    <div className="note-card" key={note.annotation_id}>
-                      <div className="note-quote">
+                    <div className={styles.noteCard} key={note.annotation_id}>
+                      <div className={styles.noteQuote}>
                         <div><LinkifiedText text={note.quote} /></div>
                         <div style={{ display: "flex", alignItems: "baseline", gap: 9, marginTop: 9 }}>
                           <span style={{ font: "600 13.5px var(--sans)", color: "var(--ink)" }}>{note.who}</span>
@@ -288,7 +291,7 @@ export default function ResearchPage() {
                         <div style={{ font: "400 15px/1.55 var(--sans)", color: "var(--ink)", marginTop: 4 }}><LinkifiedText text={note.question} /></div>
                       </div>
                       {note.answered ? (
-                        <div className="note-answer">
+                        <div className={styles.noteAnswer}>
                           <div className="agent-label" style={{ marginBottom: 6, fontSize: 13 }}>
                             <span className="agent-mark" />
                             Themis.ai
@@ -298,7 +301,7 @@ export default function ResearchPage() {
                           </div>
                         </div>
                       ) : (
-                        <div className="note-answer">
+                        <div className={styles.noteAnswer}>
                           {answeringId === note.annotation_id ? (
                             <span className="agent-label">
                               <span className="agent-mark" />
@@ -329,10 +332,16 @@ export default function ResearchPage() {
                     </div>
                   ))}
 
-                  <div className="note-empty">
+                  <div className={styles.noteInput}>
+                    {noteTarget && draftNote ? <p className="setting-help">About: {noteTarget.source ? humanSourceLabel(noteTarget.source.name, noteTarget.source.kind) : "Research memo"}</p> : null}
                     <textarea
                       className="text-input"
-                      onChange={(event) => setDraftNote(event.target.value)}
+                      onChange={(event) => {
+                        if (!draftNote) setNoteTarget({ source, path: memo.path });
+                        setDraftNote(event.target.value);
+                      }}
+                      disabled={addingNote}
+                      aria-label="Note or question"
                       placeholder="Question a passage — what would change this analysis?"
                       style={{ minHeight: 72 }}
                       value={draftNote}
@@ -345,17 +354,19 @@ export default function ResearchPage() {
                           setAddingNote(true);
                           setError("");
                           try {
-                            const sourcePath = source?.kind.includes(" · ")
-                              ? source.kind.split(" · ").slice(1).join(" · ")
-                              : memo.path;
+                            const target = noteTarget ?? { source, path: memo.path };
+                            const sourcePath = target.source?.kind.startsWith("Vault document · ")
+                              ? target.source.kind.split(" · ").slice(1).join(" · ")
+                              : target.path;
                             await createAnnotation(matterId, {
                               source_path: sourcePath,
-                              citation: source?.id ?? "",
-                              quote: source ? `…${source.quote.slice(0, 90)}…` : memo.title,
+                              citation: target.source?.id ?? "",
+                              quote: target.source?.quote ?? "",
                               question: draftNote.trim(),
                               who: "Brian Harris",
                             });
                             setDraftNote("");
+                            setNoteTarget(null);
                             await load();
                           } catch (caught) {
                             setError(caught instanceof Error ? caught.message : "Could not add the note.");
@@ -374,39 +385,17 @@ export default function ResearchPage() {
                   </div>
                 </div>
               )}
+              <a className={styles.return} href={`#${returnClaim}`}>Return to the analysis ↑</a>
             </div>
-          </div>
+          </aside>
         </div>
-      </div>
+      </main>
     </AppShell>
   );
 }
 
-function Citation({
-  n,
-  active,
-  onOpen,
-  inline = true,
-}: {
-  n: string;
-  active: boolean;
-  onOpen: () => void;
-  inline?: boolean;
-}) {
-  return (
-    <button
-      className="citation"
-      onClick={onOpen}
-      style={{
-        background: active ? "var(--agent)" : "var(--agent-tint)",
-        color: active ? "var(--paper)" : "var(--agent)",
-        transform: inline ? "translateY(-2px)" : "none",
-      }}
-      type="button"
-    >
-      {n}
-    </button>
-  );
+function Citation({ n, active, onOpen, id }: { n: string; active: boolean; onOpen: () => void; id: string }) {
+  return <button id={id} className={styles.citation} aria-label={`Open source ${n}`} aria-pressed={active} onClick={onOpen} type="button">[{n}]</button>;
 }
 
 function humanSourceLabel(value: string, kind: string): string {

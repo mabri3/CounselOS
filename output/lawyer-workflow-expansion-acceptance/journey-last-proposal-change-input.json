@@ -1,0 +1,1 @@
+{"label": "journey-last-proposal-change", "actions": [{"op": "click", "selector": "[data-review-change=\"CHG-20260905-dc1355\"] button:text-is(\"Accept\")"}, {"op": "wait", "ms": 2000}]}

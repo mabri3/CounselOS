@@ -1,0 +1,1 @@
+{"label": "journey-jordan-review-selected", "route": "/", "width": 1024, "actions": [{"op": "select", "selector": "#demo-lawyer-person", "value": "jordan"}, {"op": "visible", "name": "Review handoff"}, {"op": "click", "name": "Review handoff"}, {"op": "visible", "name": "Accept handoff"}, {"op": "wait", "ms": 1000}]}

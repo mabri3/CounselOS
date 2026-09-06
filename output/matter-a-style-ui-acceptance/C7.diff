@@ -1,0 +1,221 @@
+--- frontend/components/workspace/DecisionMap.tsx
++++ frontend/components/workspace/DecisionMap.tsx
+@@ -1,16 +1,12 @@
+ "use client";
+ 
+-import { useEffect, useMemo, useRef, useState } from "react";
++import { useMemo, useRef, useState } from "react";
+ import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
+ import type { ConversationTarget } from "@/lib/workspaceTypes";
+ import type { DecisionMapEdge, DecisionMapLayout, DecisionMapLayoutNode, DecisionMapNode, DecisionMapOutlineProps, DecisionMapProps, ScenarioLaunchIntent } from "@/lib/decisionMapTypes";
+ import { decisionMapFitScale, edgeStateLabel, nodeStateLabel, relationshipLabel, visibleDecisionMap } from "@/lib/decisionMapLayout";
++import styles from "./MatterMap.module.css";
+ 
+-const shell: CSSProperties = { display: "grid", gap: 14, minWidth: 0, maxWidth: "100%" };
+-const card: CSSProperties = { border: "1px solid var(--line)", borderRadius: "var(--radius)", background: "var(--raised)", padding: 14, minWidth: 0, maxWidth: "100%" };
+-const muted: CSSProperties = { margin: "4px 0 0", color: "var(--ink-3)", font: "400 13.5px/1.5 var(--sans)", overflowWrap: "anywhere" };
+-const outlineText: CSSProperties = { minWidth: 0, maxWidth: "100%", overflowWrap: "anywhere", wordBreak: "break-word" };
+-const outlineControl: CSSProperties = { ...outlineText, boxSizing: "border-box", whiteSpace: "normal" };
+ const MIN_MANUAL_ZOOM = 0.1;
+ const MAX_MANUAL_ZOOM = 2;
+ const MAX_CANVAS_LABEL_LENGTH = 56;
+@@ -18,6 +14,10 @@
+ 
+ function normalizedNodeState(node: DecisionMapNode): string {
+   return node.state.trim().toLowerCase().replace(/[\s-]+/g, "_");
++}
++
++function recordTypeLabel(recordType: DecisionMapNode["record_type"]): string {
++  return ({ business_question: "Business question", issue: "Issue", fact: "Fact", question: "Question", option: "Option", scenario: "Scenario", work: "Work item", decision: "Decision" } as const)[recordType];
+ }
+ 
+ function canvasLabel(label: string): string {
+@@ -37,11 +37,11 @@
+ 
+ function stateStyle(node: DecisionMapNode): CSSProperties {
+   const state = normalizedNodeState(node);
+-  if (node.missing_reference || state === "missing" || state === "failed") return { background: "var(--failure-wash)", borderColor: "var(--failure-edge)", color: "var(--failure)" };
+-  if (state === "unknown") return { background: "var(--attention-wash)", borderColor: "var(--attention-edge)", color: "var(--attention-deep)" };
+-  if (node.hypothetical || state === "hypothetical" || state === "agent" || state === "agent_analysis" || state === "proposed") return { background: "var(--agent-wash)", borderColor: "var(--agent-edge)", color: "var(--agent)" };
+-  if (state === "complete" || state === "completed" || state === "done" || state === "resolved" || state === "recorded") return { background: "var(--healthy-wash)", borderColor: "var(--healthy-tint)", color: "var(--healthy)" };
+-  return { background: "var(--rail)", borderColor: "var(--line)", color: "var(--ink-3)" };
++  if (node.missing_reference || state === "missing" || state === "failed") return { background: "var(--failure-wash)", borderColor: "var(--failure-edge)", "--node-state": "var(--failure)" } as CSSProperties;
++  if (state === "unknown") return { background: "var(--attention-wash)", borderColor: "var(--attention-edge)", "--node-state": "var(--attention-deep)" } as CSSProperties;
++  if (node.hypothetical || state === "hypothetical" || state === "agent" || state === "agent_analysis" || state === "proposed") return { background: "var(--agent-wash)", borderColor: "var(--agent-edge)", "--node-state": "var(--agent)" } as CSSProperties;
++  if (state === "complete" || state === "completed" || state === "done" || state === "resolved" || state === "recorded") return { background: "var(--healthy-wash)", borderColor: "var(--healthy-tint)", "--node-state": "var(--healthy)" } as CSSProperties;
++  return { background: "var(--rail)", borderColor: "var(--line)", "--node-state": "var(--ink-3)" } as CSSProperties;
+ }
+ 
+ function mapConversationTarget(node: DecisionMapNode, matterId: string): ConversationTarget {
+@@ -74,18 +74,18 @@
+ 
+ function CanvasNode({ node, selected, onSelect }: { node: DecisionMapLayoutNode; selected: boolean; onSelect: (nodeId: string) => void }) {
+   const state = stateStyle(node);
+-  return <button aria-current={selected ? "true" : undefined} aria-label={`${node.label}. ${node.record_type}. ${nodeStateLabel(node)}.`} className="btn quiet" onClick={() => onSelect(node.node_id)} style={{ position: "absolute", left: node.x, top: node.y, width: node.width, height: node.height, minHeight: 0, boxSizing: "border-box", overflow: "hidden", padding: 11, textAlign: "left", whiteSpace: "normal", overflowWrap: "anywhere", border: `2px solid ${selected ? "var(--ink)" : state.borderColor}`, background: state.background, color: "var(--ink)", boxShadow: selected ? "0 0 0 2px var(--ink)" : undefined }} title={node.label} type="button">
+-    <span className="record-meta" style={{ color: state.color, display: "block" }}>{node.record_type}</span>
+-    <strong style={{ display: "block", font: "600 15px/1.25 var(--serif)", marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{canvasLabel(node.label)}</strong>
+-    <span style={{ color: state.color, display: "block", font: "600 12px/1.35 var(--sans)", marginTop: 7 }}>{nodeStateLabel(node)}</span>
++  return <button aria-current={selected ? "true" : undefined} aria-label={`${node.label}. ${recordTypeLabel(node.record_type)}. ${nodeStateLabel(node)}.`} className={`btn quiet ${styles.canvasNode}`} onClick={() => onSelect(node.node_id)} style={{ ...state, left: node.x, top: node.y, width: node.width, height: node.height, border: `2px solid ${selected ? "var(--ink)" : state.borderColor}`, boxShadow: selected ? "0 0 0 2px var(--ink)" : undefined }} title={node.label} type="button">
++    <span className={styles.canvasNodeType}>{recordTypeLabel(node.record_type)}</span>
++    <strong className={styles.canvasNodeTitle}>{canvasLabel(node.label)}</strong>
++    <span className={styles.canvasNodeState}>{nodeStateLabel(node)}</span>
+   </button>;
+ }
+ 
+ function MapCanvas({ layout, selectedNodeId, onSelectNode, scale, offset, onPointerDown, onPointerMove, onPointerUp }: { layout: DecisionMapLayout; selectedNodeId: string | null; onSelectNode: (nodeId: string) => void; scale: number; offset: { x: number; y: number }; onPointerDown: (event: ReactPointerEvent<HTMLDivElement>) => void; onPointerMove: (event: ReactPointerEvent<HTMLDivElement>) => void; onPointerUp: () => void }) {
+   const canvasWidth = Math.max(layout.width, 360);
+   const canvasHeight = Math.max(layout.height, 380);
+-  return <div aria-label="Decision map visual" style={{ minHeight: 420, maxWidth: "100%", overflow: "hidden", position: "relative", border: "1px solid var(--line-faint)", borderRadius: 8, background: "var(--paper)", touchAction: "none" }}>
+-    <div onPointerCancel={onPointerUp} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} style={{ position: "absolute", width: canvasWidth, height: canvasHeight, transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`, transformOrigin: "0 0" }}>
++  return <div aria-label="Decision map visual" className={styles.canvas}>
++    <div className={styles.canvasContent} onPointerCancel={onPointerUp} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} style={{ width: canvasWidth, height: canvasHeight, transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})` }}>
+       <svg aria-hidden="true" height={canvasHeight} style={{ inset: 0, overflow: "visible", pointerEvents: "none", position: "absolute" }} width={canvasWidth}>
+         {layout.edges.map((edge) => {
+           const line = edgeCoordinates(edge, layout.nodes);
+@@ -108,30 +108,20 @@
+ /** The outline deliberately receives the exact visible arrays used by the visual map. */
+ export function DecisionMapOutline({ nodes, edges, selectedNodeId, onSelectNode, onDiscuss, onOpenDocument, matterId }: DecisionMapOutlineProps & { matterId?: string }) {
+   void onOpenDocument;
+-  return <section aria-label="Decision map outline" style={card}>
+-    <h2 className="section-heading" style={{ margin: 0 }}>Map outline</h2>
+-    <p style={muted}>Use this list to reach every visible record and relationship without the visual map.</p>
+-    {!nodes.length ? <p style={{ ...muted, ...outlineText }}>No saved records are visible in this scope.</p> : <ul style={{ display: "grid", gap: 8, listStyle: "none", margin: "12px 0 0", padding: 0, ...outlineText }}>{nodes.map((node) => <li key={node.node_id} style={{ border: "1px solid var(--line-faint)", borderRadius: 7, padding: 10, ...outlineText }}>
+-      <button aria-current={selectedNodeId === node.node_id ? "true" : undefined} className="btn quiet tiny" onClick={() => onSelectNode(node.node_id)} style={{ padding: 0, textAlign: "left", width: "100%", ...outlineControl }} type="button"><strong style={{ display: "block", ...outlineText }}>{node.label}</strong><span style={{ ...muted, ...outlineText, display: "block" }}>{node.record_type} · {nodeStateLabel(node)}</span></button>
+-      {matterId ? <button className="btn quiet tiny" onClick={() => onDiscuss(mapConversationTarget(node, matterId))} style={{ marginTop: 7, ...outlineControl }} type="button">Discuss this path</button> : null}
++  return <section aria-label="Decision map outline" className={`${styles.card} ${styles.outline}`}>
++    <h2 className={styles.sectionTitle}>Map outline</h2>
++    <p className={styles.muted}>Use this list to reach every visible record and relationship without the visual map.</p>
++    {!nodes.length ? <p className={styles.muted}>No saved records are visible in this scope.</p> : <ul className={styles.outlineList}>{nodes.map((node) => <li className={styles.outlineRow} key={node.node_id}>
++      <button aria-current={selectedNodeId === node.node_id ? "true" : undefined} className={`btn quiet ${styles.outlineSelect}`} onClick={() => onSelectNode(node.node_id)} type="button"><strong className={styles.outlineName}>{node.label}</strong><span className={styles.outlineNodeMeta}>{recordTypeLabel(node.record_type)} · {nodeStateLabel(node)}</span></button>
++      {matterId ? <button className={`btn quiet ${styles.outlineDiscuss}`} onClick={() => onDiscuss(mapConversationTarget(node, matterId))} type="button">Discuss this path</button> : null}
+     </li>)}</ul>}
+-    <h3 className="section-heading" style={{ margin: "16px 0 0" }}>Visible relationships</h3>
+-    {!edges.length ? <p style={{ ...muted, ...outlineText }}>No saved relationships are visible in this scope.</p> : <ul style={{ display: "grid", gap: 6, listStyle: "none", margin: "9px 0 0", padding: 0, ...outlineText }}>{edges.map((edge) => {
++    <h3 className={styles.relationshipHeading}>Visible relationships</h3>
++    {!edges.length ? <p className={styles.muted}>No saved relationships are visible in this scope.</p> : <ul className={styles.relationshipList}>{edges.map((edge) => {
+       const from = nodes.find((node) => node.node_id === edge.from_node_id)?.label ?? edge.from_node_id;
+       const to = nodes.find((node) => node.node_id === edge.to_node_id)?.label ?? edge.to_node_id;
+-      return <li key={edge.edge_id} style={{ ...muted, ...outlineText }}><strong>{from}</strong> {edgeLabel(edge)} <strong>{to}</strong> · {edgeStateLabel(edge)}</li>;
++      return <li className={styles.outlineRelationship} key={edge.edge_id}><strong>{from}</strong> {edgeLabel(edge)} <strong>{to}</strong> · {edgeStateLabel(edge)}</li>;
+     })}</ul>}
+   </section>;
+-}
+-
+-function useNarrowScreen() {
+-  const [narrow, setNarrow] = useState(false);
+-  useEffect(() => {
+-    const query = window.matchMedia("(max-width: 767px)");
+-    const update = () => setNarrow(query.matches);
+-    update(); query.addEventListener("change", update); return () => query.removeEventListener("change", update);
+-  }, []);
+-  return narrow;
+ }
+ 
+ export default function DecisionMap({ snapshot, layout, selectedNodeId, scope, busy = false, error = null, onSelectNode, onScopeChange, onFit, onOpenDocument, onDiscuss, onTryDifferentAssumption, scenarioPanel, selectedNodeDetails, onBackToIssue }: DecisionMapProps) {
+@@ -143,7 +133,6 @@
+   const [offset, setOffset] = useState({ x: 0, y: 0 });
+   const dragging = useRef<{ x: number; y: number; offsetX: number; offsetY: number } | null>(null);
+   const viewport = useRef<HTMLDivElement | null>(null);
+-  const narrow = useNarrowScreen();
+   const matterId = snapshot.matter_id;
+   const select = (nodeId: string) => onSelectNode(nodeId);
+   const reset = () => { setScale(1); setOffset({ x: 0, y: 0 }); };
+@@ -166,14 +155,12 @@
+   };
+   const stopPan = () => { dragging.current = null; };
+   const outline = <DecisionMapOutline edges={visible.edges} matterId={matterId} nodes={visible.nodes} onDiscuss={onDiscuss} onOpenDocument={() => undefined} onSelectNode={select} selectedNodeId={selectedNodeId} />;
+-  const outlinePresentation = scope === "whole_matter" ? <details style={card}><summary className="btn quiet" style={outlineControl}>Map outline ({visible.nodes.length} records)</summary><div style={{ marginTop: 10, ...outlineText }}>{outline}</div></details> : outline;
+-  const visual = <section aria-label="Decision map controls and visual" style={card}><div style={{ alignItems: "center", display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "space-between" }}><div><h2 className="section-heading" style={{ margin: 0 }}>Decision map</h2><p style={muted}>{scope === "whole_matter" ? "Whole matter" : "Local neighborhood"} · {visible.nodes.length} visible records</p></div><div className="btn-row"><button aria-pressed={scope === "neighborhood"} className="btn quiet tiny" disabled={busy} onClick={() => onScopeChange("neighborhood")} type="button">Local neighborhood</button><button aria-pressed={scope === "whole_matter"} className="btn quiet tiny" disabled={busy} onClick={() => onScopeChange("whole_matter")} type="button">Show whole matter</button></div></div><div aria-label="Map viewport controls" className="btn-row" style={{ marginTop: 10 }}><button className="btn quiet tiny" disabled={scale <= MIN_MANUAL_ZOOM} onClick={() => setScale((value) => Math.max(MIN_MANUAL_ZOOM, value - 0.1))} type="button">Zoom out</button><span aria-live="polite" className="record-meta">Zoom {Math.round(scale * 100)}%</span><button className="btn quiet tiny" disabled={scale >= MAX_MANUAL_ZOOM} onClick={() => setScale((value) => Math.min(MAX_MANUAL_ZOOM, value + 0.1))} type="button">Zoom in</button><button className="btn quiet tiny" onClick={fit} type="button">Fit map</button><button className="btn quiet tiny" onClick={reset} type="button">Reset view</button></div><p style={muted}>Select a record for details. Drag empty space to pan. The outline below has the same records and relationships.</p><div ref={viewport} style={{ marginTop: 10 }}><MapCanvas layout={visible} offset={offset} onPointerDown={startPan} onPointerMove={movePan} onPointerUp={stopPan} onSelectNode={select} scale={scale} selectedNodeId={selectedNodeId} /></div></section>;
++  const visual = <section aria-label="Decision map controls and visual" className={styles.card}><div className={styles.headerRow}><div><h2 className={styles.sectionTitle}>Decision map</h2><p className={styles.muted}>{scope === "whole_matter" ? "Whole matter" : "Local neighborhood"} · {visible.nodes.length} visible records</p></div><div className={styles.controlRow}><button aria-pressed={scope === "neighborhood"} className={`btn quiet ${styles.scopeButton}`} disabled={busy} onClick={() => onScopeChange("neighborhood")} type="button">Local neighborhood</button><button aria-pressed={scope === "whole_matter"} className={`btn quiet ${styles.scopeButton}`} disabled={busy} onClick={() => onScopeChange("whole_matter")} type="button">Show whole matter</button></div></div><div aria-label="Map viewport controls" className={styles.controlRow}><button className="btn quiet" disabled={scale <= MIN_MANUAL_ZOOM} onClick={() => setScale((value) => Math.max(MIN_MANUAL_ZOOM, value - 0.1))} type="button">Zoom out</button><span aria-live="polite" className={styles.meta}>Zoom {Math.round(scale * 100)}%</span><button className="btn quiet" disabled={scale >= MAX_MANUAL_ZOOM} onClick={() => setScale((value) => Math.min(MAX_MANUAL_ZOOM, value + 0.1))} type="button">Zoom in</button><button className="btn quiet" onClick={fit} type="button">Fit map</button><button className="btn quiet" onClick={reset} type="button">Reset view</button></div><p className={styles.muted}>Select a record for details. Drag empty space to pan. The outline below has the same records and relationships.</p><div className={styles.viewport} ref={viewport}><MapCanvas layout={visible} offset={offset} onPointerDown={startPan} onPointerMove={movePan} onPointerUp={stopPan} onSelectNode={select} scale={scale} selectedNodeId={selectedNodeId} /></div></section>;
+ 
+-  return <section aria-busy={busy || undefined} aria-label="Decision map" style={shell}>
+-    {error ? <p className="warning-callout" role="status" style={{ margin: 0 }}>{error}</p> : null}
+-    {narrow ? <details><summary className="btn quiet">Show visual map</summary><div style={{ marginTop: 10 }}>{visual}</div></details> : visual}
+-    {selectedNode ? <aside aria-label="Selected map record" style={card}><div style={{ alignItems: "start", display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "space-between" }}><div><span className="record-meta">Selected {selectedNode.record_type}</span><h2 className="section-heading" style={{ margin: "4px 0 0" }}>{selectedNode.label}</h2><p style={muted}>{nodeStateLabel(selectedNode)}</p></div><button className="btn quiet tiny" onClick={() => onSelectNode(null)} type="button">Clear selection</button></div>{normalizedNodeState(selectedNode) === "unknown" ? <p style={muted}>This condition is unknown. It does not select an active path.</p> : null}{selectedNode.detail ? <p style={muted}>{selectedNode.detail}</p> : null}{selectedNode.claim_ids?.length ? <p style={muted}>Claim references: {selectedNode.claim_ids.join(", ")}. Source details are shown when a saved document target is available.</p> : null}{selectedNodeDetails}<div className="btn-row" style={{ marginTop: 12 }}><button className="btn quiet tiny" onClick={() => onDiscuss(mapConversationTarget(selectedNode, matterId))} type="button">Discuss this path</button><button className="btn agent tiny" onClick={() => onTryDifferentAssumption(scenarioIntent(selectedNode))} type="button">Try a different assumption</button>{backIssueId(selectedNode, snapshot.selected_issue_id) ? <button className="btn quiet tiny" onClick={() => onBackToIssue(backIssueId(selectedNode, snapshot.selected_issue_id)!)} type="button">Back to issue</button> : null}</div></aside> : <p style={muted}>Select a record to see its saved detail and actions.</p>}
++  return <section aria-busy={busy || undefined} aria-label="Decision map" className={styles.shell}>
++    {error ? <p className="warning-callout" role="status">{error}</p> : null}
++    {scope === "whole_matter" ? <><section aria-label="Whole matter map controls" className={`${styles.card} ${styles.headerRow}`}><div><h2 className={styles.sectionTitle}>Whole matter</h2><p className={styles.muted}>{visible.nodes.length} visible records. The outline is shown first for readable review.</p></div><div className={styles.controlRow}><button aria-pressed={scope === "neighborhood"} className={`btn quiet ${styles.scopeButton}`} disabled={busy} onClick={() => onScopeChange("neighborhood")} type="button">Local neighborhood</button><button aria-pressed={scope === "whole_matter"} className={`btn quiet ${styles.scopeButton}`} disabled={busy} onClick={() => onScopeChange("whole_matter")} type="button">Show whole matter</button></div></section><section aria-label="Whole matter map outline">{outline}</section><details className={`${styles.card} ${styles.mapDisclosure}`}><summary>Show visual map ({visible.nodes.length} records)</summary><div className={styles.mapDisclosureBody}>{visual}</div></details></> : <><section aria-label="Local neighborhood map visual">{visual}</section>{outline}</>}
++    {selectedNode ? <aside aria-label="Selected map record" className={styles.card}><div className={styles.selectedHeader}><div><span className={styles.meta}>Selected {recordTypeLabel(selectedNode.record_type)}</span><h2 className={styles.selectedTitle}>{selectedNode.label}</h2><p className={styles.muted}>{nodeStateLabel(selectedNode)}</p></div><button className="btn quiet" onClick={() => onSelectNode(null)} type="button">Clear selection</button></div>{normalizedNodeState(selectedNode) === "unknown" ? <p className={styles.muted}>This condition is unknown. It does not select an active path.</p> : null}{selectedNode.detail ? <p className={styles.muted}>{selectedNode.detail}</p> : null}{selectedNode.claim_ids?.length ? <p className={styles.muted}>Claim references: {selectedNode.claim_ids.join(", ")}. Source details are shown when a saved document target is available.</p> : null}{selectedNodeDetails}<div className={styles.selectedActions}><button className="btn quiet" onClick={() => onDiscuss(mapConversationTarget(selectedNode, matterId))} type="button">Discuss this path</button><button className="btn agent" onClick={() => onTryDifferentAssumption(scenarioIntent(selectedNode))} type="button">Try a different assumption</button>{backIssueId(selectedNode, snapshot.selected_issue_id) ? <button className="btn quiet" onClick={() => onBackToIssue(backIssueId(selectedNode, snapshot.selected_issue_id)!)} type="button">Back to issue</button> : null}</div></aside> : <p className={`${styles.muted} ${styles.emptyState}`}>Select a record to see its saved detail and actions.</p>}
+     {scenarioPanel}
+-    {outlinePresentation}
+   </section>;
+ }
+--- frontend/app/matters/[matterId]/decision-map/page.tsx
++++ frontend/app/matters/[matterId]/decision-map/page.tsx
+@@ -10,6 +10,7 @@
+ import ClaimMarkdown from "@/components/workspace/ClaimMarkdown";
+ import EvidenceDrawer from "@/components/workspace/EvidenceDrawer";
+ import ReferencePreview from "@/components/workspace/ReferencePreview";
++import styles from "@/components/workspace/MatterMap.module.css";
+ import { useContinuityIdentity, continuityKey } from "@/lib/continuityApi";
+ import {
+   getFile,
+@@ -359,15 +360,18 @@
+ 
+   return (
+     <AppShell>
+-      <main className="page decision-map-page">
+-        <header className="decision-map-page__head">
++      <main className={`page ${styles.page}`}>
++        <header className={styles.pageHeader}>
+           <div>
+-            <Link href={issueBackHref}>
++            <Link className={styles.backLink} href={issueBackHref}>
+               Back to matter{requestedIssue ? " issue" : ""}
+             </Link>
+-            <span className="record-meta">Saved matter records</span>
+-            <h1>{detail.title} · Decision map</h1>
+-            <p>{workspace.question.text}</p>
++            <span className={styles.pageKicker}>Saved matter records</span>
++            <h1 className={styles.pageTitle}>{detail.title} · Decision map</h1>
++            <details className={styles.questionDisclosure}>
++              <summary>Read full business question</summary>
++              <p className={styles.questionText}>{workspace.question.text}</p>
++            </details>
+           </div>
+           <span className="state-label state-agent">
+             Agent analysis stays proposed
+@@ -457,6 +461,7 @@
+             });
+             requestAnimationFrame(() => {
+               const section = document.getElementById("decision-map-discussion");
++              section?.querySelector("details")?.setAttribute("open", "");
+               section?.scrollIntoView({ behavior: "smooth", block: "start" });
+               section?.querySelector<HTMLTextAreaElement>("textarea")?.focus();
+             });
+@@ -467,7 +472,7 @@
+           }}
+           selectedNodeDetails={
+             claims.length ? (
+-              <div className="decision-map-claims">
++              <div className={styles.claims}>
+                 {claims.map((claim) => (
+                   <article key={`${claim.claim_id}:${claim.output_revision}`}>
+                     <ClaimMarkdown
+@@ -599,9 +604,12 @@
+             ) : undefined
+           }
+         />
+-        <section className="decision-map-discussion" id="decision-map-discussion">
+-          <h2>Discuss the selected path</h2>
+-          <ChatPanel
++        <section className={styles.discussion} id="decision-map-discussion">
++          <h2 className={styles.discussionHeading}>Discuss the selected path</h2>
++          <details className={styles.conversationDisclosure} open>
++            <summary>Conversation and composer</summary>
++            <div className={styles.conversationBody}>
++              <ChatPanel
+             contextKey={contextKey}
+             matterId={matterId}
+             matterTitle={detail.title}
+@@ -656,7 +664,9 @@
+             reviewAuthor="Themis.ai"
+             lawyerAuthor={identity?.actor.display_name ?? "Lawyer"}
+             onReviewAuthorChange={() => undefined}
+-          />
++              />
++            </div>
++          </details>
+         </section>
+       </main>
+     </AppShell>

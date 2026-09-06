@@ -1,0 +1,11 @@
+{
+  "checks": {
+    "03_Matters/cedar-desk-policy-review-329d59/documents/cedar-policy-v1.txt": true,
+    "03_Matters/cedar-desk-policy-review-329d59/documents/cedar-policy-v2.txt": true,
+    "selected_inquiry_text_exact": true,
+    "same_conversation": true
+  },
+  "target_kind": "advice",
+  "target_id": "inquiry:RUN-20260905-3e0180",
+  "note": "Initial checker incorrectly treated an inquiry reference ID as a conversation message ID. Check now reads the exact selected saved inquiry."
+}

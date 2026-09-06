@@ -1,0 +1,1 @@
+{"label": "journey-casey-accept-whole", "width": 768, "actions": [{"op": "select", "selector": "#demo-lawyer-person", "value": "casey"}, {"op": "click", "name": "Hand off work"}, {"op": "visible", "name": "Accept handoff"}, {"op": "click", "name": "Accept handoff"}, {"op": "wait", "ms": 10000}]}

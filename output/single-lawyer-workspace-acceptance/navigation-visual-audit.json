@@ -1,0 +1,117 @@
+{
+  "results": [
+    {
+      "route": "/",
+      "heading": "things need your attention",
+      "loaded": true
+    },
+    {
+      "route": "/workspace",
+      "heading": "Workspace",
+      "loaded": true
+    },
+    {
+      "route": "/matters",
+      "heading": "Matters",
+      "loaded": true
+    },
+    {
+      "route": "/decisions",
+      "heading": "Decision register",
+      "loaded": true
+    },
+    {
+      "route": "/skills",
+      "heading": "Output templates",
+      "loaded": true
+    },
+    {
+      "route": "/agents",
+      "heading": "Themis.ai",
+      "loaded": true
+    },
+    {
+      "route": "/automations",
+      "heading": "Automations",
+      "loaded": true
+    },
+    {
+      "route": "/settings",
+      "heading": "Model",
+      "loaded": true
+    },
+    {
+      "settings": "Answer contract",
+      "loaded": true
+    },
+    {
+      "settings": "Document review",
+      "loaded": true
+    },
+    {
+      "settings": "Research",
+      "loaded": true
+    },
+    {
+      "settings": "Files and outputs",
+      "loaded": true
+    },
+    {
+      "settings": "Model providers",
+      "loaded": true
+    },
+    {
+      "settings": "Watch providers",
+      "loaded": true
+    },
+    {
+      "settings": "Company",
+      "loaded": true
+    },
+    {
+      "settings": "Vaults",
+      "loaded": true
+    },
+    {
+      "flow": {
+        "width": 1440,
+        "scroll": 1440,
+        "reducedMotion": true
+      }
+    },
+    {
+      "flow": {
+        "width": 1024,
+        "scroll": 1024,
+        "reducedMotion": true
+      }
+    },
+    {
+      "flow": {
+        "width": 768,
+        "scroll": 768,
+        "reducedMotion": true
+      }
+    },
+    {
+      "flow": {
+        "width": 390,
+        "scroll": 390,
+        "reducedMotion": true
+      }
+    },
+    {
+      "keyboard": "Enter opened Files drawer; Escape closed and returned focus",
+      "passed": true
+    },
+    {
+      "preparedRequest": {
+        "width": 390,
+        "scroll": 390
+      },
+      "unsentTextPreserved": true,
+      "noSubmit": true
+    }
+  ],
+  "pageErrors": []
+}

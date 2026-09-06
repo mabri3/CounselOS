@@ -1,0 +1,16 @@
+[
+  {
+    "format": "docx",
+    "artifact": "/Users/bharris/Programs/counsel-os-mvp/output/matter-review-decision-map-acceptance/launch-advice-verified-markup.docx",
+    "sha256": "af03c2e3cd8d1349cdc78e8b1fc7cab35592b45140781c8c83e269d57121bb76",
+    "checks": "Correct draft, retained A edit, no B edit, both saved document reference destinations",
+    "text": "Launch advice\n\nConfirm audience and identifier use before release.\n\nRead the product specification and \n\ndefinitions.\n\nUNSAVED A: Keep the audience review open.\n\n\nDocument references\nproduct specification \u2014 03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-bfe1be/documents/product-spec.md\ndefinitions \u2014 03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-bfe1be/documents/coppa-definitions.md\n"
+  },
+  {
+    "format": "pdf",
+    "artifact": "/Users/bharris/Programs/counsel-os-mvp/output/matter-review-decision-map-acceptance/launch-advice-verified-markup.pdf",
+    "sha256": "13c79ae3d5c5e1c221408fd16da28aedd7926b98346ebf55e54743cd43ec77ff",
+    "checks": "Correct draft, retained A edit, no B edit, both saved document reference destinations",
+    "text": "Launch\n \nadvice\nConfirm\n \naudience\n \nand\n \nidentifier\n \nuse\n \nbefore\n \nrelease.\nRead\n \nthe\n \nproduct\n \nspecification\n \nand\n \ndefinitions.\nUNSAVED\n \nA:\n \nKeep\n \nthe\n \naudience\n \nreview\n \nopen.\nDocument\n \nreferences\nproduct\n \nspecification\n \n\u2014\n \n03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-bfe1be/documents/product-spec.md\ndefinitions\n \n\u2014\n \n03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-bfe1be/documents/coppa-definitions.md\n"
+  }
+]

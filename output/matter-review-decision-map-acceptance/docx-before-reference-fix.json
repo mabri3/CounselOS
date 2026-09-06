@@ -1,0 +1,18 @@
+{
+  "sha256": "4ed2a9bbba6a7e7a4812b39a257533c78255aa21309bdf8a5bedc86ed87ac6f1",
+  "archive_integrity": true,
+  "paragraphs": [
+    "Launch advice",
+    "",
+    "Confirm audience and identifier use before release.",
+    "",
+    "Read the product specification and ",
+    "",
+    "definitions.",
+    "",
+    "UNSAVED A: Keep the audience review open.",
+    ""
+  ],
+  "hyperlinks": [],
+  "finding": "Correct draft and local A edit; saved source destinations absent."
+}

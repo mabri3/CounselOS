@@ -1,0 +1,289 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 83.99857330322266,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": -2862.272705078125
+    },
+    {
+      "font": "13px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 237.7627716064453,
+      "x": 756.7826538085938,
+      "y": -2795.4189453125
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 763.68603515625,
+      "y": -2769.72998046875
+    },
+    {
+      "font": "16px",
+      "height": 3869.176025390625,
+      "tag": "MAIN",
+      "text": "‹ All WatchesSynthetic process WatchSave draftScan nowStart ",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": -2778.274169921875
+    },
+    {
+      "font": "46px",
+      "height": 51.5198860168457,
+      "tag": "H1",
+      "text": "Synthetic process Watch",
+      "width": 496.9886169433594,
+      "x": 33.99857711791992,
+      "y": -2697.3720703125
+    },
+    {
+      "font": "15px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Save draft",
+      "width": 95.6178970336914,
+      "x": 668.1746826171875,
+      "y": -2697.3720703125
+    },
+    {
+      "font": "15px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Scan now",
+      "width": 91.91761016845705,
+      "x": 772.7911376953125,
+      "y": -2697.3720703125
+    },
+    {
+      "font": "15px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Start Watch",
+      "width": 106.83948516845705,
+      "x": 873.7073364257812,
+      "y": -2697.3720703125
+    },
+    {
+      "font": "16px",
+      "height": 32.897727966308594,
+      "tag": "BUTTON",
+      "text": "Hide settings",
+      "width": 94.14772033691406,
+      "x": 33.99857711791992,
+      "y": -2545.866455078125
+    },
+    {
+      "font": "16px",
+      "height": 712.8764038085938,
+      "tag": "SECTION",
+      "text": "AssignmentState what to watch and why it matters.Watch title",
+      "width": 944.7301025390624,
+      "x": 34.90766906738281,
+      "y": -1381.9886474609375
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Assignment",
+      "width": 908.7357788085938,
+      "x": 52.90482711791992,
+      "y": -1357.989990234375
+    },
+    {
+      "font": "16px",
+      "height": 537.819580078125,
+      "tag": "SECTION",
+      "text": "Public topics and scopeUse commas to separate values.Keyword",
+      "width": 944.7301025390624,
+      "x": 34.90766906738281,
+      "y": -669.1121826171875
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Public topics and scope",
+      "width": 908.7357788085938,
+      "x": 52.90482711791992,
+      "y": -645.1135864257812
+    },
+    {
+      "font": "16px",
+      "height": 171.03692626953125,
+      "tag": "SECTION",
+      "text": "Named sources and rolesSource type states what a source is. ",
+      "width": 944.7301025390624,
+      "x": 34.90766906738281,
+      "y": -131.2926025390625
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Named sources and roles",
+      "width": 908.7357788085938,
+      "x": 52.90482711791992,
+      "y": -107.29402923583984
+    },
+    {
+      "font": "16px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Add named source",
+      "width": 908.7357788085938,
+      "x": 52.90482711791992,
+      "y": -29.161930084228516
+    },
+    {
+      "font": "16px",
+      "height": 171.03692626953125,
+      "tag": "SECTION",
+      "text": "ProviderThe choice is saved on this Watch. A provider failur",
+      "width": 944.7301025390624,
+      "x": 34.90766906738281,
+      "y": 39.74431610107422
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Provider",
+      "width": 908.7357788085938,
+      "x": 52.90482711791992,
+      "y": 63.742897033691406
+    },
+    {
+      "font": "16px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Themis.ai native",
+      "width": 157.89772033691406,
+      "x": 52.90482711791992,
+      "y": 141.875
+    },
+    {
+      "font": "16px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Polaris",
+      "width": 88.14630126953125,
+      "x": 219.80113220214844,
+      "y": 141.875
+    },
+    {
+      "font": "16px",
+      "height": 43.99857711791992,
+      "tag": "BUTTON",
+      "text": "Both",
+      "width": 72.421875,
+      "x": 316.9460144042969,
+      "y": 141.875
+    },
+    {
+      "font": "16px",
+      "height": 300.2840881347656,
+      "tag": "SECTION",
+      "text": "Internal matching scopeThis private scope stays inside Themi",
+      "width": 944.7301025390624,
+      "x": 34.90766906738281,
+      "y": 210.78125
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Internal matching scope",
+      "width": 908.7357788085938,
+      "x": 52.90482711791992,
+      "y": 234.77981567382812
+    },
+    {
+      "font": "16px",
+      "height": 239.95738220214844,
+      "tag": "SECTION",
+      "text": "Cadence and time zoneCadenceManual onlyIntervalDailySelected",
+      "width": 944.7301025390624,
+      "x": 34.90766906738281,
+      "y": 511.0653076171875
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Cadence and time zone",
+      "width": 908.7357788085938,
+      "x": 52.90482711791992,
+      "y": 535.0639038085938
+    },
+    {
+      "font": "16px",
+      "height": 274.9715881347656,
+      "tag": "SECTION",
+      "text": "Briefing and review behaviorCreate Briefing itemsCreate a di",
+      "width": 944.7301025390624,
+      "x": 34.90766906738281,
+      "y": 751.022705078125
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Briefing and review behavior",
+      "width": 908.7357788085938,
+      "x": 52.90482711791992,
+      "y": 775.0213012695312
+    },
+    {
+      "font": "16px",
+      "height": 906.725830078125,
+      "tag": "SECTION",
+      "text": "Durable scan previewScan resultsPartial0 developments · 0 Br",
+      "width": 946.5482788085938,
+      "x": 33.99857711791992,
+      "y": -2307.62060546875
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Scan results",
+      "width": 100.58948516845705,
+      "x": 56.90340805053711,
+      "y": -2253.806640625
+    },
+    {
+      "font": "16px",
+      "height": 140.4474334716797,
+      "tag": "SECTION",
+      "text": "Run historyDraft scanSep 6, 2026, 1:14 AM · SCAN-20260906-c7",
+      "width": 946.5482788085938,
+      "x": 33.99857711791992,
+      "y": -2466.065185546875
+    },
+    {
+      "font": "18px",
+      "height": 24.545454025268555,
+      "tag": "H2",
+      "text": "Run history",
+      "width": 904.7301025390624,
+      "x": 54.90766906738281,
+      "y": -2445.15625
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 2862.272705078125,
+  "url": "http://localhost:3134/watches/WATCH-20260906-05727c",
+  "width": 1024
+}

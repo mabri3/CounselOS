@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { researchQueueAggregate, researchSupportLabel } from "@/lib/researchQueue";
 import type { ResearchRun } from "@/lib/types";
+import MatterIcon from "@/components/workspace/MatterIcon";
+import matterStyles from "@/components/workspace/MatterWork.module.css";
+import phase2Styles from "@/components/ResearchPhase2.module.css";
 
 type SavedQuestion = { id: string; text: string };
 
@@ -30,6 +33,7 @@ type ResearchQueuePanelProps = {
 export default function ResearchQueuePanel({
   items,
   mode = "controls",
+  presentation = "matter",
   busy = false,
   enteredQuestion = "",
   savedQuestions = [],
@@ -45,7 +49,8 @@ export default function ResearchQueuePanel({
   onUpdateDraftFromSavedResearch,
   onSelectedQuestion,
   showDraftSnapshotNotice = false,
-}: ResearchQueuePanelProps) {
+}: ResearchQueuePanelProps & { presentation?: "matter" | "phase2" }) {
+  const styles = presentation === "phase2" ? phase2Styles : matterStyles;
   const pending = items.filter((item) => item.state === "queued");
   const interrupted = items.some((item) => item.state === "interrupted");
   const active = items.some((item) => item.state === "queued" || item.state === "running");
@@ -58,17 +63,14 @@ export default function ResearchQueuePanel({
     return () => window.clearInterval(timer);
   }, [items]);
 
-  return <section className="agent-note" aria-label="Research queue" style={{ margin: "12px 18px", padding: 14 }}>
-    <div className="field-label">Research queue</div>
-    <p className="setting-help" role="status">
-      {aggregate.runCount} {aggregate.runCount === 1 ? "run" : "runs"} · {aggregate.activeCount} active · {aggregate.savedPacketCount} saved {aggregate.savedPacketCount === 1 ? "packet" : "packets"} · {aggregate.supportCount} saved support {aggregate.supportCount === 1 ? "source" : "sources"}
-    </p>
-    {showDraftSnapshotNotice ? <div className="matter-lifecycle-action">
+  return <section className={styles.researchQueue} aria-label="Research queue">
+    <header className={styles.queueHeader}><div><div className={`field-label ${styles.panelLabel}`}>Research queue</div><p className={`setting-help ${styles.queueSummary}`} role="status">{aggregate.runCount} {aggregate.runCount === 1 ? "run" : "runs"} · {aggregate.activeCount} active · {aggregate.savedPacketCount} saved {aggregate.savedPacketCount === 1 ? "packet" : "packets"}</p></div><span className={styles.queueSupportCount}>{aggregate.supportCount} saved {aggregate.supportCount === 1 ? "source" : "sources"}</span></header>
+    {showDraftSnapshotNotice ? <div className={`matter-lifecycle-action ${styles.snapshotNotice}`}>
       <span>This draft is a saved snapshot</span>
       <p>New research does not change this draft automatically.</p>
       <button className="btn quiet compact" disabled={busy || !onUpdateDraftFromSavedResearch || aggregate.savedPacketCount === 0} onClick={onUpdateDraftFromSavedResearch} type="button">Update draft from saved research</button>
     </div> : null}
-    {canControl ? <div className="btn-row" style={{ marginTop: 8 }}>
+    {canControl ? <div className={`btn-row ${styles.queueControls}`}>
       <select className="select-input" onChange={(event) => onSelectedQuestion?.(event.target.value)} value={selectedQuestion}>
         <option value="">Select a saved question</option>
         {savedQuestions.map((item) => <option key={item.id} value={item.text}>{item.text}</option>)}
@@ -78,22 +80,22 @@ export default function ResearchQueuePanel({
       {interrupted ? <button className="btn compact" disabled={busy || !onResume} onClick={() => void onResume?.()}>Resume research</button> : null}
       {active ? <button className="btn quiet compact" disabled={busy || !onStop} onClick={() => void onStop?.()}>Stop research</button> : null}
     </div> : null}
-    <div style={{ marginTop: 8 }}>
+    <div className={styles.queueItems}>
       {items.map((item) => {
         const packetPath = item.results?.[0]?.path;
         const partial = item.state === "completed" && item.status.startsWith("Partial");
-        return <div className="setting-help" key={item.run_id} style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-          <span><strong>{researchQueueStateWord(item)}</strong> · order {item.queue_order ?? item.priority ?? "—"} · {item.run_id} · {item.question ?? item.questions?.[0] ?? "Research question"}</span>
-          <span>Support: {researchSupportLabel(item)}</span>
-          {item.state === "running" ? <span>{researchElapsed(item, now)} elapsed{packetPath ? " · saved packet available" : ""} · You can continue elsewhere while research runs.</span> : null}
-          {partial ? <span>Partial research is saved. You can use the packet to continue drafting.</span> : null}
+        return <div className={`setting-help ${styles.queueItem}`} key={item.run_id}>
+          <span className={styles.queueIcon}><MatterIcon name={partial ? "sparkles" : item.state === "completed" ? "book" : item.state === "failed" ? "history" : "search"} size={22} /></span><div className={styles.queueItemTitle}><span>{item.question ?? item.questions?.[0] ?? "Research question"}</span><span className={styles.queueMetadata}>Queue order {item.queue_order ?? item.priority ?? "—"} · {item.run_id} · Support: {researchSupportLabel(item)}</span></div>
+          <span className={styles.queueState} data-state={partial ? "partial" : item.state}>{researchQueueStateWord(item)}</span>
+          <div className={styles.queueItemActions}>{item.state === "running" ? <span className={styles.queueNotice}>{researchElapsed(item, now)} elapsed{packetPath ? " · saved packet available" : ""}</span> : null}
+          {partial ? <span className={styles.queueNotice}>Partial research is saved</span> : null}
           {canControl && item.state === "queued" ? <>
             <button className="btn compact" disabled={busy || !onMove || pending[0]?.run_id === item.run_id} onClick={() => void onMove?.(item.run_id, -1)}>Up</button>
             <button className="btn compact" disabled={busy || !onMove || pending.at(-1)?.run_id === item.run_id} onClick={() => void onMove?.(item.run_id, 1)}>Down</button>
           </> : null}
           {packetPath ? <Link href={packetHref(packetPath)}>Open packet</Link> : null}
           {item.state === "failed" ? <button className="btn quiet compact" disabled={busy || !onRetry} onClick={() => void onRetry?.(item.run_id)} type="button">Retry</button> : null}
-          {partial && onContinueFromPartial ? <button className="btn quiet compact" onClick={() => onContinueFromPartial(item)} type="button">Continue from saved research</button> : null}
+          {partial && onContinueFromPartial ? <button className="btn quiet compact" onClick={() => onContinueFromPartial(item)} type="button">Continue from saved research</button> : null}</div>
         </div>;
       })}
     </div>

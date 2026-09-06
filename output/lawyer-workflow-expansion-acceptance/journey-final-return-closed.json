@@ -1,0 +1,1448 @@
+{
+  "label": "journey-final-return-closed",
+  "url": "http://localhost:3117/matters/MAT-20260905-0a2378",
+  "completed": [
+    {
+      "op": "wait",
+      "ms": 12000
+    }
+  ],
+  "failure": null,
+  "errors": [],
+  "responses": [],
+  "network": [
+    {
+      "url": "http://localhost:3117/_next/static/media/03fc1b4a8d284b5e-s.p.0wiir8udbzjvx.woff2",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650256.689,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.023,
+        "responseEnd": 0.023
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/media/68d403cf9f2c68c5-s.p.20at88_q9f_kt.woff2",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650256.731,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.013,
+        "responseEnd": 0.013
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/media/99e609270109b47d-s.p.40sczeszzbjw1.woff2",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650256.749,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.008,
+        "responseEnd": 0.008
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/media/ea3421846039b7f3-s.p.23jyvdx2mwxjn.woff2",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650256.761,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.01,
+        "responseEnd": 0.01
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/media/effe91970fc4db64-s.p.0oace-s_gkfks.woff2",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650256.775,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.008,
+        "responseEnd": 0.008
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/1ff3qr1bgppsr.css",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650256.9521,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.019,
+        "responseEnd": 0.019
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/3q576hlfnuh0n.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650256.98,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.012,
+        "responseEnd": 0.012
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/1z99mlp5cofct.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650256.999,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.008,
+        "responseEnd": 0.008
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/2y95wh155rj1_.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650257.011,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.008,
+        "responseEnd": 0.008
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/turbopack-41gbzzdmniu6k.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650257.025,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.009,
+        "responseEnd": 0.009
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/0ehjiuuxbbhq9.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650257.041,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.011,
+        "responseEnd": 0.011
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/149vhymybpq1n.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650257.056,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.007,
+        "responseEnd": 0.007
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/0r7yvc6llx03y.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650257.069,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.008,
+        "responseEnd": 0.008
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/2n4mrg_hs8xbg.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650257.086,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.009,
+        "responseEnd": 0.009
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/3txoe3y9g6kjt.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650257.0989,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.009,
+        "responseEnd": 0.009
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/2tubwj99lc6u6.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650257.113,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.009,
+        "responseEnd": 0.009
+      }
+    },
+    {
+      "url": "http://localhost:3117/brand/themis-ai-logo-detailed-vibrant-red-v7.png",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650257.0808,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.175,
+        "responseStart": 0.927,
+        "responseEnd": 1.318
+      }
+    },
+    {
+      "url": "http://localhost:3117/matters/MAT-20260905-0a2378",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650244.981,
+        "domainLookupStart": 0.173,
+        "domainLookupEnd": 0.266,
+        "connectStart": 0.266,
+        "secureConnectionStart": -1,
+        "connectEnd": 0.4,
+        "requestStart": 0.433,
+        "responseStart": 8.82,
+        "responseEnd": 10.904
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/1_ed_v4jb8zf3.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650257.323,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.013,
+        "responseStart": 0.044,
+        "responseEnd": 1.047
+      }
+    },
+    {
+      "url": "http://localhost:3117/briefing?_rsc=9ovI527gnIgjCyWQ",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650270.267,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.246,
+        "responseStart": 1.784,
+        "responseEnd": 4.679
+      },
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://localhost:3117/?_rsc=9ovI527gnIgjCyWQ",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650270.2112,
+        "domainLookupStart": 0.133,
+        "domainLookupEnd": 0.137,
+        "connectStart": 0.137,
+        "secureConnectionStart": -1,
+        "connectEnd": 0.373,
+        "requestStart": 0.442,
+        "responseStart": 2.482,
+        "responseEnd": 4.805
+      }
+    },
+    {
+      "url": "http://localhost:3117/workspace?_rsc=9ovI527gnIgjCyWQ",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650270.419,
+        "domainLookupStart": 0.121,
+        "domainLookupEnd": 0.122,
+        "connectStart": 0.122,
+        "secureConnectionStart": -1,
+        "connectEnd": 0.229,
+        "requestStart": 0.239,
+        "responseStart": 3.423,
+        "responseEnd": 4.983
+      }
+    },
+    {
+      "url": "http://localhost:3117/matters?_rsc=9ovI527gnIgjCyWQ",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650270.458,
+        "domainLookupStart": 0.116,
+        "domainLookupEnd": 0.117,
+        "connectStart": 0.117,
+        "secureConnectionStart": -1,
+        "connectEnd": 0.193,
+        "requestStart": 0.214,
+        "responseStart": 4.038,
+        "responseEnd": 5.221
+      }
+    },
+    {
+      "url": "http://localhost:3117/decisions?_rsc=9ovI527gnIgjCyWQ",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650275.249,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.262,
+        "responseStart": 1.222,
+        "responseEnd": 2.54
+      }
+    },
+    {
+      "url": "http://localhost:3117/skills?_rsc=9ovI527gnIgjCyWQ",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650275.452,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.189,
+        "responseStart": 1.332,
+        "responseEnd": 2.521
+      }
+    },
+    {
+      "url": "http://localhost:3117/automations?_rsc=9ovI527gnIgjCyWQ",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650275.552,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.119,
+        "responseStart": 1.424,
+        "responseEnd": 2.527
+      }
+    },
+    {
+      "url": "http://localhost:3117/agents?_rsc=9ovI527gnIgjCyWQ",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650275.6099,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.09,
+        "responseStart": 1.622,
+        "responseEnd": 2.633
+      }
+    },
+    {
+      "url": "http://localhost:3117/workspace?_rsc=VWlYN73a3HGWKP8f",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650278.493,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.054,
+        "responseStart": 2.786,
+        "responseEnd": 4.153
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/0wwx_22_p54ea.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650282.73,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.032,
+        "responseEnd": 0.032
+      }
+    },
+    {
+      "url": "http://localhost:3117/settings?_rsc=9ovI527gnIgjCyWQ",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650278.013,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.244,
+        "responseStart": 1.345,
+        "responseEnd": 4.875
+      }
+    },
+    {
+      "url": "http://localhost:3117/?_rsc=Wawfwusti5px_A4e",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650278.354,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.174,
+        "responseStart": 2.705,
+        "responseEnd": 4.696
+      }
+    },
+    {
+      "url": "http://localhost:3117/briefing?_rsc=8UnxiFBC6LeMlbuy",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650278.447,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.067,
+        "responseStart": 1.83,
+        "responseEnd": 5.374
+      },
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/010rcmbdpy62d.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650283.508,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.01,
+        "responseStart": 0.45,
+        "responseEnd": 0.743
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/102hq6ukr2mte.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650283.565,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.006,
+        "responseStart": 0.486,
+        "responseEnd": 0.745
+      }
+    },
+    {
+      "url": "http://localhost:3117/matters?_rsc=aYloDdFj2fLcBRIG",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650283.129,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.051,
+        "responseStart": 1.581,
+        "responseEnd": 3.012
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/2yltmx7hmpi85.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650286.216,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.027,
+        "responseEnd": 0.027
+      }
+    },
+    {
+      "url": "http://localhost:3117/decisions?_rsc=gb9IqDED3IyARycu",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650283.424,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.281,
+        "responseStart": 1.783,
+        "responseEnd": 2.973
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/3i8ml475q3tnt.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650286.491,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.019,
+        "responseEnd": 0.019
+      }
+    },
+    {
+      "url": "http://localhost:3117/skills?_rsc=XctmV590QdOV5Kt2",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650283.818,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.349,
+        "responseStart": 1.818,
+        "responseEnd": 2.905
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/1-ag0_8p7c454.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650286.7441,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.015,
+        "responseEnd": 0.015
+      }
+    },
+    {
+      "url": "http://localhost:3117/automations?_rsc=YSTe0YuMrKB5DiK_",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650283.9338,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.359,
+        "responseStart": 2.048,
+        "responseEnd": 3.034
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/0w7_05tjmjdpi.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650286.895,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.015,
+        "responseEnd": 0.015
+      }
+    },
+    {
+      "url": "http://localhost:3117/agents?_rsc=B2QhZAvBPwBaXk7B",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650286.622,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.295,
+        "responseStart": 0.994,
+        "responseEnd": 2.045
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/3hv1x-pofznn8.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650288.523,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.021,
+        "responseEnd": 0.021
+      }
+    },
+    {
+      "url": "http://localhost:3117/settings?_rsc=PqBGRIcLYJgm4qR6",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650286.7112,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.331,
+        "responseStart": 1.272,
+        "responseEnd": 1.994
+      }
+    },
+    {
+      "url": "http://localhost:3117/_next/static/chunks/24g_sljiih0hw.js",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650288.6838,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": -1,
+        "responseStart": 0.015,
+        "responseEnd": 0.015
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/team",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650273.7173,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.16,
+        "responseStart": 16.69,
+        "responseEnd": 22.361
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612650274.1038,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.093,
+        "responseStart": 2105.745,
+        "responseEnd": 2111.793
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/conversations",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612652392.176,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 3.517,
+        "responseStart": 250.803,
+        "responseEnd": 252.977
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/skills",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612652391.9038,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 0.931,
+        "responseStart": 341.278,
+        "responseEnd": 343.414
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/scope",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612652392.5002,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 3.276,
+        "responseStart": 377.04,
+        "responseEnd": 379.282
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/fact-requests",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612652395.0469,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 6.948,
+        "responseStart": 1187.133,
+        "responseEnd": 1191.6
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/handoffs",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612652395.3828,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 337.991,
+        "responseStart": 2391.962,
+        "responseEnd": 2396.507
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/skills/output-templates",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612652396.891,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 1186.121,
+        "responseStart": 2793.357,
+        "responseEnd": 2798.54
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/context",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612652397.122,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 2793.345,
+        "responseStart": 2873.113,
+        "responseEnd": 2878.121
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/scenarios",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612652398.0479,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 2872.364,
+        "responseStart": 2940.893,
+        "responseEnd": 2946.704
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/flow",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612652399.3762,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 2939.968,
+        "responseStart": 3291.601,
+        "responseEnd": 3298.44
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/reuse",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612652399.622,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 3291.473,
+        "responseStart": 3779.018,
+        "responseEnd": 3785.968
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/handoff-references",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612652395.2788,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 247.901,
+        "responseStart": 6199.836,
+        "responseEnd": 6204.094
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/files",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612652396.98,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 2390.617,
+        "responseStart": 6993.516,
+        "responseEnd": 6998.634
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/settings/research-queue/MAT-20260905-0a2378",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612652400.562,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 6990.189,
+        "responseStart": 6994.412,
+        "responseEnd": 7001.521
+      }
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/recommendation",
+      "method": "GET",
+      "timing": {
+        "startTime": 1788612652401.0432,
+        "domainLookupStart": -1,
+        "domainLookupEnd": -1,
+        "connectStart": -1,
+        "secureConnectionStart": -1,
+        "connectEnd": -1,
+        "requestStart": 6994.106,
+        "responseStart": 6999.385,
+        "responseEnd": 7006.708
+      }
+    }
+  ],
+  "text": "Today\nBriefing\nWorkspace\nMatters\nDecisions\nSkills\nAutomations\nAgents\nSettings\n\nLOCAL DEMO\n\nView as\nView workspace as\nAlex Morgan · Commercial · alex\nJordan Lee · Commercial · jordan\nCasey Chen · casey\nAbout\nClosed\nMatters\nHarbor Relay specification review\nSTAGE\nClosed\nRISK\nLawyer-set risk\nSet risk\nLow\nModerate\nHigh\nDUE\nNo date\nFiles & context\nOutput templates\nBusiness replies\nHand off work\nCompare supplied versions\nClose\n\nCHANGE IMPACT\n\nCompare supplied versions\n\nRead what changed first. Then assess what remains supported, what changes, and what may need review. This analysis does not edit earlier work.\n\nChoose versions and earlier work\nEarlier version (optional)\nEarlier text not supplied\nCurrent supplied version\nChoose current version\nEarlier saved work to assess (optional)\n\nNo earlier saved work is available. You can still compare the supplied source versions.\n\nTo assess a future draft, use Draft to create it. Then prepare a new comparison and select that draft.\n\nPrepare comparison\nNo comparison selected\n\nPrepare a comparison or open a saved one to read its exact passages and effects.\n\nMatter workspace view\nUnderstand\nDiscuss\nDraft\n\nOne matter conversation stays available while you read and draft.\n\nMatter understanding\n\nNo saved matter understanding is available.\n\nExplain, stress-test or ask the business\nScenarios and business flow\nPrior work, practice notes and assumption watches\nResearch, work items, decisions and matter records\nCONVERSATION SCOPE\nMatter context\nTarget: Harbor Relay specification review\n\nLoading saved chat…\n\nWhich other matters does this touch?\nWhat would change your view?\n+\nSend\nThemis.ai can research, draft and move this matter. It records a decision only when you explicitly ask it to. Build a skill\nAvailable work product\n\nNo saved work product is available yet.",
+  "controls": [
+    {
+      "tag": "SELECT",
+      "id": "demo-lawyer-person",
+      "text": "Alex Morgan · Commercial · alex\nJordan Lee · Commercial · jordan\nCasey Chen · casey",
+      "value": "alex",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "SELECT",
+      "id": "matter-risk",
+      "text": "Set risk\nLow\nModerate\nHigh",
+      "value": "",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Files & context",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Output templates",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Business replies",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Hand off work",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Compare supplied versions",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Close",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "SELECT",
+      "id": "",
+      "text": "Earlier text not supplied",
+      "value": "",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "SELECT",
+      "id": "",
+      "text": "Choose current version",
+      "value": "",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Prepare comparison",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "INPUT",
+      "id": "workspace-view-MAT-20260905-0a2378-understand",
+      "text": "",
+      "value": "understand",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "workspace-view-MAT-20260905-0a2378-discuss",
+      "text": "",
+      "value": "discuss",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "workspace-view-MAT-20260905-0a2378-draft",
+      "text": "",
+      "value": "draft",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "explain",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "stress_test",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "ask_business",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "explore_question",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "inquiry-question",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "SELECT",
+      "id": "correct-fact-id",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "correct-fact-text",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": true,
+      "type": "button"
+    },
+    {
+      "tag": "INPUT",
+      "id": "prior-work-query",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "text"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": true,
+      "type": "submit"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": true,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": true,
+      "type": "button"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "text"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "participant",
+      "disabled": false,
+      "type": "text"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": true,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": true,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Which other matters does this touch?",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "What would change your view?",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "+",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "file"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "",
+      "text": "",
+      "value": "Alex unsent note: retain the customer access qualification.",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Send",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "",
+      "text": "Create a new separate working draft titled Harbor Relay pilot review memo. For this revision exercise, use the supplied version 1 and original saved advice as the baseline: 30-day report retention, customer-only access, support access unconfirmed. Clearly label it a version 1 working baseline that needs review against version 2. Include short sections Summary, Retention, Support access, and Open items. Keep the qualification that Sam reported ticket-only logged support access but this is not independently verified. Do not change supplied sources, facts, or decisions. Save the new draft and open it in the existing editor.",
+      "value": "Create a new separate working draft titled Harbor Relay pilot review memo. For this revision exercise, use the supplied version 1 and original saved advice as the baseline: 30-day report retention, customer-only access, support access unconfirmed. Clearly label it a version 1 working baseline that needs review against version 2. Include short sections Summary, Retention, Support access, and Open items. Keep the qualification that Sam reported ticket-only logged support access but this is not independently verified. Do not change supplied sources, facts, or decisions. Save the new draft and open it in the existing editor.",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Output templates",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Request draft",
+      "value": "",
+      "disabled": true,
+      "type": "button"
+    }
+  ],
+  "editors": [],
+  "dimensions": {
+    "width": 1440,
+    "scrollWidth": 1440,
+    "reducedMotion": true
+  }
+}

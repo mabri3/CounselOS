@@ -1,0 +1,214 @@
+{
+  "errors": [],
+  "network": [
+    {
+      "url": "http://localhost:8117/api/team",
+      "status": 200,
+      "elapsedMs": 27
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378",
+      "status": 200,
+      "elapsedMs": 2332
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/conversations",
+      "status": 200,
+      "elapsedMs": 222
+    },
+    {
+      "url": "http://localhost:8117/api/skills",
+      "status": 200,
+      "elapsedMs": 284
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/scope",
+      "status": 200,
+      "elapsedMs": 648
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/scenarios",
+      "status": 200,
+      "elapsedMs": 825
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/context",
+      "status": 200,
+      "elapsedMs": 998
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/flow",
+      "status": 200,
+      "elapsedMs": 1021
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/fact-requests",
+      "status": 200,
+      "elapsedMs": 1065
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/reuse",
+      "status": 200,
+      "elapsedMs": 1503
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/handoffs",
+      "status": 200,
+      "elapsedMs": 1806
+    },
+    {
+      "url": "http://localhost:8117/api/settings/research-queue/MAT-20260905-0a2378",
+      "status": 200,
+      "elapsedMs": 1809
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/recommendation",
+      "status": 200,
+      "elapsedMs": 1813
+    },
+    {
+      "url": "http://localhost:8117/api/skills/output-templates",
+      "status": 200,
+      "elapsedMs": 1872
+    },
+    {
+      "url": "http://localhost:8117/api/review-packets?limit=100",
+      "status": 200,
+      "elapsedMs": 1874
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/files",
+      "status": 200,
+      "elapsedMs": 2765
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/conversations/CONV-20260905-9d68db",
+      "status": 200,
+      "elapsedMs": 3142
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/chat-runs?conversation_id=CONV-20260905-9d68db",
+      "status": 200,
+      "elapsedMs": 613
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/chat-runs/RUN-20260905-0bfadb",
+      "status": 200,
+      "elapsedMs": 654
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/conversations/CONV-20260905-9d68db",
+      "status": 200,
+      "elapsedMs": 676
+    },
+    {
+      "url": "http://localhost:8117/api/settings",
+      "status": 200,
+      "elapsedMs": 5779
+    },
+    {
+      "url": "http://localhost:8117/api/settings/research-queue/MAT-20260905-0a2378",
+      "status": 200,
+      "elapsedMs": 1102
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/mitigations",
+      "status": 200,
+      "elapsedMs": 7332
+    },
+    {
+      "url": "http://localhost:8117/api/skills/output-templates",
+      "status": 200,
+      "elapsedMs": 3878
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace",
+      "status": 200,
+      "elapsedMs": 9139
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/context",
+      "status": 200,
+      "elapsedMs": 4500
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/scenarios",
+      "status": 200,
+      "elapsedMs": 4548
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/flow",
+      "status": 200,
+      "elapsedMs": 4568
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378",
+      "status": 200,
+      "elapsedMs": 4840
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/reuse",
+      "status": 200,
+      "elapsedMs": 5073
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/scope",
+      "status": 200,
+      "elapsedMs": 433
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/files",
+      "status": 200,
+      "elapsedMs": 6609
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/fact-requests",
+      "status": 200,
+      "elapsedMs": 2233
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/handoffs",
+      "status": 200,
+      "elapsedMs": 2785
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace",
+      "status": 200,
+      "elapsedMs": 12413
+    },
+    {
+      "url": "http://localhost:8117/api/review-packets?limit=100",
+      "status": 200,
+      "elapsedMs": 2868
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/orientation",
+      "failed": "net::ERR_ABORTED",
+      "elapsedMs": 14994
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace",
+      "status": 200,
+      "elapsedMs": 10802
+    },
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/mitigations",
+      "status": 200,
+      "elapsedMs": 6395
+    }
+  ],
+  "state": {
+    "closed": true,
+    "waiting": false,
+    "useful": true,
+    "stale": true,
+    "timeout": false
+  },
+  "history": 0,
+  "impact": "CHANGE IMPACT\n\nCompare supplied versions\n\nRead what changed first. Then assess what remains supported, what changes, and what may need review. This analysis does not edit earlier work.\n\nChoose versions and earlier work\nEarlier version (optional)\nEarlier text not supplied\nCurrent supplied version\nChoose current version\nEarlier saved work to assess (optional)\n\nNo earlier saved work is available. You can still compare the supplied source versions.\n\nTo assess a future draft, use Draft to create it. Then prepare a new comparison and select that draft.\n\nSource-only scope: No earlier advice, recommendation, decision, or draft will be assessed.\n\nPrepare comparison\nNo comparison selected\n\nPrepare a comparison or open a saved one to read its exact passages and effects.",
+  "metrics": {
+    "scrollWidth": 1440,
+    "clientWidth": 1440,
+    "scrollHeight": 3900
+  }
+}

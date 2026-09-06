@@ -1,0 +1,154 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 174.33238220214844,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 892.7272338867188,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "font": "13px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 237.7627716064453,
+      "x": 638.9701538085938,
+      "y": 60.305397033691406
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 645.87353515625,
+      "y": 85.99431610107422
+    },
+    {
+      "font": "15px",
+      "height": 944.0908813476562,
+      "tag": "ASIDE",
+      "text": "SettingsModelAnswer contractDocument reviewResearchFiles and",
+      "width": 237.9971466064453,
+      "x": 18.90625,
+      "y": 195.2414703369141
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Model",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": 271.22869873046875
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Answer contract",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": 330.22015380859375
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Document review",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": 389.2116394042969
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Research",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": 448.2030944824219
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Files and outputs",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": 507.194580078125
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Model providers",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": 566.18603515625
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Watch providers",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": 625.1775512695312
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Company",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": 684.1690063476562
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Vaults",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": 743.1604614257812
+    },
+    {
+      "font": "48px",
+      "height": 53.749996185302734,
+      "tag": "H1",
+      "text": "Document review",
+      "width": 543.92041015625,
+      "x": 295.9019775390625,
+      "y": 233.23863220214844
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Discard",
+      "width": 82.37925720214844,
+      "x": 627.3792114257812,
+      "y": 683.8920288085938
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Save changes",
+      "width": 121.06533813476562,
+      "x": 718.757080078125,
+      "y": 683.8920288085938
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 0,
+  "url": "http://localhost:3134/settings",
+  "width": 902
+}

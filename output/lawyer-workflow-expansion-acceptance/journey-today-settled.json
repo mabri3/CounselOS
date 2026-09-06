@@ -1,0 +1,469 @@
+{
+  "label": "journey-today-settled",
+  "url": "http://localhost:3117/",
+  "completed": [
+    {
+      "op": "wait",
+      "ms": 18000
+    }
+  ],
+  "failure": null,
+  "errors": [],
+  "responses": [],
+  "text": "Today\nBriefing\nWorkspace\nMatters\nDecisions\nSkills\nAutomations\nAgents\nSettings\n\nLOCAL DEMO\n\nView as\nView workspace as\nAlex Morgan · Commercial · alex\nJordan Lee · Commercial · jordan\nCasey Chen · casey\n\nThis changes the local demo view. It is not a sign-in or access control.\n\nSeptember 5, 2026\nThree things need your attention\n\n2 unassigned · 1 awaiting your judgment.\n\nWORK\n\nTeam work\nTeam work view\nMy work\nWaiting on others\nTeam\n\nNo items in my work.\n\nCedar Desk policy review\nMATTER ORIENTATION\nReview a proposed internal equipment-loan policy for the US office. Employees may borrow a laptop for 14 days. The current policy does not say who can approve an extension. Provide a useful first pass and identify the missing business fact…\nRead full question\n\nThis saved advice has an earlier or unknown question basis. Confirm it against the current question.\n\nConfirm the business objective, timing, and facts needed to frame the legal work. For Jordan Lee.\n\nReady\n\nOrient to the request\nDiscuss\nDraft\nHarbor Relay specification review\nMATTER ORIENTATION\nAssess the US pilot of Harbor Relay (launch 21 Oct 2026), which sends an account activity report to the customer, retained 30 days and openable only by the customer, for privacy/data-access and related considerations — including whether…\nRead full question\n\nThis saved advice has an earlier or unknown question basis. Confirm it against the current question.\n\nConfirm the business objective, timing, and facts needed to frame the legal work. For Alex Morgan.\n\nReady\n\nOrient to the request\nDiscuss\nDraft\nInstant payouts Q1\nMATTER ORIENTATION\nCan Mosaic Relay ship Instant Payouts for marketplace sellers in Q1, given the proposed onboarding (email + bank account only, full identity deferred to $3,000 cumulative payouts), ACH payouts initiated by Mosaic Relay via the bank partner…\nRead full question\n\nThis saved advice has an earlier or unknown question basis. Confirm it against the current question.\n\nThe $3,000 cumulative payout threshold has no legal basis (confirmed as an engineering/product choice). Under BSA/AML, a money transmitter must collect CIP before establishing the account relationship. Design a compliant onboarding that collects full identity at onboarding rather than deferring to a payout threshold.\n\nReady\n\nRedesign identity collection: collect CIP at onboarding, not at $3,000 payout threshold\nDiscuss\nDraft\nMosaic Relay UX Test — 10 — International Expansion and Local Payment Methods\nMATTER ORIENTATION\nWhich specific countries can Mosaic Relay add to its international launch list, and what minimum facts and documentation must each candidate country clear — covering licensing/agent structure, funds flow, AML/KYC, privacy, consumer, tax…\nRead full question\n\nThis saved advice has an earlier or unknown question basis. Confirm it against the current question.\n\nDetermine whether Mosaic Relay ever takes custody of funds or whether acquiring/local payment providers and payout providers hold and move all funds. This determines whether the matter is a Mosaic Relay licensing matter or an agent/partner-of-record matter.\n\nReady\n\nConfirm funds-flow and custody model\nDiscuss\nDraft\nMosaic Relay UX Test — 09 — Targeted Product Emails Using Transaction and Identity Data\nMATTER ORIENTATION\nCan Mosaic Relay lawfully use fraud-risk scores and other service data to target marketing emails to business contacts in the US, UK, and EU, and if so, under what legal basis, with what suppression and preference controls, and subject to…\nRead full question\n\nThis saved advice has an earlier or unknown question basis. Confirm it against the current question.\n\nThis is the next step in the saved matter lifecycle. For Lawyer.\n\nReady\n\nReview the research packet and choose the legal path to test.\nDiscuss\nDraft\nMosaic Relay UX Test — 08 — Marketing Claims About Fraud Prevention and Compliance\nMATTER ORIENTATION\nAdvise which marketing claims about fraud prevention and compliance are misleading or impermissible, what substantiation and qualifiers are required, how to describe third-party dependencies, how to approve case studies, and whether…\nRead full question\n\nThis saved advice has an earlier or unknown question basis. Confirm it against the current question.\n\nThis is the next step in the saved matter lifecycle. For Lawyer.\n\nReady\n\nClose the matter.\nDiscuss\nDraft\nMosaic Relay UX Test — 07 — Consumer Disclosures for Payment Risk Holds\nMATTER ORIENTATION\nShould Mosaic Relay launch an automated payout hold feature that delays merchant funds for up to several weeks based on risk-scoring triggers, and if so, what contractual authority, disclosure language, timing limits, and procedural…\nRead full question\n\nThis saved advice has an earlier or unknown question basis. Confirm it against the current question.\n\nNo required action is saved for this matter.\n\nDiscuss\nDraft\nMosaic Relay UX Test — 06 — Privacy Controls for Payment Operations Data\nMATTER ORIENTATION\nShould Mosaic Relay proceed with the unified dashboard under a processor-only model (acting on customer instructions) or a hybrid model (processor for customer-directed operations, independent controller for fraud/security/compliance), and…\nRead full question\n\nThis saved advice has an earlier or unknown question basis. Confirm it against the current question.\n\nNo required action is saved for this matter.\n\nDiscuss\nDraft\nMosaic Relay UX Test — 05 — Deactivation of a High-Risk Merchant\nMATTER ORIENTATION\nShould Mosaic Relay implement a dual-track deactivation process that immediately blocks funds and accounts for confirmed sanctions matches while using reversible, time-boxed restrictions for discretionary fraud or AML concerns, and what…\nRead full question\n\nThis saved advice has an earlier or unknown question basis. Confirm it against the current question.\n\nThis is the next step in the saved matter lifecycle. For Lawyer.\n\nReady\n\nRecord manual delivery.\nDiscuss\nDraft\nMosaic Relay UX Test — 04 — Refunds, Reversals, and Suspicious Payment Activity\nMATTER ORIENTATION\nShould Mosaic Relay launch the merchant self-service refund tool in its current form, launch it in phases with specific controls (original-source-only refunds, enhanced monitoring, restricted manual overrides), or delay launch until…\nRead full question\n\nThis saved advice has an earlier or unknown question basis. Confirm it against the current question.\n\nNo required action is saved for this matter.\n\nDiscuss\nDraft\nMosaic Relay UX Test — 02 — Consumer Background Checks for Contractor Payouts\nMATTER ORIENTATION\nWhether Mosaic Relay may treat sanctions screening and identity verification as separate from FCRA consumer-report obligations when those checks are bundled with or used alongside criminal background reports that determine contractor payout…\nRead full question\n\nThis saved advice has an earlier or unknown question basis. Confirm it against the current question.\n\nNo required action is saved for this matter.\n\nDiscuss\nDraft\nMosaic Relay UX Test — 01 — Risk-Based Merchant Onboarding for a Marketplace\nMATTER ORIENTATION\nCan Mosaic Relay lawfully enable limited card acceptance and seller payouts for a marketplace customer in the US, UK, and EU without holding funds, and what licensing, verification, and control conditions must be satisfied before launch in…\nRead full question\n\nThis saved advice has an earlier or unknown question basis. Confirm it against the current question.\n\nNo required action is saved for this matter.\n\nDiscuss\nDraft\nYour other matters\nShowing 2 of 2\nAll matters →\nMosaic Relay UX Test — 08 — Marketing Claims About Fraud Prevention and Compliance — close the matter.\nRespond\nMosaic Relay UX Test — 05 — Deactivation of a High-Risk Merchant — record manual delivery.\nRespond\nThe practice\n7 in flight\nJust came in\n2\nBeing researched\n0\nWaiting on your judgment\n2\nBeing drafted\n0\nRespond\n3\nNothing is with Themis.ai right now.\n2 decisions recorded.\nOpen the workspace\nPaste a request — a Slack thread, an email, or a redline note…\nNew matter\nAsk about your work\n\nThemis.ai can search the workspace, compare matters, and take actions that you request.\n\nThemis.ai\nConversation\nToday — September 5, 2026\nSeptember 3, 2026\nSaved to today's Markdown file.\nWhat needs my attention today?\nSummarize my active matters.\nWhich decisions need review?\n+\nSend\nBuild a skill",
+  "controls": [
+    {
+      "tag": "SELECT",
+      "id": "demo-lawyer-person",
+      "text": "Alex Morgan · Commercial · alex\nJordan Lee · Commercial · jordan\nCasey Chen · casey",
+      "value": "alex",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "INPUT",
+      "id": "team-view-my_work",
+      "text": "",
+      "value": "on",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "team-view-waiting",
+      "text": "",
+      "value": "on",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "team-view-team",
+      "text": "",
+      "value": "on",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Read full question",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Orient to the request",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Discuss",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Draft",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Read full question",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Orient to the request",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Discuss",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Draft",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Read full question",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Redesign identity collection: collect CIP at onboarding, not at $3,000 payout threshold",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Discuss",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Draft",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Read full question",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Confirm funds-flow and custody model",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Discuss",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Draft",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Read full question",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Review the research packet and choose the legal path to test.",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Discuss",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Draft",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Read full question",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Close the matter.",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Discuss",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Draft",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Read full question",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Discuss",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Draft",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Read full question",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Discuss",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Draft",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Read full question",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Record manual delivery.",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Discuss",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Draft",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Read full question",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Discuss",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Draft",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Read full question",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Discuss",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Draft",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Read full question",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Discuss",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Draft",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "New matter",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "SELECT",
+      "id": "today-chat-day",
+      "text": "Today — September 5, 2026\nSeptember 3, 2026",
+      "value": "2026-09-05",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "What needs my attention today?",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Summarize my active matters.",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Which decisions need review?",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "+",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "file"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Send",
+      "value": "",
+      "disabled": true,
+      "type": "submit"
+    }
+  ],
+  "dimensions": {
+    "width": 1440,
+    "scrollWidth": 1440,
+    "reducedMotion": true
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "matter_id": "MAT-20260905-0a2378",
+  "revision": "f3eab7d3c7b75ee5057f219df5511a0a44d9ed71ec99bba1b04d62f99cfbe412",
+  "source_revisions": {
+    "03_Matters/harbor-relay-specification-review-0a2378/matter.md": "819f74fa57aeba75d32ba4522f4bbd21f1c9156d346c59be4eb4795fe24c9cd7",
+    "03_Matters/harbor-relay-specification-review-0a2378/dossier.md": "0f58504eb0a69e2eb81d61f060e40f97b26cf6bd942065b0932b767f10c627c8",
+    "03_Matters/harbor-relay-specification-review-0a2378/facts.md": "a454497fe33b0d36778054ae65b16e563d21a65d22d55c48cb2ac40ae15970d9",
+    "03_Matters/harbor-relay-specification-review-0a2378/issues.md": "e4f4491fdd004c11a41774d43cd2ece05e5c481c9e39bfc7d85a2722abfa1600",
+    "03_Matters/harbor-relay-specification-review-0a2378/recommendations.md": "5ba1ecf7298c3a465726a523149ed10e8c9e9f820a56cef60b6b103ecd4014c3",
+    "03_Matters/harbor-relay-specification-review-0a2378/request.md": "a38c8eaafdf2d20a54dc7ef62439c767eb703e2c80b1d8a2ea41e57e5dc9063c",
+    "business_question": "legacy:78c0caaa1faac9054ba6f20782acf60cb89adc183bcd383f4b114a3646a8aa24"
+  },
+  "question": {
+    "question_id": "BQ-eb300f7c7f4180c6",
+    "text": "Assess the US pilot of Harbor Relay (launch 21 Oct 2026), which sends an account activity report to the customer, retained 30 days and openable only by the customer, for privacy/data-access and related considerations \u2014 including whether support staff may open reports.",
+    "revision": "legacy:78c0caaa1faac9054ba6f20782acf60cb89adc183bcd383f4b114a3646a8aa24",
+    "dossier_revision": "0ce631252fb2408ac081dbbb2d72fdbad7a6fb257847401ea405df18511b3e5f",
+    "origin": "legacy_unknown",
+    "source_message_id": null,
+    "source_action_key": null,
+    "updated_at": null
+  },
+  "short_answer": "",
+  "issues": [
+    {
+      "issue_id": "ISS-eb300f7c7f-0e0598136f70e3a5",
+      "parent_issue_id": null,
+      "title": "Privacy and data-access controls for customer account activity reports",
+      "why_it_matters": "",
+      "fact_ids": [],
+      "assumption_ids": [],
+      "claim_ids": [],
+      "lawyer_state": "open",
+      "updated_at": null
+    },
+    {
+      "issue_id": "ISS-eb300f7c7f-fd4429d42b52ff4a",
+      "parent_issue_id": null,
+      "title": "Consistency of support-staff access with the stated customer-only access promise",
+      "why_it_matters": "",
+      "fact_ids": [],
+      "assumption_ids": [],
+      "claim_ids": [],
+      "lawyer_state": "open",
+      "updated_at": null
+    }
+  ],
+  "issues_revision": "e4f4491fdd004c11a41774d43cd2ece05e5c481c9e39bfc7d85a2722abfa1600",
+  "questions": [],
+  "supporting_question": null,
+  "pending_reframes": [],
+  "question_changes": [],
+  "receipts": [],
+  "context_selection": [],
+  "recap": {
+    "previous_seen_revision": null,
+    "current_revision": "aa9052f6e64c6697e5c36d8742e5b810fa679b3c30b2f45df56d22045df39c03",
+    "changes": [
+      {
+        "path": "03_Matters/harbor-relay-specification-review-0a2378/dossier.md",
+        "before_revision": null,
+        "after_revision": "0f58504eb0a69e2eb81d61f060e40f97b26cf6bd942065b0932b767f10c627c8"
+      },
+      {
+        "path": "03_Matters/harbor-relay-specification-review-0a2378/facts.md",
+        "before_revision": null,
+        "after_revision": "a454497fe33b0d36778054ae65b16e563d21a65d22d55c48cb2ac40ae15970d9"
+      },
+      {
+        "path": "03_Matters/harbor-relay-specification-review-0a2378/issues.md",
+        "before_revision": null,
+        "after_revision": "e4f4491fdd004c11a41774d43cd2ece05e5c481c9e39bfc7d85a2722abfa1600"
+      },
+      {
+        "path": "03_Matters/harbor-relay-specification-review-0a2378/matter.md",
+        "before_revision": null,
+        "after_revision": "819f74fa57aeba75d32ba4522f4bbd21f1c9156d346c59be4eb4795fe24c9cd7"
+      },
+      {
+        "path": "03_Matters/harbor-relay-specification-review-0a2378/recommendations.md",
+        "before_revision": null,
+        "after_revision": "5ba1ecf7298c3a465726a523149ed10e8c9e9f820a56cef60b6b103ecd4014c3"
+      },
+      {
+        "path": "03_Matters/harbor-relay-specification-review-0a2378/request.md",
+        "before_revision": null,
+        "after_revision": "a38c8eaafdf2d20a54dc7ef62439c767eb703e2c80b1d8a2ea41e57e5dc9063c"
+      },
+      {
+        "path": "business_question",
+        "before_revision": null,
+        "after_revision": "legacy:78c0caaa1faac9054ba6f20782acf60cb89adc183bcd383f4b114a3646a8aa24"
+      }
+    ],
+    "new_outputs": [],
+    "output_read_failures": []
+  },
+  "stale": false,
+  "answer_links": [],
+  "work_products": [],
+  "run_id": null,
+  "generated_at": null
+}

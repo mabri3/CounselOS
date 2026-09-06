@@ -1,0 +1,13 @@
+{
+  "owned_servers_stopped": [
+    4717,
+    93287
+  ],
+  "temporary_next_type_paths_restored": true,
+  "owned_build_directories_removed": [
+    "frontend/.next-map-redesign",
+    "frontend/.next-map-production"
+  ],
+  "original_backend_parent": 72061,
+  "original_frontend": 72084
+}

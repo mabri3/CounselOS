@@ -1,0 +1,69 @@
+- banner:
+  - link "Themis.ai":
+    - /url: /
+    - img "Themis.ai"
+  - navigation "Main navigation":
+    - link "Today":
+      - /url: /
+    - link "Briefing":
+      - /url: /briefing
+    - link "Workspace":
+      - /url: /workspace
+    - link "Matters":
+      - /url: /matters
+    - link "Decisions":
+      - /url: /decisions
+    - link "Skills":
+      - /url: /skills
+    - link "Automations":
+      - /url: /automations
+    - link "Agents":
+      - /url: /agents
+    - link "Settings":
+      - /url: /settings
+  - region "View as":
+    - paragraph: Local demo
+    - heading "View as" [level=2]
+    - generic: View workspace as
+    - combobox "View workspace as":
+      - option "Alex Morgan · alex-morgan" [selected]
+      - option "Jamie Lee · jamie-lee"
+    - generic "About"
+- banner:
+  - 'link "Lumen Learning: US family launch with analytics and shared-device accounts"':
+    - /url: /matters/MAT-20260905-f025e4
+  - text: · research
+  - generic: Supplied definitions research
+  - generic: Themis.ai wrote this · No cited sources
+  - link "Open in the matter":
+    - /url: /matters/MAT-20260905-f025e4?file=03_Matters%2Flumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4%2Fresearch%2Fsupplied-definitions.md
+- region "Research queue":
+  - generic: Research queue
+  - status: 2 runs · 0 active · 2 saved packets · 0 saved support sources
+  - combobox:
+    - option "Select a saved question" [selected]
+  - textbox "Or enter a research question"
+  - button "Run research"
+  - strong: Partial
+  - generic: · order — · RUN-20260905-b5b57e
+  - text: · Which coverage questions remain open?
+  - generic: "Support: Saved packet · No counted support sources"
+  - generic: Partial research is saved. You can use the packet to continue drafting.
+  - link "Open packet":
+    - /url: "?file=03_Matters%2Flumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4%2Fresearch%2Fsupplied-definitions.md"
+  - strong: Complete
+  - generic: · order — · RUN-20260905-87948e
+  - text: · What definitions are supplied?
+  - generic: "Support: Saved packet · No counted support sources"
+  - link "Open packet":
+    - /url: "?file=03_Matters%2Flumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4%2Fresearch%2Fsupplied-definitions.md"
+- article:
+  - heading "Supplied definitions research" [level=1]
+  - paragraph: Themis.ai
+  - paragraph: The fixture contains narrow definitions only. Applicability remains open.
+  - paragraph: "[Definitions](03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/coppa-definitions.md)"
+- button "Source"
+- button "Notes & questions"
+- generic: Select Notes & questions to add a question about this research.
+- button "Open Next.js Dev Tools":
+- alert

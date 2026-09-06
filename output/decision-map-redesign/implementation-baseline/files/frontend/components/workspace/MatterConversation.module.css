@@ -1,0 +1,166 @@
+.dock {
+  min-width: 0;
+  border: 1px dashed var(--agent-edge);
+  border-radius: min(10px, var(--radius));
+  background: var(--agent-wash);
+}
+
+.dock :global(.conversation-dock__target) {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--agent-edge);
+}
+
+.dock :global(.conversation-dock__label) {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--agent);
+  font: 600 12px/1.4 var(--sans);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.dock :global(.conversation-dock__target-parts) {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.dock :global(.conversation-target) {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: baseline;
+  gap: 4px;
+  padding: 4px 7px;
+  border-radius: 5px;
+  background: var(--raised);
+  color: var(--ink-3);
+  font: 400 12px/1.45 var(--sans);
+  overflow-wrap: anywhere;
+}
+
+.dock :global(.conversation-target strong) { color: var(--ink-2); font-weight: 600; }
+.dock :global(.conversation-target span) { min-width: 0; overflow-wrap: anywhere; white-space: normal; }
+
+.dock :global(.conversation-dock__receipts) { padding: 10px 14px; border-bottom: 1px solid var(--agent-edge); }
+.dock :global(.conversation-dock__receipts summary) { display: flex; align-items: center; gap: 7px; cursor: pointer; color: var(--ink-3); font: 600 13px/1.45 var(--sans); }
+.dock :global(.conversation-dock__receipts ul) { display: grid; gap: 8px; padding: 0; margin: 10px 0 0; list-style: none; }
+.dock :global(.conversation-receipt) { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; color: var(--ink-3); font: 400 15px/1.5 var(--sans); }
+.dock :global(.conversation-receipt__detail) { flex-basis: 100%; color: var(--failure); }
+.dock :global(.conversation-dock__panel) { min-width: 0; }
+
+.panel { min-width: 0; }
+.panel :global(.conversation-layout) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 336px);
+  align-items: start;
+  gap: 16px;
+  margin: 14px;
+}
+.panel :global(.conversation-layout--single) { grid-template-columns: minmax(0, 1fr); }
+.panel :global(.conversation-main) { min-width: 0; }
+.panel :global(.conversation-inquiry-rail) { min-width: 0; position: sticky; top: 16px; }
+.panel :global(.chat-history-status) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 0;
+  margin: 12px 14px 0;
+  padding: 9px 12px;
+  border: 1px solid var(--line-faint);
+  border-radius: 7px;
+  background: var(--raised);
+  color: var(--ink-3);
+  font: 400 15px/1.5 var(--sans);
+}
+
+.panel :global(.thread) { display: grid; gap: 12px; padding: 0; }
+.panel :global(.latest-answer) { min-width: 0; padding: 16px; border: 1px dashed var(--agent-edge); border-radius: 8px; background: var(--agent-wash); }
+.panel :global(.latest-answer__label) { margin: 0 0 9px; color: var(--agent); font: 600 12px/1.4 var(--sans); letter-spacing: .06em; text-transform: uppercase; }
+.panel :global(.latest-answer .assistant-message) { padding: 0; }
+.panel :global(.conversation-history) { border-top: 1px solid var(--line-faint); }
+.panel :global(.conversation-history > summary) { cursor: pointer; padding: 13px 2px; color: var(--ink-3); font: 600 14px/1.45 var(--sans); }
+.panel :global(.conversation-history__messages) { display: grid; gap: 12px; padding: 4px 0 12px; }
+.panel :global(.assistant-message) { border-radius: 10px; }
+.panel :global(.bubble-agent) { font: 400 16px/1.65 var(--serif); }
+.panel :global(.bubble-agent p),
+.panel :global(.bubble-agent ul),
+.panel :global(.bubble-agent ol),
+.panel :global(.bubble-agent table) { font-family: var(--serif); }
+.panel :global(.bubble-you) { font: 400 15px/1.5 var(--sans); }
+
+.panel :global(.composer) { margin: 0 14px 14px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--raised); }
+.panel :global(.composer-field) { min-height: 36px; }
+.panel :global(.composer-field textarea) { min-height: 28px; }
+.panel :global(.composer-note) { font-size: 12px; line-height: 1.5; }
+.panel :global(.suggestion) { text-align: left; }
+
+@media (max-width: 760px) {
+  :global(.matter-shell) :global(.draft-workspace) .dock {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  :global(.matter-shell) :global(.draft-workspace) .dock :global(.conversation-dock__panel) {
+    display: block;
+    overflow: visible;
+  }
+
+  :global(.matter-shell) :global(.draft-workspace) .dock :global(.chat-panel) { min-height: 0; }
+  :global(.matter-shell) :global(.draft-workspace) .dock :global(.thread) {
+    flex: none;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .dock :global(.conversation-dock__target > .btn) { width: 100%; min-height: 44px; }
+  .panel :global(.conversation-layout) { grid-template-columns: minmax(0, 1fr); margin: 10px 12px; }
+  .panel :global(.conversation-inquiry-rail) { position: static; }
+  .panel :global(.chat-history-status) { margin: 10px 12px 0; }
+  .panel :global(.composer) { margin: 0 12px 12px; }
+  .panel :global(.chat-history-status) > :global(.btn),
+  .panel :global(.composer-field) > :global(.btn),
+  .panel :global(.suggestion) { min-height: 44px; }
+  .panel :global(.composer-field) { align-items: stretch; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dock *, .panel * { transition: none !important; animation: none !important; }
+}
+.dock { border: 0; background: var(--raised); }
+.dock :global(.conversation-dock__target) { border: 1px solid var(--line); border-radius: 8px; margin-bottom: 20px; padding: 16px 20px; }
+.panel :global(.latest-question) { padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--raised); }
+.panel :global(.conversation-inquiry-rail) { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.panel :global(.inquiry-actions) { border: 0; background: var(--raised); }
+.panel :global(.inquiry-actions__intro) { font-size: 12px; }
+.panel :global(.inquiry-actions__buttons) { display: grid; }
+.panel :global(.inquiry-actions__buttons .btn.agent) { background: var(--agent); color: white; border-style: solid; }
+.panel :global(.inquiry-actions__choices) { gap: 12px; }
+.panel :global(.inquiry-actions__choices label) { min-height: 105px; }
+.panel :global(.inquiry-actions textarea) { font-family: var(--sans); min-height: 130px; }
+.panel :global(.answer-reading[data-collapsed="true"]) { max-height: 240px; overflow: hidden; }
+.panel :global(.latest-answer .bubble-agent), .panel :global(.latest-answer .bubble-agent p) { font-size: 21px; line-height: 1.55; }
+.panel :global(.latest-answer .agent-label) { color: var(--agent); font: 400 17px var(--sans); margin-bottom: 14px; }
+.panel :global(.latest-answer .agent-label)::before { content: "✧"; margin-right: 9px; font-size: 24px; }
+.dock { display: flex; flex-direction: column; }
+.dock :global(.conversation-dock__target) { order: 0; margin-bottom: 0; padding: 10px 16px; }
+.dock :global(.conversation-dock__panel) { order: 1; }
+.dock :global(.conversation-dock__receipts) { order: 2; border: 0; border-top: 1px solid var(--line); margin-top: 16px; }
+.panel > :global(.chat-history-status) { margin: 0; border-top: 0; padding: 6px 16px; border-radius: 0 0 8px 8px; }
+.panel > :global(.chat-card.wash-healthy) { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 10px 14px 0; padding: 7px 12px; border: 0; background: transparent; }
+.panel > :global(.chat-card.wash-healthy .chat-card-summary) { font: 400 12px/1.4 var(--sans); color: var(--ink-3); }
+.panel > :global(.chat-card.wash-healthy .chat-card-actions):empty { display: none; }
+.panel :global(.latest-answer .assistant-message) { border: 0; background: transparent; }
+.panel :global(.latest-question[data-collapsed="true"] .bubble-you) { max-height: 120px; overflow: hidden; }
+.panel :global(.inquiry-actions__header h2) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.panel :global(.inquiry-actions__header) > span, .panel :global(.inquiry-actions__intro) { display: none; }
+.panel :global(.inquiry-actions__header .eyebrow) { margin: 0 0 8px; color: var(--ink); font: 500 13px var(--sans); }

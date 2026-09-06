@@ -1,0 +1,55 @@
+{
+  "height": 1536,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 83.99857330322266,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": -55.909088134765625
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 763.68603515625,
+      "y": 36.633522033691406
+    },
+    {
+      "font": "48px",
+      "height": 53.749996185302734,
+      "tag": "H1",
+      "text": "Process helper (test)",
+      "width": 434.3181762695313,
+      "x": 277.9971618652344,
+      "y": 88.26704406738281
+    },
+    {
+      "font": "20px",
+      "height": 27.727272033691406,
+      "tag": "H2",
+      "text": "Fixed application rules",
+      "width": 708.5510864257812,
+      "x": 277.9971618652344,
+      "y": 362.4431762695313
+    },
+    {
+      "font": "20px",
+      "height": 27.727272033691406,
+      "tag": "H2",
+      "text": "Model summary",
+      "width": 708.5510864257812,
+      "x": 277.9971618652344,
+      "y": 650.866455078125
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 55.909088134765625,
+  "url": "http://localhost:3134/agents",
+  "width": 1024
+}

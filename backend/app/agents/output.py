@@ -36,7 +36,14 @@ _EMPTY_ORIENTATION_LINE = re.compile(
     re.IGNORECASE,
 )
 _INTERNAL_ID = re.compile(
-    r"\b(?:RUN|MAT|CONV|MSG|FACT|ASM|EVT|EVENT|WI|WP|FINAL|DEC|RES|SRC|ACT)-[A-Za-z0-9][A-Za-z0-9-]*\b"
+    r"\b(?:RUN|MAT|CONV|MSG|FACT|ASM|EVT|EVENT|WI|WP|FINAL|DEC|RES|SRC|CLM|ACT)-[A-Za-z0-9][A-Za-z0-9-]*\b"
+)
+_CITATION_MARKER = re.compile(
+    r"\[(?:source:[^\]|;\s]+(?:\|[^\]\r\n]+)?"
+    r"|claim:CLM-[A-Za-z0-9][A-Za-z0-9-]*)\]"
+)
+_STRUCTURED_OUTPUT = re.compile(
+    r"(?ms)^```(?:claim-support|decision-paths)[ \t]*\n.*?\n```[ \t]*(?=\n|$)"
 )
 _ABSOLUTE_PATH = re.compile(r"(?<!\w)/(?:Users|home|private|tmp|var)/[^\s)`\]}>,;]+")
 _VAULT_PATH = re.compile(
@@ -70,10 +77,36 @@ _LIFECYCLE_CONTROL_OPERATIONS: dict[str, tuple[str, ...]] = {
     "close": ("close_matter",),
 }
 
+
+def _humanize_outside_citation_markers(line: str) -> str:
+    """Keep closed citation markers exact and clean their surrounding prose."""
+    visible: list[str] = []
+    cursor = 0
+    for marker in _CITATION_MARKER.finditer(line):
+        visible.append(_humanize_internal_fragment(line[cursor:marker.start()]))
+        visible.append(marker.group())
+        cursor = marker.end()
+    visible.append(_humanize_internal_fragment(line[cursor:]))
+    return "".join(visible)
+
+
+def _humanize_internal_fragment(value: str) -> str:
+    value = _ABSOLUTE_PATH.sub("the saved file", value)
+    value = _VAULT_PATH.sub("the saved file", value)
+    value = _REPOSITORY_PATH.sub("the application", value)
+    return _INTERNAL_ID.sub("the internal record", value)
+
 # This is deliberately a closed list. It prevents a failed typed action from
 # turning into a broad ban on ordinary legal analysis that happens to use a
 # similar word (for example, "the issue map was created").
 _MUTATION_SUCCESS_CLAIMS: dict[str, tuple[re.Pattern[str], ...]] = {
+    "change_business_question": (
+        re.compile(r"\b(?:i|we) (?:have )?(?:changed|updated|saved|reframed) (?:the |your )?(?:business |decision )?question\b", re.IGNORECASE),
+        re.compile(r"\b(?:business |decision )?question (?:has been|was|is now) (?:changed|updated|saved|reframed)\b", re.IGNORECASE),
+    ),
+    "answer_workspace_question": (
+        re.compile(r"\b(?:i|we) (?:have )?(?:saved|recorded) (?:the |your )?(?:answer|fact)\b", re.IGNORECASE),
+    ),
     "record_decision": (
         re.compile(r"\bi(?:'ve| have) recorded\b[^.!?\n]*\bdecision\b", re.IGNORECASE),
         re.compile(r"\b(?:i|we) (?:have )?recorded (?:a |the |this )?decision\b", re.IGNORECASE),
@@ -140,6 +173,19 @@ _MUTATION_SUCCESS_CLAIMS: dict[str, tuple[re.Pattern[str], ...]] = {
 
 def clean_user_facing_reply(content: str) -> str:
     """Remove internal control material while preserving useful answer text."""
+    # These blocks are declarative transport, validated by the publisher.
+    # Cleaning IDs or paths inside them would destroy exact record links.
+    parts: list[str] = []
+    cursor = 0
+    for block in _STRUCTURED_OUTPUT.finditer(content):
+        parts.append(_clean_reply_prose(content[cursor:block.start()]))
+        parts.append(block.group())
+        cursor = block.end()
+    parts.append(_clean_reply_prose(content[cursor:]))
+    return "\n\n".join(part for part in parts if part).strip()
+
+
+def _clean_reply_prose(content: str) -> str:
     cleaned = _strip_control_prefixes(content)
 
     visible_lines = []
@@ -157,10 +203,7 @@ def clean_user_facing_reply(content: str) -> str:
         line = _INLINE_FUNCTION_TAG.sub("", line).strip()
         if not line:
             continue
-        line = _ABSOLUTE_PATH.sub("the saved file", line)
-        line = _VAULT_PATH.sub("the saved file", line)
-        line = _REPOSITORY_PATH.sub("the application", line)
-        line = _INTERNAL_ID.sub("the internal record", line)
+        line = _humanize_outside_citation_markers(line)
         visible_lines.append(line.rstrip())
     return "\n".join(visible_lines).strip()
 
@@ -183,6 +226,18 @@ def clean_conversation_for_display(conversation: dict[str, object]) -> dict[str,
 
 def reconcile_user_facing_reply(content: str, operation_results: list[dict[str, object]]) -> str:
     """Make a completed reply agree with its finalized typed mutation results."""
+    receipt_statuses = []
+    for result in operation_results:
+        receipt = result.get("receipt")
+        if not isinstance(receipt, dict):
+            continue
+        if receipt.get("state") == "not_saved":
+            receipt_statuses.append("Fact saved. Question update not saved." if "reported_fact" in receipt.get("completed_parts", []) else "Question change not saved.")
+        else:
+            receipt_statuses.append(str(result.get("summary") or ""))
+    for status in dict.fromkeys(receipt_statuses):
+        if status and status not in content:
+            content = _append_status(content, status)
     body, removed_control_labels = _remove_lifecycle_pseudo_controls(content.strip())
     result_operations = {
         str(result.get("operation") or "") for result in operation_results

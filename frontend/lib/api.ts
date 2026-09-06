@@ -43,10 +43,21 @@ import type {
   VaultDocument,
   VaultInfo,
   WorkspaceSettings,
+  WorkItem,
   WorkProductDraftResult,
   WorkProductLifecycleResult,
 } from "./types.ts";
 import { DEFAULT_SETTINGS, agentDetailFrom } from "./stubs.ts";
+
+let continuityTransport = { vault: "", person: "", demo: false };
+export function setContinuityTransport(vault: string, person: string, demo: boolean) { continuityTransport = { vault, person, demo }; }
+export function currentContinuityStorageKey(matter: string, slot: string) {
+  const { vault, person } = continuityTransport;
+  return vault ? `themis.continuity.v1:${[vault, person, matter, slot].map(encodeURIComponent).join(":")}` : null;
+}
+export function continuityPersonHeaders(): Record<string, string> {
+  return continuityTransport.demo ? { "X-Themis-Person-Id": continuityTransport.person } : {};
+}
 
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api";
 
@@ -75,6 +86,7 @@ export function effortLabel(effort: string): string {
 
 function formatErrorDetail(detail: unknown, fallback: string): string {
   if (typeof detail === "string") return detail || fallback;
+  if (detail && typeof detail === "object" && "message" in detail && typeof detail.message === "string") return detail.message;
 
   const entries = Array.isArray(detail) ? detail : [detail];
   const messages = entries.flatMap((entry) => {
@@ -91,7 +103,8 @@ function formatErrorDetail(detail: unknown, fallback: string): string {
 
 export async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const controller = new AbortController();
-  const timeout = globalThis.setTimeout(() => controller.abort(), 15_000);
+  let timedOut = false;
+  const timeout = globalThis.setTimeout(() => { timedOut = true; controller.abort(); }, 15_000);
   const abortFromCaller = () => controller.abort();
   if (init?.signal?.aborted) controller.abort();
   else init?.signal?.addEventListener("abort", abortFromCaller, { once: true });
@@ -100,10 +113,13 @@ export async function request<T>(path: string, init?: RequestInit): Promise<T> {
     response = await fetch(`${API_BASE}${path}`, {
       ...init,
       signal: controller.signal,
-      headers: init?.body instanceof FormData ? init.headers : { "Content-Type": "application/json", ...init?.headers },
+      headers: { ...(init?.body instanceof FormData ? {} : { "Content-Type": "application/json" }), ...continuityPersonHeaders(), ...init?.headers },
       cache: "no-store",
     });
   } catch (error) {
+    if (timedOut && error instanceof DOMException && error.name === "AbortError") {
+      throw new Error("The request timed out. The save may have completed. Reload to check the saved result, or retry the same action.");
+    }
     if (error instanceof TypeError || (error instanceof DOMException && error.name === "AbortError")) {
       throw new Error("Counsel OS cannot reach the local service. Check that it is running, then retry.");
     }
@@ -114,7 +130,7 @@ export async function request<T>(path: string, init?: RequestInit): Promise<T> {
   }
   if (!response.ok) {
     const payload: { detail?: unknown } = await response.json().catch(() => ({ detail: response.statusText }));
-    throw new Error(formatErrorDetail(payload.detail, `Request failed: ${response.status}`));
+    throw Object.assign(new Error(formatErrorDetail(payload.detail, `Request failed: ${response.status}`)), { status: response.status, detail: payload.detail });
   }
   if (response.status === 204) return undefined as T;
   return response.json() as Promise<T>;
@@ -174,6 +190,27 @@ export async function completeWorkItem(
   return request(`/matters/${encodeURIComponent(matterId)}/work-items/complete`, {
     method: "POST",
     body: JSON.stringify({ work_item_id: workItemId, actor }),
+  });
+}
+
+export async function createMatterWorkItem(
+  matterId: string,
+  payload: {
+    title: string;
+    description: string;
+    item_type: string;
+    status: string;
+    priority: string;
+    owner: string;
+    due_at?: string | null;
+    required: boolean;
+    issue_id: string;
+    source_action_key: string;
+  },
+): Promise<WorkItem> {
+  return request(`/matters/${encodeURIComponent(matterId)}/work-items`, {
+    method: "POST",
+    body: JSON.stringify({ matter_id: matterId, ...payload }),
   });
 }
 
@@ -262,10 +299,11 @@ export async function startResearchRun(
   matterId: string,
   question = "",
   sourceActionKey?: string,
+  issueId?: string,
 ): Promise<ResearchRun> {
   return request(`/matters/${encodeURIComponent(matterId)}/research-runs`, {
     method: "POST",
-    body: JSON.stringify({ question, source_action_key: sourceActionKey }),
+    body: JSON.stringify({ question, source_action_key: sourceActionKey, issue_id: issueId }),
   });
 }
 
@@ -401,14 +439,24 @@ export async function getDocumentReview(path: string): Promise<DocumentReview> {
 }
 
 export async function updateDocumentReview(path: string, action: DocumentReviewAction): Promise<DocumentReview> {
-  return request(`/files/review?path=${encodeURIComponent(path)}`, {
-    method: "PUT",
-    body: JSON.stringify(action),
-  });
+  const storageKey = currentContinuityStorageKey("review", path);
+  const signature = JSON.stringify({ path, ...action });
+  let body = { source_action_key: `review:${globalThis.crypto.randomUUID()}`, ...action };
+  if (storageKey && typeof window !== "undefined") {
+    try { const prior = JSON.parse(localStorage.getItem(storageKey) || "null"); if (prior?.signature === signature) body = prior.command; } catch { /* Start a new explicit action. */ }
+    localStorage.setItem(storageKey, JSON.stringify({ signature, command: body }));
+  }
+  const headers = continuityPersonHeaders();
+  const result = await request<DocumentReview>(`/files/review?path=${encodeURIComponent(path)}`, { method: "PUT", headers, body: JSON.stringify(body) });
+  if (storageKey && typeof window !== "undefined") {
+    try { const current = JSON.parse(localStorage.getItem(storageKey) || "null"); if (current?.command.source_action_key === body.source_action_key) localStorage.removeItem(storageKey); } catch { /* Leave newer drafts alone. */ }
+  }
+  return result;
 }
 
-export function exportFileUrl(path: string, format: "docx" | "pdf"): string {
-  return `${API_BASE}/files/export?path=${encodeURIComponent(path)}&format=${format}`;
+export function exportFileUrl(path: string, format: "docx" | "pdf", options?: { mode: "markup" | "accepted_text"; expected_revision?: string; expected_review_revision?: string }): string {
+  const query = new URLSearchParams({ path, format, ...options });
+  return `${API_BASE}/files/export?${query}`;
 }
 
 export async function sendChat(payload: Record<string, unknown>): Promise<ChatResponse> {
@@ -427,6 +475,10 @@ export async function recoverIntakeQuestion(matterId: string, conversationId: st
     method: "POST",
     body: JSON.stringify({ conversation_id: conversationId }),
   });
+}
+
+export async function getChatRuns(matterId: string, conversationId: string): Promise<ChatRun[]> {
+  return request(`/matters/${encodeURIComponent(matterId)}/chat-runs?conversation_id=${encodeURIComponent(conversationId)}`);
 }
 
 export async function getChatRun(matterId: string, runId: string): Promise<ChatRun> {
@@ -699,4 +751,8 @@ export async function getTools(): Promise<{ tools: ToolDefinition[] }> {
 
 export async function getAudiences(): Promise<{ audiences: Audience[] }> {
   return request("/automations/audiences");
+}
+
+export async function cancelChatRun(matterId: string, runId: string): Promise<ChatRun> {
+  return request<ChatRun>(`/matters/${matterId}/chat-runs/${runId}/cancel`, { method: "POST" });
 }

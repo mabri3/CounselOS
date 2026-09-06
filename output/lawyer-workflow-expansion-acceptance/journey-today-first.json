@@ -1,0 +1,125 @@
+{
+  "label": "journey-today-first",
+  "url": "http://localhost:3117/",
+  "completed": [
+    {
+      "op": "wait",
+      "ms": 3000
+    }
+  ],
+  "failure": null,
+  "errors": [],
+  "responses": [],
+  "text": "Today\nBriefing\nWorkspace\nMatters\nDecisions\nSkills\nAutomations\nAgents\nSettings\n\nLOCAL DEMO\n\nView as\nView workspace as\nAlex Morgan · Commercial · alex\nJordan Lee · Commercial · jordan\nCasey Chen · casey\n\nThis changes the local demo view. It is not a sign-in or access control.\n\nSeptember 5, 2026\nThree things need your attention\n\n2 unassigned · 1 awaiting your judgment.\n\nWORK\n\nTeam work\nTeam work view\nMy work\nWaiting on others\nTeam\n\nLoading team work…\n\n1\nNeeds assignment\nDue Sep 5, 2026\nRedesign identity collection: collect CIP at onboarding, not at $3,000 payout threshold\nFrom: Priya, PM — Marketplace Payments Subject: Instant Payouts — can we ship Q1? We're launching Instant Payouts for marketplace sellers. Plan: Sellers onboard with email + bank account only. We collect full identity\nOpen the matter\n2\nNeeds assignment\nNo date\nComplete required work before closing the matter.\nMosaic Relay plans to support merchants that accept cards, ACH, and selected local payment methods from customers in several new countries. The proposed experience would use one global onboarding flow, local payment opti\nOpen the matter\n3\nWaiting on you\nNo date\nMosaic Relay UX Test — 09 — Targeted Product Emails Using Transaction and Identity Data\nReview the research packet and choose the legal path to test.\nRead the memo\nYour other matters\nShowing 2 of 2\nAll matters →\nMosaic Relay UX Test — 08 — Marketing Claims About Fraud Prevention and Compliance — close the matter.\nRespond\nMosaic Relay UX Test — 05 — Deactivation of a High-Risk Merchant — record manual delivery.\nRespond\nThe practice\n7 in flight\nJust came in\n2\nBeing researched\n0\nWaiting on your judgment\n2\nBeing drafted\n0\nRespond\n3\nNothing is with Themis.ai right now.\n2 decisions recorded.\nOpen the workspace\nPaste a request — a Slack thread, an email, or a redline note…\nNew matter\nAsk about your work\n\nThemis.ai can search the workspace, compare matters, and take actions that you request.\n\nThemis.ai\nConversation\nToday — September 5, 2026\nSeptember 3, 2026\nSaved to today's Markdown file.\nWhat needs my attention today?\nSummarize my active matters.\nWhich decisions need review?\n+\nSend\nBuild a skill",
+  "controls": [
+    {
+      "tag": "SELECT",
+      "id": "demo-lawyer-person",
+      "text": "Alex Morgan · Commercial · alex\nJordan Lee · Commercial · jordan\nCasey Chen · casey",
+      "value": "alex",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "INPUT",
+      "id": "team-view-my_work",
+      "text": "",
+      "value": "on",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "team-view-waiting",
+      "text": "",
+      "value": "on",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "team-view-team",
+      "text": "",
+      "value": "on",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "New matter",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "SELECT",
+      "id": "today-chat-day",
+      "text": "Today — September 5, 2026\nSeptember 3, 2026",
+      "value": "2026-09-05",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "What needs my attention today?",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Summarize my active matters.",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Which decisions need review?",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "+",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "file"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Send",
+      "value": "",
+      "disabled": true,
+      "type": "submit"
+    }
+  ],
+  "dimensions": {
+    "width": 1440,
+    "scrollWidth": 1440,
+    "reducedMotion": true
+  }
+}

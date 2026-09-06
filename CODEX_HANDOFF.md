@@ -1,6 +1,6 @@
 # Codex handoff prompt
 
-You are the senior coding agent responsible for turning this scaffold into a reliable MVP of Themis.ai.
+You are the senior coding agent responsible for maintaining the runnable local MVP of Themis.ai.
 
 ## Read first
 
@@ -11,31 +11,49 @@ You are the senior coding agent responsible for turning this scaffold into a rel
 5. `README.md`
 6. The Markdown configuration and sample data under `vault/`
 
+## Phase 2 UI checkpoint — September 6, 2026
+
+The Phase 2 pages now use the selected A-style references. This includes Today,
+portfolio and intake, Decisions, Briefing and Watches, templates and skills,
+agent administration, automations, Settings, and the research reader. Matter
+and decision-map interiors keep their compact presentation. Shared components
+use optional Phase 2 variants and preserve their default Matter presentation.
+
+Evidence and measured differences are in
+`output/uiphase2-implementation/visual-matrix.md` and `browser-demo.md`.
+Required backend tests passed 1,222 cases; final frontend typecheck and build
+passed. One focused continuity check still expects three refresh endpoints,
+while unchanged baseline code uses a fourth (`/handoff-references`). This is
+recorded as a failure, not a passed check. Browser mutation tests used an isolated
+vault and mock providers. The user waived 200% zoom. Real vault files and the
+active pointer are unchanged. See `docs/uiphase2-a-style-ui.handoff-progress.md`
+for the final review state and exact model routing.
+
 ## Current authoritative checkpoint
 
-The Mosaic Relay R2 UX repair is implemented. It covers `MR2-01` through
-`MR2-12` in `docs/experiments/2026-09-03-mosaic-relay-r2-ux-experiment-report.md`.
-The full backend suite passes 838 tests. The full frontend UX check, typecheck,
-production build, graph refresh, and a visible existing-matter browser check
-also pass. A focused Sol High recheck found no remaining material defect after
-the dossier-projection and latest-request refresh corrections. Read
-`current.md` for the exact visible evidence and current queue.
+The September 5 lawyer workflow expansion implements all four approved areas:
+clear orientation, business fact replies, generic local lawyer handoffs, and
+changed-specification impact through the existing conversation and editor.
+The current implementation, independent review, exact evidence and limits are
+in `docs/lawyer-workflow-expansion.verification.md` and its usability report.
+Use `docs/lawyer-workflow-expansion.handoff-progress.md` for the final check state.
 
-The Themis.ai workflow reconciliation build is complete. Its authoritative
-plan, execution record, and reusable prompt are:
+The final backend suite passed 1,149 tests, including the final read repairs. Frontend typecheck and the workspace
+UX, single-lawyer and lawyer-continuity groups passed. The connected Harbor
+browser story includes configured-model reassessment, handoff brief, source
+comparison and tracked draft revision, selected Word/PDF export, explicit
+approval/delivery/work completion/closure, and a preserved return visit. Final
+cold-load, return, editor, native zoom and cleanup checks passed. The normal
+frontend build is restored. Read the verification report for measured limits
+and the two unregistered legacy source-string checks.
 
-- `docs/themis-ai-workflow-reconciliation-build.handoff-plan.md`
-- `docs/themis-ai-workflow-reconciliation-build.handoff-progress.md`
-- `docs/themis-ai-workflow-reconciliation-build.handoff-prompt.md`
+Markdown is authoritative. SQLite is disposable. View as is a local simulation,
+not authentication. Keep reported speakers distinct from entering lawyers;
+keep proposals distinct from decisions, approval, delivery and closure. Preserve
+local edits and frozen action identities across retries and person changes.
 
-The full backend suite passes 629 tests. All focused frontend checks, the older
-lifecycle check, typecheck, production build, graph refresh, fresh visible
-workflow demo, SQLite rebuild, and repository-vault guard pass. The combined
-Sol Medium review passed all 12 groups. No Sol High engineering escalation was
-required.
-
-There is no active or Next checkpoint. Read `current.md` before new work. Start
-only from an explicit Later item or a new user request.
+Earlier Mosaic Relay, reconciliation and single-lawyer results are historical.
+Their counts do not describe this build. Read `current.md` before new work.
 
 ## Product objective
 

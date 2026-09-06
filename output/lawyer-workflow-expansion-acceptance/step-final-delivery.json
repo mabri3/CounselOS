@@ -1,0 +1,1 @@
+{"label": "journey-final-manual-delivery", "actions": [{"op": "click", "name": "Record manual delivery"}, {"op": "click", "selector": "[role=\"dialog\"] button:text-is(\"Record manual delivery\")"}, {"op": "wait", "ms": 12000}]}

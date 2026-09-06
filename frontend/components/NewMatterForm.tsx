@@ -1,5 +1,6 @@
 "use client";
 
+import styles from "@/components/PortfolioPhase2.module.css";
 import { FormEvent, useRef, useState } from "react";
 import { getSettings, matterTargetDateFromForm } from "@/lib/api";
 import type { MatterCreatePayload } from "@/lib/types";
@@ -75,34 +76,30 @@ export default function NewMatterForm({
             Matter created. Intake is starting.
           </p>
         ) : null}
-        <div className="intake-bar">
-          <div
-            style={{ flex: 1, minWidth: 0, font: "400 15px/1.5 var(--serif)", color: "var(--ink-5)", cursor: "text" }}
-            onClick={() => setOpen(true)}
-          >
-            Paste a request — a Slack thread, an email, or a redline note…
-          </div>
-          <button className="btn primary" onClick={() => { setCreated(false); setOpen(true); }}>New matter</button>
-        </div>
+        <button className={styles.intakeBar} type="button" onClick={() => { setCreated(false); setOpen(true); }}>
+          <span className={styles.plus} aria-hidden="true">＋</span>
+          <span><strong>Create a new matter</strong><small>Start intake and triage</small></span>
+          <span aria-hidden="true">⌄</span>
+        </button>
       </div>
     );
   }
 
   return (
-    <form className="card card-pad" onSubmit={submit}>
+    <form className={styles.intake} onSubmit={submit}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 14 }}>
         <div>
-          <h2>Open the matter; orient it next</h2>
+          <h2>New matter</h2>
           <p style={{ margin: "5px 0 0", font: "400 14px var(--sans)", color: "var(--ink-3)" }}>
-            Intake takes the request as it arrived. Everything else can be inferred or corrected later.
+            Capture the request so you can organize and decide.
           </p>
         </div>
-        <button className="btn compact quiet" type="button" onClick={() => setOpen(false)}>Close</button>
+
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <div>
-          <div className="field-label">The request, as it arrived</div>
+          <div className="field-label">What needs legal attention? (required)</div>
           <textarea
             aria-label="The request as received"
             autoFocus
@@ -110,12 +107,12 @@ export default function NewMatterForm({
             onChange={(event) => setRequestText(event.target.value)}
             placeholder="Paste the Slack thread, the email, or the redline note…"
             required
-            style={{ minHeight: 130 }}
+            style={{ minHeight: 134 }}
             value={requestText}
           />
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0,1fr))", gap: 12 }}>
-          <div style={{ gridColumn: "span 2" }}>
+        <div className={styles.intakeFields}>
+          <div className={styles.fullField}>
             <div className="field-label">Matter title</div>
             <input
               aria-label="Matter title"
@@ -166,7 +163,8 @@ export default function NewMatterForm({
       ) : null}
       {error ? <p className="error">{error} You can retry without creating a duplicate.</p> : null}
 
-      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 16 }}>
+      <div className={styles.intakeActions}>
+        <button className="btn" type="button" onClick={() => setOpen(false)}>Close</button>
         <button className="btn primary" disabled={busy || submitting || !requestText.trim()} type="submit">
           {busy || submitting ? "Creating matter…" : "Create matter and open Chat"}
         </button>

@@ -1,0 +1,29 @@
+{
+  "label": "journey-request-open",
+  "url": "http://localhost:3117/matters/MAT-20260905-0a2378",
+  "completed": [
+    {
+      "op": "wait",
+      "ms": 5000
+    }
+  ],
+  "failure": "TimeoutError: locator.click: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Request a fact', exact: true })\u001b[22m\n",
+  "errors": [],
+  "responses": [],
+  "text": "Today\nBriefing\nWorkspace\nMatters\nDecisions\nSkills\nAutomations\nAgents\nSettings\nThis matter is unavailable because its current data could not be loaded.\nRetry",
+  "controls": [
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Retry",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    }
+  ],
+  "dimensions": {
+    "width": 1440,
+    "scrollWidth": 1440,
+    "reducedMotion": true
+  }
+}

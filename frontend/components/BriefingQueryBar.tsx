@@ -1,5 +1,6 @@
 "use client";
 
+import styles from "./BriefingPhase2.module.css";
 import type { BriefingGroup, BriefingQuery, BriefingSort } from "@/lib/watchTypes";
 
 /** Order and grouping read as instructions to the list, not as database words. */
@@ -23,7 +24,7 @@ export default function BriefingQueryBar({ query, onChange, onApply, onClear, fi
   filtered: boolean;
 }) {
   return (
-    <form className="query-bar" onSubmit={(event) => { event.preventDefault(); onApply(); }}>
+    <form className={`${styles.query} query-bar`} onSubmit={(event) => { event.preventDefault(); onApply(); }}>
       <div className="query-bar-row">
         <label className="query-bar-search"><span>Search these developments</span>
           <input className="text-input" onChange={(event) => onChange({ q: event.target.value })} placeholder="Words in the title or summary" value={query.q} />

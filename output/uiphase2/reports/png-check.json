@@ -1,0 +1,446 @@
+[
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/01-today.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1194299
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/02-today-practice.png",
+    "width": 864,
+    "height": 1821,
+    "bytes": 974275
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/03-workspace-board.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1114966
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/04-workspace-quarter.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 880916
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/05-matters-table.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 987254
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/06-matters-stages.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1026975
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/07-new-matter.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 844759
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/08-decisions.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1111711
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/09-decision-review.png",
+    "width": 864,
+    "height": 1821,
+    "bytes": 961019
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/10-briefing.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1162349
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/11-briefing-reader.png",
+    "width": 864,
+    "height": 1821,
+    "bytes": 1148669
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/12-briefing-digest.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1618298
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/13-watches.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1034978
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/14-watch-assignment.png",
+    "width": 887,
+    "height": 1774,
+    "bytes": 960949
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/15-watch-schedule.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1077003
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/16-watch-detail.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1103363
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/17-templates.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1139615
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/18-template-editor.png",
+    "width": 948,
+    "height": 1660,
+    "bytes": 982176
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/19-skills.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1109899
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/20-agents.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1093412
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/21-agent-advanced.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 997418
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/22-automations.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1212974
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/23-settings-models.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1012795
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/24-settings-research.png",
+    "width": 902,
+    "height": 1744,
+    "bytes": 1157399
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/25-settings-content.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1162653
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/26-settings-vaults.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1543159
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/27-research-reader.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1235845
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/28-research-notes.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1415561
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/29-skill-guided.png",
+    "width": 1024,
+    "height": 1536,
+    "bytes": 1156257
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/admin/01_agents_built_in_advanced.png",
+    "width": 1048,
+    "height": 603,
+    "bytes": 20898
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/admin/02_agents_research_advanced.png",
+    "width": 1048,
+    "height": 603,
+    "bytes": 20181
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/admin/03_automations_empty.png",
+    "width": 1057,
+    "height": 595,
+    "bytes": 15760
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/admin/04_automation_composer.png",
+    "width": 1048,
+    "height": 765,
+    "bytes": 22732
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/admin/05_automation_weekly_controls.png",
+    "width": 1048,
+    "height": 782,
+    "bytes": 22653
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/admin/06_settings_model.png",
+    "width": 1048,
+    "height": 910,
+    "bytes": 22319
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/admin/07_settings_model_advanced.png",
+    "width": 1048,
+    "height": 910,
+    "bytes": 28232
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/admin/08_model_providers.png",
+    "width": 1048,
+    "height": 910,
+    "bytes": 29104
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/admin/09_watch_providers.png",
+    "width": 1048,
+    "height": 910,
+    "bytes": 23647
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/admin/10_research_settings.png",
+    "width": 1048,
+    "height": 910,
+    "bytes": 23541
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/admin/11_research_advanced.png",
+    "width": 1048,
+    "height": 910,
+    "bytes": 32092
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/admin/12_files_outputs.png",
+    "width": 1048,
+    "height": 910,
+    "bytes": 27765
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/admin/13_document_review.png",
+    "width": 1048,
+    "height": 910,
+    "bytes": 23999
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/admin/14_answer_contract.png",
+    "width": 1048,
+    "height": 910,
+    "bytes": 48808
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/admin/15_company_saved_profile.png",
+    "width": 1048,
+    "height": 910,
+    "bytes": 40120
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/admin/16_vaults.png",
+    "width": 1048,
+    "height": 910,
+    "bytes": 26835
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/briefing-01-top.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 63171
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/briefing-02-filters-lower.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 47285
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/decisions-01-register.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 81897
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/decisions-02-lower.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 134290
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/matters-01-table.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 61150
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/matters-02-table-lower.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 70091
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/matters-03-stages.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 47905
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/research-01-top.png",
+    "width": 1164,
+    "height": 655,
+    "bytes": 87578
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/research-02-packet.png",
+    "width": 1164,
+    "height": 655,
+    "bytes": 83239
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/research-03-reading.png",
+    "width": 1164,
+    "height": 655,
+    "bytes": 91686
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/research-04-notes.png",
+    "width": 1164,
+    "height": 655,
+    "bytes": 92290
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/research-05-bottom.png",
+    "width": 1164,
+    "height": 655,
+    "bytes": 92290
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/skills-01-top.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 58612
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/skills-02-selected.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 58294
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/skills-03-editor-top.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 53196
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/skills-04-editor-lower.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 35129
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/skills-05-saved-guidance.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 71351
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/skills-06-guidance-lower.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 62212
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/skills-07-builder-start.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 44033
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/today-01-top.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 85687
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/today-02-middle.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 82446
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/today-03-bottom.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 49225
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/watch-01-assignment.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 47853
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/watch-02-sources.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 48673
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/watch-03-cadence.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 51711
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/watch-04-empty-list.png",
+    "width": 1164,
+    "height": 655,
+    "bytes": 29892
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/workspace-01-board.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 50332
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/workspace-02-quarter.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 64298
+  },
+  {
+    "path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/screenshots/root/workspace-03-new-matter.png",
+    "width": 1154,
+    "height": 649,
+    "bytes": 47606
+  }
+]

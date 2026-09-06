@@ -1,0 +1,1 @@
+{"label":"journey-wording-recover","actions":[{"op":"wait","ms":5000},{"op":"click","name":"Draft wording"},{"op":"visible","selector":".fact-request__notice","timeout":30000},{"op":"wait","ms":1000}]}

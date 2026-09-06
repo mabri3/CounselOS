@@ -1,0 +1,779 @@
+{
+  "temporary_root": "/var/folders/xb/kzc31shn1pz2s_5l2fy6d7rh0000gn/T/themis-matter-a-8fgizbza",
+  "vault": "/var/folders/xb/kzc31shn1pz2s_5l2fy6d7rh0000gn/T/themis-matter-a-8fgizbza/vault",
+  "backend_port": 8123,
+  "frontend_port": 3123,
+  "matter_id": "MAT-20260905-f025e4",
+  "matter_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4",
+  "issue_ids": [
+    "ISS-c7fd36e074-beceace28ad3b977",
+    "ISS-c7fd36e074-dfedecd1f6e194c9",
+    "ISS-c7fd36e074-f4adb6d37c427ddb",
+    "ISS-c7fd36e074-556f5297a1df7e1a",
+    "ISS-c7fd36e074-f9bf9b33e40dd688",
+    "ISS-c7fd36e074-6a74558db33a76cc"
+  ],
+  "products": [
+    {
+      "record_type": "work_product",
+      "work_product_id": "WP-55e81fbd4145",
+      "title": "Launch advice",
+      "vault_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/draft/launch-advice-bd4145.md",
+      "state": "draft",
+      "summary": "Saved the canonical work-product draft.",
+      "source_action_key": "demo-draft-0",
+      "recommendation_version_id": null,
+      "recommendation_proposal_id": null,
+      "changed_paths": [
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/draft/launch-advice-bd4145.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/matter.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/events/2026-09-05-EVT-20260905-8afea4.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/dossier.md"
+      ],
+      "dossier_projection": {
+        "state": "applied",
+        "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/dossier.md",
+        "revision_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/dossier-revisions/DOS-20260905-fdf0b0.md",
+        "content_hash": "bcf423171bdcb85713d0c41505b4440a37b92a4bf17863e4627b4bd931f53a66"
+      },
+      "artifact": {
+        "work_product_id": "WP-55e81fbd4145",
+        "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/draft/launch-advice-bd4145.md",
+        "title": "Launch advice",
+        "output_type": "general",
+        "revision": "8198c231c1ad6f9876736d2540600722047bdff06fc41904d11e3448b624cd90",
+        "review_revision": "8b92601aaa46ff7b5f4b43c2763cc4d8b87d655778730321dad7b8762c51582b",
+        "pending_review": false,
+        "source_run_id": null,
+        "claim_ids": [],
+        "template_use": null,
+        "preview": false,
+        "version_changes": [],
+        "proposal_paths": []
+      },
+      "action": "demo-draft-0",
+      "operation": "save_work_product_draft",
+      "status": "changed",
+      "matter_id": "MAT-20260905-f025e4",
+      "entity_refs": [
+        {
+          "type": "work_product",
+          "id": "WP-55e81fbd4145"
+        }
+      ],
+      "resulting_matter_state": {
+        "stage": "explore",
+        "next_action": "Orient to the request",
+        "work_state": {
+          "next_action": "Orient to the request",
+          "next_work_item_id": "WI-20260905-bb48f3",
+          "next_owner": "Alex Morgan",
+          "next_actor": "named_owner",
+          "due_at": null,
+          "execution_state": "not_running",
+          "active_run_id": null,
+          "execution_note": "",
+          "signal": {
+            "kind": "waiting_on_owner",
+            "label": "Waiting on Alex Morgan"
+          }
+        },
+        "consistency_issues": []
+      },
+      "available_next_actions": [],
+      "recommendation_review_needed": false,
+      "required_user_action": null,
+      "error": null,
+      "recovery": null
+    },
+    {
+      "record_type": "work_product",
+      "work_product_id": "WP-5e5bce7960e7",
+      "title": "Product control checklist",
+      "vault_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/draft/product-control-checklist-7960e7.md",
+      "state": "draft",
+      "summary": "Saved the canonical work-product draft.",
+      "source_action_key": "demo-draft-1",
+      "recommendation_version_id": null,
+      "recommendation_proposal_id": null,
+      "changed_paths": [
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/draft/product-control-checklist-7960e7.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/matter.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/events/2026-09-05-EVT-20260905-69c1ff.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/dossier.md"
+      ],
+      "dossier_projection": {
+        "state": "applied",
+        "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/dossier.md",
+        "revision_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/dossier-revisions/DOS-20260905-dfe516.md",
+        "content_hash": "1db0804d10963bd9b326c80b09ab393e8ee5dc36a0472466f509a39f79c0d644"
+      },
+      "artifact": {
+        "work_product_id": "WP-5e5bce7960e7",
+        "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/draft/product-control-checklist-7960e7.md",
+        "title": "Product control checklist",
+        "output_type": "general",
+        "revision": "ef96de891a73207f34dc4ffc9ffd99178fb24832b997265621f036e81fbedb20",
+        "review_revision": "ed1b087f5e3bc89b9c32d884b592613424f0c800ad357a886356da631eb781d5",
+        "pending_review": false,
+        "source_run_id": null,
+        "claim_ids": [],
+        "template_use": null,
+        "preview": false,
+        "version_changes": [],
+        "proposal_paths": []
+      },
+      "action": "demo-draft-1",
+      "operation": "save_work_product_draft",
+      "status": "changed",
+      "matter_id": "MAT-20260905-f025e4",
+      "entity_refs": [
+        {
+          "type": "work_product",
+          "id": "WP-5e5bce7960e7"
+        }
+      ],
+      "resulting_matter_state": {
+        "stage": "explore",
+        "next_action": "Orient to the request",
+        "work_state": {
+          "next_action": "Orient to the request",
+          "next_work_item_id": "WI-20260905-bb48f3",
+          "next_owner": "Alex Morgan",
+          "next_actor": "named_owner",
+          "due_at": null,
+          "execution_state": "not_running",
+          "active_run_id": null,
+          "execution_note": "",
+          "signal": {
+            "kind": "waiting_on_owner",
+            "label": "Waiting on Alex Morgan"
+          }
+        },
+        "consistency_issues": []
+      },
+      "available_next_actions": [],
+      "recommendation_review_needed": false,
+      "required_user_action": null,
+      "error": null,
+      "recovery": null
+    },
+    {
+      "record_type": "work_product",
+      "work_product_id": "WP-ee3102f22594",
+      "title": "Business reply",
+      "vault_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/draft/business-reply-f22594.md",
+      "state": "draft",
+      "summary": "Saved the canonical work-product draft.",
+      "source_action_key": "demo-draft-2",
+      "recommendation_version_id": null,
+      "recommendation_proposal_id": null,
+      "changed_paths": [
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/draft/business-reply-f22594.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/matter.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/events/2026-09-05-EVT-20260905-cf5fe5.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/dossier.md"
+      ],
+      "dossier_projection": {
+        "state": "applied",
+        "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/dossier.md",
+        "revision_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/dossier-revisions/DOS-20260905-a52717.md",
+        "content_hash": "594eccf71f1cfde01fdcc1951e02500906cfe6f36d799b4a5718c69b06d618c9"
+      },
+      "artifact": {
+        "work_product_id": "WP-ee3102f22594",
+        "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/draft/business-reply-f22594.md",
+        "title": "Business reply",
+        "output_type": "general",
+        "revision": "2e8b04795e5c6665b2b84dc814f6ac44bd23f8cd2af785182ac0e8204d198005",
+        "review_revision": "d94f5d3356c7dc59af22930d4beb300760bbfcb9806df2572f8232aa8e4e69d6",
+        "pending_review": false,
+        "source_run_id": null,
+        "claim_ids": [],
+        "template_use": null,
+        "preview": false,
+        "version_changes": [],
+        "proposal_paths": []
+      },
+      "action": "demo-draft-2",
+      "operation": "save_work_product_draft",
+      "status": "changed",
+      "matter_id": "MAT-20260905-f025e4",
+      "entity_refs": [
+        {
+          "type": "work_product",
+          "id": "WP-ee3102f22594"
+        }
+      ],
+      "resulting_matter_state": {
+        "stage": "explore",
+        "next_action": "Orient to the request",
+        "work_state": {
+          "next_action": "Orient to the request",
+          "next_work_item_id": "WI-20260905-bb48f3",
+          "next_owner": "Alex Morgan",
+          "next_actor": "named_owner",
+          "due_at": null,
+          "execution_state": "not_running",
+          "active_run_id": null,
+          "execution_note": "",
+          "signal": {
+            "kind": "waiting_on_owner",
+            "label": "Waiting on Alex Morgan"
+          }
+        },
+        "consistency_issues": []
+      },
+      "available_next_actions": [],
+      "recommendation_review_needed": false,
+      "required_user_action": null,
+      "error": null,
+      "recovery": null
+    }
+  ],
+  "decision_id": "DEC-9ABF7C62D711DFDBAC29",
+  "workflow_fixtures": {
+    "conversation": "CONV-20260905-1a8401",
+    "roster": {
+      "enabled": true,
+      "people": [
+        {
+          "person_id": "alex-morgan",
+          "display_name": "Alex Morgan",
+          "specialty": null
+        },
+        {
+          "person_id": "jamie-lee",
+          "display_name": "Jamie Lee",
+          "specialty": null
+        }
+      ],
+      "revision": "fe7ef4553d838bc12779cf553cc9701cdb4e09fea53f79776ac407e6fd5ccdcd",
+      "vault_key": "e323f706d4f77983e3a205b4"
+    },
+    "review": {
+      "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/draft/launch-advice-bd4145.md"
+    },
+    "flow": {
+      "matter_id": "MAT-20260905-f025e4",
+      "revision": "de16e10499fadbab434821f1deb550a2b49020b52da7aef7429b32591002ae38",
+      "actors": [
+        {
+          "actor_id": "family",
+          "label": "Family account"
+        },
+        {
+          "actor_id": "lumen",
+          "label": "Lumen service"
+        },
+        {
+          "actor_id": "analytics",
+          "label": "Analytics processor"
+        }
+      ],
+      "edges": [
+        {
+          "edge_id": "learning",
+          "from_actor_id": "family",
+          "to_actor_id": "lumen",
+          "label": "Learning activity",
+          "order": 1,
+          "timing": "During a session",
+          "custody": "Lumen",
+          "ownership": "Product",
+          "fact_ids": [],
+          "uncertainty": "Audience age is unconfirmed"
+        },
+        {
+          "edge_id": "events",
+          "from_actor_id": "lumen",
+          "to_actor_id": "analytics",
+          "label": "Device identifier and learning events",
+          "order": 2,
+          "timing": "After each event",
+          "custody": "Processor",
+          "ownership": "Engineering",
+          "fact_ids": [],
+          "uncertainty": "Retention period is unconfirmed"
+        }
+      ]
+    },
+    "historical_scenario": {
+      "scenario_id": "SCN-e4d7305107fade7f66587fa2",
+      "matter_id": "MAT-20260905-f025e4",
+      "title": "Historical adult-only launch option",
+      "baseline_revisions": {
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/matter.md": "9cc47dbc1c32d0ec8b0fa6a8aedf07cd747d08255e2cfef7f2bc714869db06d7",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/dossier.md": "16afeb48a40d5cf60f350bccb5dab50e93eb29bc579b79348b3f10a455f2e3e5",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/facts.md": "5fcd5129fc27b9d44c22195804d6ceac81dc6492b6142d2d300f70cb81bb9999",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/issues.md": "16425ae162e98541d613eb9aab816710a43e9cc9db181407725fe2b62d2c7b7b",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/recommendations.md": "3d06ab54aff74a9a79fa39e6f76bb53f556e1572d3a096b13a9df7921e17572b",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/flow.md": "f8f3612b735daf6e7ec7efeb5724ce320432338d8530b049491f7d2204d07f9c",
+        "business_question": "legacy:de5ce42a42be7d25a595cf35215f309958b2e19c3fa6d8e7ac608e79aa836e9c"
+      },
+      "issue_ids": [
+        "ISS-c7fd36e074-beceace28ad3b977"
+      ],
+      "proposed_fact_changes": [
+        {
+          "change_id": "adult-launch",
+          "fact_id": null,
+          "text": "The launch audience is limited to adults."
+        }
+      ],
+      "unresolved_conditions": [
+        "Product has not selected this option."
+      ],
+      "analysis": "An adult-only audience would change the audience analysis. This saved hypothetical is not an actual fact.",
+      "source_links": [],
+      "created_at": "2026-09-05T21:25:41+00:00",
+      "adopted_fact_ids": [],
+      "related_analysis": [],
+      "analysis_state": "not_started",
+      "analysis_run_id": null,
+      "analysis_source_action_key": null,
+      "analysis_baseline_revisions": {},
+      "affected_issue_ids": [],
+      "affected_branch_ids": [],
+      "claim_ids": [],
+      "proposed_outcomes": [],
+      "failure_detail": null,
+      "stale": {
+        "is_stale": false,
+        "changed_revisions": {}
+      },
+      "updated_at": null,
+      "revision": "299ac074414b536ff3faa3948c71185041a569722d788be910b17687f8e369d0"
+    },
+    "research": {
+      "completed": "RUN-20260905-87948e",
+      "partial": "RUN-20260905-b5b57e"
+    },
+    "duplicate": {
+      "record_type": "work_product",
+      "work_product_id": "WP-885abd97628f",
+      "title": "Launch advice",
+      "vault_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/draft/launch-advice-97628f.md",
+      "state": "draft",
+      "summary": "Saved the canonical work-product draft.",
+      "source_action_key": "demo-duplicate-advice",
+      "recommendation_version_id": null,
+      "recommendation_proposal_id": null,
+      "changed_paths": [
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/draft/launch-advice-97628f.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/matter.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/events/2026-09-05-EVT-20260905-b9603b.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/dossier.md"
+      ],
+      "dossier_projection": {
+        "state": "applied",
+        "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/dossier.md",
+        "revision_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/dossier-revisions/DOS-20260905-053973.md",
+        "content_hash": "adf7e22cc3b10f51fb2aeeff6171d8388b1d8045ae9f962b96485c26efa47a0b"
+      },
+      "artifact": {
+        "work_product_id": "WP-885abd97628f",
+        "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/draft/launch-advice-97628f.md",
+        "title": "Launch advice",
+        "output_type": "general",
+        "revision": "6201292b4e1b1b7bac34e23bf47d77904203dc84d4999d0894c40059624cc34b",
+        "review_revision": "f2b7106f82854c54ace7359df87239d9e8858c15cf63325fa42e142edfb4b6e3",
+        "pending_review": false,
+        "source_run_id": null,
+        "claim_ids": [],
+        "template_use": null,
+        "preview": false,
+        "version_changes": [],
+        "proposal_paths": []
+      },
+      "action": "demo-duplicate-advice",
+      "operation": "save_work_product_draft",
+      "status": "changed",
+      "matter_id": "MAT-20260905-f025e4",
+      "entity_refs": [
+        {
+          "type": "work_product",
+          "id": "WP-885abd97628f"
+        }
+      ],
+      "resulting_matter_state": {
+        "stage": "explore",
+        "next_action": "Review audience and identifier controls before launch",
+        "work_state": {
+          "next_action": "Review audience and identifier controls before launch",
+          "next_work_item_id": "WI-76bfb9167f6a",
+          "next_owner": "Alex Morgan",
+          "next_actor": "named_owner",
+          "due_at": null,
+          "execution_state": "not_running",
+          "active_run_id": null,
+          "execution_note": "",
+          "signal": {
+            "kind": "waiting_on_owner",
+            "label": "Waiting on Alex Morgan"
+          }
+        },
+        "consistency_issues": []
+      },
+      "available_next_actions": [],
+      "recommendation_review_needed": false,
+      "required_user_action": null,
+      "error": null,
+      "recovery": null
+    },
+    "empty_matter": "MAT-20260905-93dbe4",
+    "handoff": {
+      "handoff": {
+        "handoff_id": "HOF-8efe0568dabd379655d4459f",
+        "matter_id": "MAT-20260905-f025e4",
+        "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/continuity/handoffs/HOF-8efe0568dabd379655d4459f.md",
+        "sender": {
+          "person_id": "alex-morgan",
+          "display_name": "Alex Morgan",
+          "mode": "demo"
+        },
+        "recipient": {
+          "person_id": "jamie-lee",
+          "display_name": "Jamie Lee",
+          "specialty": null
+        },
+        "scope": {
+          "matter_id": "MAT-20260905-f025e4",
+          "kind": "matter",
+          "work_item_id": null,
+          "title": "Lumen Learning: US family launch with analytics and shared-device accounts",
+          "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/matter.md",
+          "owner_id": null,
+          "owner_name": "Alex Morgan",
+          "ownership_revision": "8f82304e6f1299e50c28da33ff8c5c473db4a5e3fe626ea1a4612422676276e6",
+          "content_revision": "c5f7f89eedb7636b5d244d110ea46f5824674458c5bf1693fde65def19bf87a9",
+          "status": "explore"
+        },
+        "ask": "Review the audience and identifier questions. Keep advertising outside this launch.",
+        "current_basis": "Supplied product specification and the saved working answer.",
+        "open_questions": [
+          "Audience age is unconfirmed."
+        ],
+        "references": [],
+        "requested_date": null,
+        "state": "pending",
+        "prior_handoff_id": null,
+        "return_handoff_id": null,
+        "accepted_ownership_revision": null,
+        "revision": "a6b52b937bbbcc4f335a1d82369a80ee55eb59712158f662e44a653707497090",
+        "created_at": "2026-09-05T21:27:39+00:00",
+        "reason": "",
+        "stale": false,
+        "result_paths": []
+      },
+      "reciprocal_handoff": null,
+      "receipt": {
+        "receipt_id": "IRC-8efe0568dabd379655d4459f",
+        "source_action_key": "demo-prepared-handoff",
+        "operation": "handoff.create",
+        "target": {
+          "matter_id": "MAT-20260905-f025e4",
+          "business_question_id": null,
+          "business_question_revision": null,
+          "issue_id": null,
+          "source_id": null,
+          "scenario_id": null,
+          "artifact_path": null,
+          "artifact_revision": null,
+          "artifact_review_revision": null,
+          "selected_range": null,
+          "local_draft_snapshot": null
+        },
+        "state": "applied",
+        "before_revision": null,
+        "after_revision": "a6b52b937bbbcc4f335a1d82369a80ee55eb59712158f662e44a653707497090",
+        "source_message_id": null,
+        "run_id": null,
+        "changed_links": [
+          "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/continuity/handoffs/HOF-8efe0568dabd379655d4459f.md"
+        ],
+        "completed_parts": [
+          "handoff"
+        ],
+        "failure_detail": null,
+        "created_at": "2026-09-05T21:27:39+00:00"
+      }
+    },
+    "final_product": {
+      "record_type": "work_product",
+      "work_product_id": "WP-885abd97628f",
+      "title": "Launch advice",
+      "vault_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/final/launch-advice-97628f-4d52f1.md",
+      "state": "final",
+      "summary": "Finalized the canonical work product and reconciled the matter to Respond.",
+      "final_id": "FINAL-20260905-4d52f1",
+      "changed_paths": [
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/work-product/final/launch-advice-97628f-4d52f1.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/events/2026-09-05-EVT-20260905-e5be36.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/matter.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/events/2026-09-05-EVT-20260905-555ac3.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/dossier.md"
+      ],
+      "dossier_projection": {
+        "state": "applied",
+        "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/dossier.md",
+        "revision_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/dossier-revisions/DOS-20260905-44740f.md",
+        "content_hash": "8c91990f255b827eb29b572982900fa12e80154a69a65b5cab8626fc68adf29a"
+      },
+      "action": "finalize_work_product",
+      "operation": "finalize_work_product",
+      "status": "changed",
+      "matter_id": "MAT-20260905-f025e4",
+      "source_action_key": null,
+      "entity_refs": [
+        {
+          "type": "work_product",
+          "id": "WP-885abd97628f"
+        },
+        {
+          "type": "final",
+          "id": "FINAL-20260905-4d52f1"
+        }
+      ],
+      "resulting_matter_state": {
+        "stage": "respond",
+        "next_action": "Approve the final response.",
+        "work_state": {
+          "next_action": "Approve the final response.",
+          "next_work_item_id": null,
+          "next_owner": null,
+          "next_actor": "you",
+          "due_at": null,
+          "execution_state": "not_running",
+          "active_run_id": null,
+          "execution_note": "",
+          "signal": {
+            "kind": "waiting_on_you",
+            "label": "Waiting on you"
+          }
+        },
+        "consistency_issues": []
+      },
+      "available_next_actions": [
+        "approve_response"
+      ],
+      "required_user_action": "Approve the final response with the direct approval control.",
+      "error": null,
+      "recovery": null
+    },
+    "answered_question": {
+      "question_id": "Q-DEMO-SUPPORT",
+      "business_question_id": "BQ-c7fd36e074742c4a",
+      "business_question_revision": "legacy:de5ce42a42be7d25a595cf35215f309958b2e19c3fa6d8e7ac608e79aa836e9c",
+      "issue_id": "ISS-c7fd36e074-6a74558db33a76cc",
+      "issue_ids": [
+        "ISS-c7fd36e074-6a74558db33a76cc"
+      ],
+      "question_kind": "factual",
+      "linked_fact_ids": [],
+      "answer_origin": null,
+      "source_message_id": null,
+      "source_action_key": null,
+      "source_revision": "c911bf920cbbbfcc1d03ac5d3fd73fb5ade4b62365082c7172909074add0d475",
+      "text": "Who handles family account recovery?",
+      "consequence": "",
+      "state": "answered",
+      "answer": "Support contacts the family account owner.",
+      "answer_kind": null,
+      "answer_source_ids": [],
+      "answer_claim_ids": [],
+      "updated_at": "2026-09-05T21:27:47+00:00",
+      "source_paths": [
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec.md"
+      ]
+    },
+    "comparison": {
+      "comparison_id": "CMP-8032770a3cf7cfe6e648c564",
+      "matter_id": "MAT-20260905-f025e4",
+      "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/continuity/impacts/CMP-8032770a3cf7cfe6e648c564.md",
+      "revision": "07f50c3a042d3e22d4eff9d10bd0155c938d7a425feb1cedd1e5c688aace3ebc",
+      "actor": {
+        "person_id": "alex-morgan",
+        "display_name": "Alex Morgan",
+        "mode": "demo"
+      },
+      "source_action_key": "demo-comparison",
+      "before": {
+        "reference_id": "source:SRC-LUMEN-SPEC:27344e5254c2",
+        "kind": "source",
+        "title": "product-spec.md",
+        "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec.md",
+        "revision": "c3356afe20d4004232dbdcde151d64c9330081d8ef1f98ab7cd2cd7c7d7e610b",
+        "content_hash": "4a92dd0dcb3f710160dde50784b0d61519f4b0a959864113e7ff211ec96ba640",
+        "text": "---\nmatter_id: MAT-20260905-f025e4\ntitle: Lumen product specification\nrecord_type: source\nimmutable: true\nsource_id: SRC-LUMEN-SPEC\nsupport_state: supplied\n---\n# Lumen product specification\n\n## Audience\n\nThe proposed US service is commercial. Product has not confirmed the minimum user age.\n\n## Analytics\n\nThe app uses a persistent device identifier across sessions. No advertising vendor has been selected.\n",
+        "snapshot_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/continuity/snapshots/REF-f83a55b749b4cf220868fb24.md",
+        "source_id": "SRC-LUMEN-SPEC",
+        "original_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec.md",
+        "original_hash": "4a92dd0dcb3f710160dde50784b0d61519f4b0a959864113e7ff211ec96ba640",
+        "extraction_state": "complete"
+      },
+      "after": {
+        "reference_id": "source:SRC-LUMEN-REVISED:5a9bee9e85e0",
+        "kind": "source",
+        "title": "product-spec-revised.md",
+        "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec-revised.md",
+        "revision": "c9eaa84defe8ab9907aea99bb411b1cef2db4590abcd98625e989a3ce93491ec",
+        "content_hash": "6514fdff12f3baec5d1a8669101b86fb630ac5815678425bff86b3fbda0a7d86",
+        "text": "---\nmatter_id: MAT-20260905-f025e4\ntitle: Revised Lumen product specification\nrecord_type: source\nimmutable: true\nsource_id: SRC-LUMEN-REVISED\nsupport_state: supplied\n---\n# Revised Lumen product specification\n\nAudience age remains unconfirmed.\n\nThe persistent identifier is deleted after 30 days. Advertising remains outside launch scope.\n",
+        "snapshot_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/continuity/snapshots/REF-6d11954db846740e0bc26685.md",
+        "source_id": "SRC-LUMEN-REVISED",
+        "original_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec-revised.md",
+        "original_hash": "6514fdff12f3baec5d1a8669101b86fb630ac5815678425bff86b3fbda0a7d86",
+        "extraction_state": "complete"
+      },
+      "targets": [
+        {
+          "reference_id": "snapshot:current",
+          "kind": "advice",
+          "title": "Saved workspace answer",
+          "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/workspace.md",
+          "revision": "f927c6d13b8d607bc023865a310f8646d3616b22f7e9ac85d0facfeb86251a1c",
+          "content_hash": "5911c2931104614728d294dece837b3e1dac2c60cfe9a68c740266ff20cfb305",
+          "text": "Confirm the launch audience and identifier purpose before choosing the controls. A child is under 13 under the rule [source:SRC-COPPA|Child].",
+          "snapshot_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/continuity/snapshots/REF-bb0bb2bad5fc016642898ccf.md",
+          "source_id": null,
+          "original_path": null,
+          "original_hash": null,
+          "extraction_state": "not_applicable"
+        }
+      ],
+      "question": {
+        "reference_id": "BQ-c7fd36e074742c4a",
+        "kind": "question",
+        "title": "Current business question",
+        "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/dossier.md",
+        "revision": "legacy:de5ce42a42be7d25a595cf35215f309958b2e19c3fa6d8e7ac608e79aa836e9c",
+        "content_hash": "de5ce42a42be7d25a595cf35215f309958b2e19c3fa6d8e7ac608e79aa836e9c",
+        "text": "Can Lumen launch its US family learning app with analytics?",
+        "snapshot_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/continuity/snapshots/REF-8795cbba29af1b18cf7893f9.md",
+        "source_id": null,
+        "original_path": null,
+        "original_hash": null,
+        "extraction_state": "not_applicable"
+      },
+      "basis": [
+        {
+          "reference_id": "FACT-20260905-2daaa1",
+          "kind": "fact",
+          "title": "Fact",
+          "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/facts.md",
+          "revision": "2e1ce45e1c5996a21835e998840dfa321064f68d8ef30d6d43303ced36f82a84",
+          "content_hash": "af623645a2592851e7d1fa81e23953d1a4436ca72bcf2b5208fd05cb7f2ac401",
+          "text": "Lumen plans a commercial online learning service in the United States.",
+          "snapshot_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/continuity/snapshots/REF-1fff805fdfa57da1489f0f2d.md",
+          "source_id": null,
+          "original_path": null,
+          "original_hash": null,
+          "extraction_state": "not_applicable"
+        },
+        {
+          "reference_id": "FACT-20260905-34e2c9",
+          "kind": "fact",
+          "title": "Fact",
+          "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/facts.md",
+          "revision": "55cc3e06bd74e450b0388b9ff2746930d7563a411361b8580d9ffef1171a854a",
+          "content_hash": "384870b3e0bc62649559c846ba3fb3c3714aa4ce3cbc35a15317cc2652582752",
+          "text": "The product uses a persistent device identifier across sessions.",
+          "snapshot_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/continuity/snapshots/REF-b0288a16898fd9a0d6a2c2f8.md",
+          "source_id": null,
+          "original_path": null,
+          "original_hash": null,
+          "extraction_state": "not_applicable"
+        },
+        {
+          "reference_id": "FACT-20260905-a196eb",
+          "kind": "fact",
+          "title": "Fact",
+          "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/facts.md",
+          "revision": "abcf952a9b8c22b5539a5ddc3788332e6b71dd4cbbafaac3b0d9163b218dc2f3",
+          "content_hash": "4931a95a7bd02ed3acb0933dd3e8d50465fbb150802ed28943028a7d8c2f708b",
+          "text": "Support will handle account recovery through the family account owner.",
+          "snapshot_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/continuity/snapshots/REF-c7a2a8f98d68951c99d3577e.md",
+          "source_id": null,
+          "original_path": null,
+          "original_hash": null,
+          "extraction_state": "not_applicable"
+        }
+      ],
+      "baseline_revisions": {
+        "business_question": "legacy:de5ce42a42be7d25a595cf35215f309958b2e19c3fa6d8e7ac608e79aa836e9c",
+        "fact_basis": "148764bd3aa798fa37973702114958e25b7dbcab3ad45a46a6f518cffc8acabf"
+      },
+      "state": "prepared",
+      "difference": "text_changed",
+      "passages": [
+        {
+          "passage_id": "PASS-dcdb926b217cd10eb1fc",
+          "kind": "changed",
+          "before_text": "title: Lumen product specification\n",
+          "after_text": "title: Revised Lumen product specification\n",
+          "before_locator": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec.md \u00b7 source text lines 3\u20133",
+          "after_locator": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec-revised.md \u00b7 source text lines 3\u20133"
+        },
+        {
+          "passage_id": "PASS-d07d7bdc4eaca338e325",
+          "kind": "changed",
+          "before_text": "source_id: SRC-LUMEN-SPEC\n",
+          "after_text": "source_id: SRC-LUMEN-REVISED\n",
+          "before_locator": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec.md \u00b7 source text lines 6\u20136",
+          "after_locator": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec-revised.md \u00b7 source text lines 6\u20136"
+        },
+        {
+          "passage_id": "PASS-23ec204ff5034e6d0ebc",
+          "kind": "changed",
+          "before_text": "# Lumen product specification\n",
+          "after_text": "# Revised Lumen product specification\n",
+          "before_locator": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec.md \u00b7 source text lines 9\u20139",
+          "after_locator": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec-revised.md \u00b7 source text lines 9\u20139"
+        },
+        {
+          "passage_id": "PASS-88b00d3c0bdf89fddfab",
+          "kind": "changed",
+          "before_text": "## Audience\n",
+          "after_text": "Audience age remains unconfirmed.\n",
+          "before_locator": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec.md \u00b7 source text lines 11\u201311",
+          "after_locator": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec-revised.md \u00b7 source text lines 11\u201311"
+        },
+        {
+          "passage_id": "PASS-d368bc20491fd73c6343",
+          "kind": "changed",
+          "before_text": "The proposed US service is commercial. Product has not confirmed the minimum user age.\n\n## Analytics\n\nThe app uses a persistent device identifier across sessions. No advertising vendor has been selected.\n",
+          "after_text": "The persistent identifier is deleted after 30 days. Advertising remains outside launch scope.\n",
+          "before_locator": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec.md \u00b7 source text lines 13\u201317",
+          "after_locator": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-f025e4/documents/product-spec-revised.md \u00b7 source text lines 13\u201313"
+        }
+      ],
+      "analysis": "",
+      "findings": [],
+      "coverage_limits": [
+        "Analysis covers only the selected supplied material and saved work. No external research was performed."
+      ],
+      "run_id": null,
+      "created_at": "2026-09-05T21:30:51+00:00",
+      "offer_ids": []
+    },
+    "large_map_facts": [
+      "The initial release is limited to the United States.",
+      "Families use one account owner for account settings.",
+      "Learning events include activity type and session time.",
+      "Product has not set the minimum account age.",
+      "The analytics processor receives a pseudonymous device identifier.",
+      "The launch has no advertising placement.",
+      "The app has no sale of learning-event data.",
+      "Engineering owns the event schema.",
+      "Support owns the account-recovery process.",
+      "Privacy review must address retention separately from analytics purpose.",
+      "The launch notice is still a draft.",
+      "The processor contract is supplied by Procurement.",
+      "Product expects shared devices in family homes.",
+      "Account deletion removes the family profile.",
+      "The analytics deletion process needs an Engineering description.",
+      "The proposed launch separates family-account recovery from ordinary analytics processing. Support staff ask the account owner to confirm the recovery request. Product has not yet selected the precise notice and escalation text, and that open implementation choice must remain visible when the full matter map shows this long operational fact."
+    ]
+  }
+}

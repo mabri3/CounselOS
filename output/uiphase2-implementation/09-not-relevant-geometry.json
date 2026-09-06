@@ -1,0 +1,289 @@
+{
+  "height": 1636,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 174.33238220214844,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 854.54541015625,
+      "x": 0,
+      "y": -2567.272705078125
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 607.6917114257812,
+      "y": -2481.2783203125
+    },
+    {
+      "font": "15px",
+      "height": 5956.7822265625,
+      "tag": "MAIN",
+      "text": "Recorded decisions3 recorded · 1 need reviewDecision filterA",
+      "width": 854.54541015625,
+      "x": 0,
+      "y": -2392.940185546875
+    },
+    {
+      "font": "48px",
+      "height": 52.79119110107422,
+      "tag": "H1",
+      "text": "Recorded decisions",
+      "width": 589.9502563476562,
+      "x": 37.99715805053711,
+      "y": -2360.944580078125
+    },
+    {
+      "font": "14px",
+      "height": 47.99715805053711,
+      "tag": "BUTTON",
+      "text": "Check sources again",
+      "width": 164.60226440429688,
+      "x": 651.9459838867188,
+      "y": -2352.947265625
+    },
+    {
+      "font": "15px",
+      "height": 3874.60205078125,
+      "tag": "SECTION",
+      "text": "Decision review packetsNeeds review · Synthetic process revi",
+      "width": 778.5510864257812,
+      "x": 37.99715805053711,
+      "y": -438.50140380859375
+    },
+    {
+      "font": "15px",
+      "height": 64.98579406738281,
+      "tag": "H2",
+      "text": "Decision review packets",
+      "width": 776.73291015625,
+      "x": 38.90625,
+      "y": -437.5923156738281
+    },
+    {
+      "font": "15px",
+      "height": 1676.0439453125,
+      "tag": "SECTION",
+      "text": "Themis.ai · Not yet reviewed by an attorneyReview a change t",
+      "width": 776.73291015625,
+      "x": 38.90625,
+      "y": -306.19317626953125
+    },
+    {
+      "font": "15px",
+      "height": 74.77982330322266,
+      "tag": "HEADER",
+      "text": "Themis.ai · Not yet reviewed by an attorneyReview a change t",
+      "width": 728.7357788085938,
+      "x": 62.90482711791992,
+      "y": -279.2897644042969
+    },
+    {
+      "font": "38px",
+      "height": 43.69318008422851,
+      "tag": "H2",
+      "text": "Review a change to the recorded basis",
+      "width": 647.6135864257812,
+      "x": 62.90482711791992,
+      "y": -248.20310974121097
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Submit outcome",
+      "width": 139.13351440429688,
+      "x": 545.3053588867188,
+      "y": 1171.8677978515625
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Cancel",
+      "width": 77.29402923583984,
+      "x": 693.4375,
+      "y": 1171.8677978515625
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Record mitigation",
+      "width": 147.1519775390625,
+      "x": 62.90482711791992,
+      "y": 1273.678955078125
+    },
+    {
+      "font": "15px",
+      "height": 853.8848876953125,
+      "tag": "SECTION",
+      "text": "Themis.aiReview a change to the recorded basisResolved · tod",
+      "width": 776.73291015625,
+      "x": 38.90625,
+      "y": 1436.26416015625
+    },
+    {
+      "font": "15px",
+      "height": 74.77982330322266,
+      "tag": "HEADER",
+      "text": "Themis.aiReview a change to the recorded basis",
+      "width": 728.7357788085938,
+      "x": 62.90482711791992,
+      "y": 1463.1676025390625
+    },
+    {
+      "font": "38px",
+      "height": 43.69318008422851,
+      "tag": "H2",
+      "text": "Review a change to the recorded basis",
+      "width": 647.6135864257812,
+      "x": 62.90482711791992,
+      "y": 1494.254150390625
+    },
+    {
+      "font": "15px",
+      "height": 1384.0625,
+      "tag": "SECTION",
+      "text": "Themis.ai · Not yet reviewed by an attorneyReview a change t",
+      "width": 776.73291015625,
+      "x": 38.90625,
+      "y": 2356.5625
+    },
+    {
+      "font": "15px",
+      "height": 74.77982330322266,
+      "tag": "HEADER",
+      "text": "Themis.ai · Not yet reviewed by an attorneyReview a change t",
+      "width": 728.7357788085938,
+      "x": 62.90482711791992,
+      "y": 2383.4658203125
+    },
+    {
+      "font": "38px",
+      "height": 43.69318008422851,
+      "tag": "H2",
+      "text": "Review a change to the recorded basis",
+      "width": 647.6135864257812,
+      "x": 62.90482711791992,
+      "y": 2414.552490234375
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Record mitigation",
+      "width": 147.1519775390625,
+      "x": 62.90482711791992,
+      "y": 3644.452880859375
+    },
+    {
+      "font": "15px",
+      "height": 853.8848876953125,
+      "tag": "SECTION",
+      "text": "Themis.aiReview a change to the recorded basisResolved · tod",
+      "width": 776.73291015625,
+      "x": 38.90625,
+      "y": 2422.975830078125
+    },
+    {
+      "font": "15px",
+      "height": 74.77982330322266,
+      "tag": "HEADER",
+      "text": "Themis.aiReview a change to the recorded basis",
+      "width": 728.7357788085938,
+      "x": 62.90482711791992,
+      "y": 2449.879150390625
+    },
+    {
+      "font": "38px",
+      "height": 43.69318008422851,
+      "tag": "H2",
+      "text": "Review a change to the recorded basis",
+      "width": 647.6135864257812,
+      "x": 62.90482711791992,
+      "y": 2480.9658203125
+    },
+    {
+      "font": "15px",
+      "height": 1384.0625,
+      "tag": "SECTION",
+      "text": "Themis.ai · Not yet reviewed by an attorneyReview a change t",
+      "width": 776.73291015625,
+      "x": 38.90625,
+      "y": 3343.27392578125
+    },
+    {
+      "font": "15px",
+      "height": 74.77982330322266,
+      "tag": "HEADER",
+      "text": "Themis.ai · Not yet reviewed by an attorneyReview a change t",
+      "width": 728.7357788085938,
+      "x": 62.90482711791992,
+      "y": 3370.177490234375
+    },
+    {
+      "font": "38px",
+      "height": 43.69318008422851,
+      "tag": "H2",
+      "text": "Review a change to the recorded basis",
+      "width": 647.6135864257812,
+      "x": 62.90482711791992,
+      "y": 3401.26416015625
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Record mitigation",
+      "width": 147.1519775390625,
+      "x": 62.90482711791992,
+      "y": 4631.16455078125
+    },
+    {
+      "font": "15px",
+      "height": 1615.1348876953125,
+      "tag": "SECTION",
+      "text": "Themis.ai · Not yet reviewed by an attorneyReview a change t",
+      "width": 776.73291015625,
+      "x": 38.90625,
+      "y": 3435.191650390625
+    },
+    {
+      "font": "15px",
+      "height": 74.77982330322266,
+      "tag": "HEADER",
+      "text": "Themis.ai · Not yet reviewed by an attorneyReview a change t",
+      "width": 728.7357788085938,
+      "x": 62.90482711791992,
+      "y": 3462.094970703125
+    },
+    {
+      "font": "38px",
+      "height": 43.69318008422851,
+      "tag": "H2",
+      "text": "Review a change to the recorded basis",
+      "width": 647.6135864257812,
+      "x": 62.90482711791992,
+      "y": 3493.181640625
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Record mitigation",
+      "width": 147.1519775390625,
+      "x": 62.90482711791992,
+      "y": 4954.15478515625
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 2567.272705078125,
+  "url": "http://localhost:3134/decisions",
+  "width": 864
+}

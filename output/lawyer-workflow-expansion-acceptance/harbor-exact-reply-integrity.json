@@ -1,0 +1,22 @@
+{
+  "request_id": "FRQ-0cabb8bc23b74d91b36c28ce",
+  "requested_at": "2026-09-05T10:19:07+00:00",
+  "reply_id": "RPL-e0c3cafcf8e9b9661d851fd4",
+  "exact_text_match": true,
+  "reply": {
+    "reply_id": "RPL-e0c3cafcf8e9b9661d851fd4",
+    "source_id": "SRC-2280d73c6c48921b3fd2b14d",
+    "path": "03_Matters/harbor-relay-specification-review-0a2378/continuity/replies/RPL-e0c3cafcf8e9b9661d851fd4.md",
+    "text": "Support can open a report only for a customer support ticket. Every access is logged.\nI have not confirmed the retention period yet.  \n",
+    "content_hash": "7961b9d74366f337019003abbb7afdd1131af8754f9b1a165eb2081e1eef3b5f",
+    "entered_by": {
+      "person_id": "alex",
+      "display_name": "Alex Morgan",
+      "mode": "demo"
+    },
+    "reported_speaker": "Sam Patel",
+    "reported_at": null,
+    "created_at": "2026-09-05T10:19:09+00:00",
+    "linked_fact_ids": []
+  }
+}

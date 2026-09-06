@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, Form, Header, HTTPException, UploadFile
 from pydantic import BaseModel, Field, field_validator
 
-from app.models.api import AnnotationCreate, BatchActionRequest, ChatRequest, ChatResponse, MatterActionRequest, MatterActionResult, MatterConsistencyRepairRequest, MatterCreate, MatterRiskUpdate, ParticipantUpdateRequest, RecommendationAcceptRequest, RecommendationUpdateRequest, ResearchRunStart, SourceActionKey, StageUpdate, TypedOperationResult, WorkItemAssignRequest, WorkItemCompleteRequest, WorkItemPriorityRequest, WorkProductFinalizeRequest
+from app.models.api import AnnotationCreate, BatchActionRequest, ChatRequest, ChatResponse, MatterActionRequest, MatterActionResult, MatterConsistencyRepairRequest, MatterCreate, MatterRiskUpdate, ParticipantUpdateRequest, RecommendationAcceptRequest, RecommendationUpdateRequest, ResearchRunStart, SourceActionKey, StageUpdate, TypedOperationResult, WorkItemAssignRequest, WorkItemCompleteRequest, WorkItemCreate, WorkItemPriorityRequest, WorkProductFinalizeRequest
 from app.routers.dependencies import get_context
 from app.agents.output import clean_conversation_for_display
 from app.runtime import AppContext
@@ -220,15 +220,29 @@ def update_risk(
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
+def _lifecycle_actor(context: AppContext, person_id: str | None, legacy_actor: str = ""):
+    # Keep existing non-demo clients callable. An explicit identity header, or
+    # an enabled demo roster, always uses the roster as the actor source.
+    if person_id is None and not context.workspace_team.roster()["enabled"]:
+        return legacy_actor, None
+    try:
+        actor = context.workspace_team.resolve_actor(person_id or None)
+    except ValueError as exc:
+        raise HTTPException(422, detail=str(exc)) from exc
+    return actor.display_name, actor.model_dump()
+
+
 @router.post("/{matter_id}/actions", response_model=MatterActionResult)
 def perform_action(
     matter_id: str,
     payload: MatterActionRequest,
     context: AppContext = Depends(get_context),
+    person_id: str | None = Header(None, alias="X-Themis-Person-Id"),
 ):
+    actor, action_actor = _lifecycle_actor(context, person_id, payload.actor)
     try:
         return context.matters.perform_action(
-            matter_id, payload.action, actor=payload.actor,
+            matter_id, payload.action, actor=actor, action_actor=action_actor,
             artifact_path=payload.artifact_path, work_item_id=payload.work_item_id,
             note=payload.note,
         )
@@ -241,11 +255,39 @@ def complete_work_item(
     matter_id: str,
     payload: WorkItemCompleteRequest,
     context: AppContext = Depends(get_context),
+    person_id: str | None = Header(None, alias="X-Themis-Person-Id"),
 ):
+    actor, action_actor = _lifecycle_actor(context, person_id, payload.actor)
     try:
-        return context.matters.complete_work_item(matter_id, payload.work_item_id, actor=payload.actor)
+        return context.matters.complete_work_item(matter_id, payload.work_item_id, actor=actor, action_actor=action_actor)
     except (KeyError, ValueError) as exc:
         raise HTTPException(status_code=409 if isinstance(exc, ValueError) else 404, detail=str(exc)) from exc
+
+
+@router.post("/{matter_id}/work-items", status_code=201)
+def create_work_item(
+    matter_id: str,
+    payload: WorkItemCreate,
+    context: AppContext = Depends(get_context),
+):
+    if payload.matter_id != matter_id:
+        raise HTTPException(status_code=422, detail="Work item matter does not match the route matter.")
+    if payload.item_type == "mitigation":
+        if not str(payload.issue_id or "").strip():
+            raise HTTPException(status_code=422, detail="Mitigation issue is required.")
+        if not payload.owner.strip():
+            raise HTTPException(status_code=422, detail="Mitigation owner is required.")
+    try:
+        issue_ids = {item["issue_id"] for item in context.workspace.issues(matter_id)}
+        if payload.issue_id and payload.issue_id not in issue_ids:
+            raise HTTPException(status_code=422, detail="Issue does not belong to this matter.")
+        return context.matters.create_work_item(payload)
+    except HTTPException:
+        raise
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @router.post("/{matter_id}/work-items/assign", response_model=MatterActionResult)
@@ -253,13 +295,15 @@ def assign_work_item(
     matter_id: str,
     payload: WorkItemAssignRequest,
     context: AppContext = Depends(get_context),
+    person_id: str | None = Header(None, alias="X-Themis-Person-Id"),
 ):
+    actor, action_actor = _lifecycle_actor(context, person_id, payload.actor)
     try:
         return context.matters.assign_work_item(
             matter_id,
             payload.work_item_id,
             owner=payload.owner,
-            actor=payload.actor,
+            actor=actor, action_actor=action_actor,
         )
     except (KeyError, ValueError) as exc:
         raise HTTPException(status_code=409 if isinstance(exc, ValueError) else 404, detail=str(exc)) from exc
@@ -270,10 +314,12 @@ def prioritize_work_item(
     matter_id: str,
     payload: WorkItemPriorityRequest,
     context: AppContext = Depends(get_context),
+    person_id: str | None = Header(None, alias="X-Themis-Person-Id"),
 ):
+    actor, action_actor = _lifecycle_actor(context, person_id, payload.actor)
     try:
         return context.matters.prioritize_work_item(
-            matter_id, payload.work_item_id, priority=payload.priority, actor=payload.actor
+            matter_id, payload.work_item_id, priority=payload.priority, actor=actor, action_actor=action_actor
         )
     except (KeyError, ValueError) as exc:
         raise HTTPException(status_code=409 if isinstance(exc, ValueError) else 404, detail=str(exc)) from exc
@@ -417,7 +463,7 @@ def repair_matter_consistency(
 
 
 @router.post("/{matter_id}/research", status_code=202)
-def run_research(
+async def run_research(
     matter_id: str,
     question: str = "",
     context: AppContext = Depends(get_context),
@@ -433,7 +479,7 @@ def run_research(
 
 
 @router.post("/{matter_id}/research-runs", status_code=202)
-def start_research_run(
+async def start_research_run(
     matter_id: str,
     payload: ResearchRunStart,
     context: AppContext = Depends(get_context),
@@ -444,6 +490,7 @@ def start_research_run(
             matter_id,
             questions,
             source_action_key=payload.source_action_key,
+            issue_id=payload.issue_id,
         )
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
@@ -571,9 +618,11 @@ def finalize_work_product(
     matter_id: str,
     payload: WorkProductFinalizeRequest,
     context: AppContext = Depends(get_context),
+    person_id: str | None = Header(None, alias="X-Themis-Person-Id"),
 ):
+    actor, action_actor = _lifecycle_actor(context, person_id)
     try:
-        result = context.work_products.finalize(matter_id, payload.draft_path)
+        result = context.work_products.finalize(matter_id, payload.draft_path, action_actor=action_actor)
         return result
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc

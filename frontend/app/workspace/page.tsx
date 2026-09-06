@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import styles from "@/components/PortfolioPhase2.module.css";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import AppShell from "@/components/AppShell";
@@ -69,10 +70,11 @@ export default function WorkspacePage() {
 
   return (
     <AppShell>
-      <main className="page">
+      <main className={styles.page}>
         <div className="page-header">
           <div>
-            <h1>Workspace</h1>
+            <div className={styles.eyebrow}>Portfolio board</div>
+            <h1>See where the work stands</h1>
             {loaded ? <p>
               {inFlight} matter{inFlight === 1 ? "" : "s"} in flight.{" "}
               {needsYou} {needsYou === 1 ? "matter awaits" : "matters await"} your judgment.
@@ -84,28 +86,11 @@ export default function WorkspacePage() {
         {error ? <div className="error">{error}</div> : null}
 
         {loaded ? <>
-        <div style={{ marginTop: 20 }}>
-          <NewMatterForm
-            busy={creating}
-            onCreate={async (payload) => {
-              setCreating(true);
-              try {
-                const matter = await createMatter(payload);
-                router.push(`/matters/${encodeURIComponent(matter.matter_id)}`);
-              }
-              finally { setCreating(false); }
-            }}
-          />
-        </div>
 
         <section style={{ marginTop: 26 }}>
-          <div className="section-heading">The board</div>
-          <div className="legend" style={{ margin: "4px 0 14px" }}>
+
+          <div className={styles.boardIntro}>
             <span style={{ font: "400 14px var(--sans)", color: "var(--ink-4)" }}>Drag to move active work. Close a matter from its page after delivery.</span>
-            <span className="legend-item"><span className="dot" style={{ background: role.failure }} />Overdue</span>
-            <span className="legend-item"><span className="dot" style={{ background: role.attention }} />Waiting on you</span>
-            <span className="legend-item"><span className="dot" style={{ background: role.agent }} />Themis.ai is working</span>
-            <span className="legend-item"><span className="dot" style={{ background: "#d6d1c7" }} />No action needed</span>
           </div>
           <StageBoard
               matters={matters}
@@ -121,20 +106,10 @@ export default function WorkspacePage() {
             />
         </section>
 
-        <section
-          style={{
-            marginTop: 34,
-            paddingTop: 22,
-            borderTop: "1px solid var(--line-soft)",
-            display: "grid",
-            gridTemplateColumns: "minmax(0,1fr) minmax(0,1.15fr)",
-            gap: 48,
-            alignItems: "start",
-          }}
-        >
-          <div>
-            <div className="section-heading">This quarter</div>
-            <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 9 }}>
+        <section className={styles.lowerSections}>
+          <details className={styles.lowerDisclosure}>
+            <summary>This quarter</summary>
+            <div className={styles.quarter}>
               {quarter.map((entry) => (
                 <div className="quarter-row" key={entry.label}>
                   <b style={{ color: entry.color }}>{entry.n}</b>
@@ -142,10 +117,11 @@ export default function WorkspacePage() {
                 </div>
               ))}
             </div>
-          </div>
+          </details>
 
-          <div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+          <details className={styles.lowerDisclosure}>
+            <summary>What the agents did</summary>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "16px 0" }}>
               <span className="section-heading">What the agents did</span>
               <Link href="/automations" style={{ font: "400 14px var(--sans)", color: "var(--ink-2)", textDecoration: "underline", textUnderlineOffset: 3 }}>
                 All activity
@@ -153,8 +129,10 @@ export default function WorkspacePage() {
             </div>
             <div style={{ marginTop: 12, display: "flex", flexDirection: "column" }}>
               {activity.length === 0 ? (
-                <div style={{ padding: "10px 0", font: "400 15px var(--sans)", color: "var(--ink-5)" }}>
+                <div className={styles.emptyActivity}>
+                  <span aria-hidden="true">✧</span>
                   No automation has run yet.
+                  <p>When your agents act, you’ll see their work here.</p>
                 </div>
               ) : null}
               {activity.map((schedule) => (
@@ -178,7 +156,23 @@ export default function WorkspacePage() {
                 </div>
               ))}
             </div>
-          </div>
+          </details>
+        </section>
+        <section id="new-matter" className={styles.newMatterSection}><div className={styles.eyebrow}>New matter</div>
+        <div style={{ marginTop: 20 }}>
+          <NewMatterForm
+            busy={creating}
+            onCreate={async (payload) => {
+              setCreating(true);
+              try {
+                const matter = await createMatter(payload);
+                router.push(`/matters/${encodeURIComponent(matter.matter_id)}`);
+              }
+              finally { setCreating(false); }
+            }}
+          />
+        </div>
+
         </section>
         </> : null}
       </main>

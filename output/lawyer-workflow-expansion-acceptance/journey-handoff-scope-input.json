@@ -1,0 +1,1 @@
+{"label":"journey-handoff-scope","width":1024,"actions":[{"op":"wait","ms":4000},{"op":"select","label":"Work to hand off","exact":false,"value":"WI-20260905-177aed"},{"op":"click","name":"Files & context"},{"op":"wait","ms":1000}]}

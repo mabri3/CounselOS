@@ -1,0 +1,1 @@
+{"label": "journey-final-approval", "actions": [{"op": "click", "text": "Research, work items, decisions and matter records"}, {"op": "click", "name": "Approve response"}, {"op": "visible", "name": "Record manual delivery"}]}

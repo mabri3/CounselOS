@@ -8,9 +8,12 @@ from pathlib import Path
 from typing import Any
 
 from app.models.api import DecisionCreate
+from app.services.dossier import serialized
 from app.services.index import IndexService
+from app.services.issue_analysis import IssueAnalysisService
 from app.services.matters import MatterService
 from app.services.vault import VaultService
+from app.services.workspace import WorkspaceConflict, digest
 from app.utils.ids import new_id
 from app.utils.time import iso_now, parse_iso, utc_now
 
@@ -27,6 +30,7 @@ class DecisionService:
         self.index = index
         self.matters = matters
         self.review_age_days = review_age_days
+        self.issue_analysis = IssueAnalysisService(vault, matters)
 
     def list(self, status: str | None = None) -> list[dict[str, Any]]:
         return [self._with_links(item) for item in self.index.list_decisions(status)]
@@ -40,6 +44,7 @@ class DecisionService:
             raise KeyError(f"Decision not found: {decision_id}")
         return self._with_links(decision)
 
+    @serialized
     def record(
         self,
         request: DecisionCreate,
@@ -53,7 +58,22 @@ class DecisionService:
             if request.source_action_key:
                 existing = self._find_by_source_action_key(base, request.source_action_key)
                 if existing is not None:
+                    prior_fingerprint = existing["metadata"].get("request_fingerprint")
+                    if prior_fingerprint:
+                        canonical_replay_basis = self._replay_map_basis(request, existing["metadata"])
+                        replay_fingerprint = self._request_fingerprint(
+                            request, canonical_replay_basis, revises_decision_id,
+                            mitigation_ids or [], review_packet_ids or [],
+                        )
+                        if prior_fingerprint != replay_fingerprint:
+                            self._action_key_conflict(existing["metadata"])
                     return self._finish_record(existing["path"], existing["metadata"])
+            canonical_basis = self._canonical_map_basis(request)
+            fingerprint = self._request_fingerprint(
+                request, canonical_basis, revises_decision_id,
+                mitigation_ids or [], review_packet_ids or [],
+            )
+            self._validate_current_map_basis(request, canonical_basis)
             self._validate_recommendation_version(base, request.recommendation_version_id)
             if revises_decision_id:
                 prior = self.get(revises_decision_id)
@@ -89,6 +109,8 @@ class DecisionService:
                 "recommendation_disposition": request.recommendation_disposition,
                 "recommendation_disposition_reason": request.recommendation_disposition_reason.strip(),
                 "recommendation_version_id": request.recommendation_version_id,
+                "map_basis": canonical_basis,
+                "request_fingerprint": fingerprint,
             }
             conditions = "\n".join(f"- {item}" for item in request.conditions) or "- None recorded"
             not_decided = "\n".join(f"- {item}" for item in request.not_decided) or "- None recorded"
@@ -106,6 +128,109 @@ class DecisionService:
                 metadata,
             )
             return self._finish_record(path, metadata)
+
+    def _canonical_map_basis(self, request: DecisionCreate) -> dict[str, Any] | None:
+        if request.map_basis is None:
+            return None
+        supplied = request.map_basis.model_dump(mode="json")
+        analysis = self.issue_analysis.load(
+            request.matter_id,
+            supplied["analysis_path"],
+            supplied["analysis_id"],
+            supplied["analysis_revision"],
+        )
+        if analysis["issue_id"] != supplied["issue_id"]:
+            raise ValueError("The selected analysis does not belong to this issue.")
+        if analysis["output_revision"] != supplied["output_revision"]:
+            raise ValueError("The selected analysis output revision does not match.")
+        option = next((item for item in analysis["options"]
+                       if item["option_id"] == supplied["selected_option_id"]), None)
+        if option is None:
+            raise ValueError("The selected option does not belong to this analysis.")
+        computed_option_revision = digest({
+            "analysis_revision": analysis["analysis_revision"],
+            "option": {key: value for key, value in option.items() if key != "option_revision"},
+        })
+        if (option["option_revision"] != computed_option_revision
+                or supplied["selected_option_revision"] != computed_option_revision):
+            raise ValueError("The selected option revision does not match.")
+        return {
+            "issue_id": analysis["issue_id"],
+            "analysis_id": analysis["analysis_id"],
+            "analysis_revision": analysis["analysis_revision"],
+            "analysis_path": analysis["source_path"],
+            "output_revision": analysis["output_revision"],
+            "selected_option_id": option["option_id"],
+            "selected_option_revision": option["option_revision"],
+            "use_historical_basis": bool(supplied.get("use_historical_basis")),
+            "canonical_option": option,
+            "input_basis": dict(analysis["input_basis"]),
+        }
+
+    def _replay_map_basis(
+        self, request: DecisionCreate, metadata: dict[str, Any],
+    ) -> dict[str, Any] | None:
+        prior = metadata.get("map_basis")
+        if request.map_basis is None and prior is None:
+            return None
+        if request.map_basis is None or not isinstance(prior, dict):
+            self._action_key_conflict(metadata)
+        supplied = request.map_basis.model_dump(mode="json")
+        identity_fields = (
+            "issue_id", "analysis_id", "analysis_revision", "analysis_path",
+            "output_revision", "selected_option_id", "selected_option_revision",
+        )
+        if (any(supplied.get(key) != prior.get(key) for key in identity_fields)
+                or bool(supplied.get("use_historical_basis")) != bool(prior.get("use_historical_basis"))):
+            self._action_key_conflict(metadata)
+        return dict(prior)
+
+    @staticmethod
+    def _action_key_conflict(metadata: dict[str, Any]) -> None:
+        basis = metadata.get("map_basis") if isinstance(metadata.get("map_basis"), dict) else {}
+        raise WorkspaceConflict(
+            "This action key was already used for a different decision request.",
+            str(basis.get("analysis_revision") or ""),
+            code="action_key_conflict",
+        )
+
+    def _validate_current_map_basis(
+        self, request: DecisionCreate, canonical_basis: dict[str, Any] | None,
+    ) -> None:
+        if canonical_basis is None or canonical_basis["use_historical_basis"]:
+            return
+        status = self.issue_analysis.resolve(request.matter_id, canonical_basis["issue_id"])
+        current = status.get("analysis") if isinstance(status.get("analysis"), dict) else {}
+        exact = (
+            current.get("analysis_id") == canonical_basis["analysis_id"]
+            and current.get("analysis_revision") == canonical_basis["analysis_revision"]
+            and current.get("source_path") == canonical_basis["analysis_path"]
+            and current.get("output_revision") == canonical_basis["output_revision"]
+        )
+        if not exact or status.get("state") in {"needs_review", "missing", "historical", "not_mapped"}:
+            current_revision = str(current.get("analysis_revision")
+                                   or (status.get("reference") or {}).get("analysis_revision") or "")
+            raise WorkspaceConflict(
+                "This analysis basis changed. Refresh it or explicitly use the historical basis.",
+                current_revision,
+                code="stale_analysis_basis",
+            )
+
+    @staticmethod
+    def _request_fingerprint(
+        request: DecisionCreate, canonical_basis: dict[str, Any] | None,
+        revises_decision_id: str | None, mitigation_ids: list[str],
+        review_packet_ids: list[str],
+    ) -> str:
+        submitted = request.model_dump(mode="json", exclude={"source_action_key", "map_basis"})
+        submitted["recommendation_disposition_reason"] = request.recommendation_disposition_reason.strip()
+        submitted.update({
+            "map_basis": canonical_basis,
+            "revises_decision_id": revises_decision_id,
+            "mitigation_ids": list(dict.fromkeys(mitigation_ids)),
+            "review_packet_ids": list(dict.fromkeys(review_packet_ids)),
+        })
+        return digest(submitted)
 
     def _validate_recommendation_version(
         self, matter_path: str, recommendation_version_id: str | None
@@ -226,6 +351,8 @@ class DecisionService:
             "recommendation_disposition": metadata.get("recommendation_disposition", "not_applicable"),
             "recommendation_disposition_reason": metadata.get("recommendation_disposition_reason", ""),
             "recommendation_version_id": metadata.get("recommendation_version_id"),
+            "map_basis": metadata.get("map_basis"),
+            "request_fingerprint": metadata.get("request_fingerprint"),
         }
 
     def audit(self, *, persist: bool = True) -> dict[str, Any]:

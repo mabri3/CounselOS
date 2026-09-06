@@ -1,0 +1,172 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 83.99857330322266,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 1024.54541015625,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "font": "13px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 237.7627716064453,
+      "x": 766.7826538085938,
+      "y": 66.85369110107422
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 773.68603515625,
+      "y": 92.54261016845705
+    },
+    {
+      "font": "15px",
+      "height": 950.0780639648438,
+      "tag": "MAIN",
+      "text": "Output templatesReusable skills‹ Back to templatesOutput tem",
+      "width": 1024.54541015625,
+      "x": 0,
+      "y": 83.99857330322266
+    },
+    {
+      "font": "15px",
+      "height": 46.26420211791992,
+      "tag": "BUTTON",
+      "text": "Output templates",
+      "width": 118.5014190673828,
+      "x": 40,
+      "y": 111.99573516845705
+    },
+    {
+      "font": "15px",
+      "height": 46.26420211791992,
+      "tag": "BUTTON",
+      "text": "Reusable skills",
+      "width": 100.35511016845705,
+      "x": 186.49856567382812,
+      "y": 111.99573516845705
+    },
+    {
+      "font": "15px",
+      "height": 202.1875,
+      "tag": "HEADER",
+      "text": "‹ All skillsReusable skill builderLet’s build your skill1The",
+      "width": 944.54541015625,
+      "x": 40,
+      "y": 181.16476440429688
+    },
+    {
+      "font": "14px",
+      "height": 41.9957389831543,
+      "tag": "BUTTON",
+      "text": "‹ All skills",
+      "width": 95.02130126953124,
+      "x": 40,
+      "y": 181.16476440429688
+    },
+    {
+      "font": "48px",
+      "height": 53.749996185302734,
+      "tag": "H1",
+      "text": "Let’s build your skill",
+      "width": 944.54541015625,
+      "x": 40,
+      "y": 274.609375
+    },
+    {
+      "font": "26px",
+      "height": 65,
+      "tag": "H1",
+      "text": "What should this skill help you do?",
+      "width": 357.59942626953125,
+      "x": 108.90624237060548,
+      "y": 497.7059631347656
+    },
+    {
+      "font": "13.5px",
+      "height": 35.08522415161133,
+      "tag": "BUTTON",
+      "text": "Review or analyze something",
+      "width": 600,
+      "x": 108.90624237060548,
+      "y": 626.6974487304688
+    },
+    {
+      "font": "13.5px",
+      "height": 35.08522415161133,
+      "tag": "BUTTON",
+      "text": "Draft something",
+      "width": 600,
+      "x": 108.90624237060548,
+      "y": 667.7769775390625
+    },
+    {
+      "font": "13.5px",
+      "height": 35.08522415161133,
+      "tag": "BUTTON",
+      "text": "Compare options or documents",
+      "width": 600,
+      "x": 108.90624237060548,
+      "y": 708.8565063476562
+    },
+    {
+      "font": "13.5px",
+      "height": 35.08522415161133,
+      "tag": "BUTTON",
+      "text": "Find or organize information",
+      "width": 600,
+      "x": 108.90624237060548,
+      "y": 749.93603515625
+    },
+    {
+      "font": "13.5px",
+      "height": 35.08522415161133,
+      "tag": "BUTTON",
+      "text": "Create a checklist or plan",
+      "width": 600,
+      "x": 108.90624237060548,
+      "y": 791.015625
+    },
+    {
+      "font": "13.5px",
+      "height": 35.08522415161133,
+      "tag": "BUTTON",
+      "text": "Something else",
+      "width": 600,
+      "x": 108.90624237060548,
+      "y": 832.0951538085938
+    },
+    {
+      "font": "14px",
+      "height": 41.9957389831543,
+      "tag": "BUTTON",
+      "text": "Skip",
+      "width": 61.88209915161133,
+      "x": 108.90624237060548,
+      "y": 883.1746826171875
+    },
+    {
+      "font": "14px",
+      "height": 41.9957389831543,
+      "tag": "BUTTON",
+      "text": "Build it now",
+      "width": 109.65198516845705,
+      "x": 179.78692626953125,
+      "y": 883.1746826171875
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 0,
+  "url": "http://localhost:3134/skills?goal=Summarize%20the%20supplied%20release%20process",
+  "width": 1024
+}

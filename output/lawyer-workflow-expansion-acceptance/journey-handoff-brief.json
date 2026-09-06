@@ -1,0 +1,659 @@
+{
+  "label": "journey-handoff-brief",
+  "url": "http://localhost:3117/matters/MAT-20260905-0a2378",
+  "completed": [
+    {
+      "op": "wait",
+      "ms": 4000
+    },
+    {
+      "op": "select",
+      "label": "Recipient",
+      "exact": false,
+      "value": "jordan"
+    },
+    {
+      "op": "fill",
+      "label": "Exact ask",
+      "value": "Review the support-access conflict, state the conditions needed for the pilot, and return your findings on this work item."
+    },
+    {
+      "op": "fill",
+      "label": "Current basis (optional)",
+      "value": "Sam Patel reports ticket-only support access with logging. Version 1 says support cannot open reports. Retention is still unconfirmed. The saved reassessment is in the same matter conversation."
+    },
+    {
+      "op": "fill",
+      "label": "Open questions, one per line",
+      "value": "What retention period applies, and how is deletion enforced?\nWhich access statement will the revised specification use?"
+    },
+    {
+      "op": "fill",
+      "label": "Requested date (optional)",
+      "value": "2026-09-14"
+    },
+    {
+      "op": "click",
+      "name": "Draft handoff brief"
+    },
+    {
+      "op": "visible",
+      "selector": ".chat-card.wash-agent[role=status]",
+      "timeout": 20000
+    },
+    {
+      "op": "select",
+      "selector": "#demo-lawyer-person",
+      "value": "jordan"
+    },
+    {
+      "op": "wait",
+      "ms": 2000
+    },
+    {
+      "op": "visible",
+      "selector": ".chat-card.wash-healthy[role=status], .chat-card.wash-failure[role=status]",
+      "timeout": 120000
+    },
+    {
+      "op": "select",
+      "selector": "#demo-lawyer-person",
+      "value": "alex"
+    },
+    {
+      "op": "wait",
+      "ms": 1500
+    },
+    {
+      "op": "visible",
+      "text": "Handoff brief is ready to edit.",
+      "exact": false,
+      "timeout": 30000
+    }
+  ],
+  "failure": null,
+  "errors": [],
+  "responses": [
+    {
+      "url": "http://localhost:8117/api/matters/MAT-20260905-0a2378/workspace/prepare-communication",
+      "method": "POST",
+      "status": 200
+    }
+  ],
+  "text": "Today\nBriefing\nWorkspace\nMatters\nDecisions\nSkills\nAutomations\nAgents\nSettings\n\nLOCAL DEMO\n\nView as\nView workspace as\nAlex Morgan · Commercial · alex\nJordan Lee · Commercial · jordan\nCasey Chen · casey\nAbout\nRefreshing the matter…\nWaiting on Alex Morgan\nMatters\nHarbor Relay specification review\nSTAGE\nJust came in\nRISK\nLawyer-set risk\nSet risk\nLow\nModerate\nHigh\nDUE\nNo date\nFiles & context\nOutput templates\nBusiness replies\nHand off work\nCompare supplied versions\nMATTER ORIENTATION\nSaved orientation is unavailable\n\nRefresh this matter to load its saved question, answer, and next action.\n\nRefresh matter\nClose\nWork to hand off\nWhole matter\nOrient to the request\n\nReady: Handoff brief is ready to edit. Nothing was sent and ownership did not change.\n\nTEAM\n\nHand off work\nActing as Alex Morgan\n\nCreate a pending local handoff. The recipient must accept it before ownership changes.\n\nExact scope\nWork item: Orient to the request\nCurrent owner: Alex Morgan · State: open\nRecipient\nAlex Morgan · Commercial · alex\nJordan Lee · Commercial · jordan\nCasey Chen · casey\nExact ask\nCurrent basis (optional)\nOpen questions, one per line\nRequested date (optional)\nCreate pending handoff\nDraft handoff brief\n\nNo handoffs for this scope.\n\nMatter workspace view\nUnderstand\nDiscuss\nDraft\n\nOne matter conversation stays available while you read and draft.\n\nLoading document…\nCONVERSATION SCOPE\nMatter context\nTarget: Harbor Relay specification review\n\nLoading saved chat…\n\nWhich other matters does this touch?\nWhat would change your view?\n+\nSend\nThemis.ai can research, draft and move this matter. It records a decision only when you explicitly ask it to. Build a skill\nWORK PRODUCT\nDraft controls\nRequest\nOutput template\nNo template selected\nA template is optional for a direct request.\nOutput templates\nRequest draft\nChoose a saved scope before requesting a draft.\nAvailable work product\n\nNo saved work product is available yet.",
+  "controls": [
+    {
+      "tag": "SELECT",
+      "id": "demo-lawyer-person",
+      "text": "Alex Morgan · Commercial · alex\nJordan Lee · Commercial · jordan\nCasey Chen · casey",
+      "value": "alex",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "SELECT",
+      "id": "matter-risk",
+      "text": "Set risk\nLow\nModerate\nHigh",
+      "value": "",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Files & context",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Output templates",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Business replies",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Hand off work",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Compare supplied versions",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Refresh matter",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Close",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "SELECT",
+      "id": "",
+      "text": "Whole matter\nOrient to the request",
+      "value": "WI-20260905-177aed",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "SELECT",
+      "id": "",
+      "text": "Alex Morgan · Commercial · alex\nJordan Lee · Commercial · jordan\nCasey Chen · casey",
+      "value": "jordan",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "",
+      "text": "",
+      "value": "Review the support-access conflict, state the conditions needed for the pilot, and return your findings on this work item.",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "",
+      "text": "",
+      "value": "Here is the editable handoff brief for the work item. It is draft wording only — no handoff has been created or accepted, and no facts, decisions, or work products have been changed.\n---\n# Handoff brief — Orient to the request (Harbor Relay specification review)\n## Work item\n- **Title:** Orient to the request\n- **Owner:** Alex Morgan\n- **Status:** Open\n## Ask\nReview the support-access conflict, state the conditions needed for the pilot, and return your findings on this work item.\n## Current basis\n- **Sam Patel reports** that support can open a report only for a customer support ticket, and every access is logged (reported, not independently verified).\n- **Specification v1** states support staff cannot open report content.\n- **Retention** (30 days) is still unconfirmed.\n- The saved reassessment of the support-access fact is in the same matter conversation.\n## What to review\n1. **The support-access conflict.** The supplied spec (v1) says support cannot open report content; Sam Patel reports ticket-only support access with logging. These conflict as reported. Determine which reflects the intended access model, or whether the spec needs updating to describe conditional support access.\n2. **Conditions needed for the pilot.** Identify what must be true or documented before launch (21 Oct 2026) — e.g., an accurate access statement, defined support-access conditions, logging/auditability, and confirmation of the 30-day retention.\n3. **Return findings** on this work item.\n## Open items to confirm\n- Whether support access is ticket-only (per Sam Patel) or prohibited (per spec v1).\n- Whether the 30-day retention is confirmed and deliberate.\n- Whether the \"only the customer can open\" access statement needs reconciling with any support access.\n## Constraints\n- Draft only — do not create or accept a handoff.\n- Do not change ownership, facts, decisions, or work products.\n- No legal decision recorded; no draft created.\n---\nThis is editable wording only and has not been sent or acted on. Let me know if you'd like adjustments.",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "",
+      "text": "",
+      "value": "What retention period applies, and how is deletion enforced?\nWhich access statement will the revised specification use?",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "2026-09-14",
+      "disabled": false,
+      "type": "date"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Create pending handoff",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Draft handoff brief",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "INPUT",
+      "id": "workspace-view-MAT-20260905-0a2378-understand",
+      "text": "",
+      "value": "understand",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "workspace-view-MAT-20260905-0a2378-discuss",
+      "text": "",
+      "value": "discuss",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "workspace-view-MAT-20260905-0a2378-draft",
+      "text": "",
+      "value": "draft",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "explain",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "stress_test",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "ask_business",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "explore_question",
+      "disabled": false,
+      "type": "radio"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "inquiry-question",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Start inquiry",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Copy question",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Try a scenario",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "SELECT",
+      "id": "correct-fact-id",
+      "text": "Add a new reported fact",
+      "value": "",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "correct-fact-text",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Correct a fact",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Add actor",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Add relationship",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Save flow",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Accept selected facts",
+      "value": "",
+      "disabled": true,
+      "type": "button"
+    },
+    {
+      "tag": "INPUT",
+      "id": "prior-work-query",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "text"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Search prior work",
+      "value": "",
+      "disabled": true,
+      "type": "submit"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Draft a practice note",
+      "value": "",
+      "disabled": true,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Create linked Watch draft",
+      "value": "",
+      "disabled": true,
+      "type": "button"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "text"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "participant",
+      "disabled": false,
+      "type": "text"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Add participant",
+      "value": "",
+      "disabled": true,
+      "type": "button"
+    },
+    {
+      "tag": "SELECT",
+      "id": "",
+      "text": "LowNormalHighUrgent",
+      "value": "normal",
+      "disabled": false,
+      "type": "select-one"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Morgan Patel",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Alex Morgan",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "INPUT",
+      "id": "current-work-item-owner",
+      "text": "",
+      "value": "Alex Morgan",
+      "disabled": false,
+      "type": "text"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Assign owner",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Open work item",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Complete this work item",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "FactsFacts, sources & assumptions",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Issue mapCurrent issues and questions",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "RecommendationOpen recommendation",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Record durable decisionOpen the decision form",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "New draft",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Source documentharbor-spec-v1.txtAttached to the matter",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Source documentharbor-spec-v1.txt.extracted.mdAttached to the matter",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Matter recordFacts, sources & assumptionsThe current factual record",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Matter recordIssue mapThe legal and operational questions",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Matter recordWorking recommendationSaved recommendation; source and review status are not recorded",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Matter recordOriginal requestThe request that started this matter",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Editable dossierOpen the full matter summary",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Which other matters does this touch?",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "What would change your view?",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "+",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "file"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "",
+      "text": "",
+      "value": "Alex unsent note: retain the customer access qualification.",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Send",
+      "value": "",
+      "disabled": false,
+      "type": "submit"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "",
+      "text": "",
+      "value": "",
+      "disabled": false,
+      "type": "textarea"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Output templates",
+      "value": "",
+      "disabled": false,
+      "type": "button"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Request draft",
+      "value": "",
+      "disabled": true,
+      "type": "button"
+    }
+  ],
+  "dimensions": {
+    "width": 1024,
+    "scrollWidth": 1024,
+    "reducedMotion": true
+  }
+}

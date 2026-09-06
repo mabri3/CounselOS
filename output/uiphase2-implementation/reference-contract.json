@@ -1,0 +1,205 @@
+[
+  {
+    "id": "01-today",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/01-today.png",
+    "sha256": "4195325ab3cd10d8947749d09353b62e3bc2c059582b85d82235a4c58b4cc715",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "02-today-practice",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/02-today-practice.png",
+    "sha256": "aa1d4ed16236ecce449e54e0a33ceb6ecb96a2ff819667c5956c5b0988d89c07",
+    "width": 864,
+    "height": 1821
+  },
+  {
+    "id": "03-workspace-board",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/03-workspace-board.png",
+    "sha256": "1b65f6316753d800eec1bedc25820980f2e4c25c3312d664fdfe0966ad3805e1",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "04-workspace-quarter",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/04-workspace-quarter.png",
+    "sha256": "2af6f2f8e877be38b2b9659505ec60c05deabf83ee5b996e328158dcd7211577",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "05-matters-table",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/05-matters-table.png",
+    "sha256": "787198f3de797ae375c6fbc3fa6ccc2ad76d9c7b0080154ec295b0e9ce5b8f2a",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "06-matters-stages",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/06-matters-stages.png",
+    "sha256": "fb79831cc4f74aff61e377204429202bb8d23983fb64047a4c7c145ab0315384",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "07-new-matter",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/07-new-matter.png",
+    "sha256": "14e7f43f0c38e74825fdf5f25920f93d60c11ddff708d1083e0f79b125e65509",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "08-decisions",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/08-decisions.png",
+    "sha256": "3392e26517cd7897cb171edac7bc4cc420f2d00eb5dd101c5cc4e87a362aafe3",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "09-decision-review",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/09-decision-review.png",
+    "sha256": "9f3231d99248fcc937cd9ed6e7ba65d5ff3124c674ab5e3debaaa0bdd0ac260b",
+    "width": 864,
+    "height": 1821
+  },
+  {
+    "id": "10-briefing",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/10-briefing.png",
+    "sha256": "b5887794fa431d347262afb167b9dc86b22abb0a9a0f4253afb7176947481bf0",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "11-briefing-reader",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/11-briefing-reader.png",
+    "sha256": "9118d178a7cfbae861d334f69ae7eb57fd87d55aec3764edfb289bc84a370e1c",
+    "width": 864,
+    "height": 1821
+  },
+  {
+    "id": "12-briefing-digest",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/12-briefing-digest.png",
+    "sha256": "ada417d0ca8cd50d061267df774552f898dddd7e7e3862580e7a7d87a960a024",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "13-watches",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/13-watches.png",
+    "sha256": "1be82a0b0771c58b55649f285e279eb1085c2424a1c449e3e8d08cec871ae190",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "14-watch-assignment",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/14-watch-assignment.png",
+    "sha256": "e3cbd2331cd1fc08600e9d3b5bb8380fa2c021dc8298e1f073ed1be8671d3131",
+    "width": 887,
+    "height": 1774
+  },
+  {
+    "id": "15-watch-schedule",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/15-watch-schedule.png",
+    "sha256": "0a079eaab121cb92e308c841ea2dbb02b084b1d321c9b3891863670f2dcdfa31",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "16-watch-detail",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/16-watch-detail.png",
+    "sha256": "a5482d85a2ef7fad7025f23bb62b694d25e02f873fb568955b920b062b96d7d2",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "17-templates",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/17-templates.png",
+    "sha256": "84562a03f801a989a20aa6609031f0694e9fdf58d92761fa351184a647b0a334",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "18-template-editor",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/18-template-editor.png",
+    "sha256": "bf86929add1bf7c16f793058ccc62b16c6e05428ffe4a4efeba196896ddc4113",
+    "width": 948,
+    "height": 1660
+  },
+  {
+    "id": "19-skills",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/19-skills.png",
+    "sha256": "f61ef2339a45c68fb8d4e4261869533b9e29a63efd1f7c328164c874315ae930",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "20-agents",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/20-agents.png",
+    "sha256": "37ef3f6ab5ef30a6839c05bf12e815c551793fb65e9d32130f83820c0bec393a",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "21-agent-advanced",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/21-agent-advanced.png",
+    "sha256": "6bfdf071ecce94d104df6866b53d14de836f8a3ad17dc8d9c9bf8b9b2c8c9ea2",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "22-automations",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/22-automations.png",
+    "sha256": "34036c8c3b65cfd59311978f573ee60cc95f718b3a20b927131e514e16f3c02a",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "23-settings-models",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/23-settings-models.png",
+    "sha256": "35ea130a2c4724958e5eece78b3de1600b1b766ecd7f33a4512e353f2b3da5e8",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "24-settings-research",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/24-settings-research.png",
+    "sha256": "a16b9ca87ace7c8a195523baa28d71438ac3b2b85dce1b7bd913b00be9761b97",
+    "width": 902,
+    "height": 1744
+  },
+  {
+    "id": "25-settings-content",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/25-settings-content.png",
+    "sha256": "47fb2a5015d5575fad9c7af4744b361fd036f752d81148fd4775e3177f47184c",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "26-settings-vaults",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/26-settings-vaults.png",
+    "sha256": "23fe80078b525bcaeb795ac2bb2ff26ca387eb65b8844941dd9403ecaa7a4967",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "27-research-reader",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/27-research-reader.png",
+    "sha256": "826d345f2a391edce07bbd43557968851df3f49c80b638dbfb4aea27c35125fa",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "28-research-notes",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/28-research-notes.png",
+    "sha256": "e0d3352a9b120123cff269bff7064abf39dea7850febd4e418c19b003b6c9c13",
+    "width": 1024,
+    "height": 1536
+  },
+  {
+    "id": "29-skill-guided",
+    "absolute_path": "/Users/bharris/Programs/counsel-os-mvp/output/uiphase2/designs/29-skill-guided.png",
+    "sha256": "1bad28f53bc97cb81b2e4e12a0295184dfe18c34ac1edb8cbcf8797c10ef5a9e",
+    "width": 1024,
+    "height": 1536
+  }
+]

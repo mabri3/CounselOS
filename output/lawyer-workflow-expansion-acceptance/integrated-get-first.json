@@ -1,0 +1,1533 @@
+{
+  "/api/settings/vault": {
+    "status": 200,
+    "body": {
+      "name": "vault",
+      "path": "/private/var/folders/xb/kzc31shn1pz2s_5l2fy6d7rh0000gn/T/themis-lawyer-continuity-9241nnry/vault"
+    }
+  },
+  "/api/team": {
+    "status": 200,
+    "body": {
+      "enabled": false,
+      "people": [],
+      "revision": "6c6e92ac19e670c577934faa488b1d6c6954adec1c72acb756eeda815c534355",
+      "vault_key": "9b73b8e8cc1516024ea8efed",
+      "actor": {
+        "person_id": "local-lawyer",
+        "display_name": "Unattributed lawyer",
+        "mode": "single"
+      }
+    }
+  },
+  "/api/team/orientations": {
+    "status": 200,
+    "body": [
+      {
+        "matter_id": "MAT-20260905-329d59",
+        "basis_revision": "3506433ba86ddbf52df0114e78d68b8dfd46206003726e0967273f53e04468ed",
+        "question_text": "Review a proposed internal equipment-loan policy for the US office. Employees may borrow a laptop for 14 days. The current policy does not say who can approve an extension. Provide a useful first pass and identify the missing business fact (who approves an extension). No legal decision or draft requested yet.",
+        "question_preview": "Review a proposed internal equipment-loan policy for the US office. Employees may borrow a laptop for 14 days. The current policy does not say who can approve an extension. Provide a useful first pass and identify the missing business fact\u2026",
+        "question_is_preview": true,
+        "answer": "Here's my useful first pass on the proposed equipment-loan policy.\n## Useful first pass\n**What the policy covers (as reported):** Employees at the US office may borrow a laptop for 14 days. The policy is internal and doesn't currently state who can approve an extension.\n**The core gap you flagged is the right one.** An equipment-loan policy that allows a 14-day loan but is silent on extension approval creates two practical problems:\n1. **Unclear authority \u2192 inconsistent outcomes.** Without a named approver, extensions get granted ad hoc (or not at all), which is unfair and hard to audit.\n2. **No accountability for the asset.** A laptop is company property; an open-ended extension with no owner means no one is responsible for tracking return, condition, or data security (e.g., a departing employee holding a device).\n**What the policy should ideally specify around extensions** (beyond just naming an approver):\n- Whether extensions are permitted at all, and if so, a cap (e.g., one extension of up to 14 more days) so the \"14-day\" rule isn't effectively meaningless.\n- Who approves \u2014 typically the employee's direct manager (for business need) plus IT/equipment (for asset tracking), or a single owner.\n- What happens on overdue return (escalation, recovery, data wipe).\n**The single most decision-changing missing fact** is who is authorized to approve an extension. That's the gap you asked me to identify, and it's the one I'd resolve first.\n**Note on scope:** This is an internal employment/asset-management matter, not a customer-facing or regulatory one, so no external authority is needed for the first pass. No legal decision or draft is requested yet, so I've stopped at analysis.\n---\nTo move this forward, I have a few questions. The most important one first:\n**1. Who should be authorized to approve an extension of the 14-day laptop loan period?**\n- Employee's direct manager\n- IT / equipment team\n- HR\n- Any of the above (manager, IT, or HR)\n- Not yet decided \u2014 this is the gap to fill\n**2. Should extensions be permitted at all, and if so, should there be a cap?** *(optional)*\n- No extensions \u2014 14 days is firm\n- One extension allowed, with a defined additional period\n- Extensions allowed without a stated cap\n- Not yet decided\n**3. Does the policy cover only laptops, or other equipment as well?** *(optional)*\n- Laptops only\n- Laptops and other equipment (e.g., monitors, phones, peripherals)\n- Not yet decided",
+        "answer_path": "03_Matters/cedar-desk-policy-review-329d59/conversations/CONV-20260905-95d1c0.md",
+        "answer_label": "Earlier saved assistant advice",
+        "caveats": [
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ],
+        "answer_state": "stale",
+        "primary_action": {
+          "action_id": "work-item:WI-20260905-c6faab",
+          "label": "Orient to the request",
+          "reason": "Confirm the business objective, timing, and facts needed to frame the legal work.",
+          "state": "ready",
+          "target": {
+            "matter_id": "MAT-20260905-329d59",
+            "kind": "work_item",
+            "target_id": "WI-20260905-c6faab",
+            "path": "03_Matters/cedar-desk-policy-review-329d59/work-items/WI-20260905-c6faab.md",
+            "revision": null,
+            "view": "understand"
+          },
+          "owner_id": null,
+          "owner_name": "Jordan Lee",
+          "actor_kind": "lawyer",
+          "required": true,
+          "due_at": null
+        },
+        "secondary_actions": [
+          {
+            "action_id": "discuss-current-question",
+            "label": "Discuss",
+            "reason": "Discuss the current question without changing the saved answer.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260905-329d59",
+              "kind": "question",
+              "target_id": "BQ-3c0c93005ef7be31",
+              "path": null,
+              "revision": "legacy:426a2dfb56060677a40d2165e55837cfc7f23848ceec9b8319331e5f84f72fd1",
+              "view": "discuss"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          },
+          {
+            "action_id": "open-draft",
+            "label": "Draft",
+            "reason": "Open the matter's drafting workspace.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260905-329d59",
+              "kind": "matter",
+              "target_id": "MAT-20260905-329d59",
+              "path": null,
+              "revision": null,
+              "view": "draft"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          }
+        ],
+        "changes": [
+          {
+            "change_id": "first-visit:0829a5689fd0a53a18f47b24117d71666a249d62c2383036fedeeabde229d664",
+            "title": "First review",
+            "detail": "This is your first review of the current saved matter state.",
+            "basis": "first_visit",
+            "target": {
+              "matter_id": "MAT-20260905-329d59",
+              "kind": "matter",
+              "target_id": "MAT-20260905-329d59",
+              "path": null,
+              "revision": null,
+              "view": "understand"
+            },
+            "before_text": null,
+            "after_text": null,
+            "before_revision": null,
+            "after_revision": null
+          }
+        ],
+        "first_visit": true,
+        "seen_revision": null,
+        "current_revision": "0829a5689fd0a53a18f47b24117d71666a249d62c2383036fedeeabde229d664",
+        "warnings": [
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ]
+      },
+      {
+        "matter_id": "MAT-20260905-0a2378",
+        "basis_revision": "3c38b6cd5694feddb9eb17dc568f90cd0f1ef09b09e4a057f05846768b6b5ba2",
+        "question_text": "Assess the US pilot of Harbor Relay (launch 21 Oct 2026), which sends an account activity report to the customer, retained 30 days and openable only by the customer, for privacy/data-access and related considerations \u2014 including whether support staff may open reports.",
+        "question_preview": "Assess the US pilot of Harbor Relay (launch 21 Oct 2026), which sends an account activity report to the customer, retained 30 days and openable only by the customer, for privacy/data-access and related considerations \u2014 including whether\u2026",
+        "question_is_preview": true,
+        "answer": "Here's my initial advice on the Harbor Relay US pilot.\n## Initial advice \u2014 Harbor Relay account activity report\n**What you've told me:** A US pilot of Harbor Relay launches 21 October 2026. The product sends an account activity report to the customer, retained 30 days, and the supplied spec says only the customer can open it. Business hasn't confirmed whether support staff can open reports.\n**Working assessment (preliminary, no authority retrieved):** The report almost certainly contains customer transaction/account data, so the two design choices you've flagged \u2014 30-day retention and customer-only access \u2014 are privacy and data-access controls, not just product features. The material question is whether the \"only the customer can open\" statement is an accurate description of the product's actual access model.\n- **If support staff can open reports**, then the spec's \"only the customer can open them\" is inaccurate as written, and you'd want to reconcile it before the pilot. That's not necessarily a blocker \u2014 support access under defined conditions (e.g., a verified customer request or troubleshooting) is common and defensible \u2014 but the spec and any customer-facing disclosure should reflect the real access model. Unrestricted support access would be the harder position, since it undercuts the customer-only promise and widens exposure of customer data.\n- **If support cannot open reports**, the spec is accurate and the main remaining item is confirming the 30-day retention is deliberate (data minimization) and documented.\n**The one supporting question that matters most** is the support-access one, because it determines whether the stated access promise is accurate and whether additional controls or disclosures are needed before launch:\n> **Can support staff open customer account activity reports, and if so under what conditions?**\n> - No \u2014 only the customer can open reports; support cannot\n> - Yes \u2014 support can open reports only under defined conditions (e.g., verified customer request, troubleshooting)\n> - Yes \u2014 support can open reports without restriction\n> - Not yet decided \u2014 business is still determining this\nI've recorded the reported facts and this question in the matter. Per your instruction, I have **not** recorded a legal decision or created a draft. Once you answer the support-access question, I can give a more concrete read on what (if anything) needs to change in the spec or disclosures before the pilot.",
+        "answer_path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/CONV-20260905-9d68db.md",
+        "answer_label": "Earlier saved assistant advice",
+        "caveats": [
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ],
+        "answer_state": "stale",
+        "primary_action": {
+          "action_id": "work-item:WI-20260905-177aed",
+          "label": "Orient to the request",
+          "reason": "Confirm the business objective, timing, and facts needed to frame the legal work.",
+          "state": "ready",
+          "target": {
+            "matter_id": "MAT-20260905-0a2378",
+            "kind": "work_item",
+            "target_id": "WI-20260905-177aed",
+            "path": "03_Matters/harbor-relay-specification-review-0a2378/work-items/WI-20260905-177aed.md",
+            "revision": null,
+            "view": "understand"
+          },
+          "owner_id": null,
+          "owner_name": "Alex Morgan",
+          "actor_kind": "lawyer",
+          "required": true,
+          "due_at": null
+        },
+        "secondary_actions": [
+          {
+            "action_id": "discuss-current-question",
+            "label": "Discuss",
+            "reason": "Discuss the current question without changing the saved answer.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260905-0a2378",
+              "kind": "question",
+              "target_id": "BQ-eb300f7c7f4180c6",
+              "path": null,
+              "revision": "legacy:78c0caaa1faac9054ba6f20782acf60cb89adc183bcd383f4b114a3646a8aa24",
+              "view": "discuss"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          },
+          {
+            "action_id": "open-draft",
+            "label": "Draft",
+            "reason": "Open the matter's drafting workspace.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260905-0a2378",
+              "kind": "matter",
+              "target_id": "MAT-20260905-0a2378",
+              "path": null,
+              "revision": null,
+              "view": "draft"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          }
+        ],
+        "changes": [
+          {
+            "change_id": "first-visit:2dca5c4fa4375c522505ee0ba81c0b2c978deb595e2306308ae4a9ec8e4267ba",
+            "title": "First review",
+            "detail": "This is your first review of the current saved matter state.",
+            "basis": "first_visit",
+            "target": {
+              "matter_id": "MAT-20260905-0a2378",
+              "kind": "matter",
+              "target_id": "MAT-20260905-0a2378",
+              "path": null,
+              "revision": null,
+              "view": "understand"
+            },
+            "before_text": null,
+            "after_text": null,
+            "before_revision": null,
+            "after_revision": null
+          }
+        ],
+        "first_visit": true,
+        "seen_revision": null,
+        "current_revision": "2dca5c4fa4375c522505ee0ba81c0b2c978deb595e2306308ae4a9ec8e4267ba",
+        "warnings": [
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ]
+      },
+      {
+        "matter_id": "MAT-20260904-abf788",
+        "basis_revision": "98f2612b246c73d1647d570a26bf8de3572bf12eefd531a437672709cf2dd376",
+        "question_text": "Can Mosaic Relay ship Instant Payouts for marketplace sellers in Q1, given the proposed onboarding (email + bank account only, full identity deferred to $3,000 cumulative payouts), ACH payouts initiated by Mosaic Relay via the bank partner, USDC payouts to international sellers (Mexico) via Circuit, nightly batch OFAC screening, W-9-only business onboarding without owners, and a public $3,000 verification progress bar?",
+        "question_preview": "Can Mosaic Relay ship Instant Payouts for marketplace sellers in Q1, given the proposed onboarding (email + bank account only, full identity deferred to $3,000 cumulative payouts), ACH payouts initiated by Mosaic Relay via the bank partner\u2026",
+        "question_is_preview": true,
+        "answer": "I have the relevant context. Here's the deep dive on beneficial-owner.\n## Beneficial-owner \u2014 what's at stake in this design\nThe proposed flow takes the **W-9 signer's name only** for business sellers and collects **no owners**. That's the gap. Here's the analysis.\n### The core problem: the W-9 signer is not the beneficial owner\nA W-9 captures the entity's tax identification and the person signing the form \u2014 typically an authorized representative. It does **not** identify who actually owns or controls the entity. So \"we take the signer's name\" gives you a name that may have nothing to do with the person whose identity matters for AML/sanctions purposes. That's the fundamental flaw.\n### What the law requires (US)\n**FinCEN CDD Rule (31 CFR 1010.230)** \u2014 if Mosaic Relay is a covered financial institution (which it likely is as a money transmitter/MSB), it must identify and verify beneficial owners of legal entity customers **at account opening**:\n- **Ownership prong:** any individual owning 25% or more of the entity's equity.\n- **Control prong:** a single individual with significant responsibility to control/manage/direct the entity (CEO, CFO, managing member, etc.).\n- Requires collecting name, DOB, address, and ID number, and verifying identity.\n**Corporate Transparency Act (CTA, 31 USC 5336)** \u2014 a separate, entity-level reporting obligation to FinCEN for BOI. Note: the CTA's reporting requirement has been subject to litigation and injunctions; its status has shifted over time, so treat the CTA piece as needing current verification rather than settled.\n### The key tension with this design\nThe CDD Rule applies at **account opening** \u2014 which here means when Mosaic Relay enables payout services for a seller. The design defers *all* identity to a $3,000 threshold, and even then only collects the signer's name, not owners. So the beneficial-owner gap is not just a \"nice to have\" \u2014 it's the same deferred-identity problem as the $3,000 threshold, applied to business entities. **Collecting the signer's name at $3,000 does not satisfy the ownership/control prongs.**\n### The \"UI is already 11 screens\" argument doesn't carry\nThe design rationale is that adding owner collection is too much UI. But the CDD Rule doesn't have a UI-cost exemption. The practical answer is a **risk-based approach**: collect beneficial-owner information at onboarding (name, DOB, address, ID), run automated database/sanctions checks, and enable limited activity while completing enhanced verification within a short window \u2014 rather than collecting nothing and deferring everything to $3,000.\n### What would change this\n- **Working assumption:** Mosaic Relay is a covered financial institution subject to the CDD Rule. If it's structured as a pure technology provider with no money transmission (which the licensing question hasn't resolved), the CDD Rule may not apply directly \u2014 but the sanctions and reputational risk would still demand owner collection, and the bank partner's program may impose it anyway.\n- **Open fork:** Whether Mosaic Relay can rely on the marketplace to collect/verify owners (delegated model) or must do it directly. If delegated, Mosaic Relay stays legally responsible and needs strong contractual indemnities and audit rights.\n- **Not examined:** The specific terms of Mosaic Relay's contracts with its acquiring bank/processor, which may impose owner/control-person disclosure requirements beyond the CDD Rule. Those contracts weren't provided. Also, the CTA's current enforceability status needs verification given the litigation history.\n**Bottom line:** The beneficial-owner gap is a real blocker on its own, independent of the $3,000 threshold. The fix is to collect owner information at onboarding (risk-based, with automated checks), not to add it at the $3,000 point or rely on the W-9 signer's name.\nWant me to spin this into a dedicated work item with a concrete risk-based owner-collection design, or fold it into the existing identity-redesign workstream?",
+        "answer_path": "03_Matters/instant-payouts-q1-abf788/conversations/CONV-20260904-469ac8.md",
+        "answer_label": "Earlier saved assistant advice",
+        "caveats": [
+          "Note: the CTA's reporting requirement has been subject to litigation and injunctions; its status has shifted over time, so treat the CTA piece as needing current verification rather than settled. ### The key tension with this design The CDD Rule applies at **account opening** \u2014 which here means when Mosaic Relay enables payout services for a seller.",
+          "The practical answer is a **risk-based approach**: collect beneficial-owner information at onboarding (name, DOB, address, ID), run automated database/sanctions checks, and enable limited activity while completing enhanced verification within a short window \u2014 rather than collecting nothing and deferring everything to $3,000. ### What would change this - **Working assumption:** Mosaic Relay is a covered financial institution subject to the CDD Rule.",
+          "If delegated, Mosaic Relay stays legally responsible and needs strong contractual indemnities and audit rights. - **Not examined:** The specific terms of Mosaic Relay's contracts with its acquiring bank/processor, which may impose owner/control-person disclosure requirements beyond the CDD Rule.",
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ],
+        "answer_state": "stale",
+        "primary_action": {
+          "action_id": "work-item:WI-cb249d811c96",
+          "label": "Redesign identity collection: collect CIP at onboarding, not at $3,000 payout threshold",
+          "reason": "The $3,000 cumulative payout threshold has no legal basis (confirmed as an engineering/product choice). Under BSA/AML, a money transmitter must collect CIP before establishing the account relationship. Design a compliant onboarding that collects full identity at onboarding rather than deferring to a payout threshold.",
+          "state": "ready",
+          "target": {
+            "matter_id": "MAT-20260904-abf788",
+            "kind": "work_item",
+            "target_id": "WI-cb249d811c96",
+            "path": "03_Matters/instant-payouts-q1-abf788/work-items/WI-cb249d811c96.md",
+            "revision": null,
+            "view": "understand"
+          },
+          "owner_id": null,
+          "owner_name": null,
+          "actor_kind": "unknown",
+          "required": true,
+          "due_at": null
+        },
+        "secondary_actions": [
+          {
+            "action_id": "discuss-current-question",
+            "label": "Discuss",
+            "reason": "Discuss the current question without changing the saved answer.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260904-abf788",
+              "kind": "question",
+              "target_id": "BQ-7eb9a27f11971732",
+              "path": null,
+              "revision": "legacy:46ba1a280b17d15379b24e91cd117b4a62fce8cf82019d3522c7a13659c86795",
+              "view": "discuss"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          },
+          {
+            "action_id": "open-draft",
+            "label": "Draft",
+            "reason": "Open the matter's drafting workspace.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260904-abf788",
+              "kind": "matter",
+              "target_id": "MAT-20260904-abf788",
+              "path": null,
+              "revision": null,
+              "view": "draft"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          }
+        ],
+        "changes": [
+          {
+            "change_id": "first-visit:d08582b2be798f0655a3858096f58b405217292e4561d80f75bae867d6fe1f9f",
+            "title": "First review",
+            "detail": "This is your first review of the current saved matter state.",
+            "basis": "first_visit",
+            "target": {
+              "matter_id": "MAT-20260904-abf788",
+              "kind": "matter",
+              "target_id": "MAT-20260904-abf788",
+              "path": null,
+              "revision": null,
+              "view": "understand"
+            },
+            "before_text": null,
+            "after_text": null,
+            "before_revision": null,
+            "after_revision": null
+          }
+        ],
+        "first_visit": true,
+        "seen_revision": null,
+        "current_revision": "d08582b2be798f0655a3858096f58b405217292e4561d80f75bae867d6fe1f9f",
+        "warnings": [
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ]
+      },
+      {
+        "matter_id": "MAT-20260904-1986d3",
+        "basis_revision": "d39deeace52a97ad818b20b98881b6f6a9b15c9e987787569357bf386574223d",
+        "question_text": "Which specific countries can Mosaic Relay add to its international launch list, and what minimum facts and documentation must each candidate country clear \u2014 covering licensing/agent structure, funds flow, AML/KYC, privacy, consumer, tax, sanctions, disclosure, and payout requirements \u2014 before it is approved for the six-month pilot?",
+        "question_preview": "Which specific countries can Mosaic Relay add to its international launch list, and what minimum facts and documentation must each candidate country clear \u2014 covering licensing/agent structure, funds flow, AML/KYC, privacy, consumer, tax\u2026",
+        "question_is_preview": true,
+        "answer": "These are proposed recommendations only. No durable decision is recorded.\n\n1. Treat the target-country list, funds-flow diagram, custody/control analysis, contracting entity, payout providers, and data locations as launch gates.\n2. For the six-month pilot, prefer a partner-led agent or partner-of-record model only where local counsel confirms that path and the partner holds the required licenses.\n3. Keep Mosaic Relay outside custody and control of funds unless and until it has the required permissions; if the design changes, restart the licensing analysis.\n4. Use risk-based KYB/KYC, enhanced due diligence, sanctions screening, transaction monitoring, clear allocation of SAR/STR duties, and human review for exceptions.\n5. Prepare country-specific checkout, fee/FX, refund, cancellation, complaint, payout, privacy, data-transfer, tax, and marketing disclosures.\n6. Require local counsel confirmation and documented partner licenses before approving any country.",
+        "answer_path": "03_Matters/mosaic-relay-ux-test-10-international-expansion-and-local-paymen-1986d3/recommendations.md",
+        "answer_label": "Current working recommendation",
+        "caveats": [
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ],
+        "answer_state": "stale",
+        "primary_action": {
+          "action_id": "work-item:WI-bafe643d4dc7",
+          "label": "Confirm funds-flow and custody model",
+          "reason": "Determine whether Mosaic Relay ever takes custody of funds or whether acquiring/local payment providers and payout providers hold and move all funds. This determines whether the matter is a Mosaic Relay licensing matter or an agent/partner-of-record matter.",
+          "state": "ready",
+          "target": {
+            "matter_id": "MAT-20260904-1986d3",
+            "kind": "work_item",
+            "target_id": "WI-bafe643d4dc7",
+            "path": "03_Matters/mosaic-relay-ux-test-10-international-expansion-and-local-paymen-1986d3/work-items/WI-bafe643d4dc7.md",
+            "revision": null,
+            "view": "understand"
+          },
+          "owner_id": null,
+          "owner_name": null,
+          "actor_kind": "unknown",
+          "required": true,
+          "due_at": null
+        },
+        "secondary_actions": [
+          {
+            "action_id": "discuss-current-question",
+            "label": "Discuss",
+            "reason": "Discuss the current question without changing the saved answer.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260904-1986d3",
+              "kind": "question",
+              "target_id": "BQ-49d55dbfa222baf2",
+              "path": null,
+              "revision": "legacy:1d740ebe92359a6cc301eac9ce4fef4fc28504cd30f334113834affae2fbca1d",
+              "view": "discuss"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          },
+          {
+            "action_id": "open-draft",
+            "label": "Draft",
+            "reason": "Open the matter's drafting workspace.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260904-1986d3",
+              "kind": "matter",
+              "target_id": "MAT-20260904-1986d3",
+              "path": null,
+              "revision": null,
+              "view": "draft"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          }
+        ],
+        "changes": [
+          {
+            "change_id": "first-visit:f506bf13262f9441ef50977f58ddc2df3a15e241e86c5b282f28b1af9f4544a5",
+            "title": "First review",
+            "detail": "This is your first review of the current saved matter state.",
+            "basis": "first_visit",
+            "target": {
+              "matter_id": "MAT-20260904-1986d3",
+              "kind": "matter",
+              "target_id": "MAT-20260904-1986d3",
+              "path": null,
+              "revision": null,
+              "view": "understand"
+            },
+            "before_text": null,
+            "after_text": null,
+            "before_revision": null,
+            "after_revision": null
+          }
+        ],
+        "first_visit": true,
+        "seen_revision": null,
+        "current_revision": "f506bf13262f9441ef50977f58ddc2df3a15e241e86c5b282f28b1af9f4544a5",
+        "warnings": [
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ]
+      },
+      {
+        "matter_id": "MAT-20260904-6f3f88",
+        "basis_revision": "d3a0395a27acb240a0046a3c956184596672ba2ad162901b13e42f072c7e3160",
+        "question_text": "Can Mosaic Relay lawfully use fraud-risk scores and other service data to target marketing emails to business contacts in the US, UK, and EU, and if so, under what legal basis, with what suppression and preference controls, and subject to what restrictions on profiling and special-category data?",
+        "question_preview": "Can Mosaic Relay lawfully use fraud-risk scores and other service data to target marketing emails to business contacts in the US, UK, and EU, and if so, under what legal basis, with what suppression and preference controls, and subject to\u2026",
+        "question_is_preview": true,
+        "answer": "**Matter:** Privacy review of Mosaic Relay's plan to send targeted product emails to merchants and platform administrators using service data (transaction volume, dispute rates, payout behavior, onboarding status, and fraud-risk indicators).\n**Status:** Working recommendation for review. This is a recommendation only \u2014 it does not record a decision. The decision that requires explicit approval is identified at the end.\n\n---\n\n## 1. Recommendation in brief\n\nMosaic Relay **may proceed** with targeted product emails to business contacts, but only after building the required suppression, preference, and transparency controls, and only on a **legitimate-interest basis** for corporate subscribers, with **consent or soft opt-in** required for any sole traders. Do **not** launch until the jurisdiction mix is confirmed and the targeting model is audited for special-category data.\n\n## 2. Recommended approach (Path A, with Path B fallback and Path C as target state)\n\n**Path A \u2014 Legitimate interest + corporate-subscriber exemption (primary path).**\n- Rely on GDPR/UK GDPR Art. 6(1)(f) legitimate interest for the data processing, documented in a legitimate interest assessment (LIA).\n- Rely on PECR's corporate-subscriber exemption for sending to incorporated businesses (no prior consent needed).\n- Restrict the campaign to **corporate email addresses only** until recipient status is confirmed.\n- Build opt-out and suppression controls before launch.\n- Disclose the marketing use in Mosaic's privacy notice.\n\n**Path B \u2014 Soft opt-in (fallback for sole traders).**\n- For any sole traders or unincorporated partnerships, rely on PECR soft opt-in only if an opt-out was offered at collection and in every message. Intake indicates no opt-out was offered at collection, so soft opt-in is likely **unavailable** \u2014 those recipients should be excluded or moved to Path C.\n\n**Path C \u2014 Consent (target state).**\n- Obtain explicit opt-in consent via a preference center or account settings for recipients who cannot be covered by Path A or B. Consent must be as easy to withdraw as to give.\n\n## 3. Required controls (all paths \u2014 blocking before launch)\n\n- **Working unsubscribe mechanism** in every marketing email (CAN-SPAM, PECR, GDPR Art. 21).\n- **Suppression list** maintained so opted-out individuals are not re-contacted; honor opt-outs promptly (CAN-SPAM within 10 business days).\n- **Preference center** allowing topic/frequency choice.\n- **Identification** of Mosaic Relay as sender in every message.\n- **Event-triggered emails** subject to the same marketing controls if classified as marketing.\n- **Privacy-notice disclosure** of the marketing use and lawful basis.\n\n## 4. Pre-launch blocking items\n\n- **Confirm recipient jurisdiction mix** (US / UK / EU / global). This determines which regime's rules are strictest and whether consent is required.\n- **Audit the targeting model inputs** to confirm whether fraud-risk scores or any input fields constitute or proxy special-category data under GDPR Art. 9. If they do, legitimate interest alone cannot support the marketing use.\n- **Review customer contracts and platform terms** for restrictions on secondary use of merchant/admin data for Mosaic's own marketing. If restricted, obtain a contract amendment or the platform's agreement before proceeding.\n- **Segment the recipient list** by subscriber type (corporate vs. individual/sole trader) and by jurisdiction. Exclude or separately handle non-corporate recipients until their status is confirmed.\n- **Document a legitimate interest assessment (LIA)** if relying on Art. 6(1)(f).\n- **Define retention periods** for targeting-segment data and suppression-list entries.\n\n## 5. Retention and data governance\n\n- Define retention for targeting-segment data (refresh/purge cadence) and suppression-list entries (indefinite or until re-consent).\n- Define retention for engagement data (opens, clicks) used in marketing analytics.\n- Data-minimization review of the fields used in the targeting model.\n\n## 6. Ongoing obligations\n\n- Honor Art. 21(2) objections absolutely \u2014 no balancing test once a recipient objects to direct marketing.\n- Apply the primary-purpose test honestly to message classification; do not relabel marketing as transactional.\n- Reassess when jurisdiction, contract terms, or model inputs change.\n\n---\n\n## 7. Decision requiring explicit approval\n\nThe following decision requires your explicit approval before Mosaic Relay proceeds:\n\n**Approve the recommended approach: proceed with targeted product emails to corporate business contacts on a legitimate-interest basis (Path A), with consent or soft opt-in required for any sole traders (Path B/C), contingent on (a) confirming the recipient jurisdiction mix, (b) auditing the targeting model for special-category data, and (c) reviewing customer contracts for secondary-use restrictions \u2014 and with suppression, preference, transparency, and retention controls built before launch.**\n\nThis is a recommendation. It does not record a decision. If you approve, I can record it as a durable decision and move the matter toward a final response.",
+        "answer_path": "03_Matters/mosaic-relay-ux-test-09-targeted-product-emails-using-transactio-6f3f88/recommendations.md",
+        "answer_label": "Current working recommendation",
+        "caveats": [
+          "- **Working unsubscribe mechanism** in every marketing email (CAN-SPAM, PECR, GDPR Art. 21). - **Suppression list** maintained so opted-out individuals are not re-contacted; honor opt-outs promptly (CAN-SPAM within 10 business days). - **Preference center** allowing topic/frequency choice. - **Identification** of Mosaic Relay as sender in every message. - **Event-triggered emails** subject to the same marketing controls if classified as marketing. - **Privacy-notice disclosure** of the marketing use and lawful basis.",
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ],
+        "answer_state": "stale",
+        "primary_action": {
+          "action_id": "matter:c3f0f9fef785ee20",
+          "label": "Review the research packet and choose the legal path to test.",
+          "reason": "This is the next step in the saved matter lifecycle.",
+          "state": "ready",
+          "target": {
+            "matter_id": "MAT-20260904-6f3f88",
+            "kind": "matter",
+            "target_id": "MAT-20260904-6f3f88",
+            "path": "03_Matters/mosaic-relay-ux-test-09-targeted-product-emails-using-transactio-6f3f88",
+            "revision": null,
+            "view": "understand"
+          },
+          "owner_id": null,
+          "owner_name": "Lawyer",
+          "actor_kind": "lawyer",
+          "required": false,
+          "due_at": null
+        },
+        "secondary_actions": [
+          {
+            "action_id": "discuss-current-question",
+            "label": "Discuss",
+            "reason": "Discuss the current question without changing the saved answer.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260904-6f3f88",
+              "kind": "question",
+              "target_id": "BQ-c045904b4c1bf9a5",
+              "path": null,
+              "revision": "legacy:d857fb2bb6718ad762e0832f52b0665620b19818b6e5ca659c4f7837bcea3e62",
+              "view": "discuss"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          },
+          {
+            "action_id": "open-draft",
+            "label": "Draft",
+            "reason": "Open the matter's drafting workspace.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260904-6f3f88",
+              "kind": "matter",
+              "target_id": "MAT-20260904-6f3f88",
+              "path": null,
+              "revision": null,
+              "view": "draft"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          }
+        ],
+        "changes": [
+          {
+            "change_id": "first-visit:6ab2302a6769322e086b352062c6e6259a37907b680d5bcbfcd8742e11130481",
+            "title": "First review",
+            "detail": "This is your first review of the current saved matter state.",
+            "basis": "first_visit",
+            "target": {
+              "matter_id": "MAT-20260904-6f3f88",
+              "kind": "matter",
+              "target_id": "MAT-20260904-6f3f88",
+              "path": null,
+              "revision": null,
+              "view": "understand"
+            },
+            "before_text": null,
+            "after_text": null,
+            "before_revision": null,
+            "after_revision": null
+          }
+        ],
+        "first_visit": true,
+        "seen_revision": null,
+        "current_revision": "6ab2302a6769322e086b352062c6e6259a37907b680d5bcbfcd8742e11130481",
+        "warnings": [
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ]
+      },
+      {
+        "matter_id": "MAT-20260904-1d6535",
+        "basis_revision": "e17cc01e9a43ad768562b4f3f317db073b8eed3a32a18cc5f43f7becb708f152",
+        "question_text": "Advise which marketing claims about fraud prevention and compliance are misleading or impermissible, what substantiation and qualifiers are required, how to describe third-party dependencies, how to approve case studies, and whether compliance-related claims create contractual or regulatory risk.",
+        "question_preview": "Advise which marketing claims about fraud prevention and compliance are misleading or impermissible, what substantiation and qualifiers are required, how to describe third-party dependencies, how to approve case studies, and whether\u2026",
+        "question_is_preview": true,
+        "answer": "## Recommendation\n1. Do not publish \u201cstop fraud,\u201d \u201censure compliant payments,\u201d or \u201cprevent money laundering\u201d as absolute claims. Replace them with supported capability language such as \u201chelps reduce fraud losses,\u201d \u201csupports compliant payment operations,\u201d and \u201chelps detect and report suspicious activity.\u201d\n2. Do not publish quantified customer loss-reduction percentages until Product/Analytics verifies the method, baseline, period, sample, and result; the customer approves the exact figure and channels in writing; and typicality and material-connection disclosures are clear.\n3. Use a plain qualifier: \u201cResults vary by customer, configuration, and transaction mix. Mosaic Relay does not guarantee prevention of all fraud or money laundering.\u201d\n4. Describe acquiring banks, processors, identity/fraud vendors, card networks, and cloud providers as dependencies where material. Align the wording with the customer contract and service limits.\n5. Set a named approval owner before launch. Recommended workflow: Product/Analytics evidence check \u2192 Sales customer consent \u2192 Legal claim and disclosure review \u2192 Marketing release approval \u2192 periodic re-check.\n6. Map exact countries, audience, channels, and product scope before launch. Confirm current US, UK/EU, and other local advertising, endorsement, AML, sanctions, and financial-promotion requirements.\n\n## Known facts\n- Evidence and customer permission are currently unknown.\n- Campaigns are planned before next quarter in global/multiple markets.\n- No approval owner is defined.\n- Mosaic Relay cannot guarantee perfect results.\n\n## Assumptions and missing facts\nThis recommendation assumes mainly B2B use and uses general US/UK/EU principles as an unverified lens. Confirm target countries, consumer exposure, data methods, contracts, vendor representations, and customer permissions.\n\n## Unverified leads\nFTC deception and endorsement principles, UK/EU unfair-commercial-practice rules, financial-promotion rules, and AML/sanctions implications require current jurisdiction-specific verification. No durable decision is recorded.",
+        "answer_path": "03_Matters/mosaic-relay-ux-test-08-marketing-claims-about-fraud-prevention--1d6535/recommendations.md",
+        "answer_label": "Current working recommendation",
+        "caveats": [
+          "## Known facts - Evidence and customer permission are currently unknown. - Campaigns are planned before next quarter in global/multiple markets. - No approval owner is defined. - Mosaic Relay cannot guarantee perfect results.",
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ],
+        "answer_state": "stale",
+        "primary_action": {
+          "action_id": "matter:99f0fbb83f84013c",
+          "label": "Close the matter.",
+          "reason": "This is the next step in the saved matter lifecycle.",
+          "state": "ready",
+          "target": {
+            "matter_id": "MAT-20260904-1d6535",
+            "kind": "matter",
+            "target_id": "MAT-20260904-1d6535",
+            "path": "03_Matters/mosaic-relay-ux-test-08-marketing-claims-about-fraud-prevention--1d6535",
+            "revision": null,
+            "view": "understand"
+          },
+          "owner_id": null,
+          "owner_name": "Lawyer",
+          "actor_kind": "lawyer",
+          "required": false,
+          "due_at": null
+        },
+        "secondary_actions": [
+          {
+            "action_id": "discuss-current-question",
+            "label": "Discuss",
+            "reason": "Discuss the current question without changing the saved answer.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260904-1d6535",
+              "kind": "question",
+              "target_id": "BQ-17a95b074a445953",
+              "path": null,
+              "revision": "legacy:9541dc91928e2a39146f51e656aee0d0e596de8498c290e27537c19d91ecc838",
+              "view": "discuss"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          },
+          {
+            "action_id": "open-draft",
+            "label": "Draft",
+            "reason": "Open the matter's drafting workspace.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260904-1d6535",
+              "kind": "matter",
+              "target_id": "MAT-20260904-1d6535",
+              "path": null,
+              "revision": null,
+              "view": "draft"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          }
+        ],
+        "changes": [
+          {
+            "change_id": "first-visit:385a076b100b0776c64c331cebc98b28cc8f1b7fde7f94ee3c141ade02722bcc",
+            "title": "First review",
+            "detail": "This is your first review of the current saved matter state.",
+            "basis": "first_visit",
+            "target": {
+              "matter_id": "MAT-20260904-1d6535",
+              "kind": "matter",
+              "target_id": "MAT-20260904-1d6535",
+              "path": null,
+              "revision": null,
+              "view": "understand"
+            },
+            "before_text": null,
+            "after_text": null,
+            "before_revision": null,
+            "after_revision": null
+          }
+        ],
+        "first_visit": true,
+        "seen_revision": null,
+        "current_revision": "385a076b100b0776c64c331cebc98b28cc8f1b7fde7f94ee3c141ade02722bcc",
+        "warnings": [
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ]
+      },
+      {
+        "matter_id": "MAT-20260904-75af25",
+        "basis_revision": "c6803bd8ef97b6153ae2d92399697f4aabefbc2f9f79d807c57ab3959471134a",
+        "question_text": "Should Mosaic Relay launch an automated payout hold feature that delays merchant funds for up to several weeks based on risk-scoring triggers, and if so, what contractual authority, disclosure language, timing limits, and procedural safeguards must be in place to avoid money transmission violations, unfair or deceptive practices claims, and breach of contract exposure?",
+        "question_preview": "Should Mosaic Relay launch an automated payout hold feature that delays merchant funds for up to several weeks based on risk-scoring triggers, and if so, what contractual authority, disclosure language, timing limits, and procedural\u2026",
+        "question_is_preview": true,
+        "answer": "Intake is now complete. Here's the summary:\n**Intake complete.** The matter is oriented and the dossier is preserved for the analysis phase.\n**What's confirmed:**\n- **Feature:** A risk-control hold that temporarily delays a merchant payout when risk scoring flags unusual activity, high dispute risk, or incomplete verification. Merchant sees a \"review required\" status, gets a general explanation, and submits documents via a secure portal.\n- **Timing:** Holds could start automatically within minutes and last from hours to multiple weeks.\n- **Jurisdiction:** US only.\n- **Mosaic Relay's role:** Provides payout controls and risk scoring; does not hold deposits or operate as a bank.\n**Open material facts (flagged for the analysis, not blockers):**\n- **Funds ownership** \u2014 whether held funds belong to the merchant or to underlying sellers/consumers. This is the single biggest fork: it determines whether this is a merchant-contract/regulatory matter or a consumer-protection matter.\n- **Contractual authority** \u2014 whether the merchant agreement already grants hold authority and its notice/timing/appeal terms (tracked as a work item to pull and review the agreement).\n- **Automation** \u2014 whether the hold is automatic or human-confirmed.\n- **Interest/fee treatment** and the outcome if a merchant can't provide documents.\n- **Notice timing and appeal rights.**\n**Working assumption carried forward:** Mosaic Relay's direct counterparty is the merchant/platform, not the end consumer; consumer-protection exposure likely flows through the merchant's own obligations unless Mosaic Relay holds funds belonging to consumers. Legal sources in the eventual advice will be labeled verified or unverified.\nThe matter is ready to move into research/analysis on the US-only basis.",
+        "answer_path": "03_Matters/mosaic-relay-ux-test-07-consumer-disclosures-for-payment-risk-ho-75af25/conversations/CONV-20260904-a7970d.md",
+        "answer_label": "Earlier saved assistant advice",
+        "caveats": [
+          "This is the single biggest fork: it determines whether this is a merchant-contract/regulatory matter or a consumer-protection matter. - **Contractual authority** \u2014 whether the merchant agreement already grants hold authority and its notice/timing/appeal terms (tracked as a work item to pull and review the agreement). - **Automation** \u2014 whether the hold is automatic or human-confirmed. - **Interest/fee treatment** and the outcome if a merchant can't provide documents. - **Notice timing and appeal rights.** **Working assumption carried forward:** Mosaic Relay's direct counterparty is the merchant/platform, not the end consumer; consumer-protection exposure likely flows through the merchant's own obligations unless Mosaic Relay holds funds belonging to consumers.",
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ],
+        "answer_state": "stale",
+        "primary_action": null,
+        "secondary_actions": [
+          {
+            "action_id": "discuss-current-question",
+            "label": "Discuss",
+            "reason": "Discuss the current question without changing the saved answer.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260904-75af25",
+              "kind": "question",
+              "target_id": "BQ-3612603939cc3fdd",
+              "path": null,
+              "revision": "legacy:2bf377816c821dec274092b2071b5a36f70a946ebc799eeb9e1989c842e2ea58",
+              "view": "discuss"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          },
+          {
+            "action_id": "open-draft",
+            "label": "Draft",
+            "reason": "Open the matter's drafting workspace.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260904-75af25",
+              "kind": "matter",
+              "target_id": "MAT-20260904-75af25",
+              "path": null,
+              "revision": null,
+              "view": "draft"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          }
+        ],
+        "changes": [
+          {
+            "change_id": "first-visit:686fa62b62ad3188435d2510fd8baf40b410f107aedcff0dfba44a08a38707ef",
+            "title": "First review",
+            "detail": "This is your first review of the current saved matter state.",
+            "basis": "first_visit",
+            "target": {
+              "matter_id": "MAT-20260904-75af25",
+              "kind": "matter",
+              "target_id": "MAT-20260904-75af25",
+              "path": null,
+              "revision": null,
+              "view": "understand"
+            },
+            "before_text": null,
+            "after_text": null,
+            "before_revision": null,
+            "after_revision": null
+          }
+        ],
+        "first_visit": true,
+        "seen_revision": null,
+        "current_revision": "686fa62b62ad3188435d2510fd8baf40b410f107aedcff0dfba44a08a38707ef",
+        "warnings": [
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ]
+      },
+      {
+        "matter_id": "MAT-20260904-696f08",
+        "basis_revision": "4c971c6a45a7e2ff8d47ee791405a5f5976c891c56f5d571863669ceecc63e43",
+        "question_text": "Should Mosaic Relay proceed with the unified dashboard under a processor-only model (acting on customer instructions) or a hybrid model (processor for customer-directed operations, independent controller for fraud/security/compliance), and what specific access controls, export restrictions, and vendor contract amendments are required before launch to prevent unlawful secondary use and excessive data exposure?",
+        "question_preview": "Should Mosaic Relay proceed with the unified dashboard under a processor-only model (acting on customer instructions) or a hybrid model (processor for customer-directed operations, independent controller for fraud/security/compliance), and\u2026",
+        "question_is_preview": true,
+        "answer": "1. Proceed only after a documented data map and controller/processor allocation for each flow. Mosaic Relay should act as processor for customer-directed operations processing and as an independent controller only for its own legal, security, and fraud duties where required.\n\n2. Use purpose- and role-limited views. Mask identity, KYC/KYB, fraud, dispute, support, and payout fields by default. Require reason-coded, time-limited access for investigations.\n\n3. Restrict exports. Permit only selected fields and date ranges, require approval for bulk export, log every search/view/export, alert on unusual volume, and apply retention and deletion to exported copies.\n\n4. Update notices and document a lawful basis per purpose. Keep service, legal obligation, fraud/security, and any separate marketing purpose distinct. Do not allow customer marketing reuse without separate purpose, notice, and lawful basis.\n\n5. Inventory fraud scores and profiling. Where output has legal or similarly significant effects, provide required information, human review, challenge, and escalation.\n\n6. Set purpose-specific retention schedules and deletion holds. Confirm countries, vendors, hosting, transfer mechanisms, and supplementary safeguards before EU/UK data crosses borders.\n\nThis is a working recommendation, not a recorded decision. Jurisdiction-specific citations and vendor terms are unverified leads because no external sources or contracts were supplied.",
+        "answer_path": "03_Matters/mosaic-relay-ux-test-06-privacy-controls-for-payment-operations--696f08/recommendations.md",
+        "answer_label": "Current working recommendation",
+        "caveats": [
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ],
+        "answer_state": "stale",
+        "primary_action": null,
+        "secondary_actions": [
+          {
+            "action_id": "discuss-current-question",
+            "label": "Discuss",
+            "reason": "Discuss the current question without changing the saved answer.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260904-696f08",
+              "kind": "question",
+              "target_id": "BQ-e0bfb7360ccb1668",
+              "path": null,
+              "revision": "legacy:d81940f70df2cd67a00bac8ef760649874b0d7eb476db14b23499adf01a13260",
+              "view": "discuss"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          },
+          {
+            "action_id": "open-draft",
+            "label": "Draft",
+            "reason": "Open the matter's drafting workspace.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260904-696f08",
+              "kind": "matter",
+              "target_id": "MAT-20260904-696f08",
+              "path": null,
+              "revision": null,
+              "view": "draft"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          }
+        ],
+        "changes": [
+          {
+            "change_id": "first-visit:f779726aaaf144685a612631bf2af65dc52225c77e2c24610f02df58c876034a",
+            "title": "First review",
+            "detail": "This is your first review of the current saved matter state.",
+            "basis": "first_visit",
+            "target": {
+              "matter_id": "MAT-20260904-696f08",
+              "kind": "matter",
+              "target_id": "MAT-20260904-696f08",
+              "path": null,
+              "revision": null,
+              "view": "understand"
+            },
+            "before_text": null,
+            "after_text": null,
+            "before_revision": null,
+            "after_revision": null
+          }
+        ],
+        "first_visit": true,
+        "seen_revision": null,
+        "current_revision": "f779726aaaf144685a612631bf2af65dc52225c77e2c24610f02df58c876034a",
+        "warnings": [
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ]
+      },
+      {
+        "matter_id": "MAT-20260904-55d44e",
+        "basis_revision": "808702d27d9759379df1565f159930573d914c6d849df65b41e383d9acfaae77",
+        "question_text": "Should Mosaic Relay implement a dual-track deactivation process that immediately blocks funds and accounts for confirmed sanctions matches while using reversible, time-boxed restrictions for discretionary fraud or AML concerns, and what specific state money-transmitter and consumer-protection notice requirements must the process include to avoid wrongful closure claims and regulatory penalties when restricting merchant access to pending funds?",
+        "question_preview": "Should Mosaic Relay implement a dual-track deactivation process that immediately blocks funds and accounts for confirmed sanctions matches while using reversible, time-boxed restrictions for discretionary fraud or AML concerns, and what\u2026",
+        "question_is_preview": true,
+        "answer": "This recommendation is for counsel review only. It is not a durable business decision.\n\n## Recommended dual-track process\n\n1. Add a mandatory sanctions gate to every high-risk deactivation. If a match is confirmed, block relevant property immediately, preserve evidence, coordinate with the acquiring partner, and do not return or release funds without the required authorization.\n2. For discretionary fraud, chargeback, consumer-harm, or AML signals, use a reversible, time-boxed restriction on new payments and/or payouts. Record the trigger, evidence, owner, scope, and review deadline.\n3. Investigate with compliance and legal review. Separate confirmed facts from model or vendor leads. Apply consistent criteria and escalate material exceptions.\n4. Decide to restore, extend with a documented reason, or terminate under the merchant agreement. Keep sanctions handling separate from ordinary appeal or cure rights.\n5. Manage pending funds and consumer orders through a documented path for holds, refunds, chargebacks, reserves, and lawful return. Coordinate with processors before changing settlement instructions.\n6. Send merchant and consumer notices when contract and law require, but suppress SAR-related details and any communication that could cause tipping-off or interfere with law enforcement.\n7. Preserve the complete audit trail: alert and screening result, evidence, timestamps, decision-maker, notice text, partner communications, funds treatment, filings, appeal, and final outcome.\n\n## Assumptions\n\n- Mosaic Relay is a US payment facilitator operating under partner-bank arrangements, not a bank or directly licensed money transmitter.\n- The process must support both confirmed sanctions matches and discretionary risk signals.\n- A restriction may be required within minutes, with investigation and disposition over several days.\n\n## Missing facts\n\n- Merchant agreement suspension, termination, notice, cure, appeal, reserve, and funds-return terms.\n- Mosaic Relay's licensing status, jurisdictions, and possession or control of funds.\n- Pending balances, payouts, consumer orders, partner instructions, law-enforcement requests, and SAR status.\n- Applicable card-network, processor, state, UK, and EU requirements.\n\n## Unverified leads\n\nThe research packet and draft are model-generated. No external authority was retrieved because the research run timed out. Verify current OFAC rules and reporting procedures, FinCEN/SAR confidentiality requirements, state money-transmission rules, and card-network rules before launch.",
+        "answer_path": "03_Matters/mosaic-relay-ux-test-05-deactivation-of-a-high-risk-merchant-55d44e/recommendations.md",
+        "answer_label": "Current working recommendation",
+        "caveats": [
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ],
+        "answer_state": "stale",
+        "primary_action": {
+          "action_id": "matter:6c8ca3a446d8d717",
+          "label": "Record manual delivery.",
+          "reason": "This is the next step in the saved matter lifecycle.",
+          "state": "ready",
+          "target": {
+            "matter_id": "MAT-20260904-55d44e",
+            "kind": "artifact",
+            "target_id": "03_Matters/mosaic-relay-ux-test-05-deactivation-of-a-high-risk-merchant-55d44e/work-product/final/ofac-blocking-and-reporting-obligations-for-a-payment-facilitato-3c5325-b145fa.md",
+            "path": "03_Matters/mosaic-relay-ux-test-05-deactivation-of-a-high-risk-merchant-55d44e/work-product/final/ofac-blocking-and-reporting-obligations-for-a-payment-facilitato-3c5325-b145fa.md",
+            "revision": null,
+            "view": "draft"
+          },
+          "owner_id": null,
+          "owner_name": "Lawyer",
+          "actor_kind": "lawyer",
+          "required": false,
+          "due_at": null
+        },
+        "secondary_actions": [
+          {
+            "action_id": "discuss-current-question",
+            "label": "Discuss",
+            "reason": "Discuss the current question without changing the saved answer.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260904-55d44e",
+              "kind": "question",
+              "target_id": "BQ-9b9c361cb1eca1d0",
+              "path": null,
+              "revision": "legacy:e0cff7b1d7df18d6d9f94119d0f0f8b5961a32cf693fa004526dcb42cb743db6",
+              "view": "discuss"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          },
+          {
+            "action_id": "open-draft",
+            "label": "Draft",
+            "reason": "Open the matter's drafting workspace.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260904-55d44e",
+              "kind": "matter",
+              "target_id": "MAT-20260904-55d44e",
+              "path": null,
+              "revision": null,
+              "view": "draft"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          }
+        ],
+        "changes": [
+          {
+            "change_id": "first-visit:4ca1eeee88901cc2f63136f115f268c8db7c35cf34a52d84ad5c7c03c1cdd6b4",
+            "title": "First review",
+            "detail": "This is your first review of the current saved matter state.",
+            "basis": "first_visit",
+            "target": {
+              "matter_id": "MAT-20260904-55d44e",
+              "kind": "matter",
+              "target_id": "MAT-20260904-55d44e",
+              "path": null,
+              "revision": null,
+              "view": "understand"
+            },
+            "before_text": null,
+            "after_text": null,
+            "before_revision": null,
+            "after_revision": null
+          }
+        ],
+        "first_visit": true,
+        "seen_revision": null,
+        "current_revision": "4ca1eeee88901cc2f63136f115f268c8db7c35cf34a52d84ad5c7c03c1cdd6b4",
+        "warnings": [
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ]
+      },
+      {
+        "matter_id": "MAT-20260903-812225",
+        "basis_revision": "e63c21773836703cf047bcc4d07ee9bf9c26e42255d80204b96cbcad0310a02c",
+        "question_text": "Should Mosaic Relay launch the merchant self-service refund tool in its current form, launch it in phases with specific controls (original-source-only refunds, enhanced monitoring, restricted manual overrides), or delay launch until transaction-monitoring coverage for refunds/reversals is confirmed and acquiring-partner agreements are reviewed \u2014 given that operations has identified potential misuse for moving funds between unrelated parties?",
+        "question_preview": "Should Mosaic Relay launch the merchant self-service refund tool in its current form, launch it in phases with specific controls (original-source-only refunds, enhanced monitoring, restricted manual overrides), or delay launch until\u2026",
+        "question_is_preview": true,
+        "answer": "Launch the self-service refund tool in phases \u2014 card refunds first (original-source-only, no destination-changing overrides), then ACH, then local methods \u2014 with launch gates requiring: (1) confirmation that transaction-monitoring covers refunds/reversals (or building that coverage), (2) review of acquiring-partner/processor agreements, (3) confirmation of Mosaic Relay's legal entity/licensing status and funds-flow model, (4) confirmation of per-partner refund windows, and (5) drafting merchant and payer disclosures. Treat any refund to a destination other than the original funding source as a high-risk exception requiring enhanced due diligence, monitoring-alert generation, and post-transaction review \u2014 or prohibit it outright. This is a working recommendation, not a durable decision.",
+        "answer_path": "03_Matters/mosaic-relay-ux-test-04-refunds-reversals-and-suspicious-payment-812225/recommendations.md",
+        "answer_label": "Current working recommendation",
+        "caveats": [
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ],
+        "answer_state": "stale",
+        "primary_action": null,
+        "secondary_actions": [
+          {
+            "action_id": "discuss-current-question",
+            "label": "Discuss",
+            "reason": "Discuss the current question without changing the saved answer.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260903-812225",
+              "kind": "question",
+              "target_id": "BQ-e3fe978575ef5257",
+              "path": null,
+              "revision": "legacy:41cd04aec20d1b8bef438b7f067caadfeeeeaa98b99ace2ba3ef416acc7c8f71",
+              "view": "discuss"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          },
+          {
+            "action_id": "open-draft",
+            "label": "Draft",
+            "reason": "Open the matter's drafting workspace.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260903-812225",
+              "kind": "matter",
+              "target_id": "MAT-20260903-812225",
+              "path": null,
+              "revision": null,
+              "view": "draft"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          }
+        ],
+        "changes": [
+          {
+            "change_id": "first-visit:a88d650b36bb15cd8a294b1f374813adfb810f2d01a80462bb8efca48d29110e",
+            "title": "First review",
+            "detail": "This is your first review of the current saved matter state.",
+            "basis": "first_visit",
+            "target": {
+              "matter_id": "MAT-20260903-812225",
+              "kind": "matter",
+              "target_id": "MAT-20260903-812225",
+              "path": null,
+              "revision": null,
+              "view": "understand"
+            },
+            "before_text": null,
+            "after_text": null,
+            "before_revision": null,
+            "after_revision": null
+          }
+        ],
+        "first_visit": true,
+        "seen_revision": null,
+        "current_revision": "a88d650b36bb15cd8a294b1f374813adfb810f2d01a80462bb8efca48d29110e",
+        "warnings": [
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ]
+      },
+      {
+        "matter_id": "MAT-20260903-cabb78",
+        "basis_revision": "da3b57875b90edf91930b06676a44ff0e457fa8281417b4f60f0634370b9ebe2",
+        "question_text": "Whether Mosaic Relay may treat sanctions screening and identity verification as separate from FCRA consumer-report obligations when those checks are bundled with or used alongside criminal background reports that determine contractor payout eligibility, and if separation is possible, what product architecture and contractual terms are required to maintain that distinction without creating co-user FCRA liability for Mosaic Relay.",
+        "question_preview": "Whether Mosaic Relay may treat sanctions screening and identity verification as separate from FCRA consumer-report obligations when those checks are bundled with or used alongside criminal background reports that determine contractor payout\u2026",
+        "question_is_preview": true,
+        "answer": "Mosaic Relay may offer the contractor-screening service only as a controlled US pilot, subject to the conditions below. This is a working recommendation, not a durable decision.\n\n## Conditions before launch\n\n1. Treat the background vendor as a CRA and treat the platform customer as the decision-maker and FCRA user unless the data flow shows Mosaic Relay procures the report or applies the rules. If Mosaic Relay does either, allocate co-user duties by contract and build the same notice workflow for Mosaic Relay.\n2. Use a standalone, clear disclosure that a consumer report may be obtained for work eligibility and capture written authorization. Confirm whether one authorization covers annual and event-triggered rechecks.\n3. Build a pre-adverse step: send the report and the current Summary of Rights before any \u201cmanual review\u201d or \u201cnot eligible\u201d outcome becomes final. Then send the final adverse-action notice with CRA identity/contact, statement that the CRA did not decide, free-report rights, and dispute rights.\n4. Give contractors a clear dispute and reinvestigation path. Pause final adverse action while a timely dispute is handled, and revisit the result after correction.\n5. Keep sanctions screening and identity verification separate from the CRA report unless Mosaic Relay accepts that bundled data is handled under FCRA. Apply documented, proportionate rules and individualized review where required.\n6. Do not restrict, delay, or condition payment for completed work until counsel confirms the payout terms, state overlays, and notice timing. Start with onboarding/future-work gating only, with least-privilege report access and documented retention/disposal.\n7. Confirm contractor states, report contents, accuracy sources, retention periods, and adverse-action ownership before launch. Verify all statutory and agency citations against current authority.\n\n## Lawyer action requested\n\nApprove a limited design phase to confirm these facts and implement the FCRA workflow. Do not record a durable launch approval until the missing facts and authority checks are complete.",
+        "answer_path": "03_Matters/mosaic-relay-ux-test-02-consumer-background-checks-for-contracto-cabb78/recommendations.md",
+        "answer_label": "Current working recommendation",
+        "caveats": [
+          "Mosaic Relay may offer the contractor-screening service only as a controlled US pilot, subject to the conditions below.",
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ],
+        "answer_state": "stale",
+        "primary_action": null,
+        "secondary_actions": [
+          {
+            "action_id": "discuss-current-question",
+            "label": "Discuss",
+            "reason": "Discuss the current question without changing the saved answer.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260903-cabb78",
+              "kind": "question",
+              "target_id": "BQ-74630e5f0cd508e2",
+              "path": null,
+              "revision": "legacy:49d39b67d3e7d3c9d37e77923d5b7c99069411f5be786a4e9f0504a6a0782bb1",
+              "view": "discuss"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          },
+          {
+            "action_id": "open-draft",
+            "label": "Draft",
+            "reason": "Open the matter's drafting workspace.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260903-cabb78",
+              "kind": "matter",
+              "target_id": "MAT-20260903-cabb78",
+              "path": null,
+              "revision": null,
+              "view": "draft"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          }
+        ],
+        "changes": [
+          {
+            "change_id": "first-visit:2efd4793ff4884114836e50e97162b35f00354fbad840eb4c6715a7f30b47321",
+            "title": "First review",
+            "detail": "This is your first review of the current saved matter state.",
+            "basis": "first_visit",
+            "target": {
+              "matter_id": "MAT-20260903-cabb78",
+              "kind": "matter",
+              "target_id": "MAT-20260903-cabb78",
+              "path": null,
+              "revision": null,
+              "view": "understand"
+            },
+            "before_text": null,
+            "after_text": null,
+            "before_revision": null,
+            "after_revision": null
+          }
+        ],
+        "first_visit": true,
+        "seen_revision": null,
+        "current_revision": "2efd4793ff4884114836e50e97162b35f00354fbad840eb4c6715a7f30b47321",
+        "warnings": [
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ]
+      },
+      {
+        "matter_id": "MAT-20260903-7576cf",
+        "basis_revision": "bce53622f6db97e291eb8eca31000cc34c417ed5ff290f226d464fb3641e0738",
+        "question_text": "Can Mosaic Relay lawfully enable limited card acceptance and seller payouts for a marketplace customer in the US, UK, and EU without holding funds, and what licensing, verification, and control conditions must be satisfied before launch in 1\u20133 months?",
+        "question_preview": "Can Mosaic Relay lawfully enable limited card acceptance and seller payouts for a marketplace customer in the US, UK, and EU without holding funds, and what licensing, verification, and control conditions must be satisfied before launch in\u2026",
+        "question_is_preview": true,
+        "answer": "## Executive recommendation\nProceed with a controlled, jurisdiction-gated pilot for general retail and services sellers. Permit minutes-level limited activity only after required identity and sanctions checks return clear results. Keep payouts disabled until enhanced review is complete and the seller's payout destination is verified. Treat this as a working recommendation, not a recorded decision.\n\n## Required onboarding data\nCollect the seller's legal name, trading name, formation and registration details, business address, operating locations, tax identification details, entity type, industry and goods/services, expected ticket size and volume, cross-border activity, ownership chart, each beneficial owner and control person, government ID and date of birth where required, sanctions-screening identifiers, and verified payout destination. Capture the marketplace relationship, seller terms acceptance, consent and notices, source and time of each check, result, reviewer, and reason for any override.\n\n## Risk-based shortcut\nFor general retail/services sellers with no red flags, allow limited card acceptance after automated KYB/KYC, identity, sanctions, and fraud checks pass. Apply a conservative cap on volume, transaction count, and duration. Do not allow payouts during the limited window unless the payout destination and control person checks are complete. Escalate at risk score 70/100 or higher, a potential sanctions hit, failed identity or liveness, inconsistent legal name/address/tax data, missing ownership evidence, an unverifiable payout destination, unexpected velocity, or manual analyst concern. A potential sanctions match or identity failure is a hard stop for acceptance and payouts until resolved. High-risk categories, complex ownership, high-risk jurisdictions, and abnormal patterns should require enhanced review before any activity.\n\n## Beneficial-owner standard\nUse a 25% ownership threshold as the US baseline plus the control-person prong. Verify identity with documentary or reliable non-documentary evidence, reconcile ownership and control information, and record the method and result. Do not assume the US threshold is sufficient for UK/EU operations: map local rules, register checks, control definitions, and any lower or different thresholds before launch. Marketplace-led verification may be used only with written standards, audit rights, access to evidence, change notification, and Mosaic Relay oversight.\n\n## Sanctions and fraud controls\nScreen the seller, beneficial owners, control persons, and payout recipient against applicable US, UK, EU, and partner-required lists before activation. Re-screen at least weekly and on material changes, list updates, ownership changes, payout changes, and risk events. Define fuzzy-match handling, disposition evidence, escalation ownership, blocking, rescreening, and release authority. Feed fraud and transaction monitoring into the same hold and review workflow.\n\n## Disclosures and recordkeeping\nGive sellers clear terms and a funds-flow notice. Explain Mosaic Relay's role, that it is not a bank and does not hold deposits, what data is collected and why, vendor involvement, screening and review timing, limited-activity limits, reasons for holds or rejection, payout prerequisites, support and appeal routes, and privacy/retention practices. Retain KYB/KYC, ownership, screening, decision, and transaction records for at least six years as the current cross-jurisdiction working standard, subject to a documented legal basis, minimization, deletion exceptions, and local requirements.\n\n## Activation criteria\nEnable limited card acceptance only when seller identity, business information, sanctions screening, fraud controls, and required marketplace attestations are complete and clear. Enable full acceptance only after enhanced review closes all flags. Enable payouts only after beneficial-owner/control verification, sanctions clearance, payout-destination verification, and any acquiring-partner conditions are satisfied. Suspend or hold on new sanctions alerts, identity failure, material data change, unexplained velocity, or adverse review.\n\n## Assumptions and missing facts\nAssume direct-to-seller funds flow and no custody by Mosaic Relay or the marketplace; verify the actual contracts and operational flow. Validate country-level coverage, seller categories, non-US ownership thresholds, licensing status and partner allocation, vendor locations and transfer terms, retention/deletion rules, escalation SLAs, chargeback/refund handling, payout timing, and acquiring-partner requirements.\n\n## Unverified leads\nThe saved research is model-only and has no external authority retrieved. Treat references to FinCEN CDD, UK MLR 2017/PSC, EU AMLD, state money-transmission law, and any CTA/BOI reporting position as leads for counsel to verify against current primary sources and the applicable contracts. A 50-state and country-by-country survey was not completed.\n\n## Decision status\nRecommendation only. No durable decision recorded. Lawyer review is required before launch.",
+        "answer_path": "03_Matters/mosaic-relay-ux-test-01-risk-based-merchant-onboarding-for-a-mar-7576cf/recommendations.md",
+        "answer_label": "Current working recommendation",
+        "caveats": [
+          "Retain KYB/KYC, ownership, screening, decision, and transaction records for at least six years as the current cross-jurisdiction working standard, subject to a documented legal basis, minimization, deletion exceptions, and local requirements.",
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ],
+        "answer_state": "stale",
+        "primary_action": null,
+        "secondary_actions": [
+          {
+            "action_id": "discuss-current-question",
+            "label": "Discuss",
+            "reason": "Discuss the current question without changing the saved answer.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260903-7576cf",
+              "kind": "question",
+              "target_id": "BQ-5c60d53b809e2e1f",
+              "path": null,
+              "revision": "legacy:8f4911d6245bb1240b24a25bad5581fe28f4aa5a4deb823c26a0b7d35f67487a",
+              "view": "discuss"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          },
+          {
+            "action_id": "open-draft",
+            "label": "Draft",
+            "reason": "Open the matter's drafting workspace.",
+            "state": "ready",
+            "target": {
+              "matter_id": "MAT-20260903-7576cf",
+              "kind": "matter",
+              "target_id": "MAT-20260903-7576cf",
+              "path": null,
+              "revision": null,
+              "view": "draft"
+            },
+            "owner_id": null,
+            "owner_name": null,
+            "actor_kind": "lawyer",
+            "required": false,
+            "due_at": null
+          }
+        ],
+        "changes": [
+          {
+            "change_id": "first-visit:787195438ce1cd66f9dffc2aa414dba45aac97deaf95aeb7e420036b5170878f",
+            "title": "First review",
+            "detail": "This is your first review of the current saved matter state.",
+            "basis": "first_visit",
+            "target": {
+              "matter_id": "MAT-20260903-7576cf",
+              "kind": "matter",
+              "target_id": "MAT-20260903-7576cf",
+              "path": null,
+              "revision": null,
+              "view": "understand"
+            },
+            "before_text": null,
+            "after_text": null,
+            "before_revision": null,
+            "after_revision": null
+          }
+        ],
+        "first_visit": true,
+        "seen_revision": null,
+        "current_revision": "787195438ce1cd66f9dffc2aa414dba45aac97deaf95aeb7e420036b5170878f",
+        "warnings": [
+          "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+        ]
+      }
+    ]
+  },
+  "/api/matters/MAT-20260905-0a2378/workspace": {
+    "status": 200,
+    "body": {
+      "matter_id": "MAT-20260905-0a2378",
+      "revision": "3c38b6cd5694feddb9eb17dc568f90cd0f1ef09b09e4a057f05846768b6b5ba2",
+      "source_revisions": {
+        "03_Matters/harbor-relay-specification-review-0a2378/matter.md": "c8bb80c9d71b07ad76983a6181b910a635a0760ea09b1f7a98fda982187b454f",
+        "03_Matters/harbor-relay-specification-review-0a2378/dossier.md": "3f0794d3f5a2efb0c8f1cd1be09a20523fc6f548139a2e48abfc93f8bada75af",
+        "03_Matters/harbor-relay-specification-review-0a2378/facts.md": "a454497fe33b0d36778054ae65b16e563d21a65d22d55c48cb2ac40ae15970d9",
+        "03_Matters/harbor-relay-specification-review-0a2378/issues.md": "e4f4491fdd004c11a41774d43cd2ece05e5c481c9e39bfc7d85a2722abfa1600",
+        "03_Matters/harbor-relay-specification-review-0a2378/recommendations.md": "5ba1ecf7298c3a465726a523149ed10e8c9e9f820a56cef60b6b103ecd4014c3",
+        "03_Matters/harbor-relay-specification-review-0a2378/request.md": "a38c8eaafdf2d20a54dc7ef62439c767eb703e2c80b1d8a2ea41e57e5dc9063c",
+        "03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v1.txt.extracted.md": "0b61a34d4f61d50ae717873d78664b913bf70429e0d01323e46e14de85253ffc",
+        "03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v1.txt": "0aaff467a728978b9659a79e93b352e0176be0132a4de7427e65567004ee5f68",
+        "business_question": "legacy:78c0caaa1faac9054ba6f20782acf60cb89adc183bcd383f4b114a3646a8aa24"
+      },
+      "question": {
+        "question_id": "BQ-eb300f7c7f4180c6",
+        "text": "Assess the US pilot of Harbor Relay (launch 21 Oct 2026), which sends an account activity report to the customer, retained 30 days and openable only by the customer, for privacy/data-access and related considerations \u2014 including whether support staff may open reports.",
+        "revision": "legacy:78c0caaa1faac9054ba6f20782acf60cb89adc183bcd383f4b114a3646a8aa24",
+        "dossier_revision": "0ce631252fb2408ac081dbbb2d72fdbad7a6fb257847401ea405df18511b3e5f",
+        "origin": "legacy_unknown",
+        "source_message_id": null,
+        "source_action_key": null,
+        "updated_at": null
+      },
+      "short_answer": "",
+      "issues": [
+        {
+          "issue_id": "ISS-eb300f7c7f-0e0598136f70e3a5",
+          "parent_issue_id": null,
+          "title": "Privacy and data-access controls for customer account activity reports",
+          "why_it_matters": "",
+          "fact_ids": [],
+          "assumption_ids": [],
+          "claim_ids": [],
+          "lawyer_state": "open",
+          "updated_at": null
+        },
+        {
+          "issue_id": "ISS-eb300f7c7f-fd4429d42b52ff4a",
+          "parent_issue_id": null,
+          "title": "Consistency of support-staff access with the stated customer-only access promise",
+          "why_it_matters": "",
+          "fact_ids": [],
+          "assumption_ids": [],
+          "claim_ids": [],
+          "lawyer_state": "open",
+          "updated_at": null
+        }
+      ],
+      "issues_revision": "e4f4491fdd004c11a41774d43cd2ece05e5c481c9e39bfc7d85a2722abfa1600",
+      "questions": [
+        {
+          "question_id": "Q-support-access",
+          "business_question_id": "BQ-eb300f7c7f4180c6",
+          "business_question_revision": "legacy:78c0caaa1faac9054ba6f20782acf60cb89adc183bcd383f4b114a3646a8aa24",
+          "issue_id": null,
+          "linked_fact_ids": [],
+          "answer_origin": "legacy_intake",
+          "source_message_id": "MSG-20260905-89cd85",
+          "source_action_key": null,
+          "source_revision": "91d290ceab41a4149479146d4b2add869ab6b0789eaaf3796248f8354b841b3b",
+          "text": "Can support staff open customer account activity reports, and if so under what conditions?",
+          "consequence": "This determines whether the stated 'only the customer can open' access promise is accurate and whether additional privacy/data-access controls or disclosures are needed before the pilot.",
+          "state": "open",
+          "answer": null,
+          "updated_at": null
+        }
+      ],
+      "supporting_question": {
+        "question_id": "Q-support-access",
+        "business_question_id": "BQ-eb300f7c7f4180c6",
+        "business_question_revision": "legacy:78c0caaa1faac9054ba6f20782acf60cb89adc183bcd383f4b114a3646a8aa24",
+        "issue_id": null,
+        "linked_fact_ids": [],
+        "answer_origin": "legacy_intake",
+        "source_message_id": "MSG-20260905-89cd85",
+        "source_action_key": null,
+        "source_revision": "91d290ceab41a4149479146d4b2add869ab6b0789eaaf3796248f8354b841b3b",
+        "text": "Can support staff open customer account activity reports, and if so under what conditions?",
+        "consequence": "This determines whether the stated 'only the customer can open' access promise is accurate and whether additional privacy/data-access controls or disclosures are needed before the pilot.",
+        "state": "open",
+        "answer": null,
+        "updated_at": null
+      },
+      "pending_reframes": [],
+      "question_changes": [],
+      "receipts": [],
+      "context_selection": [],
+      "recap": {
+        "previous_seen_revision": null,
+        "current_revision": "2dca5c4fa4375c522505ee0ba81c0b2c978deb595e2306308ae4a9ec8e4267ba",
+        "changes": [
+          {
+            "path": "03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v1.txt",
+            "before_revision": null,
+            "after_revision": "0aaff467a728978b9659a79e93b352e0176be0132a4de7427e65567004ee5f68"
+          },
+          {
+            "path": "03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v1.txt.extracted.md",
+            "before_revision": null,
+            "after_revision": "0b61a34d4f61d50ae717873d78664b913bf70429e0d01323e46e14de85253ffc"
+          },
+          {
+            "path": "03_Matters/harbor-relay-specification-review-0a2378/dossier.md",
+            "before_revision": null,
+            "after_revision": "3f0794d3f5a2efb0c8f1cd1be09a20523fc6f548139a2e48abfc93f8bada75af"
+          },
+          {
+            "path": "03_Matters/harbor-relay-specification-review-0a2378/facts.md",
+            "before_revision": null,
+            "after_revision": "a454497fe33b0d36778054ae65b16e563d21a65d22d55c48cb2ac40ae15970d9"
+          },
+          {
+            "path": "03_Matters/harbor-relay-specification-review-0a2378/issues.md",
+            "before_revision": null,
+            "after_revision": "e4f4491fdd004c11a41774d43cd2ece05e5c481c9e39bfc7d85a2722abfa1600"
+          },
+          {
+            "path": "03_Matters/harbor-relay-specification-review-0a2378/matter.md",
+            "before_revision": null,
+            "after_revision": "c8bb80c9d71b07ad76983a6181b910a635a0760ea09b1f7a98fda982187b454f"
+          },
+          {
+            "path": "03_Matters/harbor-relay-specification-review-0a2378/recommendations.md",
+            "before_revision": null,
+            "after_revision": "5ba1ecf7298c3a465726a523149ed10e8c9e9f820a56cef60b6b103ecd4014c3"
+          },
+          {
+            "path": "03_Matters/harbor-relay-specification-review-0a2378/request.md",
+            "before_revision": null,
+            "after_revision": "a38c8eaafdf2d20a54dc7ef62439c767eb703e2c80b1d8a2ea41e57e5dc9063c"
+          },
+          {
+            "path": "business_question",
+            "before_revision": null,
+            "after_revision": "legacy:78c0caaa1faac9054ba6f20782acf60cb89adc183bcd383f4b114a3646a8aa24"
+          }
+        ],
+        "new_outputs": [],
+        "output_read_failures": []
+      },
+      "stale": false,
+      "answer_links": [],
+      "work_products": [],
+      "run_id": null,
+      "generated_at": null,
+      "update_offers": []
+    }
+  },
+  "/api/matters/MAT-20260905-0a2378/workspace/orientation": {
+    "status": 200,
+    "body": {
+      "matter_id": "MAT-20260905-0a2378",
+      "basis_revision": "3c38b6cd5694feddb9eb17dc568f90cd0f1ef09b09e4a057f05846768b6b5ba2",
+      "question_text": "Assess the US pilot of Harbor Relay (launch 21 Oct 2026), which sends an account activity report to the customer, retained 30 days and openable only by the customer, for privacy/data-access and related considerations \u2014 including whether support staff may open reports.",
+      "question_preview": "Assess the US pilot of Harbor Relay (launch 21 Oct 2026), which sends an account activity report to the customer, retained 30 days and openable only by the customer, for privacy/data-access and related considerations \u2014 including whether\u2026",
+      "question_is_preview": true,
+      "answer": "Here's my initial advice on the Harbor Relay US pilot.\n## Initial advice \u2014 Harbor Relay account activity report\n**What you've told me:** A US pilot of Harbor Relay launches 21 October 2026. The product sends an account activity report to the customer, retained 30 days, and the supplied spec says only the customer can open it. Business hasn't confirmed whether support staff can open reports.\n**Working assessment (preliminary, no authority retrieved):** The report almost certainly contains customer transaction/account data, so the two design choices you've flagged \u2014 30-day retention and customer-only access \u2014 are privacy and data-access controls, not just product features. The material question is whether the \"only the customer can open\" statement is an accurate description of the product's actual access model.\n- **If support staff can open reports**, then the spec's \"only the customer can open them\" is inaccurate as written, and you'd want to reconcile it before the pilot. That's not necessarily a blocker \u2014 support access under defined conditions (e.g., a verified customer request or troubleshooting) is common and defensible \u2014 but the spec and any customer-facing disclosure should reflect the real access model. Unrestricted support access would be the harder position, since it undercuts the customer-only promise and widens exposure of customer data.\n- **If support cannot open reports**, the spec is accurate and the main remaining item is confirming the 30-day retention is deliberate (data minimization) and documented.\n**The one supporting question that matters most** is the support-access one, because it determines whether the stated access promise is accurate and whether additional controls or disclosures are needed before launch:\n> **Can support staff open customer account activity reports, and if so under what conditions?**\n> - No \u2014 only the customer can open reports; support cannot\n> - Yes \u2014 support can open reports only under defined conditions (e.g., verified customer request, troubleshooting)\n> - Yes \u2014 support can open reports without restriction\n> - Not yet decided \u2014 business is still determining this\nI've recorded the reported facts and this question in the matter. Per your instruction, I have **not** recorded a legal decision or created a draft. Once you answer the support-access question, I can give a more concrete read on what (if anything) needs to change in the spec or disclosures before the pilot.",
+      "answer_path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/CONV-20260905-9d68db.md",
+      "answer_label": "Earlier saved assistant advice",
+      "caveats": [
+        "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+      ],
+      "answer_state": "stale",
+      "primary_action": {
+        "action_id": "work-item:WI-20260905-177aed",
+        "label": "Orient to the request",
+        "reason": "Confirm the business objective, timing, and facts needed to frame the legal work.",
+        "state": "ready",
+        "target": {
+          "matter_id": "MAT-20260905-0a2378",
+          "kind": "work_item",
+          "target_id": "WI-20260905-177aed",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/work-items/WI-20260905-177aed.md",
+          "revision": null,
+          "view": "understand"
+        },
+        "owner_id": null,
+        "owner_name": "Alex Morgan",
+        "actor_kind": "lawyer",
+        "required": true,
+        "due_at": null
+      },
+      "secondary_actions": [
+        {
+          "action_id": "discuss-current-question",
+          "label": "Discuss",
+          "reason": "Discuss the current question without changing the saved answer.",
+          "state": "ready",
+          "target": {
+            "matter_id": "MAT-20260905-0a2378",
+            "kind": "question",
+            "target_id": "BQ-eb300f7c7f4180c6",
+            "path": null,
+            "revision": "legacy:78c0caaa1faac9054ba6f20782acf60cb89adc183bcd383f4b114a3646a8aa24",
+            "view": "discuss"
+          },
+          "owner_id": null,
+          "owner_name": null,
+          "actor_kind": "lawyer",
+          "required": false,
+          "due_at": null
+        },
+        {
+          "action_id": "open-draft",
+          "label": "Draft",
+          "reason": "Open the matter's drafting workspace.",
+          "state": "ready",
+          "target": {
+            "matter_id": "MAT-20260905-0a2378",
+            "kind": "matter",
+            "target_id": "MAT-20260905-0a2378",
+            "path": null,
+            "revision": null,
+            "view": "draft"
+          },
+          "owner_id": null,
+          "owner_name": null,
+          "actor_kind": "lawyer",
+          "required": false,
+          "due_at": null
+        }
+      ],
+      "changes": [
+        {
+          "change_id": "first-visit:2dca5c4fa4375c522505ee0ba81c0b2c978deb595e2306308ae4a9ec8e4267ba",
+          "title": "First review",
+          "detail": "This is your first review of the current saved matter state.",
+          "basis": "first_visit",
+          "target": {
+            "matter_id": "MAT-20260905-0a2378",
+            "kind": "matter",
+            "target_id": "MAT-20260905-0a2378",
+            "path": null,
+            "revision": null,
+            "view": "understand"
+          },
+          "before_text": null,
+          "after_text": null,
+          "before_revision": null,
+          "after_revision": null
+        }
+      ],
+      "first_visit": true,
+      "seen_revision": null,
+      "current_revision": "2dca5c4fa4375c522505ee0ba81c0b2c978deb595e2306308ae4a9ec8e4267ba",
+      "warnings": [
+        "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+      ]
+    }
+  },
+  "/api/matters/MAT-20260905-0a2378/workspace/fact-requests": {
+    "status": 200,
+    "body": []
+  },
+  "/api/matters/MAT-20260905-0a2378/workspace/impact-candidates": {
+    "status": 200,
+    "body": {
+      "sources": [
+        {
+          "reference_id": "source:SRC-0AAFF467A728978B:81720b134013",
+          "kind": "source",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/documents/harbor-spec-v1.txt.extracted.md",
+          "expected_revision": "764be8ca1d53a9625809a1f992d97daa3d9f6352002fcdcbead80f45e46c81cc",
+          "title": "harbor-spec-v1.txt"
+        }
+      ],
+      "targets": [
+        {
+          "reference_id": "recommendation:current",
+          "kind": "recommendation",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/recommendations.md",
+          "expected_revision": "06f792d40fdf1808ed3bf311b96c74b05f910b2e1cee2c9a34bfb83cbb055b8a",
+          "title": "Working recommendation"
+        },
+        {
+          "reference_id": "MSG-20260905-89cd85",
+          "kind": "advice",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/CONV-20260905-9d68db.md",
+          "expected_revision": "63be52a4c090fd4697f72d4ccc114f1387242572be88368d14dbe3503c762a11",
+          "title": "Saved assistant advice \u00b7 MSG-20260905-89cd85"
+        },
+        {
+          "reference_id": "inquiry:RUN-20260905-0bfadb",
+          "kind": "advice",
+          "path": "03_Matters/harbor-relay-specification-review-0a2378/conversations/inquiries/RUN-20260905-0bfadb.md",
+          "expected_revision": "a81247876e95906f3106582654c748dfd5b3abf4d24a25eefa5f77d35d291f19",
+          "title": "Saved inquiry \u00b7 RUN-20260905-0bfadb"
+        }
+      ]
+    }
+  },
+  "/api/matters/MAT-20260904-abf788/workspace/orientation": {
+    "status": 200,
+    "body": {
+      "matter_id": "MAT-20260904-abf788",
+      "basis_revision": "98f2612b246c73d1647d570a26bf8de3572bf12eefd531a437672709cf2dd376",
+      "question_text": "Can Mosaic Relay ship Instant Payouts for marketplace sellers in Q1, given the proposed onboarding (email + bank account only, full identity deferred to $3,000 cumulative payouts), ACH payouts initiated by Mosaic Relay via the bank partner, USDC payouts to international sellers (Mexico) via Circuit, nightly batch OFAC screening, W-9-only business onboarding without owners, and a public $3,000 verification progress bar?",
+      "question_preview": "Can Mosaic Relay ship Instant Payouts for marketplace sellers in Q1, given the proposed onboarding (email + bank account only, full identity deferred to $3,000 cumulative payouts), ACH payouts initiated by Mosaic Relay via the bank partner\u2026",
+      "question_is_preview": true,
+      "answer": "I have the relevant context. Here's the deep dive on beneficial-owner.\n## Beneficial-owner \u2014 what's at stake in this design\nThe proposed flow takes the **W-9 signer's name only** for business sellers and collects **no owners**. That's the gap. Here's the analysis.\n### The core problem: the W-9 signer is not the beneficial owner\nA W-9 captures the entity's tax identification and the person signing the form \u2014 typically an authorized representative. It does **not** identify who actually owns or controls the entity. So \"we take the signer's name\" gives you a name that may have nothing to do with the person whose identity matters for AML/sanctions purposes. That's the fundamental flaw.\n### What the law requires (US)\n**FinCEN CDD Rule (31 CFR 1010.230)** \u2014 if Mosaic Relay is a covered financial institution (which it likely is as a money transmitter/MSB), it must identify and verify beneficial owners of legal entity customers **at account opening**:\n- **Ownership prong:** any individual owning 25% or more of the entity's equity.\n- **Control prong:** a single individual with significant responsibility to control/manage/direct the entity (CEO, CFO, managing member, etc.).\n- Requires collecting name, DOB, address, and ID number, and verifying identity.\n**Corporate Transparency Act (CTA, 31 USC 5336)** \u2014 a separate, entity-level reporting obligation to FinCEN for BOI. Note: the CTA's reporting requirement has been subject to litigation and injunctions; its status has shifted over time, so treat the CTA piece as needing current verification rather than settled.\n### The key tension with this design\nThe CDD Rule applies at **account opening** \u2014 which here means when Mosaic Relay enables payout services for a seller. The design defers *all* identity to a $3,000 threshold, and even then only collects the signer's name, not owners. So the beneficial-owner gap is not just a \"nice to have\" \u2014 it's the same deferred-identity problem as the $3,000 threshold, applied to business entities. **Collecting the signer's name at $3,000 does not satisfy the ownership/control prongs.**\n### The \"UI is already 11 screens\" argument doesn't carry\nThe design rationale is that adding owner collection is too much UI. But the CDD Rule doesn't have a UI-cost exemption. The practical answer is a **risk-based approach**: collect beneficial-owner information at onboarding (name, DOB, address, ID), run automated database/sanctions checks, and enable limited activity while completing enhanced verification within a short window \u2014 rather than collecting nothing and deferring everything to $3,000.\n### What would change this\n- **Working assumption:** Mosaic Relay is a covered financial institution subject to the CDD Rule. If it's structured as a pure technology provider with no money transmission (which the licensing question hasn't resolved), the CDD Rule may not apply directly \u2014 but the sanctions and reputational risk would still demand owner collection, and the bank partner's program may impose it anyway.\n- **Open fork:** Whether Mosaic Relay can rely on the marketplace to collect/verify owners (delegated model) or must do it directly. If delegated, Mosaic Relay stays legally responsible and needs strong contractual indemnities and audit rights.\n- **Not examined:** The specific terms of Mosaic Relay's contracts with its acquiring bank/processor, which may impose owner/control-person disclosure requirements beyond the CDD Rule. Those contracts weren't provided. Also, the CTA's current enforceability status needs verification given the litigation history.\n**Bottom line:** The beneficial-owner gap is a real blocker on its own, independent of the $3,000 threshold. The fix is to collect owner information at onboarding (risk-based, with automated checks), not to add it at the $3,000 point or rely on the W-9 signer's name.\nWant me to spin this into a dedicated work item with a concrete risk-based owner-collection design, or fold it into the existing identity-redesign workstream?",
+      "answer_path": "03_Matters/instant-payouts-q1-abf788/conversations/CONV-20260904-469ac8.md",
+      "answer_label": "Earlier saved assistant advice",
+      "caveats": [
+        "Note: the CTA's reporting requirement has been subject to litigation and injunctions; its status has shifted over time, so treat the CTA piece as needing current verification rather than settled. ### The key tension with this design The CDD Rule applies at **account opening** \u2014 which here means when Mosaic Relay enables payout services for a seller.",
+        "The practical answer is a **risk-based approach**: collect beneficial-owner information at onboarding (name, DOB, address, ID), run automated database/sanctions checks, and enable limited activity while completing enhanced verification within a short window \u2014 rather than collecting nothing and deferring everything to $3,000. ### What would change this - **Working assumption:** Mosaic Relay is a covered financial institution subject to the CDD Rule.",
+        "If delegated, Mosaic Relay stays legally responsible and needs strong contractual indemnities and audit rights. - **Not examined:** The specific terms of Mosaic Relay's contracts with its acquiring bank/processor, which may impose owner/control-person disclosure requirements beyond the CDD Rule.",
+        "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+      ],
+      "answer_state": "stale",
+      "primary_action": {
+        "action_id": "work-item:WI-cb249d811c96",
+        "label": "Redesign identity collection: collect CIP at onboarding, not at $3,000 payout threshold",
+        "reason": "The $3,000 cumulative payout threshold has no legal basis (confirmed as an engineering/product choice). Under BSA/AML, a money transmitter must collect CIP before establishing the account relationship. Design a compliant onboarding that collects full identity at onboarding rather than deferring to a payout threshold.",
+        "state": "ready",
+        "target": {
+          "matter_id": "MAT-20260904-abf788",
+          "kind": "work_item",
+          "target_id": "WI-cb249d811c96",
+          "path": "03_Matters/instant-payouts-q1-abf788/work-items/WI-cb249d811c96.md",
+          "revision": null,
+          "view": "understand"
+        },
+        "owner_id": null,
+        "owner_name": null,
+        "actor_kind": "unknown",
+        "required": true,
+        "due_at": null
+      },
+      "secondary_actions": [
+        {
+          "action_id": "discuss-current-question",
+          "label": "Discuss",
+          "reason": "Discuss the current question without changing the saved answer.",
+          "state": "ready",
+          "target": {
+            "matter_id": "MAT-20260904-abf788",
+            "kind": "question",
+            "target_id": "BQ-7eb9a27f11971732",
+            "path": null,
+            "revision": "legacy:46ba1a280b17d15379b24e91cd117b4a62fce8cf82019d3522c7a13659c86795",
+            "view": "discuss"
+          },
+          "owner_id": null,
+          "owner_name": null,
+          "actor_kind": "lawyer",
+          "required": false,
+          "due_at": null
+        },
+        {
+          "action_id": "open-draft",
+          "label": "Draft",
+          "reason": "Open the matter's drafting workspace.",
+          "state": "ready",
+          "target": {
+            "matter_id": "MAT-20260904-abf788",
+            "kind": "matter",
+            "target_id": "MAT-20260904-abf788",
+            "path": null,
+            "revision": null,
+            "view": "draft"
+          },
+          "owner_id": null,
+          "owner_name": null,
+          "actor_kind": "lawyer",
+          "required": false,
+          "due_at": null
+        }
+      ],
+      "changes": [
+        {
+          "change_id": "first-visit:d08582b2be798f0655a3858096f58b405217292e4561d80f75bae867d6fe1f9f",
+          "title": "First review",
+          "detail": "This is your first review of the current saved matter state.",
+          "basis": "first_visit",
+          "target": {
+            "matter_id": "MAT-20260904-abf788",
+            "kind": "matter",
+            "target_id": "MAT-20260904-abf788",
+            "path": null,
+            "revision": null,
+            "view": "understand"
+          },
+          "before_text": null,
+          "after_text": null,
+          "before_revision": null,
+          "after_revision": null
+        }
+      ],
+      "first_visit": true,
+      "seen_revision": null,
+      "current_revision": "d08582b2be798f0655a3858096f58b405217292e4561d80f75bae867d6fe1f9f",
+      "warnings": [
+        "This saved advice has an earlier or unknown question basis. Confirm it against the current question."
+      ]
+    }
+  }
+}

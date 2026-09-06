@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 import re
 from collections.abc import Awaitable, Callable
@@ -10,16 +11,21 @@ from typing import Any
 from app.intelligence.outbound_policy import OutboundQueryPolicy, PublicResearchQuery
 from app.intelligence.polaris import PolarisIntelligenceProvider
 from app.models.api import ChatRequest, WorkItemCreate
+from app.models.workspace import ConversationTarget
 from app.models.awareness import InternalScope, OutboundWatchQuery, PublicWatchQuery, Watch
 from app.agents.runner import ResolvedAgentProvider
 from app.providers.base import LLMProvider
-from app.providers.mock import MOCK_RESEARCH_UNAVAILABLE
+from app.providers.mock import MOCK_RESEARCH_UNAVAILABLE, MockProvider
 from app.services.dossier import DossierService
 from app.services.index import IndexService
 from app.services.internal_knowledge import InternalKnowledgeService
 from app.services.matters import MatterService
 from app.services.search import SearchService
 from app.services.vault import VaultService
+from app.services.workspace_evidence import WorkspaceEvidenceService
+from app.services.workspace import digest
+from app.services.issue_analysis import IssueAnalysisService, extract_decision_paths
+from app.services.workspace_actions import WorkspaceActionsService, extract_claim_support
 from app.utils.ids import new_id
 from app.utils.time import iso_now
 
@@ -82,17 +88,52 @@ class ResearchService:
         work_item_id: str | None = None,
         resolved_provider: ResolvedAgentProvider | None = None,
         on_packet_saved: Callable[[dict[str, Any]], None] | None = None,
+        expected_question_revision: str | None = None,
+        issue_id: str | None = None,
+        run_id: str | None = None,
+        frozen_context: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         matter = self.index.get_matter(matter_id)
         if not matter:
             raise KeyError(f"Matter not found: {matter_id}")
+        from app.services.workspace import WorkspaceService
+        workspace = WorkspaceService(self.vault, self.matters, self.dossiers)
+        issue_analysis = IssueAnalysisService(self.vault, self.matters, workspace)
+        frozen_context = dict(frozen_context or {})
+        research_inputs = frozen_context.get("research_inputs")
+        research_inputs = research_inputs if isinstance(research_inputs, dict) else None
+        issue_id = issue_id or frozen_context.get("issue_id")
+        capture = frozen_context.get("issue_analysis_capture")
+        if not isinstance(capture, dict):
+            capture = issue_analysis.capture(
+                matter_id, issue_id, frozen_context=frozen_context
+            )
+            frozen_context["issue_analysis_capture"] = capture
+        frozen_context.setdefault("issue_id", issue_id)
+        frozen_question = workspace.business_question(matter_id)
+        captured_question = capture.get("business_question") or {}
+        if captured_question.get("text"):
+            frozen_question = {**frozen_question, **captured_question}
+        if expected_question_revision and frozen_question["revision"] != expected_question_revision:
+            frozen_question = next((q for q in workspace.question_history(matter_id) if q["revision"] == expected_question_revision), frozen_question)
+        expected_question_revision = expected_question_revision or frozen_question["revision"]
         original_stage = matter["status"]
 
         request_path = f"{matter['path']}/request.md"
-        request_text = self.vault.read_markdown(request_path)["content"] if self.vault.exists(request_path) else ""
+        request_text = (
+            str(research_inputs.get("request_text") or "") if research_inputs is not None
+            else self.vault.read_markdown(request_path)["content"] if self.vault.exists(request_path) else ""
+        )
+        prompt_matter = {**matter, **(research_inputs.get("matter") or {})} if research_inputs else matter
         research_question = question.strip() or matter["title"]
         correlation_id = new_id("RC")
-        if self.search.settings.search_provider.lower() == "tavily":
+        if research_inputs is not None:
+            search_result = {
+                "query": research_question,
+                "internal": list(research_inputs.get("internal") or []),
+                "external": [], "warning": None,
+            }
+        elif self.search.settings.search_provider.lower() == "tavily":
             search_result = {
                 "query": research_question,
                 "internal": self.search.search_internal(
@@ -173,36 +214,73 @@ class ResearchService:
             item.get("support_state") in {"retrieved", "verified"}
             for item in search_result.get("external", [])
         )
-        prompt = self._prompt(matter, request_text, research_question, search_result)
+        try:
+            if research_inputs is not None:
+                external_records = self._source_records({"internal": [], "external": search_result.get("external", [])})
+                search_result["source_records"] = [
+                    *list(research_inputs.get("source_records") or []), *external_records,
+                ]
+            else:
+                search_result["source_records"] = self._source_records(search_result)
+        except Exception as exc:
+            logger.warning("Research source projection failed: %s", type(exc).__name__)
+            search_result["source_records"] = []
+            self._append_warning(search_result, "Source details unavailable; analysis continued from available context.")
+        prompt = self._prompt(prompt_matter, request_text, research_question, search_result)
+        prompt += "\nCurrent business question at submission: " + frozen_question["text"]
+        if research_inputs is not None and isinstance(research_inputs.get("issue_inputs"), dict):
+            prompt += (
+                "\n\nExact issue facts, assumptions, and questions supplied when this research was queued:\n"
+                + json.dumps(
+                    research_inputs["issue_inputs"], ensure_ascii=False, default=str
+                )
+            )
+
         analysis_warning: str | None = None
+        used_mock = False
         try:
             if self._agent_runner is not None:
+                if not frozen_context.get("context"):
+                    selected_inputs = [item.get("inputs") for item in (capture.get("issues") or {}).values()]
+                    frozen_context["context"] = (
+                        "# Frozen issue-analysis inputs\n"
+                        + json.dumps(selected_inputs, ensure_ascii=False, default=str)
+                    )
                 request = ChatRequest(
-                    message=prompt, matter_id=matter_id, agent_id="research-agent"
+                    message=prompt, matter_id=matter_id, agent_id="research-agent",
+                    target=ConversationTarget(matter_id=matter_id, issue_id=issue_id) if issue_id else None,
+                    frozen_context=frozen_context,
                 )
-                use_fallback_model = (
-                    not external_authority_retrieved
-                    and bool(self._settings.get("model_fallback_enabled"))
-                    and resolved_provider is not None
-                )
+                bound_runner = getattr(self._agent_runner, "__self__", None)
+                if bound_runner is not None and hasattr(bound_runner, "resolve"):
+                    selected_provider = resolved_provider or bound_runner.resolve("research-agent")
+                    used_mock = isinstance(selected_provider.provider, MockProvider)
                 reply = (
                     await self._agent_runner(request, resolved_provider=resolved_provider)
-                    if use_fallback_model
+                    if resolved_provider is not None
                     else await self._agent_runner(request)
                 )
                 body = str(reply.reply).strip()
             else:
+                used_mock = isinstance(self.provider, MockProvider)
                 reply = await self.provider.complete(
                     [{"role": "user", "content": prompt}]
                 )
                 body = reply.content.strip()
         except Exception as exc:
             logger.warning("Research analysis failed: %s", type(exc).__name__)
-            body = ""
+            body = str(getattr(getattr(exc, "state", None), "useful_content", "") or "").strip()
             analysis_warning = (
                 "Research analysis failed. Useful source material and fallback work were preserved."
             )
-        if body == MOCK_RESEARCH_UNAVAILABLE:
+        decision_structure = None
+        claim_structure = None
+        structure_warnings: list[str] = []
+        if body and body != MOCK_RESEARCH_UNAVAILABLE and not used_mock:
+            body, decision_structure, decision_warnings = extract_decision_paths(body)
+            body, claim_structure, claim_warnings = extract_claim_support(body)
+            structure_warnings.extend([*decision_warnings, *claim_warnings])
+        if body == MOCK_RESEARCH_UNAVAILABLE or used_mock:
             body = ""
             analysis_warning = (
                 "The Research Agent used Mock. No model-generated research analysis was filed."
@@ -224,8 +302,11 @@ class ResearchService:
         if analysis_warning:
             body = f"**Generated analysis warning.** {analysis_warning}\n\n{body}"
         packet_id = new_id("RES")
+        analysis_run_id = run_id or correlation_id
         path = f"{matter['path']}/research/{packet_id}.md"
         citation_warning: str | None = None
+        if any(not item.get("path") and not item.get("url") for item in search_result.get("source_records", [])):
+            citation_warning = "Research citation formatting failed for a source with no available location."
         try:
             source_lines = self._source_lines(search_result)
         except Exception as exc:
@@ -234,9 +315,7 @@ class ResearchService:
             source_lines = "- Source details could not be formatted. Review the research warning metadata."
         packet_title = self._packet_title(research_question)
         packet_status = "first_pass_complete" if public_status == "retrieved" else "first_pass_partial"
-        self.vault.write_markdown(
-            path,
-            (
+        packet_content = (
                 f"# {packet_title}\n\n"
                 f"## Question\n\n{research_question}\n\n"
                 f"## Working Analysis\n\n{body}\n\n"
@@ -252,9 +331,34 @@ class ResearchService:
                 f"- Model-only: {'Yes' if model_only else 'No'}\n"
                 "- Assumptions: See the Working Analysis.\n"
                 "- Remaining gaps: Verify material facts and any authority used for the final answer.\n"
-            ),
+            )
+        output_revision = digest(packet_content.strip())
+        claim_publisher = WorkspaceActionsService(self.vault, self.matters, workspace)
+        claims: list[dict[str, Any]] = []
+        raw_claims = claim_structure.get("claims", []) if isinstance(claim_structure, dict) else claim_publisher._inline_claims(body)
+        for index, raw_claim in enumerate(raw_claims if isinstance(raw_claims, list) else []):
+            try:
+                claim, claim_warnings = claim_publisher._parse_claim(
+                    raw_claim, text=packet_content,
+                    sources=search_result.get("source_records", []),
+                    output_revision=output_revision,
+                )
+                claims.append(claim)
+                structure_warnings.extend(
+                    f"Optional claim {index + 1}: {warning}" for warning in claim_warnings
+                )
+            except (TypeError, ValueError, KeyError) as exc:
+                structure_warnings.append(
+                    f"Optional claim {index + 1} unavailable: {type(exc).__name__}. Useful research prose was retained."
+                )
+        self.vault.write_markdown(
+            path, packet_content,
             {
                 "research_id": packet_id,
+                "run_id": analysis_run_id,
+                "output_revision": output_revision,
+                "claims": claims,
+                "source_records": search_result.get("source_records", []),
                 "matter_id": matter_id,
                 "title": packet_title,
                 "question": research_question,
@@ -278,6 +382,19 @@ class ResearchService:
                 "correlation_id": correlation_id,
             },
         )
+        published_analysis: dict[str, Any] = {"warnings": [], "issue_analyses": [], "historical": False}
+        if decision_structure is not None:
+            try:
+                published_analysis = issue_analysis.publish(
+                    matter_id, path=path, run_id=analysis_run_id,
+                    output_revision=output_revision, structure=decision_structure,
+                    capture=capture, claims=claims,
+                )
+                structure_warnings.extend(published_analysis["warnings"])
+            except (OSError, TypeError, ValueError, KeyError) as exc:
+                structure_warnings.append(
+                    f"Optional decision paths unavailable: {type(exc).__name__}. Useful research prose and prior analysis were retained."
+                )
         if on_packet_saved is not None:
             on_packet_saved({
                 "path": path,
@@ -287,12 +404,14 @@ class ResearchService:
                 "model_only": model_only,
             })
         warnings = [warning for warning in (search_result.get("warning"), analysis_warning, citation_warning) if warning]
+        warnings.extend(structure_warnings)
         orientation_warning: str | None = None
+        orientation_result: dict[str, Any] = {}
         try:
             generated_summary = DossierService.section(body, "Matter summary")
             generated_open_questions = DossierService.list_section(body, "Open questions")
             current_orientation = self.dossiers.orientation(matter_id)
-            self.dossiers.update_orientation(
+            orientation_result = self.dossiers.update_orientation(
                 matter_id,
                 summary=(
                     generated_summary
@@ -301,13 +420,18 @@ class ResearchService:
                     or matter["title"]
                 ),
                 decision_question=(
-                    current_orientation["decision_question"]
-                    or matter.get("next_action")
-                    or research_question
+                    frozen_question["text"]
+                    if decision_structure is not None
+                    else (
+                        current_orientation["decision_question"]
+                        or matter.get("next_action")
+                        or research_question
+                    )
                 ),
                 open_questions=generated_open_questions or current_orientation["open_questions"],
                 research_path=path,
                 research_support=source_lines,
+                expected_question_revision=expected_question_revision,
             )
         except Exception as exc:
             logger.warning("Research orientation update failed: %s", type(exc).__name__)
@@ -392,6 +516,7 @@ class ResearchService:
                 )
             ),
             "path": path,
+            "source_records": search_result.get("source_records", []),
             "warning": " ".join(warnings) or None,
             "internal_sources": len(search_result.get("internal", [])),
             "external_sources": len(search_result.get("external", [])),
@@ -402,6 +527,8 @@ class ResearchService:
             "polaris_observability": polaris_observability,
             "analysis_warning": analysis_warning,
             "orientation_warning": orientation_warning,
+            "orientation_state": orientation_result.get("state"),
+            "expected_question_revision": expected_question_revision,
             "question_answered": question_answered,
             "supplied_sources_used": sum(1 for item in search_result.get("external", []) if item.get("support_state") == "supplied"),
             "internal_support_used": bool(search_result.get("internal")),
@@ -410,6 +537,10 @@ class ResearchService:
             "model_only": model_only,
             "provider_legs": search_result.get("provider_legs", []),
             "correlation_id": correlation_id,
+            "output_revision": output_revision,
+            "claims": claims,
+            "issue_analyses": published_analysis["issue_analyses"],
+            "historical_analysis": bool(published_analysis.get("historical")),
             "dossier_projection": dossier_projection,
         }
 
@@ -607,12 +738,19 @@ class ResearchService:
             f"Matter type: {matter.get('matter_type')}\n"
             f"Business objective / original request:\n{request_text[:10000]}\n\n"
             f"Research question:\n{question}\n\n"
+            "Source records (cite beside each supported claim as "
+            "[source:SOURCE_ID|exact locator], using the exact saved source_id and locator; "
+            "omit |exact locator only when the record has no locator):\n"
+            f"{search_result.get('source_records', [])}\n\n"
             f"Internal search results:\n{search_result.get('internal', [])}\n\n"
             f"External search results:\n{ResearchService._prompt_external_sources(search_result)}\n\n"
             "Deliver the strongest useful first-pass answer. Separate retrieved external authority, supplied public sources, "
             "internal support, assumptions, and remaining gaps. Generated analysis is not retrieved authority. If no external "
             "authority was retrieved, say exactly: No external authority retrieved.\n\n"
-            "Begin with these exact Markdown sections:\n\n"
+            "Begin with the likely answer and a short conditional alternative when a missing fact matters. "
+            "Use at most one optional question and state its consequence; no minimum caveat count. "
+            "Do not invent an objection. Keep the current business question unchanged. "
+            "For a research packet, these optional sections can help orientation:\n\n"
             "## Matter summary\n"
             "Write 2–4 short sentences explaining who is involved, what is happening, why counsel is involved, "
             "and the important timing or consequence. Use only matter facts.\n\n"
@@ -621,38 +759,60 @@ class ResearchService:
             "business consequence. It must make sense without another file. Avoid generic verbs such as review, "
             "assess, consider, or approve the path. Keep it under 90 words.\n\n"
             "## Open questions\n"
-            "List 1–5 material questions that remain unresolved after this review. Include missing business facts and "
+            "Include at most one material unanswered question, only if useful. Include missing business facts and "
             "research questions only when the answer could change the recommendation or decision. Use Markdown bullets.\n\n"
             "Then return: likely rules/issues, viable paths, facts that could change the answer, and recommended "
-            "last-mile verification. Keep the recommendation separate from the lawyer's decision."
+            "last-mile verification. Keep the recommendation separate from the lawyer's decision. "
+            "After the useful prose, you may append one optional decision-paths fenced JSON object for the captured real issue IDs. "
+            "Use unique local IDs and real supplied record IDs. Unknown does not choose a route. Requirements need all or any; split mixed nested logic."
         )
+
+    def _source_records(self, search_result: dict[str, Any]) -> list[dict[str, Any]]:
+        records = []
+        for item in search_result.get("internal", []):
+            supplied = dict(item)
+            path = str(item.get("path") or "")
+            if path:
+                try:
+                    document = self.vault.read_document(path)
+                    text = str(document.get("content") or "")
+                    metadata = document.get("metadata") or {}
+                    if not metadata.get("source_id") and self.vault.exists(path + ".extracted.md"):
+                        metadata = self.vault.read_markdown(path + ".extracted.md")["metadata"]
+                    supplied.update(available_excerpt=text[:800] or None,
+                                    source_version=metadata.get("source_version") or digest(text),
+                                    source_hash=digest(text), locator="Start of document")
+                    if metadata.get("source_id"):
+                        supplied["source_id"] = metadata["source_id"]
+                except (OSError, ValueError, TypeError):
+                    supplied.update(available_excerpt=None)
+            record = WorkspaceEvidenceService.source_record(supplied, internal=True)
+            record["source_label"] = self._source_label(item, path)
+            records.append(record)
+        records.extend(WorkspaceEvidenceService.source_record(item) for item in search_result.get("external", []))
+        return records
 
     def _source_lines(self, search_result: dict[str, Any]) -> str:
         lines: list[str] = []
-        for item in search_result.get("internal", []):
-            path = item["path"]
-            raw_excerpt = ""
-            if self.vault.exists(path):
-                try:
-                    raw_excerpt = str(self.vault.read_markdown(path).get("content") or "")
-                except (OSError, ValueError):
-                    pass
-            label = self._source_label(item, path)
-            excerpt = self._clean_source_excerpt(raw_excerpt)
-            lines.append(f"- Internal support: **{label}**{f' — {excerpt}' if excerpt else ''}")
-        for item in search_result.get("external", []):
-            title = str(item.get("title") or "Source")
-            url = str(item.get("url") or "")
-            state = str(item.get("support_state") or "unverified")
-            support = {
-                "supplied": "Supplied source",
-                "retrieved": "Retrieved external authority",
-                "verified": "Verified external authority",
-            }.get(state, "Unverified external lead")
-            excerpt = self._clean_source_excerpt(str(item.get("excerpt") or ""))
-            rendered = f"[{title}]({url})" if url else f"**{title}**"
-            lines.append(f"- {support}: {rendered}{f' — {excerpt}' if excerpt else ''}")
-        return "\n".join(lines) or "- No source results were returned. The packet is an issue-spotting scaffold only."
+        records = search_result.get("source_records")
+        if records is None:
+            records = self._source_records(search_result)
+        for item in records:
+            support = {"supplied": "Internal support" if item.get("path") else "Supplied source",
+                       "retrieved": "Retrieved external authority", "verified": "Verified external authority"}.get(item["support_state"], "Unverified external lead")
+            title = str(item["source_label"]).replace("[", "").replace("]", "")
+            location = item.get("url") or item.get("path")
+            rendered = f"[{title}]({location})" if location else f"**{title}**"
+            locator = str(item.get("locator") or "").replace("]", "").strip()
+            marker = f"[source:{item['source_id']}" + (f"|{locator}]" if locator else "]")
+            lines.append(f"- {support}: {rendered} {marker}")
+            if item.get("available_excerpt"):
+                # Preserve literal source text; the structured record carries its
+                # exact full excerpt. No Markdown cleanup creates fake quotations.
+                lines.append("  Available excerpt:\n" + "\n".join("  > " + line for line in item["available_excerpt"][:200].splitlines()))
+            else:
+                lines.append("  No source excerpt available.")
+        return "\n".join(lines) or "- No source results were returned."
 
     @staticmethod
     def _prompt_external_sources(search_result: dict[str, Any]) -> list[dict[str, Any]]:

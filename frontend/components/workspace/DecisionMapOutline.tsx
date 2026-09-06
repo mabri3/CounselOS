@@ -1,0 +1,18 @@
+import type { ConversationTarget, DocumentReferenceTarget } from "@/lib/workspaceTypes";
+import type { DecisionMapEdge, DecisionMapNode } from "@/lib/decisionMapTypes";
+import { edgeStateLabel, nodeStateLabel, relationshipLabel } from "@/lib/decisionMapLayout";
+import styles from "./MatterMap.module.css";
+
+const GROUPS = ["current", "legacy", "historical", "hypothetical", "missing"] as const;
+function groupLabel(group: string) { return ({ current: "Current analysis", legacy: "Legacy records", historical: "Historical records", hypothetical: "Hypothetical records", missing: "Missing references" } as Record<string, string>)[group] ?? "Other records"; }
+function targetFor(node: DecisionMapNode, matterId: string, focusedIssueId?: string | null): ConversationTarget { return { matter_id: matterId, issue_id: focusedIssueId ?? (node.record_type === "issue" ? node.record_id : node.issue_ids?.[0] ?? null), analysis_id: node.analysis_id ?? null, analysis_revision: node.analysis_revision ?? null, option_id: node.record_type === "option" ? node.record_id : null, option_revision: typeof node.data?.option_revision === "string" ? node.data.option_revision : null }; }
+
+export default function DecisionMapOutline({ nodes, edges, selectedNodeId, focusedIssueId, onSelectNode, onDiscuss, onOpenDocument, matterId }: { nodes: DecisionMapNode[]; edges: DecisionMapEdge[]; selectedNodeId: string | null; focusedIssueId?: string | null; onSelectNode: (id: string) => void; onDiscuss?: (target: ConversationTarget) => void; onOpenDocument?: (target: DocumentReferenceTarget) => void; matterId?: string }) {
+  void onOpenDocument;
+  const orderedGroups = [...GROUPS, ...[...new Set(nodes.map((node) => node.group ?? "other"))].filter((group) => !GROUPS.includes(group as typeof GROUPS[number]))];
+  return <section aria-label="Decision map outline" className={`${styles.card} ${styles.outline}`}><h2 className={styles.sectionTitle}>All records</h2><p className={styles.muted}>Complete saved titles and the same relationships shown in the graph.</p>{orderedGroups.map((group) => {
+    const groupNodes = nodes.filter((node) => (node.group ?? "other") === group);
+    if (!groupNodes.length) return null;
+    return <section className={styles.outlineGroup} key={group}><h3>{groupLabel(group)}</h3><ul className={styles.outlineList}>{groupNodes.map((node) => <li className={styles.outlineRow} key={node.node_id}><button aria-current={selectedNodeId === node.node_id ? "true" : undefined} className={`btn quiet ${styles.outlineSelect}`} onClick={() => onSelectNode(node.node_id)} title={node.label} type="button"><strong className={styles.outlineName}>{node.label}</strong><span className={styles.outlineNodeMeta}>{node.record_type.replace(/_/g, " ")} · {nodeStateLabel(node)}</span></button>{matterId && onDiscuss ? <button className={`btn quiet ${styles.outlineDiscuss}`} onClick={() => onDiscuss(targetFor(node, matterId, focusedIssueId))} type="button">Discuss this path</button> : null}</li>)}</ul></section>;
+  })}<section className={styles.outlineEdges}><h3>Visible relationships ({edges.length})</h3>{edges.length ? <ul className={styles.relationshipList}>{edges.map((edge) => { const from = nodes.find((node) => node.node_id === edge.from_node_id)?.label ?? edge.from_node_id; const to = nodes.find((node) => node.node_id === edge.to_node_id)?.label ?? edge.to_node_id; return <li className={styles.outlineRelationship} key={edge.edge_id}><strong>{from}</strong> → <span>{edge.label || relationshipLabel(edge.relationship)}</span> → <strong>{to}</strong> · {edgeStateLabel(edge)}</li>; })}</ul> : <p className={styles.muted}>No saved relationships are visible in this scope.</p>}</section></section>;
+}

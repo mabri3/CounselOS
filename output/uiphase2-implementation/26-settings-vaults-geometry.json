@@ -1,0 +1,190 @@
+{
+  "height": 1091,
+  "landmarks": [
+    {
+      "font": "15px",
+      "height": 83.99857330322266,
+      "tag": "HEADER",
+      "text": "themis.aiTodayBriefingWorkspaceMattersDecisionsSkillsAutomat",
+      "width": 1014.54541015625,
+      "x": 0,
+      "y": -10.454545021057127
+    },
+    {
+      "font": "13px",
+      "height": 59.190338134765625,
+      "tag": "SECTION",
+      "text": "\n.demo-lawyer-switcher { position:relative; min-width:0; fle",
+      "width": 237.7627716064453,
+      "x": 756.7826538085938,
+      "y": 56.399147033691406
+    },
+    {
+      "font": "13px",
+      "height": 28.593748092651367,
+      "tag": "H2",
+      "text": "View as",
+      "width": 31.051136016845703,
+      "x": 763.68603515625,
+      "y": 82.08806610107422
+    },
+    {
+      "font": "15px",
+      "height": 978.5510864257812,
+      "tag": "ASIDE",
+      "text": "SettingsModelAnswer contractDocument reviewResearchFiles and",
+      "width": 237.9971466064453,
+      "x": 18.90625,
+      "y": 94.453125
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Model",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": 170.44033813476562
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Answer contract",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": 229.4318084716797
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Document review",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": 288.42327880859375
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Research",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": 347.4147644042969
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Files and outputs",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": 406.40625
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Model providers",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": 465.397705078125
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Watch providers",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": 524.38916015625
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Company",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": 583.3806762695312
+    },
+    {
+      "font": "16px",
+      "height": 51.99573516845703,
+      "tag": "BUTTON",
+      "text": "Vaults",
+      "width": 217.0880584716797,
+      "x": 28.906248092651367,
+      "y": 642.3721313476562
+    },
+    {
+      "font": "48px",
+      "height": 53.749996185302734,
+      "tag": "H1",
+      "text": "Vaults",
+      "width": 665.7385864257812,
+      "x": 295.9019775390625,
+      "y": 132.45028686523438
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Create new vault",
+      "width": 141.67613220214844,
+      "x": 295.9019775390625,
+      "y": 506.413330078125
+    },
+    {
+      "font": "14px",
+      "height": 37.99715805053711,
+      "tag": "BUTTON",
+      "text": "Load existing vault",
+      "width": 153.1676025390625,
+      "x": 446.5766906738281,
+      "y": 506.413330078125
+    },
+    {
+      "font": "15px",
+      "height": 438.6079406738281,
+      "tag": "SECTION",
+      "text": "Local team demonstrationOptional people share this vault. Sw",
+      "width": 665.7385864257812,
+      "x": 295.9019775390625,
+      "y": 598.4019775390625
+    },
+    {
+      "font": "20px",
+      "height": 27.99715805053711,
+      "tag": "H2",
+      "text": "Local team demonstration",
+      "width": 665.7385864257812,
+      "x": 295.9019775390625,
+      "y": 627.3082275390625
+    },
+    {
+      "font": "13.5px",
+      "height": 33.0823860168457,
+      "tag": "BUTTON",
+      "text": "Save and enable people",
+      "width": 174.7158966064453,
+      "x": 295.9019775390625,
+      "y": 1003.9275512695312
+    },
+    {
+      "font": "13.5px",
+      "height": 33.0823860168457,
+      "tag": "BUTTON",
+      "text": "Use one lawyer",
+      "width": 121.98863220214844,
+      "x": 479.616455078125,
+      "y": 1003.9275512695312
+    }
+  ],
+  "overflow": false,
+  "scale": 1.100000023841858,
+  "scrollY": 10.454545021057127,
+  "url": "http://localhost:3134/settings",
+  "width": 1024
+}

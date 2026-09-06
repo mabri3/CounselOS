@@ -1,0 +1,33 @@
+{
+  "target": {
+    "document_id": "SRC-3D8BEFD2E880647C",
+    "path": "03_Matters/harbor-sandbox-release-timing-1b2102/documents/pilot-contract.txt.extracted.md",
+    "revision": "fc2f88f72d42ecf4485cd0b8ad9b5edcb6c11690e508e660293cf8ade602e95b",
+    "locator": "",
+    "available_excerpt": "# Extracted text: pilot-contract.txt\n\n# Fictional supplier contract\n\n## Section 4\n\nScreening must finish before release. A manual pilot can include ten test accounts.\n",
+    "exact_passage_available": true,
+    "origin": {
+      "surface": "decision_map",
+      "record_id": "option:OPT-7055d911b535fb346671",
+      "document_id": null,
+      "focus_id": null,
+      "scroll_offset": 921
+    }
+  },
+  "document": {
+    "document_id": "SRC-3D8BEFD2E880647C",
+    "path": "03_Matters/harbor-sandbox-release-timing-1b2102/documents/pilot-contract.txt.extracted.md",
+    "title": "pilot-contract.txt.extracted",
+    "kind": "source",
+    "revision": "fc2f88f72d42ecf4485cd0b8ad9b5edcb6c11690e508e660293cf8ade602e95b",
+    "version_id": null,
+    "work_product_id": null,
+    "lifecycle_state": "reading_source",
+    "editable": false,
+    "immutable": false,
+    "original_path": "03_Matters/harbor-sandbox-release-timing-1b2102/documents/pilot-contract.txt",
+    "extracted_path": null
+  },
+  "passage_state": "exact",
+  "message": ""
+}
