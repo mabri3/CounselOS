@@ -244,7 +244,19 @@ class IssueAnalysisService:
             raise ValueError("duplicate local IDs are not allowed")
         condition_ids = {item["condition_id"] for item in conditions}
         self._validate_links(tests, conditions, options, known, condition_ids)
+        connections = None
+        if isinstance(raw.get("connections"), list):
+            from app.models.workspace import IssueConnection
+            try:
+                connections = [IssueConnection.model_validate(item).model_dump(mode="json") for item in raw["connections"]]
+                valid_issues = {item["issue_id"] for item in self.workspace.issues(matter_id)}
+                if any(item["target_issue_id"] not in valid_issues or item["target_issue_id"] == issue_id or not item["reason"].strip() for item in connections):
+                    raise ValueError("Invalid related issue or missing reason")
+            except ValueError:
+                connections = None
+                warnings.append("Connections need assessment: invalid connection structure was omitted.")
         provider = {
+            "connections": connections,
             "display_title": str(raw.get("display_title") or "").strip(),
             "explanation": str(raw.get("explanation") or "").strip(),
             "business_effect": str(raw.get("business_effect") or "").strip(),
@@ -267,6 +279,10 @@ class IssueAnalysisService:
             item["option_id"] = mappings[item["option_id"]]
             for requirement in item["requirements"]:
                 requirement["condition_id"] = mappings[requirement["condition_id"]]
+            for effect in item.get("effects", []):
+                effect["target_option_id"] = mappings[effect["target_option_id"]]
+                if effect.get("condition_id"):
+                    effect["condition_id"] = mappings[effect["condition_id"]]
             item["option_revision"] = digest({
                 "analysis_revision": analysis_revision,
                 "option": {key: value for key, value in item.items() if key != "option_revision"},
@@ -326,7 +342,17 @@ class IssueAnalysisService:
                 raise ValueError("condition points to a foreign fact or question")
             if set(condition["claim_ids"]) - known["claims"]:
                 raise ValueError("condition points to a foreign claim")
+        option_ids = {option["option_id"] for option in options}
         for option in options:
+            for effect in option.get("effects", []):
+                if effect["target_option_id"] not in option_ids or effect["target_option_id"] == option["option_id"]:
+                    raise ValueError("effect must point to another option in this analysis")
+                if not effect["reason"].strip():
+                    raise ValueError("effect requires a reason")
+                if effect["trigger"] == "condition" and effect.get("condition_id") not in condition_ids:
+                    raise ValueError("effect points to an unknown condition")
+                if effect.get("condition_id") and effect["condition_id"] not in condition_ids:
+                    raise ValueError("effect points to an unknown condition")
             if any(item["condition_id"] not in condition_ids for item in option["requirements"]):
                 raise ValueError("option points to an unknown condition")
             if set(option["claim_ids"]) - known["claims"] or set(option["work_item_ids"]) - known["work"]:

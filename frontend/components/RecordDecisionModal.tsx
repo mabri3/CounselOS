@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { createDecision, getDecisions, getFile } from "@/lib/api";
+import { createDecision, revisePathDecision, getDecisions, getFile } from "@/lib/api";
 import { formatLongDay } from "@/lib/design";
 import type { MatterDetail } from "@/lib/types";
 import type { RecommendationDisposition } from "@/lib/types";
@@ -113,7 +113,7 @@ export default function RecordDecisionModal({
           return { payload, sourceActionKey: sourceActionKey.current };
         })();
         pendingSubmission.current = submission;
-        const saved = await createDecision(submission.payload);
+        const saved = await (pathPrefill?.revises_decision_id ? revisePathDecision(pathPrefill.revises_decision_id, submission.payload) : createDecision(submission.payload));
         decisionCreated = true;
         decisionId = saved.decision_id;
         setCreated(true);

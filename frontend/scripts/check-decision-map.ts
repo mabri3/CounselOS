@@ -34,15 +34,19 @@ const edges = [
   { edge_id: "condition-a2", from_node_id: "condition:A", to_node_id: "option:A2", relationship: "if", label: "If not met", state: "inactive" },
   { edge_id: "shared-b", from_node_id: "fact:SHARED", to_node_id: "legal_test:B", relationship: "supports", label: "Supports", state: "active" },
 ];
-const focused = layout.focusedDecisionPath({ matter_id: "MAT", revision: "r1", selected_issue_id: "A", nodes, edges }, "A") as { nodes: Array<{ node_id: string }>; edges: Array<{ edge_id: string }>; lanes: Array<{ label: string }> };
+const focused = layout.focusedDecisionPath({ matter_id: "MAT", revision: "r1", selected_issue_id: "A", nodes, edges }, "A") as { nodes: Array<{ node_id: string; x: number; y: number }>; edges: Array<{ edge_id: string; from_node_id: string; to_node_id: string }>; lanes: Array<{ label: string }> };
 const ids = new Set(focused.nodes.map((node) => node.node_id));
-assert.equal(JSON.stringify(focused.lanes.map((lane) => lane.label)), JSON.stringify(["Law or test", "What changes the answer", "Possible paths"]));
+for (const edge of focused.edges) {
+  const from = focused.nodes.find((node) => node.node_id === edge.from_node_id)!;
+  const to = focused.nodes.find((node) => node.node_id === edge.to_node_id)!;
+  assert.ok(from.x < to.x, "each downstream step follows its inputs from left to right");
+}
 for (const id of ["business_question:BQ", "issue:A", "fact:SHARED", "legal_test:A", "condition:A", "option:A1", "option:A2"]) assert.ok(ids.has(id), `focused slice keeps ${id}`);
 assert.ok(!ids.has("issue:B") && !ids.has("legal_test:B"), "a shared fact does not pull another issue's private branch into the focused slice");
 assert.equal(JSON.stringify([...new Set(focused.edges.map((edge) => edge.edge_id))].sort()), JSON.stringify(edges.filter((edge) => ids.has(edge.from_node_id) && ids.has(edge.to_node_id)).map((edge) => edge.edge_id).sort()), "focused edges retain exactly the visible canonical identities");
 assert.ok(focused.edges.some((edge) => edge.edge_id === "condition-a2" && edge.state === "inactive"), "an inactive route remains visible as a canonical structural edge");
-const stretched = layout.reflowDecisionPathNodes(focused, { "issue:A": { width: 480, height: 236 } }) as Array<{ node_id: string; y: number }>;
-assert.ok(stretched.filter((node) => ["legal_test:A", "condition:A", "option:A1"].includes(node.node_id)).every((node) => node.y >= 268), "measured context-card growth moves all three lanes below it without overlap");
+const stretched = layout.reflowDecisionPathNodes(focused, { "option:A1": { width: 300, height: 400 } }) as Array<{ node_id: string; y: number }>;
+assert.ok(stretched.find((node) => node.node_id === "option:A2")!.y >= stretched.find((node) => node.node_id === "option:A1")!.y + 448, "long cards leave a clear gap before the next card in their column");
 assert.ok((layout.decisionMapFitScale({ width: 4800, height: 3200 }, 390, 420) as number) >= .72, "fit retains the readable scale floor");
 assert.equal((layout.activeDecisionMapPath([{ node_id: "condition:UNKNOWN", state: "unknown" }], [{ edge_id: "a", from_node_id: "condition:UNKNOWN", to_node_id: "condition:UNKNOWN", state: "active" }], "condition:UNKNOWN") as string[]).length, 0, "unknown never chooses a path");
 assert.equal(JSON.stringify(layout.activeDecisionMapPath(

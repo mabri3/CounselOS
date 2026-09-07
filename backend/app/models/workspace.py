@@ -514,6 +514,14 @@ class PathRequirement(WorkspaceModel):
     state: Literal["met", "not_met"]
 
 
+class PathEffect(WorkspaceModel):
+    target_option_id: str
+    trigger: Literal["agreement", "implementation_complete", "condition"]
+    condition_id: str | None = None
+    condition_state: Literal["met", "not_met"] = "met"
+    reason: str
+
+
 class IssueOption(WorkspaceModel):
     option_id: str
     option_revision: str = ""
@@ -527,11 +535,20 @@ class IssueOption(WorkspaceModel):
     remaining_work: list[str] = Field(default_factory=list)
     recommendation: Literal["candidate", "recommended"] = "candidate"
     recommendation_reason: str = ""
+    effects: list[PathEffect] = Field(default_factory=list)
+    risk_assessment: Literal["not_assessed", "risk_to_review", "not_recommended"] = "not_assessed"
     claim_ids: list[str] = Field(default_factory=list)
     work_item_ids: list[str] = Field(default_factory=list)
 
 
+class IssueConnection(WorkspaceModel):
+    target_issue_id: str
+    relationship: Literal["depends_on", "compounds", "may_resolve", "shared_condition"]
+    reason: str
+
+
 class IssueAnalysis(WorkspaceModel):
+    connections: list[IssueConnection] | None = None
     schema_version: Literal[1] = 1
     issue_id: str
     analysis_id: str

@@ -79,6 +79,8 @@ export default function MatterDecisionMapPage() {
   );
   const [focusedIssueId, setFocusedIssueId] = useState<string | null>(null);
   const [pathPrefill, setPathPrefill] = useState<DecisionPathPrefill | null>(null);
+  const [analyzingIssueId, setAnalyzingIssueId] = useState<string | null>(null);
+  const [analysisResult, setAnalysisResult] = useState<{issueId: string; message: string; saved: boolean} | null>(null);
   const [analysisBusy, setAnalysisBusy] = useState(false);
   const [analysisNotice, setAnalysisNotice] = useState("");
   const [externalRun, setExternalRun] = useState<ChatRun | null>(null);
@@ -180,7 +182,7 @@ export default function MatterDecisionMapPage() {
     setFocusedIssueId(null); setSelectedNodeId(null); setInitialConversationId(null);
     setConversationTarget(null); setPathPrefill(null); setLaunchIntent(null); setExternalRun(null);
     setReferenceTarget(null); setReferenceDocument(null); invalidateReferenceResult(referenceGeneration);
-    setAnalysisBusy(false); setAnalysisNotice("");
+    setAnalysisBusy(false); setAnalyzingIssueId(null); setAnalysisResult(null); setAnalysisNotice("");
     return () => { loadGeneration.current += 1; };
   }, [contextKey]);
   useEffect(() => {
@@ -191,15 +193,26 @@ export default function MatterDecisionMapPage() {
     if (loadedContext.current === contextKey) window.sessionStorage.setItem(selectionKey, JSON.stringify({ focusedIssueId, selectedNodeId }));
   }, [contextKey, selectionKey, focusedIssueId, selectedNodeId]);
 
+  const attemptedAnalyses = useRef(new Set<string>());
+  useEffect(() => {
+    if (!snapshot || !focusedIssueId || analysisBusy) return;
+    const status = snapshot.issue_analyses?.[focusedIssueId];
+    const attemptKey = `${contextKey}:${focusedIssueId}`;
+    if ((!status || status.state === "not_mapped") && !attemptedAnalyses.current.has(attemptKey)) {
+      attemptedAnalyses.current.add(attemptKey);
+      void analyzePaths(focusedIssueId);
+    }
+  }, [snapshot, focusedIssueId, analysisBusy, contextKey]);
+
   async function analyzePaths(issueId: string) {
     if (analysisBusy) return;
     const key = contextKey;
-    setAnalysisBusy(true); setAnalysisNotice("Analyzing paths…");
+    setAnalyzingIssueId(issueId); setAnalysisResult(null); setAnalysisBusy(true); setAnalysisNotice("Analyzing paths…");
     try {
       const started = await runWorkspaceAction(matterId, {
         action: "explain", target: { matter_id: matterId, issue_id: issueId }, conversation_id: initialConversationId,
         source_action_key: `analyze-paths:${crypto.randomUUID()}`,
-        instruction: "Analyze the possible paths for this actual saved issue. Explain the applicable test, actor, exceptions, unknown facts, conditional routes and business alternatives. Return useful prose and the optional decision-paths structure. Do not call tools to save recommendations or work products; the inquiry publisher saves this answer automatically.",
+        instruction: "Assess connections to all other saved issues in this matter as well as the paths. Include connections in the decision-paths issue analysis: an array of target_issue_id (exact saved issue ID), relationship (depends_on, compounds, may_resolve, shared_condition), and reason. Describe any implementation or conditions needed in the reason; a potential connection does not close an issue. Return an empty connections array only after assessing the other issues and finding none. Other saved issues: " + JSON.stringify(workspace?.issues ?? []) + ". Analyze the possible paths for this actual saved issue. Name each choice as an action the business can take. For each choice, explain the facts and conditions it depends on, the next consequence, material negative outcomes or risks, trade-offs, and remaining work. Distinguish known facts from unknown facts and possible risks from expected consequences. Explain the applicable test, actor, exceptions, conditional routes and business alternatives. Return useful prose and the optional decision-paths structure. In that structure, include supported effects on other options: effects entries with target_option_id, trigger (agreement, implementation_complete, or condition), and reason; condition triggers also need condition_id and condition_state. In particular, distinguish agreeing to a redesign from implementing it: an existing route remains possible until the replacement is implemented. Do not invent exclusion for options that can coexist. Do not call tools to save recommendations or work products; the inquiry publisher saves this answer automatically.",
       });
       if (activeContext.current !== key) return;
       let run = await getChatRun(matterId, started.run_id);
@@ -212,10 +225,16 @@ export default function MatterDecisionMapPage() {
       }
       if (activeContext.current !== key) return;
       setExternalRun(run); await load();
+      const refreshed = await getDecisionMap(matterId);
+      if (activeContext.current !== key) return;
+      const updated = refreshed.issue_analyses?.[issueId]?.analysis;
+      const changed = !!updated && updated.analysis_revision !== snapshot?.issue_analyses?.[issueId]?.analysis?.analysis_revision;
+      setAnalysisResult({issueId, saved: changed, message: changed ? `Analysis updated. ${updated.options.length} paths; ${Array.isArray(updated.connections) ? `${updated.connections.length} connections found` : 'connections still need assessment'}.` : 'No new map was saved. The previous analysis is still shown.'});
       if (activeContext.current === key) setAnalysisNotice(run.state === "completed" ? "Analysis finished. The saved map is shown. Any incomplete structure remains labelled." : "The inquiry stopped. Available saved analysis remains shown.");
     } catch (cause) {
+      if (activeContext.current === key) setAnalysisResult({issueId, saved: false, message: "Update could not be confirmed. The saved map is still shown. Reload to check before retrying."});
       if (activeContext.current === key) setAnalysisNotice(cause instanceof Error ? cause.message : "Analysis could not finish. Saved work remains available.");
-    } finally { if (activeContext.current === key) setAnalysisBusy(false); }
+    } finally { if (activeContext.current === key) { setAnalysisBusy(false); setAnalyzingIssueId(null); } }
   }
   const selectedNode =
     snapshot?.nodes.find((node) => node.node_id === selectedNodeId) ?? null;
@@ -489,10 +508,13 @@ export default function MatterDecisionMapPage() {
         />
         {analysisNotice ? <p role="status" className="state-label state-agent">{analysisNotice}</p> : null}
         <DecisionMap
+          onRefresh={load}
           snapshot={snapshot}
           layout={layout}
           focusedIssueId={focusedIssueId}
           selectedNodeId={selectedNodeId}
+          analyzingIssueId={analyzingIssueId}
+          analysisResult={analysisResult}
           busy={analysisBusy}
           onFocusIssue={(issueId) => { setFocusedIssueId(issueId); setSelectedNodeId(`issue:${issueId}`); }}
           onAnalyzePaths={(issueId) => void analyzePaths(issueId)}
@@ -500,7 +522,7 @@ export default function MatterDecisionMapPage() {
           scope={scope}
           onSelectNode={(nodeId) => {
             const node = snapshot.nodes.find((item) => item.node_id === nodeId);
-            if (node?.record_type === "issue") setFocusedIssueId(node.record_id);
+            if (node?.record_type === "issue") { setFocusedIssueId(node.record_id); setScope("neighborhood"); }
             setSelectedNodeId(nodeId);
           }}
           onScopeChange={setScope}

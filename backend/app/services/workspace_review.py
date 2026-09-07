@@ -389,14 +389,14 @@ class WorkspaceReviewService:
         for item in work_items:
             add("work", item["work_item_id"], item.get("title", item["work_item_id"]), item.get("status", "open"),
                 issue_ids=[item["issue_id"]] if item.get("issue_id") else [],
-                detail=("Owner: " + str(item["owner"])) if item.get("owner") else "")
+                detail=("Owner: " + str(item["owner"])) if item.get("owner") else "", data=item)
         for item in decisions:
             map_basis = item.get("map_basis") if isinstance(item.get("map_basis"), dict) else None
             decision_issues = string_ids(item.get("issue_ids")) or ([item["issue_id"]] if isinstance(item.get("issue_id"), str) and item.get("issue_id") else [])
             if map_basis and map_basis.get("issue_id"):
                 decision_issues = list(dict.fromkeys([*decision_issues, str(map_basis["issue_id"])]))
             add("decision", item["decision_id"], item.get("title", item["decision_id"]), "recorded",
-                data={"map_basis": map_basis} if map_basis else {}, issue_ids=decision_issues)
+                data=item, issue_ids=decision_issues)
 
         analysis_claims: dict[tuple[str, str], dict[str, dict[str, Any]]] = {}
 
@@ -566,6 +566,7 @@ class WorkspaceReviewService:
         for item in work_items:
             if item.get("issue_id"):
                 relate(f"issue:{item['issue_id']}", f"work:{item['work_item_id']}", "mitigated_by", "Mitigated by")
+        revised_ids = {item.get("revises_decision_id") for item in decisions if item.get("revises_decision_id")}
         for item in decisions:
             for linked_issue in string_ids(item.get("issue_ids")) or ([item["issue_id"]] if isinstance(item.get("issue_id"), str) and item.get("issue_id") else []):
                 relate(f"issue:{linked_issue}", f"decision:{item['decision_id']}", "decided_by", "Decided by")
@@ -577,7 +578,8 @@ class WorkspaceReviewService:
                                  and current.get("analysis_revision") == basis.get("analysis_revision")
                                  and current.get("output_revision") == basis.get("output_revision")
                                  and status.get("state") in {"saved", "partial"}
-                                 and not basis.get("use_historical_basis"))
+                                 and not basis.get("use_historical_basis")
+                                 and item["decision_id"] not in revised_ids)
                 relate(f"option:{basis['selected_option_id']}", f"decision:{item['decision_id']}",
                        "decided_by", "Recorded as", "active" if exact_current else "historical")
         direct_edges = workspace_doc["metadata"].get("decision_map_edges", [])
@@ -606,6 +608,23 @@ class WorkspaceReviewService:
                 if current.startswith("business_question:"):
                     continue
                 queue.extend(sorted(adjacency.get(current, set()) - visible))
+        for answer in workspace_doc["metadata"].get("path_condition_answers", []):
+            node = nodes.get(f"condition:{answer.get('condition_id')}")
+            if node and node.get("analysis_revision") == answer.get("analysis_revision"):
+                node.setdefault("data", {})["reported_answer"] = answer
+        for assessment in workspace_doc["metadata"].get("path_condition_assessments", []):
+            node = nodes.get(f"condition:{assessment.get('condition_id')}")
+            if node and node.get("analysis_revision") == assessment.get("analysis_revision") and node.get("group") != "historical":
+                node.setdefault("data", {})["lawyer_assessment"] = assessment
+                node["state"] = assessment["assessment"]
+                node["detail"] = assessment["reason"]
+        for edge in edges.values():
+            condition = nodes.get(edge["from_node_id"], {})
+            target = nodes.get(edge["to_node_id"], {})
+            if edge["relationship"] == "if" and edge["state"] != "historical" and condition.get("data", {}).get("lawyer_assessment"):
+                requirement = next((req for req in target.get("data", {}).get("requirements", []) if req["condition_id"] == condition.get("record_id")), None)
+                if requirement:
+                    edge["state"] = "unknown" if condition["state"] in {"unknown", "conflicting"} else "active" if condition["state"] == requirement["state"] else "inactive"
         projected_nodes = [node for key, node in nodes.items() if key in visible]
         projected_edges = [edge for edge in edges.values() if edge["from_node_id"] in visible and edge["to_node_id"] in visible]
         revisions = self.workspace.source_revisions(matter_id)

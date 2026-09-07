@@ -182,6 +182,26 @@ an object with `condition_id` and `state`; its state is `met` or `not_met`.
 `requirements` is always an array, not an object such as `{\"all\": [...]}`. An
 option with requirements must set `combination` to `all` or `any`. Allowed
 recommendation values are `candidate` and `recommended`.
+Each option also has `risk_assessment`: `not_assessed`, `risk_to_review`, or
+`not_recommended`. Use `risk_to_review` for a material risk or unresolved
+condition needing review. Use `not_recommended` only when the analysis identifies
+a reason to avoid the path, and explain that reason in `trade_off`. Do not mark
+a path recommended when you assess it as not recommended. Keep risk separate
+from the lawyer recording a decision.
+
+Issue analyses may include `connections`: an array of {target_issue_id, relationship, reason}. Use exact saved issue IDs; relationship is depends_on, compounds, may_resolve, or shared_condition. Explain conditional effects in reason. An empty array means connections were assessed and none found; omit when not assessed.
+
+Options may include `effects`, an array of explicit effects on other options in
+this same analysis. Each effect has `target_option_id`, `trigger` (agreement,
+implementation_complete, or condition), and a concrete `reason`. For condition
+triggers also provide `condition_id` and `condition_state` (met or not_met).
+An agreement trigger means choosing this option excludes the target as a choice.
+An implementation_complete trigger means the target is replaced only after this
+option's listed implementation work is complete; it remains possible before then.
+A condition trigger means that confirmed condition state rules out the target.
+Never infer exclusion merely from graph adjacency or from a recommendation.
+Omit effects when there is no supported causal link. Do not claim a current
+operating state unless the supplied facts establish it.
 
 Express mixed nested logic as separate options. Do not supply analysis or option
 revisions; the application creates them. Whole-matter analysis may use

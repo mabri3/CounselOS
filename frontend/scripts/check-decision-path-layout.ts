@@ -47,8 +47,8 @@ assert.ok(positionedNodes.find((node) => node.node_id === "option:OPT-A")!.y < p
 const graph = Graph({ layout: pathLayout, selectedNodeId: null, onSelectNode: () => undefined });
 assert.ok(expand(graph).some((node) => node.type === "button" && String(node.props["aria-label"]).includes(option.title)), "long graph card has a full accessible title");
 assert.ok(expand(graph).some((node) => node.type === "path"), "focused graph renders curved SVG connectors");
-const inactiveConnector = expand(graph).find((node) => node.type === "path" && node.props.stroke === "var(--line)")!;
-assert.equal(inactiveConnector.props.markerEnd, "url(#decision-path-inactive-arrow)", "inactive routes use a muted structural connector");
+const inactiveConnector = expand(graph).find((node) => node.type === "path" && node.props.markerEnd === "url(#decision-path-unassessed-arrow)")!;
+assert.equal(inactiveConnector.props.markerEnd, "url(#decision-path-unassessed-arrow)", "inactive routes use a muted structural connector");
 assert.equal(inactiveConnector.props.strokeDasharray, "5 5", "inactive routes are visibly non-active");
 
 let selected = ""; let discussed: Record<string, unknown> | null = null;
@@ -75,3 +75,63 @@ assert.ok(!expand(historical).some((node) => node.type === "button" && text(node
 const stale = Inspector({ focusedIssueId: "ISS-A", node: nodes[2], status: { ...status, state: "needs_review" }, onSelectNode: () => undefined, onAnalyzePaths: () => undefined, onRecordPath: () => undefined, onOpenDocument: () => undefined, onDiscuss: () => undefined, onTryDifferentAssumption: () => undefined, onBackToIssue: () => undefined });
 assert.ok(expand(stale).some((node) => node.type === "button" && text(node) === "Update paths"), "a stale analysis provides the update action without changing a record");
 console.log("Decision path graph, inspector, outline, source, and callback checks passed.");
+
+const choicesSource = await readFile(new URL("../components/workspace/IssuePaths.tsx", import.meta.url), "utf8");
+const Choices = compile(choicesSource, "IssuePaths.tsx", modules).default as (props: Record<string, unknown>) => Element;
+let chosen = "";
+const choices = Choices({ status, nodes, selectedNodeId: "option:OPT-A", busy: false, onSelectNode: (id: string) => { chosen = id; }, onAnalyze: () => undefined });
+assert.match(text(choices), /Next consequence[\s\S]*Risk or trade-off[\s\S]*Known state: unknown[\s\S]*This path requires: met/, "path comparison separates consequences, trade-offs, observed facts and required states");
+const conditionButton = expand(choices).find(node => node.type === "button" && text(node) === "Does screening finish before release?")!;
+(conditionButton.props.onClick as () => void)();
+assert.equal(chosen, "condition:CON-A", "condition opens its canonical support record");
+const emptyChoices = Choices({ status: null, nodes: [], selectedNodeId: null, busy: true, onSelectNode: () => undefined, onAnalyze: () => undefined });
+assert.match(text(emptyChoices), /Finding possible paths/, "unmapped issue shows analysis progress");
+assert.ok(expand(emptyChoices).some(node => node.type === "button" && node.props.disabled === true), "analysis cannot be resubmitted while running");
+
+const outcomeSource = await readFile(new URL("../components/workspace/PathOutcome.tsx", import.meta.url), "utf8");
+const outcomeModule = compile(outcomeSource, "PathOutcome.tsx", { ...modules, "./DecisionMapInspector": { __esModule: true, ...compile(inspectorSource, "DecisionMapInspector.tsx", modules) } });
+const Outcome = outcomeModule.default as (props: Record<string, unknown>) => Element;
+const progress = outcomeModule.outcomeProgress as (option: unknown, nodes: unknown[], agreed: boolean) => {label: string};
+assert.equal(progress(option, nodes, false).label, "Exploring — decision not recorded");
+assert.equal(progress(option, nodes, true).label, "Path agreed — conditions unresolved");
+const metNodes = nodes.map(node => node.record_type === "condition" ? {...node, data: {lawyer_assessment: {assessment: "met"}}} : node);
+assert.equal(progress(option, metNodes, true).label, "Path agreed — implementation pending");
+assert.equal(progress(option, [...metNodes, {record_type: "work", node_id: "work:W", label: "Confirm timing", state: "done"}], true).label, "Complete for this issue");
+assert.equal(progress(option, nodes.map(node => node.record_type === "condition" ? {...node, state: "not_met"} : node), true).label, "Agreed path needs review");
+assert.equal(progress({...option, combination: "any", requirements: [...option.requirements, {condition_id: "CON-missing",state: "met"}]}, metNodes, true).label, "Path agreed — implementation pending");
+const mapSource = await readFile(new URL("../components/workspace/DecisionMap.tsx", import.meta.url), "utf8");
+const MapView = compile(mapSource, "DecisionMap.tsx", { ...modules, "./PathOutcome": { __esModule: true, default: Outcome }, "./IssuePaths": { __esModule: true, default: Choices }, "./DecisionMapInspector": { __esModule: true, default: Inspector }, "./DecisionMapOutline": { __esModule: true, default: Outline }, "./DecisionPathGraph": { __esModule: true, default: Graph } }).default as (props: Record<string, unknown>) => Element;
+let analyzedIssue = "";
+const mapView = MapView({ snapshot: { matter_id: "MAT-A", nodes, edges, issue_analyses: { "ISS-A": status } }, layout: pathLayout, focusedIssueId: "ISS-A", selectedNodeId: "option:OPT-A", scope: "neighborhood", onAnalyzePaths: (id: string) => { analyzedIssue = id; }, onSelectNode: () => undefined });
+const mapElements = expand(mapView);
+assert.ok(mapElements.findIndex(node => node.props["aria-label"] === "Issue choices") < mapElements.findIndex(node => node.props["aria-label"] === "Outcome for this issue"), "compact choices appear beside path details before the full graph");
+assert.ok(mapElements.some(node => node.type === "summary" && text(node) === "Full map, facts, and history"), "the full record graph is available on demand");
+const updateAnalysis = mapElements.find(node => node.type === "button" && text(node) === "Update analysis")!;
+(updateAnalysis.props.onClick as () => void)();
+assert.equal(analyzedIssue, "ISS-A", "saved analysis can be updated directly from the graph");
+assert.ok(mapElements.some(node => node.props.role === "status" && text(node).includes("Path details expanded below")), "graph selection signals expanded detail below");
+
+const arrowRole = layout.pathArrowRole as (edge: unknown, nodes: unknown[], edges: unknown[]) => string;
+assert.equal(arrowRole({ ...edges[1], state: "unknown" }, nodes, edges), "recommended", "recommended route is blue even with unresolved facts; risk is separate");
+assert.equal((layout.pathRisk as (node: unknown, nodes: unknown[]) => string)(nodes[3], nodes), "risk");
+const decisionLink = { from_node_id: "option:OPT-A", to_node_id: "decision:DEC-A", relationship: "decided_by", state: "active" };
+const recordedNodes = [...nodes, { node_id: "decision:DEC-A", record_type: "decision" }];
+assert.equal(arrowRole({ ...edges[1], state: "active" }, recordedNodes, [...edges, decisionLink]), "chosen", "only an active recorded decision makes a route green");
+assert.equal(arrowRole({ ...edges[1], state: "active" }, recordedNodes, [...edges, { ...decisionLink, state: "historical" }]), "recommended", "historical choice does not mark the current route chosen");
+const avoidNodes = nodes.map(node => node.node_id === "option:OPT-A" ? { ...node, data: { ...node.data, risk_assessment: "not_recommended" } } : node);
+assert.equal(arrowRole({ ...edges[1], state: "active" }, avoidNodes, edges), "avoid", "red requires an explicit negative assessment");
+assert.ok(mapElements.some(node => node.props["aria-label"] === "Arrow legend"));
+
+const effectsFor = layout.connectedPathEffects as (target: unknown, nodes: unknown[], edges: unknown[]) => Array<{effective: boolean; label: string}>;
+const affected = {...nodes[3], node_id: "option:OTHER", record_id: "OTHER", data: {...option, option_id:"OTHER"}};
+const effectSource = {...nodes[3], data: {...option, effects: [{target_option_id:"OTHER", trigger:"implementation_complete", reason:"The new process replaces this route."}]}};
+const effectNodes = [effectSource, affected, ...nodes.filter(n => n.record_type !== "option"), ...recordedNodes.filter(n => n.record_type === "decision")];
+assert.equal(effectsFor(affected, effectNodes, [decisionLink])[0].effective, false, "agreement does not imply implementation");
+assert.equal(effectsFor(affected, effectNodes, [decisionLink])[0].label, "Available until implementation is complete");
+const doneWork = {node_id:"work:CHECK",record_type:"work",record_id:"CHECK",label:"Confirm timing",state:"done",issue_ids:["ISS-A"]};
+assert.equal(effectsFor(affected, [...effectNodes, doneWork], [decisionLink])[0].effective, true, "actual work completion activates the explicit effect");
+assert.equal(effectsFor(affected, [...effectNodes, doneWork], [])[0].effective, false, "completed work alone cannot stand in for agreement");
+const conditionalSource = {...effectSource, data:{...effectSource.data, effects:[{target_option_id:"OTHER", trigger:"condition", condition_id:"CON-A",condition_state:"met",reason:"This fact rules out the branch."}]}};
+assert.equal(effectsFor(affected, [conditionalSource, ...effectNodes.slice(1)], [decisionLink])[0].effective, false, "unknown facts do not foreclose connected branches");
+assert.equal(effectsFor(affected, [conditionalSource, ...effectNodes.slice(1).map(n => n.record_type === "condition" ? {...n,state:"met"} : n)], [])[0].effective, true);
+assert.equal(effectsFor(affected, [nodes[3],affected], []).length, 0, "adjacency or recommendation never invents exclusion");

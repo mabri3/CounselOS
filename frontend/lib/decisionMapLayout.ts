@@ -15,7 +15,7 @@ const COMPONENT_GAP = 54;
 const PADDING = 32;
 export const DECISION_PATH_FIT_FLOOR = 0.72;
 
-export type DecisionPathLane = "law" | "change" | "path" | "context";
+export type DecisionPathLane = string;
 export interface DecisionPathLayout extends DecisionMapLayout {
   lanes: Array<{ id: DecisionPathLane; label: string; x: number; width: number }>;
 }
@@ -199,13 +199,6 @@ function issueNode(snapshot: DecisionMapSnapshot, issueId: string) {
   return snapshot.nodes.find((node) => node.record_type === "issue" && node.record_id === issueId);
 }
 
-function nodeLane(node: DecisionMapNode): DecisionPathLane {
-  if (node.record_type === "legal_test") return "law";
-  if (["condition", "fact", "question"].includes(node.record_type)) return "change";
-  if (["option", "work", "decision", "scenario"].includes(node.record_type)) return "path";
-  return "context";
-}
-
 function measuredHeight(node: DecisionMapNode, width: number): number {
   const charactersPerLine = Math.max(22, Math.floor((width - 34) / 7.3));
   const titleLines = Math.max(1, Math.ceil(node.label.length / charactersPerLine));
@@ -254,56 +247,48 @@ export function focusedDecisionPath(snapshot: DecisionMapSnapshot, focusedIssueI
 
   const visibleNodes = snapshot.nodes.filter((node) => included.has(node.node_id));
   const visibleEdges = snapshot.edges.filter((edge) => included.has(edge.from_node_id) && included.has(edge.to_node_id));
-  const lanes: Array<{ id: DecisionPathLane; label: string; x: number; width: number }> = [
-    { id: "law", label: "Law or test", x: PADDING, width: 250 },
-    { id: "change", label: "What changes the answer", x: 430, width: 270 },
-    { id: "path", label: "Possible paths", x: 810, width: 270 },
-  ];
-  const nextY = new Map<DecisionPathLane, number>([["law", 144], ["change", 144], ["path", 144], ["context", 12]]);
+  // Reuse the directed layout's cycle-safe ranks. Each downstream record is
+  // placed after its inputs, rather than in a fixed column for its record type.
+  const ranked = layoutDecisionMap({ nodes: visibleNodes, edges: visibleEdges });
+  // Keep terminal outcomes together on the right, including alternatives that
+  // branch directly from the issue without an intervening condition.
+  const lastColumn = Math.max(...ranked.nodes.map((node) => node.x));
+  for (const node of ranked.nodes) {
+    if (["option", "work", "decision", "scenario"].includes(node.record_type) && !visibleEdges.some((edge) => edge.from_node_id === node.node_id)) node.x = lastColumn;
+  }
+  const columns = [...new Set(ranked.nodes.map((node) => node.x))].sort((a, b) => a - b);
+  const lanes = columns.map((_, index) => ({ id: `column-${index}`, label: "", x: PADDING + index * 440, width: 300 }));
   const positions = new Map<string, { x: number; y: number; width: number; height: number }>();
-  const groups: Record<DecisionPathLane, DecisionMapNode[]> = { law: [], change: [], path: [], context: [] };
-  for (const node of visibleNodes) groups[nodeLane(node)].push(node);
   const semanticOrder = (left: DecisionMapNode, right: DecisionMapNode) => {
     const analysisRank = (node: DecisionMapNode) => ({ current: 0, legacy: 1, historical: 2, hypothetical: 3, missing: 4 } as Record<string, number>)[node.group ?? "current"] ?? 1;
     const priority = (node: DecisionMapNode) => node.record_type === "business_question" ? 0 : node.record_type === "issue" ? 1 : node.record_type === "legal_test" ? 2 : node.record_type === "condition" ? 3 : node.record_type === "fact" ? 4 : node.record_type === "question" ? 5 : node.record_type === "option" ? 6 : node.record_type === "work" ? 7 : node.record_type === "decision" ? 8 : 9;
     return analysisRank(left) - analysisRank(right) || priority(left) - priority(right) || left.label.localeCompare(right.label) || left.node_id.localeCompare(right.node_id);
   };
-  const contextNodes = groups.context.sort(semanticOrder);
-  contextNodes.forEach((node, index) => {
-    const width = 480;
-    positions.set(node.node_id, { x: PADDING + index * 498, y: 12, width, height: measuredHeight(node, width) });
-  });
-  const contextBottom = Math.max(124, ...contextNodes.map((node) => positions.get(node.node_id)!.y + positions.get(node.node_id)!.height + 20));
-  for (const lane of ["law", "change", "path"] as DecisionPathLane[]) {
-    const laneSpec = lanes.find((entry) => entry.id === lane);
-    const width = laneSpec?.width ?? 978;
-    nextY.set(lane, Math.max(nextY.get(lane)!, contextBottom));
-    for (const node of groups[lane].sort(semanticOrder)) {
-      const height = measuredHeight(node, width);
-      const y = nextY.get(lane)!;
-      positions.set(node.node_id, { x: laneSpec?.x ?? PADDING, y, width, height });
-      nextY.set(lane, y + height + 20);
+  columns.forEach((column, index) => {
+    let y = PADDING;
+    const lane = lanes[index];
+    for (const node of ranked.nodes.filter((node) => node.x === column).sort(semanticOrder)) {
+      const height = measuredHeight(node, lane.width);
+      positions.set(node.node_id, { x: lane.x, y, width: lane.width, height });
+      y += height + 48;
     }
-  }
+  });
   const layoutNodes = visibleNodes.map((node) => ({ ...node, ...positions.get(node.node_id)! }));
-  const maxY = Math.max(...layoutNodes.map((node) => node.y + node.height), 260) + PADDING;
-  return { nodes: layoutNodes, edges: visibleEdges, lanes, width: 1112, height: maxY };
+  return { nodes: layoutNodes, edges: visibleEdges, lanes, width: (lanes.at(-1)?.x ?? PADDING) + 300 + PADDING, height: Math.max(...layoutNodes.map((node) => node.y + node.height), 260) + PADDING };
+
 }
 
-/** Apply DOM card measurements without changing identities or semantic lane order. */
+/** Apply DOM card measurements without changing identities or connection order. */
 export function reflowDecisionPathNodes(layout: DecisionPathLayout, measurements: Record<string, Pick<DecisionMapLayoutNode, "width" | "height">>): DecisionMapLayoutNode[] {
   if (!layout.lanes.length) return layout.nodes.map((node) => ({ ...node, ...(measurements[node.node_id] ?? {}) }));
   const result = new Map(layout.nodes.map((node) => [node.node_id, { ...node, ...(measurements[node.node_id] ?? {}) }]));
-  const context = layout.nodes.filter((node) => node.y < 140);
-  const laneNodes = layout.nodes.filter((node) => node.y >= 140);
-  const contextBottom = Math.max(144, ...context.map((node) => { const current = result.get(node.node_id)!; return current.y + current.height + 20; }));
   for (const lane of layout.lanes) {
-    const ordered = laneNodes.filter((node) => node.x === lane.x).sort((left, right) => left.y - right.y || left.label.localeCompare(right.label));
-    let y = Math.max(ordered[0]?.y ?? 0, contextBottom);
+    const ordered = layout.nodes.filter((node) => node.x === lane.x).sort((left, right) => left.y - right.y || left.label.localeCompare(right.label));
+    let y = PADDING;
     for (const node of ordered) {
       const current = result.get(node.node_id)!;
       current.y = y;
-      y += current.height + 20;
+      y += current.height + 48;
     }
   }
   return layout.nodes.map((node) => result.get(node.node_id)!);
@@ -339,4 +324,76 @@ export function activeDecisionMapPath(nodes: readonly DecisionMapNode[], edges: 
     }
   }
   return [...path];
+}
+
+
+/** Path assessment is independent of transient selection and a recorded choice. */
+export const pathArrowRoles = {
+  chosen: { label: "Recorded choice", color: "var(--path-chosen)" },
+  recommended: { label: "Recommended", color: "var(--path-recommended)" },
+  risk: { label: "Risk to review", color: "var(--path-risk)" },
+  avoid: { label: "Not recommended", color: "var(--path-avoid)" },
+  unassessed: { label: "Not assessed", color: "var(--path-unassessed)" },
+  not_chosen: { label: "Not chosen", color: "var(--path-unassessed)" },
+  unavailable: { label: "Unavailable", color: "var(--path-unassessed)" },
+  context: { label: "Context link", color: "var(--path-unassessed)" },
+} as const;
+
+export function pathRisk(node: DecisionMapNode, nodes: DecisionMapNode[]) {
+  if (node.data?.risk_assessment === "not_recommended") return "avoid";
+  const requirements = Array.isArray(node.data?.requirements) ? node.data.requirements as Array<{condition_id: string; state: string}> : [];
+  if (node.data?.risk_assessment === "risk_to_review" || String(node.data?.trade_off ?? "").trim() || requirements.some(requirement => {
+    const condition = nodes.find(item => item.record_type === "condition" && item.record_id === requirement.condition_id && item.analysis_revision === node.analysis_revision);
+    return !condition || condition.state !== requirement.state;
+  })) return "risk";
+  return null;
+}
+
+export function pathArrowRole(edge: DecisionMapEdge, nodes: DecisionMapNode[], edges: DecisionMapEdge[]): keyof typeof pathArrowRoles {
+  const from = nodes.find(node => node.node_id === edge.from_node_id);
+  const to = nodes.find(node => node.node_id === edge.to_node_id);
+  const option = to?.record_type === "option" ? to : from?.record_type === "option" ? from : null;
+  if (!option) return "context";
+  if (["historical", "inactive", "hypothetical", "missing"].includes(edge.state ?? "") || option.hypothetical || ["historical", "hypothetical", "missing"].includes(option.group ?? "")) return "unassessed";
+  const recorded = edges.some(link => link.from_node_id === option.node_id && link.relationship === "decided_by" && link.state === "active" && nodes.some(node => node.node_id === link.to_node_id && node.record_type === "decision" && !node.hypothetical));
+  if (recorded) return "chosen";
+  const effect = connectedPathEffects(option, nodes, edges).find(item => item.effective);
+  if (effect) return effect.kind;
+  if (pathRisk(option, nodes) === "avoid") return "avoid";
+  if (option.data?.recommendation === "recommended" || option.state === "recommended") return "recommended";
+  if (pathRisk(option, nodes)) return "risk";
+  return "unassessed";
+}
+
+export function connectedPathEffects(target: DecisionMapNode, nodes: DecisionMapNode[], edges: DecisionMapEdge[]) {
+  const results: Array<{sourceId: string; targetId: string; triggerIds: string[]; label: string; reason: string; effective: boolean; kind: "not_chosen" | "unavailable"}> = [];
+  if (target.record_type !== "option" || ["historical", "hypothetical", "missing"].includes(target.group ?? "") || target.hypothetical) return results;
+  for (const source of nodes) {
+    if (source.record_type !== "option" || source.hypothetical || ["historical", "hypothetical", "missing"].includes(source.group ?? "") || source.analysis_id !== target.analysis_id || source.analysis_revision !== target.analysis_revision) continue;
+    const option = source.data as unknown as import("./decisionMapTypes").IssueOption;
+    const agreed = edges.some(edge => edge.from_node_id === source.node_id && edge.relationship === "decided_by" && edge.state === "active" && nodes.some(node => node.node_id === edge.to_node_id && node.record_type === "decision" && !node.hypothetical));
+    for (const effect of option?.effects ?? []) {
+      if (effect.target_option_id !== target.record_id) continue;
+      let effective = false;
+      let label = "Available — no agreement recorded";
+      let triggerIds = [source.node_id];
+      if (effect.trigger === "agreement") {
+        effective = agreed;
+        label = agreed ? "Not chosen — another path agreed" : "Available until another path is agreed";
+      } else if (effect.trigger === "implementation_complete") {
+        const work = [...(option.work_item_ids ?? []), ...(option.remaining_work ?? [])].map(id => nodes.find(node => node.record_type === "work" && node.issue_ids?.some(issue => source.issue_ids?.includes(issue)) && (node.record_id === id || node.data?.source_action_key === `path-work:${option.option_revision}:${option.remaining_work.indexOf(id)}` || node.label === id)));
+        effective = agreed && work.length > 0 && work.every(node => node && ["done", "complete", "completed"].includes(node.state));
+        triggerIds = [source.node_id, ...work.flatMap(node => node ? [node.node_id] : [])];
+        label = effective ? "Replaced — implementation complete" : agreed ? "Available until implementation is complete" : "Available — implementation not agreed";
+      } else {
+        const condition = nodes.find(node => node.record_type === "condition" && node.record_id === effect.condition_id && node.analysis_revision === source.analysis_revision && node.group !== "historical");
+        const state = (condition?.data?.lawyer_assessment as {assessment?: string} | undefined)?.assessment ?? condition?.state;
+        effective = !!condition && state === (effect.condition_state ?? "met");
+        label = effective ? "Unavailable under current facts" : !state || ["unknown", "conflicting"].includes(state) ? "Depends on an unresolved condition" : "Available under current facts";
+        triggerIds = condition ? [condition.node_id] : [source.node_id];
+      }
+      results.push({sourceId: source.node_id, targetId: target.node_id, triggerIds, label, reason: effect.reason, effective, kind: effect.trigger === "agreement" ? "not_chosen" : "unavailable"});
+    }
+  }
+  return results;
 }

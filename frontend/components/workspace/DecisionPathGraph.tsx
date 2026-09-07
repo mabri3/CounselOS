@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { CSSProperties } from "react";
+import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
 import type { DecisionMapNode } from "@/lib/decisionMapTypes";
 import type { DecisionPathLayout } from "@/lib/decisionMapLayout";
-import { decisionPathCurve, edgeStateLabel, nodeStateLabel, reflowDecisionPathNodes, relationshipLabel } from "@/lib/decisionMapLayout";
+import { decisionPathCurve, connectedPathEffects, pathArrowRole, pathArrowRoles, pathRisk, edgeStateLabel, nodeStateLabel, reflowDecisionPathNodes, relationshipLabel } from "@/lib/decisionMapLayout";
 import styles from "./MatterMap.module.css";
 
 function typeLabel(type: DecisionMapNode["record_type"]) {
@@ -15,14 +15,6 @@ function stateClass(node: DecisionMapNode) {
   if (node.hypothetical || state === "proposed" || state === "candidate" || state === "recommended") return styles.pathAgent;
   if (["recorded", "resolved", "complete", "completed", "done"].includes(state)) return styles.pathRecorded;
   return styles.pathAttention;
-}
-
-function edgeStroke(state: string | undefined) {
-  if (state === "missing") return "var(--failure)";
-  if (state === "unknown") return "var(--attention)";
-  if (state === "hypothetical") return "var(--agent)";
-  if (state === "inactive") return "var(--line)";
-  return "var(--ink-4)";
 }
 
 function wrappedLabel(label: string) {
@@ -56,18 +48,41 @@ function edgeAnalysisRank(edge: { from_node_id: string; to_node_id: string; stat
   return Math.max(rank(nodes.get(edge.from_node_id)), rank(nodes.get(edge.to_node_id)), edge.state === "historical" ? 2 : 0);
 }
 
-export default function DecisionPathGraph({ layout, selectedNodeId, onSelectNode }: { layout: DecisionPathLayout; selectedNodeId: string | null; onSelectNode: (nodeId: string) => void }) {
+export default function DecisionPathGraph({ layout, selectedNodeId, onSelectNode, scale = 1, snapshot }: { snapshot?: { nodes: DecisionMapNode[]; edges: import("@/lib/decisionMapTypes").DecisionMapEdge[] }; scale?: number; layout: DecisionPathLayout; selectedNodeId: string | null; onSelectNode: (nodeId: string) => void }) {
   const content = useRef<HTMLDivElement | null>(null);
-  const [measured, setMeasured] = useState<Record<string, { x: number; y: number; width: number; height: number }>>({});
+  const [measured, setMeasured] = useState<Record<string, { width: number; height: number }>>({});
+  const [positions, setPositions] = useState<Record<string, { x: number; y: number }>>({});
+  const drag = useRef<{ id: string; pointerId: number; clientX: number; clientY: number; x: number; y: number; moved: boolean } | null>(null);
+  const suppressClick = useRef(false);
+  const moveNode = (id: string, x: number, y: number) => {
+    setPositions((current) => ({ ...current, [id]: { x: Math.max(0, x), y: Math.max(0, y) } }));
+  };
+  const moveDrag = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const active = drag.current;
+    if (!active || active.pointerId !== event.pointerId) return;
+    event.stopPropagation();
+    const dx = event.clientX - active.clientX;
+    const dy = event.clientY - active.clientY;
+    if (!active.moved && Math.hypot(dx, dy) < 4) return;
+    active.moved = true;
+    moveNode(active.id, active.x + dx / scale, active.y + dy / scale);
+  };
+  const stopDrag = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (!drag.current || drag.current.pointerId !== event.pointerId) return;
+    event.stopPropagation();
+    suppressClick.current = drag.current.moved;
+    drag.current = null;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+  };
   useEffect(() => {
     const container = content.current;
     if (!container || typeof ResizeObserver === "undefined") return;
     const observe = () => {
-      const next: Record<string, { x: number; y: number; width: number; height: number }> = {};
+      const next: Record<string, { width: number; height: number }> = {};
       for (const element of container.querySelectorAll<HTMLElement>("[data-map-node-id]")) {
         const id = element.dataset.mapNodeId;
         // Offset geometry stays in the graph coordinate space at every zoom level.
-        if (id) next[id] = { x: element.offsetLeft, y: element.offsetTop, width: element.offsetWidth, height: element.offsetHeight };
+        if (id) next[id] = { width: element.offsetWidth, height: element.offsetHeight };
       }
       setMeasured(next);
     };
@@ -77,7 +92,8 @@ export default function DecisionPathGraph({ layout, selectedNodeId, onSelectNode
     observe();
     return () => observer.disconnect();
   }, [layout]);
-  const measuredNodes = useMemo(() => reflowDecisionPathNodes(layout, measured), [layout, measured]);
+  const measuredNodes = useMemo(() => reflowDecisionPathNodes(layout, measured).map((node) => ({ ...node, ...positions[node.node_id] })), [layout, measured, positions]);
+  const contentWidth = Math.max(layout.width, ...measuredNodes.map((node) => node.x + node.width + 32));
   const contentHeight = Math.max(layout.height, ...measuredNodes.map((node) => node.y + node.height + 32));
   const nodesById = useMemo(() => new Map(layout.nodes.map((node) => [node.node_id, node])), [layout.nodes]);
   const drawnEdges = useMemo(() => [...layout.edges].sort((left, right) => edgeAnalysisRank(left, nodesById) - edgeAnalysisRank(right, nodesById) || left.edge_id.localeCompare(right.edge_id)), [layout.edges, nodesById]);
@@ -87,30 +103,47 @@ export default function DecisionPathGraph({ layout, selectedNodeId, onSelectNode
   const visibleLabelBoxes: LabelBox[] = [];
   return <section aria-label="Focused decision paths" className={styles.pathGraph}>
     <div className={styles.pathGraphScroll}>
-      <div className={styles.pathGraphContent} ref={content} style={{ minHeight: contentHeight, minWidth: layout.width }}>
-        <div className={styles.pathLanes} aria-hidden="true">{layout.lanes.map((lane) => <span key={lane.id} style={{ left: lane.x, width: lane.width }}>{lane.label}</span>)}</div>
-        <svg aria-hidden="true" className={styles.pathEdges} height={contentHeight} width={layout.width}>
-          <defs><marker id="decision-path-arrow" markerHeight="7" markerWidth="7" orient="auto" refX="6" refY="3.5"><path d="M0,0 L7,3.5 L0,7 z" fill="var(--ink-4)" /></marker><marker id="decision-path-inactive-arrow" markerHeight="7" markerWidth="7" orient="auto" refX="6" refY="3.5"><path d="M0,0 L7,3.5 L0,7 z" fill="var(--line)" /></marker></defs>
+      <div className={styles.pathGraphContent} ref={content} style={{ minHeight: contentHeight, minWidth: contentWidth }}>
+        <svg aria-hidden="true" className={styles.pathEdges} height={contentHeight} width={contentWidth}>
+          <defs>{Object.entries(pathArrowRoles).map(([key, role]) => <marker key={key} id={`decision-path-${key}-arrow`} markerHeight="7" markerWidth="7" orient="auto" refX="6" refY="3.5"><path d="M0,0 L7,3.5 L0,7 z" fill={role.color} /></marker>)}</defs>
           {drawnEdges.map((edge, index) => {
             const channel = drawnEdges.slice(0, index).filter((prior) => prior.from_node_id === edge.from_node_id).length;
             const curve = decisionPathCurve(edge, measuredNodes, channel);
             if (!curve) return null;
             const from = measuredNodes.find((node) => node.node_id === edge.from_node_id);
             const to = measuredNodes.find((node) => node.node_id === edge.to_node_id);
+            const arrowRole = pathArrowRole(edge, snapshot?.nodes ?? layout.nodes, snapshot?.edges ?? layout.edges);
+            const arrow = pathArrowRoles[arrowRole];
             const contextEdge = from?.record_type === "business_question" || from?.record_type === "issue" || to?.record_type === "business_question" || to?.record_type === "issue" || edge.relationship === "supports";
             const fullLabel = edge.label.trim() || relationshipLabel(edge.relationship);
             const label = compactConnectorLabel(edge);
             const inactive = edge.state === "inactive";
-            const dashed = ["unknown", "hypothetical", "historical", "inactive"].includes(edge.state ?? "");
+            const dashed = ["unassessed", "unavailable"].includes(arrowRole) || ["unknown", "hypothetical", "historical", "inactive"].includes(edge.state ?? "");
             const lines = wrappedLabel(label);
-            const labelWidth = Math.min(104, Math.max(62, Math.max(...lines.map((line) => line.length)) * 6.3 + 14));
+            const labelWidth = Math.min(140, Math.max(114, Math.max(...lines.map((line) => line.length)) * 6.3 + 14));
             const labelHeight = 22 + lines.length * 13;
-            const labelY = contextEdge ? null : [curve.labelY, curve.labelY + labelHeight + 10, curve.labelY - labelHeight - 10].find((candidate) => !visibleLabelBoxes.some((box) => labelBoxesOverlap(box, { x: curve.labelX - labelWidth / 2, y: candidate - labelHeight / 2, width: labelWidth, height: labelHeight })));
+            const labelY = contextEdge && arrowRole === "context" ? null : [curve.labelY, curve.labelY + labelHeight + 10, curve.labelY - labelHeight - 10].find((candidate) => !visibleLabelBoxes.some((box) => labelBoxesOverlap(box, { x: curve.labelX - labelWidth / 2, y: candidate - labelHeight / 2, width: labelWidth, height: labelHeight })));
             if (labelY !== undefined && labelY !== null) visibleLabelBoxes.push({ x: curve.labelX - labelWidth / 2, y: labelY - labelHeight / 2, width: labelWidth, height: labelHeight });
-            return <g key={edge.edge_id}><path d={curve.d} fill="none" markerEnd={`url(#decision-path-${inactive ? "inactive-" : ""}arrow)`} stroke={edgeStroke(edge.state)} strokeDasharray={dashed ? "5 5" : undefined} strokeWidth={inactive ? "1.25" : "1.5"} />{labelY === undefined || labelY === null ? null : <><rect className={`${styles.pathEdgeLabelBack} ${inactive ? styles.pathEdgeLabelInactive : ""}`} height={labelHeight} rx="4" width={labelWidth} x={curve.labelX - labelWidth / 2} y={labelY - labelHeight / 2} /><text className={`${styles.pathEdgeLabel} ${inactive ? styles.pathEdgeLabelInactive : ""}`} textAnchor="middle" x={curve.labelX} y={labelY - (lines.length - 1) * 6}>{lines.map((line, lineIndex) => <tspan dy={lineIndex ? 13 : 0} key={`${edge.edge_id}-${line}`} x={curve.labelX}>{line}</tspan>)}</text><text className={`${styles.pathEdgeState} ${inactive ? styles.pathEdgeLabelInactive : ""}`} textAnchor="middle" x={curve.labelX} y={labelY + labelHeight / 2 - 5}>{edgeStateLabel(edge)}</text></>}<title>{fullLabel} · {edgeStateLabel(edge)}</title></g>;
+            return <g key={edge.edge_id} opacity={inactive || edge.state === "historical" ? 0.45 : 1}><path d={curve.d} fill="none" markerEnd={`url(#decision-path-${arrowRole}-arrow)`} stroke={arrow.color} strokeDasharray={dashed ? "5 5" : undefined} strokeWidth={inactive ? "1.25" : "1.5"} />{labelY === undefined || labelY === null ? null : <><rect className={`${styles.pathEdgeLabelBack} ${inactive ? styles.pathEdgeLabelInactive : ""}`} height={labelHeight} rx="4" width={labelWidth} x={curve.labelX - labelWidth / 2} y={labelY - labelHeight / 2} /><text className={`${styles.pathEdgeLabel} ${inactive ? styles.pathEdgeLabelInactive : ""}`} textAnchor="middle" x={curve.labelX} y={labelY - (lines.length - 1) * 6}>{lines.map((line, lineIndex) => <tspan dy={lineIndex ? 13 : 0} key={`${edge.edge_id}-${line}`} x={curve.labelX}>{line}</tspan>)}</text><text className={`${styles.pathEdgeState} ${inactive ? styles.pathEdgeLabelInactive : ""}`} textAnchor="middle" x={curve.labelX} y={labelY + labelHeight / 2 - 5}>{arrowRole === "context" ? edgeStateLabel(edge) : arrow.label}</text></>}<title>{fullLabel} · {arrow.label} · {edgeStateLabel(edge)}</title></g>;
           })}
         </svg>
-        {measuredNodes.map((node) => <button aria-current={node.node_id === selectedNodeId ? "true" : undefined} aria-label={`${node.label}. ${typeLabel(node.record_type)}. ${nodeStateLabel(node)}.`} className={`${styles.pathNode} ${node.record_type === "business_question" || node.record_type === "issue" ? styles.pathContext : ""} ${stateClass(node)}`} data-map-node-id={node.node_id} key={node.node_id} onClick={() => onSelectNode(node.node_id)} style={{ left: node.x, top: node.y, width: node.width, minHeight: node.height } as CSSProperties} title={node.label} type="button"><span className={styles.pathNodeType}>{typeLabel(node.record_type)}</span><strong className={styles.pathNodeTitle}>{node.label}</strong><span className={styles.pathNodeState}>{nodeStateLabel(node)}</span></button>)}
+        {measuredNodes.map((node) => <button aria-current={node.node_id === selectedNodeId ? "true" : undefined} aria-label={`${node.label}. ${typeLabel(node.record_type)}. ${nodeStateLabel(node)}.`} className={`${styles.pathNode} ${node.record_type === "business_question" || node.record_type === "issue" ? styles.pathContext : ""} ${stateClass(node)} ${node.state === "inactive" || node.group === "historical" || node.state === "historical" ? styles.pathMuted : ""} ${connectedPathEffects(node, snapshot?.nodes ?? layout.nodes, snapshot?.edges ?? layout.edges).some(effect => effect.effective) && !(snapshot?.edges ?? layout.edges).some(edge => edge.from_node_id === node.node_id && edge.relationship === "decided_by" && edge.state === "active") ? styles.pathUnavailable : ""}`} data-map-node-id={node.node_id} key={node.node_id} onPointerDown={(event) => {
+          if (event.button !== 0 || !event.isPrimary) return;
+          event.stopPropagation();
+          suppressClick.current = false;
+          drag.current = { id: node.node_id, pointerId: event.pointerId, clientX: event.clientX, clientY: event.clientY, x: node.x, y: node.y, moved: false };
+          event.currentTarget.setPointerCapture(event.pointerId);
+        }} onPointerMove={moveDrag} onPointerUp={stopDrag} onPointerCancel={stopDrag} onLostPointerCapture={stopDrag} onKeyDown={(event) => {
+          const steps: Record<string, [number, number]> = { ArrowLeft: [-16, 0], ArrowRight: [16, 0], ArrowUp: [0, -16], ArrowDown: [0, 16] };
+          const step = steps[event.key];
+          if (!event.altKey || !step) return;
+          event.preventDefault();
+          event.stopPropagation();
+          moveNode(node.node_id, node.x + step[0], node.y + step[1]);
+        }} onClick={(event) => {
+          if (suppressClick.current && event.detail !== 0) { suppressClick.current = false; return; }
+          onSelectNode(node.node_id);
+        }} style={{ left: node.x, top: node.y, width: node.width, minHeight: node.height } as CSSProperties} title={`${node.label} — Drag to move. Alt + arrow keys also move this card.`} type="button"><span className={styles.pathNodeType}>{typeLabel(node.record_type)}</span><strong className={styles.pathNodeTitle}>{node.label}</strong>{connectedPathEffects(node, snapshot?.nodes ?? layout.nodes, snapshot?.edges ?? layout.edges).map((effect, index) => <span className={styles.pathRiskLabel} key={index}>{effect.label}</span>)}<span className={styles.pathNodeState}>{nodeStateLabel(node)}</span>{node.record_type === "option" ? <span className={styles.pathRiskLabel}>End of branch · Open outcome ↓</span> : null}{node.record_type === "option" && pathRisk(node, layout.nodes) ? <span className={styles.pathRiskLabel} style={{ color: pathArrowRoles[pathRisk(node, layout.nodes)!].color }}>{pathArrowRoles[pathRisk(node, layout.nodes)!].label}</span> : null}</button>)}
       </div>
     </div>
   </section>;

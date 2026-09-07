@@ -24,6 +24,13 @@
   --ink-5: #8a857c;
   --ink-6: #a8a298;
 
+  /* Decision path roles: shared across map arrows and legend. */
+  --path-chosen: #146b54;
+  --path-recommended: #2563eb;
+  --path-risk: #a97800;
+  --path-avoid: #b33a20;
+  --path-unassessed: #596477;
+
   /* Roles */
   --attention: #f97316;
   --attention-tint: #fff1dc;

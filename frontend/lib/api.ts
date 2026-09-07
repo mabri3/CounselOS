@@ -756,3 +756,7 @@ export async function getAudiences(): Promise<{ audiences: Audience[] }> {
 export async function cancelChatRun(matterId: string, runId: string): Promise<ChatRun> {
   return request<ChatRun>(`/matters/${matterId}/chat-runs/${runId}/cancel`, { method: "POST" });
 }
+
+export async function revisePathDecision(id: string, payload: Record<string, unknown>): Promise<Decision> {
+  return request(`/decisions/${encodeURIComponent(id)}/revisions`, {method: "POST", body: JSON.stringify(payload)});
+}

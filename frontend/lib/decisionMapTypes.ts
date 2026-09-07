@@ -88,6 +88,9 @@ export interface ScenarioLaunchIntent {
 }
 
 export interface DecisionMapProps {
+  analyzingIssueId?: string | null;
+  analysisResult?: { issueId: string; message: string; saved: boolean } | null;
+  onRefresh?: () => Promise<void>;
   focusedIssueId?: string | null;
   onFocusIssue?: (issueId: string) => void;
   onAnalyzePaths?: (issueId: string) => void;
@@ -129,16 +132,26 @@ export interface PathCondition {
   assessment: "met" | "not_met" | "unknown" | "conflicting";
   assessment_basis: string; fact_ids: string[]; question_ids: string[]; claim_ids: string[];
 }
+export interface PathEffect {
+  target_option_id: string;
+  trigger: "agreement" | "implementation_complete" | "condition";
+  condition_id?: string | null;
+  condition_state?: "met" | "not_met";
+  reason: string;
+}
 export interface IssueOption {
+  effects?: PathEffect[];
   option_id: string; option_revision: string; title: string;
   kind: "conditional_path" | "business_alternative" | "clarify";
   condition_summary: string;
   requirements: Array<{ condition_id: string; state: "met" | "not_met" }>;
   combination: "all" | "any" | null; consequence: string; trade_off?: string;
   remaining_work: string[]; recommendation: "candidate" | "recommended";
+  risk_assessment?: "not_assessed" | "risk_to_review" | "not_recommended";
   recommendation_reason?: string; claim_ids: string[]; work_item_ids: string[];
 }
 export interface IssueAnalysis {
+  connections?: Array<{ target_issue_id: string; relationship: "depends_on" | "compounds" | "may_resolve" | "shared_condition"; reason: string }> | null;
   schema_version: 1; issue_id: string; analysis_id: string; analysis_revision: string;
   source_path: string; output_revision: string; source_revisions: Record<string, string>;
   input_basis: Record<string, string>; run_id: string; display_title?: string;
@@ -159,6 +172,7 @@ export interface DecisionMapBasis {
   input_basis?: Record<string, string>;
 }
 export interface DecisionPathPrefill {
+  revises_decision_id?: string;
   map_basis: DecisionMapBasis; option: IssueOption; analysis: IssueAnalysis;
   state: IssueAnalysisStatus["state"]; hypothetical?: boolean;
 }

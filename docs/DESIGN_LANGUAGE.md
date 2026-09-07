@@ -279,3 +279,31 @@ tabs. Existing output-template records can also serve as slash-command skills.
 Use `output/uiphase2-implementation/visual-matrix.md` for all 29 reference
 comparisons, measured widths, real scroll captures, and permitted differences.
 Narrow data tables scroll inside a labelled keyboard-focusable region.
+
+## Decision map arrows
+
+The decision map uses the user-requested path palette from the shared
+`--path-*` tokens: green recorded choice, blue recommended, yellow risk to
+review, red not recommended, and dashed gray not assessed. Gray solid links
+show context. This is an explicit exception to the general agent/failure color
+roles above. A recorded choice requires a current saved decision relationship;
+viewing a card never records a choice. Risk labels stay visible separately on
+chosen and recommended cards. Red requires an explicit saved assessment, never
+a guess from path prose. Every arrow role appears with words in the legend and
+on path connectors.
+
+Connected paths are muted only by an explicit saved option effect. Agreement,
+implementation completion, and confirmed condition states are separate triggers.
+Pending or missing work never counts as completed. Unknown conditions never
+exclude a branch. The affected path stays clickable and shows the reason and
+links to the triggering path, condition, or implementation work. Graph adjacency
+alone carries no exclusion meaning. Conflicting effects on an agreed path require
+review; they do not silently erase the agreement.
+
+### Decision workspace
+
+The issue view uses a compact choice map beside the selected path. Keep reported
+answers visible beside the choice; save them as facts, separately from legal
+assessments. Information-gathering actions belong under Next task. Related issues,
+full record graphs, sources, and history are disclosures below the workspace.
+At narrow widths the choices precede the details in one column.

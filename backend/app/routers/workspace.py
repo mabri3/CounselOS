@@ -6,6 +6,7 @@ from app.models.workspace import (
     ScenarioCreateCommand, SupportingQuestionCommand,
 )
 from app.routers.dependencies import get_context
+from app.services.dossier import serialized
 from app.services.workspace import WorkspaceConflict
 from app.services.workspace_review import WorkspaceReviewService
 
@@ -567,3 +568,82 @@ async def prepare_communication(matter_id: str, payload: dict, context=Depends(g
         target={"matter_id": matter_id})
     request = invoke(trusted_chat_actor, request, context, person_id or None)
     return invoke(context.chat_runs.start, matter_id, request)
+
+
+from pydantic import BaseModel
+from typing import Literal
+from datetime import UTC, datetime
+
+
+class PathConditionAssessment(BaseModel):
+    analysis_revision: str
+    assessment: Literal["met", "not_met", "unknown", "conflicting"]
+    reason: str
+
+
+@router.post("/issues/{issue_id}/conditions/{condition_id}/assessment")
+@serialized
+def assess_path_condition(matter_id: str, issue_id: str, condition_id: str,
+                          payload: PathConditionAssessment, context=Depends(get_context),
+                          person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
+    actor = invoke(context.workspace_team.resolve_actor, person_id or None)
+    snapshot = invoke(review_service(context).decision_map, matter_id)
+    analysis = (snapshot.get("issue_analyses", {}).get(issue_id) or {}).get("analysis")
+    if not analysis or analysis["analysis_revision"] != payload.analysis_revision:
+        raise HTTPException(409, "The analysis changed. Reload before assessing this condition.")
+    if not any(item["condition_id"] == condition_id for item in analysis["conditions"]):
+        raise HTTPException(404, "Condition not found in this issue.")
+    if not payload.reason.strip():
+        raise HTTPException(422, "Give the reason for this assessment.")
+    doc = context.workspace._document(matter_id, "workspace.md")
+    history = doc["metadata"].setdefault("path_condition_assessments", [])
+    entry = {"issue_id": issue_id, "condition_id": condition_id, **payload.model_dump(),
+             "actor": actor.model_dump(), "recorded_at": datetime.now(UTC).isoformat()}
+    history.append(entry)
+    context.vault.write_markdown(doc["path"], doc["content"], doc["metadata"])
+    return entry
+
+class PathConditionAnswer(BaseModel):
+    analysis_revision: str
+    answer: str
+    source_action_key: str
+
+
+@router.post("/issues/{issue_id}/conditions/{condition_id}/answer")
+@serialized
+def answer_path_condition(matter_id: str, issue_id: str, condition_id: str,
+                          payload: PathConditionAnswer, context=Depends(get_context),
+                          person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
+    actor = invoke(context.workspace_team.resolve_actor, person_id or None)
+    snapshot = invoke(review_service(context).decision_map, matter_id)
+    analysis = (snapshot.get("issue_analyses", {}).get(issue_id) or {}).get("analysis")
+    if not analysis or analysis["analysis_revision"] != payload.analysis_revision:
+        raise HTTPException(409, "The analysis changed. Reload before answering this question.")
+    condition = next((item for item in analysis["conditions"] if item["condition_id"] == condition_id), None)
+    if not condition:
+        raise HTTPException(404, "Condition not found in this issue.")
+    if not payload.answer.strip() or not payload.source_action_key.strip():
+        raise HTTPException(422, "Enter your answer.")
+    doc = context.workspace._document(matter_id, "workspace.md")
+    prior = next((item for item in doc["metadata"].get("path_condition_answers", []) if item.get("source_action_key") == payload.source_action_key), None)
+    if prior:
+        if any(prior.get(key) != value for key, value in {"issue_id": issue_id, "condition_id": condition_id, **payload.model_dump()}.items()):
+            raise HTTPException(409, "This save key was used for a different answer.")
+        return prior
+    from app.services.workspace import digest
+    source_id = "MSG-" + digest([matter_id, payload.source_action_key])[:20]
+    result = invoke(context.matter_records.apply_update, matter_id,
+        facts=[{"text": f"{condition['question']} — {payload.answer.strip()}", "source_ids": [source_id]}],
+        sources=[{"source_id": source_id, "kind": "conversation", "label": "Reported answer from decision map", "location": ""}],
+        actor="user", summary="Reported answer to decision-path question",
+        source_action_key=f"condition-answer:{payload.source_action_key}")
+    doc = context.workspace._document(matter_id, "workspace.md")
+    history = doc["metadata"].setdefault("path_condition_answers", [])
+    prior = next((item for item in history if item.get("source_action_key") == payload.source_action_key), None)
+    if prior:
+        return prior
+    entry = {"issue_id": issue_id, "condition_id": condition_id, **payload.model_dump(),
+             "fact_ids": result["created"]["facts"], "actor": actor.model_dump(), "recorded_at": datetime.now(UTC).isoformat()}
+    history.append(entry)
+    context.vault.write_markdown(doc["path"], doc["content"], doc["metadata"])
+    return entry
