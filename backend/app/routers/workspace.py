@@ -103,6 +103,9 @@ def record_issue_disposition(matter_id: str, issue_id: str, payload: IssueDispos
                              context=Depends(get_context),
                              person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     actor = invoke(context.workspace_team.resolve_actor, person_id or None)
+    if payload.workflow:
+        from app.services.issue_choice import IssueChoiceService
+        return invoke(IssueChoiceService(review_service(context)).record, matter_id, issue_id, payload, actor=actor)
     return invoke(review_service(context).record_disposition, matter_id, issue_id, payload, actor=actor)
 
 
@@ -607,6 +610,8 @@ class PathConditionAnswer(BaseModel):
     analysis_revision: str
     answer: str
     source_action_key: str
+    expected_answer_key: str | None = None
+    surface: Literal["map", "chat"] = "map"
 
 
 @router.post("/issues/{issue_id}/conditions/{condition_id}/answer")
@@ -627,14 +632,19 @@ def answer_path_condition(matter_id: str, issue_id: str, condition_id: str,
     doc = context.workspace._document(matter_id, "workspace.md")
     prior = next((item for item in doc["metadata"].get("path_condition_answers", []) if item.get("source_action_key") == payload.source_action_key), None)
     if prior:
+        if prior.get("actor") != actor.model_dump():
+            raise HTTPException(409, "This save key belongs to another lawyer.")
         if any(prior.get(key) != value for key, value in {"issue_id": issue_id, "condition_id": condition_id, **payload.model_dump()}.items()):
             raise HTTPException(409, "This save key was used for a different answer.")
         return prior
+    current = next((item for item in reversed(doc["metadata"].get("path_condition_answers", [])) if item.get("issue_id") == issue_id and item.get("condition_id") == condition_id), None)
+    if payload.expected_answer_key is not None and payload.expected_answer_key != (current or {}).get("source_action_key", ""):
+        raise HTTPException(409, "Another answer was saved. Review it before replacing it. Your draft is unchanged.")
     from app.services.workspace import digest
     source_id = "MSG-" + digest([matter_id, payload.source_action_key])[:20]
     result = invoke(context.matter_records.apply_update, matter_id,
-        facts=[{"text": f"{condition['question']} — {payload.answer.strip()}", "source_ids": [source_id]}],
-        sources=[{"source_id": source_id, "kind": "conversation", "label": "Reported answer from decision map", "location": ""}],
+        facts=[{"text": f"{condition['question']} — {payload.answer.strip()}", "source_ids": [source_id], "supersedes": ((current or {}).get("fact_ids") or [None])[0]}],
+        sources=[{"source_id": source_id, "kind": "conversation", "label": f"Reported answer from {payload.surface}", "location": ""}],
         actor="user", summary="Reported answer to decision-path question",
         source_action_key=f"condition-answer:{payload.source_action_key}")
     doc = context.workspace._document(matter_id, "workspace.md")

@@ -224,13 +224,14 @@ class WorkspaceReviewService:
         today = date.today().isoformat()
         ranked = []
         for order, issue in enumerate(issues):
-            if issue.get("disposition") in {"resolved", "risk_accepted", "not_applicable"} or issue.get("lawyer_state") == "set_aside":
-                continue
             linked_ids = set(issue.get("linked_work_item_ids", []))
             linked = [item for work_id, item in work_by_id.items()
                       if work_id in linked_ids or item.get("issue_id") == issue["issue_id"]
                       or issue["issue_id"] in (item.get("issue_ids") or [])]
             open_work = [item for item in linked if item.get("status") not in {"done", "closed", "complete", "completed"}]
+            open_work.sort(key=lambda item: bool(item.get("choice_review_for")))
+            if not open_work and (issue.get("disposition") in {"resolved", "risk_accepted", "not_applicable"} or issue.get("lawyer_state") == "set_aside"):
+                continue
             required = next((item for item in open_work if item.get("required")), None)
             material = bool(issue.get("why_it_matters") or issue.get("fact_ids") or issue.get("assumption_ids"))
             category = 0 if required else (1 if material else 2)
@@ -239,9 +240,10 @@ class WorkspaceReviewService:
             failed = bool(work and work.get("status") in {"failed", "blocked"})
             overdue = bool(due_at and due_at[:10] < today and work and work.get("status") not in {"done", "closed"})
             state = "failed" if failed else ("overdue" if overdue else "needs_attention")
-            reason = str((work or {}).get("description") or issue.get("priority_reason") or issue.get("why_it_matters") or "No disposition is recorded.")
+            fallback = "Review the completed follow-up and record your conclusion." if issue.get("disposition") == "mitigation_in_progress" else "Review the open question." if issue.get("disposition") else "No disposition is recorded."
+            reason = str((work or {}).get("description") or issue.get("priority_reason") or issue.get("why_it_matters") or fallback)
             actor = str((work or {}).get("owner") or issue.get("action_owner") or "Lawyer")
-            label = str((work or {}).get("title") or issue.get("next_action") or "Review and record a disposition")
+            label = str((work or {}).get("title") or issue.get("next_action") or (fallback if issue.get("disposition") else "Review and record a disposition"))
             item = IssueReviewItem(issue_id=issue["issue_id"], reason=reason, actor=actor,
                 action_label=label, state=state, saved_order=order, due_at=due_at).model_dump()
             ranked.append((category, due_at or "9999-12-31", order, item))
@@ -566,6 +568,12 @@ class WorkspaceReviewService:
         for item in work_items:
             if item.get("issue_id"):
                 relate(f"issue:{item['issue_id']}", f"work:{item['work_item_id']}", "mitigated_by", "Mitigated by")
+            if item.get("decision_id"):
+                relate(f"decision:{item['decision_id']}", f"work:{item['work_item_id']}", "requires", "Follow-up work")
+                decision = next((value for value in decisions if value["decision_id"] == item["decision_id"]), {})
+                basis = decision.get("map_basis") or {}
+                if basis.get("selected_option_id"):
+                    relate(f"option:{basis['selected_option_id']}", f"work:{item['work_item_id']}", "requires", "Confirmed follow-up")
         revised_ids = {item.get("revises_decision_id") for item in decisions if item.get("revises_decision_id")}
         for item in decisions:
             for linked_issue in string_ids(item.get("issue_ids")) or ([item["issue_id"]] if isinstance(item.get("issue_id"), str) and item.get("issue_id") else []):
@@ -577,8 +585,7 @@ class WorkspaceReviewService:
                 exact_current = (current.get("analysis_id") == basis.get("analysis_id")
                                  and current.get("analysis_revision") == basis.get("analysis_revision")
                                  and current.get("output_revision") == basis.get("output_revision")
-                                 and status.get("state") in {"saved", "partial"}
-                                 and not basis.get("use_historical_basis")
+                                 and status.get("state") in {"saved", "partial", "needs_review"}
                                  and item["decision_id"] not in revised_ids)
                 relate(f"option:{basis['selected_option_id']}", f"decision:{item['decision_id']}",
                        "decided_by", "Recorded as", "active" if exact_current else "historical")
@@ -608,6 +615,16 @@ class WorkspaceReviewService:
                 if current.startswith("business_question:"):
                     continue
                 queue.extend(sorted(adjacency.get(current, set()) - visible))
+        from app.services.condition_questions import question_view
+        for status in issue_analyses.values():
+            analysis = status.get("analysis")
+            if not analysis:
+                continue
+            answers = [a for a in workspace_doc["metadata"].get("path_condition_answers", []) if a.get("issue_id") == analysis["issue_id"]]
+            for number, condition in enumerate(analysis["conditions"], 1):
+                node = nodes.get(f"condition:{condition['condition_id']}")
+                if node:
+                    node.setdefault("data", {}).update(question_view(condition, number, answers))
         for answer in workspace_doc["metadata"].get("path_condition_answers", []):
             node = nodes.get(f"condition:{answer.get('condition_id')}")
             if node and node.get("analysis_revision") == answer.get("analysis_revision"):
@@ -688,6 +705,7 @@ class WorkspaceReviewService:
                 title=str(metadata.get("title") or path.stem), kind=kind, revision=revision,
                 version_id=metadata.get("version_id") or metadata.get("final_id") or (source or {}).get("version"),
                 work_product_id=work_product_id, lifecycle_state=lifecycle,
+                source_url=metadata.get("url") if kind == "source" else None,
                 editable=bool(document.get("editable", False)) and not immutable and kind != "source", immutable=immutable,
                 original_path=metadata.get("source_path") if metadata.get("record_type") == "extracted_document" else metadata.get("original_path"),
                 extracted_path=metadata.get("extracted_path") or companions.get(relative)).model_dump())

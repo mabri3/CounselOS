@@ -2,7 +2,7 @@
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import type { MouseEvent, ReactNode } from "react";
+import { Children, type MouseEvent, type ReactNode } from "react";
 import type { ClaimEvidence, DocumentIdentity, DocumentReferenceTarget, ReferenceOrigin, WorkspaceClaim } from "@/lib/workspaceTypes";
 import { isSafeDocumentPath } from "@/lib/documentNavigation";
 import styles from "./MatterDocuments.module.css";
@@ -83,22 +83,32 @@ function origin(surface: ReferenceOrigin["surface"], recordId?: string | null): 
 export interface ClaimMarkdownProps {
   text: string;
   claims?: WorkspaceClaim[];
+  sources?: ClaimEvidence[];
   documents?: DocumentIdentity[];
   surface?: ReferenceOrigin["surface"];
   recordId?: string | null;
   className?: string;
+  separateParagraphLines?: boolean;
   onOpenEvidence?: (evidence: ClaimEvidence) => void;
   onOpenDocument?: (target: DocumentReferenceTarget) => void;
 }
 
 /** Render saved prose and resolve each source marker by source, locator, and claim revision. */
-export default function ClaimMarkdown({ text, claims = [], documents = [], surface = "document", recordId, className, onOpenEvidence, onOpenDocument }: ClaimMarkdownProps) {
+export default function ClaimMarkdown({ text, claims = [], sources = [], documents = [], surface = "document", recordId, className, separateParagraphLines = false, onOpenEvidence, onOpenDocument }: ClaimMarkdownProps) {
   const markers: Array<{ label: string; evidence: ClaimEvidence | null; exact: boolean }> = [];
   const renderedClaims = claimsForRenderedText(claims, text);
   const markdown = visibleClaimProse(text).replace(SOURCE_MARKER, (_marker, sourceId: string, locator?: string) => {
     const normalizedLocator = locator?.trim() || null;
     const exact = evidenceForSourceMarker(renderedClaims, sourceId, normalizedLocator);
-    const evidence = exact ?? sourceForMarker(claims, sourceId);
+    const savedSources = sources.filter(source => source.source_id === sourceId && (!normalizedLocator || source.locator === normalizedLocator));
+    const matched = exact ?? (savedSources.length === 1 ? savedSources[0] : null) ?? sourceForMarker(claims, sourceId);
+    const copies = documents.filter(doc => doc.document_id === sourceId && doc.kind === "source");
+    // Legacy chat may retain only an ID. Resolve a unique saved source without claiming an exact passage.
+    const copy = copies.length === 1 ? copies[0] : null;
+    const evidence = matched?.url || matched?.path ? matched : copy ? {
+      claim_id: `source:${sourceId}`, source_id: sourceId, source_label: copy.title,
+      path: copy.path, url: copy.source_url,
+    } : matched;
     const index = markers.push({ label: normalizedLocator ? `${sourceId} · ${normalizedLocator}` : sourceId, evidence, exact: Boolean(exact) }) - 1;
     return `[${normalizedLocator ? `Source: ${sourceId} · ${normalizedLocator}` : `Source: ${sourceId}`}](#themis-source-${index})`;
   });
@@ -113,11 +123,29 @@ export default function ClaimMarkdown({ text, claims = [], documents = [], surfa
   }
 
   return <div className={[styles.claim, className].filter(Boolean).join(" ")}><ReactMarkdown remarkPlugins={[remarkGfm]} components={{
+    p: ({ children }) => {
+      if (!separateParagraphLines) return <p>{children}</p>;
+      const lines: ReactNode[][] = [[]];
+      Children.forEach(children, child => {
+        if (typeof child !== "string") { lines[lines.length - 1].push(child); return; }
+        child.split("\n").forEach((part, index) => {
+          if (index) lines.push([]);
+          if (part) lines[lines.length - 1].push(part);
+        });
+      });
+      return <>{lines.filter(line => line.length).map((line, index) => <p key={index}>{line}</p>)}</>;
+    },
     a: ({ href = "", children }) => {
       const marker = href.match(/^#themis-source-(\d+)$/);
       if (marker) {
         const item = markers[Number(marker[1])];
-        return <button className="claim-source-link" disabled={!item?.evidence || !onOpenEvidence} onClick={() => item?.evidence && onOpenEvidence?.(item.evidence)} title={item?.exact ? "Review this saved passage" : item?.evidence ? "Open the saved source; no unique passage is selected" : "The saved source is unavailable"} type="button">{children}{item?.exact ? null : item?.evidence ? " · source" : " · unavailable"}</button>;
+        const evidence = item?.evidence;
+        const publicUrl = evidence?.url && /^https?:/.test(evidence.url) && safePublicUrl(evidence.url) ? evidence.url : null;
+        const saved = evidence?.path && isSafeDocumentPath(evidence.path) ? documents.find(doc => doc.path === evidence.path) : null;
+        const label = evidence?.source_label || (publicUrl ? new URL(publicUrl).hostname : "Source");
+        const openSaved = saved && onOpenDocument ? () => onOpenDocument({ document_id: saved.document_id, path: saved.path, revision: saved.revision, origin: origin(surface, recordId) }) : null;
+        if (publicUrl) return <span><a className="claim-source-link" href={publicUrl} target="_blank" rel="noopener noreferrer" title="Open original source">{label}</a>{openSaved ? <> · <button className="claim-source-link" onClick={openSaved} type="button" aria-label={`Saved copy of ${label}`}>Saved copy</button></> : evidence?.path && onOpenEvidence ? <> · <button className="claim-source-link" onClick={() => onOpenEvidence(evidence)} type="button">Source details</button></> : null}</span>;
+        return <button className="claim-source-link" disabled={!evidence || (!openSaved && !onOpenEvidence)} onClick={() => openSaved ? openSaved() : evidence && onOpenEvidence?.(evidence)} title="Open saved source" type="button">{label}{!evidence ? " · unavailable" : ""}</button>;
       }
       if (safePublicUrl(href)) return <a href={href} rel="noreferrer" target="_blank">{children}</a>;
       const decoded = safeDecodePath(href);

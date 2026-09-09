@@ -400,6 +400,8 @@ class QuestionCard(BaseModel):
     question_id: str
     text: str
     reason: str | None = None
+    priority: Literal["could_change_answer", "could_refine_advice", "helpful_detail"] | None = None
+    topic: str | None = None
     selection_mode: Literal["single", "multiple", "free_text"] = "single"
     choices: list[ChatChoice] = Field(default_factory=list, max_length=7)
     progress_current: int | None = Field(default=None, ge=1)
@@ -464,6 +466,7 @@ class CardAnswer(BaseModel):
     card_id: str = Field(min_length=1)
     action: Literal["answer", "skip"]
     values: list[str] = Field(default_factory=list)
+    free_text: str | None = Field(default=None, max_length=10000)
 
 
 class CardAction(BaseModel):
@@ -474,13 +477,24 @@ class CardAction(BaseModel):
         "open_watch", "open_scan", "scan_again",
     ]
     values: list[str] = Field(default_factory=list)
-    answers: list[CardAnswer] = Field(default_factory=list, max_length=5)
+    answers: list[CardAnswer] = Field(default_factory=list)
 
 
 from app.models.workspace import ConversationTarget
 
 
+class ChatModelSelection(BaseModel):
+    provider: str = Field(min_length=1, max_length=100)
+    model: str = Field(min_length=1, max_length=200)
+    reasoning_effort: str = Field(default="default", max_length=30)
+
+
 class ChatRequest(BaseModel):
+    model_selection: ChatModelSelection | None = None
+    experimental_chat: bool = False
+    experimental_intake: bool = False
+    experimental_explore: bool = False
+    experimental_comment_id: str | None = Field(default=None, max_length=100)
     message: str = Field(default="", max_length=MAX_CHAT_MESSAGE_CHARS)
     matter_id: str | None = None
     active_file: str | None = None
@@ -580,7 +594,7 @@ class IntakeTurn(BaseModel):
     material_missing_facts: list[str] = Field(default_factory=list)
     human_questions: list[str] = Field(default_factory=list)
     public_research_questions: list[str] = Field(default_factory=list, max_length=3)
-    next_questions: list[QuestionCard] = Field(default_factory=list, max_length=5)
+    next_questions: list[QuestionCard] = Field(default_factory=list)
     next_question: QuestionCard | None = None
     intake_state: Literal["active", "complete"] = "active"
     dossier_orientation: str | None = None

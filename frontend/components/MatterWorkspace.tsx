@@ -354,6 +354,8 @@ function MatterWorkspaceContent({
   const [error, setError] = useState("");
   const [actionNotice, setActionNotice] = useState("");
   const [workspace, setWorkspace] = useState<WorkspaceSnapshot | null>(null);
+  const [workspaceLoading, setWorkspaceLoading] = useState(true);
+  const [workspaceLoadError, setWorkspaceLoadError] = useState("");
   const [questionEdit, setQuestionEdit] = useState<string | null>(null);
   const [questionBase, setQuestionBase] = useState("");
   const [questionHistory, setQuestionHistory] = useState<BusinessQuestion[]>(
@@ -975,11 +977,18 @@ function MatterWorkspaceContent({
       setFiles,
     );
     let baseline: WorkspaceSnapshot;
+    setWorkspaceLoading(true);
+    setWorkspaceLoadError("");
     try {
       baseline = await getWorkspace(matterId);
     } catch (cause) {
-      if (isCurrentWorkspaceRead()) throw cause;
+      if (isCurrentWorkspaceRead()) {
+        setWorkspaceLoadError("Saved matter work could not load. Retry to load it again.");
+        throw cause;
+      }
       return;
+    } finally {
+      if (isCurrentWorkspaceRead()) setWorkspaceLoading(false);
     }
     if (!isCurrentWorkspaceRead()) return;
     setWorkspace(baseline);
@@ -1554,13 +1563,21 @@ function MatterWorkspaceContent({
   const refreshWorkspace = useCallback(async () => {
     const matterId = detail.matter_id;
     const readId = ++workspaceRead.current;
-    const saved = await getWorkspace(matterId);
-    if (
+    const isCurrent = () =>
       currentMatterRef.current === matterId &&
-      workspaceRead.current === readId
-    )
-      setWorkspace(saved);
-    return saved;
+      workspaceRead.current === readId;
+    setWorkspaceLoading(true);
+    setWorkspaceLoadError("");
+    try {
+      const saved = await getWorkspace(matterId);
+      if (isCurrent()) setWorkspace(saved);
+      return saved;
+    } catch (cause) {
+      if (isCurrent()) setWorkspaceLoadError("Saved matter work could not load. Retry to load it again.");
+      throw cause;
+    } finally {
+      if (isCurrent()) setWorkspaceLoading(false);
+    }
   }, [detail.matter_id]);
   useEffect(() => {
     const documents = workspace?.documents ?? [];
@@ -1781,7 +1798,9 @@ function MatterWorkspaceContent({
   ]);
 
   useEffect(() => {
-    void getSettings().then((saved) => {
+    let cancelled = false;
+    void getSettings({ includeModelCatalog: false }).then((saved) => {
+      if (cancelled) return;
       const rows =
         saved.sections.find((item) => item.id === "document-review")?.rows ??
         [];
@@ -1795,7 +1814,12 @@ function MatterWorkspaceContent({
             (item) => item.config_key === "document_review.default_author",
           )?.value || "Themis.ai",
       });
+    }).catch(() => {
+      if (!cancelled) {
+        setError("Document review settings could not load. Reload the page to try again.");
+      }
     });
+    return () => { cancelled = true; };
   }, []);
 
   const loadAwareness = useCallback(async () => {
@@ -1867,10 +1891,16 @@ function MatterWorkspaceContent({
       state: item.status,
       owner: item.owner,
       required: Boolean(item.required),
-    }));
+      reviewRequired: Boolean(decisionMap?.nodes.find(node => node.record_type === "work" && node.record_id === item.work_item_id)?.data?.choice_review_for),
+    })).sort((a, b) => Number(a.reviewRequired) - Number(b.reviewRequired));
   const linkedDecisions = detail.decisions.filter((item) =>
     selectedIssue?.linked_decision_ids?.includes(item.decision_id),
-  );
+  ).map(item => {
+    const saved = decisionMap?.nodes.find(node => node.record_type === "decision" && node.record_id === item.decision_id)?.data;
+    return { ...item, map_basis: saved?.map_basis as import("@/lib/decisionMapTypes").DecisionMapBasis | undefined,
+      conditions: Array.isArray(saved?.conditions) ? saved.conditions.filter((value): value is string => typeof value === "string") : [],
+      revises_decision_id: typeof saved?.revises_decision_id === "string" ? saved.revises_decision_id : undefined };
+  });
   const responseOptions = (decisionMap?.nodes ?? [])
     .filter(
       (node) =>
@@ -3601,6 +3631,7 @@ function MatterWorkspaceContent({
         }}
         understand={
           <>
+            {workspaceNotice ? <p role="status">{workspaceNotice}</p> : null}
             <UnderstandPanel
               orientation={orientation}
               sectionNavigation={<><MatterSectionNav entries={sectionEntries} onReveal={revealMatterSection} /><div className={matterStyles.overviewFacts}><section><span className={matterStyles.overviewIcon}><MatterIcon name="file" /></span><div><span className="record-meta">Sources</span><strong>{files.filter((file) => file.kind === "source").length}</strong><button className="btn quiet" onClick={() => showMatterTool("files")} type="button">View sources <MatterIcon name="chevron" size={16} /></button></div></section><section><span className={matterStyles.overviewIcon}><MatterIcon name="scale" /></span><div><span className="record-meta">Decision</span><strong>{linkedDecisions.length ? `${linkedDecisions.length} recorded` : "Not recorded"}</strong><button className="btn quiet" onClick={() => setModalOpen(true)} type="button">Record decision <MatterIcon name="chevron" size={16} /></button></div></section></div></>}
@@ -3612,6 +3643,8 @@ function MatterWorkspaceContent({
               onHandoff={() => setContinuityPanel("handoff")}
               onCompareSources={() => setContinuityPanel("impact")}
               snapshot={workspace}
+              loading={workspaceLoading}
+              error={workspaceLoadError}
               selectedIssueId={selectedIssueId}
               onSelectIssue={(issueId) => {
                 setSelectedIssueId(issueId);
@@ -3669,13 +3702,18 @@ function MatterWorkspaceContent({
                   restoreBusinessQuestion(detail.matter_id, command),
                 )
               }
+              onCompleteWork={async (workItemId) => {
+                await completeSavedWorkItem(workItemId);
+                await Promise.all([refreshWorkspace(), getDecisionMap(detail.matter_id).then(setDecisionMap)]);
+              }}
               onDisposition={async (issueId, command) => {
                 const saved = await recordIssueDisposition(
                   detail.matter_id,
                   issueId,
                   command,
                 );
-                await Promise.all([refreshWorkspace(), onReload()]);
+                refreshSavedWorkspace(detail.matter_id, "The disposition was recorded.",
+                  () => Promise.all([refreshWorkspace(), onReload(), getDecisionMap(detail.matter_id).then(setDecisionMap)]));
                 return saved;
               }}
               onOpenDocument={(target) => void openReference(target)}
@@ -3720,15 +3758,21 @@ function MatterWorkspaceContent({
                   owner: actor.display_name,
                 });
               }}
-              onAnalyzePaths={(issueId) => {
-                if (workspaceBusy) return;
+              onAnalyzePaths={(issueId, recordedPosition) => {
+                if (workspaceBusy && !recordedPosition) return;
                 setWorkspaceBusy(true);
                 setWorkspaceNotice("Analyzing paths…");
                 void runWorkspaceShortcut({
-                  action: "explain", target: { matter_id: detail.matter_id, issue_id: issueId },
+                  action: "explain", target: { matter_id: detail.matter_id, ...(recordedPosition ? {} : { issue_id: issueId }) },
                   source_action_key: `analyze-paths:${crypto.randomUUID()}`,
-                  instruction: "Analyze the possible paths for this actual saved issue. Explain the test, actor, exceptions, unknown facts, conditional routes and business alternatives. Return useful prose and the optional decision-paths structure. Do not call tools to save recommendations or work products; the inquiry publisher saves this answer automatically.",
-                }).catch((cause) => setWorkspaceNotice(cause instanceof Error ? cause.message : "Analysis could not finish. Saved work remains available.")).finally(() => setWorkspaceBusy(false));
+                  instruction: "Analyze the possible paths for this actual saved issue. Explain the test, actor, exceptions, unknown facts, conditional routes and business alternatives. Return useful prose and the optional decision-paths structure. Do not call tools to save recommendations or work products; the inquiry publisher saves this answer automatically." + (recordedPosition ? `\n\nReassess the issue using this lawyer-recorded position and reason:\n${recordedPosition}\nThe recorded choice concerns issue ${issueId}. Reassess connected saved issues and return optional issue_analyses for the affected issues. Explain which recommendations and drafts may need to change. A recorded position is not proof that implementation is complete or unknown facts are confirmed. Preserve the lawyer's recorded position; present the updated analysis separately.` : ""),
+                }).then(async (result) => {
+                  const map = await getDecisionMap(detail.matter_id);
+                  setDecisionMap(map);
+                  setWorkspaceNotice(result.state === "saved"
+                    ? "Analysis answer saved. Review it in Discuss. Paths without updated analysis remain marked Needs review."
+                    : "Analysis did not finish. Your recorded choice and work are saved. Use Update analysis to retry.");
+                }).catch((cause) => setWorkspaceNotice((cause instanceof Error ? cause.message : "Analysis could not finish.") + " Your recorded choice and work remain saved. Use Update analysis to retry.")).finally(() => setWorkspaceBusy(false));
               }}
               onRecordPath={(prefill) => {
                 setSelectedIssueId(prefill.map_basis.issue_id);
@@ -3814,7 +3858,9 @@ function MatterWorkspaceContent({
                   answerWorkspaceQuestion(detail.matter_id, id, command),
                 )
               }
-              onRefresh={() => void refreshAfterChatRun()}
+              onRefresh={() => void loadWorkspaceFeatures().catch(() => {
+                // The read sets the visible load error and preserves saved work.
+              })}
             />
             <section id={`matter-${detail.matter_id}-explore`}>
             <details className="workspace-exploration">
@@ -5385,6 +5431,7 @@ function MatterWorkspaceContent({
               intakeActive={detail.intake_state === "active"}
               intakeAnswers={detail.intake_answers}
               target={effectiveTarget ?? undefined}
+              onTargetChange={setConversationTarget}
               expectedQuestionRevision={workspace?.question.revision}
               contextSelections={selections}
               onFilesAttached={(refs) => setComposerFileSelection(refs, true)}

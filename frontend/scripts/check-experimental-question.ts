@@ -1,0 +1,14 @@
+import assert from "node:assert/strict";
+import { proseWithoutRepeatedQuestion as render } from "../components/experimental/questionPresentation.ts";
+const question = {text:"Reviewed?",choices:[{label:"Yes"},{label:"No"}]};
+const prose="Supported analysis. [Source](https://example.com)\n\n**Reviewed?**\n- Yes\n- No";
+assert.equal(render(prose,[question]),"Supported analysis. [Source](https://example.com)");
+assert.equal(render(prose,[]),prose);
+const differing=prose.replace('- No','- Not yet');
+assert.equal(render(differing,[question]),differing);
+const sourced=prose.replace('**Reviewed?**','**Reviewed?** [source:one]');
+assert.equal(render(sourced,[question]),sourced);
+const example='```text\n'+prose+'\n```';
+assert.equal(render(example,[question]),example);
+assert.equal(render('Analysis.\n\nReviewed?',[question]),'Analysis.');
+console.log('PASS exact question deduplication; preserve analysis, sources, differing options, and examples.');

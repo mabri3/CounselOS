@@ -518,7 +518,12 @@ export default function MatterDecisionMapPage() {
           busy={analysisBusy}
           onFocusIssue={(issueId) => { setFocusedIssueId(issueId); setSelectedNodeId(`issue:${issueId}`); }}
           onAnalyzePaths={(issueId) => void analyzePaths(issueId)}
-          onRecordPath={setPathPrefill}
+          onRecordPath={(prefill) => {
+            const query = new URLSearchParams({ issue: prefill.map_basis.issue_id, record_option: prefill.map_basis.selected_option_id });
+            const conversation = new URLSearchParams(window.location.search).get("conversation");
+            if (conversation) query.set("conversation", conversation);
+            window.location.href = `/matters/${encodeURIComponent(snapshot.matter_id)}?${query}`;
+          }}
           scope={scope}
           onSelectNode={(nodeId) => {
             const node = snapshot.nodes.find((item) => item.node_id === nodeId);
@@ -528,7 +533,8 @@ export default function MatterDecisionMapPage() {
           onScopeChange={setScope}
           onFit={() => undefined}
           onOpenDocument={(target) => void openReference(target)}
-          onDiscuss={(target) => {
+          onDiscuss={(target, prompt) => {
+            if (prompt) setChatSeed(current => ({ text: prompt, revision: current.revision + 1 }));
             setConversationTarget({
               ...target,
               business_question_revision: workspace.question.revision,
@@ -703,6 +709,7 @@ export default function MatterDecisionMapPage() {
               }
             }
             expectedQuestionRevision={workspace.question.revision}
+            onTargetChange={setConversationTarget}
             workspaceClaims={workspace.claims ?? []}
             workspaceDocuments={workspace.documents ?? []}
             onOpenReference={(target) => void openReference(target)}

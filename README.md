@@ -123,7 +123,20 @@ restart.
 
 ## Optional external search
 
-The research service supports an optional Tavily adapter:
+The research service supports optional Firecrawl and Tavily adapters.
+For Firecrawl search with page text, add the key to the local `.env` file:
+
+```dotenv
+SEARCH_PROVIDER=firecrawl
+FIRECRAWL_API_KEY=your-key
+```
+
+Restart the backend after changing `.env`. In **Settings → Research**, choose
+**Firecrawl web research** as the primary or backup research service. The key
+stays on the backend. Results with page text are marked retrieved; search-only
+results remain unverified leads.
+
+For Tavily:
 
 ```dotenv
 SEARCH_PROVIDER=tavily

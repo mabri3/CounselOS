@@ -50,6 +50,28 @@ import type {
 import { DEFAULT_SETTINGS, agentDetailFrom } from "./stubs.ts";
 
 let continuityTransport = { vault: "", person: "", demo: false };
+const matterChangeEvent = "themis-matter-records-changed";
+export function notifyMatterChanged(matterId: string) {
+  if (typeof window === "undefined" || typeof window.dispatchEvent !== "function") return;
+  const detail = { matterId, vault: continuityTransport.vault };
+  window.dispatchEvent(new CustomEvent(matterChangeEvent, { detail }));
+  try { if (typeof BroadcastChannel !== "undefined") {
+    const channel = new BroadcastChannel(matterChangeEvent);
+    channel.postMessage(detail); channel.close();
+  } } catch { /* Optional cross-tab hint must not turn a saved action into a failure. */ }
+}
+export function subscribeMatterChanges(matterId: string, refresh: () => void) {
+  const receive = (data: { matterId?: string; vault?: string }) => {
+    if ((data.matterId === matterId || data.matterId === "*") && data.vault === continuityTransport.vault) refresh();
+  };
+  const local = (event: Event) => receive((event as CustomEvent).detail);
+  window.addEventListener(matterChangeEvent, local);
+  window.addEventListener("focus", refresh);
+  let channel: BroadcastChannel | null = null;
+  try { channel = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel(matterChangeEvent) : null; } catch { /* Focus refresh remains available. */ }
+  if (channel) channel.onmessage = event => receive(event.data ?? {});
+  return () => { window.removeEventListener(matterChangeEvent, local); window.removeEventListener("focus", refresh); channel?.close(); };
+}
 export function setContinuityTransport(vault: string, person: string, demo: boolean) { continuityTransport = { vault, person, demo }; }
 export function currentContinuityStorageKey(matter: string, slot: string) {
   const { vault, person } = continuityTransport;
@@ -132,6 +154,10 @@ export async function request<T>(path: string, init?: RequestInit): Promise<T> {
     const payload: { detail?: unknown } = await response.json().catch(() => ({ detail: response.statusText }));
     throw Object.assign(new Error(formatErrorDetail(payload.detail, `Request failed: ${response.status}`)), { status: response.status, detail: payload.detail });
   }
+  let changedMatter = path.match(/^\/matters\/([^/?]+)/)?.[1];
+  if (!changedMatter && typeof init?.body === "string") { try { changedMatter = JSON.parse(init.body).matter_id; } catch { /* Not a JSON mutation. */ } }
+  if (!changedMatter && path.startsWith("/files")) changedMatter = "*";
+  if (changedMatter && init?.method && !["GET", "HEAD"].includes(init.method.toUpperCase()) && !path.endsWith("/seen")) notifyMatterChanged(decodeURIComponent(changedMatter));
   if (response.status === 204) return undefined as T;
   return response.json() as Promise<T>;
 }
@@ -577,8 +603,8 @@ export function rawFileUrl(path: string): string {
 
 /* ── Settings and agent administration ───────────────────────────────── */
 
-export async function getSettings(): Promise<WorkspaceSettings> {
-  const { values, model_catalog } = await request<SettingsPayload>("/settings");
+export async function getSettings({ includeModelCatalog = true } = {}): Promise<WorkspaceSettings> {
+  const { values, model_catalog } = await request<SettingsPayload>(includeModelCatalog ? "/settings" : "/settings?include_model_catalog=false");
   const catalog = normalizeModelCatalog(model_catalog);
   const providerValue = typeof values["agents.provider"] === "string" ? values["agents.provider"] : "mock";
   const selectedProvider = catalog.providers.find((provider) => provider.id === providerValue)

@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import json
 import re
+from yaml import YAMLError
 from datetime import UTC, datetime
 from typing import Any
 
@@ -68,6 +69,10 @@ class IssueAnalysisService:
             basis, inputs = self._basis(
                 question, issue, records, questions, context_projection
             )
+            choices = self._recorded_choices(matter_id)
+            if choices:
+                basis["recorded_choices"] = digest(choices)
+                inputs["recorded_choices"] = choices
             issue_captures[issue["issue_id"]] = {
                 "issue_id": issue["issue_id"],
                 "input_basis": basis,
@@ -519,6 +524,18 @@ class IssueAnalysisService:
                        "assumptions": assumptions, "questions": supplied_questions,
                        "context": projection}
 
+    def _recorded_choices(self, matter_id: str) -> list[dict[str, Any]]:
+        result = []
+        for path in sorted(self.vault.iter_files(f"{self.matters.matter_path(matter_id)}/decisions", {".md"}), key=str):
+            try:
+                record = self.vault.read_markdown(self.vault.relative(path))["metadata"]
+            except (OSError, UnicodeError, ValueError, TypeError, YAMLError):
+                result.append({"path": self.vault.relative(path), "state": "unavailable"})
+                continue
+            if record.get("matter_id") == matter_id and record.get("issue_id"):
+                result.append({key: record.get(key) for key in ("decision_id", "issue_id", "chosen_path", "rationale", "conditions", "revises_decision_id")})
+        return result
+
     def _current_basis(self, matter_id: str, issue_id: str, saved: dict[str, str]) -> dict[str, str]:
         projection = {"entries": [], "excluded_reference_ids": [], "excluded_paths": [],
                       "research_question": "", "manifest_present": False,
@@ -543,6 +560,9 @@ class IssueAnalysisService:
         issue = next(item for item in self.workspace.issues(matter_id) if item["issue_id"] == issue_id)
         basis, _ = self._basis(self.workspace.business_question(matter_id), issue,
                                self.workspace.records.get(matter_id), self.workspace.questions(matter_id), projection)
+        choices = self._recorded_choices(matter_id)
+        if choices or "recorded_choices" in saved:
+            basis["recorded_choices"] = digest(choices)
         # A research question is immutable run input, not mutable matter state.
         if "research_question" in saved:
             basis["research_question"] = saved["research_question"]
@@ -569,7 +589,7 @@ class IssueAnalysisService:
                     # mutable local record to compare. Their captured revision
                     # stays pinned to this immutable output.
                     basis[key] = saved[key]
-        return {key: basis.get(key, "") for key in saved}
+        return {key: basis.get(key, "") for key in {*saved, *(["recorded_choices"] if choices else [])}}
 
     def _file_revision(self, path: str) -> str:
         try:

@@ -54,6 +54,18 @@ def test_settings_are_on_disk_not_in_memory(app_context):
     assert fresh.read()["values"]["general.organisation"] == "DemoCo Financial"
 
 
+def test_saved_settings_can_load_without_model_discovery(app_context, monkeypatch):
+    async def unavailable_catalog():
+        pytest.fail("Reading saved preferences must not contact model providers")
+
+    monkeypatch.setattr(app_context, "model_catalog", unavailable_catalog)
+    app_context.settings_store.write({"document_review.lawyer_name": "Test Lawyer"})
+    response = _client(app_context).get("/api/settings?include_model_catalog=false")
+    assert response.status_code == 200
+    assert response.json()["values"]["document_review.lawyer_name"] == "Test Lawyer"
+    assert "model_catalog" not in response.json()
+
+
 def test_research_preferences_are_bounded_and_do_not_store_secrets(app_context, monkeypatch):
     from app.providers.openai_compatible import OpenAICompatibleProvider
 

@@ -21,7 +21,7 @@ class ProviderSettingsPolicy:
     REASONING_EFFORTS = {
         "default", "none", "minimal", "low", "medium", "high", "xhigh", "max", "ultra",
     }
-    EXTERNAL_RESEARCH_PROVIDERS = {"polaris", "tavily", "none"}
+    EXTERNAL_RESEARCH_PROVIDERS = {"polaris", "tavily", "firecrawl", "none"}
     MODEL_FALLBACK_PROVIDER = "openai_compatible"
     MODEL_FALLBACK_MODEL = "kimi-k3-fast"
 

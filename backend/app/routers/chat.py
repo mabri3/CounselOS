@@ -278,6 +278,9 @@ def freeze_run_context(payload: ChatRequest, context: AppContext, run_id: str) -
     """Capture reference text and reusable instructions once, before execution."""
     if not payload.matter_id:
         return payload
+    if payload.experimental_chat:
+        from app.services.experimental_chat import validate_documents
+        validate_documents(payload, context)
     selections = payload.context_selections
     if selections is None:
         selections = context.workspace_evidence.selection(payload.matter_id)["selections"]
@@ -295,6 +298,13 @@ def freeze_run_context(payload: ChatRequest, context: AppContext, run_id: str) -
         applied_notes=context.workspace_reuse.applied_practice_notes(payload.matter_id),
         expected_question_revision=payload.expected_question_revision)
     templates = context.skills.list_output_templates()
+    if payload.experimental_chat:
+        from app.services.experimental_chat import guidance, freeze_comment
+        frozen["experimental_guidance"] = guidance(context.vault)
+        frozen["experimental_comment"] = freeze_comment(payload, context)
+        if payload.conversation_id:
+            transcript = context.chat_history.get(payload.matter_id, payload.conversation_id)
+            frozen["context"] += "\n\nCurrent experimental conversation transcript path (read for a full audit): " + transcript["path"]
     frozen["templates"] = templates
     frozen["sources"] = [context.workspace_evidence.source_record(item, internal=True) for item in context.matter_records.get(payload.matter_id)["sources"]]
     frozen["template_uses"] = {item["template_id"]: context.skills.resolve_template_use(item["template_id"], output_type=item["output_type"]).model_dump(mode="json") for item in templates if item.get("output_type")}
@@ -366,7 +376,7 @@ async def execute_chat(
             payload = freeze_run_context(payload, context, run_id)
         user_content = payload.message.strip() or _action_text(payload)
         try:
-            skill_id, model_content = context.skills.parse_invocation(user_content)
+            skill_id, model_content = (None, user_content) if payload.experimental_chat and user_content.startswith("/audit") else context.skills.parse_invocation(user_content)
         except KeyError as exc:
             raise ValueError(str(exc)) from exc
         if skill_id is None and _watch_builder_requested(user_content, payload):
@@ -434,7 +444,7 @@ async def execute_chat(
                 if current_user else None
             )
             intake_active = (
-                conversation.get("conversation_kind") == "intake"
+                (conversation.get("conversation_kind") == "intake" or conversation.get("conversation_kind") == "experimental" and conversation.get("intake_state") is not None)
                 and conversation.get("intake_state") == "active"
                 and not (payload.target and payload.target.scenario_id)
             )
@@ -482,6 +492,8 @@ async def execute_chat(
                     if checkpoint:
                         checkpoint(run_state)
                 model_content = _resolved_answer_text(resolved_answers)
+                if payload.experimental_chat and payload.experimental_explore:
+                    model_content += "\n\n" + payload.message
                 expected_dossier_hash = context.dossiers.content_hash(payload.matter_id)
         else:
             if payload.conversation_id:
@@ -503,6 +515,11 @@ async def execute_chat(
                 card_action=payload.card_action.model_dump() if payload.card_action else None,
             )
             conversation_id = None
+        if payload.experimental_chat and payload.experimental_explore and payload.matter_id and intake_active:
+            context.matter_records.set_intake_state(payload.matter_id, "complete")
+            context.chat_history.update_state(payload.matter_id, conversation_id,
+                intake_state="complete", active_agent_id="counsel-copilot")
+            intake_active = False
         response = (
             _confirm_saved_operation(
                 context, payload, saved, execution_state=run_state,
@@ -524,6 +541,9 @@ async def execute_chat(
                 intake_active=bool(payload.matter_id and intake_active),
                 recovery=not persist_user_message,
             )
+            if payload.model_selection is not None and resolved_provider is None:
+                from app.services.experimental_chat import resolve_chat_provider
+                resolved_provider = resolve_chat_provider(payload.model_copy(update={"agent_id": routed_agent_id}), context)
             response = await context.runner.run(
                 payload.model_copy(
                     update={
@@ -555,7 +575,7 @@ async def execute_chat(
                     execution_state=run_state, run_id=run_id,
                 )
             intake_record = context.matter_records.get(payload.matter_id)
-            if conversation.get("conversation_kind") == "intake" and run_state.scope_state.get("scope") != "scenario":
+            if (conversation.get("conversation_kind") == "intake" or conversation.get("conversation_kind") == "experimental" and conversation.get("intake_state") is not None) and run_state.scope_state.get("scope") != "scenario":
                 intake_state = intake_record.get("intake_state", "active")
                 context.chat_history.update_state(
                     payload.matter_id,
@@ -565,7 +585,7 @@ async def execute_chat(
                         "intake-agent" if intake_state == "active" else "counsel-copilot"
                     ),
                 )
-                if intake_state == "complete":
+                if intake_state == "complete" and not payload.experimental_chat:
                     _queue_intake_research(
                         context, payload.matter_id, intake_record,
                         cycle_id=conversation_id,
@@ -581,6 +601,12 @@ async def execute_chat(
             # only when useful prose remains for the lawyer.
             if visible_reply.strip():
                 response.reply = visible_reply
+        if payload.experimental_chat:
+            from app.services.experimental_chat import extract_choices
+            extract_choices(response, run_id)
+        if payload.experimental_chat and payload.experimental_comment_id:
+            from app.services.experimental_chat import answer_comment
+            answer_comment(payload, context, response, run_id)
         if payload.matter_id:
             if response.reply.strip():
                 if run_id:
@@ -720,6 +746,8 @@ def _route_matter_agent(
     recovery: bool,
 ) -> str:
     """Choose the active matter agent without letting intake block direct work."""
+    if payload.experimental_chat and payload.experimental_explore:
+        return "counsel-copilot"
     if not intake_active:
         return payload.agent_id
     if recovery or payload.card_action is not None:
@@ -776,7 +804,7 @@ def _reject_duplicate_question_action(saved: dict, payload: ChatRequest) -> None
 def _validate_question_action(saved: dict, payload: ChatRequest) -> None:
     action = payload.card_action
     if (
-        saved.get("conversation_kind") != "intake"
+        saved.get("conversation_kind") not in {"intake", "experimental"}
         or not action
         or action.action not in {"answer", "answer_set", "skip"}
     ):
@@ -800,9 +828,14 @@ def _validate_question_action(saved: dict, payload: ChatRequest) -> None:
         if card is None:
             raise ValueError("The saved intake question is not available.")
         values = [str(value).strip() for value in answer.get("values", []) if str(value).strip()]
+        free_text = str(answer.get("free_text") or "").strip()
         if answer.get("action") == "skip":
-            if values:
+            if values or free_text:
                 raise ValueError("A skipped question cannot include an answer.")
+            continue
+        if payload.experimental_chat and free_text:
+            if values:
+                raise ValueError("Enter an answer or select choices, not both.")
             continue
         if not values:
             raise ValueError("Select or enter an answer.")
@@ -811,7 +844,7 @@ def _validate_question_action(saved: dict, payload: ChatRequest) -> None:
             for choice in card.get("choices", [])
             if choice.get("value")
         }
-        if choices and values[0] not in choices:
+        if choices and (any(value not in choices for value in values) if payload.experimental_chat else values[0] not in choices):
             raise ValueError("The selected answer is not available for this question.")
 
 
@@ -831,7 +864,7 @@ def _resolved_question_answers(saved: dict, payload: ChatRequest) -> list[dict[s
             for choice in card.get("choices", [])
         }
         answer_parts = [labels.get(value, value) for value in values]
-        answer_text = ": ".join(answer_parts) if len(answer_parts) > 1 else "".join(answer_parts)
+        answer_text = (str(answer.get("free_text") or "").strip() if payload.experimental_chat else "") or (": ".join(answer_parts) if len(answer_parts) > 1 else "".join(answer_parts))
         status = "skipped" if answer.get("action") == "skip" else "answered"
         resolved.append({
             "question_id": str(answer.get("card_id") or ""),

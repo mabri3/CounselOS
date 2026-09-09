@@ -258,6 +258,9 @@ same in the board, the matter header and chat.
 
 - Understand leads with the business question, short working answer, qualification, and one owned action. Show at most three review items, with a reason and a link to all issues.
 - Keep issue explanations, claim support, shared questions, options, work, and the lawyer's disposition together. Collapse title/parent editing and supporting history.
+- Put choice controls before supporting analysis. Offer recommended and candidate paths with editable reasons. Label the lawyer's judgment **Your conclusion**, separately from work progress. **Record decision and follow-up** saves the explicit decision, issue conclusion, and confirmed new work together. Reopening an issue does not silently revoke an earlier decision. Return visits prefill the recorded choice, not the agent recommendation.
+- Keep required work visible after risk acceptance or issue resolution. **Proceed with follow-up** adds or reuses a required lawyer review task. Completing implementation does not resolve the issue; recording the final conclusion completes that review task. Other required tasks remain open. The map includes lawyer-confirmed work in its path progress. Unconfirmed conditions remain unconfirmed.
+- A changed position starts an analysis update after saving. Preserve the recorded choice if analysis fails and provide a retry action. Updated analysis may reassess connected issues but cannot change other recorded decisions. Flag drafts whose captured decision context is older; preserve lawyer edits and keep approval, delivery, and closure separate.
 - The decision map has its own route and a keyboard-accessible outline. Show the same record identities and labeled conditions in both views. Unknown conditions stay Unknown. Hypothetical and historical analysis remain distinct from active facts and recorded decisions.
 - Show document names, counts, versions, and the active editable document before the editor. Source previews sit beside the draft on wide screens and stack on narrow screens. Reading a source does not select agent context or replace the draft action target.
 - Evidence shows the actual claim revision, source status, available passage, and applicability explanation or support gap. A source-only link must not imply exact claim support. Keep useful answers visible when optional evidence is missing.
@@ -301,6 +304,29 @@ alone carries no exclusion meaning. Conflicting effects on an agreed path requir
 review; they do not silently erase the agreement.
 
 ### Decision workspace
+
+Question navigation uses labelled buttons that open the section and move keyboard
+focus to the numbered question. Explain that conditional agreement is separate
+from confirming conditions, completing work, and resolving the issue. An empty
+condition list is neutral and not assessed, never evidence of legal readiness.
+
+Show legal basis beside each selected choice. Display exact linked claim material,
+source status, applicability, and support gaps without treating a citation as legal
+approval. No linked support is a research gap, not proof of unlawfulness. Research
+legal basis prepares a path-scoped request in the existing chat and preserves any
+unsent message. The lawyer selects Send; no decision is recorded by this control.
+
+Chat and pages are views of the same saved matter, not separate record systems.
+Use the same numbered question, saved answer choices, reported answer, and answer
+history on both surfaces. Numbers are local to the issue and saved analysis.
+Show matching question numbers beside paths and beside each question. Suggestions
+are editable drafts; never infer confirmation from choosing or discussing one.
+The shared Save answer control records the answer, and newer answers supersede
+earlier reported facts without rewriting history. Preserve local drafts on refresh
+and require review before replacing a newer answer. Chat's selected question also
+sets its inquiry scope. Page changes and completed chat runs refresh the other
+views; preserve unsent composer text. Existing decision and lifecycle controls
+remain explicit and reachable from chat.
 
 The issue view uses a compact choice map beside the selected path. Keep reported
 answers visible beside the choice; save them as facts, separately from legal

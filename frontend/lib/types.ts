@@ -431,14 +431,14 @@ export type AppliedSkillSummary = { skill_id: string; name: string };
 
 export type ChatChoice = { value: string; label: string; suggested?: boolean };
 export type ChatCard =
-  | { type: "question"; question_id: string; text: string; reason?: string | null; selection_mode: "single" | "multiple" | "free_text"; choices: ChatChoice[]; progress_current?: number | null; progress_total?: number | null; allow_skip: boolean; allow_stop: boolean; conflict: boolean; record_target?: "fact" | "jurisdiction_scope" | "product_area" | "business_team" | "matter_type" | "target_date" | "requester" | "business_owner" | "risk_level" }
+  | { type: "question"; question_id: string; text: string; reason?: string | null; priority?: "could_change_answer" | "could_refine_advice" | "helpful_detail" | null; topic?: string | null; selection_mode: "single" | "multiple" | "free_text"; choices: ChatChoice[]; progress_current?: number | null; progress_total?: number | null; allow_skip: boolean; allow_stop: boolean; conflict: boolean; record_target?: "fact" | "jurisdiction_scope" | "product_area" | "business_team" | "matter_type" | "target_date" | "requester" | "business_owner" | "risk_level" }
   | { type: "matter_update"; action_id: string; summary: string; changed_sections: string[]; can_edit: boolean; can_undo: boolean }
   | { type: "research_status"; run_id: string; state: "queued" | "running" | "completed" | "failed" | "interrupted"; total: number; completed: number; status: string; dossier_effect: string }
   | { type: "work_product"; preview?: boolean; title: string; vault_path: string; state: "draft" | "final"; summary: string }
   | AwarenessChatCard;
 
 export type AttachmentReference = { source_id: string; path: string; name: string; version?: string };
-export type CardAnswer = { card_id: string; action: "answer" | "skip"; values: string[] };
+export type CardAnswer = { card_id: string; action: "answer" | "skip"; values: string[]; free_text?: string };
 export type CardAction = { card_id: string; action: "answer" | "answer_set" | "skip" | "stop" | "edit" | "undo" | "apply" | "preview" | AwarenessCardAction; values?: string[]; answers?: CardAnswer[] };
 export type QuestionMode = "guided" | "set";
 
@@ -588,6 +588,7 @@ export type ChatConversationSummary = {
 };
 
 export type ChatConversation = ChatConversationSummary & {
+  intake_state?: "active" | "complete" | null;
   path: string;
   messages: ChatHistoryMessage[];
 };

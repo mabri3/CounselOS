@@ -93,6 +93,13 @@ class MatterWorkItemService:
             if not actor:
                 raise ValueError("actor is required.")
             item = self.find(matter_id, work_item_id)
+            metadata = self.matters.vault.read_markdown(item["path"])["metadata"]
+            if metadata.get("choice_review_for"):
+                from app.services.workspace import WorkspaceService
+                issue = next((value for value in WorkspaceService(self.matters.vault, self.matters).issues(matter_id)
+                              if value["issue_id"] == metadata["choice_review_for"]), {})
+                if issue.get("disposition") not in {"resolved", "risk_accepted", "not_applicable"}:
+                    raise ValueError("Review the follow-up and record the issue conclusion before completing this review.")
             already = item["status"] in {"done", "closed"}
             changed_paths: list[str] = []
             if not already:

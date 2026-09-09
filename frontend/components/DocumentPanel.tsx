@@ -15,13 +15,14 @@ import styles from "@/components/workspace/MatterDocuments.module.css";
 
 type SaveState = "clean" | "saving" | "conflict" | "error";
 type MutationBasis = { base_revision: string; review_revision?: string };
-type ReferenceAwareDocumentPanelProps = DocumentPanelProps & { documents?: DocumentIdentity[] };
+type ReferenceAwareDocumentPanelProps = DocumentPanelProps & { documents?: DocumentIdentity[]; autoSave?: boolean };
 
 /**
  * Canvas 4c — the work surface. A what-you-see editor over a file that stays
  * plain Markdown on disk. Agent-written files remain clearly labelled.
  */
 export default function DocumentPanel({
+  autoSave = false,
   activeDocument,
   activePath,
   contextKey,
@@ -271,6 +272,13 @@ export default function DocumentPanel({
     }
     finally { setBusy(false); }
   }
+
+  // The experimental surface opts in; existing document pages keep manual save.
+  useEffect(() => {
+    if (!autoSave || !dirty || busy || saveState !== "clean" || savedChangesAvailable || !document?.editable) return;
+    const timer = window.setTimeout(() => { void save(); }, 1200);
+    return () => window.clearTimeout(timer);
+  }, [autoSave, dirty, busy, saveState, savedChangesAvailable, document?.content, activePath]);
 
   async function reloadCanonical() {
     if (!document) return;

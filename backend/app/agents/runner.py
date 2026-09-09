@@ -152,6 +152,8 @@ class AgentRunner:
         user_context = state.frozen_context.get("context") if state.frozen_context else self.context_builder.build_user_context(agent, matter_id=request.matter_id, active_file=request.active_file)
         if state.frozen_context.get("templates"):
             messages.append({"role": "system", "content": "Source honesty: a saved packet or heading that says verified is still supplied historical material unless the structured source record contains actual verification evidence. Do not promote its label into a verified event. Never expose planning or process commentary. Answer only the lawyer. Output templates available at submission (declarative instructions only): " + json.dumps(state.frozen_context["templates"], ensure_ascii=False) + "\nUse the matching output_type and template_id with save_work_product. A new memo, clause, or checklist creates a distinct draft. For outside_counsel_brief provide brief content and separate cover_email_content to save the two editable documents. Revise only the visibly selected artifact. Range content must contain ONLY its replacement. Save explicit audience, business constraints, accepted analysis and preferences with workspace_action. A correction saves an update offer when there is a current draft. Keep its document unchanged in that turn. A later explicit request to update, revise, narrow, or PROPOSE wording already authorizes saving a tracked proposal with save_work_product operation=revise. Do not ask again for permission to save proposed wording; the lawyer reviews it in the editor. Use manage_output_template only when asked to change reusable instructions."})
+        if request.experimental_chat and state.frozen_context.get("experimental_guidance"):
+            messages.append({"role": "system", "content": state.frozen_context["experimental_guidance"]["instructions"]})
         if user_context:
             messages.append({"role": "user", "content": user_context})
         messages.extend(message.model_dump() for message in self.context_builder.filter_history(request.history, state.frozen_context))
@@ -178,6 +180,9 @@ class AgentRunner:
         lifecycle_permissions = _lifecycle_permissions(request.message)
         watch_activation_allowed = _explicit_watch_activation_requested(request)
         provider_tools = self.tools.provider_tools(agent)
+        if request.experimental_chat:
+            from app.services.experimental_chat import intake_tools
+            provider_tools = intake_tools(provider_tools)
         continuity = (request.frozen_context or {}).get("continuity") or request.continuity_context
         restricted_continuity = bool(continuity) or request.workspace_action in {"reassess_changed_facts", "prepare_handoff"}
         continuity_tools = {"select_conversation_scope", "read_file", "list_files", "search_vault"}
@@ -275,6 +280,20 @@ class AgentRunner:
             try:
                 reply = await provider.complete(messages, turn_tools)
             except Exception as exc:
+                # Preserve the answer path after a failed tool round. This makes
+                # one bounded synthesis attempt, not another research/tool loop.
+                if any(message.get("role") == "tool" for message in messages):
+                    try:
+                        recovery = await provider.complete([
+                            *messages,
+                            {"role": "system", "content": "The research call failed. Do not call tools. Answer the user's question now using the collected information. Distinguish verified sources from saved analysis and state material research gaps. Do not merely describe what you plan to do."},
+                        ], None)
+                        if recovery.content.strip() and not recovery.tool_calls:
+                            return ChatResponse(reply=clean_user_facing_reply(recovery.content, preserve_paragraphs=request.experimental_chat), trace=trace,
+                                changed_paths=_unique(changed_paths), refresh=_unique(refresh),
+                                cards=cards, applied_skills=applied_skills, review_author=review_author)
+                    except Exception:
+                        pass
                 safe_detail = (
                     str(exc) if isinstance(exc, ProviderAdapterError)
                     else "The model service did not finish."
@@ -288,7 +307,7 @@ class AgentRunner:
                     safe_detail="The response could not be turned into the required structure.",
                     failure_class="output_shape",
                 )
-            user_facing_content = clean_user_facing_reply(reply.content)
+            user_facing_content = clean_user_facing_reply(reply.content, preserve_paragraphs=request.experimental_chat)
             if user_facing_content:
                 state.useful_content = user_facing_content
                 if checkpoint:
@@ -551,7 +570,7 @@ class AgentRunner:
         _record_missing_mutation_result(state, request)
         return ChatResponse(
             reply=(
-                clean_user_facing_reply(final_reply.content)
+                clean_user_facing_reply(final_reply.content, preserve_paragraphs=request.experimental_chat)
                 or "The available actions are complete; use the trace and updated matter state as the working result."
             ),
             trace=trace,

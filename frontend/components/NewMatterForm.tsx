@@ -12,9 +12,11 @@ import type { MatterCreatePayload } from "@/lib/types";
 export default function NewMatterForm({
   onCreate,
   busy,
+  onClose,
 }: {
   onCreate: (payload: MatterCreatePayload) => Promise<void>;
   busy: boolean;
+  onClose?: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const [requestText, setRequestText] = useState("");
@@ -68,7 +70,7 @@ export default function NewMatterForm({
     }
   }
 
-  if (!open) {
+  if (!open && !onClose) {
     return (
       <div>
         {created ? (
@@ -164,7 +166,7 @@ export default function NewMatterForm({
       {error ? <p className="error">{error} You can retry without creating a duplicate.</p> : null}
 
       <div className={styles.intakeActions}>
-        <button className="btn" type="button" onClick={() => setOpen(false)}>Close</button>
+        <button className="btn" type="button" disabled={Boolean(onClose) && (busy || submitting)} onClick={() => onClose ? onClose() : setOpen(false)}>Close</button>
         <button className="btn primary" disabled={busy || submitting || !requestText.trim()} type="submit">
           {busy || submitting ? "Creating matter…" : "Create matter and open Chat"}
         </button>

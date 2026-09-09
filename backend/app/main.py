@@ -9,7 +9,7 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from app.config import get_settings
 from app.active_context import ActiveContextManager
 from app.observability import configure_logging
-from app.routers import awareness, automations, chat, decisions, files, matters, settings as settings_router, skills, system, workspace, team
+from app.routers import experimental_chat, awareness, automations, chat, decisions, files, matters, settings as settings_router, skills, system, workspace, team
 
 
 @asynccontextmanager
@@ -46,6 +46,7 @@ app.add_middleware(
 )
 
 for router in (
+    experimental_chat.router,
     system.router,
     awareness.router,
     matters.router,

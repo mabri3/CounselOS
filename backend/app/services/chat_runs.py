@@ -79,7 +79,10 @@ class ChatRunService:
         requested_agent_id = request.agent_id
         from app.routers.chat import freeze_workspace_request, freeze_run_context, _route_matter_agent
         conversation = self.context.chat_history.get(matter_id, conversation_id) if conversation_id else {}
-        actual_agent_id = _route_matter_agent(request, intake_active=conversation.get("conversation_kind") == "intake" and conversation.get("intake_state") == "active" and not (request.target and request.target.scenario_id), recovery=request.intake_recovery)
+        experimental_intake = request.experimental_chat and request.experimental_intake and matter.get("intake_state") != "complete"
+        if experimental_intake:
+            request = request.model_copy(update={"agent_id": "intake-agent"})
+        actual_agent_id = _route_matter_agent(request, intake_active=(conversation.get("conversation_kind") in {"intake", "experimental"} and conversation.get("intake_state") == "active" or experimental_intake) and not (request.target and request.target.scenario_id), recovery=request.intake_recovery)
         request = request.model_copy(update={"agent_id": actual_agent_id})
         request = freeze_workspace_request(request.model_copy(update={"matter_id": matter_id}), self.context)
         run_id = new_id("RUN")
@@ -90,7 +93,8 @@ class ChatRunService:
             "source_action_key": request.source_action_key or f"chat:{run_id}",
         })
         payload = freeze_run_context(payload, self.context, run_id)
-        resolved = self.context.runner.resolve(payload.agent_id)
+        from app.services.experimental_chat import resolve_chat_provider
+        resolved = resolve_chat_provider(payload, self.context)
         if not persist_user_message and not payload.conversation_id:
             raise ValueError("An internal chat run needs an existing conversation.")
         if payload.conversation_id:
@@ -115,8 +119,11 @@ class ChatRunService:
                 attachments=[item.model_dump() for item in payload.attachments],
                 card_action=payload.card_action.model_dump() if payload.card_action else None,
                 run_id=run_id, action_actor=payload.action_actor,
+                conversation_kind="experimental" if payload.experimental_chat else None,
             )
             payload = payload.model_copy(update={"conversation_id": saved["conversation_id"]})
+            if experimental_intake and saved.get("intake_state") != "complete":
+                self.context.chat_history.update_state(matter_id, saved["conversation_id"], intake_state="active", active_agent_id="intake-agent")
         record = self._write(
             matter_id, run_id, state="queued", status="Chat is queued.",
             request=payload.model_dump(mode="json"), submitted_command=submitted_command, action_actor=payload.action_actor, conversation_id=payload.conversation_id,

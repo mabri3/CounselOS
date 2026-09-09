@@ -626,3 +626,16 @@ def test_current_answer_claims_are_separate_from_historical_output_claims(app_co
     assert [item["output_revision"] for item in payload["answer_claims"]] == ["output-current"]
     assert payload["answer_claims"][0]["evidence"][0]["available_excerpt"] == "Current exact excerpt."
     assert next(item for item in payload["claims"] if item["output_revision"] == "out7")["evidence"][0]["available_excerpt"] == old["evidence"][0]["available_excerpt"]
+
+
+def test_saved_retrieval_exposes_original_url_for_citation_reading(review):
+    base = review._base(MATTER)
+    path = f"{base}/research/sources/retained-rule.md"
+    review.vault.write_markdown(path, "Full saved rule text.", {
+        "record_type": "retrieved_source", "source_id": "SRC-RETAINED",
+        "title": "Agency rule", "url": "https://example.com/rule",
+    })
+    source = next(item for item in review.documents(MATTER) if item["path"] == path)
+    assert source["document_id"] == "SRC-RETAINED"
+    assert source["kind"] == "source"
+    assert source["source_url"] == "https://example.com/rule"

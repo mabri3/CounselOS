@@ -66,6 +66,7 @@ function providerState(provider: ModelCatalogProvider): { label: string; color: 
 const RESEARCH_PROVIDER_LABELS: Record<string, string> = {
   polaris: "Polaris legal research",
   tavily: "Tavily web research",
+  firecrawl: "Firecrawl web research",
   none: "no external research service",
 };
 

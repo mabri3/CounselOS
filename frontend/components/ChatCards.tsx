@@ -24,10 +24,11 @@ type Props = {
   onOpenDocument?: (path: string) => void;
   onRefresh?: () => void | Promise<void>;
   currentWorkProductDraftPath?: string | null;
+  showResearchDocuments?: boolean;
   operationResults?: ChatOperationResult[];
 };
 
-export default function ChatCards({ cards = [], matterId, disabled, questionsDisabled, questionStates, questionMode = "guided", showQuestionMode = false, onQuestionModeChange, onAction, onOpenDocument, onRefresh, currentWorkProductDraftPath, operationResults = [] }: Props) {
+export default function ChatCards({ cards = [], matterId, disabled, questionsDisabled, questionStates, questionMode = "guided", showQuestionMode = false, onQuestionModeChange, onAction, onOpenDocument, onRefresh, currentWorkProductDraftPath, showResearchDocuments = false, operationResults = [] }: Props) {
   const questions = cards.filter((card): card is Extract<ChatCard, { type: "question" }> => card.type === "question");
   const activeQuestions = questions.filter((card) => (questionStates?.[card.question_id]?.state ?? "active") === "active");
   const historicalQuestions = questions.filter((card) => (questionStates?.[card.question_id]?.state ?? "active") !== "active");
@@ -47,7 +48,7 @@ export default function ChatCards({ cards = [], matterId, disabled, questionsDis
           : card.type === "research_status" ? card.run_id
           : `${card.vault_path}-${index}`;
         if (card.type === "matter_update") return null;
-        if (card.type === "research_status") return <ResearchCard card={card} key={key} matterId={matterId} onRefresh={onRefresh} />;
+        if (card.type === "research_status") return <ResearchCard card={card} key={key} matterId={matterId} onRefresh={onRefresh} onOpenDocument={showResearchDocuments ? onOpenDocument : undefined} />;
         if (card.type === "watch_draft") return <WatchCard card={card} disabled={disabled} key={key} onAction={onAction} />;
         if (card.type === "watch_scan") return <WatchCard card={card} disabled={disabled} key={key} onAction={onAction} />;
         return <WorkProductCard card={card} currentWorkProductDraftPath={currentWorkProductDraftPath} key={key} onOpenDocument={onOpenDocument} />;
@@ -228,6 +229,7 @@ function WorkProductCard({ card, onOpenDocument, currentWorkProductDraftPath }: 
   card: Extract<ChatCard, { type: "work_product" }>;
   onOpenDocument?: (path: string) => void;
   currentWorkProductDraftPath?: string | null;
+  showResearchDocuments?: boolean;
 }) {
   const targetPath = card.vault_path;
   return (
@@ -485,7 +487,7 @@ function QuestionCard({ card, current, disabled, draft, onAction, onBack, onDraf
   );
 }
 
-function ResearchCard({ card, matterId, onRefresh }: { card: Extract<ChatCard, { type: "research_status" }>; matterId?: string; onRefresh?: Props["onRefresh"] }) {
+function ResearchCard({ card, matterId, onRefresh, onOpenDocument }: { card: Extract<ChatCard, { type: "research_status" }>; matterId?: string; onRefresh?: Props["onRefresh"]; onOpenDocument?: Props["onOpenDocument"] }) {
   const [run, setRun] = useState<ResearchRun | Extract<ChatCard, { type: "research_status" }>>(card);
   const refreshedRunId = useRef<string | null>(null);
   const onRefreshRef = useRef(onRefresh);
@@ -509,6 +511,7 @@ function ResearchCard({ card, matterId, onRefresh }: { card: Extract<ChatCard, {
   }, [card.run_id, matterId]);
   const active = run.state === "queued" || run.state === "running";
   return (
+    <>
     <details className="chat-card research-card">
       <summary>
         <span className={`research-indicator ${active ? "active" : ""}`} aria-hidden="true" />
@@ -517,6 +520,12 @@ function ResearchCard({ card, matterId, onRefresh }: { card: Extract<ChatCard, {
       </summary>
       <div className="chat-card-detail">{run.dossier_effect || "No dossier change is recorded yet."}</div>
     </details>
+    {onOpenDocument && "results" in run && run.results?.filter(result => result.path).map((result, index, results) => (
+      <button className="btn small" type="button" key={result.path} onClick={() => onOpenDocument(result.path)}>
+        Open research{results.length > 1 ? ` ${index + 1}` : ""} <span aria-hidden="true">→</span>
+      </button>
+    ))}
+    </>
   );
 }
 

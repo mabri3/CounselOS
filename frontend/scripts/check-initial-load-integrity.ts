@@ -96,3 +96,53 @@ runInNewContext(ts.transpileModule(`export const updateDate = ${dateEffect}`, { 
 effectModule.exports.updateDate();
 assert.equal(shownDate, formatLongDate(new Date(afterMidnight)), "the mounted page must show the current browser date");
 console.log("Today initial render remains stable across midnight; its effect shows the browser date.");
+
+const workspaceSource = read("../components/MatterWorkspace.tsx");
+const workspaceAst = ts.createSourceFile("MatterWorkspace.tsx", workspaceSource, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+let settingsEffect = "";
+function findSettingsEffect(node: import("typescript").Node) {
+  if (ts.isCallExpression(node) && node.expression.getText(workspaceAst) === "useEffect" && node.arguments[0]?.getText(workspaceAst).includes("getSettings(")) settingsEffect = node.arguments[0].getText(workspaceAst);
+  ts.forEachChild(node, findSettingsEffect);
+}
+findSettingsEffect(workspaceAst);
+assert.ok(settingsEffect, "the matter must load document review settings");
+for (const unmount of [false, true]) {
+  const errors: string[] = [];
+  const effectModule = { exports: {} as { load: () => () => void } };
+  runInNewContext(ts.transpileModule(`export const load = ${settingsEffect}`, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText, {
+    exports: effectModule.exports,
+    getSettings: (options: { includeModelCatalog: boolean }) => {
+      assert.equal(options.includeModelCatalog, false, "document review settings must not probe model providers");
+      return Promise.reject(new Error("The request timed out."));
+    },
+    setReviewSettings: () => assert.fail("failed settings must not overwrite review settings"),
+    setError: (message: string) => errors.push(message),
+  });
+  const cleanup = effectModule.exports.load();
+  if (unmount) cleanup();
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(errors.length, unmount ? 0 : 1, "settings failures must be handled in the mounted page only");
+}
+console.log("Matter settings failures remain handled, including after unmount.");
+
+assert.match(workspaceSource, /loading=\{workspaceLoading\}/, "Understand must receive its actual read state");
+assert.match(workspaceSource, /error=\{workspaceLoadError\}/, "Understand must show failed reads instead of an empty state");
+const featuresMatch = workspaceSource.match(/const loadWorkspaceFeatures = useCallback\((async \(\) => \{[\s\S]*?)\}, \[detail\.matter_id\]\);/);
+assert.ok(featuresMatch);
+const failures: string[] = [];
+const loadStates: boolean[] = [];
+const featureModule = { exports: {} as { load: () => Promise<void> } };
+runInNewContext(ts.transpileModule(`export const load = ${featuresMatch[1]}}`, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText, {
+  exports: featureModule.exports,
+  featureRead: { current: 0 }, workspaceRead: { current: 0 },
+  detail: { matter_id: "MAT-1" }, currentMatterRef: { current: "MAT-1" },
+  workspaceCommand: () => Promise.resolve([]), setFiles: () => {},
+  getWorkspace: () => Promise.reject(new Error("timeout")),
+  setWorkspaceLoading: (value: boolean) => loadStates.push(value),
+  setWorkspaceLoadError: (value: string) => failures.push(value),
+  setWorkspace: () => assert.fail("a failed read must not erase the saved snapshot"),
+});
+await assert.rejects(featureModule.exports.load(), /timeout/);
+assert.deepEqual(loadStates, [true, false]);
+assert.match(failures.at(-1) ?? "", /Saved matter work could not load/);
+console.log("Failed matter reads expose loading and retry state without erasing saved work.");

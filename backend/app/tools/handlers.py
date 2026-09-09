@@ -142,6 +142,16 @@ async def read_file(context: ToolExecutionContext, arguments: dict[str, Any]) ->
     document = context.app.vault.read_document(path)
     if context.frozen_context.get("withhold_unattributed_history") and context.matter_id and context.app.vault.relative(context.app.vault.resolve(path)) in {f"{context.app.matters.matter_path(context.matter_id)}/{name}" for name in ("facts.md", "dossier.md", "issues.md", "matter.md")}:
         document = {**document, "content": context.frozen_context.get("context", ""), "metadata": {"context_filtered": True}}
+    # Conversation metadata contains nested runs and traces, not just source text.
+    # Never feed that recursive execution history back into the model.
+    if len(json.dumps(document, default=str)) > 60000:
+        content = str(document.get("content") or "")
+        clipped = len(content) > 40000
+        document = {**document, "metadata": {
+            key: value for key, value in document.get("metadata", {}).items()
+            if isinstance(value, (str, int, float, bool)) and len(str(value)) < 1000
+        }, "content": content if not clipped else content[:20000] + "\n\n[Middle omitted from this tool view. Full file remains saved.]\n\n" + content[-20000:],
+            "tool_view_notice": "Large file: nested metadata omitted; content may show only the beginning and end. Do not claim to have reviewed omitted text."}
     return {"summary": f"Read {path}.", "data": document}
 
 

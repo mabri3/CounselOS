@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import ts from "typescript";
-import { getChatRun, retryChatRun, startChatRun } from "../lib/api.ts";
+import { getChatRun, retryChatRun, startChatRun, notifyMatterChanged } from "../lib/api.ts";
 import { chatAgentId, chatDraftStorageKey, chatFailureGuidance, chatProgressLabel, chatRunStateLabel, chatRunStorageKey, chatSuggestions, conversationChatDraftStorageKey, durableChatProgress, historicalQuestionStates, intakeRecoveryKey, legacyChatRunStorageKey, mergeChatMessages, needsIntakeQuestionRecovery, operationChangeLinks, pendingChatRunId, promoteConversationComposer, rememberChatRun, remainingComposerValue, safeChatFailureDetail, shouldShowChatRunStatus, storeConversationComposer, visibleOperationResults } from "../lib/chatRunLogic.ts";
 import type { ChatRun } from "../lib/types.ts";
 
@@ -131,6 +131,7 @@ async function checkRunReconciliation({ pending = false, matchingRun = true, mat
   const reads: string[] = [];
   const timers: number[] = [];
   const scope: Record<string, unknown> = {
+    notifyMatterChanged,
     useCallback: (callback: unknown) => callback, contextKey: "vault/alex/M-1/panels", matterId: "M-1", runId: run.run_id, pendingRunId: pending ? run.run_id : null,
     conversationId: "CONV-SAVED", initialRunId: "RUN-OLD-INITIAL", messages, cancelled: false, timer: undefined,
     terminalRuns: { current: new Set<string>() }, window: { localStorage: storage, setTimeout: (_callback: unknown, delay: number) => { timers.push(delay); } },

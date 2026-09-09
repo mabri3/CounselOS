@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 from time import monotonic
+import hashlib
+from datetime import datetime, UTC
 
 import httpx
 
@@ -25,16 +27,10 @@ class SearchService:
 
     async def search(self, query: str, *, matter_path: str | None = None) -> dict[str, Any]:
         internal = self.search_internal(query, matter_path=matter_path, limit=8)
-        external: list[dict[str, Any]] = []
-        warning: str | None = None
-        if self.settings.search_provider.lower() == "tavily" and self.settings.tavily_api_key:
-            try:
-                external = await self._tavily(query)
-            except Exception as exc:  # External research must not prevent useful work product.
-                warning = f"External search failed: {exc}"
-        elif self.settings.search_provider.lower() not in {"", "disabled", "none"}:
-            warning = f"Search provider '{self.settings.search_provider}' is not configured."
-        return {"query": query, "internal": internal, "external": external, "warning": warning}
+        if self.settings.search_provider.lower() in {"", "disabled", "none"}:
+            return {"query": query, "internal": internal, "external": [], "warning": None}
+        result = await self.search_external(query)
+        return {"query": query, "internal": internal, "external": result["external"], "warning": result["warning"]}
 
     async def search_external(
         self, query: str, *, provider: str | None = None,
@@ -47,18 +43,25 @@ class SearchService:
         attempts = 0
         failure_class: str | None = None
         selected = (provider or self.settings.search_provider).lower()
-        if selected == "tavily" and self.settings.tavily_api_key:
+        configured = (
+            selected == "tavily" and self.settings.tavily_api_key
+            or selected == "firecrawl" and self.settings.firecrawl_api_key
+        )
+        if configured:
+            search = self._firecrawl if selected == "firecrawl" else self._tavily
             for attempt in range(max(0, retry_count) + 1):
                 attempts = attempt + 1
                 try:
-                    external = await self._tavily(query, timeout_seconds=timeout_seconds)
+                    external = await search(query, timeout_seconds=timeout_seconds)
+                    warning = None
+                    failure_class = None
                     break
                 except Exception as exc:  # A provider failure can still yield a partial scan.
                     warning = f"External search failed: {type(exc).__name__}"
                     failure_class = "timeout" if isinstance(exc, httpx.TimeoutException) else "network" if isinstance(exc, httpx.NetworkError) else "http_status" if isinstance(exc, httpx.HTTPStatusError) else "request_failure"
                     if attempt >= max(0, retry_count):
                         break
-        elif selected == "tavily":
+        elif selected in {"tavily", "firecrawl"}:
             warning = "External search provider is not configured."
         elif selected not in {"", "disabled", "none"}:
             warning = f"Search provider '{selected}' is not configured."
@@ -94,4 +97,40 @@ class SearchService:
                 "support_state": "retrieved",
             }
             for result in data.get("results", [])
+        ]
+
+    async def _firecrawl(self, query: str, *, timeout_seconds: int | None = None) -> list[dict[str, Any]]:
+        payload = {
+            "query": query,
+            "limit": min(100, max(1, self.settings.search_max_results)),
+            "sources": ["web"],
+            "scrapeOptions": {"formats": ["markdown"]},
+        }
+        async with httpx.AsyncClient(timeout=timeout_seconds or self.settings.llm_timeout_seconds) as client:
+            response = await client.post(
+                "https://api.firecrawl.dev/v2/search", json=payload,
+                headers={"Authorization": f"Bearer {self.settings.firecrawl_api_key}"},
+            )
+            response.raise_for_status()
+            data = response.json()
+        if data.get("success") is not True:
+            raise ValueError("Firecrawl search failed")
+        results = data.get("data", {}).get("web", [])
+        # The research prompt includes both source records and search excerpts.
+        # Share the existing excerpt budget so long pages cannot crowd out analysis.
+        excerpt_limit = max(1, self.settings.intelligence_max_excerpt_characters // max(1, len(results)))
+        retrieved_at = datetime.now(UTC).isoformat()
+        return [
+            {
+                "title": result.get("title") or (result.get("metadata") or {}).get("title") or "Untitled source",
+                "url": result.get("url", ""),
+                "content": (result.get("markdown") or result.get("description") or "")[:excerpt_limit],
+                "retrieved_content": result.get("markdown") or None,
+                "available_excerpt": (result.get("markdown") or "")[:excerpt_limit] or None,
+                "retrieved_at": retrieved_at,
+                "source_hash": hashlib.sha256(result["markdown"][:excerpt_limit].encode()).hexdigest() if result.get("markdown") else None,
+                "score": None,
+                "support_state": "retrieved" if (result.get("markdown") or "").strip() else "unverified_lead",
+            }
+            for result in results
         ]

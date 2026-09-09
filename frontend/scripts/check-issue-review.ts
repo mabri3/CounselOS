@@ -33,7 +33,7 @@ function hookRuntime() {
 function load(source: string, fileName: string, reactModule: Record<string, unknown>, modules: Record<string, unknown> = {}) {
   const module = { exports: {} as Record<string, unknown> & { default?: Component } };
   const output = ts.transpileModule(source, { fileName, compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText;
-  runInNewContext(output, { exports: module.exports, module, require: (name: string) => name === "react/jsx-runtime" ? { Fragment: "Fragment", jsx, jsxs: jsx } : name === "react" ? reactModule : modules[name] ?? {} });
+  runInNewContext(output, { crypto: { randomUUID: () => "test-key" }, exports: module.exports, module, require: (name: string) => name === "react/jsx-runtime" ? { Fragment: "Fragment", jsx, jsxs: jsx } : name === "react" ? reactModule : modules[name] ?? {} });
   return module.exports;
 }
 
@@ -119,7 +119,7 @@ const props = {
 function renderDetail() { hooks.reset(); return IssueReviewDetail(props); }
 let tree = renderDetail();
 const rendered = text(tree);
-assert.match(rendered, /What needs your judgment[\s\S]*Why this matters[\s\S]*Legal basis[\s\S]*Questions that change the answer[\s\S]*Ways forward[\s\S]*Your recorded position/, "issue detail keeps the required reading order");
+assert.match(rendered, /What needs your judgment[\s\S]*Your recorded position[\s\S]*Why this matters[\s\S]*Legal basis[\s\S]*Questions that change the answer[\s\S]*Ways forward/, "the disposition controls precede supporting analysis");
 assert.match(rendered, /Learning service operator[\s\S]*United States[\s\S]*The service collects data from learners/, "claim applicability names actor, jurisdiction, and application");
 assert.match(rendered, /COPPA Rule · 16 CFR 312.2 — child · Retrieved/, "claim evidence keeps its exact locator and support state");
 assert.match(rendered, /Support gap:[\s\S]*No exact operator passage is saved[\s\S]*No claim-level evidence is saved/, "an unsupported claim remains visible with its gap");
@@ -149,8 +149,17 @@ for (const [label, expected] of [["Open decision map", "map"], ["Discuss this is
 assert.deepEqual(calls.evidence, ["16 CFR 312.2 — child"], "the exact claim evidence row opens without source-level merging");
 (buttons.find((button) => text(button) === "Update analysis")!.props.onClick as () => void)();
 assert.equal(calls.analyzed, "ISS-AGE", "analysis refresh keeps the saved issue identity");
-(buttons.find((button) => text(button) === "Record this path")!.props.onClick as () => void)();
-assert.deepEqual(structuredClone((calls.path as { map_basis: Record<string, unknown> }).map_basis), { issue_id: "ISS-AGE", analysis_id: "AN-AGE", analysis_revision: "analysis-r3", analysis_path: "03_Matters/demo/research/age-paths.md", output_revision: "output-r4", selected_option_id: "OPT-AGE-GATE", selected_option_revision: "option-r2" }, "recording a path passes the exact saved option and analysis identity");
+const pathHooks = hookRuntime();
+const PathDetail = load(detailSource, "IssueReviewDetail.tsx", pathHooks.module, {
+  "./IssueChoiceForm": (input: Record<string, unknown>) => jsx("form", { "data-option": input.initialOptionId }),
+}).default!;
+pathHooks.reset();
+let pathTree = PathDetail(props);
+(nodes(pathTree).find(node => node.type === "button" && text(node) === "Record this path")!.props.onClick as Function)();
+pathHooks.reset();
+pathTree = PathDetail(props);
+assert.equal(nodes(pathTree).find(node => node.type === "form")?.props["data-option"], "OPT-AGE-GATE", "path recording opens the shared choice and work form with the exact option");
+assert.equal(calls.path, null, "the separate legacy decision dialog is not used");
 
 const unsupportedHooks = hookRuntime();
 const unsupportedDetail = load(detailSource, "IssueReviewDetail.tsx", unsupportedHooks.module).default!;
@@ -169,31 +178,71 @@ await (buttons.find((button) => text(button) === "Save legal analysis")!.props.o
 assert.equal(calls.question?.answer_kind, "legal_analysis", "a legal answer is sent as legal analysis");
 assert.equal(calls.question?.answer, "The federal rule applies to this operator.");
 
-let dispositionWrites = 0;
-const dispositionHooks = hookRuntime();
-const DispositionDetail = load(detailSource, "IssueReviewDetail.tsx", dispositionHooks.module).default!;
-const dispositionProps = { ...props, onDisposition: async () => { dispositionWrites += 1; return { issue: props.issue, receipt: { receipt_id: "R-D", source_action_key: "A-D", operation: "disposition", target: { matter_id: "MAT-DEMO" }, state: "applied" } }; } };
-function renderDisposition(nextProps = dispositionProps) { dispositionHooks.reset(); return DispositionDetail(nextProps); }
-let dispositionTree = renderDisposition();
-(nodes(dispositionTree).find((node) => node.type === "button" && text(node) === "Record disposition")!.props.onClick as () => void)();
-dispositionTree = renderDisposition();
-assert.match(text(dispositionTree), /Record issue disposition[\s\S]*Cancel/, "the disposition editor opens only after a direct action");
-(nodes(dispositionTree).filter((node) => node.type === "button" && text(node) === "Cancel").at(-1)!.props.onClick as () => void)();
-dispositionTree = renderDisposition();
-assert.equal(nodes(dispositionTree).filter((node) => node.type === "button" && text(node) === "Cancel").length, 1, "cancel closes only the disposition editor");
-assert.equal(dispositionWrites, 0, "opening and cancelling a disposition makes no write");
-
-(nodes(dispositionTree).find((node) => node.type === "button" && text(node) === "Record disposition")!.props.onClick as () => void)();
-dispositionTree = renderDisposition({ ...dispositionProps, issuesRevision: "issues-r2" });
-const reasonInput = nodes(dispositionTree).find((node) => node.type === "textarea" && node.props.placeholder === "Give the reason for this recorded position.")!;
-(reasonInput.props.onChange as (event: { target: { value: string } }) => void)({ target: { value: "The mitigation is complete." } });
-dispositionTree = renderDisposition({ ...dispositionProps, issuesRevision: "issues-r2" });
-const staleSubmit = nodes(dispositionTree).find((node) => node.type === "button" && text(node) === "Record disposition")!;
-assert.equal(staleSubmit.props.disabled, true, "a changed issue revision disables disposition save");
-await (staleSubmit.props.onClick as () => Promise<void>)();
-dispositionTree = renderDisposition({ ...dispositionProps, issuesRevision: "issues-r2" });
-assert.match(text(dispositionTree), /issue changed while you were choosing a disposition/i, "the stale form explains how to recover");
-assert.equal(dispositionWrites, 0, "a stale disposition form never calls the write callback");
+const choiceSource = await readFile(new URL("../components/workspace/IssueChoiceForm.tsx", import.meta.url), "utf8");
+for (const scenario of ["recommended", "candidate", "custom", "edited", "conditions", "failed", "stale", "risk", "open"] as const) {
+  const choiceHooks = hookRuntime();
+  const ChoiceForm = load(choiceSource, "IssueChoiceForm.tsx", choiceHooks.module).default!;
+  const events: string[] = [];
+  let recorded: Record<string, unknown> = {};
+  let position = "";
+  const choiceProps = { ...props, onCancel: () => events.push("close"),
+    onDisposition: async (_id: string, command: Record<string, unknown>) => {
+      events.push("record"); recorded = command;
+      if (scenario === "failed") throw new Error("Save not confirmed");
+      return {};
+    },
+    onAnalyzePaths: (_id: string, value: string) => { events.push("analyze"); position = value; },
+  };
+  const render = (input = choiceProps) => { choiceHooks.reset(); return ChoiceForm(input); };
+  let view = render();
+  const field = (tag: string, label: string) => nodes(view).find(node => node.type === "label" && text(node).startsWith(label)) && nodes(nodes(view).find(node => node.type === "label" && text(node).startsWith(label))).find(node => node.type === tag)!;
+  assert.equal(events.length, 0, "rendering does not record or analyze");
+  const choice = field("select", "Starting choice")!;
+  assert.equal(choice.props.value, "OPT-AGE-GATE");
+  if (["candidate", "custom"].includes(scenario)) {
+    (choice.props.onChange as Function)({ target: { value: scenario === "candidate" ? "OPT-SCHOOL" : "custom" } }); view = render();
+  }
+  if (["custom", "edited", "failed"].includes(scenario)) {
+    (field("textarea", "Reason")!.props.onChange as Function)({ target: { value: "Use an adult-only pilot." } });
+    (field("input", "Chosen path")!.props.onChange as Function)({ target: { value: "Adult pilot" } }); view = render();
+  }
+  if (scenario === "conditions") {
+    (field("textarea", "Conditions still to confirm")!.props.onChange as Function)({ target: { value: "Partner confirmation must cover the new launch region." } }); view = render();
+  }
+  if (scenario === "risk" || scenario === "open") {
+    (field("select", "Your conclusion")!.props.onChange as Function)({ target: { value: scenario === "risk" ? "risk_accepted" : "unresolved" } }); view = render();
+  }
+  if (scenario === "stale") view = render({ ...choiceProps, issuesRevision: "r2" });
+  const submit = nodes(view).find(node => node.type === "button" && /Record decision and follow-up|Record open question and follow-up/.test(text(node)))!;
+  if (scenario === "stale") assert.equal(submit.props.disabled, true);
+  await (submit.props.onClick as Function)();
+  if (scenario === "stale") { assert.deepEqual(events, []); continue; }
+  assert.equal(recorded.workflow, true);
+  assert.equal(recorded.disposition, scenario === "risk" ? "risk_accepted" : scenario === "open" ? "unresolved" : "mitigation_in_progress");
+  if (scenario === "recommended") {
+    assert.equal((recorded.map_basis as Record<string, unknown>).selected_option_revision, "option-r2");
+    assert.equal((recorded.follow_up as unknown[]).length, 1);
+    assert.deepEqual(events, ["record", "close"]);
+  }
+  if (scenario === "failed") {
+    view = render();
+    assert.match(text(view), /Your text is retained/);
+    assert.equal(field("textarea", "Reason")!.props.value, "Use an adult-only pilot.");
+    assert.deepEqual(events, ["record"]);
+  } else if (["candidate", "custom", "edited", "conditions", "open"].includes(scenario)) {
+    assert.deepEqual(events, ["record", "close", "analyze"]);
+    assert.ok(position.includes(String(recorded.reason)));
+  }
+}
+assert.match(detailSource, /IssueChoiceForm/, "issue page uses the tested unified form");
+assert.match(detailSource, /onCompleteWork/, "linked work has a completion action");
+const resumeHooks = hookRuntime();
+const ResumeChoice = load(choiceSource, "IssueChoiceForm.tsx", resumeHooks.module).default!;
+resumeHooks.reset();
+const resumeTree = ResumeChoice({ ...props, onCancel: () => undefined, decisions: [{ decision_id: "D-current", title: "School path", chosen_path: "Use the school-authorized route", rationale: "School authorization confirmed.", map_basis: { selected_option_id: "OPT-SCHOOL" }, conditions: [], decided_at: "2026-09-07" }] });
+assert.equal(nodes(resumeTree).find(node => node.type === "input" && node.props.value === "Use the school-authorized route")?.props.value, "Use the school-authorized route", "returning to review preserves the recorded path, not the recommendation");
+assert.equal(nodes(resumeTree).find(node => node.type === "select" && text(node).includes("Recommended —"))?.props.value, "OPT-SCHOOL");
+assert.doesNotMatch(text(resumeTree), /New task 1/, "reviewing completed work does not recreate the recommendation tasks");
 
 const readOnlyHooks = hookRuntime();
 const readOnlyDetail = load(detailSource, "IssueReviewDetail.tsx", readOnlyHooks.module).default!;

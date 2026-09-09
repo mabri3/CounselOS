@@ -160,6 +160,11 @@ other valid claims and evidence entries.
 """
 
 DECISION_PATHS_EXECUTION_CONTRACT = """# Optional decision paths output
+For each condition, optionally include answer_choices: up to six objects with
+label and answer. These are editable draft answers, not facts. Give useful
+matter-specific alternatives, including uncertainty when material. Do not
+invent confirmed facts. The same saved choices appear in chat and the map.
+
 
 Keep the useful answer in normal prose. For a focused issue analysis, you may
 append one independent fenced JSON object after the prose:

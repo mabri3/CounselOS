@@ -15,7 +15,7 @@ import OrientationSummary from "./OrientationSummary";
 import WorkItemSummary from "./WorkItemSummary";
 import styles from "./MatterReview.module.css";
 
-type ReviewIntegrationActions = "onDisposition" | "onOpenDocument" | "onResearchLegalBasis" | "onCreateMitigation" | "onRecordDecision" | "onDiscuss" | "onOpenDecisionMap" | "onAnalyzePaths" | "onRecordPath";
+type ReviewIntegrationActions = "onCompleteWork" | "onDisposition" | "onOpenDocument" | "onResearchLegalBasis" | "onCreateMitigation" | "onRecordDecision" | "onDiscuss" | "onOpenDecisionMap" | "onAnalyzePaths" | "onRecordPath";
 export type UnderstandPanelIntegrationProps = ContinuityUnderstandPanelProps & Partial<Pick<IssueReviewDetailProps, ReviewIntegrationActions>> & {
   linkedWorkItems?: LinkedIssueWork[];
   linkedDecisions?: LinkedIssueDecision[];
@@ -252,7 +252,7 @@ export default function UnderstandPanel(props: UnderstandPanelIntegrationProps) 
 
     {hasReviewProjection ? props.sectionNavigation ?? null : null}
 
-    {hasReviewProjection && selectedIssue ? <IssueReviewDetail analysisStatus={analysisStatus} onAnalyzePaths={props.onAnalyzePaths} onRecordPath={props.onRecordPath} busy={busy} claims={[...new Map([...selectedClaims, ...(analysisStatus?.claims ?? [])].map((claim) => [`${claim.claim_id}:${claim.output_revision}`, claim])).values()]} decisions={props.linkedDecisions ?? []} error={actionError || error} issue={selectedIssue} issuesRevision={snapshot.issues_revision ?? ""} key={selectedIssue.issue_id} matterId={snapshot.matter_id} onCreateMitigation={props.onCreateMitigation} onDiscuss={props.onDiscuss} onDisposition={props.onDisposition} onIssueUpdate={onIssueUpdate} onOpenDecisionMap={props.onOpenDecisionMap} onOpenDocument={props.onOpenDocument} onOpenEvidence={onOpenEvidence} onQuestionAnswer={onQuestionAnswer} onRecordDecision={props.onRecordDecision} onResearchLegalBasis={props.onResearchLegalBasis} questions={selectedQuestions} renderSupportedText={props.renderSupportedText} responseOptions={props.responseOptions ?? []} workItems={props.linkedWorkItems ?? []} /> : null}
+    {hasReviewProjection && selectedIssue ? <IssueReviewDetail onCompleteWork={props.onCompleteWork} analysisStatus={analysisStatus} onAnalyzePaths={props.onAnalyzePaths} onRecordPath={props.onRecordPath} busy={busy} claims={[...new Map([...selectedClaims, ...(analysisStatus?.claims ?? [])].map((claim) => [`${claim.claim_id}:${claim.output_revision}`, claim])).values()]} decisions={props.linkedDecisions ?? []} error={actionError || error} issue={selectedIssue} issuesRevision={snapshot.issues_revision ?? ""} key={selectedIssue.issue_id} matterId={snapshot.matter_id} onCreateMitigation={props.onCreateMitigation} onDiscuss={props.onDiscuss} onDisposition={props.onDisposition} onIssueUpdate={onIssueUpdate} onOpenDecisionMap={props.onOpenDecisionMap} onOpenDocument={props.onOpenDocument} onOpenEvidence={onOpenEvidence} onQuestionAnswer={onQuestionAnswer} onRecordDecision={props.onRecordDecision} onResearchLegalBasis={props.onResearchLegalBasis} questions={selectedQuestions} renderSupportedText={props.renderSupportedText} responseOptions={props.responseOptions ?? []} workItems={props.linkedWorkItems ?? []} /> : null}
 
     {savedAnswer.text && (!hasReviewProjection || savedAnswer.text.trim() !== (snapshot.short_answer ?? "").trim()) ? (() => {
       const answerIsLong = savedAnswer.text.length > LONG_ANSWER_CHARACTER_LIMIT;

@@ -13,6 +13,8 @@ import { chatAgentId, chatDraftStorageKey, chatFailureGuidance, chatProgressLabe
 import { legacyQuestionModeStorageKey, questionModeStorageKey } from "@/lib/chatCardLogic";
 import { skillBuilderGoal } from "@/lib/skills";
 import type { AppliedSkillSummary, AttachmentReference, CardAction, ChatCard, ChatRun, IntakeAnswer, OperationResult, QuestionMode, SkillDefinition, ToolTrace } from "@/lib/types";
+import ChatMatterQuestions from "@/components/workspace/ChatMatterQuestions";
+import { notifyMatterChanged, subscribeMatterChanges } from "@/lib/api";
 import ClaimMarkdown from "@/components/workspace/ClaimMarkdown";
 import type { ConversationTarget, DocumentIdentity, DocumentReferenceTarget, InteractionReceipt, WorkspaceClaim } from "@/lib/workspaceTypes";
 import styles from "@/components/workspace/MatterConversation.module.css";
@@ -21,6 +23,7 @@ type ChatOperationResult = OperationResult & { proposal?: Record<string, unknown
 type Message = { message_id?: string; run_id?: string; workspace_action?: string | null; role: "user" | "assistant"; content: string; trace?: ToolTrace[]; cards?: ChatCard[]; attachments?: AttachmentReference[]; applied_skills?: AppliedSkillSummary[]; card_action?: CardAction | null; operation_results?: ChatOperationResult[] };
 
 function conversationTargetLabel(target: ConversationTarget | undefined, matterTitle: string): string {
+  if (target?.condition_id) return "Selected numbered question";
   if (target?.scenario_id) return "Saved scenario";
   if (target?.artifact_path) return `Document: ${target.artifact_path.split("/").at(-1)}`;
   if (target?.selected_range?.text) return "Selected passage";
@@ -74,6 +77,7 @@ export default function ChatPanel({
   onBeforeSubmit,
   onRunStarted,
   target,
+  onTargetChange,
   expectedQuestionRevision,
   workspaceReceipts,
   onClearTarget,
@@ -111,6 +115,7 @@ export default function ChatPanel({
   onBeforeSubmit?: () => void;
   onRunStarted?: (run: ChatRun) => void;
   target?: ConversationTarget;
+  onTargetChange?: (target: ConversationTarget) => void;
   expectedQuestionRevision?: string;
   workspaceReceipts?: InteractionReceipt[];
   onClearTarget?: () => void;
@@ -139,12 +144,36 @@ export default function ChatPanel({
   inquiryRail?: ReactNode;
 }) {
   const router = useRouter();
+  const [questionTarget, setQuestionTarget] = useState<ConversationTarget | null>(null);
+  const targetIdentity = JSON.stringify([target?.condition_id, target?.issue_id, target?.option_id, target?.source_id, target?.scenario_id, target?.artifact_path]);
+  useEffect(() => setQuestionTarget(null), [targetIdentity, matterId, contextKey]);
+  const effectiveTarget = questionTarget ?? target;
   const legacyInputStorageKey = contextKey ? `${contextKey}:composer` : chatDraftStorageKey(matterId);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [loadingHistory, setLoadingHistory] = useState(true);
   const [input, setInput] = useState("");
+  const syncState = useRef({onRefresh, conversationId});
+  syncState.current = {onRefresh, conversationId};
+  useEffect(() => {
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout>;
+    const unsubscribe = subscribeMatterChanges(matterId, () => {
+      clearTimeout(timer);
+      timer = setTimeout(async () => {
+        try {
+          await syncState.current.onRefresh();
+          const id = syncState.current.conversationId;
+          if (id) {
+            const saved = await getConversation(matterId, id);
+            if (!cancelled && id === syncState.current.conversationId) setMessages(current => mergeChatMessages(current, saved.messages));
+          }
+        } catch { if (!cancelled) setHistoryError("Saved matter changes could not refresh. Your text is retained. Reload to try again."); }
+      }, 200);
+    });
+    return () => {cancelled = true; clearTimeout(timer); unsubscribe();};
+  }, [matterId, contextKey]);
   const composerValue = useRef(input); composerValue.current = input;
   const draftConversationId = conversationId ?? (loadingHistory ? initialConversationId : null);
   const inputStorageKey = conversationChatDraftStorageKey(matterId, draftConversationId);
@@ -327,6 +356,7 @@ export default function ChatPanel({
     try {
       if (refreshMatter) {
         await onRefresh();
+        notifyMatterChanged(matterId);
         onRunComplete?.(run);
       }
       const token = terminalRunToken(run);
@@ -479,7 +509,7 @@ export default function ChatPanel({
       onBeforeSubmit?.();
       const run = await startChatRun(matterId, {
         message: trimmed,
-        target,
+        target: effectiveTarget,
         expected_question_revision: expectedQuestionRevision,
         context_selections: contextSelections,
         template_id: selectedTemplateId,
@@ -651,6 +681,9 @@ export default function ChatPanel({
     -1,
   );
   const latestUserIndex = messages.reduce((latest, message, index) => message.role === "user" ? index : latest, -1);
+  const latestResponseLabel = activeRun && activeRun.state !== "completed"
+    ? ["queued", "running"].includes(activeRun.state) ? "Research in progress — no final answer yet" : "Saved partial response — research did not finish"
+    : "Latest answer";
   const latestQuestionKey = `question:${messages[latestUserIndex]?.message_id ?? latestUserIndex}`;
   const earlierMessageCount = messages.length - (latestAssistantIndex >= 0 ? 1 : 0) - (latestUserIndex >= 0 ? 1 : 0);
   const activeRunHasSavedWork = Boolean(
@@ -730,8 +763,8 @@ export default function ChatPanel({
   return (
     <div className={`${styles.panel} chat-panel`}>
       <div className="chat-history-status">
-        <span><strong>Inquiry target:</strong> {conversationTargetLabel(target, matterTitle)}</span>
-        {target && onClearTarget ? <button className="btn tiny quiet" type="button" onClick={onClearTarget}>Clear target</button> : null}
+        <span><strong>Inquiry target:</strong> {conversationTargetLabel(effectiveTarget, matterTitle)}</span>
+        {target && onClearTarget ? <button className="btn tiny quiet" type="button" onClick={() => { setQuestionTarget(null); onClearTarget?.(); }}>Clear target</button> : null}
         {latestAssistantIndex >= 0 ? <button className="btn tiny quiet" type="button" onClick={() => latestAnswerElement.current?.scrollIntoView({ behavior: "auto", block: "start" })}>Jump to latest answer</button> : null}
       </div>
       <WorkspaceReceiptCards receipts={workspaceReceipts} onOpenDocument={onOpenDocument} />
@@ -764,7 +797,7 @@ export default function ChatPanel({
         <div className="conversation-main">
       {messages.length ? (
         <div className="thread" ref={threadElement} onScroll={() => { const node = threadElement.current; if (node) followLatest.current = node.scrollHeight - node.scrollTop - node.clientHeight < 100; }}>
-          {latestAssistantIndex >= 0 ? <section className="latest-answer"><p className="latest-answer__label">Latest answer</p>{renderMessage(messages[latestAssistantIndex], latestAssistantIndex)}</section> : null}
+          {latestAssistantIndex >= 0 ? <section className="latest-answer"><p className="latest-answer__label">{latestResponseLabel}</p>{renderMessage(messages[latestAssistantIndex], latestAssistantIndex)}</section> : null}
           {latestUserIndex >= 0 ? <section className="latest-question" data-collapsed={!expandedAnswerKeys.includes(latestQuestionKey) ? "true" : undefined}><p className="latest-answer__label">Your question</p>{renderMessage(messages[latestUserIndex], latestUserIndex)}{messages[latestUserIndex].content.length > 400 ? <button className="btn quiet" type="button" aria-expanded={expandedAnswerKeys.includes(latestQuestionKey)} onClick={() => setExpandedAnswerKeys((keys) => keys.includes(latestQuestionKey) ? keys.filter((key) => key !== latestQuestionKey) : [...keys, latestQuestionKey])}>{expandedAnswerKeys.includes(latestQuestionKey) ? "Show shorter question" : "Read full question"}</button> : null}</section> : null}
           {earlierMessageCount > 0 ? <details className="conversation-history"><summary>Earlier conversation ({earlierMessageCount} messages)</summary><div className="conversation-history__messages">{messages.map((message, index) => (index === latestAssistantIndex || index === latestUserIndex) ? null : renderMessage(message, index))}</div></details> : null}
           {busy && waiting ? (
@@ -779,6 +812,7 @@ export default function ChatPanel({
         {inquiryRail ? <aside className="conversation-inquiry-rail" aria-label="Run an inquiry">{inquiryRail}</aside> : null}
       </div>
 
+      {!intakeActive ? <ChatMatterQuestions matterId={matterId} contextKey={contextKey} target={effectiveTarget} onTarget={next => { setQuestionTarget(next); onTargetChange?.(next); }} conversationId={conversationId} onAsk={text => { if (input.trim()) setPreparedRequest(text); else setInput(text); inputRef.current?.focus(); }} chatText={input || (latestAssistantIndex >= 0 ? messages[latestAssistantIndex].content : "")} /> : null}
       <div className="composer"
         onDragOver={event => { if (Array.from(event.dataTransfer.types).includes("Files")) { event.preventDefault(); event.dataTransfer.dropEffect = "copy"; } }}
         onDrop={event => { if (event.dataTransfer.files.length) { event.preventDefault(); event.stopPropagation(); void addFiles(Array.from(event.dataTransfer.files)); } }}

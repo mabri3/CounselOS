@@ -3,6 +3,8 @@
 import { useEffect, useRef } from "react";
 import type { EvidenceDrawerProps } from "@/lib/workspaceTypes";
 import { isSafeSourceUrl, isSafeVaultPath } from "@/lib/research";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import styles from "./MatterDocuments.module.css";
 
 function supportLabel(state: NonNullable<NonNullable<EvidenceDrawerProps["evidence"]>["support_state"]>) {
@@ -18,7 +20,7 @@ export default function EvidenceDrawer({ evidence, open, onClose, onOpenArtifact
     if (!open) return;
     returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const node = drawer.current;
-    const focusable = () => Array.from(node?.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])') ?? []);
+    const focusable = () => Array.from(node?.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], summary, [tabindex]:not([tabindex="-1"])') ?? []);
     focusable()[0]?.focus();
     const keydown = (event: globalThis.KeyboardEvent) => {
       if (event.key === "Escape") { event.preventDefault(); closeRef.current(); return; }
@@ -40,14 +42,32 @@ export default function EvidenceDrawer({ evidence, open, onClose, onOpenArtifact
     <button aria-label="Close evidence" className={styles.evidenceBackdrop} onClick={onClose} type="button" />
     <aside aria-label="Claim evidence" aria-modal="true" className={styles.evidenceDrawer} ref={drawer} role="dialog">
       <header className={styles.evidenceHeader}>
-        <div><span className="record-meta">Evidence for claim</span><h2 className={styles.evidenceTitle}>{evidence?.source_label || "Source unavailable"}</h2></div>
+        <div><span className="record-meta">Source</span><h2 className={styles.evidenceTitle}>{evidence?.source_label || "Source unavailable"}</h2></div>
         <button aria-label="Close evidence drawer" className="btn quiet tiny" onClick={onClose} type="button">Close</button>
       </header>
-      {!evidence ? <div className="warning-callout" role="status"><strong>Evidence unavailable.</strong> The saved answer remains visible.</div> : <div className={styles.evidenceStack}>
-        <section className={styles.evidenceCard}><span className={`state-label ${state === "verified" ? "state-healthy" : state === "unverified_lead" || state === "unknown" ? "state-attention" : "state-agent"}`}>{supportLabel(state)}</span><dl className={styles.evidenceDetails}><dt>Claim ID</dt><dd>{evidence.claim_id || "Unknown"}</dd><dt>Claim revision</dt><dd>{evidence.claim_revision || "Legacy or unavailable"}</dd><dt>Output revision</dt><dd>{evidence.output_revision || "Legacy or unavailable"}</dd><dt>Source ID</dt><dd>{evidence.source_id || "Unknown"}</dd><dt>Location</dt><dd>{evidence.locator || "Exact location unavailable"}</dd><dt>Retrieved</dt><dd>{evidence.retrieved_at || "Unknown"}</dd><dt>Version</dt><dd>{evidence.source_version || evidence.source_hash || "Unknown"}</dd></dl><p className="faint">Source support and legal applicability are separate. Supplied or Retrieved does not mean Verified, and no source status proves that the rule applies to this matter.</p></section>
-        <section className={styles.evidenceCard}><span className="record-meta">Exact available passage</span>{evidence.available_excerpt ? <blockquote className={styles.evidenceReading}>{evidence.available_excerpt}</blockquote> : <p className={styles.evidenceReading}>No exact passage is available. Retrieval may have failed or the saved source reference may be missing.</p>}</section>
-        {evidence.explanation ? <section className={`wash-agent ${styles.evidenceCard}`}><span className="record-meta">Generated explanation · How this source supports this claim</span><p className={styles.evidenceReading}>{evidence.explanation}</p></section> : <section className="warning-callout" role="status"><strong>Claim explanation unavailable.</strong> The source record remains available, but its support for this claim is not explained.</section>}
-        <section className={styles.evidenceCard}><span className="record-meta">Open source</span><div className={`btn-row ${styles.evidenceActions}`}>{safeUrl ? <a className="btn quiet tiny" href={safeUrl} rel="noopener noreferrer" target="_blank">Open public source</a> : null}{safePath ? <button className="btn quiet tiny" onClick={() => onOpenArtifact(safePath)} type="button">Open saved source</button> : null}{!safeUrl && !safePath ? <span className="faint">No safe source link is available.</span> : null}</div>{(evidence.url && !safeUrl) || (evidence.path && !safePath) ? <p className="warning-callout" role="status">An unsafe source location was blocked.</p> : null}<p className="faint">Opening a link does not verify the source.</p></section>
+      {!evidence ? <p role="status">This source record is unavailable.</p> : <div className={styles.evidenceStack}>
+        <section className={styles.evidenceCard}>
+          <div className={`btn-row ${styles.evidenceActions}`}>
+            {safeUrl && <a className="btn primary" href={safeUrl} rel="noopener noreferrer" target="_blank">Open original source ↗</a>}
+            {safePath && <button className="btn quiet" onClick={() => { onClose(); onOpenArtifact(safePath); }} type="button">Read saved copy</button>}
+          </div>
+          {safeUrl && <p className="faint">{new URL(safeUrl).hostname}</p>}
+          {!safeUrl && !safePath && <p>No source link is available.</p>}
+          <span className={`state-label ${state === "verified" ? "state-healthy" : state === "unverified_lead" || state === "unknown" ? "state-attention" : "state-agent"}`}>{supportLabel(state)}</span>
+        </section>
+        {evidence.locator && evidence.available_excerpt ? <section className={styles.evidenceCard}>
+          <span className="record-meta">Saved passage · {evidence.locator}</span>
+          <div className={styles.evidenceReading}><ReactMarkdown remarkPlugins={[remarkGfm]} components={{a: ({href, children}) => isSafeSourceUrl(href) ? <a href={href} target="_blank" rel="noopener noreferrer">{children}</a> : <span>{children}</span>, img: () => null}}>{evidence.available_excerpt}</ReactMarkdown></div>
+        </section> : <p className="faint">No specific passage was saved. Read the original or saved copy to check the source in context.</p>}
+        {evidence.explanation && <details className={styles.evidenceCard}><summary>Generated explanation</summary><p>{evidence.explanation}</p></details>}
+        <details className={styles.evidenceCard}><summary>Technical details</summary><dl className={styles.evidenceDetails}>
+          <dt>Source ID</dt><dd>{evidence.source_id}</dd>
+          <dt>Retrieved</dt><dd>{evidence.retrieved_at || "Unknown"}</dd>
+          <dt>Claim ID</dt><dd>{evidence.claim_id}</dd>
+          <dt>Claim revision</dt><dd>{evidence.claim_revision || "Unavailable"}</dd>
+          <dt>Output revision</dt><dd>{evidence.output_revision || "Unavailable"}</dd>
+          <dt>Version</dt><dd>{evidence.source_version || evidence.source_hash || "Unknown"}</dd>
+        </dl></details>
       </div>}
     </aside>
   </>;

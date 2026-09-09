@@ -105,7 +105,7 @@ export interface DecisionMapProps {
   onScopeChange: (scope: "neighborhood" | "whole_matter") => void;
   onFit: () => void;
   onOpenDocument: (target: DocumentReferenceTarget) => void;
-  onDiscuss: (target: ConversationTarget) => void;
+  onDiscuss: (target: ConversationTarget, prompt?: string) => void;
   onTryDifferentAssumption: (intent: ScenarioLaunchIntent) => void;
   scenarioPanel?: ReactNode;
   selectedNodeDetails?: ReactNode;
@@ -128,6 +128,7 @@ export interface LegalTest {
   exceptions?: string; applicability?: string; claim_ids: string[]; condition_ids: string[];
 }
 export interface PathCondition {
+  answer_choices?: Array<{ label: string; answer: string }>;
   condition_id: string; question: string;
   assessment: "met" | "not_met" | "unknown" | "conflicting";
   assessment_basis: string; fact_ids: string[]; question_ids: string[]; claim_ids: string[];

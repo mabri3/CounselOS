@@ -11,6 +11,9 @@ from typing import Any, TextIO
 
 import yaml
 
+# Keep safe YAML semantics while avoiding repeated pure-Python parsing on reads.
+_SafeLoader = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
+
 
 @dataclass
 class Post:
@@ -43,7 +46,7 @@ def loads(text: str) -> Post:
     if closing is None:
         return Post(normalized)
     raw_metadata = "".join(lines[1:closing])
-    metadata = yaml.safe_load(raw_metadata) or {}
+    metadata = yaml.load(raw_metadata, Loader=_SafeLoader) or {}
     if not isinstance(metadata, dict):
         raise ValueError("Markdown frontmatter must be a YAML mapping.")
     content = "".join(lines[closing + 1 :]).lstrip("\n")

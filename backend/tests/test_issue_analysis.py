@@ -398,3 +398,51 @@ def test_condition_answer_saves_fact_without_setting_assessment(app_context):
     with pytest.raises(HTTPException) as exc:
         answer_path_condition(MATTER, issue_id, condition_id, payload.model_copy(update={"analysis_revision":"stale"}), context=app, person_id=None)
     assert exc.value.status_code == 409
+
+
+def test_map_and_chat_share_questions_answers_and_conflict_history(app_context):
+    from app.routers.workspace import answer_path_condition, PathConditionAnswer, review_service
+    from fastapi import HTTPException
+    app = app_context
+    service = _service(app)
+    issue_id = _issue(app)
+    path, revision = _output(app, "RUN-shared-question", "Shared question analysis")
+    structure = _structure(issue_id)
+    structure["issue_analysis"]["conditions"][0]["answer_choices"] = [
+        {"label": "Partner confirmed", "answer": "The partner confirmed the arrangement in writing."},
+        {"label": "No confirmation", "answer": "The partner has not confirmed the arrangement."},
+    ]
+    service.publish(MATTER, path=path, run_id="RUN-shared-question", output_revision=revision,
+                    structure=structure, capture=service.capture(MATTER, issue_id))
+    analysis = service.resolve(MATTER, issue_id)["analysis"]
+    cid = analysis["conditions"][0]["condition_id"]
+    target = {"matter_id": MATTER, "issue_id": issue_id, "condition_id": cid}
+    app.workspace.validate_target(MATTER, target)
+    with pytest.raises(ValueError, match="Question not found"):
+        app.workspace.validate_target(MATTER, {**target, "condition_id": "wrong"})
+    graph = review_service(app).decision_map(MATTER)
+    question = next(n for n in graph["nodes"] if n["record_id"] == cid)
+    assert question["data"]["question_number"] == 1
+    assert question["data"]["answer_choices"][0]["label"] == "Partner confirmed"
+    assert not question["data"]["reported_answer"]  # Viewing/suggesting does not save.
+    payload = PathConditionAnswer(analysis_revision=analysis["analysis_revision"], answer="No confirmation received.",
+                                  source_action_key="map-answer", expected_answer_key="", surface="map")
+    first = answer_path_condition(MATTER, issue_id, cid, payload, context=app, person_id=None)
+    frozen = app.agent_context.build_run_context(app.agents.get("counsel-copilot"), matter_id=MATTER, target=target)
+    assert "No confirmation received." in frozen["context"]
+    assert '"question_number": 1' in frozen["context"]
+    assert "Partner confirmed" in frozen["context"]
+    second_payload = payload.model_copy(update={"answer":"Written confirmation is now available.", "source_action_key":"chat-answer", "surface":"chat", "expected_answer_key":"map-answer"})
+    second = answer_path_condition(MATTER, issue_id, cid, second_payload, context=app, person_id=None)
+    assert answer_path_condition(MATTER, issue_id, cid, second_payload, context=app, person_id=None) == second
+    with pytest.raises(HTTPException) as exc:
+        answer_path_condition(MATTER, issue_id, cid, payload.model_copy(update={"source_action_key":"stale-tab"}), context=app, person_id=None)
+    assert exc.value.status_code == 409
+    app.index.rebuild()
+    question = next(n for n in review_service(app).decision_map(MATTER)["nodes"] if n["record_id"] == cid)
+    assert question["data"]["reported_answer"]["answer"] == second_payload.answer
+    assert [a["surface"] for a in question["data"]["answer_history"]] == ["map", "chat"]
+    assert question["state"] == "unknown"
+    facts = app.matter_records.get(MATTER)["facts"]
+    assert next(f for f in facts if f["fact_id"] == first["fact_ids"][0])["status"] == "superseded"
+    assert service.resolve(MATTER, issue_id)["state"] == "needs_review"

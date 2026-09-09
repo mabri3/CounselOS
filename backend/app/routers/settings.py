@@ -295,7 +295,7 @@ async def draft_company_profile(
 
 
 @router.get("")
-async def get_settings(context: AppContext = Depends(get_context)):
+async def get_settings(context: AppContext = Depends(get_context), include_model_catalog: bool = True):
     result = context.settings_store.read()
     result["values"].update(
         {
@@ -304,9 +304,10 @@ async def get_settings(context: AppContext = Depends(get_context)):
             "agents.reasoning_effort": context.settings.llm_reasoning_effort or "default",
         }
     )
-    result["model_catalog"] = context.settings_store.normalize_model_catalog(
-        await context.model_catalog()
-    )
+    if include_model_catalog:
+        result["model_catalog"] = context.settings_store.normalize_model_catalog(
+            await context.model_catalog()
+        )
     for key, value in context.research_settings.items():
         result["values"].setdefault(f"research.{key}", value)
     return result

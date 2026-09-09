@@ -61,6 +61,7 @@ export interface SelectedRange {
 }
 
 export interface ConversationTarget {
+  condition_id?: string | null;
   analysis_id?: string | null;
   analysis_revision?: string | null;
   option_id?: string | null;
@@ -140,6 +141,12 @@ export interface IssueUpdate {
 }
 
 export interface IssueDispositionCommand {
+  workflow?: boolean;
+  chosen_path?: string;
+  conditions?: string[];
+  map_basis?: import('./decisionMapTypes').DecisionMapBasis | null;
+  follow_up?: Array<{ title: string; owner: string; due_at?: string | null; required: boolean }>;
+  revises_decision_id?: string | null;
   disposition: IssueDispositionState;
   reason: string;
   expected_revision: string;
@@ -237,6 +244,7 @@ export interface DocumentIdentity {
   immutable: boolean;
   original_path?: string | null;
   extracted_path?: string | null;
+  source_url?: string | null;
 }
 
 export interface ReferenceOrigin {
@@ -353,6 +361,7 @@ export interface UpdateOffer {
 }
 
 export interface WorkProductReference {
+  decision_review_required?: boolean;
   work_product_id: string;
   path: string;
   title: string;
@@ -612,6 +621,7 @@ export interface IssueReviewItem {
   due_at?: string | null;
 }
 export interface LinkedIssueWork {
+  reviewRequired?: boolean;
   work_item_id: string;
   title: string;
   state: string;
@@ -619,6 +629,9 @@ export interface LinkedIssueWork {
   required?: boolean;
 }
 export interface LinkedIssueDecision {
+  revises_decision_id?: string | null;
+  map_basis?: import('./decisionMapTypes').DecisionMapBasis | null;
+  conditions?: string[];
   decision_id: string;
   title: string;
   chosen_path: string;
@@ -668,8 +681,9 @@ export interface IssueNavigatorProps {
   onIssueUpdate?: IssueUpdateCallback;
 }
 export interface IssueReviewDetailProps {
+  onCompleteWork?: (workItemId: string) => Promise<void>;
   analysisStatus?: IssueAnalysisStatus | null;
-  onAnalyzePaths?: (issueId: string) => void;
+  onAnalyzePaths?: (issueId: string, recordedPosition?: string) => void;
   onRecordPath?: (prefill: DecisionPathPrefill) => void;
   matterId: string;
   issue: IssueNode;

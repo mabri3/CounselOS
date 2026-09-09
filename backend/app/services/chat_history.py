@@ -74,7 +74,8 @@ class ChatHistoryService:
         if conversation_id:
             conversation = self.get(matter_id, conversation_id)
             if (
-                conversation.get("conversation_kind") == "intake"
+                conversation.get("conversation_kind") in {"intake", "experimental"}
+                and conversation.get("intake_state") is not None
                 and (
                     conversation.get("intake_state") != "active"
                     or self.matters.get(matter_id).get("intake_state") == "complete"

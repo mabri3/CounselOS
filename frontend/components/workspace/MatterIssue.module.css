@@ -62,6 +62,10 @@
 .claim { border-style: dashed; border-color: var(--agent-edge); background: var(--agent-wash); }
 .position { display: grid; grid-template-columns: 64px minmax(0, 1fr) minmax(235px, 294px); gap: 18px; align-items: center; padding: 24px 28px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); }
 .recordedPosition { padding: 26px 28px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); }
+.recordedPosition { scroll-margin-top: 20px; }
+.recordedPosition fieldset { min-width: 0; }
+.recordedPosition textarea { min-height: 150px; }
+.recordedPosition select { width: 100%; max-width: 100%; }
 .positionIcon { display: grid; width: 58px; height: 58px; place-items: center; border-radius: 50%; background: var(--rail); color: var(--ink-2); }
 .positionTitle { margin: 4px 0 0; font: 600 25px/1.2 var(--serif); }
 .positionActions { display: grid; gap: 10px; }

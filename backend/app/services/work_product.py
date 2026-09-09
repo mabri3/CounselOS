@@ -336,7 +336,12 @@ class WorkProductService:
         draft = self.mutable_draft(matter_id, path, require_current=False)
         metadata = draft["metadata"]
         review = metadata.get("review", {})
+        from app.services.workspace import WorkspaceService
+        current = WorkspaceService(self.vault, self.matters).decision_revisions(matter_id)
+        captured = (metadata.get("draft_context") or {}).get("source_revisions", {})
+        decision_review = any("/decisions/" in key and captured.get(key) != value for key, value in current.items())
         return {"work_product_id": metadata["work_product_id"], "path": path,
+            "decision_review_required": decision_review,
             "title": metadata.get("title", PurePosixPath(path).stem),
             "output_type": metadata.get("output_type", "general"),
             "revision": DocumentReviewService.content_revision(draft["content"]),

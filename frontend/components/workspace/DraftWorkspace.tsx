@@ -37,6 +37,7 @@ function templateUse(template: OutputTemplate, overrides: Record<string, string>
 }
 
 function ArtifactState({ artifact }: { artifact: WorkProductReference }) {
+  if (artifact.decision_review_required) return <span className="state-label state-attention">Recorded choice changed · Review draft</span>;
   if (artifact.pending_review) return <span className="state-label state-attention">Pending attorney review</span>;
   if (artifact.preview) return <span className="state-label state-agent">Preview · Not kept</span>;
   return <span className="state-label state-healthy">Saved work product</span>;

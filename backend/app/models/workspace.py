@@ -69,6 +69,7 @@ class SelectedRange(WorkspaceModel):
 
 
 class ConversationTarget(WorkspaceModel):
+    condition_id: str | None = None
     analysis_id: str | None = None
     analysis_revision: str | None = None
     option_id: str | None = None
@@ -146,9 +147,22 @@ class IssueUpdate(WorkspaceModel):
     why_it_matters: str | None = None
 
 
+class IssueFollowUp(WorkspaceModel):
+    title: str = Field(min_length=1, max_length=500)
+    owner: str = Field(default="", max_length=200)
+    due_at: str | None = None
+    required: bool = True
+
+
 class IssueDispositionCommand(WorkspaceModel):
+    workflow: bool = False
+    chosen_path: str = Field(default="", max_length=2000)
+    conditions: list[str] = Field(default_factory=list)
+    map_basis: DecisionMapBasis | None = None
+    follow_up: list[IssueFollowUp] = Field(default_factory=list, max_length=30)
+    revises_decision_id: str | None = None
     disposition: Literal["unresolved", "mitigation_in_progress", "resolved", "risk_accepted", "not_applicable"]
-    reason: str = Field(min_length=1, max_length=2000)
+    reason: str = Field(min_length=1, max_length=10000)
     expected_revision: str
     source_action_key: SourceActionKey
     linked_work_item_ids: list[str] = Field(default_factory=list)
@@ -240,6 +254,7 @@ class DocumentIdentity(WorkspaceModel):
     lifecycle_state: Literal["editing_draft", "reading_source", "final", "approved", "matter_record"]
     editable: bool
     immutable: bool
+    source_url: str | None = None
     original_path: str | None = None
     extracted_path: str | None = None
 
@@ -499,11 +514,17 @@ class LegalTest(WorkspaceModel):
     condition_ids: list[str] = Field(default_factory=list)
 
 
+class AnswerChoice(WorkspaceModel):
+    label: str = Field(min_length=1, max_length=200)
+    answer: str = Field(min_length=1, max_length=4000)
+
+
 class PathCondition(WorkspaceModel):
     condition_id: str
     question: str
     assessment: Literal["met", "not_met", "unknown", "conflicting"] = "unknown"
     assessment_basis: str = ""
+    answer_choices: list[AnswerChoice] = Field(default_factory=list, max_length=6)
     fact_ids: list[str] = Field(default_factory=list)
     question_ids: list[str] = Field(default_factory=list)
     claim_ids: list[str] = Field(default_factory=list)

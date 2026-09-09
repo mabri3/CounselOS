@@ -133,7 +133,7 @@ class ResearchService:
                 "internal": list(research_inputs.get("internal") or []),
                 "external": [], "warning": None,
             }
-        elif self.search.settings.search_provider.lower() == "tavily":
+        elif self.search.settings.search_provider.lower() in {"tavily", "firecrawl"}:
             search_result = {
                 "query": research_question,
                 "internal": self.search.search_internal(
@@ -209,6 +209,7 @@ class ResearchService:
             search_result.get("internal", []), matter["path"]
         )
         search_result["external"] = self._eligible_external_sources(search_result.get("external", []))
+        self._save_retrieved_sources(matter["path"], search_result)
         public_status = self._public_research_status(search_result, polaris_status)
         external_authority_retrieved = any(
             item.get("support_state") in {"retrieved", "verified"}
@@ -553,11 +554,11 @@ class ResearchService:
                 status = "not_configured"
             else:
                 status = await self._add_polaris_research(outbound, search_result)
-        elif provider_id == "tavily":
+        elif provider_id in {"tavily", "firecrawl"}:
             try:
                 try:
                     result = await self.search.search_external(
-                        outbound.standing_question, provider="tavily",
+                        outbound.standing_question, provider=provider_id,
                         timeout_seconds=int(self._settings["external_timeout_seconds"]),
                         retry_count=int(self._settings["external_retry_count"]),
                     )
@@ -766,6 +767,28 @@ class ResearchService:
             "After the useful prose, you may append one optional decision-paths fenced JSON object for the captured real issue IDs. "
             "Use unique local IDs and real supplied record IDs. Unknown does not choose a route. Requirements need all or any; split mixed nested logic."
         )
+
+    def _save_retrieved_sources(self, matter_path: str, search_result: dict[str, Any]) -> None:
+        """Keep full retrieved pages on disk; send only bounded excerpts to the model."""
+        for item in search_result.get("external", []):
+            text = item.pop("retrieved_content", None)
+            if not isinstance(text, str) or not text.strip():
+                continue
+            source_id = "SRC-" + digest(item.get("url") or item.get("title"))[:20]
+            version = digest(text)
+            path = f"{matter_path}/research/sources/{source_id}-{version[:12]}.md"
+            try:
+                if not self.vault.exists(path):
+                    self.vault.write_markdown(path, text, {
+                        "record_type": "retrieved_source", "source_id": source_id,
+                        "title": item.get("title"), "url": item.get("url"),
+                        "retrieved_at": item.get("retrieved_at"),
+                        "source_hash": version, "source_version": version,
+                        "support_state": "retrieved",
+                    })
+                item.update(source_id=source_id, path=path, source_hash=version, source_version=version)
+            except (OSError, ValueError):
+                self._append_warning(search_result, "Full source copy could not be saved; the retrieved excerpt was preserved.")
 
     def _source_records(self, search_result: dict[str, Any]) -> list[dict[str, Any]]:
         records = []

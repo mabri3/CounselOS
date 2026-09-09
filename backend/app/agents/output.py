@@ -56,6 +56,18 @@ _INLINE_FUNCTION_TAG = re.compile(
     r"<function(?:=|\s)[^>]*>.*?</function>", re.IGNORECASE
 )
 _SENTENCE_BOUNDARY = re.compile(r"(?<=[.!?])(?=\s|$)")
+# Match implementation narration, not substantive reports that a source,
+# document save, or research step is unavailable. Filter sentences separately
+# so useful advice on the same line survives.
+_INTERNAL_SCOPE_SENTENCE = re.compile(
+    r"^\s*(?:"
+    r"the tool (?:keeps failing|failed|is failing) on exact[- ]match\b"
+    r"|this is (?:a )?current-matter intake answer\b.*\bactual scope\b"
+    r"|the answer is a reported fact being supplied to the matter record\b"
+    r"|i(?:'ll| will) proceed with actual scope\b"
+    r")",
+    re.IGNORECASE,
+)
 _SPAN_BOUNDARY = re.compile(r"(?<=[.!?])(?=\s|$)|(?<=\n)")
 _NEGATED_OR_HISTORICAL_MUTATION = re.compile(
     r"\b(?:not|no|never|cannot|can't|wasn't|weren't|didn't|hasn't|haven't|"
@@ -171,26 +183,34 @@ _MUTATION_SUCCESS_CLAIMS: dict[str, tuple[re.Pattern[str], ...]] = {
 }
 
 
-def clean_user_facing_reply(content: str) -> str:
+def clean_user_facing_reply(content: str, *, preserve_paragraphs: bool = False) -> str:
     """Remove internal control material while preserving useful answer text."""
     # These blocks are declarative transport, validated by the publisher.
     # Cleaning IDs or paths inside them would destroy exact record links.
     parts: list[str] = []
     cursor = 0
     for block in _STRUCTURED_OUTPUT.finditer(content):
-        parts.append(_clean_reply_prose(content[cursor:block.start()]))
+        parts.append(_clean_reply_prose(content[cursor:block.start()], preserve_paragraphs=preserve_paragraphs))
         parts.append(block.group())
         cursor = block.end()
-    parts.append(_clean_reply_prose(content[cursor:]))
+    parts.append(_clean_reply_prose(content[cursor:], preserve_paragraphs=preserve_paragraphs))
     return "\n\n".join(part for part in parts if part).strip()
 
 
-def _clean_reply_prose(content: str) -> str:
+def _clean_reply_prose(content: str, *, preserve_paragraphs: bool = False) -> str:
     cleaned = _strip_control_prefixes(content)
 
     visible_lines = []
     for line in cleaned.splitlines():
+        if preserve_paragraphs and not line.strip():
+            if visible_lines and visible_lines[-1] != "":
+                visible_lines.append("")
+            continue
         line = _strip_control_prefixes(line)
+        line = "".join(
+            sentence for sentence in _SENTENCE_BOUNDARY.split(line)
+            if not _INTERNAL_SCOPE_SENTENCE.search(sentence)
+        ).strip()
         if not line:
             continue
         if (
@@ -218,7 +238,7 @@ def clean_conversation_for_display(conversation: dict[str, object]) -> dict[str,
         if not isinstance(message, dict) or message.get("role") != "assistant":
             continue
         message["content"] = reconcile_user_facing_reply(
-            clean_user_facing_reply(str(message.get("content") or "")),
+            clean_user_facing_reply(str(message.get("content") or ""), preserve_paragraphs=visible.get("conversation_kind") == "experimental"),
             list(message.get("operation_results") or []),
         )
     return visible

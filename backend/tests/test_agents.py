@@ -1009,6 +1009,27 @@ def test_output_hygiene_preserves_workspace_language_without_using_it_as_state()
     assert clean_user_facing_reply(advice) == advice
 
 
+def test_output_hygiene_removes_scope_debugging_without_losing_answer():
+    narration = (
+        "The tool keeps failing on exact-match. "
+        "This is a current-matter intake answer — clearly actual scope. "
+        "The answer is a reported fact being supplied to the matter record. "
+        "I'll proceed with actual scope since this is explicit current-matter work "
+        "(answering saved intake questions), and record the fact. "
+    )
+    answer = (
+        "The underlying documents cannot be reconstructed. [source:SRC-kyc]\n"
+        "Is the bonus offered to all migrated users?\n"
+        "I could not save the document. Your draft is still available below."
+    )
+    assert clean_user_facing_reply(narration + answer) == answer
+    # Existing transcripts receive the same display-only cleanup.
+    from app.agents.output import clean_conversation_for_display
+    saved = {"messages": [{"role": "assistant", "content": narration + answer}]}
+    assert clean_conversation_for_display(saved)["messages"][0]["content"] == answer
+    assert saved["messages"][0]["content"] == narration + answer
+
+
 def test_agent_context_contains_one_current_matter_work_state(app_context):
     agent = app_context.agents.get("counsel-copilot")
     built = app_context.agent_context.build(agent, matter_id="MAT-DEMO-BEACON")

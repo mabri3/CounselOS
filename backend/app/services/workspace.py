@@ -609,6 +609,11 @@ class WorkspaceService:
             self._check(item["business_question_revision"], question["revision"])
         if item["issue_id"] and item["issue_id"] not in {n["issue_id"] for n in self.issues(matter_id)}:
             raise ValueError("Issue not found in this matter.")
+        if item.get("condition_id"):
+            from app.services.issue_analysis import IssueAnalysisService
+            analysis = IssueAnalysisService(self.vault, self.matters, self).resolve(matter_id, item["issue_id"]).get("analysis") if item["issue_id"] else None
+            if not analysis or not any(c["condition_id"] == item["condition_id"] for c in analysis["conditions"]):
+                raise ValueError("Question not found in this issue. Select the current question.")
         if item["source_id"]:
             records = self.records.get(matter_id)
             known = {s["source_id"] for s in records["sources"]} | {f["fact_id"] for f in records["facts"]}
@@ -643,8 +648,20 @@ class WorkspaceService:
                     raise WorkspaceConflict("The selected passage changed. Select it again.", actual, code="target_conflict")
         return item
 
-    def source_revisions(self, matter_id: str) -> dict[str, str]:
+    def decision_revisions(self, matter_id: str) -> dict[str, str]:
         result = {}
+        for path in self.vault.iter_files(f"{self.matters.matter_path(matter_id)}/decisions", {".md"}):
+            try:
+                document = self.vault.read_markdown(self.vault.relative(path))
+            except (OSError, UnicodeError, ValueError, TypeError, YAMLError):
+                result[self.vault.relative(path)] = "unavailable"
+                continue
+            if document["metadata"].get("matter_id") == matter_id:
+                result[document["path"]] = digest({key: document["metadata"].get(key) for key in ("decision_id", "chosen_path", "rationale", "conditions", "revises_decision_id")})
+        return result
+
+    def source_revisions(self, matter_id: str) -> dict[str, str]:
+        result = self.decision_revisions(matter_id)
         for name in ("matter.md", "dossier.md", "facts.md", "issues.md", "recommendations.md", "flow.md"):
             path = self._path(matter_id, name)
             if self.vault.exists(path):

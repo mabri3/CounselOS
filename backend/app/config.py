@@ -30,6 +30,7 @@ class Settings(BaseSettings):
 
     search_provider: str = Field("disabled", alias="SEARCH_PROVIDER")
     tavily_api_key: str | None = Field(None, alias="TAVILY_API_KEY")
+    firecrawl_api_key: str | None = Field(None, alias="FIRECRAWL_API_KEY")
     search_max_results: int = Field(6, alias="SEARCH_MAX_RESULTS")
 
     polaris_api_key: str | None = Field(None, alias="POLARIS_API_KEY")

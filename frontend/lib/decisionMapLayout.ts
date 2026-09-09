@@ -365,6 +365,14 @@ export function pathArrowRole(edge: DecisionMapEdge, nodes: DecisionMapNode[], e
   return "unassessed";
 }
 
+export function pathImplementationWork(option: import("./decisionMapTypes").IssueOption, nodes: DecisionMapNode[]) {
+  const original = [...new Set([...(option.remaining_work ?? []), ...(option.work_item_ids ?? [])])].map(title => ({ title,
+    node: nodes.find(node => node.record_type === "work" && (node.record_id === title || node.label === title || node.data?.source_action_key === `path-work:${option.option_revision}:${option.remaining_work.indexOf(title)}`)),
+  }));
+  const confirmed = nodes.filter(node => node.record_type === "work" && node.data?.choice_option_revision === option.option_revision && !node.data?.choice_review_for).map(node => ({ title: node.label, node }));
+  return [...original, ...confirmed].filter((item, index, all) => all.findIndex(other => (other.node?.node_id ?? other.title) === (item.node?.node_id ?? item.title)) === index);
+}
+
 export function connectedPathEffects(target: DecisionMapNode, nodes: DecisionMapNode[], edges: DecisionMapEdge[]) {
   const results: Array<{sourceId: string; targetId: string; triggerIds: string[]; label: string; reason: string; effective: boolean; kind: "not_chosen" | "unavailable"}> = [];
   if (target.record_type !== "option" || ["historical", "hypothetical", "missing"].includes(target.group ?? "") || target.hypothetical) return results;
@@ -381,7 +389,7 @@ export function connectedPathEffects(target: DecisionMapNode, nodes: DecisionMap
         effective = agreed;
         label = agreed ? "Not chosen — another path agreed" : "Available until another path is agreed";
       } else if (effect.trigger === "implementation_complete") {
-        const work = [...(option.work_item_ids ?? []), ...(option.remaining_work ?? [])].map(id => nodes.find(node => node.record_type === "work" && node.issue_ids?.some(issue => source.issue_ids?.includes(issue)) && (node.record_id === id || node.data?.source_action_key === `path-work:${option.option_revision}:${option.remaining_work.indexOf(id)}` || node.label === id)));
+        const work = pathImplementationWork(option, nodes.filter(node => node.issue_ids?.some(issue => source.issue_ids?.includes(issue)))).map(item => item.node);
         effective = agreed && work.length > 0 && work.every(node => node && ["done", "complete", "completed"].includes(node.state));
         triggerIds = [source.node_id, ...work.flatMap(node => node ? [node.node_id] : [])];
         label = effective ? "Replaced — implementation complete" : agreed ? "Available until implementation is complete" : "Available — implementation not agreed";
