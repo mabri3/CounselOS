@@ -1,0 +1,286 @@
+PAGE 1
+$5M SEED · $25M PRE-MONEY · AUGUST 2026 CONFIDENTIAL INVESTOR PRESENTATION
+The AIDeal Conductorfor investment banking.Bankers out front. AI behind the scenes.
+
+PAGE 2
+THE PROBLEM
+COMPENSATION AS % OF REVENUEPerella Weinberg
+PJT Partners
+Moelis & Co
+Lazard
+Evercore
+Houlihan Lokey
+71%68%67%67%65%64%
+Two-thirdsof i-banking revenue goes to payroll.
+2Compensation as a percentage of net revenue. Source: public filings (FY2025). 
+Training takes yearsSlow and expensive to train, and risks are costly
+The most expensive people run the processMost valuable MD hours spent coordinating, not originating and closing
+Institutional memory evaporatesExperience walks out with the banker and stays siloed while present.
+Headcount and AI spend not measured or optimizedNo attribution, audit trail or optimization. 
+Compliance is found, not preventedHuman supervision is afterliability, not before, and is manually intensive.
+
+PAGE 3
+THE OPPORTUNITYA deal is 81 steps. Bankers are only needed for 11 of them.
+●70 process steps · Conductia automates these      ●11 judgment calls · the banker makes these
+Automate the process. Preserve the judgment.
+3
+
+PAGE 4
+WHY NOW
+FINRA confirmed existing rules apply to AI. The AI is Ready.
+2026Models cleared the quality gate.Models can now: support supervised deal work; and draft, analyze, and reason over deal materials, with banker review.
+2025FINRA clarified the regulatory expectations.Supervision. Testing. Privacy. Reliability. Documentation. Third-party risk. Human oversight. FINRA clarified that existing obligations follow AI into the workflow.
+4FINRA 2026 Annual Regulatory Oversight Report (Dec 2025); FINRA Regulatory Notice 24-09 (June 2024). 
+Regulators defined the obligations. Conductia turned them into a product.
+
+PAGE 5
+THE SOLUTIONThis is a workflow problem. We built the governed workflow.01Runs the process02Drafts the work, checks the models03Hands the banker final approval
+TODAY WITH CONDUCTIAManual, inconsistent, and rushed→Sequenced, consistent, and on scheduleSlow output and long processes→Faster cycles and more deals per bankerUnauditable and key-person dependent→Logged access and release; workflow memory stays with the firmMargin lost to process→Higher revenue with fewer demands on peopleCompliance found after the fact→Regulatory, legal and reputational risks flagged for human review before release
+Unsupervised and ungoverned AI→Named approval gates and logged human release
+Bankers should bank. Not chase process. Not build AI.
+Relationships, judgment and negotiation stay.
+The firm’s edge leaks to the vendor→No cross-client or model training.
+5
+
+PAGE 6
+WHERE WE ARE TODAYContracted customer for design and testing.SHIPPING SEPTEMBERThe governed foundationDeal creation, staffing, conflicts, permissioning, workflow state, append-only audit, on-platform messaging.
+CONTRACTED CUSTOMERIgnatious runsand tests itThe first customer will run live mandates. It is a regulated environment we own and instrument end to end. Related party, disclosed.
+IN BUILD · LIVE TESTINGAgentic applicationsAgentic execution per step with pre-send compliance vetting, in live testing. Platform checks banker-built work; drafting comes later.
+BEYOND OUR FIRST CUSTOMER: PIPELINE
+8BOUTIQUE FIRMSLogged interest; converting to paid design partners.1SME DISTRIBUTION PARTNEROne relationship. 450+ affiliated firms and 920+ members.
+Q1 2027+Paid design partnerships+ revenue customers
+AUG 2026Live build & testing (Ignatious)
+November 2026Product launch(Design Partners)
+ 6
+
+PAGE 7
+FOUNDER-MARKET FITBuilt by the banker who ran these deals for 30 years.
+Storm DuncanCEO & CO-FOUNDER
+Google's M&A advisor for a decade, including YouTube and DoubleClick. Former Global Head of Tech M&A at Jefferies and Credit Suisse. Founder of Ignatious, Conductia's first paying customer.
+Jess MahTECHNICAL CO-FOUNDER
+Founder of inDinero (financial workflow software) and Mahway: 10+ companies incubated.
+7
+FOUNDING ENGINEERSCharles WillianFOUNDING ENGINEERBack endGuillermo GonzalezFOUNDING ENGINEERApplications & securityMarcelo GumieroFOUNDING ENGINEERFront endRob Di LilloFOUNDING ENGINEERFull stack
+
+PAGE 8
+THE PRODUCTEvery deal in the book, conducted to the day.
+8
+STORM’S DEAL CONDUCTOR: Wednesday, November 11, 2026 (Draft UI/UX w/ illustrative data, not final)Live DealsDEALSTAGECLOSESTATUSFEEProject MesaSigningOct 09, 2026-1 day$5.1M
+Project NovaNegotiationNov 06, 2026-18 days$6.0M
+Project AtlasBuyer DiligenceDec 18, 2026-3 days$4.2M
+Project HarborMarketing / LOIFeb 12, 2027on time$2.8M
+Project FalconPreparationApr 02, 2027+2 days$3.5M
+Project CobaltMandateMay 21, 2027on time$1.9M
+▲ ▲ ▲▲
+6 deals $23.5M
+▼ Good morning, Storm12 tasks today▼LIVE DEALS4Project Atlas · Buyer B management session follow-upsYOUProject Nova · sign off on diligence responsesYOUProject Atlas · Buyer C diligence Q&AVPProject Harbor · LOI comparison for reviewVP▼PITCHES2Project Vega · pitch next Thursday, deck at 80%YOUProject Sierra · send follow-up materialsASC▲CLIENT MAINTENANCE4▲FIRM ACTIVITIES3
+
+PAGE 9
+9
+HUMAN IN THE LOOPAI drafts and checks. Bankers decide and release.QUALITY-LOOPING FLOWInterpret & planThe engine reads the task and picks the workflow.
+ResearchPulls only from permissioned deal data, with citations.
+DraftAn agent produces the work product.
+Risk and policyscreenA supervisor agent checks it. Risky language gets caught.
+Human sign-offBanker approves in the console, and sign-off is logged. Every decision is bank-captured intelligence. → → → →
+revise and re-review until it clears the barhuman edits are re-screened
+Routine work is automated, andlogged. Consequential decisions require human sign-off.
+COMPLIANCE-LOOPING FLOW
+Task→ →Done
+Where the AI Stops•Mandate acceptance•Strategy andvaluation•Negotiation and terms •Every external release•Legal, closing & funds flow•Direct relationship building
+
+PAGE 10
+COMPETITIVE LANDSCAPE
+10
+Everyone started in the wrong corner. We want to lock that.
+A chat tool bolted onto a regulated workflow doesn't remove the risk —it moves it somewhere nobody is watching. A governance platform can add features anytime; point tools can't add governance later.
+FULL TRANSACTION WORKFLOW
+SUPERVISORY CONTROLIN WORKFLOW STATE
+APPLICATION-LEVEL CONTROLS
+Conductia
+TASK / WORK PRODUCTIntapp / DealCloud
+HebbiaDatasite / Blueflame
+Model MLSamayaFarsight / MaywoodMosaic / Crunched / Compound
+Rogo
+
+PAGE 11
+11
+Building four compounding advantages as durable moats01The adaptive workflow graph · in build81 steps customized foreach bank’s rules and each banker’s workflow and working style. The map is copyable; the adaptation is not.
+02The open app ecosystem· Post-seedEach new app creates a standard that solidifies us. Banks and vendors build on it; we provide distribution and the compliance surface.
+03Network effects · Post-seedBuyers and advisers join the platform in every M&A sale process, discovering us before we sell to them. Extend into buy-side workflow from the sell-side layer.
+04Deal economics on the record· FutureOnce cost savings and close rates are on the record, and workflows and intelligence are institutionalized, removing us means justifying the reversal.
+Remove Conductia and the bank keeps every file. But it loses the compounding workflow intelligence that turns those files into institutional memory.
+THE MOATS WE ARE BUILDING
+
+PAGE 12
+12
+The question is no longer whether a bank uses AI. It is whether the AI runs inside controls the bank configures, supervises and can audit.
+WHY A BANK BUYS
+Conductia doesn’t sell AI. We sell capacity.01  ·  REVENUE LEVERAGE
+Senior bankers sell and close.Conductia runs the process.The workflow absorbs the coordination load, shifting senior hours from process management to origination and closing.
+More senior leverage,not junior substitution.
+02  ·  OPERATING LEVERAGE
+Each deal makes the next cheaper.The firm keeps the memory.AI and human labor costs are tracked, optimized and attributed by deal. Every deal, edit and approval compounds as institution-owned memory.
+Memory compounds as firm property,not vendor property.
+03  ·  RISK REDUCTION
+Risk is screened before release.The bank owns the evidence.Every workflow send is pre-flagged for correction or approval. Access and approvals are tenant-scoped and audit-logged. Juniors learn firm standards in the workflow rather than by making costly mistakes.
+A stronger control environment,not a new risk surface.
+
+PAGE 13
+13
+WHAT THE BANK MEASURES3 ways a bank makes money. Each one is ours to improve.01Deal volume02Close rate & velocity03Fees & costs per deal
++6%MORE PITCHESCoordination hours become origination hours.
++4%HIGHER WIN RATEBetter prep, firm precedent, faster follow-up.
++3%CLOSE RATEDrift surfaces daily, not at the post-mortem.
++10%FASTER CYCLESShorter mandate-to-close. 11.1% more annual throughput.
+–15%COST PER DEALLess manual process time per task, per deal.
++0%FEES PER DEALNo assumed increase in average fee per deal.
+Up to 64% higher FCF
+Based on initial Customer Zero input. 26.2% revenue uplift plus 15% savings on execution costs produces approximately 64% higher FCF, or 16% of baseline revenue, before Conductia fees.
+Conductia will establish a bank-agreed baseline, track the drivers and quantify the value created.
+PILOT HYPOTHESES
+
+PAGE 14
+HOW WE CHARGEFixed enterprise pricing aligned with value. Never seats.
+14
+SEGMENTSME advisory
+Boutique
+Large / mid-market
+Bulge bracket
+FIRMS~3,000
+~130
+~80
+~12
+M&A REVENUE$1M –$10M
+$10M –$40M
+$40M –$1.0B
+$1.0B –$5.0B
+VALUE / COST~3×~6×~8×~10×
+AVG ANNUAL LICENSE$125K$500K$3.0M$30M
+BREAKEVENCOST REDUCTION~10%
+~4%~5%
+~3%
+Value/cost applies 16% incremental FCF to weighted-average M&A revenue; breakeven assumes zero revenue uplift and execution-cost savings only.
+
+PAGE 15
+THE INITIAL MARKETOne Product. Three Wedges. Each opens the next. 
+15Sources: LSEG H1 2026 annualized; Conductia assumptions, Aug. 2026. 75% cost base; ⅔ execution-related. M&A SAM = segment firm counts × average annual licenses = $1.0B.
+The pool it governs2026E GLOBAL M&A ADVISORY FEES · FIRST WEDGE SAM
+POOLSAM AS %OF POOLFee revenue~$48B2.2%Total cost base~$36B2.9%Execution cost pool~$24B4.3%
+Addressable Market
+FIRST WEDGE · M&A Workflow$3.5BSECOND WEDGE · Full IB Workflow$7.0B+THIRD WEDGE · Counterparties (Investors · Corp Dev · PE · VC)
+$1.0B
+
+PAGE 16
+HOW WE REACH THEMFour channels. Each compounds the others.
+01OUR FOUNDER NETWORK30 years of relationships across elite tech M&A and senior banking executives. Direct access to decision-makers at every tier.
+02FINALIS PARTNERSHIPPotential channel to450+ firms and 920+ members through our relationship with Finalis. Instant distribution into the SME advisory layer.
+03DIRECT SALESTwo dedicated sales hires targeting the 80large and 130 boutique firms where per-bank economics are strongest.
+04EVERY LIVE DEALCounterparties work inside the seller's process. Each live deal introduces the next customers to Conductia before we even sell to them. 
+Two sales hires included in Use of Funds. Finalis relationship and firm count per Finalis as of Q2 2026. 
+IMMEDIATE20272028+
+16
+
+PAGE 17
+17
+An adjacent peergrew 7.5× in 2025. Conductia underwrites below that curve and executes to exceed it.Penetration uses the $1.0B M&A workflow SAM. Rogo benchmark: Forbes Fintech 50, February 2026.
+ILLUSTRATIVE OPERATING CASEA measured path to $104M with only 10.0% of the initial SAM.EOY ARR ·  CUSTOMERS  ·  % SAM PENETRATION
+$6M202713 customers
+$38M
+202843 customers
+$104M
+2029110 customers0.6% of SAM3.7% of SAM10.0% of SAM
+
+PAGE 18
+18
+YOURaising $5M to turn live-deal proof into paying banks.
+$5MSEED ROUND · PRICED$25MPRE-MONEY VALUATION(includes option pool)$30MPOST-MONEY
+WHAT THE MONEY DOES
+Use of fundsExisting team plus CTO, VP Product, two forward-deployed engineers, two sales leads, a named compliance owner. Certification and audit fees, tech,E&O and cyber coverage,bank paper, and inference.
+TARGET MILESTONES · SERIES A READINESSPRODUCT: Full 81-step sell-side adaptive workflow graph; all steps automated or assisted; core app-store layer and data integrations functional; deal economics.EXTERNAL PROOF: ≥5 external paying institutions; ≥$2M contracted ARR; ≥3 live deployments; NDR >100%.CUSTOMER VALUE: Documented ROI across cycle time, labor value, rework, exception rates, output consistency and weekly usage.DEPLOYMENT & TRUST: Customerslive in ≤60 days; tested isolation, permissions, audit &retention; SOC 2 Type II and other bank-required controls & certifications.TEAM & ECONOMICS: Dedicated CTO and VP Product;burn multiple <1.5×; spend held to approved base.
+Runway~27 months with no revenue assumed; all Series A milestones cleared within 18 months.
+
+PAGE 19
+storm@conductia.comRAISING $5M · $25M PRE-MONEY · PRICED ROUND
+Building the governed execution layer for investment banking, starting with sell-side M&A.
+
+PAGE 20
+One governed layer coordinates everything.
+20
+APPENDIX A · THE ARCHITECTURE
+DiligenceApprovals & CommitteesLegalMarketingValuation
+BANK DATA LAYEREmail & TextCRMVDRCloud StorageMarket DataTemplates
+We are not a better application. We are the workflow layer they all run on.Permissioned, supervised, logged.
+APPLICATION LAYERPrep Materials WaterfallBuyer LogClient Reporting
+Notes 
+ResearchModelsData Room
+DEAL CONDUCTOR · CONDUCTIA WORKFLOW LAYERDeal ConsoleEnterprise SearchInstitutional memoryCommunicationsPre-send QC (“Riskpatcher”)Human & agent routingGovernance & supervisionPermissions & deal isolationModel routing/cost attributionAudit trail
+
+PAGE 21
+APPENDIX A · TABLE STAKES
+Security and data isolation, by design.
+21
+Tenant separation · live and testedThe current deployment runs in Conductia-managed infrastructure with tenant separation. Dedicated deployment in each external institution’s approved cloud environment is the target architecture.
+Deal-level controls · live and testedDocuments, memberships and messages are gated per deal in the application layer. Every access and every send is audit-logged. No Conductia employee or agent has an unpermissioned path to deal data, even for Conductia support.
+Audit foundation · live and testedAppend-only audit events and initial retention controls are live in the current build. Automated legal hold and one-deal export remain post-seed targets.Agent guardrails · in buildStep limits, token budgets, scoped tool access and a kill switch are implemented in the current test environment. External-content defenses and deployment-level validation remain in progress.
+Engineered like infrastructureDeterministic state, append-only audit schema, 350+ tests. Every step ships with an eval suite and is agent-drafted only after it clears the bar.
+
+PAGE 22
+APPENDIX A · PRE-SEND RISK
+Risk screening: from lookback to pre-release intervention.
+22
+TODAY: EX POST FACTOPRE-SEND, WITH CONDUCTIAThe problem is found in the recordLookbacks and e-discovery. By then the message is gone.
+>$2B in industry fines since 2022Paid across the sector for unsupervised messaging.
+Risk is managed as a crisisExposure surfaces only once it is already exposure.
+Risk is surfaced earlier and reducedMessages and work products in workflow are screened before release.
+Embedded, not bolted alongsideCompliance runs inside the platform, so the check is part of the workflow.
+Catch risk before releaseConductia assesses, flags and routes issues along with suggested alternatives; the human approver decides. The bank’s tenant retains and learns from the feedback loop.
+Compliance is native to the platform. That is what moves risk from too late… to before.
+
+PAGE 23
+23
+APPENDIX B · SIDE BY SIDE
+Rogo proved demand. Conductia governs deal execution.What Rogo got right · $300M+ raised at a $2B valuation, 250+ institutions, ~$60K avg ACV (analyst tool tier), and now moving toward workflow.
+ROGO CONDUCTIA
+PricingCharge per seat per year for a product that promises fewer seats.Annual platform license sized to bank economics. No per-seat risk.ImplementationForward-deployed engineers train bankers to build AI.AI behind the scenes: Agent adapts workflow & skills to working style Platform modelClosed. Banks build within Rogo's walls only. No third-party apps, agents, or ecosystem.Open. Third parties build apps, skills, and agents on the governed layer. The ecosystem compounds the moat.
+The right analogue is not another AI tool. It is Palantir: own the governed delivery of AI inside the institution.
+Primary roleAI for research, analysis, work product &increasingly deal workflow.Execution control layer for the full deal team; bankers own judgment.Agentic finance platform, integrations and Deal Room.Core system Authoritative deal state, routing, permissions, approvals &audit evidence.Human controlHuman review within its products and customer processes.Explicit judgment gates and logged human release.Institutional memoryPersistent research, agents and Deal Room collaboration.Institution-owned memory tied to workflow, edits and approvals.
+
+PAGE 24
+24
+* 2028 assumes a $24M initial bulge-bracket license versus the $30M planning ACV.  Counts × average annual licenses; figures are shown as EOY ARR. Approximately 81% of 2029 ARR comes from ten large institutions.
+$60M     +     $24M     +     $10M     +     $10M     =     $104M ARR                   2 bulge                     8 large/mid                    20 boutique                     80 SME            110 customers
+Founder-led to the first $6M. Proof-led expansion after.SEGMENTPLANNING ACV202720282029
+SME ADVISORY (~3,000)$125K8 · $1M32 · $4M80· $10MBOUTIQUE (~130) $500K4 · $2M8· $4M 20· $10MLARGE / MID-MARKET (~80)$3.0M1 · $3M2· $6M 8· $24MBULGE BRACKET (~12) $30M0 · $01 · $24M* 2· $60MTOTAL CUSTOMERS13 43 110EOY ARR $6M$38M$104M
+APPENDIX C · CUSTOMER MIX BY YEAR
+
+PAGE 25
+Loaded multiplier of 1.3×includes benefits, payroll taxes, equipment.
+25
+APPENDIX C · RUNWAY
+$5M provides ~27 months of zero-revenue runway.MONTHLY HEADCOUNT COSTSROLEBASE/MONTHLOADED/MONTHCEO / Co-Founder (Storm)$0 $0Co-Founder (Jess)$0 $0CTO (to hire)$29.2K$37.9KVP Product (to hire)$16.7K$21.7KFounding Engineer ×4 $50.0K$65.0KForward-Deployed Engineer ×2 (to hire)$25.0K$32.5KSales Lead ×2 (to hire)$20.8K$27.1KCompliance Owner (to hire)$12.5K$16.3KTOTAL HEADCOUNT (13 FTEs)$154.2K$200.5K
+OTHER MONTHLY COSTSITEMMONTHLYCloud & inference (AWS/GCP)$12.0KSOC 2 / ISO audit & certification$4.2KTech E&O and cyber insurance$8.5KLegal & compliance counsel$5.0KOffice, tools & SaaS$3.5KTravel & business development$4.0KRecruiting & onboarding$2.5KContingency & buffer$10.0KTOTAL OTHER$49.7K
+Headcount (fully ramped, 13 FTEs)    $200.5KOther costs                                              $49.7KTotal fully ramped burn                           $250.2KAverage burn (6→13 FTE hiring ramp) ~$182K / moRunway at average burn~27.5 monthsSeries A milestones achieved in 18 months
+
+PAGE 26
+26
+APPENDIX C · THE FUTURE · TARGET / POST-SEED
+Prove the wedge. Then expand the control layer.01 · PROVE M&AEarn the right to expandFIRSTComplete the 81-step workflow, win external paying banks, document ROI and prove repeatable deployment in 60 days or less.
+THENAdd buy-side workflow and more M&A applications: CRM, VDR, diligence, compliance and marketplace.
+02 · EXPAND ACROSS BANKINGSame institution, more fee poolsNEXTEquity and debt capital markets, restructuring, syndicate and research—unlocked after M&A proof.
+SAME CONTROL LAYERReuse permissions, workflow state, human gates, audit evidence and institutional memory.
+03 · EXTEND THE NETWORKCounterparties, then adjacenciesCOUNTERPARTIESCorporate development, PE, VC, family offices and self-serve advisers.
+LATERPrivate credit, secondaries and CFO/treasury—then other regulated workflows after repeatability is proven.
+
+PAGE 27
+27
+APPENDIX D · STRATEGIC OPTIONALITY
+Precedent · Datasite acquired Blueflame AI in 2025 to put a deal-team assistant inside the VDR. The task layer consolidates into infrastructure.
+We can get acquired by anyone who loses without our layer.01Deal infrastructure and data roomsIntapp / DealCloud · Datasite · SS&C Intralinks · Broadridge · DFIN · Workiva · Nasdaq · ICE
+02Market data and terminalsBloomberg · S&P Global / Capital IQ · FactSet · LSEG / Refinitiv · Thomson Reuters · PitchBook / Morningstar · Moody's · MSCI
+03Supervision and communications complianceSmarsh · Global Relay · NICE Actimize · Behavox
+04AI-native deal platformsRogo · Hebbia · AlphaSense · Harvey · Mosaic
+05Consulting and systems integratorsAccenture · Deloitte · PwC · EY · KPMG · Infosys · Cognizant · TCS · Capgemini · Genpact· Ode
+06Enterprise workflow and systems of recordMicrosoft · ServiceNow · Salesforce / Slack · Oracle / NetSuite · Workday · SAP
+07Model and cloud layersOpenAI · Anthropic · Google Cloud · Palantir · AWS
+08Banks and financial institutionsBulge bracket · large regionals · any bank buying the standard to keep it from a rival
+Each builds or buys deal workflow. None has a governed AI layer yet. Ranked by likelihood.

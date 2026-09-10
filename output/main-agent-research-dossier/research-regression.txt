@@ -1,0 +1,176 @@
+..........F......F..F..............................FF                    [100%]
+=================================== FAILURES ===================================
+____ test_timeout_research_run_finishes_and_does_not_move_respond_backward _____
+
+app_context = <app.runtime.AppContext object at 0x10a555e80>
+
+    @pytest.mark.asyncio
+    async def test_timeout_research_run_finishes_and_does_not_move_respond_backward(app_context):
+        app_context.matters.move_stage("MAT-DEMO-BEACON", "respond")
+    
+        async def hanging_search(*args, **kwargs):
+            await asyncio.Event().wait()
+    
+        app_context.research.search.search_external = hanging_search
+        app_context.research.configure({
+            "primary_external_provider": "tavily",
+            "fallback_external_provider": "polaris",
+            "external_timeout_seconds": 0.02,
+        })
+        runs = ResearchRunService(app_context.vault, app_context.research)
+        started = runs.start("MAT-DEMO-BEACON", ["Which rules control?"])
+    
+        await asyncio.wait_for(runs.wait(started["run_id"]), timeout=0.4)
+        completed = runs.get("MAT-DEMO-BEACON", started["run_id"])
+    
+>       assert completed["state"] == "completed"
+E       AssertionError: assert 'failed' == 'completed'
+E         
+E         - completed
+E         + failed
+
+tests/test_research.py:209: AssertionError
+___________ test_research_refreshes_precomputed_dossier_orientation ____________
+
+app_context = <app.runtime.AppContext object at 0x109b1ee10>
+
+    @pytest.mark.asyncio
+    async def test_research_refreshes_precomputed_dossier_orientation(app_context):
+        decision_question_before = (
+            app_context.dossiers.orientation("MAT-DEMO-ORBIT")["decision_question"]
+            or app_context.index.get_matter("MAT-DEMO-ORBIT")["next_action"]
+        )
+        async def run_agent(_request):
+            return ChatResponse(
+                reply=(
+                    "## Matter summary\n\n"
+                    "Orbit uses an automated notice process that may need updated reason codes. "
+                    "Counsel must resolve the notice approach before launch.\n\n"
+                    "## Decision question\n\n"
+                    "Should Orbit block launch until the new reason codes are in every notice?\n\n"
+                    "## Open questions\n\n"
+                    "- Which notices still use the old reason codes?\n"
+                    "- Can the launch be limited to updated states?\n\n"
+                    "## Likely issues\n\nNotice accuracy and launch scope."
+                )
+            )
+    
+        app_context.research.bind_agent_runner(run_agent)
+        run = app_context.research_runs.start("MAT-DEMO-ORBIT", ["What notice and reason-code work is needed?"])
+        await app_context.research_runs.wait_for_active_work()
+        saved = app_context.research_runs.get("MAT-DEMO-ORBIT", run["run_id"])
+        assert saved["state"] == "completed", saved
+        result = saved["results"][0]
+        assert result["orientation_warning"] is None
+>       assert app_context.dossiers.orientation("MAT-DEMO-ORBIT") == {
+            "summary": (
+                "Orbit uses an automated notice process that may need updated reason codes. "
+                "Counsel must resolve the notice approach before launch."
+            ),
+            "decision_question": decision_question_before,
+            "open_questions": [
+                "Which notices still use the old reason codes?",
+                "Can the launch be limited to updated states?",
+            ],
+        }
+E       AssertionError: assert {'decision_qu...fore launch.'} == {'decision_qu...fore launch.'}
+E         
+E         Omitting 2 identical items, use -vv to show
+E         Differing items:
+E         {'decision_question': 'Should Orbit block launch until the new reason codes are in every notice?'} != {'decision_question': 'Complete orientation and identify missing facts.'}
+E         Use -v to get more diff
+
+tests/test_research.py:401: AssertionError
+_________ test_automatic_research_run_moves_active_research_to_explore _________
+
+app_context = <app.runtime.AppContext object at 0x109ee3d40>
+
+    @pytest.mark.asyncio
+    async def test_automatic_research_run_moves_active_research_to_explore(app_context):
+        runs = ResearchRunService(app_context.vault, app_context.research)
+    
+        started = runs.start("MAT-DEMO-BEACON", ["What issues need research?"])
+        assert started["state"] == "queued"
+        await runs.wait(started["run_id"])
+    
+        completed = runs.get("MAT-DEMO-BEACON", started["run_id"])
+>       assert completed["state"] == "completed"
+E       AssertionError: assert 'failed' == 'completed'
+E         
+E         - completed
+E         + failed
+
+tests/test_research.py:480: AssertionError
+_____ test_http_research_start_runs_on_the_application_loop[research-runs] _____
+
+app_context = <app.runtime.AppContext object at 0x109f96990>
+endpoint = 'research-runs'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("endpoint", ["research-runs", "research"])
+    async def test_http_research_start_runs_on_the_application_loop(app_context, endpoint):
+        import httpx
+        from fastapi import FastAPI
+        from app.routers.dependencies import get_context
+        from app.routers.matters import router
+    
+        app = FastAPI()
+        app.include_router(router, prefix="/api")
+        app.dependency_overrides[get_context] = lambda: app_context
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app, raise_app_exceptions=False), base_url="http://test") as client:
+            options = {"json": {"question": "Which notice work is needed?", "source_action_key": "http-research-start"}} if endpoint == "research-runs" else {"params": {"question": "Which notice work is needed?"}}
+            response = await client.post(f"/api/matters/MAT-DEMO-ORBIT/{endpoint}", **options)
+            assert response.status_code == 202, response.text
+            run = response.json()
+            await app_context.research_runs.wait_for_active_work()
+            saved = app_context.research_runs.get("MAT-DEMO-ORBIT", run["run_id"])
+>           assert saved["state"] == "completed"
+E           AssertionError: assert 'failed' == 'completed'
+E             
+E             - completed
+E             + failed
+
+tests/test_research.py:1282: AssertionError
+_______ test_http_research_start_runs_on_the_application_loop[research] ________
+
+app_context = <app.runtime.AppContext object at 0x10a057b60>
+endpoint = 'research'
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("endpoint", ["research-runs", "research"])
+    async def test_http_research_start_runs_on_the_application_loop(app_context, endpoint):
+        import httpx
+        from fastapi import FastAPI
+        from app.routers.dependencies import get_context
+        from app.routers.matters import router
+    
+        app = FastAPI()
+        app.include_router(router, prefix="/api")
+        app.dependency_overrides[get_context] = lambda: app_context
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app, raise_app_exceptions=False), base_url="http://test") as client:
+            options = {"json": {"question": "Which notice work is needed?", "source_action_key": "http-research-start"}} if endpoint == "research-runs" else {"params": {"question": "Which notice work is needed?"}}
+            response = await client.post(f"/api/matters/MAT-DEMO-ORBIT/{endpoint}", **options)
+            assert response.status_code == 202, response.text
+            run = response.json()
+            await app_context.research_runs.wait_for_active_work()
+            saved = app_context.research_runs.get("MAT-DEMO-ORBIT", run["run_id"])
+>           assert saved["state"] == "completed"
+E           AssertionError: assert 'failed' == 'completed'
+E             
+E             - completed
+E             + failed
+
+tests/test_research.py:1282: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/bharris/Programs/counsel-os-mvp/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_research.py::test_timeout_research_run_finishes_and_does_not_move_respond_backward
+FAILED tests/test_research.py::test_research_refreshes_precomputed_dossier_orientation
+FAILED tests/test_research.py::test_automatic_research_run_moves_active_research_to_explore
+FAILED tests/test_research.py::test_http_research_start_runs_on_the_application_loop[research-runs]
+FAILED tests/test_research.py::test_http_research_start_runs_on_the_application_loop[research]
+5 failed, 48 passed, 1 warning in 22.64s

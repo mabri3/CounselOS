@@ -25,6 +25,7 @@ from app.services.recommendations import RecommendationService
 
 
 def build_handlers() -> dict[str, Handler]:
+    from app.tools.research_investigation import collect_research_evidence, read_research_source, search_research_sources
     return {
         "select_conversation_scope": select_conversation_scope,
         "workspace_action": workspace_action,
@@ -46,6 +47,9 @@ def build_handlers() -> dict[str, Handler]:
         "move_matter_stage": move_matter_stage,
         "create_work_item": create_work_item,
         "run_research": run_research,
+        "collect_research_evidence": collect_research_evidence,
+        "read_research_source": read_research_source,
+        "search_research_sources": search_research_sources,
         "stop_research": stop_research,
         "record_decision": record_decision,
         "audit_decisions": audit_decisions,
@@ -64,6 +68,17 @@ async def _rebuild_index(context: ToolExecutionContext) -> None:
     await context.app.index.rebuild_async()
 
 
+def _observe_problem_inputs(context, groups):
+    """Return the exact permitted records added to this run's input basis."""
+    capture = context.frozen_context["problem_analysis_capture"]
+    observed = context.app.problem_analysis.capture(context.matter_id, frozen_context=context.frozen_context)
+    for group in groups:
+        capture["inputs"][group] = observed["inputs"][group]
+        capture["input_basis"]["hashes"][group] = observed["input_basis"]["hashes"][group]
+    capture["references"].update(observed["references"])
+    return {group: observed["inputs"][group] for group in groups}
+
+
 async def update_matter_intake(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
     if not context.matter_id:
         raise ValueError("An active matter is required.")
@@ -78,6 +93,8 @@ async def update_matter_intake(context: ToolExecutionContext, arguments: dict[st
             "Do not ask a follow-up question only in prose."
         )
     before_revisions = context.app.workspace.source_revisions(context.matter_id)
+    problem_capture = context.frozen_context.get("problem_analysis_capture")
+    problem_was_current = bool(problem_capture and context.app.problem_analysis._fresh(context.matter_id, problem_capture["input_basis"]))
     result = context.app.matter_records.apply_intake_turn(
         context.matter_id,
         turn,
@@ -106,6 +123,10 @@ async def update_matter_intake(context: ToolExecutionContext, arguments: dict[st
     baseline = context.frozen_context.get("intake_publication_baseline") or context.frozen_context.get("publication_baseline")
     if baseline == before_revisions:
         context.frozen_context["intake_publication_baseline"] = context.app.workspace.source_revisions(context.matter_id)
+    if problem_was_current and baseline == before_revisions:
+        # Only this tool's actual returned observations amend the original basis.
+        # Preserve the original time, prior pointer and immutable context identity.
+        payload["observed_problem_inputs"] = _observe_problem_inputs(context, ("facts", "assumptions", "issues", "questions", "business_question"))
     return {
         "summary": "Updated the matter intake record.",
         "changed_paths": payload.get("changed_paths", []),
@@ -137,6 +158,8 @@ async def read_file(context: ToolExecutionContext, arguments: dict[str, Any]) ->
     path = str(arguments.get("path") or context.active_file or "")
     if not path:
         raise ValueError("A file path is required.")
+    if _needs_other_matter_choice(context, path):
+        return await run_research(context, {"question": context.trusted_user_message or "Review relevant material from other matters."})
     if _excluded_tool_path(context, path):
         raise ValueError("This file was excluded from the submitted inquiry.")
     document = context.app.vault.read_document(path)
@@ -146,7 +169,9 @@ async def read_file(context: ToolExecutionContext, arguments: dict[str, Any]) ->
     # Never feed that recursive execution history back into the model.
     if len(json.dumps(document, default=str)) > 60000:
         content = str(document.get("content") or "")
-        clipped = len(content) > 40000
+        # Investigation capture saves this full, already scope-filtered text,
+        # then returns a bounded passage. Do not snapshot a clipped tool view.
+        clipped = len(content) > 40000 and context.investigation is None
         document = {**document, "metadata": {
             key: value for key, value in document.get("metadata", {}).items()
             if isinstance(value, (str, int, float, bool)) and len(str(value)) < 1000
@@ -159,6 +184,8 @@ async def list_files(context: ToolExecutionContext, arguments: dict[str, Any]) -
     path = str(arguments.get("path") or "")
     if not path and context.matter_id:
         path = context.app.matters.matter_path(context.matter_id)
+    if _needs_other_matter_choice(context, path):
+        return await run_research(context, {"question": context.trusted_user_message or "Find relevant material in other matters."})
     tree = context.app.vault.list_tree(path)
     return {"summary": f"Listed files under {path or 'the vault'}.", "data": {"tree": tree}}
 
@@ -168,11 +195,34 @@ async def search_vault(context: ToolExecutionContext, arguments: dict[str, Any])
     if not query:
         raise ValueError("A search query is required.")
     path = arguments.get("path")
+    if not path and context.matter_id:
+        path = context.app.matters.matter_path(context.matter_id)
+    if _needs_other_matter_choice(context, str(path or "")):
+        return await run_research(context, {"question": query})
     results = context.app.search.search_internal(
         query, matter_path=str(path or "") or None, limit=10
     )
     results = [item for item in results if not _excluded_tool_path(context, str(item.get("path") or ""))]
     return {"summary": f"Found {len(results)} internal result(s).", "data": {"results": results}}
+
+
+def _needs_other_matter_choice(context: ToolExecutionContext, path: str) -> bool:
+    if not context.matter_id:
+        return False
+    canonical = context.app.vault.relative(context.app.vault.resolve(path))
+    current = context.app.matters.matter_path(context.matter_id)
+    if canonical == current or canonical.startswith(current + "/"):
+        return False
+    if canonical.startswith("99_Trash"):
+        raise ValueError("Trashed matters are not research sources.")
+    if canonical not in {".", "", "03_Matters"} and not canonical.startswith("03_Matters/"):
+        return False
+    allowed = (context.frozen_context.get("research_scope") or {}).get("other_matters") is True
+    if allowed:
+        roots = [item["path"] for item in context.app.index.list_matters()]
+        if any(canonical == root or canonical.startswith(root + "/") for root in roots):
+            return False
+    return True
 
 
 async def write_markdown(context: ToolExecutionContext, arguments: dict[str, Any]) -> dict[str, Any]:
@@ -266,7 +316,7 @@ async def save_work_product(context: ToolExecutionContext, arguments: dict[str, 
     if continuity.get("draft_update"):
         if arguments.get("kind") != "draft" or arguments.get("operation") != "revise" or not context.target or arguments.get("existing_draft_path") != context.target.artifact_path:
             raise ValueError("This comparison update can only propose edits to its frozen draft target.")
-    if context.frozen_context.get("draft_updates_require_offer") and not context.update_offer_id:
+    if arguments.get("kind") != "recommendation" and context.frozen_context.get("draft_updates_require_offer") and not context.update_offer_id:
         raise ValueError("The facts changed. Offer a draft update before creating or revising a document.")
     kind = str(arguments.get("kind") or "").strip()
     title = str(arguments.get("title") or "").strip()
@@ -277,17 +327,19 @@ async def save_work_product(context: ToolExecutionContext, arguments: dict[str, 
     if not content.strip():
         raise ValueError("The deliverable body is required.")
     if kind == "recommendation":
+        if context.preview:
+            raise ValueError("A preview does not update the working recommendation.")
         if existing_draft_path:
             raise ValueError("Recommendations are revised in recommendations.md, not as work-product drafts.")
         recommendations = RecommendationService(context.app.vault, context.app.matters)
         existing = recommendations.get(matter_id)
         if existing["current_version_id"]:
             saved_recommendation = recommendations.propose(
-                matter_id, content, actor=context.review_author or "Themis.ai"
+                matter_id, content, actor=context.review_author or "Themis.ai", next_action=str(arguments.get("next_action") or "")
             )
         else:
             saved_recommendation = recommendations.set_working(
-                matter_id, content, actor=context.review_author or "Themis.ai", origin="initial_agent"
+                matter_id, content, actor=context.review_author or "Themis.ai", origin="initial_agent", next_action=str(arguments.get("next_action") or "")
             )
         path = saved_recommendation["path"]
         result = {
@@ -567,20 +619,38 @@ async def run_research(context: ToolExecutionContext, arguments: dict[str, Any])
     matter_id = str(arguments.get("matter_id") or context.matter_id or "")
     if not matter_id:
         raise ValueError("An active matter is required.")
-    started = context.app.research_runs.start(
-        matter_id,
-        [str(arguments.get("question") or context.app.matters.get(matter_id)["title"])],
-        source_action_key=context.source_action_key,
-        expected_question_revision=context.expected_question_revision,
-    )
+    question = str(arguments.get("question") or context.app.matters.get(matter_id)["title"])
+    options = context.app.research_runs.research.search_options()
+    from app.services.native_research import native_options
+    try:
+        collector = context.app.research_runs.resolve_agent()
+        collector_selection = context.app.research_runs._selection_values(collector)
+    except Exception:
+        collector_selection = None
+        options["collection_warning"] = "Collection model unavailable; main analysis can still use available context."
+    options.update(native_options(collector_selection, context.app.settings))
+    options.update(main_model_selection=context.model_selection,
+                   collector_model_selection=options["model_selection"],
+                   allow_followup_queries=True)
+    # Suggestions are not authorization. Only the direct card action starts a run.
+    user_text = context.trusted_user_message or ""
+    external = bool(re.search(r"\b(?:external(?:ly)?|web|internet|online|public sources)\b", user_text, re.I))
+    other = bool(re.search(r"\b(?:other|prior|across) matters\b", user_text, re.I))
+    if re.search(r"\b(?:not|don't|do not|without)\b|\bonly\s+(?:the\s+)?(?:current|this)\s+matter\b", user_text, re.I):
+        external = other = False
     return {
-        "summary": (
-            f"Research started in the background as {started['run_id']}. "
-            "The saved run status will update when it finishes."
-        ),
-        "changed_paths": [str(started["path"])],
-        "refresh": ["matter", "kanban", "tree"],
-        "data": started,
+        "summary": "Where should I look for this research?",
+        "operation": "run_research",
+        "operation_status": "confirmation_required",
+        "required_user_action": "Choose sources for this request. No research has started yet.",
+        "changed_paths": [],
+        "data": {"proposal": {
+            "matter_id": matter_id, "question": question,
+            "public_query": str(arguments.get("public_query") or ""),
+            "external": external, "other_matters": other,
+            "expected_question_revision": context.expected_question_revision,
+            **options,
+        }},
     }
 
 
@@ -932,12 +1002,23 @@ async def answer_workspace_question(context: ToolExecutionContext, arguments: di
     if question["business_question_revision"] != context.expected_question_revision:
         raise ValueError("This supporting question belongs to an earlier business question.")
     command.update(expected_revision=arguments.get("expected_revision"), state=arguments.get("state"), answer=arguments.get("answer"))
+    capture = context.frozen_context.get("problem_analysis_capture")
+    was_current = bool(capture and context.app.problem_analysis._fresh(context.matter_id, capture["input_basis"]))
     receipt = context.app.workspace.answer_question(context.matter_id, question_id, command)
-    return _workspace_result(receipt, "Question left open." if command["state"] == "left_open" else "Answer saved as a reported fact. The issue remains open.")
+    result = _workspace_result(receipt, "Question left open." if command["state"] == "left_open" else "Answer saved as a reported fact. The issue remains open.")
+    if was_current and receipt["state"] != "not_saved":
+        # Return the exact records used to amend this run's captured basis.
+        # A correction that preceded this tool call remains a stale baseline.
+        result["data"]["observed_problem_inputs"] = _observe_problem_inputs(context, ("facts", "assumptions", "questions"))
+    return result
 
 
 def _excluded_tool_path(context, path: str) -> bool:
     resolved = context.app.vault.resolve(path)
+    normalized = context.app.vault.relative(resolved)
+    if "/research/source-library/" in normalized:
+        if not normalized.endswith("/source-library/index.md") or context.frozen_context.get("excluded_paths") or context.frozen_context.get("excluded_reference_ids"):
+            return True
     if any(resolved == context.app.vault.resolve(item) for item in context.frozen_context.get("excluded_paths", [])):
         return True
     if context.frozen_context.get("withhold_unattributed_history"):
@@ -987,6 +1068,8 @@ async def workspace_action(context: ToolExecutionContext, arguments: dict[str, A
         raise ValueError("Select a matter first.")
     app = context.app
     workspace = app.workspace
+    problem_capture = context.frozen_context.get("problem_analysis_capture")
+    problem_was_current = bool(problem_capture and app.problem_analysis._fresh(matter_id, problem_capture["input_basis"]))
     metadata = workspace._document(matter_id, "workspace.md")["metadata"]
     revision_map = context.frozen_context.get("mutation_revisions") or context.frozen_context.get("publication_baseline") or workspace.source_revisions(matter_id)
     if action == "inspect":
@@ -1015,6 +1098,8 @@ async def workspace_action(context: ToolExecutionContext, arguments: dict[str, A
     elif action == "set_context":
         saved = app.workspace_evidence.save_selection(matter_id, values["selections"], expected_revision=values["expected_revision"])
     elif action == "prior_work":
+        if not (context.frozen_context.get("research_scope") or {}).get("other_matters"):
+            return await run_research(context, {"question": values.get("query") or context.trusted_user_message or "Find relevant prior work in other matters."})
         saved = [item for item in app.workspace_reuse.prior_work(matter_id, values.get("query", "")) if not _excluded_tool_path(context, item["path"])]
     elif action == "draft_practice_note":
         saved = app.workspace_reuse.draft_practice_note(**values)
@@ -1041,7 +1126,10 @@ async def workspace_action(context: ToolExecutionContext, arguments: dict[str, A
     if saved is None:
         return {"summary": "The question was not saved because its scope changed or its required text was missing. Useful analysis is retained.", "operation_status": "no_change", "data": {"state": "not_saved"}}
     read_only = action in {"inspect", "prior_work", "draft_practice_note"}
-    return {"summary": "Workspace context available." if read_only else "Workspace action saved.", "data": {"result": saved}, "operation_status": "no_change" if read_only else "changed", "refresh": ["workspace", "matter"]}
+    data = {"result": saved}
+    if problem_was_current and action in {"correct_fact", "adopt_scenario", "accept_flow_facts"} and saved.get("state") not in {"not_saved", "conflict"}:
+        data["observed_problem_inputs"] = _observe_problem_inputs(context, ("facts", "assumptions", "questions"))
+    return {"summary": "Workspace context available." if read_only else "Workspace action saved.", "data": data, "operation_status": "no_change" if read_only else "changed", "refresh": ["workspace", "matter"]}
 
 
 def fact_update_details(app, matter_id: str, result: dict, *, source_action_key: str, selected_path: str | None = None, instruction: str = "") -> dict:

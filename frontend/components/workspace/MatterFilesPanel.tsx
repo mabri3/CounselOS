@@ -93,7 +93,8 @@ export function matterFileReferenceTarget(
   return {
     document_id: file.source_id?.trim() || file.reference_id,
     path,
-    revision: file.revision ?? null,
+    // The companion has its own text revision. Resolve its current saved copy.
+    revision: path === file.path ? file.revision ?? null : null,
     origin: {
       surface: "document",
       record_id: file.reference_id,

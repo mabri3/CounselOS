@@ -1,0 +1,15 @@
+{
+  "matter_id": "MAT-20260910-0e3709",
+  "vault": "/var/folders/xb/kzc31shn1pz2s_5l2fy6d7rh0000gn/T/themis-decision-map-acceptance-oyk_603c/vault",
+  "index_rebuild_preserved_markdown": true,
+  "unresolved_issue": "ISS-6f4db355eb-beceace28ad3b977",
+  "completed_mitigation": true,
+  "decision_count": 2,
+  "explicit_adoption": true,
+  "final_read_only": true,
+  "source_unchanged": true,
+  "draft_review_matches_saved_body": true,
+  "selected_draft_exports": [
+    ".exports/cb3b86343a617f6c/61b99220b218095caeb9/launch-advice-e18203-markup.docx"
+  ]
+}

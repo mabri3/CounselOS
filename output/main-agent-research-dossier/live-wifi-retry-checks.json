@@ -1,0 +1,40 @@
+[
+  {
+    "run_id": "RUN-20260910-1d46bd",
+    "completion_messages": 1,
+    "source_count": 0,
+    "local_sources": [
+      "03_Matters/orbit-bank-data/documents/termination-A.md",
+      "03_Matters/orbit-bank-data/documents/termination-B.md"
+    ],
+    "budget": {
+      "main_calls": 3,
+      "batches": 0,
+      "requests": 0,
+      "fetches": 0,
+      "active_seconds": 12.318198499982827,
+      "evidence_chars": 209
+    },
+    "analysis_failure": null
+  },
+  {
+    "run_id": "RUN-20260910-a53014",
+    "completion_messages": 1,
+    "source_count": 0,
+    "local_sources": [
+      "03_Matters/beacon-instant-onboarding/facts.md",
+      "03_Matters/beacon-instant-onboarding/matter.md",
+      "03_Matters/beacon-instant-onboarding/dossier.md",
+      "03_Matters/beacon-instant-onboarding/recommendations.md"
+    ],
+    "budget": {
+      "main_calls": 10,
+      "batches": 3,
+      "requests": 5,
+      "fetches": 1,
+      "active_seconds": 460.0556792070274,
+      "evidence_chars": 730
+    },
+    "analysis_failure": null
+  }
+]

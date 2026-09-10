@@ -35,6 +35,7 @@ from app.services.document_review import DocumentReviewService
 from app.services.dossier import DossierService
 from app.services.workspace import WorkspaceService
 from app.services.issue_analysis import IssueAnalysisService
+from app.services.problem_analysis import ProblemAnalysisService
 from app.services.workspace_actions import WorkspaceActionsService
 from app.services.workspace_evidence import WorkspaceEvidenceService
 from app.services.workspace_scenarios import WorkspaceScenarioService
@@ -46,6 +47,7 @@ from app.services.ingestion import IngestionService
 from app.services.internal_knowledge import InternalKnowledgeService
 from app.services.matters import MatterService
 from app.services.matter_paths import MatterPathPolicy
+from app.services.source_library import SourceLibraryService
 from app.services.mitigations import MitigationService
 from app.services.matter_state import MatterStateService
 from app.services.matter_records import MatterRecordService
@@ -92,15 +94,18 @@ class AppContext:
         self.matters.bind_dossiers(self.dossiers)
         self.workspace = WorkspaceService(self.vault, self.matters, self.dossiers, self.matter_records)
         self.issue_analysis = IssueAnalysisService(self.vault, self.matters, self.workspace)
+        self.problem_analysis = ProblemAnalysisService(self.vault, self.matters, self.workspace)
         self.work_products = WorkProductService(self.vault, self.matters, self.matter_paths)
         self.document_reviews = DocumentReviewService(self.vault)
         self.document_exports = DocumentExportService(self.vault)
+        self.source_library = SourceLibraryService(self.vault, self.index, self.matters)
         self.ingestion = IngestionService(
             self.vault,
             self.index,
             self.matters,
             self.matter_paths,
             max_upload_mb=self.settings.max_upload_mb,
+            source_library=self.source_library,
         )
         self.decisions = DecisionService(
             self.vault,
@@ -184,7 +189,7 @@ class AppContext:
         self.provider_router = ProviderRouter(self.settings, self.provider)
         self.skills = SkillRegistry(self.vault)
         self.skills.install_missing_output_template_starters()
-        self.workspace_evidence = WorkspaceEvidenceService(self.vault, self.matters, self.workspace)
+        self.workspace_evidence = WorkspaceEvidenceService(self.vault, self.matters, self.workspace, self.source_library)
         self.workspace_scenarios = WorkspaceScenarioService(self.vault, self.matters, self.workspace, self.matter_records)
         self.workspace_review = WorkspaceReviewService(
             self.vault, self.matters, self.workspace, self.matter_records, self.workspace_scenarios
@@ -225,10 +230,14 @@ class AppContext:
             self.vault,
             self.research,
             resolve_agent=self._resolve_research_model,
+            resolve_main=lambda: self.runner.resolve("counsel-copilot"),
+            validate_origin=self.chat_history.get,
             resolve_selection=self.provider_router.resolve_selection,
         )
+        self.research.app = self
         if recover_interrupted:
             self.research_runs.mark_running_interrupted()
+            self.research_runs.recover_saved_publications()
         self.chat_runs = ChatRunService(
             self.vault, self, timeout_seconds=self.settings.chat_run_timeout_seconds
         )

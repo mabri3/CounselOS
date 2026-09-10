@@ -1,0 +1,153 @@
+[
+  {
+    "matter_id": "MAT-20260910-781631",
+    "run_id": "RUN-20260910-d09de5",
+    "conversation_id": "CONV-20260910-ec949c",
+    "state": "completed",
+    "packet_path": "03_Matters/synthetic-vendor-termination-browser-test-781631/research/RES-20260910-e5ef0e.md",
+    "scope": {
+      "external": false,
+      "other_matters": false,
+      "public_query": "Synthetic transfer permission rule",
+      "provider_ids": [
+        "polaris",
+        "tavily"
+      ],
+      "native": true,
+      "allow_firecrawl": false,
+      "model_selection": {
+        "provider": "codex",
+        "model": "fixture-collector",
+        "reasoning_effort": "medium"
+      },
+      "main_model_selection": {
+        "provider": "codex",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium"
+      },
+      "collector_model_selection": {
+        "provider": "codex",
+        "model": "fixture-collector",
+        "reasoning_effort": "medium"
+      },
+      "allow_followup_queries": true
+    },
+    "budget_used": {
+      "main_calls": 5,
+      "batches": 0,
+      "requests": 0,
+      "fetches": 0,
+      "active_seconds": 0.8034833349956898,
+      "evidence_chars": 140
+    },
+    "completion_messages": 1,
+    "sources": [
+      "03_Matters/synthetic-vendor-termination-browser-test-781631/research/sources/SRC-LOCAL-664ae8091efd2a75c443.md",
+      "03_Matters/synthetic-vendor-termination-browser-test-781631/research/sources/SRC-LOCAL-dd6dc12e5de46cbbda64.md"
+    ],
+    "publication": {
+      "state": "published",
+      "receipts": {
+        "packet": {
+          "state": "saved",
+          "path": "03_Matters/synthetic-vendor-termination-browser-test-781631/research/RES-20260910-e5ef0e.md"
+        },
+        "recommendation": {
+          "state": "proposed",
+          "version_id": "REC-20260910-68d794"
+        },
+        "dossier": {
+          "state": "applied",
+          "path": "03_Matters/synthetic-vendor-termination-browser-test-781631/dossier.md",
+          "revision_path": "03_Matters/synthetic-vendor-termination-browser-test-781631/dossier-revisions/DOS-c8024477ecb3de01aa9d.md",
+          "content_hash": "d38653cae626a3d9750b1422d5aa6f2a9b4ac7bef6c7f0bfb88e6c62ee705274"
+        },
+        "conversation": {
+          "state": "saved",
+          "message_id": "MSG-20260910-f7e596"
+        }
+      },
+      "warnings": [],
+      "basis_warning": ""
+    }
+  },
+  {
+    "matter_id": "MAT-20260910-345ecb",
+    "run_id": "RUN-20260910-250009",
+    "conversation_id": "CONV-20260910-001348",
+    "state": "completed",
+    "packet_path": "03_Matters/synthetic-acquisition-browser-test-345ecb/research/RES-20260910-691785.md",
+    "scope": {
+      "external": true,
+      "other_matters": false,
+      "public_query": "Synthetic transfer permission rule",
+      "provider_ids": [
+        "polaris",
+        "tavily"
+      ],
+      "native": true,
+      "allow_firecrawl": false,
+      "model_selection": {
+        "provider": "codex",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium"
+      },
+      "main_model_selection": {
+        "provider": "codex",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium"
+      },
+      "collector_model_selection": {
+        "provider": "codex",
+        "model": "gpt-5.6-sol",
+        "reasoning_effort": "medium"
+      },
+      "allow_followup_queries": true
+    },
+    "budget_used": {
+      "main_calls": 4,
+      "batches": 2,
+      "requests": 2,
+      "fetches": 2,
+      "active_seconds": 0.8916466660011793,
+      "evidence_chars": 144
+    },
+    "completion_messages": 1,
+    "sources": [
+      "03_Matters/synthetic-acquisition-browser-test-345ecb/matter.md",
+      "03_Matters/synthetic-acquisition-browser-test-345ecb/work-items/WI-20260910-25a24a.md",
+      "03_Matters/synthetic-acquisition-browser-test-345ecb/request.md",
+      "03_Matters/synthetic-acquisition-browser-test-345ecb/events/2026-09-10-EVT-20260910-8af65f.md",
+      "03_Matters/synthetic-acquisition-browser-test-345ecb/participants.md",
+      "03_Matters/synthetic-acquisition-browser-test-345ecb/facts.md",
+      "03_Matters/synthetic-acquisition-browser-test-345ecb/issues.md",
+      "03_Matters/synthetic-acquisition-browser-test-345ecb/research/sources/SRC-dd9c7547c5bac0b14d7b-53a197a25988.md",
+      "03_Matters/synthetic-acquisition-browser-test-345ecb/research/sources/SRC-d003001afc91758c7676-e91d58531100.md"
+    ],
+    "publication": {
+      "state": "published",
+      "receipts": {
+        "packet": {
+          "state": "saved",
+          "path": "03_Matters/synthetic-acquisition-browser-test-345ecb/research/RES-20260910-691785.md"
+        },
+        "recommendation": {
+          "state": "proposed",
+          "version_id": "REC-20260910-2550fc"
+        },
+        "dossier": {
+          "state": "applied",
+          "path": "03_Matters/synthetic-acquisition-browser-test-345ecb/dossier.md",
+          "revision_path": "03_Matters/synthetic-acquisition-browser-test-345ecb/dossier-revisions/DOS-82c0b4e1a0daf08a3996.md",
+          "content_hash": "13e43125b2c9ccc1000e18d929ef99a0c659ddfd11e0989c021f6e9621825b96"
+        },
+        "conversation": {
+          "state": "saved",
+          "message_id": "MSG-20260910-de1551"
+        }
+      },
+      "warnings": [],
+      "basis_warning": ""
+    }
+  }
+]

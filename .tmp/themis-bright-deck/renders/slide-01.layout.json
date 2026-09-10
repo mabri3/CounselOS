@@ -1,0 +1,526 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/swhxgs",
+    "id": "swhxgs",
+    "slide": 1,
+    "layoutId": "94302c2b-6a1f-40e6-875c-bb9de263a0ea",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "0bdeb33e-220c-474b-889e-c35a5c6bbebb",
+    "masterLayoutName": "Master",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "Arial",
+      "Georgia"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "94302c2b-6a1f-40e6-875c-bb9de263a0ea",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "0bdeb33e-220c-474b-889e-c35a5c6bbebb",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "0bdeb33e-220c-474b-889e-c35a5c6bbebb",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "image",
+      "scope": "slide",
+      "aid": "im/bq9cjy5w",
+      "id": "1",
+      "bbox": [
+        0,
+        0,
+        1280,
+        720
+      ],
+      "alt": "A lawyer directing a beam across uncertain terrain in black and white",
+      "contentType": "image/png",
+      "imageFit": "cover",
+      "asset": {
+        "assetId": "76ea7d76-17d9-4afc-90f9-f7ecb47802f0",
+        "contentType": "image/png",
+        "byteLength": 2905355
+      }
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/dobahg7a",
+      "id": "2",
+      "name": "cover-scrim",
+      "bbox": [
+        0,
+        0,
+        760,
+        720
+      ],
+      "geometry": "rect",
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/cn2tobqp",
+      "id": "3",
+      "name": "logo-ground",
+      "bbox": [
+        48,
+        38,
+        190,
+        58
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#FCFAF4",
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "image",
+      "scope": "slide",
+      "aid": "im/21gb694z",
+      "id": "4",
+      "bbox": [
+        62,
+        48,
+        162,
+        38
+      ],
+      "alt": "Themis.ai logo",
+      "contentType": "image/png",
+      "imageFit": "contain",
+      "asset": {
+        "assetId": "45848067-3966-4eea-a83b-1046f490dcc7",
+        "contentType": "image/png",
+        "byteLength": 55256
+      }
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/2h0ri18n",
+      "id": "5",
+      "name": "cover-title",
+      "bbox": [
+        54,
+        136,
+        720,
+        208
+      ],
+      "geometry": "rect",
+      "text": "The lawyer makes the call.\nThemis makes sure they do not face it alone.",
+      "textPreview": "The lawyer makes the call. | Themis makes sure they do not face it alone.",
+      "resolvedFontSize": 48,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 48,
+        "typeface": "Georgia",
+        "color": "#FCFAF4",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "The lawyer makes the call."
+          },
+          {
+            "index": 2,
+            "text": "Themis makes sure they do"
+          },
+          {
+            "index": 3,
+            "text": "not face it alone."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "The lawyer makes the call.",
+          "lineSpacingPercent": 98000,
+          "resolvedTextStyle": {
+            "fontSize": 48,
+            "typeface": "Georgia",
+            "color": "#FCFAF4",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 0.98
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "The lawyer makes the call.",
+              "fontSize": 48,
+              "typeface": "Georgia",
+              "color": "#FCFAF4",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 0.98
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 2,
+          "text": "Themis makes sure they do not face it alone.",
+          "lineSpacingPercent": 98000,
+          "resolvedTextStyle": {
+            "fontSize": 48,
+            "typeface": "Georgia",
+            "color": "#FCFAF4",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 0.98
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Themis makes sure they do not face it alone.",
+              "fontSize": 48,
+              "typeface": "Georgia",
+              "color": "#FCFAF4",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 0.98
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/pkradgry",
+      "id": "6",
+      "name": "cover-support",
+      "bbox": [
+        56,
+        363,
+        560,
+        70
+      ],
+      "geometry": "rect",
+      "text": "Themis is a companion to legal judgment—\na flashlight in the dark.",
+      "textPreview": "Themis is a companion to legal judgment— | a flashlight in the dark.",
+      "resolvedFontSize": 25,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 25,
+        "typeface": "Georgia",
+        "color": "#C79A2B",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Themis is a companion to legal judgment—"
+          },
+          {
+            "index": 2,
+            "text": "a flashlight in the dark."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Themis is a companion to legal judgment—",
+          "lineSpacingPercent": 102000,
+          "resolvedTextStyle": {
+            "fontSize": 25,
+            "typeface": "Georgia",
+            "color": "#C79A2B",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.02
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Themis is a companion to legal judgment—",
+              "fontSize": 25,
+              "typeface": "Georgia",
+              "color": "#C79A2B",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.02
+            }
+          ],
+          "marginLeft": 0
+        },
+        {
+          "index": 2,
+          "text": "a flashlight in the dark.",
+          "lineSpacingPercent": 102000,
+          "resolvedTextStyle": {
+            "fontSize": 25,
+            "typeface": "Georgia",
+            "color": "#C79A2B",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.02
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "a flashlight in the dark.",
+              "fontSize": 25,
+              "typeface": "Georgia",
+              "color": "#C79A2B",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.02
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/4jitkbqd",
+      "id": "7",
+      "name": "cover-context",
+      "bbox": [
+        56,
+        450,
+        600,
+        108
+      ],
+      "geometry": "rect",
+      "text": "Legal judgment is rarely a search for one obvious answer. The lawyer must understand an uncertain legal space, see what could change the analysis, and make a decision the business can act on. Themis helps illuminate that space while leaving the judgment with the lawyer.",
+      "textPreview": "Legal judgment is rarely a search for one obvious answer. The lawyer must understand an uncertain legal space, see what could change the ...",
+      "resolvedFontSize": 17,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 17,
+        "typeface": "Arial",
+        "color": "#FCFAF4",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 4,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Legal judgment is rarely a search for one obvious answer. The lawyer must"
+          },
+          {
+            "index": 2,
+            "text": "understand an uncertain legal space, see what could change the analysis, and"
+          },
+          {
+            "index": 3,
+            "text": "make a decision the business can act on. Themis helps illuminate that space"
+          },
+          {
+            "index": 4,
+            "text": "while leaving the judgment with the lawyer."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Legal judgment is rarely a search for one obvious answer. The lawyer must understand an uncertain legal space, see what could change the analysis, and make a decision the business can act on. Themis helps illuminate that space while leaving the judgment with the lawyer.",
+          "lineSpacingPercent": 115000,
+          "resolvedTextStyle": {
+            "fontSize": 17,
+            "typeface": "Arial",
+            "color": "#FCFAF4",
+            "alignment": "left",
+            "lineSpacing": 1.15
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Legal judgment is rarely a search for one obvious answer. The lawyer must understand an uncertain legal space, see what could change the analysis, and make a decision the business can act on. Themis helps illuminate that space while leaving the judgment with the lawyer.",
+              "fontSize": 17,
+              "typeface": "Arial",
+              "color": "#FCFAF4",
+              "alignment": "left",
+              "lineSpacing": 1.15
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/fups7m9w",
+      "id": "8",
+      "name": "cover-bottom",
+      "bbox": [
+        0,
+        596,
+        760,
+        124
+      ],
+      "geometry": "rect",
+      "fillColor": "#C86449",
+      "lineWidth": 0
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/utgre18b",
+      "id": "9",
+      "name": "cover-bottom-line",
+      "bbox": [
+        56,
+        620,
+        650,
+        68
+      ],
+      "geometry": "rect",
+      "text": "Themis supports the person responsible for the answer. It does not replace their judgment.",
+      "textPreview": "Themis supports the person responsible for the answer. It does not replace their judgment.",
+      "resolvedFontSize": 22,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 22,
+        "typeface": "Georgia",
+        "color": "#16233F",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Themis supports the person responsible for the answer."
+          },
+          {
+            "index": 2,
+            "text": "It does not replace their judgment."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Themis supports the person responsible for the answer. It does not replace their judgment.",
+          "lineSpacingPercent": 105000,
+          "resolvedTextStyle": {
+            "fontSize": 22,
+            "typeface": "Georgia",
+            "color": "#16233F",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.05
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Themis supports the person responsible for the answer. It does not replace their judgment.",
+              "fontSize": 22,
+              "typeface": "Georgia",
+              "color": "#16233F",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.05
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

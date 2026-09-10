@@ -1,0 +1,190 @@
+........................................................................ [  5%]
+........................................................................ [ 10%]
+........................................................................ [ 16%]
+........................................................................ [ 21%]
+........................................................................ [ 27%]
+........................................................................ [ 32%]
+........................................................................ [ 37%]
+........................................................................ [ 43%]
+........................................................................ [ 48%]
+........................................................................ [ 54%]
+........................................................................ [ 59%]
+........................................................................ [ 64%]
+...........................F............................................ [ 70%]
+........................................................................ [ 75%]
+........................................................................ [ 81%]
+........................................................................ [ 86%]
+........................................................................ [ 91%]
+........................................................................ [ 97%]
+...................................                                      [100%]
+=================================== FAILURES ===================================
+____ test_timeout_research_run_finishes_and_does_not_move_respond_backward _____
+
+fut = <coroutine object ResearchRunService.wait at 0x11230e330>, timeout = 0.4
+
+    async def wait_for(fut, timeout):
+        """Wait for the single Future or coroutine to complete, with timeout.
+    
+        Coroutine will be wrapped in Task.
+    
+        Returns result of the Future or coroutine.  When a timeout occurs,
+        it cancels the task and raises TimeoutError.  To avoid the task
+        cancellation, wrap it in shield().
+    
+        If the wait is cancelled, the task is also cancelled.
+    
+        If the task suppresses the cancellation and returns a value instead,
+        that value is returned.
+    
+        This function is a coroutine.
+        """
+        # The special case for timeout <= 0 is for the following case:
+        #
+        # async def test_waitfor():
+        #     func_started = False
+        #
+        #     async def func():
+        #         nonlocal func_started
+        #         func_started = True
+        #
+        #     try:
+        #         await asyncio.wait_for(func(), 0)
+        #     except asyncio.TimeoutError:
+        #         assert not func_started
+        #     else:
+        #         assert False
+        #
+        # asyncio.run(test_waitfor())
+    
+    
+        if timeout is not None and timeout <= 0:
+            fut = ensure_future(fut)
+    
+            if fut.done():
+                return fut.result()
+    
+            await _cancel_and_wait(fut)
+            try:
+                return fut.result()
+            except exceptions.CancelledError as exc:
+                raise TimeoutError from exc
+    
+        async with timeouts.timeout(timeout):
+>           return await fut
+                   ^^^^^^^^^
+
+../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/tasks.py:520: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/services/research_runs.py:493: in wait
+    await task
+app/services/research_runs.py:534: in _execute
+    result = await self.research.run(
+app/services/research.py:578: in run
+    try:
+        ^
+app/services/index.py:137: in rebuild_async
+    return await asyncio.to_thread(self.rebuild)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+func = <bound method IndexService.rebuild of <app.services.index.IndexService object at 0x10cf66c90>>
+args = (), kwargs = {}
+loop = <_UnixSelectorEventLoop running=False closed=False debug=False>
+ctx = <_contextvars.Context object at 0x1121213c0>
+func_call = functools.partial(<built-in method run of _contextvars.Context object at 0x1121213c0>, <bound method IndexService.rebuild of <app.services.index.IndexService object at 0x10cf66c90>>)
+
+    async def to_thread(func, /, *args, **kwargs):
+        """Asynchronously run function *func* in a separate thread.
+    
+        Any *args and **kwargs supplied for this function are directly passed
+        to *func*. Also, the current :class:`contextvars.Context` is propagated,
+        allowing context variables from the main thread to be accessed in the
+        separate thread.
+    
+        Return a coroutine that can be awaited to get the eventual result of *func*.
+        """
+        loop = events.get_running_loop()
+        ctx = contextvars.copy_context()
+        func_call = functools.partial(ctx.run, func, *args, **kwargs)
+>       return await loop.run_in_executor(None, func_call)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       asyncio.exceptions.CancelledError
+
+../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/threads.py:25: CancelledError
+
+The above exception was the direct cause of the following exception:
+
+app_context = <app.runtime.AppContext object at 0x1120191f0>
+
+    @pytest.mark.asyncio
+    async def test_timeout_research_run_finishes_and_does_not_move_respond_backward(app_context):
+        app_context.matters.move_stage("MAT-DEMO-BEACON", "respond")
+    
+        async def hanging_search(*args, **kwargs):
+            await asyncio.Event().wait()
+    
+        app_context.research.search.search_external = hanging_search
+        app_context.research.configure({
+            "primary_external_provider": "tavily",
+            "fallback_external_provider": "polaris",
+            "external_timeout_seconds": 0.02,
+        })
+        runs = ResearchRunService(app_context.vault, app_context.research)
+        started = runs.start("MAT-DEMO-BEACON", ["Which rules control?"])
+    
+>       await asyncio.wait_for(runs.wait(started["run_id"]), timeout=0.4)
+
+tests/test_research.py:206: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/tasks.py:519: in wait_for
+    async with timeouts.timeout(timeout):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Timeout [expired]>
+exc_type = <class 'asyncio.exceptions.CancelledError'>
+exc_val = CancelledError(), exc_tb = <traceback object at 0x10cada3c0>
+
+    async def __aexit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> Optional[bool]:
+        assert self._state in (_State.ENTERED, _State.EXPIRING)
+    
+        if self._timeout_handler is not None:
+            self._timeout_handler.cancel()
+            self._timeout_handler = None
+    
+        if self._state is _State.EXPIRING:
+            self._state = _State.EXPIRED
+    
+            if self._task.uncancel() <= self._cancelling and exc_type is exceptions.CancelledError:
+                # Since there are no new cancel requests, we're
+                # handling this.
+>               raise TimeoutError from exc_val
+E               TimeoutError
+
+../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/timeouts.py:115: TimeoutError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/bharris/Programs/counsel-os-mvp/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_research_documents.py::test_real_text_and_ocr_pdf_extraction[text]
+tests/test_research_documents.py::test_real_text_and_ocr_pdf_extraction[text]
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+tests/test_research_documents.py::test_real_text_and_ocr_pdf_extraction[text]
+tests/test_research_documents.py::test_real_text_and_ocr_pdf_extraction[text]
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+tests/test_research_documents.py::test_real_text_and_ocr_pdf_extraction[text]
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_research.py::test_timeout_research_run_finishes_and_does_not_move_respond_backward
+1 failed, 1330 passed, 6 warnings in 586.56s (0:09:46)
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

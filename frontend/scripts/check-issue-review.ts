@@ -283,9 +283,9 @@ const EvidenceDrawer = load(evidenceSource, "EvidenceDrawer.tsx", evidenceHooks.
 let openedPath = "";
 evidenceHooks.reset();
 const evidenceTree = EvidenceDrawer({ evidence: { claim_id: "CLM-AGE", claim_revision: "cr1", output_revision: "out7", source_id: "SRC-COPPA", source_label: "COPPA Rule", locator: "16 CFR 312.2 — child", available_excerpt: "Child means an individual under age 13.", support_state: "retrieved", path: "sources/coppa.md", explanation: "This passage defines the age threshold used by the claim." }, open: true, onClose: () => undefined, onOpenArtifact: (path: string) => { openedPath = path; } });
-assert.match(text(evidenceTree), /Retrieved[\s\S]*Claim revision[\s\S]*cr1[\s\S]*16 CFR 312.2 — child[\s\S]*Exact available passage/, "the drawer keeps exact claim support together");
-assert.match(text(evidenceTree), /Source support and legal applicability are separate/, "the drawer does not treat source status as applicability");
-(nodes(evidenceTree).find((node) => node.type === "button" && text(node) === "Open saved source")!.props.onClick as () => void)();
+assert.match(text(evidenceTree), /Retrieved[\s\S]*Saved passage[\s\S]*16 CFR 312.2 — child[\s\S]*Claim revision[\s\S]*cr1/, "the drawer keeps exact claim support together");
+assert.doesNotMatch(text(evidenceTree), /Verified support|Legally applicable/, "retrieved evidence must not become verified or imply legal applicability");
+(nodes(evidenceTree).find((node) => node.type === "button" && text(node) === "Read saved copy")!.props.onClick as () => void)();
 assert.equal(openedPath, "sources/coppa.md", "the evidence action opens the saved source path");
 
 assert.match(understandSource, /review_items \?\? \[\]\)\.filter[\s\S]*\.slice\(0, 3\)/, "the review page shows at most three saved review items");

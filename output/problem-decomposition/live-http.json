@@ -1,0 +1,1088 @@
+{
+  "vault": "/var/folders/xb/kzc31shn1pz2s_5l2fy6d7rh0000gn/T/problem-live-http-xgd79oo9/vault",
+  "matter_id": "MAT-20260910-68f769",
+  "runs": [
+    {
+      "message": "Can we use customer chats to improve our support product? We want a pilot next month. Use only the supplied facts. No external research is authorized.",
+      "http_status": 200,
+      "response": {
+        "reply": "## Short answer\n**Yes, likely \u2014 but only on an internal-evaluation basis for now, with vendor processing gated separately.** The supplied facts tell us chats are collected and retained, and that internal evaluation and vendor processing are both proposed, with vendor reuse unresolved. The controlling question is whether the original collection/retention was authorized for this new use, and whether the pilot touches a vendor.\n## The two paths\n**1. Internal evaluation only (lower risk, proceed).**\nIf the pilot uses chats solely for internal analysis to improve the support product, the key checks are:\n- Does the existing collection notice/consent (or customer terms) cover this secondary use? If the notice disclosed use to improve the product, you're in good shape. If not, you need a new basis or re-notice.\n- Do the chats contain personal data? The company profile says it processes business contact data, which narrows but does not eliminate the personal-data analysis. If personal data is present, minimization and purpose limitation apply.\n**2. Vendor processing (higher risk, gate it).**\nBecause vendor reuse is explicitly unresolved, sending chats to a vendor is a separate step that is **not** covered by the existing collection/retention fact. It requires its own vendor assessment: data processing agreement, purpose limitation, security, and \u2014 if personal data is involved \u2014 a lawful transfer basis and any required notice. This should not be assumed into the pilot.\n## What could change the view\n- **Notice/consent scope** \u2014 whether the original collection disclosed use of chats to improve the product. This is the single most material unknown.\n- **Personal data content** \u2014 whether the chats contain customer PII versus purely business/technical content.\n- **Vendor involvement** \u2014 whether the pilot actually touches a vendor at all.\n## Recommendation\nRun the pilot on an **internal-evaluation-only** basis, with a documented purpose limitation and a check of the existing notice/consent and customer terms. Hold vendor processing as a separate, gated workstream pending resolution of the vendor-reuse question and a vendor assessment.\n**One question that would materially narrow this:** Did the original chat collection notice/consent disclose use of the chats to improve the support product? If yes, internal use is more clearly covered; if no, you'll need a new basis or re-notice before launch.\n**No external authority retrieved** \u2014 this analysis is based on the supplied facts and general privacy/contract reasoning, not on verified statutes or case law. A saved working recommendation is in the matter file.",
+        "conversation_id": "CONV-20260910-a5b6a9",
+        "trace": [
+          {
+            "tool": "select_conversation_scope",
+            "status": "success",
+            "summary": "Current matter context selected.",
+            "mutation_status": null
+          },
+          {
+            "tool": "list_files",
+            "status": "success",
+            "summary": "Listed files under 03_Matters/synthetic-live-support-pilot-68f769.",
+            "mutation_status": null
+          },
+          {
+            "tool": "read_file",
+            "status": "success",
+            "summary": "Read 03_Matters/synthetic-live-support-pilot-68f769/facts.md.",
+            "mutation_status": null
+          },
+          {
+            "tool": "read_file",
+            "status": "success",
+            "summary": "Read 03_Matters/synthetic-live-support-pilot-68f769/request.md.",
+            "mutation_status": null
+          },
+          {
+            "tool": "read_file",
+            "status": "success",
+            "summary": "Read 03_Matters/synthetic-live-support-pilot-68f769/issues.md.",
+            "mutation_status": null
+          },
+          {
+            "tool": "read_file",
+            "status": "success",
+            "summary": "Read 03_Matters/synthetic-live-support-pilot-68f769/recommendations.md.",
+            "mutation_status": null
+          },
+          {
+            "tool": "save_work_product",
+            "status": "success",
+            "summary": "Saved recommendation: Customer chat reuse for support product \u2014 working recommendation.",
+            "mutation_status": "changed"
+          }
+        ],
+        "changed_paths": [
+          "03_Matters/synthetic-live-support-pilot-68f769/recommendations.md",
+          "03_Matters/synthetic-live-support-pilot-68f769/dossier.md",
+          "03_Matters/synthetic-live-support-pilot-68f769/conversations/CONV-20260910-a5b6a9.md"
+        ],
+        "refresh": [
+          "tree",
+          "matter"
+        ],
+        "cards": [],
+        "applied_skills": [],
+        "review_author": "Themis.ai",
+        "operation_results": [
+          {
+            "action": "MSG-20260910-397ebf:tool:e305a704004cdb587c8070d2",
+            "source_action_key": "MSG-20260910-397ebf:tool:e305a704004cdb587c8070d2",
+            "operation": "select_conversation_scope",
+            "status": "no_change",
+            "summary": "Current matter context selected.",
+            "matter_id": "MAT-20260910-68f769",
+            "entity_refs": [],
+            "changed_paths": [],
+            "resulting_matter_state": {
+              "stage": "intake",
+              "next_action": "Orient to the request and identify the first missing facts.",
+              "work_state": {
+                "next_action": "Orient to the request and identify the first missing facts.",
+                "next_work_item_id": "WI-20260910-582ae0",
+                "next_owner": null,
+                "next_actor": "unassigned",
+                "due_at": null,
+                "execution_state": "not_running",
+                "active_run_id": null,
+                "execution_note": "",
+                "signal": {
+                  "kind": "needs_assignment",
+                  "label": "Needs assignment"
+                }
+              },
+              "consistency_issues": []
+            },
+            "available_next_actions": [],
+            "required_user_action": null,
+            "error": null,
+            "recovery": null
+          },
+          {
+            "action": "MSG-20260910-397ebf:tool:edf50fbb080bc1de0f1c00a8",
+            "source_action_key": "MSG-20260910-397ebf:tool:edf50fbb080bc1de0f1c00a8",
+            "operation": "list_files",
+            "status": "no_change",
+            "summary": "Listed files under 03_Matters/synthetic-live-support-pilot-68f769.",
+            "matter_id": "MAT-20260910-68f769",
+            "entity_refs": [],
+            "changed_paths": [],
+            "resulting_matter_state": {
+              "stage": "intake",
+              "next_action": "Orient to the request and identify the first missing facts.",
+              "work_state": {
+                "next_action": "Orient to the request and identify the first missing facts.",
+                "next_work_item_id": "WI-20260910-582ae0",
+                "next_owner": null,
+                "next_actor": "unassigned",
+                "due_at": null,
+                "execution_state": "not_running",
+                "active_run_id": null,
+                "execution_note": "",
+                "signal": {
+                  "kind": "needs_assignment",
+                  "label": "Needs assignment"
+                }
+              },
+              "consistency_issues": []
+            },
+            "available_next_actions": [],
+            "required_user_action": null,
+            "error": null,
+            "recovery": null
+          },
+          {
+            "action": "MSG-20260910-397ebf:tool:c8453cae8eae3dfea70e0c05",
+            "source_action_key": "MSG-20260910-397ebf:tool:c8453cae8eae3dfea70e0c05",
+            "operation": "read_file",
+            "status": "no_change",
+            "summary": "Read 03_Matters/synthetic-live-support-pilot-68f769/facts.md.",
+            "matter_id": "MAT-20260910-68f769",
+            "entity_refs": [],
+            "changed_paths": [],
+            "resulting_matter_state": {
+              "stage": "intake",
+              "next_action": "Orient to the request and identify the first missing facts.",
+              "work_state": {
+                "next_action": "Orient to the request and identify the first missing facts.",
+                "next_work_item_id": "WI-20260910-582ae0",
+                "next_owner": null,
+                "next_actor": "unassigned",
+                "due_at": null,
+                "execution_state": "not_running",
+                "active_run_id": null,
+                "execution_note": "",
+                "signal": {
+                  "kind": "needs_assignment",
+                  "label": "Needs assignment"
+                }
+              },
+              "consistency_issues": []
+            },
+            "available_next_actions": [],
+            "required_user_action": null,
+            "error": null,
+            "recovery": null
+          },
+          {
+            "action": "MSG-20260910-397ebf:tool:a0375ffa40976c1d2faba40d",
+            "source_action_key": "MSG-20260910-397ebf:tool:a0375ffa40976c1d2faba40d",
+            "operation": "read_file",
+            "status": "no_change",
+            "summary": "Read 03_Matters/synthetic-live-support-pilot-68f769/request.md.",
+            "matter_id": "MAT-20260910-68f769",
+            "entity_refs": [],
+            "changed_paths": [],
+            "resulting_matter_state": {
+              "stage": "intake",
+              "next_action": "Orient to the request and identify the first missing facts.",
+              "work_state": {
+                "next_action": "Orient to the request and identify the first missing facts.",
+                "next_work_item_id": "WI-20260910-582ae0",
+                "next_owner": null,
+                "next_actor": "unassigned",
+                "due_at": null,
+                "execution_state": "not_running",
+                "active_run_id": null,
+                "execution_note": "",
+                "signal": {
+                  "kind": "needs_assignment",
+                  "label": "Needs assignment"
+                }
+              },
+              "consistency_issues": []
+            },
+            "available_next_actions": [],
+            "required_user_action": null,
+            "error": null,
+            "recovery": null
+          },
+          {
+            "action": "MSG-20260910-397ebf:tool:c9010e985de4489f68ad39ac",
+            "source_action_key": "MSG-20260910-397ebf:tool:c9010e985de4489f68ad39ac",
+            "operation": "read_file",
+            "status": "no_change",
+            "summary": "Read 03_Matters/synthetic-live-support-pilot-68f769/issues.md.",
+            "matter_id": "MAT-20260910-68f769",
+            "entity_refs": [],
+            "changed_paths": [],
+            "resulting_matter_state": {
+              "stage": "intake",
+              "next_action": "Orient to the request and identify the first missing facts.",
+              "work_state": {
+                "next_action": "Orient to the request and identify the first missing facts.",
+                "next_work_item_id": "WI-20260910-582ae0",
+                "next_owner": null,
+                "next_actor": "unassigned",
+                "due_at": null,
+                "execution_state": "not_running",
+                "active_run_id": null,
+                "execution_note": "",
+                "signal": {
+                  "kind": "needs_assignment",
+                  "label": "Needs assignment"
+                }
+              },
+              "consistency_issues": []
+            },
+            "available_next_actions": [],
+            "required_user_action": null,
+            "error": null,
+            "recovery": null
+          },
+          {
+            "action": "MSG-20260910-397ebf:tool:05da5f39a1e0a53cde42be5b",
+            "source_action_key": "MSG-20260910-397ebf:tool:05da5f39a1e0a53cde42be5b",
+            "operation": "read_file",
+            "status": "no_change",
+            "summary": "Read 03_Matters/synthetic-live-support-pilot-68f769/recommendations.md.",
+            "matter_id": "MAT-20260910-68f769",
+            "entity_refs": [],
+            "changed_paths": [],
+            "resulting_matter_state": {
+              "stage": "intake",
+              "next_action": "Orient to the request and identify the first missing facts.",
+              "work_state": {
+                "next_action": "Orient to the request and identify the first missing facts.",
+                "next_work_item_id": "WI-20260910-582ae0",
+                "next_owner": null,
+                "next_actor": "unassigned",
+                "due_at": null,
+                "execution_state": "not_running",
+                "active_run_id": null,
+                "execution_note": "",
+                "signal": {
+                  "kind": "needs_assignment",
+                  "label": "Needs assignment"
+                }
+              },
+              "consistency_issues": []
+            },
+            "available_next_actions": [],
+            "required_user_action": null,
+            "error": null,
+            "recovery": null
+          },
+          {
+            "action": "MSG-20260910-397ebf:tool:5b0bb6b2577b4c235e11a345",
+            "source_action_key": "MSG-20260910-397ebf:tool:5b0bb6b2577b4c235e11a345",
+            "operation": "save_work_product",
+            "status": "changed",
+            "summary": "Saved recommendation: Customer chat reuse for support product \u2014 working recommendation.",
+            "matter_id": "MAT-20260910-68f769",
+            "entity_refs": [],
+            "changed_paths": [
+              "03_Matters/synthetic-live-support-pilot-68f769/recommendations.md",
+              "03_Matters/synthetic-live-support-pilot-68f769/dossier.md"
+            ],
+            "resulting_matter_state": {
+              "stage": "intake",
+              "next_action": "Orient to the request and identify the first missing facts.",
+              "work_state": {
+                "next_action": "Orient to the request and identify the first missing facts.",
+                "next_work_item_id": "WI-20260910-582ae0",
+                "next_owner": null,
+                "next_actor": "unassigned",
+                "due_at": null,
+                "execution_state": "not_running",
+                "active_run_id": null,
+                "execution_note": "",
+                "signal": {
+                  "kind": "needs_assignment",
+                  "label": "Needs assignment"
+                }
+              },
+              "consistency_issues": []
+            },
+            "available_next_actions": [],
+            "required_user_action": null,
+            "error": null,
+            "recovery": null
+          }
+        ]
+      },
+      "breakdown": {
+        "state": "partial",
+        "analysis": {
+          "schema_version": 1,
+          "objective": "Determine whether customer chats can be used to improve the support product and how to run a pilot next month within the supplied facts.",
+          "proposed_method": "Internal-evaluation-only pilot with vendor processing gated separately, pending notice/consent and personal-data checks.",
+          "framing_note": "Analysis is based solely on supplied facts; no external research authorized.",
+          "parts": [
+            {
+              "key": "p1",
+              "label": "Chat collection/retention",
+              "description": "Chats are collected and retained (supplied fact).",
+              "category": "flow",
+              "status": "assumed",
+              "references": []
+            },
+            {
+              "key": "p2",
+              "label": "Internal evaluation",
+              "description": "Internal evaluation of chats is proposed (supplied fact).",
+              "category": "activity",
+              "status": "assumed",
+              "references": []
+            },
+            {
+              "key": "p3",
+              "label": "Vendor processing",
+              "description": "Vendor processing of chats is proposed but vendor reuse is unresolved (supplied fact).",
+              "category": "activity",
+              "status": "assumed",
+              "references": []
+            },
+            {
+              "key": "p4",
+              "label": "Company",
+              "description": "US subscription software company processing business contact data, general commercial regulation.",
+              "category": "actor",
+              "status": "assumed",
+              "references": []
+            },
+            {
+              "key": "p5",
+              "label": "Customers",
+              "description": "Customers whose chats are collected and retained.",
+              "category": "actor",
+              "status": "assumed",
+              "references": []
+            },
+            {
+              "key": "p6",
+              "label": "Pilot timing",
+              "description": "Pilot desired next month.",
+              "category": "timing",
+              "status": "assumed",
+              "references": []
+            }
+          ],
+          "questions": [
+            {
+              "key": "q1",
+              "question": "Did the original chat collection notice/consent disclose use of chats to improve the support product?",
+              "why_it_matters": "Determines whether internal secondary use is covered by the existing basis or requires a new basis/re-notice.",
+              "kind": "fact",
+              "part_keys": [
+                "p1",
+                "p5"
+              ],
+              "issue_id": null,
+              "parent_key": null,
+              "depends_on": [],
+              "characterizations": [],
+              "assessment": "",
+              "counterpoint": "",
+              "answer_changing_fact": "",
+              "state": "open",
+              "priority": "decision_changing",
+              "references": [],
+              "next_action": "ask_business",
+              "next_action_reason": "Material unknown that changes the path."
+            },
+            {
+              "key": "q2",
+              "question": "Do the chats contain personal data (customer PII) or only business/technical content?",
+              "why_it_matters": "Determines whether privacy obligations (minimization, purpose limitation, transfer basis) apply.",
+              "kind": "fact",
+              "part_keys": [
+                "p1",
+                "p4"
+              ],
+              "issue_id": null,
+              "parent_key": null,
+              "depends_on": [],
+              "characterizations": [],
+              "assessment": "",
+              "counterpoint": "",
+              "answer_changing_fact": "",
+              "state": "open",
+              "priority": "decision_changing",
+              "references": [],
+              "next_action": "ask_business",
+              "next_action_reason": "Material unknown affecting scope of obligations."
+            },
+            {
+              "key": "q3",
+              "question": "Does the pilot involve vendor processing of chats?",
+              "why_it_matters": "Vendor reuse is unresolved; vendor processing is a separate, higher-risk step requiring its own assessment.",
+              "kind": "fact",
+              "part_keys": [
+                "p3"
+              ],
+              "issue_id": null,
+              "parent_key": null,
+              "depends_on": [],
+              "characterizations": [],
+              "assessment": "",
+              "counterpoint": "",
+              "answer_changing_fact": "",
+              "state": "open",
+              "priority": "decision_changing",
+              "references": [],
+              "next_action": "ask_business",
+              "next_action_reason": "Determines whether the gated vendor workstream is triggered."
+            },
+            {
+              "key": "q4",
+              "question": "Is internal evaluation of chats for product improvement a permissible secondary use under the original collection basis?",
+              "why_it_matters": "Core legal characterization of the proposed activity.",
+              "kind": "characterization",
+              "part_keys": [
+                "p1",
+                "p2",
+                "p4"
+              ],
+              "issue_id": null,
+              "parent_key": null,
+              "depends_on": [],
+              "characterizations": [],
+              "assessment": "",
+              "counterpoint": "",
+              "answer_changing_fact": "",
+              "state": "conditional",
+              "priority": "decision_changing",
+              "references": [],
+              "next_action": "none",
+              "next_action_reason": "Conditional on q1 and q2."
+            },
+            {
+              "key": "q5",
+              "question": "What vendor assessment is required before vendor processing of chats?",
+              "why_it_matters": "Vendor processing requires DPA, purpose limitation, security, and transfer basis if personal data.",
+              "kind": "requirement",
+              "part_keys": [
+                "p3",
+                "p4"
+              ],
+              "issue_id": null,
+              "parent_key": null,
+              "depends_on": [],
+              "characterizations": [],
+              "assessment": "",
+              "counterpoint": "",
+              "answer_changing_fact": "",
+              "state": "conditional",
+              "priority": "supporting",
+              "references": [],
+              "next_action": "none",
+              "next_action_reason": "Conditional on q3."
+            }
+          ],
+          "coverage": [
+            {
+              "topic": "Internal evaluation path",
+              "reason": "Analyzed as the lower-risk path; conditional on notice/consent and personal-data checks.",
+              "state": "included",
+              "part_keys": [
+                "p2"
+              ],
+              "question_keys": [
+                "q1",
+                "q2",
+                "q4"
+              ]
+            },
+            {
+              "topic": "Vendor processing path",
+              "reason": "Analyzed as a gated, higher-risk workstream; vendor reuse unresolved.",
+              "state": "included",
+              "part_keys": [
+                "p3"
+              ],
+              "question_keys": [
+                "q3",
+                "q5"
+              ]
+            },
+            {
+              "topic": "External legal authority",
+              "reason": "No external research authorized; analysis based on supplied facts and general reasoning only.",
+              "state": "unresolved",
+              "part_keys": [
+                "p4"
+              ],
+              "question_keys": []
+            }
+          ],
+          "changes": [],
+          "alternative_paths": [
+            {
+              "title": "Internal-only pilot",
+              "proposed_change": "Run pilot using chats only for internal evaluation, no vendor involvement.",
+              "benefit": "Lower risk; can proceed with documented purpose limitation and notice/consent check.",
+              "tradeoff": "May not achieve full product-improvement goals if vendor processing is needed.",
+              "remaining_condition": "Notice/consent covers or can be amended for internal secondary use; no personal-data transfer issue.",
+              "question_keys": [
+                "q1",
+                "q2"
+              ]
+            },
+            {
+              "title": "Gated vendor workstream",
+              "proposed_change": "Hold vendor processing as a separate workstream pending vendor-reuse resolution and vendor assessment.",
+              "benefit": "Keeps pilot moving while addressing the higher-risk path deliberately.",
+              "tradeoff": "Adds timeline and assessment burden.",
+              "remaining_condition": "Vendor reuse resolved; vendor assessment completed.",
+              "question_keys": [
+                "q3",
+                "q5"
+              ]
+            }
+          ],
+          "integrated_answer": "Yes, likely \u2014 but only on an internal-evaluation basis for now, with vendor processing gated separately. The controlling question is whether the original collection/retention was authorized for this new use, and whether the pilot touches a vendor. Internal evaluation is the lower-risk path, conditional on notice/consent scope and whether chats contain personal data. Vendor processing is a separate, higher-risk step requiring its own assessment. No external authority retrieved.",
+          "next_step": "Confirm whether the original chat collection notice/consent disclosed use to improve the support product, and whether the chats contain personal data, before finalizing the pilot scope.",
+          "analysis_id": "PA-28f40ef0d98472b859647552",
+          "analysis_revision": "57a845d2773276b633bf9e8c338d894b16bed44acdb81ef6461311a102620015",
+          "matter_id": "MAT-20260910-68f769",
+          "run_id": "RUN-20260910-e42fe2",
+          "source_path": "03_Matters/synthetic-live-support-pilot-68f769/conversations/inquiries/RUN-20260910-e42fe2.md",
+          "output_revision": "140de2233d52e028a37fb7bc520d6a15ed715fdfbcc95c4dfa8f636efb66a7bc",
+          "captured_at": "2026-09-10T13:26:27.100120+00:00",
+          "input_basis": {
+            "scope": {
+              "roles": {
+                "current_facts": "all",
+                "supporting_questions": "all",
+                "working_assumptions": "all",
+                "issues": "all"
+              },
+              "paths": [
+                "03_Matters/synthetic-live-support-pilot-68f769/request.md",
+                "00_System/user.md",
+                "00_System/company.md",
+                "00_System/memory.md"
+              ],
+              "decisions": [],
+              "excluded_reference_ids": [],
+              "excluded_paths": []
+            },
+            "hashes": {
+              "business_question": "938d6cf1e350429dcb397d1f9c4cddb3ec1ae7403e93ecc896e052658b1a3db7",
+              "facts": "075f15ecfa02672d0a61f28145c66c3fa77331445aa8a153ed0261b354e8c14a",
+              "assumptions": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "issues": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "questions": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "decisions": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "files": "eb262acc5f48a243610d440bf5fc45ff5b96c271ce0739079a6e8fa807162a69"
+            },
+            "supplied_context_revision": "1563850215d46f70eec9f8f545193ba0826637e9c5de691afcdf72347bfe6387"
+          },
+          "prior_reference": null,
+          "resolved_references": [],
+          "warnings": [
+            "Chat collection/retention: retained as assumed because reported support was not supplied.",
+            "Internal evaluation: retained as assumed because reported support was not supplied.",
+            "Vendor processing: retained as assumed because reported support was not supplied.",
+            "Company: retained as assumed because reported support was not supplied.",
+            "Customers: retained as assumed because reported support was not supplied.",
+            "Pilot timing: retained as assumed because reported support was not supplied."
+          ]
+        },
+        "reference": {
+          "analysis_id": "PA-28f40ef0d98472b859647552",
+          "analysis_revision": "57a845d2773276b633bf9e8c338d894b16bed44acdb81ef6461311a102620015",
+          "source_path": "03_Matters/synthetic-live-support-pilot-68f769/conversations/inquiries/RUN-20260910-e42fe2.md",
+          "output_revision": "140de2233d52e028a37fb7bc520d6a15ed715fdfbcc95c4dfa8f636efb66a7bc",
+          "run_id": "RUN-20260910-e42fe2",
+          "captured_at": "2026-09-10T13:26:27.100120+00:00"
+        },
+        "warnings": [
+          "Chat collection/retention: retained as assumed because reported support was not supplied.",
+          "Internal evaluation: retained as assumed because reported support was not supplied.",
+          "Vendor processing: retained as assumed because reported support was not supplied.",
+          "Company: retained as assumed because reported support was not supplied.",
+          "Customers: retained as assumed because reported support was not supplied.",
+          "Pilot timing: retained as assumed because reported support was not supplied."
+        ]
+      },
+      "seconds": 166.73
+    },
+    {
+      "message": "The vendor retains the chats and uses them to train its general model. Our earlier description of internal-only use was wrong. Reassess using only the supplied facts; no external research is authorized.",
+      "http_status": 200,
+      "response": {
+        "reply": "## Reassessment\nThe corrected facts change the analysis materially. The pilot is **no longer an internal-only evaluation** \u2014 the vendor retains the chats and uses them to train its **general model**. That is a much broader secondary use than improving our support product, and it changes the risk profile.\n### What changed\n- Prior view treated vendor processing as a separate, gated workstream with reuse unresolved.\n- Corrected facts: vendor reuse is resolved \u2014 the vendor keeps the chats and trains its own general model on them. This is a transfer of customer chat data to a third party for the vendor's own benefit, not \"processing on our behalf.\"\n### Controlling questions (now more consequential)\n1. **Notice/consent scope** \u2014 Did the original chat collection notice/consent (or customer terms) disclose sharing chats with a vendor for model training? This is the single most material unknown. Training a general model is a broad, non-obvious secondary use that most collection notices do not cover.\n2. **Personal data content** \u2014 Do the chats contain customer PII or only business/technical content? If personal data is present, the transfer for model training raises purpose-limitation, minimization, and transfer-basis issues.\n3. **Vendor contract** \u2014 Is there a DPA restricting vendor use to our instructions, or does the retention-and-training arrangement fall outside a standard DPA? A vendor training its own general model is typically a separate controller/use, a materially different legal posture.\n### Bottom line\n- **Internal evaluation** of chats to improve the support product remains the lower-risk path, conditional on notice/consent and personal-data checks.\n- **Vendor retention + general-model training** is a distinct, higher-risk activity that should **not** be assumed into the pilot. It needs (a) a lawful basis covering the sharing for this purpose, (b) if personal data, a transfer basis and any required notice/consent, and (c) a vendor contract that actually authorizes or is assessed against the training use.\n**One question that would materially narrow this:** Did the original chat collection notice/consent disclose sharing chats with a vendor for model training? If not, the vendor-training element likely needs a new basis or re-notice and should be separated from the internal-evaluation pilot.\n**No external authority retrieved** \u2014 analysis based on the supplied facts and general privacy/contract reasoning only. The corrected facts and revised recommendation are saved in the matter file.",
+        "conversation_id": "CONV-20260910-a5b6a9",
+        "trace": [
+          {
+            "tool": "select_conversation_scope",
+            "status": "success",
+            "summary": "Current matter context selected.",
+            "mutation_status": null
+          },
+          {
+            "tool": "workspace_action",
+            "status": "success",
+            "summary": "Workspace action saved.",
+            "mutation_status": "changed"
+          },
+          {
+            "tool": "workspace_action",
+            "status": "success",
+            "summary": "Workspace action saved.",
+            "mutation_status": "changed"
+          },
+          {
+            "tool": "save_work_product",
+            "status": "success",
+            "summary": "Saved recommendation: Reassessment: vendor training on customer chats.",
+            "mutation_status": "changed"
+          }
+        ],
+        "changed_paths": [
+          "03_Matters/synthetic-live-support-pilot-68f769/recommendations.md",
+          "03_Matters/synthetic-live-support-pilot-68f769/dossier.md",
+          "03_Matters/synthetic-live-support-pilot-68f769/conversations/CONV-20260910-a5b6a9.md"
+        ],
+        "refresh": [
+          "workspace",
+          "matter",
+          "tree"
+        ],
+        "cards": [],
+        "applied_skills": [],
+        "review_author": "Themis.ai",
+        "operation_results": [
+          {
+            "action": "MSG-20260910-c019e6:tool:0dd3784ebefe27bc8f240087",
+            "source_action_key": "MSG-20260910-c019e6:tool:0dd3784ebefe27bc8f240087",
+            "operation": "select_conversation_scope",
+            "status": "no_change",
+            "summary": "Current matter context selected.",
+            "matter_id": "MAT-20260910-68f769",
+            "entity_refs": [],
+            "changed_paths": [],
+            "resulting_matter_state": {
+              "stage": "intake",
+              "next_action": "Orient to the request and identify the first missing facts.",
+              "work_state": {
+                "next_action": "Orient to the request and identify the first missing facts.",
+                "next_work_item_id": "WI-20260910-582ae0",
+                "next_owner": null,
+                "next_actor": "unassigned",
+                "due_at": null,
+                "execution_state": "not_running",
+                "active_run_id": null,
+                "execution_note": "",
+                "signal": {
+                  "kind": "needs_assignment",
+                  "label": "Needs assignment"
+                }
+              },
+              "consistency_issues": []
+            },
+            "available_next_actions": [],
+            "required_user_action": null,
+            "error": null,
+            "recovery": null
+          },
+          {
+            "action": "MSG-20260910-c019e6:tool:bc490c9acfdd1b93284ea3f9",
+            "source_action_key": "MSG-20260910-c019e6:tool:bc490c9acfdd1b93284ea3f9",
+            "operation": "workspace_action",
+            "status": "changed",
+            "summary": "Workspace action saved.",
+            "matter_id": "MAT-20260910-68f769",
+            "entity_refs": [],
+            "changed_paths": [],
+            "resulting_matter_state": {
+              "stage": "intake",
+              "next_action": "Orient to the request and identify the first missing facts.",
+              "work_state": {
+                "next_action": "Orient to the request and identify the first missing facts.",
+                "next_work_item_id": "WI-20260910-582ae0",
+                "next_owner": null,
+                "next_actor": "unassigned",
+                "due_at": null,
+                "execution_state": "not_running",
+                "active_run_id": null,
+                "execution_note": "",
+                "signal": {
+                  "kind": "needs_assignment",
+                  "label": "Needs assignment"
+                }
+              },
+              "consistency_issues": []
+            },
+            "available_next_actions": [],
+            "required_user_action": null,
+            "error": null,
+            "recovery": null
+          },
+          {
+            "action": "MSG-20260910-c019e6:tool:ff0ec1d1d026bb3853c14741",
+            "source_action_key": "MSG-20260910-c019e6:tool:ff0ec1d1d026bb3853c14741",
+            "operation": "workspace_action",
+            "status": "changed",
+            "summary": "Workspace action saved.",
+            "matter_id": "MAT-20260910-68f769",
+            "entity_refs": [],
+            "changed_paths": [],
+            "resulting_matter_state": {
+              "stage": "intake",
+              "next_action": "Orient to the request and identify the first missing facts.",
+              "work_state": {
+                "next_action": "Orient to the request and identify the first missing facts.",
+                "next_work_item_id": "WI-20260910-582ae0",
+                "next_owner": null,
+                "next_actor": "unassigned",
+                "due_at": null,
+                "execution_state": "not_running",
+                "active_run_id": null,
+                "execution_note": "",
+                "signal": {
+                  "kind": "needs_assignment",
+                  "label": "Needs assignment"
+                }
+              },
+              "consistency_issues": []
+            },
+            "available_next_actions": [],
+            "required_user_action": null,
+            "error": null,
+            "recovery": null
+          },
+          {
+            "action": "MSG-20260910-c019e6:tool:2255f2ca15ff4baf32b88946",
+            "source_action_key": "MSG-20260910-c019e6:tool:2255f2ca15ff4baf32b88946",
+            "operation": "save_work_product",
+            "status": "changed",
+            "summary": "Saved recommendation: Reassessment: vendor training on customer chats.",
+            "matter_id": "MAT-20260910-68f769",
+            "entity_refs": [],
+            "changed_paths": [
+              "03_Matters/synthetic-live-support-pilot-68f769/recommendations.md",
+              "03_Matters/synthetic-live-support-pilot-68f769/dossier.md"
+            ],
+            "resulting_matter_state": {
+              "stage": "intake",
+              "next_action": "Orient to the request and identify the first missing facts.",
+              "work_state": {
+                "next_action": "Orient to the request and identify the first missing facts.",
+                "next_work_item_id": "WI-20260910-582ae0",
+                "next_owner": null,
+                "next_actor": "unassigned",
+                "due_at": null,
+                "execution_state": "not_running",
+                "active_run_id": null,
+                "execution_note": "",
+                "signal": {
+                  "kind": "needs_assignment",
+                  "label": "Needs assignment"
+                }
+              },
+              "consistency_issues": []
+            },
+            "available_next_actions": [],
+            "required_user_action": null,
+            "error": null,
+            "recovery": null,
+            "proposal": {
+              "version_id": "REC-20260910-10c9e5",
+              "number": 2,
+              "content": "## Working position (revised)\n\nThe pilot is no longer an internal-only evaluation. The corrected facts establish that the vendor **retains the chats and uses them to train its general model**. This is a materially higher-risk path than internal evaluation and changes the analysis.\n\n## What changed\n\n- Prior view assumed vendor processing was a separate, gated workstream with vendor reuse unresolved.\n- Corrected facts: vendor reuse is resolved \u2014 the vendor retains chats and trains its general model on them. This is a secondary use that goes well beyond improving our support product; it is a transfer of customer chat data to a third party for the vendor's own model training.\n\n## Controlling questions (unchanged but now more consequential)\n\n1. **Notice/consent scope** \u2014 Did the original chat collection notice/consent (or customer terms) disclose that chats could be shared with a vendor for model training? This is the single most material unknown. Training a general model is a broad, non-obvious secondary use that most collection notices do not cover.\n2. **Personal data content** \u2014 Do the chats contain customer PII or only business/technical content? The company profile says it processes business contact data, but chat content may include personal data. If personal data is present, the transfer to a vendor for model training raises purpose-limitation, minimization, and transfer-basis issues.\n3. **Vendor contract** \u2014 Is there a data processing agreement that restricts vendor use to our instructions, or does the vendor's retention-and-training arrangement fall outside a standard DPA? A vendor training its own general model is typically not \"processing on our behalf\" \u2014 it is a separate controller/use, which is a materially different legal posture.\n\n## Assessment\n\n- **Internal evaluation** of chats to improve the support product remains the lower-risk path, conditional on notice/consent and personal-data checks.\n- **Vendor retention + general-model training** is a distinct, higher-risk activity. It is not covered by the internal-evaluation framing and should not be assumed into the pilot. It requires: (a) a lawful basis that covers sharing with the vendor for this purpose, (b) if personal data, a transfer basis and any required notice/consent, and (c) a vendor contract that actually authorizes (or is assessed against) the training use.\n\n## Material unknowns\n\n- Whether original collection notice/consent disclosed vendor model training.\n- Whether chats contain personal data.\n- Whether the vendor arrangement is a standard DPA or a broader license/training grant.\n\n## Next step\n\nConfirm whether the original chat collection notice/consent disclosed sharing chats with a vendor for model training, and whether the chats contain personal data, before finalizing pilot scope. If not disclosed, the vendor-training element likely needs a new basis or re-notice and should be separated from the internal-evaluation pilot.\n\n**No external authority retrieved** \u2014 analysis based on supplied facts and general privacy/contract reasoning only.",
+              "actor": "Themis.ai",
+              "origin": "agent_proposal",
+              "created_at": "2026-09-10T13:29:25+00:00",
+              "next_action": "Confirm whether the original chat collection notice/consent disclosed vendor model training, and whether the chats contain personal data, before finalizing pilot scope.",
+              "based_on_version_id": "REC-20260910-d5dd43"
+            }
+          }
+        ]
+      },
+      "breakdown": {
+        "state": "partial",
+        "analysis": {
+          "schema_version": 1,
+          "objective": "Determine whether customer chats can be used to improve the support product and how to run a pilot next month, given the corrected fact that the vendor retains chats and trains its general model on them.",
+          "proposed_method": "Internal-evaluation pilot separated from a gated vendor-training workstream, pending notice/consent and personal-data checks.",
+          "framing_note": "Analysis based solely on supplied facts; no external research authorized. Corrected facts change the prior internal-only framing.",
+          "parts": [
+            {
+              "key": "p1",
+              "label": "Chat collection/retention",
+              "description": "Chats are collected and retained (supplied fact).",
+              "category": "flow",
+              "status": "assumed",
+              "references": []
+            },
+            {
+              "key": "p2",
+              "label": "Vendor retention and training",
+              "description": "Vendor retains the chats and uses them to train its general model (corrected supplied fact).",
+              "category": "activity",
+              "status": "assumed",
+              "references": []
+            },
+            {
+              "key": "p3",
+              "label": "Company",
+              "description": "US subscription software company processing business contact data, general commercial regulation.",
+              "category": "actor",
+              "status": "assumed",
+              "references": []
+            },
+            {
+              "key": "p4",
+              "label": "Customers",
+              "description": "Customers whose chats are collected and retained.",
+              "category": "actor",
+              "status": "assumed",
+              "references": []
+            },
+            {
+              "key": "p5",
+              "label": "Pilot timing",
+              "description": "Pilot desired next month.",
+              "category": "timing",
+              "status": "assumed",
+              "references": []
+            }
+          ],
+          "questions": [
+            {
+              "key": "q1",
+              "question": "Did the original chat collection notice/consent disclose sharing chats with a vendor for model training?",
+              "why_it_matters": "Determines whether the vendor-training secondary use is covered by the existing basis or requires a new basis/re-notice.",
+              "kind": "fact",
+              "part_keys": [
+                "p1",
+                "p2",
+                "p4"
+              ],
+              "issue_id": null,
+              "parent_key": null,
+              "depends_on": [],
+              "characterizations": [],
+              "assessment": "",
+              "counterpoint": "",
+              "answer_changing_fact": "",
+              "state": "open",
+              "priority": "decision_changing",
+              "references": [],
+              "next_action": "ask_business",
+              "next_action_reason": "Material unknown that changes the path."
+            },
+            {
+              "key": "q2",
+              "question": "Do the chats contain personal data (customer PII) or only business/technical content?",
+              "why_it_matters": "Determines whether privacy obligations (minimization, purpose limitation, transfer basis) apply to the vendor transfer.",
+              "kind": "fact",
+              "part_keys": [
+                "p1",
+                "p3"
+              ],
+              "issue_id": null,
+              "parent_key": null,
+              "depends_on": [],
+              "characterizations": [],
+              "assessment": "",
+              "counterpoint": "",
+              "answer_changing_fact": "",
+              "state": "open",
+              "priority": "decision_changing",
+              "references": [],
+              "next_action": "ask_business",
+              "next_action_reason": "Material unknown affecting scope of obligations."
+            },
+            {
+              "key": "q3",
+              "question": "Is the vendor arrangement a standard DPA or a broader license/training grant?",
+              "why_it_matters": "A vendor training its own general model is typically separate-controller use, not processing on our behalf, changing the legal posture.",
+              "kind": "fact",
+              "part_keys": [
+                "p2",
+                "p3"
+              ],
+              "issue_id": null,
+              "parent_key": null,
+              "depends_on": [],
+              "characterizations": [],
+              "assessment": "",
+              "counterpoint": "",
+              "answer_changing_fact": "",
+              "state": "open",
+              "priority": "decision_changing",
+              "references": [],
+              "next_action": "ask_business",
+              "next_action_reason": "Determines whether the vendor use is covered by a DPA or is a separate controller use."
+            },
+            {
+              "key": "q4",
+              "question": "Is vendor retention and general-model training a permissible secondary use under the original collection basis?",
+              "why_it_matters": "Core legal characterization of the corrected activity.",
+              "kind": "characterization",
+              "part_keys": [
+                "p1",
+                "p2",
+                "p3"
+              ],
+              "issue_id": null,
+              "parent_key": null,
+              "depends_on": [
+                "q1",
+                "q2"
+              ],
+              "characterizations": [],
+              "assessment": "",
+              "counterpoint": "",
+              "answer_changing_fact": "",
+              "state": "conditional",
+              "priority": "decision_changing",
+              "references": [],
+              "next_action": "none",
+              "next_action_reason": "Conditional on q1 and q2."
+            }
+          ],
+          "coverage": [
+            {
+              "topic": "Internal evaluation path",
+              "reason": "Remains the lower-risk path, conditional on notice/consent and personal-data checks.",
+              "state": "included",
+              "part_keys": [
+                "p1"
+              ],
+              "question_keys": [
+                "q1",
+                "q2"
+              ]
+            },
+            {
+              "topic": "Vendor retention and training path",
+              "reason": "Corrected fact makes this a distinct, higher-risk activity requiring its own basis, transfer, and contract assessment.",
+              "state": "included",
+              "part_keys": [
+                "p2"
+              ],
+              "question_keys": [
+                "q1",
+                "q2",
+                "q3",
+                "q4"
+              ]
+            },
+            {
+              "topic": "External legal authority",
+              "reason": "No external research authorized; analysis based on supplied facts and general reasoning only.",
+              "state": "unresolved",
+              "part_keys": [
+                "p3"
+              ],
+              "question_keys": []
+            }
+          ],
+          "changes": [
+            {
+              "kind": "assessment_changed",
+              "prior_question_keys": [
+                "q3",
+                "q5"
+              ],
+              "current_question_keys": [
+                "q2",
+                "q3",
+                "q4"
+              ],
+              "reason": "Corrected facts establish vendor retention and general-model training, replacing the prior unresolved-vendor-reuse framing.",
+              "answer_effect": "Vendor training is now a material, higher-risk element of the pilot rather than a gated future workstream.",
+              "references": []
+            }
+          ],
+          "alternative_paths": [
+            {
+              "title": "Internal-only pilot, vendor training separated",
+              "proposed_change": "Run the pilot using chats only for internal evaluation; hold vendor retention/training as a separate workstream pending basis, transfer, and contract assessment.",
+              "benefit": "Lower risk; keeps pilot moving while addressing the higher-risk vendor use deliberately.",
+              "tradeoff": "May not achieve full product-improvement goals if vendor training is needed.",
+              "remaining_condition": "Notice/consent covers or can be amended for internal secondary use; vendor-training element separately authorized.",
+              "question_keys": [
+                "q1",
+                "q2",
+                "q3"
+              ]
+            },
+            {
+              "title": "Full pilot including vendor training",
+              "proposed_change": "Include vendor retention and general-model training in the pilot.",
+              "benefit": "Achieves the full product-improvement goal.",
+              "tradeoff": "Higher risk; requires a lawful basis for the vendor transfer, personal-data transfer basis, and a vendor contract authorizing the training use.",
+              "remaining_condition": "Notice/consent discloses vendor model training; personal-data checks pass; vendor contract assessed.",
+              "question_keys": [
+                "q1",
+                "q2",
+                "q3",
+                "q4"
+              ]
+            }
+          ],
+          "integrated_answer": "The corrected facts materially change the analysis: the vendor retains the chats and trains its general model on them, which is a broad secondary use beyond improving our support product. Internal evaluation remains the lower-risk path, conditional on notice/consent and personal-data checks. Vendor retention and general-model training is a distinct, higher-risk activity requiring its own lawful basis, transfer basis (if personal data), and vendor-contract assessment. The single most material unknown is whether the original collection notice/consent disclosed vendor model training. No external authority retrieved.",
+          "next_step": "Confirm whether the original chat collection notice/consent disclosed sharing chats with a vendor for model training, and whether the chats contain personal data, before finalizing pilot scope.",
+          "analysis_id": "PA-c0fce91bc1804ed5f4e820a7",
+          "analysis_revision": "7172f425d2c316803b208e0bdcb9f7664da2efb79dbc807927f46f3df8a3e5ec",
+          "matter_id": "MAT-20260910-68f769",
+          "run_id": "RUN-20260910-54fff5",
+          "source_path": "03_Matters/synthetic-live-support-pilot-68f769/conversations/inquiries/RUN-20260910-54fff5.md",
+          "output_revision": "5fb0d623705fb0afe63a969b884dec08e433037d0b5f3bfb968a49ab4e289a53",
+          "captured_at": "2026-09-10T13:29:13.846927+00:00",
+          "input_basis": {
+            "scope": {
+              "roles": {
+                "current_facts": "all",
+                "supporting_questions": "all",
+                "working_assumptions": "all",
+                "issues": "all"
+              },
+              "paths": [
+                "03_Matters/synthetic-live-support-pilot-68f769/request.md",
+                "00_System/user.md",
+                "00_System/company.md",
+                "00_System/memory.md"
+              ],
+              "decisions": [],
+              "excluded_reference_ids": [],
+              "excluded_paths": []
+            },
+            "hashes": {
+              "business_question": "938d6cf1e350429dcb397d1f9c4cddb3ec1ae7403e93ecc896e052658b1a3db7",
+              "facts": "558faeec27fa3558412ee3025dae81ca643b3972a79b9fae3a413e7b7a08b899",
+              "assumptions": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "issues": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "questions": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "decisions": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+              "files": "eb262acc5f48a243610d440bf5fc45ff5b96c271ce0739079a6e8fa807162a69"
+            },
+            "supplied_context_revision": "f844ad34490a0d6f06cd6e97738bb8ad4a9d091b78a77aebecbe0b9b2d890aa1"
+          },
+          "prior_reference": {
+            "analysis_id": "PA-28f40ef0d98472b859647552",
+            "analysis_revision": "57a845d2773276b633bf9e8c338d894b16bed44acdb81ef6461311a102620015",
+            "source_path": "03_Matters/synthetic-live-support-pilot-68f769/conversations/inquiries/RUN-20260910-e42fe2.md",
+            "output_revision": "140de2233d52e028a37fb7bc520d6a15ed715fdfbcc95c4dfa8f636efb66a7bc",
+            "run_id": "RUN-20260910-e42fe2",
+            "captured_at": "2026-09-10T13:26:27.100120+00:00"
+          },
+          "resolved_references": [],
+          "warnings": [
+            "Chat collection/retention: retained as assumed because reported support was not supplied.",
+            "Vendor retention and training: retained as assumed because reported support was not supplied."
+          ]
+        },
+        "reference": {
+          "analysis_id": "PA-c0fce91bc1804ed5f4e820a7",
+          "analysis_revision": "7172f425d2c316803b208e0bdcb9f7664da2efb79dbc807927f46f3df8a3e5ec",
+          "source_path": "03_Matters/synthetic-live-support-pilot-68f769/conversations/inquiries/RUN-20260910-54fff5.md",
+          "output_revision": "5fb0d623705fb0afe63a969b884dec08e433037d0b5f3bfb968a49ab4e289a53",
+          "run_id": "RUN-20260910-54fff5",
+          "captured_at": "2026-09-10T13:29:13.846927+00:00"
+        },
+        "warnings": [
+          "Chat collection/retention: retained as assumed because reported support was not supplied.",
+          "Vendor retention and training: retained as assumed because reported support was not supplied."
+        ]
+      },
+      "seconds": 21.76
+    }
+  ]
+}

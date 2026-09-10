@@ -1,0 +1,79 @@
+........................................................................ [ 78%]
+............F.......                                                     [100%]
+=================================== FAILURES ===================================
+_________ test_provider_diagnostics_stay_in_metadata_not_lawyer_packet _________
+
+app_context = <app.runtime.AppContext object at 0x10c92d850>
+
+    @pytest.mark.asyncio
+    async def test_provider_diagnostics_stay_in_metadata_not_lawyer_packet(app_context):
+        class Polaris:
+            configured = True
+    
+            async def research(self, _query):
+                return PolarisProviderResult(
+                    provider_id="polaris",
+                    status="failed",
+                    warnings=["Polaris request failed (timeout)."],
+                    observability={
+                        "failure_class": "http_status",
+                        "attempt_count": 3,
+                        "elapsed_ms": 1250,
+                        "fallback_status": "pending",
+                        "http_status": 503,
+                    },
+                )
+    
+        async def no_native_results(_query):
+            return {"external": [], "warning": "Native public research was unavailable."}
+    
+        async def useful_local_analysis(_request, *, resolved_provider=None, investigation=None, **kwargs):
+            await investigation.collect({"requests": [{"proposition_id": "public-rule", "proposition": "Public federal rule", "public_query": "What public federal rules apply?", "source_goal": "operative_rule"}]})
+            return ChatResponse(reply="Useful local fallback analysis remains available.")
+    
+        app_context.research.bind_polaris(Polaris())
+        app_context.research.search.search_external = no_native_results
+        app_context.research.bind_agent_runner(useful_local_analysis)
+        runs = ResearchRunService(app_context.vault, app_context.research)
+    
+        started = runs.start("MAT-DEMO-BEACON", ["What public federal rules apply?"], search_scope=ResearchScope(
+            external=True, public_query="What public federal rules apply?",
+            provider_ids=app_context.research.search_options()["provider_ids"],
+        ))
+        await runs.wait(started["run_id"])
+    
+        run = runs.get("MAT-DEMO-BEACON", started["run_id"])
+        result = run["results"][0]
+        packet = app_context.vault.read_markdown(result["path"])
+        expected = {
+            "failure_class": "http_status",
+            "attempt_count": 3,
+            "elapsed_ms": 1250,
+            "fallback_status": "analysis_preserved",
+            "http_status": 503,
+        }
+>       assert result["polaris_observability"] == expected
+E       AssertionError: assert None == {'attempt_count': 3, 'elapsed_ms': 1250, 'failure_class': 'http_status', 'fallback_status': 'analysis_preserved', ...}
+
+tests/test_research.py:1158: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/bharris/Programs/counsel-os-mvp/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_research_documents.py::test_real_text_and_ocr_pdf_extraction[text]
+tests/test_research_documents.py::test_real_text_and_ocr_pdf_extraction[text]
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+tests/test_research_documents.py::test_real_text_and_ocr_pdf_extraction[text]
+tests/test_research_documents.py::test_real_text_and_ocr_pdf_extraction[text]
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+tests/test_research_documents.py::test_real_text_and_ocr_pdf_extraction[text]
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_research.py::test_provider_diagnostics_stay_in_metadata_not_lawyer_packet
+1 failed, 91 passed, 6 warnings in 82.16s (0:01:22)
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

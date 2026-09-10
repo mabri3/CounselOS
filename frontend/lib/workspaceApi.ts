@@ -116,3 +116,6 @@ export const adoptWorkspaceScenario = (matterId: string, scenarioId: string, com
 
 export function workspaceCommand<T>(matterId: string, path: string, method = "GET", body?: unknown): Promise<T> { return request<T>(`${base(matterId)}${path}`, body === undefined ? { method } : json(method, body)); }
 export function templateCommand<T>(path = "", method = "GET", body?: unknown): Promise<T> { return request<T>(`/skills/output-templates${path}`, body === undefined ? { method } : json(method, body)); }
+
+export const getProblemAnalysis = (matterId: string, reference: import("./problemAnalysisTypes").ProblemAnalysisReference) =>
+  request<import("./problemAnalysisTypes").ProblemAnalysisStatus>(`${base(matterId)}/problem-analysis?reference=${encodeURIComponent(JSON.stringify(reference))}`);

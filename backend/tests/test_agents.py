@@ -143,7 +143,7 @@ async def test_search_vault_tool_uses_the_indexed_search_service(app_context, mo
 
     result = await search_vault(context, {"query": "privacy"})
 
-    assert calls == [("privacy", None, 10)]
+    assert calls == [("privacy", "03_Matters/beacon-instant-onboarding", 10)]
     assert result["data"]["results"] == [
         {"path": "03_Matters/beacon-instant-onboarding/request.md"}
     ]

@@ -4,14 +4,42 @@
     {
       "name": "counsel-os-frontend",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "frontend", "run", "dev"],
+      "runtimeArgs": [
+        "--prefix",
+        "frontend",
+        "run",
+        "dev"
+      ],
       "port": 3000
     },
     {
       "name": "counsel-os-backend",
       "runtimeExecutable": "backend/.venv/bin/uvicorn",
-      "runtimeArgs": ["app.main:app", "--port", "8000", "--app-dir", "backend"],
+      "runtimeArgs": [
+        "app.main:app",
+        "--port",
+        "8000",
+        "--app-dir",
+        "backend"
+      ],
       "port": 8000
+    },
+    {
+      "name": "source-library-demo",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "frontend",
+        "run",
+        "dev",
+        "--",
+        "--port",
+        "3128"
+      ],
+      "port": 3128,
+      "env": {
+        "NEXT_PUBLIC_API_BASE_URL": "http://127.0.0.1:8128/api"
+      }
     }
   ]
 }

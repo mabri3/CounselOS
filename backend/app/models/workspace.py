@@ -260,6 +260,7 @@ class DocumentIdentity(WorkspaceModel):
 
 
 class ReferenceOrigin(WorkspaceModel):
+    workspace_view: Literal["understand", "discuss", "draft"] | None = None
     surface: Literal["issue", "conversation", "decision_map", "draft", "evidence", "document"]
     record_id: str | None = None
     document_id: str | None = None
@@ -712,7 +713,11 @@ class IssueReviewItem(WorkspaceModel):
     due_at: str | None = None
 
 
+from app.models.problem_analysis import ProblemAnalysisStatus
+
+
 class WorkspaceSnapshot(WorkspaceModel):
+    problem_analysis: ProblemAnalysisStatus | None = None
     issue_analyses: dict[str, IssueAnalysisStatus] = Field(default_factory=dict)
     matter_id: str
     revision: str

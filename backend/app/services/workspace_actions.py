@@ -136,15 +136,19 @@ class WorkspaceActionsService:
                        sources: list[dict[str, Any]] | None = None, source_action_key: str | None = None,
                        target: ConversationTarget | dict[str, Any] | None = None,
                        frozen_context: dict[str, Any] | None = None,
-                       update_current_snapshot: bool = True) -> dict[str, Any]:
+                       update_current_snapshot: bool = True,
+                       problem_structure: Any = None, problem_current_eligible: bool = True) -> dict[str, Any]:
         """Persist useful prose before touching optional model structure.
 
         Call after existing chat has its final prose. A stale result remains a
         historical inquiry and never replaces the current snapshot.
         """
+        from app.services.problem_analysis import ProblemAnalysisService, extract_problem_analysis
+        text, transported_problem, problem_warnings = extract_problem_analysis(text)
+        problem_structure = problem_structure if problem_structure is not None else transported_problem
         prose, transported_paths, path_warnings = extract_decision_paths(text)
         prose, transported_claims, transport_warnings = extract_claim_support(prose)
-        transport_warnings = [*path_warnings, *transport_warnings]
+        transport_warnings = [*problem_warnings, *path_warnings, *transport_warnings]
         if prose.strip() in {
             "",
             "The available actions are complete; use the trace and updated matter state as the working result.",
@@ -274,6 +278,15 @@ class WorkspaceActionsService:
                 result["warnings"].append(
                     f"Optional decision paths unavailable: {type(exc).__name__}. Useful prose and prior analysis were retained."
                 )
+        if problem_structure is not None:
+            try:
+                result["problem_analysis"] = ProblemAnalysisService(self.vault, self.matters, self.workspace).publish(
+                    matter_id, path=path, run_id=run_id, output_revision=output_revision,
+                    structure=problem_structure, capture=(frozen_context or {}).get("problem_analysis_capture"),
+                    current_eligible=problem_current_eligible)
+                result["warnings"].extend(result["problem_analysis"].get("warnings", []))
+            except (OSError, ValueError, KeyError, TypeError):
+                result["warnings"].append("Breakdown publication failed. Useful answer and prior breakdown retained.")
         if not update_current_snapshot:
             result["current_snapshot_updated"] = False
             return result

@@ -1,0 +1,45 @@
+{
+  "run_id": "RUN-20260910-58c98e",
+  "main": {
+    "agent_id": "counsel-copilot",
+    "provider": "openai_compatible",
+    "model": "deepseek-v4-flash",
+    "reasoning_effort": "default"
+  },
+  "collector": {
+    "agent_id": "research-agent",
+    "provider": "opencode_go",
+    "model": "deepseek-v4-flash",
+    "reasoning_effort": ""
+  },
+  "scope": {
+    "external": true,
+    "other_matters": false,
+    "public_query": "United States payments asset purchase license transfer customer identification requirements",
+    "provider_ids": [],
+    "native": true,
+    "allow_firecrawl": false,
+    "model_selection": null,
+    "main_model_selection": null,
+    "collector_model_selection": {
+      "provider": "opencode_go",
+      "model": "deepseek-v4-flash"
+    },
+    "allow_followup_queries": true
+  },
+  "pages_saved": 13,
+  "passage_reads": 5,
+  "completion_messages": 1,
+  "structure_warnings": [
+    "Invalid assumption_updates entry ignored; useful prose retained.",
+    "Invalid proposition_assessments; reconciliation remains partial."
+  ],
+  "budget": {
+    "main_calls": 12,
+    "batches": 2,
+    "requests": 4,
+    "fetches": 13,
+    "active_seconds": 261.49959383296664,
+    "evidence_chars": 32847
+  }
+}

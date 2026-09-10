@@ -61,11 +61,13 @@ class IngestionService:
         matters: MatterService,
         matter_paths: MatterPathPolicy,
         max_upload_mb: int = 25,
+        source_library: Any = None,
     ):
         self.vault = vault
         self.index = index
         self.matters = matters
         self.matter_paths = matter_paths
+        self.source_library = source_library
         self.max_upload_bytes = max_upload_mb * 1024 * 1024
 
     async def upload_to_matter(
@@ -131,6 +133,7 @@ class IngestionService:
                       support_state="supplied", uploaded_at=iso_now())
         if extraction_warning:
             result.update(state="partial", extraction_state="partial", failure_detail=extraction_warning)
+        await self._register_library_source(matter_id, result, name, extracted)
         try:
             if not reused:
                 self.matters.append_event(
@@ -149,6 +152,34 @@ class IngestionService:
             except Exception:
                 result.update(state="partial", failure_detail="Source saved; the file index could not refresh.")
         return result
+
+    async def _register_library_source(
+        self, matter_id: str, result: dict[str, Any], name: str, extracted: str
+    ) -> None:
+        """Register the saved original in the matter source library. Never blocks the upload."""
+        if self.source_library is None:
+            return
+        try:
+            # PDFs and images get page-preserving extraction from the original bytes.
+            # DOCX and text keep their existing supplied extraction as sections.
+            suffix = Path(result["path"]).suffix.lower()
+            supplied = None if suffix in {".pdf", *self.IMAGE_SUFFIXES} else (
+                str(extracted) if str(extracted).strip() else None)
+            descriptor = self.source_library.register_saved_source(
+                matter_id, result["path"], source_id=result["source_id"], title=name,
+                source_kind="supplied", text=supplied)
+            descriptor = await self.source_library.extract_or_resume(matter_id, descriptor["job_id"])
+            result.update(library_source_id=descriptor["source_id"], library_job_id=descriptor["job_id"],
+                          library_source_version=descriptor["source_version"],
+                          library_extraction_state=descriptor["extraction_state"],
+                          library_unread_pages=descriptor["unread_page_count"])
+            if descriptor["extraction_state"] == "partial":
+                result.update(state="partial", extraction_state="partial",
+                              failure_detail=f"Source saved; {descriptor['unread_page_count']} pages are not extracted yet.")
+        except Exception as exc:
+            logger.error("source library registration failed: %s", type(exc).__name__)
+            result.setdefault("failure_detail", "Source saved; the source library could not register it.")
+            result["library_extraction_state"] = "unavailable"
 
     async def upload_many_to_matter(
         self,

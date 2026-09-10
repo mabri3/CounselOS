@@ -1,0 +1,93 @@
+{
+  "fixture_vault": "/var/folders/xb/kzc31shn1pz2s_5l2fy6d7rh0000gn/T/main-research-live-vfisxup1/vault",
+  "results": [
+    {
+      "matter": "MAT-DEMO-BEACON",
+      "external": true,
+      "run_id": "RUN-20260910-a53014",
+      "state": "completed",
+      "seconds": 467.0,
+      "publication": {
+        "state": "published",
+        "receipts": {
+          "packet": {
+            "state": "saved",
+            "path": "03_Matters/beacon-instant-onboarding/research/RES-20260910-52f8de.md"
+          },
+          "recommendation": {
+            "state": "proposed",
+            "version_id": "REC-20260910-b5b44c"
+          },
+          "dossier": {
+            "state": "applied",
+            "path": "03_Matters/beacon-instant-onboarding/dossier.md",
+            "revision_path": "03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-df489e3bc50235e1bf6c.md",
+            "content_hash": "59eab54d44ae79bc1b2299c1b3884ecab3586da492fedb0105488c8ef4a78750"
+          },
+          "conversation": {
+            "state": "saved",
+            "message_id": "MSG-20260910-3c3337"
+          }
+        },
+        "warnings": [],
+        "basis_warning": ""
+      },
+      "budget": {
+        "main_calls": 10,
+        "batches": 3,
+        "requests": 5,
+        "fetches": 1,
+        "active_seconds": 460.0556792070274,
+        "evidence_chars": 730
+      },
+      "failure": null,
+      "packet_paths": [
+        "03_Matters/beacon-instant-onboarding/research/RES-20260910-52f8de.md"
+      ]
+    },
+    {
+      "matter": "MAT-DEMO-ORBIT",
+      "external": false,
+      "run_id": "RUN-20260910-1d46bd",
+      "state": "completed",
+      "seconds": 14.33,
+      "publication": {
+        "state": "published",
+        "receipts": {
+          "packet": {
+            "state": "saved",
+            "path": "03_Matters/orbit-bank-data/research/RES-20260910-28eb2d.md"
+          },
+          "recommendation": {
+            "state": "proposed",
+            "version_id": "REC-20260910-6b9a27"
+          },
+          "dossier": {
+            "state": "applied",
+            "path": "03_Matters/orbit-bank-data/dossier.md",
+            "revision_path": "03_Matters/orbit-bank-data/dossier-revisions/DOS-fd973752cecb9d213e76.md",
+            "content_hash": "d6a19a32840e6e7a93188c4fd342f134ce7c3a3eebe881b2c5a669f5c2e51f13"
+          },
+          "conversation": {
+            "state": "saved",
+            "message_id": "MSG-20260910-5ca866"
+          }
+        },
+        "warnings": [],
+        "basis_warning": ""
+      },
+      "budget": {
+        "main_calls": 3,
+        "batches": 0,
+        "requests": 0,
+        "fetches": 0,
+        "active_seconds": 12.318198499982827,
+        "evidence_chars": 209
+      },
+      "failure": null,
+      "packet_paths": [
+        "03_Matters/orbit-bank-data/research/RES-20260910-28eb2d.md"
+      ]
+    }
+  ]
+}

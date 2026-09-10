@@ -1,0 +1,21 @@
+{
+  "D_current": {
+    "analysis_id": "PA-1beea800054c168ca05893d0",
+    "analysis_revision": "fdf5f2f3b8dbb267f236af22406657fa9e6290f7a202f4af039016168603c936",
+    "source_path": "03_Matters/synthetic-lifecycle-d-5e5646/conversations/inquiries/RUN-20260910-dd35ff.md",
+    "output_revision": "d5805b8a2c3ce979be5adfbbe25af97f5ea744f9116f35ca0a398866bf6aef17",
+    "run_id": "RUN-20260910-dd35ff",
+    "captured_at": "2026-09-10T13:29:43.764750+00:00"
+  },
+  "source_open_return_draft_preserved": true,
+  "reopen_after_rebuild": true,
+  "route_smoke": [
+    "/matters",
+    "/decisions",
+    "/automations",
+    "/settings",
+    "/matters/MAT-20260910-5e5646"
+  ],
+  "page_errors": [],
+  "limits": "Route smoke is not the full fifteen-step matter-review acceptance walk."
+}

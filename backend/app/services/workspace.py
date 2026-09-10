@@ -828,6 +828,8 @@ class WorkspaceService:
 
     @serialized
     def get(self, matter_id: str) -> dict[str, Any]:
+        from app.services.problem_analysis import ProblemAnalysisService
+        problem_analysis = ProblemAnalysisService(self.vault, self.matters, self).resolve(matter_id)
         doc = self._document(matter_id, "workspace.md")
         dossier = self._document(matter_id, "dossier.md")
         saved = doc["metadata"].get("snapshot") or {}
@@ -839,7 +841,7 @@ class WorkspaceService:
         receipts = [*dossier["metadata"].get("interaction_receipts", []), *doc["metadata"].get("interaction_receipts", [])]
         receipts.sort(key=lambda r: (r.get("created_at") or "", r["receipt_id"]))
         issues = self.issues(matter_id)
-        return {**saved, "matter_id": matter_id, "revision": digest(revisions), "source_revisions": revisions,
+        return {**saved, "problem_analysis": problem_analysis, "matter_id": matter_id, "revision": digest(revisions), "source_revisions": revisions,
             "question": question, "short_answer": saved.get("short_answer") or "",
             "issues": issues, "issue_analyses": self.issue_analyses(matter_id, issues=issues),
             "issues_revision": self.issues_revision(matter_id), "questions": questions,

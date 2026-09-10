@@ -1,0 +1,61 @@
+{
+  "fixture": "/Users/bharris/Programs/counsel-os-mvp/output/problem-decomposition/stories-fixture.json",
+  "provider": "Scripted StoryProvider; not judgment evidence",
+  "results": [
+    {
+      "story": "A",
+      "current": {
+        "analysis_id": "PA-078100fcb054fc23ed4a3a2d",
+        "analysis_revision": "2f81df2c633ccec7bff45cad46f2dfb7cf52571f92ec152e0d0579c0a71da512",
+        "source_path": "03_Matters/synthetic-story-a-a20dd2/conversations/inquiries/RUN-20260910-56fec0.md",
+        "output_revision": "58538e342a0110a0da6a62d70af9ad591142dc3d04004361d036c992711eca60",
+        "run_id": "RUN-20260910-56fec0",
+        "captured_at": "2026-09-10T13:24:55.781765+00:00"
+      },
+      "prior": {
+        "analysis_id": "PA-4b35274cc15a90c9ed2018ad",
+        "analysis_revision": "be3c36c192d3cfdb95a70a6d8b5ce9f72d6483e14ccbfab1912ac8ab742cc206",
+        "source_path": "03_Matters/synthetic-story-a-a20dd2/conversations/inquiries/RUN-20260910-69fd81.md",
+        "output_revision": "8c48be078ca6b7b0be178e0b5458c50d3affd478f157ac42387617e12d171571",
+        "run_id": "RUN-20260910-69fd81",
+        "captured_at": "2026-09-10T13:24:52.445570+00:00"
+      },
+      "fact_count": 2,
+      "scenario_unchanged": true,
+      "pass": true
+    },
+    {
+      "story": "B",
+      "current": {
+        "analysis_id": "PA-4a87c7b6737859c53987e5d7",
+        "analysis_revision": "aae13851a6f724b91b6ba8355e8c2bf9088731b8cacdc0630ac4eb1a0f50ff0e",
+        "source_path": "03_Matters/synthetic-story-b-886577/conversations/inquiries/RUN-20260910-a06b59.md",
+        "output_revision": "af4bff09ad6c9ff5e5c760f69bfff9633c208e6e7c0202665da1b038f1a0363c",
+        "run_id": "RUN-20260910-a06b59",
+        "captured_at": "2026-09-10T13:25:06.601770+00:00"
+      },
+      "prior": {
+        "analysis_id": "PA-5803cf5809a659916f0962cf",
+        "analysis_revision": "afc278235495da3cf8685e9e54c0ff5ba25410937aaacba6094240824eed8b20",
+        "source_path": "03_Matters/synthetic-story-b-886577/conversations/inquiries/RUN-20260910-1b4887.md",
+        "output_revision": "bafb16fd77cd3f2ebd4fd0c2eb854a37c56baed103a968a607cb6da5f79bbe2f",
+        "run_id": "RUN-20260910-1b4887",
+        "captured_at": "2026-09-10T13:25:03.801212+00:00"
+      },
+      "decision_unchanged": true,
+      "pass": true
+    },
+    {
+      "story": "C",
+      "current": {
+        "analysis_id": "PA-0e462f70b879c6810c56d758",
+        "analysis_revision": "aa71750e13814e8a723c2e60e338c3b5f6b49467d0739d88f1cad21df8571fba",
+        "source_path": "03_Matters/synthetic-story-c-c5eaaf/conversations/inquiries/RUN-20260910-b129ca.md",
+        "output_revision": "673794c91db0ddf2c846a5cb716ba923a2fbcb1026d3a674fa16b83734a0c171",
+        "run_id": "RUN-20260910-b129ca",
+        "captured_at": "2026-09-10T13:25:10.037274+00:00"
+      },
+      "pass": true
+    }
+  ]
+}

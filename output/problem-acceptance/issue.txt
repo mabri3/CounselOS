@@ -1,0 +1,99 @@
+themis.ai
+⌄
+Waiting on Alex Morgan
+Matters
+Lumen Learning: US family launch with analytics and shared-device accounts
+Matter details
+Tools and history
+Matter workspace view
+Understand
+Discuss
+Draft
+Decision map
+← All issues
+WHAT NEEDS YOUR JUDGMENT
+Audience age and the proposed launch to families with children…
+Read full issue title
+Open
+No disposition recorded
+
+Audience changes which launch controls require legal review.
+
+Next action: Review audience and identifier controls before launch
+
+Owner
+Alex Morgan
+
+ Record disposition
+ Open decision map
+ Discuss this issue
+Edit issue details
+YOUR RECORDED POSITION
+No disposition recorded
+
+No disposition reason is recorded.
+
+No formal decision is linked to this issue.
+
+Record disposition
+Disposition history (0)
+WHY THIS MATTERS
+Business effect
+
+Audience changes which launch controls require legal review.
+
+DECISION PATHS
+Saved issue analysis
+Not mapped
+
+No saved path analysis is linked to this issue. The issue text remains available.
+
+Analyze paths
+Open decision map
+LEGAL BASIS
+Claims and applicability
+Agent claim
+
+The rule defines a child as an individual under 13.
+
+Regulated actor
+Lumen, proposed online service operator
+Jurisdiction
+United States
+Application
+Lumen proposes a commercial US online service. Audience age is unknown. This definition alone does not establish coverage or a consent duty.
+
+Support gap: Coverage and exceptions require further analysis.
+
+16 CFR 312.2 — definitions · Child · Retrieved
+QUESTIONS THAT CHANGE THE ANSWER
+Facts and legal questions
+Open
+FACTUAL QUESTION
+SHARED WITH 2 ISSUES
+
+Will the US launch include children under 13?
+
+The answer can change the required launch controls.
+
+Reported fact
+Save reported fact
+Leave open
+WAYS FORWARD
+Options and mitigation
+LEGACY OPTION FALLBACK
+Agent proposal
+OPT-DEMO-NOTICE
+Prepare parental notice and consent controls
+
+Condition: If the launch includes a covered child audience
+
+Review audience and identifier controls before launch
+open
+Owner: Alex Morgan
+Required
+Complete work
+Create mitigation work
+Record formal decision
+Discussion help
+Show discussion

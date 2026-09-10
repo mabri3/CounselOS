@@ -58,8 +58,8 @@ assert.match(mattersTable, /Review matter/, "the matter table must link each con
 assert.match(mattersPage, /Repair safe stage mismatch/, "the grouped matter view must expose the safe repair control");
 assert.match(mattersPage, /setMatters\(\(await getMatters\(\)\)\.matters\);\s*setLoaded\(true\);/, "matters must become loaded only after the first successful response");
 assert.doesNotMatch(mattersPage, /finally\s*\{\s*setLoaded\(true\)/, "an initial matters error must not become a loaded zero-count state");
-assert.match(mattersPage, /\{loaded \? <p>\{inFlight\} in flight, \{closed\} closed\.<\/p> : null\}/, "matter totals must stay hidden until the first successful load");
-assert.match(mattersPage, /\{loaded \? \(\s*<>\s*<div className="stat-chips"/, "matter filters must stay hidden until the first successful load");
+assert.match(mattersPage, /\{loaded \? <p>\{inFlight\} in flight \/ \{closed\} closed<\/p> : null\}/, "matter totals must stay hidden until the first successful load");
+assert.match(mattersPage, /\{loaded \? \(\s*<>\s*<div className=\{styles.countsAndFilters\}/, "matter filters must stay hidden until the first successful load");
 assert.match(mattersPage, /!loaded && !error \? <div className="loading">Loading matters…<\/div>/, "matters must show a neutral initial loading state");
 assert.match(mattersPage, /<fieldset className="segmented">\s*<legend className="sr-only">Matter view<\/legend>/, "the matter view switch must be a labelled native radio group");
 assert.equal([...mattersPage.matchAll(/name="matter-view"/g)].length, 2, "both matter view options must share one radio name");
@@ -275,7 +275,7 @@ assert.match(todayChat, /Saved replies reflect the workspace when written\. The 
 assert.match(todayChat, /Saved reply · \$\{parsed\.toLocaleTimeString/, "valid saved replies must show local time");
 assert.match(todayChat, /if \(Number\.isNaN\(parsed\.getTime\(\)\)\) return "Saved reply"/, "invalid timestamps must not invent a time");
 assert.match(todayChat, /<summary>Saved conversation · \{messages\.length\} messages<\/summary>/, "saved Today history must have one collapsed summary");
-assert.match(todayChat, /setHistoryOpen\(day !== today\)/, "past daily conversations must open their history");
+assert.match(todayChat, /setSelectedDay\(day\);\s*setHistoryOpen\(true\)/, "past daily conversations must open their history");
 assert.match(todayChat, /setHistoryOpen\(true\)[\s\S]{0,180}setMessages/, "a newly submitted message must open the current history");
 assert.doesNotMatch(briefingSource, /TITLE_MAX|clampText/, "Today titles must not be clipped in data");
 assert.doesNotMatch(styles, /\.brief-title\s*\{\s*-webkit-line-clamp/, "Today titles must not be line-clamped");
@@ -292,7 +292,7 @@ assert.match(modal, /Optional\. List issues that remain open after this decision
 assert.match(styles, /\.btn\.primary:disabled\s*\{[^}]*var\(--sunken\)[^}]*var\(--line\)[^}]*var\(--ink-6\)/, "disabled primary buttons must use the shared disabled tokens");
 assert.match(decisionsPage, /const \[loaded, setLoaded\] = useState\(false\)/, "decisions must track initial loading separately from an empty register");
 assert.match(decisionsPage, /<DataLoadStatus[^>]+loadingLabel=/, "decisions must show neutral feedback while its first read runs");
-assert.match(decisionsPage, /\{loaded \? \(\s*<DecisionTable/, "decisions must not flash an empty register before loading finishes");
+assert.match(decisionsPage, /\{loaded \? \(\s*<div[^>]*aria-label="Recorded decisions table"[^>]*><DecisionTable/, "decisions must not flash an empty register before loading finishes");
 assert.match(decisionsPage, /Mine \(configured lawyer\)/, "the personal decision filter must identify its configured source");
 assert.match(decisionsPage, /<fieldset className="segmented">\s*<legend className="sr-only">Decision filter<\/legend>/, "decision filters must be a labelled native radio group");
 assert.equal([...decisionsPage.matchAll(/name="decision-filter"/g)].length, 1, "the mapped decision radios must use one shared name");

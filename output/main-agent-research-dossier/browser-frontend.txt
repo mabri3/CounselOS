@@ -1,0 +1,41 @@
+npm notice run themis.ai-frontend@0.1.0 dev
+npm notice run next dev --hostname 127.0.0.1 --port 3127
+▲ Next.js 16.3.3 (Turbopack)
+- Local:         http://127.0.0.1:3127
+- Network:       http://127.0.0.1:3127
+- Environments: .env.local
+✓ Ready in 234ms
+✓ Running next.config.ts took 16ms
+
+  We detected TypeScript in your project and reconfigured your tsconfig.json file for you.
+  The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:
+
+  	- include was updated to add '.next-research-investigation/types/**/*.ts'
+  	- include was updated to add '.next-research-investigation/dev/types/**/*.ts'
+
+
+ GET / 200 in 1378ms (next.js: 1238ms, application-code: 141ms)
+ GET /matters/MAT-20260910-345ecb 200 in 911ms (next.js: 898ms, application-code: 13ms)
+ GET /experimental/chat 200 in 198ms (next.js: 154ms, application-code: 44ms)
+ GET /experimental/chat?matter=MAT-20260910-345ecb 200 in 35ms (next.js: 5ms, application-code: 30ms)
+ GET /experimental/chat?matter=MAT-20260910-781631 200 in 309ms (next.js: 196ms, application-code: 113ms)
+✓ Compiled in 742ms
+[browser] The final argument passed to useEffect changed size between renders. The order and size of this array must remain constant.
+
+Previous: [03_Matters/synthetic-vendor-termination-browser-test-781631/dossier-revisions/DOS-582ae2aeffff756623bc.md, 5, 0]
+Incoming: [03_Matters/synthetic-vendor-termination-browser-test-781631/dossier-revisions/DOS-582ae2aeffff756623bc.md, false, 5, 0] 
+    at ExperimentalDocument (components/experimental/ExperimentalDocument.tsx:44:14)
+    at Set.forEach (<anonymous>)
+  42 |     const [localRefresh, setLocalRefresh] = useState(0);
+  43 |     const article = useRef<HTMLDivElement>(null);
+> 44 |     useEffect(() => { let cancelled = false; void Promise.allSettled([getFile(document.path), document.editable ? getDocumentReview(document.path) : Promise.resolve(null)]).then(([next, comments]) => { if (!cancelled) {
+     |              ^
+  45 |         setFile(next.status === "fulfilled" ? next.value : null);
+  46 |         setReview(comments.status === "fulfilled" ? comments.value : null);
+  47 |         setError(next.status === "rejected" ? "The saved document could not be loaded." : comments.status === "rejected" ? "The document is available, but comments could not be loaded." : ""); (components/experimental/ExperimentalDocument.tsx:44:14)
+ GET /experimental/chat?matter=MAT-20260910-781631 200 in 110ms (next.js: 24ms, application-code: 86ms)
+ GET /experimental/chat?matter=MAT-20260910-781631 200 in 62ms (next.js: 14ms, application-code: 48ms)
+ GET /experimental/chat?matter=MAT-20260910-781631 200 in 102ms (next.js: 40ms, application-code: 61ms)
+ GET /experimental/chat?matter=MAT-20260910-345ecb 200 in 52ms (next.js: 13ms, application-code: 39ms)
+ GET /experimental/chat?matter=MAT-20260910-781631 200 in 79ms (next.js: 28ms, application-code: 51ms)
+[?25h

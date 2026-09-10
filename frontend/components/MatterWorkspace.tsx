@@ -1,5 +1,7 @@
 "use client";
 
+import { useResearchScope } from "@/components/ResearchScopeChoice";
+
 import {
   useContinuityIdentity,
   continuityKey,
@@ -134,7 +136,6 @@ import {
   resumeResearchQueue,
   retryResearchItem,
   saveWorkProductDraft,
-  startResearchRun,
   stopResearchQueue,
   updateMatterRisk,
   uploadDocument,
@@ -295,6 +296,7 @@ function MatterWorkspaceContent({
   initialConversationId?: string | null;
   onReload: () => Promise<void>;
 }) {
+  const { startScopedResearch: startResearchRun, researchScopeDialog } = useResearchScope(detail.matter_id);
   const initialArtifacts = matterArtifacts(
     detail.tree,
     detail.response_approved_artifact_path,
@@ -2456,6 +2458,7 @@ function MatterWorkspaceContent({
           detail.matter_id,
           directResearchQuestion,
         );
+        if (!startedResearchRun) return;
         try {
           await loadResearchQueue();
         } catch (caught) {
@@ -2988,6 +2991,7 @@ function MatterWorkspaceContent({
 
   return (
     <div className={`${matterStyles.workspace} matter-shell`} data-section={activeSection ?? undefined} data-tool={continuityPanel ?? undefined} id={`matter-${detail.matter_id}`}>
+      {researchScopeDialog}
       <header
         className="matter-head"
         style={{
@@ -3633,6 +3637,7 @@ function MatterWorkspaceContent({
           <>
             {workspaceNotice ? <p role="status">{workspaceNotice}</p> : null}
             <UnderstandPanel
+              onProblemDiscuss={openChatWithSeed}
               orientation={orientation}
               sectionNavigation={<><MatterSectionNav entries={sectionEntries} onReveal={revealMatterSection} /><div className={matterStyles.overviewFacts}><section><span className={matterStyles.overviewIcon}><MatterIcon name="file" /></span><div><span className="record-meta">Sources</span><strong>{files.filter((file) => file.kind === "source").length}</strong><button className="btn quiet" onClick={() => showMatterTool("files")} type="button">View sources <MatterIcon name="chevron" size={16} /></button></div></section><section><span className={matterStyles.overviewIcon}><MatterIcon name="scale" /></span><div><span className="record-meta">Decision</span><strong>{linkedDecisions.length ? `${linkedDecisions.length} recorded` : "Not recorded"}</strong><button className="btn quiet" onClick={() => setModalOpen(true)} type="button">Record decision <MatterIcon name="chevron" size={16} /></button></div></section></div></>}
               onOpenTarget={openContinuityTarget}
@@ -3728,16 +3733,17 @@ function MatterWorkspaceContent({
                 });
                 setWorkspaceView("discuss");
                 setResearchIssueTitle(issue?.title ?? issueId);
-                setActionNotice(
-                  `Research started for ${issue?.title ?? issueId}. Its live status is shown with the conversation.`,
-                );
                 void startResearchRun(
                   detail.matter_id,
                   `Research the legal basis for this saved issue: ${issue?.title ?? issueId}. Keep useful analysis even if a source cannot be confirmed.`,
                   `issue-research:${issueId}:${crypto.randomUUID()}`,
                   issueId,
                 )
-                  .then(loadResearchQueue)
+                  .then(async run => {
+                    if (!run) return;
+                    setActionNotice(`Research started for ${issue?.title ?? issueId}.`);
+                    await loadResearchQueue();
+                  })
                   .catch((cause) =>
                     setWorkspaceNotice(
                       cause instanceof Error
@@ -5690,7 +5696,7 @@ function MatterWorkspaceContent({
             void openReference({
               document_id: document.document_id,
               path: activeEvidence.path!,
-              revision: activeEvidence.source_version ?? document.revision,
+              revision: activeEvidence.source_hash ?? document.revision,
               locator: activeEvidence.locator,
               available_excerpt: activeEvidence.available_excerpt,
               exact_passage_available: Boolean(

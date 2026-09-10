@@ -1,0 +1,1944 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/6n82ul",
+    "id": "6n82ul",
+    "slide": 8,
+    "layoutId": "94302c2b-6a1f-40e6-875c-bb9de263a0ea",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "0bdeb33e-220c-474b-889e-c35a5c6bbebb",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#FCFAF4",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "Arial",
+      "Georgia"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "94302c2b-6a1f-40e6-875c-bb9de263a0ea",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "0bdeb33e-220c-474b-889e-c35a5c6bbebb",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "0bdeb33e-220c-474b-889e-c35a5c6bbebb",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/zqlk3ylk",
+      "id": "1",
+      "name": "kicker-8",
+      "bbox": [
+        54,
+        36,
+        1172,
+        22
+      ],
+      "geometry": "rect",
+      "text": "THEMIS THESIS  /  08",
+      "textPreview": "THEMIS THESIS  /  08",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#3E5F9D",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "THEMIS THESIS  /  08"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "THEMIS THESIS  /  08",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#3E5F9D",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "THEMIS THESIS  /  08",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#3E5F9D",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/0rulw325",
+      "id": "2",
+      "name": "title-8",
+      "bbox": [
+        54,
+        64,
+        1172,
+        72
+      ],
+      "geometry": "rect",
+      "text": "Trust is earned by how the product behaves.",
+      "textPreview": "Trust is earned by how the product behaves.",
+      "resolvedFontSize": 44,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 44,
+        "typeface": "Georgia",
+        "color": "#16233F",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Trust is earned by how the product behaves."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Trust is earned by how the product behaves.",
+          "lineSpacingPercent": 98000,
+          "resolvedTextStyle": {
+            "fontSize": 44,
+            "typeface": "Georgia",
+            "color": "#16233F",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 0.98
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Trust is earned by how the product behaves.",
+              "fontSize": 44,
+              "typeface": "Georgia",
+              "color": "#16233F",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 0.98
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/1s3m583q",
+      "id": "3",
+      "name": "s8-context",
+      "bbox": [
+        54,
+        140,
+        900,
+        36
+      ],
+      "geometry": "rect",
+      "text": "Themis should feel like a capable colleague whose conduct makes the lawyer stronger.",
+      "textPreview": "Themis should feel like a capable colleague whose conduct makes the lawyer stronger.",
+      "resolvedFontSize": 20,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 20,
+        "typeface": "Georgia",
+        "color": "#16233F",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Themis should feel like a capable colleague whose conduct makes the lawyer stronger."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Themis should feel like a capable colleague whose conduct makes the lawyer stronger.",
+          "lineSpacingPercent": 108000,
+          "resolvedTextStyle": {
+            "fontSize": 20,
+            "typeface": "Georgia",
+            "color": "#16233F",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.08
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Themis should feel like a capable colleague whose conduct makes the lawyer stronger.",
+              "fontSize": 20,
+              "typeface": "Georgia",
+              "color": "#16233F",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.08
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/qls3qt43",
+      "id": "4",
+      "name": "s8-index-0",
+      "bbox": [
+        54,
+        202,
+        32,
+        24
+      ],
+      "geometry": "rect",
+      "text": "01",
+      "textPreview": "01",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#3E5F9D",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "01"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "01",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#3E5F9D",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "01",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#3E5F9D",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/rm1kzelo",
+      "id": "5",
+      "name": "s8-head-0",
+      "bbox": [
+        96,
+        200,
+        520,
+        28
+      ],
+      "geometry": "rect",
+      "text": "Humble, not performative.",
+      "textPreview": "Humble, not performative.",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 18,
+        "typeface": "Georgia",
+        "color": "#16233F",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Humble, not performative."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Humble, not performative.",
+          "lineSpacingPercent": 102000,
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Georgia",
+            "color": "#16233F",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.02
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Humble, not performative.",
+              "fontSize": 18,
+              "typeface": "Georgia",
+              "color": "#16233F",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.02
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/cnalsj29",
+      "id": "6",
+      "name": "s8-body-0",
+      "bbox": [
+        96,
+        234,
+        520,
+        50
+      ],
+      "geometry": "rect",
+      "text": "It shows uncertainty and does not pretend that ambiguity has disappeared.",
+      "textPreview": "It shows uncertainty and does not pretend that ambiguity has disappeared.",
+      "resolvedFontSize": 14.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 14.51,
+        "typeface": "Arial",
+        "color": "#16233F",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "It shows uncertainty and does not pretend that ambiguity has disappeared."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "It shows uncertainty and does not pretend that ambiguity has disappeared.",
+          "lineSpacingPercent": 112000,
+          "resolvedTextStyle": {
+            "fontSize": 14.51,
+            "typeface": "Arial",
+            "color": "#16233F",
+            "alignment": "left",
+            "lineSpacing": 1.12
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "It shows uncertainty and does not pretend that ambiguity has disappeared.",
+              "fontSize": 14.51,
+              "typeface": "Arial",
+              "color": "#16233F",
+              "alignment": "left",
+              "lineSpacing": 1.12
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/do321o3u",
+      "id": "7",
+      "name": "rule-96-290",
+      "bbox": [
+        96,
+        290,
+        520,
+        1
+      ],
+      "geometry": "rect",
+      "fillColor": "rgba(22, 35, 63, 0.22745)",
+      "lineWidth": 0
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ahw32dk7",
+      "id": "8",
+      "name": "s8-index-1",
+      "bbox": [
+        658,
+        202,
+        32,
+        24
+      ],
+      "geometry": "rect",
+      "text": "02",
+      "textPreview": "02",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#C86449",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "02"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "02",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#C86449",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "02",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#C86449",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/bi54bils",
+      "id": "9",
+      "name": "s8-head-1",
+      "bbox": [
+        700,
+        200,
+        520,
+        28
+      ],
+      "geometry": "rect",
+      "text": "Curious, not merely declarative.",
+      "textPreview": "Curious, not merely declarative.",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 18,
+        "typeface": "Georgia",
+        "color": "#16233F",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Curious, not merely declarative."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Curious, not merely declarative.",
+          "lineSpacingPercent": 102000,
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Georgia",
+            "color": "#16233F",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.02
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Curious, not merely declarative.",
+              "fontSize": 18,
+              "typeface": "Georgia",
+              "color": "#16233F",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.02
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/36pgjq1s",
+      "id": "10",
+      "name": "s8-body-1",
+      "bbox": [
+        700,
+        234,
+        520,
+        50
+      ],
+      "geometry": "rect",
+      "text": "It asks the question that exposes the missing fact or untested assumption.",
+      "textPreview": "It asks the question that exposes the missing fact or untested assumption.",
+      "resolvedFontSize": 14.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 14.51,
+        "typeface": "Arial",
+        "color": "#16233F",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "It asks the question that exposes the missing fact or untested assumption."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "It asks the question that exposes the missing fact or untested assumption.",
+          "lineSpacingPercent": 112000,
+          "resolvedTextStyle": {
+            "fontSize": 14.51,
+            "typeface": "Arial",
+            "color": "#16233F",
+            "alignment": "left",
+            "lineSpacing": 1.12
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "It asks the question that exposes the missing fact or untested assumption.",
+              "fontSize": 14.51,
+              "typeface": "Arial",
+              "color": "#16233F",
+              "alignment": "left",
+              "lineSpacing": 1.12
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 11,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/i5gfalk7",
+      "id": "11",
+      "name": "rule-700-290",
+      "bbox": [
+        700,
+        290,
+        520,
+        1
+      ],
+      "geometry": "rect",
+      "fillColor": "rgba(22, 35, 63, 0.22745)",
+      "lineWidth": 0
+    },
+    {
+      "order": 12,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/587ylgjy",
+      "id": "12",
+      "name": "s8-index-2",
+      "bbox": [
+        54,
+        310,
+        32,
+        24
+      ],
+      "geometry": "rect",
+      "text": "03",
+      "textPreview": "03",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#3E5F9D",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "03"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "03",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#3E5F9D",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "03",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#3E5F9D",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 13,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/47yxcv2d",
+      "id": "13",
+      "name": "s8-head-2",
+      "bbox": [
+        96,
+        308,
+        520,
+        28
+      ],
+      "geometry": "rect",
+      "text": "Present, not intrusive.",
+      "textPreview": "Present, not intrusive.",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 18,
+        "typeface": "Georgia",
+        "color": "#16233F",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Present, not intrusive."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Present, not intrusive.",
+          "lineSpacingPercent": 102000,
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Georgia",
+            "color": "#16233F",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.02
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Present, not intrusive.",
+              "fontSize": 18,
+              "typeface": "Georgia",
+              "color": "#16233F",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.02
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 14,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/rapgnq14",
+      "id": "14",
+      "name": "s8-body-2",
+      "bbox": [
+        96,
+        342,
+        520,
+        50
+      ],
+      "geometry": "rect",
+      "text": "It is available throughout the matter without taking control of the decision.",
+      "textPreview": "It is available throughout the matter without taking control of the decision.",
+      "resolvedFontSize": 14.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 14.51,
+        "typeface": "Arial",
+        "color": "#16233F",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "It is available throughout the matter without taking control of the decision."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "It is available throughout the matter without taking control of the decision.",
+          "lineSpacingPercent": 112000,
+          "resolvedTextStyle": {
+            "fontSize": 14.51,
+            "typeface": "Arial",
+            "color": "#16233F",
+            "alignment": "left",
+            "lineSpacing": 1.12
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "It is available throughout the matter without taking control of the decision.",
+              "fontSize": 14.51,
+              "typeface": "Arial",
+              "color": "#16233F",
+              "alignment": "left",
+              "lineSpacing": 1.12
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 15,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/q9gfelkj",
+      "id": "15",
+      "name": "rule-96-398",
+      "bbox": [
+        96,
+        398,
+        520,
+        1
+      ],
+      "geometry": "rect",
+      "fillColor": "rgba(22, 35, 63, 0.22745)",
+      "lineWidth": 0
+    },
+    {
+      "order": 16,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/dcryp0ju",
+      "id": "16",
+      "name": "s8-index-3",
+      "bbox": [
+        658,
+        310,
+        32,
+        24
+      ],
+      "geometry": "rect",
+      "text": "04",
+      "textPreview": "04",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#C86449",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "04"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "04",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#C86449",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "04",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#C86449",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 17,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/sbixgvi9",
+      "id": "17",
+      "name": "s8-head-3",
+      "bbox": [
+        700,
+        308,
+        520,
+        28
+      ],
+      "geometry": "rect",
+      "text": "Persistent, not forgetful.",
+      "textPreview": "Persistent, not forgetful.",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 18,
+        "typeface": "Georgia",
+        "color": "#16233F",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Persistent, not forgetful."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Persistent, not forgetful.",
+          "lineSpacingPercent": 102000,
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Georgia",
+            "color": "#16233F",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.02
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Persistent, not forgetful.",
+              "fontSize": 18,
+              "typeface": "Georgia",
+              "color": "#16233F",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.02
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 18,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/fy9gra10",
+      "id": "18",
+      "name": "s8-body-3",
+      "bbox": [
+        700,
+        342,
+        520,
+        50
+      ],
+      "geometry": "rect",
+      "text": "It carries context forward so the lawyer does not have to reconstruct the matter each time.",
+      "textPreview": "It carries context forward so the lawyer does not have to reconstruct the matter each time.",
+      "resolvedFontSize": 14.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 14.51,
+        "typeface": "Arial",
+        "color": "#16233F",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "It carries context forward so the lawyer does not have to reconstruct the matter"
+          },
+          {
+            "index": 2,
+            "text": "each time."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "It carries context forward so the lawyer does not have to reconstruct the matter each time.",
+          "lineSpacingPercent": 112000,
+          "resolvedTextStyle": {
+            "fontSize": 14.51,
+            "typeface": "Arial",
+            "color": "#16233F",
+            "alignment": "left",
+            "lineSpacing": 1.12
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "It carries context forward so the lawyer does not have to reconstruct the matter each time.",
+              "fontSize": 14.51,
+              "typeface": "Arial",
+              "color": "#16233F",
+              "alignment": "left",
+              "lineSpacing": 1.12
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 19,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ed0zi50f",
+      "id": "19",
+      "name": "rule-700-398",
+      "bbox": [
+        700,
+        398,
+        520,
+        1
+      ],
+      "geometry": "rect",
+      "fillColor": "rgba(22, 35, 63, 0.22745)",
+      "lineWidth": 0
+    },
+    {
+      "order": 20,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/a54r6t8z",
+      "id": "20",
+      "name": "s8-index-4",
+      "bbox": [
+        54,
+        418,
+        32,
+        24
+      ],
+      "geometry": "rect",
+      "text": "05",
+      "textPreview": "05",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#3E5F9D",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "05"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "05",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#3E5F9D",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "05",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#3E5F9D",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 21,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/b6dszypk",
+      "id": "21",
+      "name": "s8-head-4",
+      "bbox": [
+        96,
+        416,
+        520,
+        28
+      ],
+      "geometry": "rect",
+      "text": "Supportive, not substitutive.",
+      "textPreview": "Supportive, not substitutive.",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 18,
+        "typeface": "Georgia",
+        "color": "#16233F",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Supportive, not substitutive."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Supportive, not substitutive.",
+          "lineSpacingPercent": 102000,
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Georgia",
+            "color": "#16233F",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.02
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Supportive, not substitutive.",
+              "fontSize": 18,
+              "typeface": "Georgia",
+              "color": "#16233F",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.02
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 22,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/w7m98365",
+      "id": "22",
+      "name": "s8-body-4",
+      "bbox": [
+        96,
+        450,
+        520,
+        50
+      ],
+      "geometry": "rect",
+      "text": "It strengthens the lawyer's judgment instead of presenting itself as the legal authority.",
+      "textPreview": "It strengthens the lawyer's judgment instead of presenting itself as the legal authority.",
+      "resolvedFontSize": 14.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 14.51,
+        "typeface": "Arial",
+        "color": "#16233F",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "It strengthens the lawyer's judgment instead of presenting itself as the legal"
+          },
+          {
+            "index": 2,
+            "text": "authority."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "It strengthens the lawyer's judgment instead of presenting itself as the legal authority.",
+          "lineSpacingPercent": 112000,
+          "resolvedTextStyle": {
+            "fontSize": 14.51,
+            "typeface": "Arial",
+            "color": "#16233F",
+            "alignment": "left",
+            "lineSpacing": 1.12
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "It strengthens the lawyer's judgment instead of presenting itself as the legal authority.",
+              "fontSize": 14.51,
+              "typeface": "Arial",
+              "color": "#16233F",
+              "alignment": "left",
+              "lineSpacing": 1.12
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 23,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/x8fa187q",
+      "id": "23",
+      "name": "rule-96-506",
+      "bbox": [
+        96,
+        506,
+        520,
+        1
+      ],
+      "geometry": "rect",
+      "fillColor": "rgba(22, 35, 63, 0.22745)",
+      "lineWidth": 0
+    },
+    {
+      "order": 24,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/mh4r2t8n",
+      "id": "24",
+      "name": "s8-index-5",
+      "bbox": [
+        658,
+        418,
+        32,
+        24
+      ],
+      "geometry": "rect",
+      "text": "06",
+      "textPreview": "06",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#C86449",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "06"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "06",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#C86449",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "06",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#C86449",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 25,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/nidsvyp8",
+      "id": "25",
+      "name": "s8-head-5",
+      "bbox": [
+        700,
+        416,
+        520,
+        28
+      ],
+      "geometry": "rect",
+      "text": "Faithful, not revisionist.",
+      "textPreview": "Faithful, not revisionist.",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 18,
+        "typeface": "Georgia",
+        "color": "#16233F",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Faithful, not revisionist."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Faithful, not revisionist.",
+          "lineSpacingPercent": 102000,
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "typeface": "Georgia",
+            "color": "#16233F",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.02
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Faithful, not revisionist.",
+              "fontSize": 18,
+              "typeface": "Georgia",
+              "color": "#16233F",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.02
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 26,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ojm94jqt",
+      "id": "26",
+      "name": "s8-body-5",
+      "bbox": [
+        700,
+        450,
+        520,
+        50
+      ],
+      "geometry": "rect",
+      "text": "It records the lawyer's decision without silently turning a model recommendation into that decision.",
+      "textPreview": "It records the lawyer's decision without silently turning a model recommendation into that decision.",
+      "resolvedFontSize": 14.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 14.51,
+        "typeface": "Arial",
+        "color": "#16233F",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "It records the lawyer's decision without silently turning a model recommendation"
+          },
+          {
+            "index": 2,
+            "text": "into that decision."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "It records the lawyer's decision without silently turning a model recommendation into that decision.",
+          "lineSpacingPercent": 112000,
+          "resolvedTextStyle": {
+            "fontSize": 14.51,
+            "typeface": "Arial",
+            "color": "#16233F",
+            "alignment": "left",
+            "lineSpacing": 1.12
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "It records the lawyer's decision without silently turning a model recommendation into that decision.",
+              "fontSize": 14.51,
+              "typeface": "Arial",
+              "color": "#16233F",
+              "alignment": "left",
+              "lineSpacing": 1.12
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 27,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/94vaxo7e",
+      "id": "27",
+      "name": "rule-700-506",
+      "bbox": [
+        700,
+        506,
+        520,
+        1
+      ],
+      "geometry": "rect",
+      "fillColor": "rgba(22, 35, 63, 0.22745)",
+      "lineWidth": 0
+    },
+    {
+      "order": 28,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/6dobedo7",
+      "id": "28",
+      "name": "s8-bottom",
+      "bbox": [
+        0,
+        540,
+        1280,
+        180
+      ],
+      "geometry": "rect",
+      "fillColor": "#16233F",
+      "lineWidth": 0
+    },
+    {
+      "order": 29,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/7exs7ips",
+      "id": "29",
+      "name": "s8-closing",
+      "bbox": [
+        54,
+        568,
+        560,
+        86
+      ],
+      "geometry": "rect",
+      "text": "This is what it means for Themis not to be a soulless product: its values appear in repeated, observable behavior.",
+      "textPreview": "This is what it means for Themis not to be a soulless product: its values appear in repeated, observable behavior.",
+      "resolvedFontSize": 22,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 22,
+        "typeface": "Georgia",
+        "color": "#FCFAF4",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "This is what it means for Themis not to be a"
+          },
+          {
+            "index": 2,
+            "text": "soulless product: its values appear in repeated,"
+          },
+          {
+            "index": 3,
+            "text": "observable behavior."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "This is what it means for Themis not to be a soulless product: its values appear in repeated, observable behavior.",
+          "lineSpacingPercent": 108000,
+          "resolvedTextStyle": {
+            "fontSize": 22,
+            "typeface": "Georgia",
+            "color": "#FCFAF4",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.08
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "This is what it means for Themis not to be a soulless product: its values appear in repeated, observable behavior.",
+              "fontSize": 22,
+              "typeface": "Georgia",
+              "color": "#FCFAF4",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.08
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 30,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/h8judcru",
+      "id": "30",
+      "name": "s8-investor-kicker",
+      "bbox": [
+        684,
+        570,
+        220,
+        22
+      ],
+      "geometry": "rect",
+      "text": "INVESTOR IMPLICATION",
+      "textPreview": "INVESTOR IMPLICATION",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#C79A2B",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "INVESTOR IMPLICATION"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "INVESTOR IMPLICATION",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#C79A2B",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "INVESTOR IMPLICATION",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#C79A2B",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 31,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/g7ad47q9",
+      "id": "31",
+      "name": "s8-investor",
+      "bbox": [
+        684,
+        602,
+        520,
+        68
+      ],
+      "geometry": "rect",
+      "text": "These behaviors turn the emotional promise into product requirements. If they remain consistent across models and matters, the ethos can become part of the user experience rather than branding placed on top of it.",
+      "textPreview": "These behaviors turn the emotional promise into product requirements. If they remain consistent across models and matters, the ethos can ...",
+      "resolvedFontSize": 15.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 15.51,
+        "typeface": "Arial",
+        "color": "#FCFAF4",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "These behaviors turn the emotional promise into product requirements. If"
+          },
+          {
+            "index": 2,
+            "text": "they remain consistent across models and matters, the ethos can become"
+          },
+          {
+            "index": 3,
+            "text": "part of the user experience rather than branding placed on top of it."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "These behaviors turn the emotional promise into product requirements. If they remain consistent across models and matters, the ethos can become part of the user experience rather than branding placed on top of it.",
+          "lineSpacingPercent": 112000,
+          "resolvedTextStyle": {
+            "fontSize": 15.51,
+            "typeface": "Arial",
+            "color": "#FCFAF4",
+            "alignment": "left",
+            "lineSpacing": 1.12
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "These behaviors turn the emotional promise into product requirements. If they remain consistent across models and matters, the ethos can become part of the user experience rather than branding placed on top of it.",
+              "fontSize": 15.51,
+              "typeface": "Arial",
+              "color": "#FCFAF4",
+              "alignment": "left",
+              "lineSpacing": 1.12
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

@@ -1,0 +1,1544 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/4t1cwj",
+    "id": "4t1cwj",
+    "slide": 9,
+    "layoutId": "94302c2b-6a1f-40e6-875c-bb9de263a0ea",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "0bdeb33e-220c-474b-889e-c35a5c6bbebb",
+    "masterLayoutName": "Master",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "Arial",
+      "Georgia"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "94302c2b-6a1f-40e6-875c-bb9de263a0ea",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "0bdeb33e-220c-474b-889e-c35a5c6bbebb",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "0bdeb33e-220c-474b-889e-c35a5c6bbebb",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "image",
+      "scope": "slide",
+      "aid": "im/43qxwbex",
+      "id": "1",
+      "bbox": [
+        0,
+        0,
+        1280,
+        720
+      ],
+      "alt": "A luminous path becoming coherent through repeated decision points",
+      "contentType": "image/png",
+      "imageFit": "cover",
+      "asset": {
+        "assetId": "e887a8e0-1c23-4e19-966e-345cbb76ce4d",
+        "contentType": "image/png",
+        "byteLength": 2277850
+      }
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/q14bm1s3",
+      "id": "2",
+      "name": "s9-left",
+      "bbox": [
+        0,
+        0,
+        730,
+        720
+      ],
+      "geometry": "rect",
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/r2xsf69o",
+      "id": "3",
+      "name": "s9-kicker",
+      "bbox": [
+        54,
+        42,
+        260,
+        22
+      ],
+      "geometry": "rect",
+      "text": "THEMIS THESIS  /  09",
+      "textPreview": "THEMIS THESIS  /  09",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#2E8984",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "THEMIS THESIS  /  09"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "THEMIS THESIS  /  09",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#2E8984",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "THEMIS THESIS  /  09",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#2E8984",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/076tsba5",
+      "id": "4",
+      "name": "s9-title",
+      "bbox": [
+        54,
+        70,
+        620,
+        122
+      ],
+      "geometry": "rect",
+      "text": "The durable position is inside the lawyer's process of reaching confidence.",
+      "textPreview": "The durable position is inside the lawyer's process of reaching confidence.",
+      "resolvedFontSize": 38,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 38,
+        "typeface": "Georgia",
+        "color": "#FCFAF4",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "The durable position is inside"
+          },
+          {
+            "index": 2,
+            "text": "the lawyer's process of"
+          },
+          {
+            "index": 3,
+            "text": "reaching confidence."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "The durable position is inside the lawyer's process of reaching confidence.",
+          "lineSpacingPercent": 99000,
+          "resolvedTextStyle": {
+            "fontSize": 38,
+            "typeface": "Georgia",
+            "color": "#FCFAF4",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 0.99
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "The durable position is inside the lawyer's process of reaching confidence.",
+              "fontSize": 38,
+              "typeface": "Georgia",
+              "color": "#FCFAF4",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 0.99
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/18falgrq",
+      "id": "5",
+      "name": "rule-54-211",
+      "bbox": [
+        54,
+        211,
+        120,
+        6
+      ],
+      "geometry": "rect",
+      "fillColor": "#C79A2B",
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/e5obq1sf",
+      "id": "6",
+      "name": "s9-quote",
+      "bbox": [
+        54,
+        222,
+        620,
+        230
+      ],
+      "geometry": "rect",
+      "text": "But this is the more important and defensible leap. Intelligence will become common. Workflows can be copied. A product that earns a place inside the lawyer’s process of reaching confidence in their decision can become much harder to replace.",
+      "textPreview": "But this is the more important and defensible leap. Intelligence will become common. Workflows can be copied. A product that earns a plac...",
+      "resolvedFontSize": 27,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 27,
+        "typeface": "Georgia",
+        "color": "#FCFAF4",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 7,
+        "lines": [
+          {
+            "index": 1,
+            "text": "But this is the more important and"
+          },
+          {
+            "index": 2,
+            "text": "defensible leap. Intelligence will become"
+          },
+          {
+            "index": 3,
+            "text": "common. Workflows can be copied. A"
+          },
+          {
+            "index": 4,
+            "text": "product that earns a place inside the"
+          },
+          {
+            "index": 5,
+            "text": "lawyer’s process of reaching confidence in"
+          },
+          {
+            "index": 6,
+            "text": "their decision can become much harder to"
+          },
+          {
+            "index": 7,
+            "text": "replace."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "But this is the more important and defensible leap. Intelligence will become common. Workflows can be copied. A product that earns a place inside the lawyer’s process of reaching confidence in their decision can become much harder to replace.",
+          "lineSpacingPercent": 105000,
+          "resolvedTextStyle": {
+            "fontSize": 27,
+            "typeface": "Georgia",
+            "color": "#FCFAF4",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.05
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "But this is the more important and defensible leap. Intelligence will become common. Workflows can be copied. A product that earns a place inside the lawyer’s process of reaching confidence in their decision can become much harder to replace.",
+              "fontSize": 27,
+              "typeface": "Georgia",
+              "color": "#FCFAF4",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.05
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/z6xsj69k",
+      "id": "7",
+      "name": "s9-context",
+      "bbox": [
+        54,
+        468,
+        620,
+        88
+      ],
+      "geometry": "rect",
+      "text": "The market will make strong AI capabilities more available. The investor question is not only which product can generate the best answer today. It is which product can earn a lasting role in the professional process around that answer.",
+      "textPreview": "The market will make strong AI capabilities more available. The investor question is not only which product can generate the best answer ...",
+      "resolvedFontSize": 16,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 16,
+        "typeface": "Arial",
+        "color": "#FCFAF4",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "The market will make strong AI capabilities more available. The investor question is not"
+          },
+          {
+            "index": 2,
+            "text": "only which product can generate the best answer today. It is which product can earn a"
+          },
+          {
+            "index": 3,
+            "text": "lasting role in the professional process around that answer."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "The market will make strong AI capabilities more available. The investor question is not only which product can generate the best answer today. It is which product can earn a lasting role in the professional process around that answer.",
+          "lineSpacingPercent": 114000,
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "typeface": "Arial",
+            "color": "#FCFAF4",
+            "alignment": "left",
+            "lineSpacing": 1.14
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "The market will make strong AI capabilities more available. The investor question is not only which product can generate the best answer today. It is which product can earn a lasting role in the professional process around that answer.",
+              "fontSize": 16,
+              "typeface": "Arial",
+              "color": "#FCFAF4",
+              "alignment": "left",
+              "lineSpacing": 1.14
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/gbm9gra1",
+      "id": "8",
+      "name": "s9-right-panel",
+      "bbox": [
+        760,
+        34,
+        480,
+        648
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#FCFAF4",
+      "lineWidth": 0
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/hcva9crm",
+      "id": "9",
+      "name": "s9-why",
+      "bbox": [
+        790,
+        62,
+        230,
+        22
+      ],
+      "geometry": "rect",
+      "text": "WHY THIS COULD MATTER",
+      "textPreview": "WHY THIS COULD MATTER",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#3E5F9D",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "WHY THIS COULD MATTER"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "WHY THIS COULD MATTER",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#3E5F9D",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "WHY THIS COULD MATTER",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#3E5F9D",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/xo7m9svy",
+      "id": "10",
+      "name": "s9-why-num-0",
+      "bbox": [
+        790,
+        96,
+        24,
+        24
+      ],
+      "geometry": "rect",
+      "text": "1",
+      "textPreview": "1",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#C86449",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "1"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "1",
+          "lineSpacingPercent": 108000,
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#C86449",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.08
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "1",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#C86449",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.08
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 11,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/wny5gnud",
+      "id": "11",
+      "name": "s9-why-text-0",
+      "bbox": [
+        824,
+        92,
+        378,
+        52
+      ],
+      "geometry": "rect",
+      "text": "Model quality will improve and useful workflow patterns will spread across products.",
+      "textPreview": "Model quality will improve and useful workflow patterns will spread across products.",
+      "resolvedFontSize": 13.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 13.51,
+        "typeface": "Arial",
+        "color": "#16233F",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Model quality will improve and useful workflow patterns will"
+          },
+          {
+            "index": 2,
+            "text": "spread across products."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Model quality will improve and useful workflow patterns will spread across products.",
+          "lineSpacingPercent": 111000,
+          "resolvedTextStyle": {
+            "fontSize": 13.51,
+            "typeface": "Arial",
+            "color": "#16233F",
+            "alignment": "left",
+            "lineSpacing": 1.11
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Model quality will improve and useful workflow patterns will spread across products.",
+              "fontSize": 13.51,
+              "typeface": "Arial",
+              "color": "#16233F",
+              "alignment": "left",
+              "lineSpacing": 1.11
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 12,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/bm547ids",
+      "id": "12",
+      "name": "s9-why-num-1",
+      "bbox": [
+        790,
+        160,
+        24,
+        24
+      ],
+      "geometry": "rect",
+      "text": "2",
+      "textPreview": "2",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#C86449",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "2"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "2",
+          "lineSpacingPercent": 108000,
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#C86449",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.08
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "2",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#C86449",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.08
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 13,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/alwnexcn",
+      "id": "13",
+      "name": "s9-why-text-1",
+      "bbox": [
+        824,
+        156,
+        378,
+        52
+      ],
+      "geometry": "rect",
+      "text": "Matter history can deepen Themis's role because the system retains how the lawyer and organization reached prior decisions.",
+      "textPreview": "Matter history can deepen Themis's role because the system retains how the lawyer and organization reached prior decisions.",
+      "resolvedFontSize": 13.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 13.51,
+        "typeface": "Arial",
+        "color": "#16233F",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Matter history can deepen Themis's role because the system"
+          },
+          {
+            "index": 2,
+            "text": "retains how the lawyer and organization reached prior"
+          },
+          {
+            "index": 3,
+            "text": "decisions."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Matter history can deepen Themis's role because the system retains how the lawyer and organization reached prior decisions.",
+          "lineSpacingPercent": 111000,
+          "resolvedTextStyle": {
+            "fontSize": 13.51,
+            "typeface": "Arial",
+            "color": "#16233F",
+            "alignment": "left",
+            "lineSpacing": 1.11
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Matter history can deepen Themis's role because the system retains how the lawyer and organization reached prior decisions.",
+              "fontSize": 13.51,
+              "typeface": "Arial",
+              "color": "#16233F",
+              "alignment": "left",
+              "lineSpacing": 1.11
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 14,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ls7mdcva",
+      "id": "14",
+      "name": "s9-why-num-2",
+      "bbox": [
+        790,
+        224,
+        24,
+        24
+      ],
+      "geometry": "rect",
+      "text": "3",
+      "textPreview": "3",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#C86449",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "3"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "3",
+          "lineSpacingPercent": 108000,
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#C86449",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.08
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "3",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#C86449",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.08
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 15,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/kry5k7up",
+      "id": "15",
+      "name": "s9-why-text-2",
+      "bbox": [
+        824,
+        220,
+        378,
+        52
+      ],
+      "geometry": "rect",
+      "text": "Repeated moments of useful challenge, honest uncertainty, and faithful memory can build trust that a feature checklist does not capture.",
+      "textPreview": "Repeated moments of useful challenge, honest uncertainty, and faithful memory can build trust that a feature checklist does not capture.",
+      "resolvedFontSize": 13.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 13.51,
+        "typeface": "Arial",
+        "color": "#16233F",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Repeated moments of useful challenge, honest uncertainty,"
+          },
+          {
+            "index": 2,
+            "text": "and faithful memory can build trust that a feature checklist"
+          },
+          {
+            "index": 3,
+            "text": "does not capture."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Repeated moments of useful challenge, honest uncertainty, and faithful memory can build trust that a feature checklist does not capture.",
+          "lineSpacingPercent": 111000,
+          "resolvedTextStyle": {
+            "fontSize": 13.51,
+            "typeface": "Arial",
+            "color": "#16233F",
+            "alignment": "left",
+            "lineSpacing": 1.11
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Repeated moments of useful challenge, honest uncertainty, and faithful memory can build trust that a feature checklist does not capture.",
+              "fontSize": 13.51,
+              "typeface": "Arial",
+              "color": "#16233F",
+              "alignment": "left",
+              "lineSpacing": 1.11
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 16,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/jqp4b2d4",
+      "id": "16",
+      "name": "rule-790-292",
+      "bbox": [
+        790,
+        292,
+        410,
+        2
+      ],
+      "geometry": "rect",
+      "fillColor": "#D5D9DF",
+      "lineWidth": 0
+    },
+    {
+      "order": 17,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ypgnixcj",
+      "id": "17",
+      "name": "s9-not-kicker",
+      "bbox": [
+        790,
+        314,
+        200,
+        22
+      ],
+      "geometry": "rect",
+      "text": "WHAT THE MOAT IS NOT",
+      "textPreview": "WHAT THE MOAT IS NOT",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#C86449",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "WHAT THE MOAT IS NOT"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "WHAT THE MOAT IS NOT",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#C86449",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "WHAT THE MOAT IS NOT",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#C86449",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 18,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/tgr6hcv6",
+      "id": "18",
+      "name": "s9-not",
+      "bbox": [
+        790,
+        344,
+        410,
+        50
+      ],
+      "geometry": "rect",
+      "text": "It is not exclusive intelligence, a fixed workflow, or a claim that lawyers will hand judgment to software.",
+      "textPreview": "It is not exclusive intelligence, a fixed workflow, or a claim that lawyers will hand judgment to software.",
+      "resolvedFontSize": 14.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 14.51,
+        "typeface": "Arial",
+        "color": "#16233F",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "It is not exclusive intelligence, a fixed workflow, or a claim that"
+          },
+          {
+            "index": 2,
+            "text": "lawyers will hand judgment to software."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "It is not exclusive intelligence, a fixed workflow, or a claim that lawyers will hand judgment to software.",
+          "lineSpacingPercent": 112000,
+          "resolvedTextStyle": {
+            "fontSize": 14.51,
+            "typeface": "Arial",
+            "color": "#16233F",
+            "alignment": "left",
+            "lineSpacing": 1.12
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "It is not exclusive intelligence, a fixed workflow, or a claim that lawyers will hand judgment to software.",
+              "fontSize": 14.51,
+              "typeface": "Arial",
+              "color": "#16233F",
+              "alignment": "left",
+              "lineSpacing": 1.12
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 19,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/8fi5o7ul",
+      "id": "19",
+      "name": "s9-could-kicker",
+      "bbox": [
+        790,
+        414,
+        250,
+        22
+      ],
+      "geometry": "rect",
+      "text": "WHAT THE MOAT COULD BECOME",
+      "textPreview": "WHAT THE MOAT COULD BECOME",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#3E5F9D",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "WHAT THE MOAT COULD BECOME"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "WHAT THE MOAT COULD BECOME",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#3E5F9D",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "WHAT THE MOAT COULD BECOME",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#3E5F9D",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 20,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/cbqx0f69",
+      "id": "20",
+      "name": "s9-could",
+      "bbox": [
+        790,
+        440,
+        410,
+        76
+      ],
+      "geometry": "rect",
+      "text": "A trusted place beside the lawyer, reinforced by accumulated context, product behavior, and repeated proof that Themis illuminates what matters without taking the decision away.",
+      "textPreview": "A trusted place beside the lawyer, reinforced by accumulated context, product behavior, and repeated proof that Themis illuminates what m...",
+      "resolvedFontSize": 14.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 14.51,
+        "typeface": "Georgia",
+        "color": "#16233F",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 4,
+        "lines": [
+          {
+            "index": 1,
+            "text": "A trusted place beside the lawyer, reinforced by"
+          },
+          {
+            "index": 2,
+            "text": "accumulated context, product behavior, and repeated"
+          },
+          {
+            "index": 3,
+            "text": "proof that Themis illuminates what matters without"
+          },
+          {
+            "index": 4,
+            "text": "taking the decision away."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "A trusted place beside the lawyer, reinforced by accumulated context, product behavior, and repeated proof that Themis illuminates what matters without taking the decision away.",
+          "lineSpacingPercent": 112000,
+          "resolvedTextStyle": {
+            "fontSize": 14.51,
+            "typeface": "Georgia",
+            "color": "#16233F",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.12
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "A trusted place beside the lawyer, reinforced by accumulated context, product behavior, and repeated proof that Themis illuminates what matters without taking the decision away.",
+              "fontSize": 14.51,
+              "typeface": "Georgia",
+              "color": "#16233F",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.12
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 21,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/dcjy9k7e",
+      "id": "21",
+      "name": "s9-investor-kicker",
+      "bbox": [
+        790,
+        530,
+        210,
+        22
+      ],
+      "geometry": "rect",
+      "text": "INVESTOR IMPLICATION",
+      "textPreview": "INVESTOR IMPLICATION",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#C86449",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "INVESTOR IMPLICATION"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "INVESTOR IMPLICATION",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#C86449",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "INVESTOR IMPLICATION",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#C86449",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 22,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/q98fy5o3",
+      "id": "22",
+      "name": "s9-investor",
+      "bbox": [
+        790,
+        560,
+        410,
+        62
+      ],
+      "geometry": "rect",
+      "text": "The emotional thesis is the proposed source of defensibility: a trusted role strengthened by matter history, repeated use, and behavior that respects the lawyer's responsibility.",
+      "textPreview": "The emotional thesis is the proposed source of defensibility: a trusted role strengthened by matter history, repeated use, and behavior t...",
+      "resolvedFontSize": 13.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 13.51,
+        "typeface": "Arial",
+        "color": "#16233F",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "The emotional thesis is the proposed source of defensibility: a"
+          },
+          {
+            "index": 2,
+            "text": "trusted role strengthened by matter history, repeated use, and"
+          },
+          {
+            "index": 3,
+            "text": "behavior that respects the lawyer's responsibility."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "The emotional thesis is the proposed source of defensibility: a trusted role strengthened by matter history, repeated use, and behavior that respects the lawyer's responsibility.",
+          "lineSpacingPercent": 111000,
+          "resolvedTextStyle": {
+            "fontSize": 13.51,
+            "typeface": "Arial",
+            "color": "#16233F",
+            "alignment": "left",
+            "lineSpacing": 1.11
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "The emotional thesis is the proposed source of defensibility: a trusted role strengthened by matter history, repeated use, and behavior that respects the lawyer's responsibility.",
+              "fontSize": 13.51,
+              "typeface": "Arial",
+              "color": "#16233F",
+              "alignment": "left",
+              "lineSpacing": 1.11
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 23,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/rahg7apo",
+      "id": "23",
+      "name": "s9-thesis",
+      "bbox": [
+        790,
+        632,
+        410,
+        38
+      ],
+      "geometry": "rect",
+      "text": "Themis thesis: This is the central strategic leap. It is plausible and supported by interview signals, but it is not yet proven by adoption or retention data.",
+      "textPreview": "Themis thesis: This is the central strategic leap. It is plausible and supported by interview signals, but it is not yet proven by adopti...",
+      "resolvedFontSize": 11.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 11.51,
+        "typeface": "Arial",
+        "color": "#606878",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Themis thesis: This is the central strategic leap. It is plausible and supported by"
+          },
+          {
+            "index": 2,
+            "text": "interview signals, but it is not yet proven by adoption or retention data."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Themis thesis: This is the central strategic leap. It is plausible and supported by interview signals, but it is not yet proven by adoption or retention data.",
+          "lineSpacingPercent": 108000,
+          "resolvedTextStyle": {
+            "fontSize": 11.51,
+            "typeface": "Arial",
+            "color": "#606878",
+            "alignment": "left",
+            "lineSpacing": 1.08
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Themis thesis: ",
+              "fontSize": 11.51,
+              "typeface": "Arial",
+              "color": "#606878",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.08
+            },
+            {
+              "index": 2,
+              "text": "This is the central strategic leap. It is plausible and supported by interview signals, but it is not yet proven by adoption or retention data.",
+              "fontSize": 11.51,
+              "typeface": "Arial",
+              "color": "#606878",
+              "alignment": "left",
+              "lineSpacing": 1.08
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

@@ -1,0 +1,50 @@
+....F....................                                                [100%]
+=================================== FAILURES ===================================
+_____________ test_real_ocr_page_limit_and_saved_extraction_replay _____________
+
+app_context = <app.runtime.AppContext object at 0x10ee76d80>
+
+    @pytest.mark.asyncio
+    async def test_real_ocr_page_limit_and_saved_extraction_replay(app_context):
+        import pymupdf
+        source = pymupdf.open(stream=synthetic_pdf("scanned"), filetype="pdf")
+        document = pymupdf.open()
+        for _ in range(7):
+            document.insert_pdf(source)
+        data = document.tobytes()
+>       first = await extract_document(data, app_context.settings, source_key="seven-scans")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_research_documents.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = b'%PDF-1.7\n%\xc2\xb5\xc2\xb6\n% Written by MuPDF 1.28.2\n\n1 0 obj\n<</Type/Catalog/Pages 2 0 R/Info<</Producer(MuPDF...45/Root 1 0 R/ID[<3F464FC3A018C28432612770C3B53901><59BCF2B1935254B5E6A1B6202CAB1E3B>]>>\nstartxref\n17661817\n%%EOF\n'
+settings = Settings(app_name='Counsel OS', frontend_origin='http://localhost:3000', vault_path='/private/var/folders/xb/kzc31shn1..._max_candidates=100, scheduler_enabled=False, scheduler_poll_seconds=5, decision_review_age_days=180, max_upload_mb=25)
+
+    async def extract_document(data, settings, *, source_key, source_directory=None):
+        if len(data) > MAX_BYTES:
+>           raise ValueError("Document exceeds the 5 MB extraction limit.")
+E           ValueError: Document exceeds the 5 MB extraction limit.
+
+app/services/research_documents.py:63: ValueError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/bharris/Programs/counsel-os-mvp/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_research_documents.py::test_real_text_and_ocr_pdf_extraction[text]
+tests/test_research_documents.py::test_real_text_and_ocr_pdf_extraction[text]
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+tests/test_research_documents.py::test_real_text_and_ocr_pdf_extraction[text]
+tests/test_research_documents.py::test_real_text_and_ocr_pdf_extraction[text]
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+tests/test_research_documents.py::test_real_text_and_ocr_pdf_extraction[text]
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_research_documents.py::test_real_ocr_page_limit_and_saved_extraction_replay
+1 failed, 24 passed, 6 warnings in 24.50s
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

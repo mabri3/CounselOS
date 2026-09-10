@@ -1,0 +1,22 @@
+[Sources]
+Primary narrative and locked copy:
+- /Users/bharris/Programs/counsel-os-mvp/output/deck/Themis-ai-Companion-Thesis-Deck-Outline.md
+
+Product evidence:
+- /Users/bharris/Programs/counsel-os-mvp/output/deck/screenshots/matter.png
+- /Users/bharris/Programs/counsel-os-mvp/docs/PRD.md
+- /Users/bharris/Programs/counsel-os-mvp/docs/ARCHITECTURE.md
+- /Users/bharris/Programs/counsel-os-mvp/docs/IMPLEMENTATION_STATUS.md
+
+Research evidence:
+- /Users/bharris/Programs/counsel-os-mvp/output/research/raw/legal-ai-reddit-source-corpus.jsonl
+- /Users/bharris/Programs/counsel-os-mvp/output/research/raw/interviews/in-house-counsel/
+
+Original generated editorial illustrations:
+- /Users/bharris/Programs/counsel-os-mvp/output/deck/assets/bright-editorial/cover-flashlight.png
+- /Users/bharris/Programs/counsel-os-mvp/output/deck/assets/bright-editorial/blind-spots.png
+- /Users/bharris/Programs/counsel-os-mvp/output/deck/assets/bright-editorial/journey.png
+- /Users/bharris/Programs/counsel-os-mvp/output/deck/assets/bright-editorial/defensible-leap.png
+
+The illustrations were generated for this deck with the built-in image generation tool. They contain no externally sourced photography.
+

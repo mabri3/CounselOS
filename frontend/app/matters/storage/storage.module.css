@@ -1,0 +1,5 @@
+.page { max-width: 1200px; width: 100%; margin: 0 auto; min-width: 0; }
+.page > p { margin: 16px 0; }
+.page > fieldset { width: fit-content; }
+.page > section { margin: 12px 0; }
+.page code { overflow-wrap: anywhere; }

@@ -12,6 +12,7 @@ import IssueNavigator from "./IssueNavigator";
 import IssueReviewDetail from "./IssueReviewDetail";
 import type { IssueResponseOption, SupportedTextRenderInput } from "./IssueReviewDetail";
 import OrientationSummary from "./OrientationSummary";
+import ProblemBreakdown from "./ProblemBreakdown";
 import WorkItemSummary from "./WorkItemSummary";
 import styles from "./MatterReview.module.css";
 
@@ -238,6 +239,7 @@ export default function UnderstandPanel(props: UnderstandPanelIntegrationProps) 
     {actionError ? <p className="warning-callout" role="status">{actionError}</p> : null}
 
     {hasReviewProjection ? <OrientationSummary citationState={answerClaims.some((claim) => claim.evidence.some((evidence) => evidence.available_excerpt && (evidence.path || evidence.url))) ? "available" : "none"} allIssueCount={(snapshot.issues ?? []).length} onOpenIssue={chooseIssue} onShowAllIssues={() => allIssuesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })} qualification={snapshot.qualification ?? props.orientation?.caveats?.[0]} question={currentQuestion} renderAnswer={props.renderSupportedText ? (text) => props.renderSupportedText!({ text, surface: "current_answer", claims: answerClaims }) : undefined} reviewItems={snapshot.review_items ?? []} shortAnswer={snapshot.short_answer ?? savedAnswer.text} /> : props.orientation ? <OrientationSummary compact error={error} onOpenTarget={openTarget} onRefresh={onRefresh} orientation={props.orientation} /> : null}
+    <ProblemBreakdown status={snapshot.problem_analysis} onDiscuss={props.onProblemDiscuss} onOpenSource={onOpenArtifact} onOpenIssue={chooseIssue} />
 
     {answerIsStale ? <p className="warning-callout" role="status">Some saved analysis is based on an earlier question or source version. It remains available while you refresh it. <button className="btn quiet tiny" onClick={onRefresh} type="button">Refresh matter</button></p> : null}
 

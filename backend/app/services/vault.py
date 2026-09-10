@@ -46,7 +46,7 @@ class VaultService:
         suffix = path.suffix.lower()
         if suffix == ".md":
             result = self.read_markdown(relative_path)
-            result.update({"editable": not bool(result["metadata"].get("immutable")), "kind": "markdown"})
+            result.update({"editable": not (bool(result["metadata"].get("immutable")) or self._in_source_library(self.relative(path))), "kind": "markdown"})
             return result
         if suffix in {".txt", ".csv", ".json", ".yaml", ".yml"}:
             return {
@@ -126,7 +126,9 @@ class VaultService:
         def build(path: Path, depth: int) -> list[dict[str, Any]]:
             if depth > max_depth:
                 return []
-            entries = [entry for entry in path.iterdir() if not entry.name.startswith(".")]
+            entries = [entry for entry in path.iterdir()
+                       if not entry.name.startswith(".")
+                       and not (entry.is_dir() and self._in_source_library(self.relative(entry)))]
             entries.sort(key=lambda item: (not item.is_dir(), item.name.lower()))
             nodes: list[dict[str, Any]] = []
             for entry in entries:
@@ -145,11 +147,32 @@ class VaultService:
 
         return build(root, 0)
 
-    def iter_files(self, relative_path: str = "", suffixes: set[str] | None = None) -> Iterable[Path]:
+    SOURCE_LIBRARY_SEGMENT = "/research/source-library/"
+
+    @classmethod
+    def _in_source_library(cls, relative: str) -> bool:
+        return cls.SOURCE_LIBRARY_SEGMENT in f"/{relative.strip('/')}/"
+
+    def iter_files(
+        self,
+        relative_path: str = "",
+        suffixes: set[str] | None = None,
+        *,
+        include_source_library: bool = False,
+    ) -> Iterable[Path]:
+        """Walk vault files.
+
+        The internal source library holds one Markdown file per extracted page, so a
+        large source would otherwise make every matter-wide walk read thousands of
+        records. It is skipped unless the caller asks for it or walks into it directly;
+        its content stays reachable through the library service and the search index.
+        """
         root = self.resolve(relative_path)
         if not root.exists():
             return []
         files = (path for path in root.rglob("*") if path.is_file() and not path.name.startswith("."))
+        if not include_source_library and not self._in_source_library(str(relative_path)):
+            files = (path for path in files if not self._in_source_library(self.relative(path)))
         if suffixes is None:
             return files
         normalized = {suffix.lower() for suffix in suffixes}
@@ -161,6 +184,8 @@ class VaultService:
             return []
         scored: list[tuple[int, dict[str, Any]]] = []
         for path in self.iter_files(relative_path, {".md", ".txt"}):
+            if self.relative(path).startswith("99_Trash/"):
+                continue
             try:
                 text = path.read_text(encoding="utf-8", errors="replace")
             except OSError:

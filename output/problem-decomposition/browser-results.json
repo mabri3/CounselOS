@@ -1,0 +1,49 @@
+{
+  "results": [
+    {
+      "surface": "normal",
+      "state": "saved",
+      "pass": true
+    },
+    {
+      "surface": "normal",
+      "state": "partial",
+      "pass": true
+    },
+    {
+      "surface": "normal",
+      "state": "stale",
+      "pass": true
+    },
+    {
+      "surface": "normal",
+      "state": "no-map",
+      "pass": true
+    },
+    {
+      "surface": "experimental",
+      "state": "saved",
+      "draft_preserved": true,
+      "pass": true
+    },
+    {
+      "surface": "experimental",
+      "state": "partial",
+      "draft_preserved": true,
+      "pass": true
+    },
+    {
+      "surface": "experimental",
+      "state": "stale",
+      "draft_preserved": true,
+      "pass": true
+    },
+    {
+      "surface": "experimental",
+      "state": "no-map",
+      "draft_preserved": true,
+      "pass": true
+    }
+  ],
+  "page_errors": []
+}

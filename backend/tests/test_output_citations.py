@@ -128,3 +128,8 @@ def test_output_cleanup_preserves_path_source_and_path_locator_inside_marker():
         "source_id": "03_Matters/MAT-DEMO/source-documents/coppa.md",
         "locator": "03_Matters/MAT-DEMO/source-documents/coppa.md — Child",
     }]
+
+
+def test_named_saved_document_links_survive_cleanup():
+    link = "[Open full research](03_Matters/synthetic/research/packet.md)"
+    assert link in clean_user_facing_reply("Saved result: " + link)

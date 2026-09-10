@@ -1,0 +1,44 @@
+.page { position: relative; padding: 28px 40px 40px; width: 100%; max-width: 1600px; margin: 0 auto; color: var(--ink); }
+.heading { padding-right: 250px; margin: 0; font: 400 48px/1.12 var(--serif); }
+.lede { padding-right: 250px; margin: 10px 0 20px; color: var(--ink-3); }
+.tabs { display: flex; gap: 28px; border-bottom: 1px solid var(--line-soft); margin-bottom: 22px; }
+.tabs button { padding: 12px 0; border: 0; border-bottom: 3px solid transparent; background: transparent; color: var(--ink-3); cursor: pointer; }
+.tabs button[aria-pressed=true] { color: var(--ink); border-bottom-color: var(--ink); }
+.matter { display: grid; gap: 7px; max-width: 580px; }
+.matter select { width: 100%; min-height: 42px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 5px; background: var(--raised); }
+.library.library, .editor.editor { padding: 0; border: 0; border-radius: 0; box-shadow: none; background: transparent; }
+.library.library :global(.template-library__head) { position: absolute; top: 48px; right: 40px; display: flex; justify-content: flex-end; margin: 0; }
+.library.library :global(.template-library__head > div) { display: none; }
+.library.library :global(.template-layout) { display: block; margin-top: 0; }
+.table { border: 1px solid var(--line-soft); border-radius: 6px; overflow: hidden; }
+.tableHead, .tableRow { display: grid; grid-template-columns: minmax(0, 1fr) 22% 17% 14px; gap: 16px; align-items: center; padding: 13px 20px; width: 100%; text-align: left; }
+.tableHead { font: 400 12px var(--mono); text-transform: uppercase; letter-spacing: .06em; min-height: 46px; }
+.tableRow { border: 0; border-top: 1px solid var(--line-faint); background: var(--raised); color: var(--ink); cursor: pointer; min-height: 50px; }
+.tableRow[aria-pressed=true] { box-shadow: inset 3px 0 var(--ink); background: var(--paper); }
+.tableRow:hover { background: var(--hover); }
+.tableRow small { display: block; color: var(--ink-3); font-size: 12px; margin-top: 2px; }
+.tableRow > span { min-width: 0; overflow-wrap: anywhere; }
+.tableRow strong { font-weight: 400; }
+.library.library :global(.template-detail) { margin-top: 22px; padding: 20px; border: 1px solid var(--line-soft); border-radius: 6px; }
+.library.library :global(.template-detail__head h3) { font: 400 28px/1.2 var(--serif); }
+.library.library :global(.template-summary) { font: 400 15px/1.6 var(--sans); }
+.library.library :global(.preview-overrides), .editor.editor :global(.preview-box) { background: var(--raised); border: 1px solid var(--line-soft); padding: 20px; margin-top: 24px; }
+.library.library :global(.preview-overrides legend), .editor.editor :global(.preview-box legend) { font: 400 23px var(--serif); }
+.library.library :global(.preview-result), .editor.editor :global(.preview-result) { border: 1px dashed var(--agent-edge); border-radius: 6px; padding: 20px; }
+.library.library :global(.btn.agent), .editor.editor :global(.btn.agent) { background: var(--ink); color: var(--raised); border: 1px solid var(--ink); width: fit-content; }
+.editor.editor :global(.template-editor__head) { margin-bottom: 30px; }
+.editor.editor :global(.template-editor__head h2) { font: 400 48px/1.15 var(--serif); margin-top: 12px; }
+.editorColumns { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 32px; }
+.editor.editor .editorColumns :global(.template-fields) { grid-template-columns: minmax(0, 1fr); margin: 0; gap: 24px; }
+.editor.editor .editorColumns :global(.template-fields--details) { margin-top: 24px; }
+.editor.editor .editorColumns :global(.editor-field) { margin: 0 0 24px; }
+.editor.editor :global(.editor-field h3) { font: 500 15px var(--sans); }
+.editor.editor :global(.editor-field p) { font-size: 13px; }
+.editor.editor :global(.template-long-fields) { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 20px; }
+.editor.editor :global(.text-input), .library.library :global(.text-input) { min-height: 42px; }
+.editor.editor :global(.save-actions) { justify-content: flex-end; }
+.editor.editor :global(.revision-detail) { padding: 18px; border: 1px solid var(--line-soft); border-radius: 6px; }
+.outline { min-height: 265px; resize: vertical; font-family: var(--mono); width: 100%; }
+.back { margin-bottom: 24px; }
+.page [hidden] { display: none !important; }
+@media(max-width: 760px) { .page { padding: 24px 20px; } .heading, .editor.editor :global(.template-editor__head h2) { font-size: 36px; } .library.library :global(.template-library__head) { position: static; margin: 0 0 20px; } .heading, .lede { padding-right: 0; } .editorColumns { grid-template-columns: 1fr; gap: 20px; } .editor.editor :global(.template-long-fields) { grid-template-columns: 1fr; } .tableHead, .tableRow { grid-template-columns: minmax(0, 1fr) 18% 25%; padding: 12px; gap: 8px; } .tableHead > :last-child, .tableRow > :last-child { display: none; } .library.library :global(.template-detail) { padding: 14px; } }

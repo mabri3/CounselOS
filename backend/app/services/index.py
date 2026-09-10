@@ -19,10 +19,11 @@ from app.models.awareness import (
     BriefingItem, BriefingPage, BriefingQuery, Development, Digest, IndexReport,
     Mitigation, ReviewPacket, SavedView, Scan, Watch,
 )
+from app.services.source_index import SOURCE_SCHEMA, SOURCE_TABLES, index_source_library
 from app.services.vault import VaultService
 
 
-SCHEMA_VERSION = 4
+SCHEMA_VERSION = 5
 SCHEMA = f"""
 PRAGMA foreign_keys=ON;
 PRAGMA user_version={SCHEMA_VERSION};
@@ -43,8 +44,8 @@ CREATE INDEX briefing_items_created ON briefing_items(created_at DESC,item_id DE
 CREATE INDEX briefing_items_watch ON briefing_items(watch_id);
 CREATE VIRTUAL TABLE vault_search USING fts5(path UNINDEXED,title UNINDEXED,content UNINDEXED,search_text,tokenize='trigram',detail=none,columnsize=0);
 CREATE TABLE vault_search_bigrams (term TEXT PRIMARY KEY,document_rowids TEXT NOT NULL) WITHOUT ROWID;
-"""
-TABLES = {"matters", "work_items", "decisions", "schedules", "documents", "watches", "scans", "developments", "briefing_items", "saved_views", "digests", "review_packets", "mitigations", "vault_search", "vault_search_bigrams"}
+""" + SOURCE_SCHEMA
+TABLES = {"matters", "work_items", "decisions", "schedules", "documents", "watches", "scans", "developments", "briefing_items", "saved_views", "digests", "review_packets", "mitigations", "vault_search", "vault_search_bigrams", *SOURCE_TABLES}
 TABLE_COLUMNS = {
     "matters": ("matter_id", "path", "title", "description", "matter_type", "product_area", "business_team", "requester", "legal_owner", "business_owner", "status", "priority", "risk_level", "target_date", "privilege", "next_action", "created_at", "updated_at"),
     "work_items": ("work_item_id", "matter_id", "path", "title", "description", "item_type", "status", "priority", "owner", "due_at", "required", "issue_id", "created_at", "completed_at"),
@@ -166,6 +167,7 @@ class IndexService:
             self._index_matters(connection, errors)
             + self._index_schedules(connection, errors)
             + self._index_search_documents(connection, errors)
+            + index_source_library(connection, self.vault, errors)
         )
         watches, added = self._models(connection, "00_System/legal-awareness/watches", Watch, "watches", self._watch_row, errors)
         count += added
@@ -215,8 +217,10 @@ class IndexService:
         """Index the same Markdown and text corpus exposed by the legacy vault search."""
         count = 0
         bigram_documents: dict[str, list[int]] = {}
-        for path in self.vault.iter_files("", {".md", ".txt"}):
+        for path in self.vault.iter_files("", {".md", ".txt"}, include_source_library=True):
             relative = self.vault.relative(path)
+            if relative.startswith("99_Trash/"):
+                continue
             try:
                 content = path.read_text(encoding="utf-8", errors="replace")
                 title = path.stem.replace("-", " ").replace("_", " ").title()
@@ -481,6 +485,11 @@ class IndexService:
                 + ")"
             )
         conditions: list[str] = []
+        # The internal source library is searched through the source tools, which
+        # scope into it. It never crowds ordinary vault search.
+        if not self.vault._in_source_library(str(relative_path)):
+            conditions.append("path NOT LIKE :source_library_glob")
+            params["source_library_glob"] = "%/research/source-library/%"
         if relative_path:
             relative = self.vault.relative(self.vault.resolve(relative_path))
             escaped = (
@@ -521,15 +530,19 @@ class IndexService:
         scored.sort(key=lambda item: (-item[0], item[1]["path"]))
         return [row for _, row in scored[:limit]]
 
-    def list_matters(self) -> list[dict[str, Any]]:
-        return self._query("SELECT * FROM matters ORDER BY updated_at DESC, title")
+    def list_matters(self, include_archived: bool = False) -> list[dict[str, Any]]:
+        rows = self._query("SELECT * FROM matters ORDER BY updated_at DESC, title")
+        return rows if include_archived else [row for row in rows if not self.vault.read_markdown(f"{row['path']}/matter.md")["metadata"].get("archived_at")]
 
     def get_matter(self, matter_id: str) -> dict[str, Any] | None:
         rows = self._query("SELECT * FROM matters WHERE matter_id = ?", (matter_id,))
         return rows[0] if rows else None
 
     def list_work_items(self, matter_id: str | None = None) -> list[dict[str, Any]]:
-        return self._query("SELECT * FROM work_items WHERE matter_id = ? ORDER BY status, priority, due_at", (matter_id,)) if matter_id else self._query("SELECT * FROM work_items ORDER BY status, priority, due_at")
+        if matter_id:
+            return self._query("SELECT * FROM work_items WHERE matter_id = ? ORDER BY status, priority, due_at", (matter_id,))
+        active = {row["matter_id"] for row in self.list_matters()}
+        return [row for row in self._query("SELECT * FROM work_items ORDER BY status, priority, due_at") if row["matter_id"] in active]
 
     def list_decisions(
         self, status: str | None = None, matter_id: str | None = None,

@@ -128,6 +128,7 @@ export default function MattersPage() {
               <input checked={view === "stages"} className="segmented-input" id="matter-view-stages" name="matter-view" onChange={() => setView("stages")} type="radio" value="stages" />
               <label htmlFor="matter-view-stages" title="Group matters by their current workflow stage.">Stages</label>
             </fieldset>
+            <Link className="btn" href="/matters/storage">Archive &amp; trash</Link>
             <Link className="btn primary" href="/workspace#new-matter">New matter</Link>
           </div>
         </div>

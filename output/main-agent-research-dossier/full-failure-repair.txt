@@ -1,0 +1,77 @@
+........................................................................ [ 40%]
+..................F..................................................... [ 80%]
+....................................                                     [100%]
+=================================== FAILURES ===================================
+___________ test_research_refreshes_precomputed_dossier_orientation ____________
+
+app_context = <app.runtime.AppContext object at 0x10dc67fe0>
+
+    @pytest.mark.asyncio
+    async def test_research_refreshes_precomputed_dossier_orientation(app_context):
+        decision_question_before = (
+            app_context.dossiers.orientation("MAT-DEMO-ORBIT")["decision_question"]
+        )
+        async def run_agent(_request):
+            return ChatResponse(
+                reply=(
+                    "## Matter summary\n\n"
+                    "Orbit uses an automated notice process that may need updated reason codes. "
+                    "Counsel must resolve the notice approach before launch.\n\n"
+                    "## Decision question\n\n"
+                    "Should Orbit block launch until the new reason codes are in every notice?\n\n"
+                    "## Open questions\n\n"
+                    "- Which notices still use the old reason codes?\n"
+                    "- Can the launch be limited to updated states?\n\n"
+                    "## Likely issues\n\nNotice accuracy and launch scope."
+                )
+            )
+    
+        app_context.research.bind_agent_runner(run_agent)
+        run = app_context.research_runs.start("MAT-DEMO-ORBIT", ["What notice and reason-code work is needed?"])
+        await app_context.research_runs.wait_for_active_work()
+        saved = app_context.research_runs.get("MAT-DEMO-ORBIT", run["run_id"])
+        assert saved["state"] == "completed", saved
+        result = saved["results"][0]
+        assert result["orientation_warning"] is None
+        assert app_context.dossiers.orientation("MAT-DEMO-ORBIT") == {
+            "summary": (
+                "Orbit uses an automated notice process that may need updated reason codes. "
+                "Counsel must resolve the notice approach before launch."
+            ),
+            "decision_question": decision_question_before,
+            "open_questions": [
+                "Which notices still use the old reason codes?",
+                "Can the launch be limited to updated states?",
+            ],
+        }
+        assert "## Matter summary" in app_context.vault.read_markdown(result["path"])["content"]
+        dossier = app_context.dossiers.get("MAT-DEMO-ORBIT")["content"]
+        assert dossier.count("## Matter summary") == 1
+        assert "## Summary" not in dossier
+>       assert dossier.count("## Research and source support") == 1
+E       AssertionError: assert 0 == 1
+E        +  where 0 = <built-in method count of str object at 0x80bce2000>('## Research and source support')
+E        +    where <built-in method count of str object at 0x80bce2000> = '# Matter dossier\n\n## Options or working recommendation\n\n### Latest research-based proposal — not yet accepted\n\n...fied.\n\nNot yet reconciled with this research:\n- None.\n\nHistorical generated assumptions not relied on:\n- None.\n'.count
+
+tests/test_research.py:415: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/bharris/Programs/counsel-os-mvp/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+tests/test_research_lifecycle.py::test_source_confirmation_pdf_followup_origin_and_publication[True]
+tests/test_research_lifecycle.py::test_source_confirmation_pdf_followup_origin_and_publication[True]
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+tests/test_research_lifecycle.py::test_source_confirmation_pdf_followup_origin_and_publication[True]
+tests/test_research_lifecycle.py::test_source_confirmation_pdf_followup_origin_and_publication[True]
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+tests/test_research_lifecycle.py::test_source_confirmation_pdf_followup_origin_and_publication[True]
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_research.py::test_research_refreshes_precomputed_dossier_orientation
+1 failed, 179 passed, 6 warnings in 123.53s (0:02:03)
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

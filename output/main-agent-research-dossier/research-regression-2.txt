@@ -1,0 +1,62 @@
+.................F...............................................        [100%]
+=================================== FAILURES ===================================
+___________ test_research_refreshes_precomputed_dossier_orientation ____________
+
+app_context = <app.runtime.AppContext object at 0x10bc04830>
+
+    @pytest.mark.asyncio
+    async def test_research_refreshes_precomputed_dossier_orientation(app_context):
+        decision_question_before = (
+            app_context.dossiers.orientation("MAT-DEMO-ORBIT")["decision_question"]
+            or app_context.index.get_matter("MAT-DEMO-ORBIT")["next_action"]
+        )
+        async def run_agent(_request):
+            return ChatResponse(
+                reply=(
+                    "## Matter summary\n\n"
+                    "Orbit uses an automated notice process that may need updated reason codes. "
+                    "Counsel must resolve the notice approach before launch.\n\n"
+                    "## Decision question\n\n"
+                    "Should Orbit block launch until the new reason codes are in every notice?\n\n"
+                    "## Open questions\n\n"
+                    "- Which notices still use the old reason codes?\n"
+                    "- Can the launch be limited to updated states?\n\n"
+                    "## Likely issues\n\nNotice accuracy and launch scope."
+                )
+            )
+    
+        app_context.research.bind_agent_runner(run_agent)
+        run = app_context.research_runs.start("MAT-DEMO-ORBIT", ["What notice and reason-code work is needed?"])
+        await app_context.research_runs.wait_for_active_work()
+        saved = app_context.research_runs.get("MAT-DEMO-ORBIT", run["run_id"])
+        assert saved["state"] == "completed", saved
+        result = saved["results"][0]
+        assert result["orientation_warning"] is None
+>       assert app_context.dossiers.orientation("MAT-DEMO-ORBIT") == {
+            "summary": (
+                "Orbit uses an automated notice process that may need updated reason codes. "
+                "Counsel must resolve the notice approach before launch."
+            ),
+            "decision_question": decision_question_before,
+            "open_questions": [
+                "Which notices still use the old reason codes?",
+                "Can the launch be limited to updated states?",
+            ],
+        }
+E       AssertionError: assert {'decision_qu...fore launch.'} == {'decision_qu...fore launch.'}
+E         
+E         Omitting 2 identical items, use -vv to show
+E         Differing items:
+E         {'decision_question': 'Should Orbit block launch until the new reason codes are in every notice?'} != {'decision_question': 'Complete orientation and identify missing facts.'}
+E         Use -v to get more diff
+
+tests/test_research.py:401: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/bharris/Programs/counsel-os-mvp/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_research.py::test_research_refreshes_precomputed_dossier_orientation
+1 failed, 64 passed, 1 warning in 30.62s

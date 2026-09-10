@@ -66,9 +66,9 @@ assert.equal(uploadHelpers.uploadState(mixedUpload).word, "Partial", "mixed succ
 assert.equal(mixedUpload[2].input, uploadInputs[2], "the failed outcome must retain its exact File object for retry");
 assert.equal(uploadHelpers.uploadState(uploadHelpers.normalizeUpload(undefined, uploadInputs)).word, "Completed", "a legacy void callback may report completion without inventing per-file saved states");
 
-assert.match(evidence, /Exact available passage[\s\S]*Generated explanation/, "exact passages and generated explanations must use separate labelled regions");
+assert.match(evidence, /Saved passage[\s\S]*Generated explanation/, "exact passages and generated explanations must use separate labelled regions");
 assert.match(evidence, /Retrieved[\s\S]*Unknown/, "source status and unknown retrieval dates must be explicit");
-assert.match(evidence, /Opening a link does not verify the source/, "opening a source must not imply verification");
+assert.match(evidence, /const state = evidence\?\.support_state \?\? "unknown"/, "source status must come from saved evidence, not opening its link");
 assert.match(evidence, /event\.key === "Escape"[\s\S]*event\.key !== "Tab"/, "the evidence drawer must close with Escape and trap keyboard focus");
 assert.match(evidence, /isSafeSourceUrl[\s\S]*isSafeVaultPath/, "evidence actions must block unsafe URLs and paths");
 
@@ -80,7 +80,7 @@ assert.match(context, /does not delete the saved file/, "context removal must ex
 assert.doesNotMatch(context, /onDelete|deleteFile|removeFile/, "context selection must not expose a deletion action");
 
 assert.match(files, /multiple[\s\S]*Add files to library[\s\S]*Add files to inquiry/, "F1: picker uploads must accept multiple files with explicit destinations");
-assert.match(files, /setBatches\(\(current\) => \[\.\.\.current, \{ id, destination, outcomes:/, "F1: a second batch must add to pending batches");
+assert.match(files, /setBatches\(\(current\) => \[\s*\.\.\.current,\s*\{\s*id,\s*destination,\s*outcomes:/, "F1: a second batch must add to pending batches");
 assert.match(files, /Find by name or folder[\s\S]*Folder view[\s\S]*Open original[\s\S]*Open extracted text[\s\S]*Open generated output/, "F2: the library must support search, folder view, and both preview forms");
 assert.match(files, /existing[\s\S]*selected: !selected[\s\S]*<ContextTray[\s\S]*manifest=\{manifest\}/, "F3: selection must be separate from stored files and run manifests");
 assert.match(files, /result\.outcomes\[index\][\s\S]*No result was returned for this file/, "F4: each uploaded file must use its actual returned outcome");

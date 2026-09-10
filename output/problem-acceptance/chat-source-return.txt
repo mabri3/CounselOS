@@ -1,0 +1,176 @@
+Browser tab: 2, Title: "Themis.ai", URL: "http://localhost:3136/matters/MAT-20260910-0e3709/decision-map?back=%2Fmatters%2FMAT-20260910-0e3709&conversation=CONV-20260910-8c4ac5".
+1 AXWebArea Themis.ai, URL: localhost:3136/matters/MAT-20260910-0e3709/decision-map?back=%2Fmatters%2FMAT-20260910-0e3709&conversation=CONV-20260910-8c4ac5
+	2 container
+		182 container
+			183 button (collapsed) themis.ai, Secondary Actions: Expand
+				184 text themis.ai
+		8 container
+			9 link Description: Matters, Value: localhost:3136/matters
+			10 text Lumen Learning: US family launch with analytics and shared-device accounts
+			11 link Description: Back to matter, Value: localhost:3136/matters/MAT-20260910-0e3709?issue=ISS-6f4db355eb-beceace28ad3b977&conversation=CONV-20260910-8c4ac5
+		12 container
+			13 text MATTER
+			14 heading Lumen Learning: US family launch with analytics and shared-device accounts, Value: 1
+				15 text Lumen Learning: US family launch with analytics and shared-device accounts
+			16 button (collapsed) Read full business question, Secondary Actions: Expand
+				17 text Read full business question
+			18 container Matter views
+				19 link Description: Understand, Value: localhost:3136/matters/MAT-20260910-0e3709?issue=ISS-6f4db355eb-beceace28ad3b977&conversation=CONV-20260910-8c4ac5
+				20 link Description: Discuss, Value: localhost:3136/matters/MAT-20260910-0e3709?issue=ISS-6f4db355eb-beceace28ad3b977&conversation=CONV-20260910-8c4ac5&view=discuss
+				21 link Description: Draft, Value: localhost:3136/matters/MAT-20260910-0e3709?issue=ISS-6f4db355eb-beceace28ad3b977&conversation=CONV-20260910-8c4ac5&view=draft
+				22 text Decision map
+		23 container Decision map
+			24 container
+				25 text DECISION MAP
+				26 heading Audience coverage, Value: 2
+					27 text Audience coverage
+				28 text Audience age changes the launch path. The saved definition alone does not establish coverage.
+				29 checkbox This issue, Value: 1
+				30 checkbox All issues (6), Value: 0
+					31 text All issues (
+					32 text 6
+					33 text )
+			34 container Issue choices
+				35 text DECISION MAP
+				36 heading Your choices, Value: 3
+					37 text Your choices
+				38 text Select a choice to review its effect and what remains.
+				39 checkbox Possible choice Prepare child-audience controls Questions 1, Value: 1
+					40 text Possible choice
+					41 text Prepare child-audience controls
+					42 container
+						43 text Questions  1
+				44 checkbox Possible choice Limit launch to an adult audience Questions 1, Value: 0
+					45 text Possible choice
+					46 text Limit launch to an adult audience
+					47 container
+						48 text Questions  1
+				49 button Update this issue
+			50 container
+				51 container Outcome for this issue
+					52 container
+						53 text OUTCOME FOR THIS ISSUE
+						54 heading Prepare child-audience controls, Value: 2
+							55 text Prepare child-audience controls
+						56 text No outcome saved yet.
+						57 button Agree on this path
+						58 text You can agree subject to unresolved conditions.
+					59 container Path progress
+						60 text ● Not agreed ● 1 conditions need review ● No work pending
+					61 container Question navigation
+						62 heading Questions for this path, Value: 3
+							63 text Questions for this path
+						64 text Jump to a question to review or answer it. You can agree conditionally before answering. Agreement does not resolve the issue or confirm these conditions.
+						65 container Questions for this path
+							66 button Go to Question 1 — Needs review ↓
+								67 text Go to Question 
+								68 text 1
+								69 text  — 
+								70 text Needs review
+								71 text  ↓
+					72 container Legal basis for this choice
+						73 heading Legal basis, Value: 3
+							74 text Legal basis
+						75 text Linked source material — review its support and applicability
+						76 text A linked source is not proof that this choice is lawful. Source status and application to the facts must be read separately.
+						77 container
+							78 text Saved reasoning:  No reasoning saved.
+						79 container
+							80 text The rule defines a child as an individual under 13. Application:  Lumen proposes a commercial US online service. Audience age is unknown. This definition alone does not establish coverage or a consent duty. Support gap:  Coverage and exceptions require further analysis. 16 CFR 312.2 — definitions  ·  retrieved  · Child  — Child means an individual under the age of 13.
+						81 button Review linked sources
+						82 button Research legal basis in chat
+						83 text Prepares a request for your review. Select Send in chat to start research.
+					84 container
+						85 button (expanded) What we need to know 1 need review, Secondary Actions: Collapse
+							86 text What we need to know
+							87 text 1 need review
+						88 text The saved analysis treats all of these as conditions for carrying out this path, not prerequisites for recording a conditional agreement. Review whether each condition actually applies; update analysis if it does not.
+						89 container path-question-CON-451f8296807293d2827f
+							90 container
+								91 text Question  1 Will the launch include children under 13?
+							92 button (collapsed) Assessment and supporting facts, Secondary Actions: Expand
+								93 text Assessment and supporting facts
+							94 container
+								95 text Starting answer
+								96 pop up button (collapsed, settable) Starting answer, Value: Choose a draft or write your own, Secondary Actions: Expand
+									97 menu
+										98 (disabled) Choose a draft or write your own
+										99 (disabled) Not yet confirmed
+										100 (disabled) Other / write my own answer
+							101 text Suggested answers are starting drafts, not confirmed facts. Edit the answer before saving.
+							102 text Your answer
+							103 text entry area (settable) Your answer
+							104 button (disabled) Save answer
+							105 button I need to find out
+							106 button Discuss Question 1
+								107 text Discuss Question 
+								108 text 1
+					109 button (collapsed) Implementation work No work pending, Secondary Actions: Expand
+						110 text Implementation work
+						111 text No work pending
+					112 button (collapsed) Why this path and its risks, Secondary Actions: Expand
+						113 text Why this path and its risks
+					114 button (collapsed) Effects on connected paths 0, Secondary Actions: Expand
+						115 text Effects on connected paths
+						116 text 0
+					117 button (collapsed) Business question and agreement details, Secondary Actions: Expand
+						118 text Business question and agreement details
+					119 button Discuss what remains
+				120 button (collapsed) Saved record and source support, Secondary Actions: Expand
+					121 text Saved record and source support
+			122 button (collapsed) Related issues, Secondary Actions: Expand
+				123 text Related issues
+			124 button (collapsed) Full map, facts, and history, Secondary Actions: Expand
+				125 text Full map, facts, and history
+			126 container Selected record support
+				127 container
+					194 text The rule defines a child as an individual under 13. APPLIES TO  LUMEN, PROPOSED ONLINE SERVICE OPERATOR  IN UNITED STATES . LUMEN PROPOSES A COMMERCIAL US ONLINE SERVICE. AUDIENCE AGE IS UNKNOWN. THIS DEFINITION ALONE DOES NOT ESTABLISH COVERAGE OR A CONSENT DUTY.
+					129 button Review 16 CFR 312.2 — definitions · Child
+						130 text Review 
+						131 text 16 CFR 312.2 — definitions
+						132 text  · Child
+			133 button (collapsed) All records for this issue, Secondary Actions: Expand
+				134 text All records for this issue
+		135 container decision-map-discussion
+			136 heading Discuss the selected path, Value: 2
+				137 text Discuss the selected path
+			139 container
+				140 button (expanded) Conversation and composer, Secondary Actions: Collapse
+					141 text Conversation and composer
+				142 text Inquiry target: Selected issue
+				143 button Jump to latest answer
+				144 container
+					145 text THEMIS.AI ·  COMPLETED
+				146 container
+					186 text Chat is complete.  Review the saved result below.
+				148 text LATEST ANSWER
+				187 container
+					188 text ✧ Themis.ai
+				195 container
+					196 text Read the 
+					197 link Description: saved definition, Value: localhost:3136/matters/MAT-20260910-0e3709/03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/documents/coppa-definitions.md
+					198 text . Fixture analysis: Audience age changes the proposed controls. Keep the issue open for lawyer review. Under the hypothetical, assess the changed audience before launch. This is generated fixture analysis; no external research was performed.
+				152 text YOUR QUESTION
+				193 text Open the saved source document.
+				178 button (collapsed) Earlier conversation (4 messages), Secondary Actions: Expand
+					179 text Earlier conversation (
+					180 text 4
+					181 text  messages)
+				155 container Shared matter actions
+					156 button (collapsed) Questions and actions · Same saved matter, Secondary Actions: Expand
+						157 text Questions and actions · Same saved matter
+				158 button Run inquiry: Which other matters does this touch?
+					159 text Run inquiry: 
+					160 text Which other matters does this touch?
+				161 button Run inquiry: What would change your view?
+					162 text Run inquiry: 
+					163 text What would change your view?
+				164 button Add files
+				165 text entry area (settable)
+				166 button (disabled) Send
+				167 text Themis.ai can research, draft and move this matter. It records a decision only when you explicitly ask it to. 
+				168 link Description: Build a skill, Value: localhost:3136/skills
+	6 pop up button (collapsed) Description: Open Next.js Dev Tools, ID: next-logo, Secondary Actions: Expand
+		7 image
+
+The focused UI element is 1 AXWebArea Themis.ai, URL: localhost:3136/matters/MAT-20260910-0e3709/decision-map?back=%2Fmatters%2FMAT-20260910-0e3709&conversation=CONV-20260910-8c4ac5

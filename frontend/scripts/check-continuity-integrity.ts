@@ -314,11 +314,11 @@ function loaderFixture(panel: string | null) {
 for (const panel of [null, "facts", "handoff", "impact"]) {
   const fixture = loaderFixture(panel);
   const pending = fixture.load();
-  const expected = ["/orientation", "/fact-requests", "/handoffs", ...(panel === "handoff" ? ["/handoff-references"] : panel === "impact" ? ["/impact-candidates", "/impacts"] : [])];
+  const expected = ["/orientation", "/fact-requests", "/handoffs", ...((panel === "handoff" || panel === "facts") ? ["/handoff-references"] : panel === "impact" ? ["/impact-candidates", "/impacts"] : [])];
   assert.deepEqual(fixture.calls.map(call => call.path), expected);
   fixture.calls[0].resolve({answer: "Useful saved answer"}); for (let tick = 0; tick < 8; tick++) await Promise.resolve();
   assert.equal(fixture.values.Orientation.answer, "Useful saved answer", "orientation must appear before a slow optional catalog settles");
-  assert.equal(fixture.values.CatalogLoading, panel === "handoff" || panel === "impact");
+  assert.equal(fixture.values.CatalogLoading, panel === "handoff" || panel === "facts" || panel === "impact");
   fixture.calls.slice(1).forEach(call => call.resolve([])); await pending;
   assert.equal(fixture.values.CatalogLoading, false);
   assert.ok(fixture.calls.every(call => call.actor.person_id === "alex" && call.matter === "MAT-load"));

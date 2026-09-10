@@ -327,9 +327,12 @@ class DocumentReviewService:
         review["comments"] = [dict(item) for item in review.get("comments", []) if isinstance(item, dict)]
         review["comment_events"] = [dict(item) for item in review.get("comment_events", []) if isinstance(item, dict)]
         review.pop("baseline", None)
-        if review["tracking"] and _current(review["segments"]) != document["content"]:
-            author = self._ensure_author(review, "Themis.ai")
-            review["segments"] = self._compose_revision(review["segments"], document["content"], author)
+        if _current(review["segments"]) != document["content"]:
+            if review["tracking"]:
+                author = self._ensure_author(review, "Themis.ai")
+                review["segments"] = self._compose_revision(review["segments"], document["content"], author)
+            else:
+                review["segments"] = self._compose_untracked(review["segments"], document["content"])
         # Conversion on a GET must be repeatable without saving the source.
         # Explicit mutations persist these projected IDs with the actual edit.
         known_ids = set()

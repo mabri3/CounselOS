@@ -82,7 +82,8 @@ def get_daily_conversation(
 @router.post("/chat", response_model=ChatResponse)
 async def chat(payload: ChatRequest, context: AppContext = Depends(get_context), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     payload = trusted_chat_actor(payload, context, person_id)
-    return await execute_chat(payload.model_copy(update={"frozen_context": None, "frozen_template_use": None, "trusted_user_message": None, "trusted_message_id": None}), context)
+    clean = payload.model_copy(update={"frozen_context": None, "frozen_template_use": None, "trusted_user_message": None, "trusted_message_id": None})
+    return await execute_chat(clean, context)
 
 
 @router.post("/matters/{matter_id}/chat-runs", response_model=ChatRun, status_code=202)
@@ -544,6 +545,15 @@ async def execute_chat(
             if payload.model_selection is not None and resolved_provider is None:
                 from app.services.experimental_chat import resolve_chat_provider
                 resolved_provider = resolve_chat_provider(payload.model_copy(update={"agent_id": routed_agent_id}), context)
+            if execution_state is None and payload.matter_id and routed_agent_id == "counsel-copilot" and skill_id != "watch-builder":
+                from dataclasses import asdict
+                from app.services.research_execution import MainChatCheckpointAccess
+                resolved_provider = resolved_provider or context.runner.resolve(routed_agent_id)
+                journal_id = new_id("RUN")
+                context.chat_runs._write(payload.matter_id, journal_id, state="running", status="Main analysis running.",
+                    conversation_id=conversation_id, synchronous=True, selection=asdict(resolved_provider.selection),
+                    request=payload.model_copy(update={"conversation_id": conversation_id, "agent_id": routed_agent_id}).model_dump(mode="json"))
+                run_state.call_journal = MainChatCheckpointAccess(context, payload.matter_id, journal_id)
             response = await context.runner.run(
                 payload.model_copy(
                     update={
@@ -594,6 +604,15 @@ async def execute_chat(
             response.reply = reconcile_user_facing_reply(
                 response.reply, response.operation_results
             )
+        from app.services.problem_analysis import extract_problem_analysis
+        _, problem_structure, problem_warnings = extract_problem_analysis(run_state.raw_final_output or response.reply)
+        response.reply, _, _ = extract_problem_analysis(response.reply)
+        if problem_warnings:
+            response.reply += "\n\n" + " ".join(problem_warnings)
+        problem_eligible = (run_state.scope_state.get("scope") != "scenario" and not payload.preview
+            and not (payload.target and (payload.target.artifact_path or payload.target.scenario_id or payload.target.issue_id))
+            and payload.workspace_action not in {"draft", "prepare_handoff"}
+            and not re.search(r"\b(?:do not|don't|don’t|never)\s+(?:save\b|(?:update|change)\s+(?:any\s+)?(?:records\b|the\s+(?:matter|facts|breakdown|map)\b))|\b(?:no[- ]save|read[- ]only)\b|\bwithout\s+saving\b", payload.message, re.I))
         claim_structure = None
         if response.reply.strip():
             visible_reply, claim_structure, _claim_warnings = extract_claim_support(response.reply)
@@ -710,12 +729,23 @@ async def execute_chat(
             elif response.reply.strip() and frozen.get("intake_publication_baseline") and not payload.preview and not (payload.target and payload.target.artifact_path) and run_state.scope_state.get("scope") != "scenario" and all(item.tool in {"select_conversation_scope", "read_file", "search_vault", "list_files", "update_matter_intake"} for item in response.trace):
                 context.workspace_actions.publish_result(payload.matter_id, run_id=run_id, text=response.reply, frozen_context=frozen,
                     source_revisions=frozen["intake_publication_baseline"], expected_question_revision=payload.expected_question_revision or "",
-                    structure=claim_structure, source_action_key=payload.source_action_key, target=payload.target, sources=frozen.get("sources", []))
+                    structure=claim_structure, source_action_key=payload.source_action_key, target=payload.target, sources=frozen.get("sources", []),
+                    problem_structure=problem_structure if problem_eligible else None, problem_current_eligible=problem_eligible)
             elif response.reply.strip() and run_state.scope_state.get("scope") != "scenario" and not payload.preview and all(item.tool in {"select_conversation_scope", "read_file", "search_vault", "list_files"} or (item.tool == "workspace_action" and frozen.get("workspace_tool_actions") and all(action in {"inspect", "prior_work", "draft_practice_note"} for action in frozen["workspace_tool_actions"])) for item in response.trace) and not any(item.get("status") == "changed" for item in response.operation_results):
                 context.workspace_actions.publish_result(payload.matter_id, run_id=run_id, text=response.reply, frozen_context=frozen,
                     source_revisions=frozen["publication_baseline"], expected_question_revision=payload.expected_question_revision or "",
                     structure=claim_structure, source_action_key=payload.source_action_key, target=payload.target, sources=frozen.get("sources", []),
-                    update_current_snapshot=not bool(payload.target and payload.target.artifact_path))
+                    update_current_snapshot=not bool(payload.target and payload.target.artifact_path),
+                    problem_structure=problem_structure if problem_eligible else None, problem_current_eligible=problem_eligible)
+            elif response.reply.strip() and problem_structure is not None and problem_eligible:
+                context.workspace_actions.publish_result(payload.matter_id, run_id=run_id, text=response.reply, frozen_context=frozen,
+                    source_revisions=frozen["publication_baseline"], expected_question_revision=payload.expected_question_revision or "",
+                    structure=claim_structure, source_action_key=payload.source_action_key, target=payload.target, sources=frozen.get("sources", []),
+                    update_current_snapshot=False, problem_structure=problem_structure)
+        if run_state.call_journal is not None:
+            access = run_state.call_journal
+            context.chat_runs._write(payload.matter_id, access.run_id, state="completed", status="Main answer saved.",
+                response=response.model_dump(mode="json"), conversation_id=conversation_id)
         response.conversation_id = conversation_id
         response.changed_paths = list(dict.fromkeys([*response.changed_paths, saved["path"]]))
         return response
@@ -1076,6 +1106,51 @@ def _confirm_saved_operation(
         or proposal_result.get("source_action_key")
         or action_id
     )
+
+    if operation == "run_research":
+        from app.models.research_scope import ResearchScope
+        from app.models.api import ResearchStatusCard
+        if proposal.get("matter_id") != matter_id:
+            raise ValueError("The research choice belongs to another matter.")
+        if len(action.values) not in {3, 5, 6} or any(value not in {"yes", "no"} for value in action.values[:2] + action.values[3:]):
+            raise ValueError("Choose external sources and other matters separately.")
+        scope = ResearchScope(
+            external=action.values[0] == "yes",
+            other_matters=action.values[1] == "yes",
+            public_query=action.values[2],
+            provider_ids=proposal.get("provider_ids") or [],
+            native=len(action.values) >= 5 and action.values[3] == "yes",
+            allow_firecrawl=len(action.values) >= 5 and action.values[4] == "yes",
+            model_selection=proposal.get("model_selection"),
+            main_model_selection=proposal.get("main_model_selection"),
+            collector_model_selection=proposal.get("collector_model_selection"),
+            allow_followup_queries=len(action.values) == 6 and action.values[5] == "yes",
+        )
+        origin_message_id = None
+        for message in saved.get("messages", []):
+            if proposal_result in (message.get("operation_results") or []):
+                break
+            if message.get("role") == "user":
+                origin_message_id = message.get("message_id")
+        started = context.research_runs.start(
+            matter_id, [str(proposal["question"])],
+            source_action_key=source_action_key,
+            expected_question_revision=proposal.get("expected_question_revision"),
+            search_scope=scope,
+            origin_conversation_id=saved.get("conversation_id"),
+            origin_message_id=origin_message_id,
+        )
+        execution_state.operation_results.append({
+            "action": action_id, "source_action_key": source_action_key,
+            "operation": operation, "status": "changed", "matter_id": matter_id,
+            "summary": "Research started with your source choices.",
+            "changed_paths": [started["path"]],
+        })
+        return ChatResponse(
+            reply="Research is queued or running with its saved source choices. The run will show which sources were retrieved. Repeating this confirmation does not start another run.",
+            changed_paths=[started["path"]], refresh=["matter", "kanban", "tree"],
+            cards=[ResearchStatusCard.model_validate(started)],
+        )
 
     if operation == "record_decision":
         disposition = action.values[0] if action.values else ""

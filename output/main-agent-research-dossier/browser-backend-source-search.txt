@@ -1,0 +1,69 @@
+Isolated fixture vault: /var/folders/xb/kzc31shn1pz2s_5l2fy6d7rh0000gn/T/main-research-browser-6phvwnk2/vault
+INFO:     Started server process [90699]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8127 (Press CTRL+C to quit)
+INFO:     127.0.0.1:56763 - "OPTIONS /api/matters/MAT-20260910-781631/chat-runs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56763 - "POST /api/matters/MAT-20260910-781631/chat-runs HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:56763 - "OPTIONS /api/matters/MAT-20260910-781631/conversations/CONV-20260910-5bc5a1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56766 - "OPTIONS /api/matters/MAT-20260910-781631/chat-runs/RUN-20260910-880afa HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56763 - "GET /api/matters/MAT-20260910-781631/chat-runs/RUN-20260910-880afa HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56763 - "OPTIONS /api/matters/MAT-20260910-781631/conversations/CONV-20260910-5bc5a1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56766 - "GET /api/matters/MAT-20260910-781631/conversations/CONV-20260910-5bc5a1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56763 - "GET /api/matters/MAT-20260910-781631/conversations/CONV-20260910-5bc5a1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56763 - "OPTIONS /api/matters/MAT-20260910-781631 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56766 - "OPTIONS /api/matters/MAT-20260910-781631/workspace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56768 - "OPTIONS /api/matters/MAT-20260910-781631/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56763 - "GET /api/matters/MAT-20260910-781631/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56766 - "GET /api/matters/MAT-20260910-781631 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56768 - "GET /api/matters/MAT-20260910-781631/workspace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56768 - "OPTIONS /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56766 - "OPTIONS /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56766 - "GET /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56768 - "GET /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56782 - "OPTIONS /api/matters/MAT-20260910-781631/chat-runs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56782 - "POST /api/matters/MAT-20260910-781631/chat-runs HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:56782 - "OPTIONS /api/matters/MAT-20260910-781631/conversations/CONV-20260910-5bc5a1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56787 - "OPTIONS /api/matters/MAT-20260910-781631/chat-runs/RUN-20260910-376286 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56782 - "GET /api/matters/MAT-20260910-781631/chat-runs/RUN-20260910-376286 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56782 - "OPTIONS /api/matters/MAT-20260910-781631/conversations/CONV-20260910-5bc5a1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56787 - "GET /api/matters/MAT-20260910-781631/conversations/CONV-20260910-5bc5a1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56782 - "GET /api/matters/MAT-20260910-781631/conversations/CONV-20260910-5bc5a1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56782 - "OPTIONS /api/matters/MAT-20260910-781631/research-runs/RUN-20260910-e864ab HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56787 - "OPTIONS /api/matters/MAT-20260910-781631/research-runs/RUN-20260910-e864ab HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56787 - "OPTIONS /api/matters/MAT-20260910-781631 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56782 - "OPTIONS /api/matters/MAT-20260910-781631/workspace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56806 - "OPTIONS /api/matters/MAT-20260910-781631/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56787 - "GET /api/matters/MAT-20260910-781631/research-runs/RUN-20260910-e864ab HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56782 - "GET /api/matters/MAT-20260910-781631/research-runs/RUN-20260910-e864ab HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56782 - "OPTIONS /api/matters/MAT-20260910-781631 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56787 - "OPTIONS /api/matters/MAT-20260910-781631/workspace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56782 - "OPTIONS /api/matters/MAT-20260910-781631/conversations/CONV-20260910-5bc5a1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56812 - "OPTIONS /api/matters/MAT-20260910-781631/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56812 - "GET /api/matters/MAT-20260910-781631/conversations/CONV-20260910-5bc5a1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56810 - "GET /api/matters/MAT-20260910-781631/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56812 - "GET /api/matters/MAT-20260910-781631/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56787 - "GET /api/matters/MAT-20260910-781631 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56806 - "GET /api/matters/MAT-20260910-781631 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56808 - "GET /api/matters/MAT-20260910-781631/workspace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56808 - "OPTIONS /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56806 - "OPTIONS /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56808 - "GET /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56806 - "GET /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56782 - "GET /api/matters/MAT-20260910-781631/workspace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56782 - "OPTIONS /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56806 - "OPTIONS /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56806 - "GET /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56782 - "GET /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56860 - "OPTIONS /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-a9552d33ca1f679c4d0f.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56861 - "OPTIONS /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-a9552d33ca1f679c4d0f.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56864 - "OPTIONS /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-a9552d33ca1f679c4d0f.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56865 - "OPTIONS /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-a9552d33ca1f679c4d0f.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56864 - "GET /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-a9552d33ca1f679c4d0f.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56860 - "GET /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-a9552d33ca1f679c4d0f.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56861 - "GET /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-a9552d33ca1f679c4d0f.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56865 - "GET /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-a9552d33ca1f679c4d0f.md HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [90699]

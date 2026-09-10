@@ -1,0 +1,8 @@
+{
+  "source_class": "synthetic fixtures; no real law",
+  "initial": "Can we use customer chats to improve our support product? We want a pilot next month.",
+  "supplied_context": "Customer chats are collected and retained. Activities include internal evaluation and vendor processing. Vendor reuse is unresolved.",
+  "correction": "The vendor retains the chats and uses them to train its general model. Our earlier description of internal-only use was wrong.",
+  "scenario": "What if we used synthetic chats instead?",
+  "invariants": ["Useful conditional prose survives invalid transport", "Generated analysis does not create business facts or decisions", "Prior output and correction provenance survive refresh"]
+}

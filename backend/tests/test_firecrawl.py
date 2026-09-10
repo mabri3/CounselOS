@@ -66,6 +66,7 @@ async def test_firecrawl_failure_preserves_local_results_and_hides_key(monkeypat
 
 @pytest.mark.asyncio
 async def test_firecrawl_research_saves_sources_and_preserves_public_query_boundary(app_context):
+    from app.models.research_scope import ResearchScope
     queries = []
 
     async def search(query, **kwargs):
@@ -76,7 +77,8 @@ async def test_firecrawl_research_saves_sources_and_preserves_public_query_bound
     app_context.search.search_external = search
     ProviderSettingsPolicy.validate_research_values({"research.primary_external_provider": "firecrawl"})
     app_context.research.configure({"primary_external_provider": "firecrawl", "fallback_external_provider": "none"})
-    result = await app_context.research.run("MAT-DEMO-BEACON", "Which public rules apply?", change_stage=False)
+    result = await app_context.research.run("MAT-DEMO-BEACON", "Which public rules apply?", change_stage=False, execution_version=1,
+        search_scope=ResearchScope(external=True, public_query="Which public rules apply?", provider_ids=["firecrawl"]))
     assert len(queries) == 1
     assert queries[0][1]["provider"] == "firecrawl"
     assert result["provider_legs"][0]["provider"] == "firecrawl"
@@ -89,6 +91,7 @@ async def test_firecrawl_research_saves_sources_and_preserves_public_query_bound
     assert app_context.vault.read_markdown(saved_source["path"])["content"] == "Public rule\n\nFull retained page.\n"
     assert saved_source["source_hash"]
     queries.clear()
-    private = await app_context.research.run("MAT-DEMO-BEACON", "What rules apply to MAT-DEMO-BEACON?", change_stage=False)
+    private = await app_context.research.run("MAT-DEMO-BEACON", "What rules apply to MAT-DEMO-BEACON?", change_stage=False, execution_version=1,
+        search_scope=ResearchScope(external=True, public_query="What rules apply to MAT-DEMO-BEACON?", provider_ids=["firecrawl"]))
     assert not queries
     assert private["polaris_status"] == "privacy_blocked"

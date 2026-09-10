@@ -1,0 +1,44 @@
+npm notice run themis.ai-frontend@0.1.0 build
+npm notice run next build
+▲ Next.js 16.3.3 (Turbopack)
+- Environments: .env.local
+✓ Running next.config.ts took 43ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 699ms
+  Running TypeScript ...
+  Finished TypeScript in 10.1s ...
+  Collecting page data using 9 workers ...
+  Generating static pages using 9 workers (0/15) ...
+  Generating static pages using 9 workers (3/15) 
+  Generating static pages using 9 workers (7/15) 
+  Generating static pages using 9 workers (11/15) 
+✓ Generating static pages using 9 workers (15/15) in 462ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /agents
+├ ○ /automations
+├ ƒ /briefing
+├ ƒ /briefing/[itemId]
+├ ƒ /briefing/digests/[digestId]
+├ ○ /decisions
+├ ○ /experimental/chat
+├ ○ /matters
+├ ƒ /matters/[matterId]
+├ ƒ /matters/[matterId]/decision-map
+├ ƒ /matters/[matterId]/research
+├ ○ /matters/storage
+├ ○ /settings
+├ ○ /skills
+├ ○ /watches
+├ ƒ /watches/[watchId]
+├ ○ /watches/new
+└ ○ /workspace
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

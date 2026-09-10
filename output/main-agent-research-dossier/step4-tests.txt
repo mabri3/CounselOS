@@ -1,0 +1,584 @@
+........................................................................ [ 38%]
+.........FFFF...F..FF.FFF.F.......
+=================================== FAILURES ===================================
+_________ test_research_uses_the_disposable_index_for_internal_sources _________
+
+app_context = <app.runtime.AppContext object at 0x10a19d220>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10a139a30>
+
+    @pytest.mark.asyncio
+    async def test_research_uses_the_disposable_index_for_internal_sources(app_context, monkeypatch):
+        calls = []
+    
+        def lexical_search(query, *, relative_path="", limit=10):
+            calls.append((query, relative_path, limit))
+            return []
+    
+        monkeypatch.setattr(app_context.index, "lexical_search", lexical_search)
+    
+        await app_context.research.run(
+            "MAT-DEMO-BEACON", "Which rules control?", change_stage=False
+        )
+    
+>       assert calls == [
+            ("Which rules control?", "03_Matters/beacon-instant-onboarding", 8)
+        ]
+E       AssertionError: assert [('Which rule...boarding', 8)] == [('Which rule...boarding', 8)]
+E         
+E         Left contains one more item: ('Which rules control?', '03_Matters/beacon-instant-onboarding', 8)
+E         Use -v to get more diff
+
+tests/test_research.py:82: AssertionError
+_____ test_mock_research_is_labeled_and_not_filed_as_substantive_analysis ______
+
+app_context = <app.runtime.AppContext object at 0x10a13be90>
+
+    @pytest.mark.asyncio
+    async def test_mock_research_is_labeled_and_not_filed_as_substantive_analysis(app_context):
+        result = await app_context.research.run(
+            "MAT-DEMO-BEACON", "Which public rules control?", change_stage=False
+        )
+        packet = app_context.vault.read_markdown(result["path"])
+    
+        assert packet["metadata"]["status"] == "first_pass_partial"
+>       assert "No model-generated research analysis was filed" in packet["content"]
+E       AssertionError: assert 'No model-generated research analysis was filed' in '# Which public rules control\n\n## Question\n\nWhich public rules control?\n\n## Working Analysis\n\n**No external au...ons: See the Working Analysis.\n- Remaining gaps: Verify material facts and any authority used for the final answer.\n'
+
+tests/test_research.py:95: AssertionError
+________________ test_repeated_research_reuses_open_review_item ________________
+
+app_context = <app.runtime.AppContext object at 0x10a19f8f0>
+
+    @pytest.mark.asyncio
+    async def test_repeated_research_reuses_open_review_item(app_context):
+        async def public_search(_query):
+            return {"external": [{"title": "Agency rule", "url": "https://agency.example/rule"}]}
+    
+        app_context.research.search.search_external = public_search
+        first = await external_research(app_context, "MAT-DEMO-ORBIT", "First question")
+        first_items = app_context.index.list_work_items("MAT-DEMO-ORBIT")
+>       first_review = next(
+            item for item in first_items
+            if app_context.vault.read_markdown(item["path"])["metadata"].get("source_kind") == "research_review"
+        )
+E       StopIteration
+
+tests/test_research.py:108: StopIteration
+
+The above exception was the direct cause of the following exception:
+
+self = <Coroutine test_repeated_research_reuses_open_review_item>
+
+    def runtest(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        runner = self._request.getfixturevalue(runner_fixture_id)
+        context = contextvars.copy_context()
+        synchronized_obj = _synchronize_coroutine(
+            getattr(*self._synchronization_target_attr), runner, context
+        )
+        with MonkeyPatch.context() as c:
+            c.setattr(*self._synchronization_target_attr, synchronized_obj)
+>           super().runtest()
+
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:905: in inner
+    runner.run(coro, context=context)
+../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <_UnixSelectorEventLoop running=False closed=False debug=False>
+future = <Task finished name='Task-93' coro=<test_repeated_research_reuses_open_review_item() done, defined at /Users/bharris/Programs/counsel-os-mvp/backend/tests/test_research.py:100> exception=RuntimeError('coroutine raised StopIteration')>
+
+    def run_until_complete(self, future):
+        """Run until the Future is done.
+    
+        If the argument is a coroutine, it is wrapped in a Task.
+    
+        WARNING: It would be disastrous to call run_until_complete()
+        with the same coroutine twice -- it would wrap it in two
+        different Tasks and that can't be good.
+    
+        Return the Future's result, or raise its exception.
+        """
+        self._check_closed()
+        self._check_running()
+    
+        new_task = not futures.isfuture(future)
+        future = tasks.ensure_future(future, loop=self)
+        if new_task:
+            # An exception is raised if the future didn't complete, so there
+            # is no need to log the "destroy pending task" message
+            future._log_destroy_pending = False
+    
+        future.add_done_callback(_run_until_complete_cb)
+        try:
+            self.run_forever()
+        except:
+            if new_task and future.done() and not future.cancelled():
+                # The coroutine raised a BaseException. Consume the exception
+                # to not log a warning, the caller doesn't have access to the
+                # local task.
+                future.exception()
+            raise
+        finally:
+            future.remove_done_callback(_run_until_complete_cb)
+        if not future.done():
+            raise RuntimeError('Event loop stopped before Future completed.')
+    
+>       return future.result()
+               ^^^^^^^^^^^^^^^
+E       RuntimeError: coroutine raised StopIteration
+
+../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/base_events.py:691: RuntimeError
+___________ test_completed_research_review_gets_new_item_on_next_run ___________
+
+app_context = <app.runtime.AppContext object at 0x10a19d2e0>
+
+    @pytest.mark.asyncio
+    async def test_completed_research_review_gets_new_item_on_next_run(app_context):
+        async def public_search(_query):
+            return {"external": [{"title": "Agency rule", "url": "https://agency.example/rule"}]}
+    
+        app_context.research.search.search_external = public_search
+        await external_research(app_context, "MAT-DEMO-ORBIT", "First question")
+>       review = next(
+            item for item in app_context.index.list_work_items("MAT-DEMO-ORBIT")
+            if app_context.vault.read_markdown(item["path"])["metadata"].get("source_kind") == "research_review"
+        )
+E       StopIteration
+
+tests/test_research.py:132: StopIteration
+
+The above exception was the direct cause of the following exception:
+
+self = <Coroutine test_completed_research_review_gets_new_item_on_next_run>
+
+    def runtest(self) -> None:
+        runner_fixture_id = f"_{self._loop_scope}_scoped_runner"
+        runner = self._request.getfixturevalue(runner_fixture_id)
+        context = contextvars.copy_context()
+        synchronized_obj = _synchronize_coroutine(
+            getattr(*self._synchronization_target_attr), runner, context
+        )
+        with MonkeyPatch.context() as c:
+            c.setattr(*self._synchronization_target_attr, synchronized_obj)
+>           super().runtest()
+
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:569: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/pytest_asyncio/plugin.py:905: in inner
+    runner.run(coro, context=context)
+../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <_UnixSelectorEventLoop running=False closed=False debug=False>
+future = <Task finished name='Task-96' coro=<test_completed_research_review_gets_new_item_on_next_run() done, defined at /Users...s/Programs/counsel-os-mvp/backend/tests/test_research.py:125> exception=RuntimeError('coroutine raised StopIteration')>
+
+    def run_until_complete(self, future):
+        """Run until the Future is done.
+    
+        If the argument is a coroutine, it is wrapped in a Task.
+    
+        WARNING: It would be disastrous to call run_until_complete()
+        with the same coroutine twice -- it would wrap it in two
+        different Tasks and that can't be good.
+    
+        Return the Future's result, or raise its exception.
+        """
+        self._check_closed()
+        self._check_running()
+    
+        new_task = not futures.isfuture(future)
+        future = tasks.ensure_future(future, loop=self)
+        if new_task:
+            # An exception is raised if the future didn't complete, so there
+            # is no need to log the "destroy pending task" message
+            future._log_destroy_pending = False
+    
+        future.add_done_callback(_run_until_complete_cb)
+        try:
+            self.run_forever()
+        except:
+            if new_task and future.done() and not future.cancelled():
+                # The coroutine raised a BaseException. Consume the exception
+                # to not log a warning, the caller doesn't have access to the
+                # local task.
+                future.exception()
+            raise
+        finally:
+            future.remove_done_callback(_run_until_complete_cb)
+        if not future.done():
+            raise RuntimeError('Event loop stopped before Future completed.')
+    
+>       return future.result()
+               ^^^^^^^^^^^^^^^
+E       RuntimeError: coroutine raised StopIteration
+
+../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/base_events.py:691: RuntimeError
+__ test_external_provider_hang_uses_one_total_budget_and_saves_partial_packet __
+
+app_context = <app.runtime.AppContext object at 0x10a0dcc80>
+
+    @pytest.mark.asyncio
+    async def test_external_provider_hang_uses_one_total_budget_and_saves_partial_packet(app_context):
+        entered = asyncio.Event()
+    
+        async def hanging_search(*args, **kwargs):
+            entered.set()
+            await asyncio.Event().wait()
+    
+        app_context.research.search.search_external = hanging_search
+        app_context.research.configure({
+            "primary_external_provider": "tavily",
+            "fallback_external_provider": "none",
+            "external_timeout_seconds": 0.02,
+        })
+    
+        result = await asyncio.wait_for(
+            external_research(
+                app_context, "MAT-DEMO-ORBIT", "Which rules control?", change_stage=False
+            ),
+            timeout=0.3,
+        )
+    
+>       assert entered.is_set()
+E       assert False
+E        +  where False = is_set()
+E        +    where is_set = <asyncio.locks.Event object at 0x10a19ea50 [unset]>.is_set
+
+tests/test_research.py:178: AssertionError
+___ test_research_uses_bound_research_agent_without_changing_manual_behavior ___
+
+app_context = <app.runtime.AppContext object at 0x10a24a330>
+
+    @pytest.mark.asyncio
+    async def test_research_uses_bound_research_agent_without_changing_manual_behavior(app_context):
+        requests = []
+    
+        async def run_agent(request):
+            requests.append(request)
+            return ChatResponse(reply="Configured agent analysis.")
+    
+        app_context.research.bind_agent_runner(run_agent)
+>       result = await app_context.research.run("MAT-DEMO-ORBIT", "Which rules control?")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_research.py:236: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/services/research.py:184: in run
+    investigation_result = await run_main_research(self, matter_id, research_question, run_id=run_id, frozen_context=frozen_context, scope=search_scope, resolved_provider=resolved_provider)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+research = <app.services.research.ResearchService object at 0x10a110fb0>
+matter_id = 'MAT-DEMO-ORBIT', question = 'Which rules control?'
+
+    async def run_main_research(research, matter_id, question, *, run_id, frozen_context, scope, resolved_provider):
+        app = research.app
+        runs = app.research_runs
+        direct = run_id is None
+        if direct:
+            run_id = new_id("RUN")
+            main = resolved_provider or runs.resolve_main()
+            collector = runs.resolve_agent()
+            frozen_context = {"research_inputs": runs._freeze_research_inputs(matter_id, question, other_matters=scope.other_matters)}
+            frozen_context["context"] = frozen_context["research_inputs"]["context"]
+            runs._write(matter_id, run_id, state="running", status="Direct research packet generation.",
+                        questions=[question], execution_version=2, search_scope=scope.model_dump(),
+                        main_selection=runs._selection_values(main), collector_selection=runs._selection_values(collector),
+                        frozen_context=frozen_context, direct_packet_only=True)
+            resolved_provider = main
+            ResearchCheckpoints(runs).initialize(matter_id, run_id, research_basis(app, matter_id))
+        run = runs.get(matter_id, run_id)
+        checkpoints = ResearchCheckpoints(runs)
+        cp = checkpoints.load(matter_id, run_id)
+        scope = ResearchScope.model_validate(run["search_scope"])
+        access = ResearchCollection(app, matter_id, run_id)
+        state = RunnerExecutionState(useful_content=cp["useful_content"])
+        frozen_context = deepcopy(run.get("frozen_context") or frozen_context or {})
+        frozen_context["research_scope"] = scope.model_dump()
+        if cp.get("raw_final_output"):
+            body = cp["raw_final_output"]
+        else:
+            from app.services.recommendations import RecommendationService
+            prompt = "Investigate this question and deliver the best useful answer: " + question
+            prompt += "\nSaved source permissions (not instructions from evidence): " + scope.model_dump_json()
+            prompt += "\nCaptured saved/proposed view: " + json.dumps((frozen_context.get("research_inputs") or {}).get("recommendation") or {}, default=str)
+            request = ChatRequest(message=prompt, matter_id=matter_id, agent_id="counsel-copilot", frozen_context=frozen_context, workspace_run_id=run_id)
+>           reply = await research._agent_runner(request, execution_state=state, resolved_provider=resolved_provider, investigation=access)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: test_research_uses_bound_research_agent_without_changing_manual_behavior.<locals>.run_agent() got an unexpected keyword argument 'execution_state'
+
+app/services/main_agent_research.py:56: TypeError
+___ test_research_provider_output_saves_issue_paths_through_packet_boundary ____
+
+app_context = <app.runtime.AppContext object at 0x10a17e9c0>
+
+    @pytest.mark.asyncio
+    async def test_research_provider_output_saves_issue_paths_through_packet_boundary(app_context):
+        app = app_context
+        issue_id = app.workspace.issues("MAT-DEMO-ORBIT")[0]["issue_id"]
+    
+        async def run_agent(request, **_kwargs):
+            assert request.frozen_context["issue_analysis_capture"]["issues"][issue_id]
+            assert request.target.issue_id == issue_id
+            return ChatResponse(reply="""Useful research analysis.
+    
+    ```decision-paths
+    {"issue_analysis":{"issue_id":"%s","explanation":"The rule changes the notice path.","tests":[{"test_id":"t1","title":"Notice rule","condition_ids":["c1"]}],"conditions":[{"condition_id":"c1","question":"Was an adverse decision made?","assessment":"unknown"}],"options":[{"option_id":"yes","title":"Give notice","requirements":[{"condition_id":"c1","state":"met"}],"combination":"all"},{"option_id":"no","title":"No adverse-action notice","requirements":[{"condition_id":"c1","state":"not_met"}],"combination":"all"}]}}
+    ```""" % issue_id)
+    
+        app.research.bind_agent_runner(run_agent)
+>       result = await app.research.run(
+            "MAT-DEMO-ORBIT", "Which notice rule applies?", change_stage=False,
+            issue_id=issue_id, run_id="RUN-research-paths",
+        )
+
+tests/test_research.py:258: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/services/research.py:184: in run
+    investigation_result = await run_main_research(self, matter_id, research_question, run_id=run_id, frozen_context=frozen_context, scope=search_scope, resolved_provider=resolved_provider)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/services/main_agent_research.py:40: in run_main_research
+    run = runs.get(matter_id, run_id)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <app.services.research_runs.ResearchRunService object at 0x109ffb1d0>
+matter_id = 'MAT-DEMO-ORBIT', run_id = 'RUN-research-paths'
+
+    def get(self, matter_id: str, run_id: str) -> dict[str, Any]:
+        path = self._path(matter_id, run_id)
+        if not self.vault.exists(path):
+>           raise KeyError(f"Research run not found: {run_id}")
+E           KeyError: 'Research run not found: RUN-research-paths'
+
+app/services/research_runs.py:391: KeyError
+_____ test_queued_research_prompt_uses_frozen_request_and_internal_sources _____
+
+app_context = <app.runtime.AppContext object at 0x10a110e60>
+
+    @pytest.mark.asyncio
+    async def test_queued_research_prompt_uses_frozen_request_and_internal_sources(app_context):
+        app = app_context
+        matter_id = "MAT-DEMO-BEACON"
+        issue_id = app.workspace.issues(matter_id)[0]["issue_id"]
+        requests = []
+    
+        async def run_agent(request, **_kwargs):
+            requests.append(request)
+            return ChatResponse(reply="Useful frozen research answer.")
+    
+        app.research.bind_agent_runner(run_agent)
+        runs = ResearchRunService(app.vault, app.research)
+        started = runs.start(matter_id, ["What does the original request ask?"], issue_id=issue_id)
+        request_path = f"{app.matters.matter_path(matter_id)}/request.md"
+        original = app.vault.read_markdown(request_path)
+        app.vault.write_markdown(request_path, "CHANGED AFTER QUEUE", original["metadata"])
+        await runs.wait(started["run_id"])
+        assert requests
+>       assert "Can we remove manual review" in requests[0].message
+E       assert 'Can we remove manual review' in 'Investigate this question and deliver the best useful answer: What does the original request ask?\nSaved source permi...equired manual review.", "current_version_id": null, "current_version_number": null, "versions": [], "proposal": null}'
+E        +  where 'Investigate this question and deliver the best useful answer: What does the original request ask?\nSaved source permi...equired manual review.", "current_version_id": null, "current_version_number": null, "versions": [], "proposal": null}' = ChatRequest(model_selection=None, experimental_chat=False, experimental_intake=False, experimental_explore=False, expe... 'collector_model_selection': None, 'allow_followup_queries': False}}, frozen_template_use=None, intake_recovery=False).message
+
+tests/test_research.py:312: AssertionError
+_ test_queued_issue_research_uses_frozen_facts_and_cannot_replace_current_after_fact_change _
+
+app_context = <app.runtime.AppContext object at 0x10a113470>
+
+    @pytest.mark.asyncio
+    async def test_queued_issue_research_uses_frozen_facts_and_cannot_replace_current_after_fact_change(app_context):
+        app = app_context
+        matter_id = "MAT-DEMO-BEACON"
+        issue_id = app.workspace.issues(matter_id)[0]["issue_id"]
+        structure = {"issue_analysis": {
+            "issue_id": issue_id, "explanation": "The fact controls the route.",
+            "tests": [{"test_id": "t", "title": "Coverage", "condition_ids": ["c"]}],
+            "conditions": [{"condition_id": "c", "question": "Is the fact true?", "assessment": "unknown"}],
+            "options": [
+                {"option_id": "yes", "title": "Covered", "requirements": [{"condition_id": "c", "state": "met"}], "combination": "all"},
+                {"option_id": "no", "title": "Not covered", "requirements": [{"condition_id": "c", "state": "not_met"}], "combination": "all"},
+            ],
+        }}
+        current_capture = app.issue_analysis.capture(matter_id, issue_id)
+        current_path = app.workspace._path(matter_id, "inquiries/RUN-before-queued-research.md")
+        current_text = "Current analysis."
+        current_revision = digest(current_text)
+        app.vault.write_markdown(current_path, current_text, {
+            "record_type": "workspace_inquiry", "matter_id": matter_id,
+            "run_id": "RUN-before-queued-research", "output_revision": current_revision,
+        })
+        app.issue_analysis.publish(
+            matter_id, path=current_path, run_id="RUN-before-queued-research",
+            output_revision=current_revision, structure=structure, capture=current_capture,
+        )
+    
+        record = app.workspace.records.get(matter_id)
+        old_fact = record["facts"][0]["text"]
+        changed_fact = old_fact + " Changed after enqueue."
+    
+        async def run_agent(request, **_kwargs):
+            assert old_fact in request.message
+            assert changed_fact not in request.message
+            return ChatResponse(reply=(
+                "Useful queued analysis.\n\n```decision-paths\n"
+                + json.dumps(structure)
+                + "\n```"
+            ))
+    
+        app.research.bind_agent_runner(run_agent)
+        runs = ResearchRunService(app.vault, app.research)
+        started = runs.start(matter_id, ["Which path applies?"], issue_id=issue_id)
+        record["facts"][0]["text"] = changed_fact
+        app.workspace.records._save(matter_id, record)
+        await runs.wait(started["run_id"])
+    
+        completed = runs.get(matter_id, started["run_id"])
+>       assert completed["state"] == "completed"
+E       AssertionError: assert 'failed' == 'completed'
+E         
+E         - completed
+E         + failed
+
+tests/test_research.py:364: AssertionError
+___________ test_research_refreshes_precomputed_dossier_orientation ____________
+
+app_context = <app.runtime.AppContext object at 0x10a17f230>
+
+    @pytest.mark.asyncio
+    async def test_research_refreshes_precomputed_dossier_orientation(app_context):
+        decision_question_before = (
+            app_context.dossiers.orientation("MAT-DEMO-ORBIT")["decision_question"]
+            or app_context.index.get_matter("MAT-DEMO-ORBIT")["next_action"]
+        )
+        async def run_agent(_request):
+            return ChatResponse(
+                reply=(
+                    "## Matter summary\n\n"
+                    "Orbit uses an automated notice process that may need updated reason codes. "
+                    "Counsel must resolve the notice approach before launch.\n\n"
+                    "## Decision question\n\n"
+                    "Should Orbit block launch until the new reason codes are in every notice?\n\n"
+                    "## Open questions\n\n"
+                    "- Which notices still use the old reason codes?\n"
+                    "- Can the launch be limited to updated states?\n\n"
+                    "## Likely issues\n\nNotice accuracy and launch scope."
+                )
+            )
+    
+        app_context.research.bind_agent_runner(run_agent)
+>       result = await app_context.research.run(
+            "MAT-DEMO-ORBIT",
+            "What notice and reason-code work is needed?",
+            change_stage=False,
+        )
+
+tests/test_research.py:393: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/services/research.py:184: in run
+    investigation_result = await run_main_research(self, matter_id, research_question, run_id=run_id, frozen_context=frozen_context, scope=search_scope, resolved_provider=resolved_provider)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+research = <app.services.research.ResearchService object at 0x10a17ef00>
+matter_id = 'MAT-DEMO-ORBIT'
+question = 'What notice and reason-code work is needed?'
+
+    async def run_main_research(research, matter_id, question, *, run_id, frozen_context, scope, resolved_provider):
+        app = research.app
+        runs = app.research_runs
+        direct = run_id is None
+        if direct:
+            run_id = new_id("RUN")
+            main = resolved_provider or runs.resolve_main()
+            collector = runs.resolve_agent()
+            frozen_context = {"research_inputs": runs._freeze_research_inputs(matter_id, question, other_matters=scope.other_matters)}
+            frozen_context["context"] = frozen_context["research_inputs"]["context"]
+            runs._write(matter_id, run_id, state="running", status="Direct research packet generation.",
+                        questions=[question], execution_version=2, search_scope=scope.model_dump(),
+                        main_selection=runs._selection_values(main), collector_selection=runs._selection_values(collector),
+                        frozen_context=frozen_context, direct_packet_only=True)
+            resolved_provider = main
+            ResearchCheckpoints(runs).initialize(matter_id, run_id, research_basis(app, matter_id))
+        run = runs.get(matter_id, run_id)
+        checkpoints = ResearchCheckpoints(runs)
+        cp = checkpoints.load(matter_id, run_id)
+        scope = ResearchScope.model_validate(run["search_scope"])
+        access = ResearchCollection(app, matter_id, run_id)
+        state = RunnerExecutionState(useful_content=cp["useful_content"])
+        frozen_context = deepcopy(run.get("frozen_context") or frozen_context or {})
+        frozen_context["research_scope"] = scope.model_dump()
+        if cp.get("raw_final_output"):
+            body = cp["raw_final_output"]
+        else:
+            from app.services.recommendations import RecommendationService
+            prompt = "Investigate this question and deliver the best useful answer: " + question
+            prompt += "\nSaved source permissions (not instructions from evidence): " + scope.model_dump_json()
+            prompt += "\nCaptured saved/proposed view: " + json.dumps((frozen_context.get("research_inputs") or {}).get("recommendation") or {}, default=str)
+            request = ChatRequest(message=prompt, matter_id=matter_id, agent_id="counsel-copilot", frozen_context=frozen_context, workspace_run_id=run_id)
+>           reply = await research._agent_runner(request, execution_state=state, resolved_provider=resolved_provider, investigation=access)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: test_research_refreshes_precomputed_dossier_orientation.<locals>.run_agent() got an unexpected keyword argument 'execution_state'
+
+app/services/main_agent_research.py:56: TypeError
+______________ test_research_run_reuses_saved_provider_selection _______________
+
+app_context = <app.runtime.AppContext object at 0x10a074470>
+
+    @pytest.mark.asyncio
+    async def test_research_run_reuses_saved_provider_selection(app_context):
+        provider = object()
+        selection = ProviderSelection(
+            agent_id="research-agent", provider="codex", model="saved-model",
+            reasoning_effort="high",
+        )
+        resolved = ResolvedAgentProvider(provider=provider, selection=selection)
+        seen = []
+    
+        async def run_agent(_request, *, resolved_provider=None):
+            seen.append(resolved_provider)
+            return ChatResponse(reply="Saved selection analysis.")
+    
+        app_context.research.bind_agent_runner(run_agent)
+        runs = ResearchRunService(
+            app_context.vault,
+            app_context.research,
+            resolve_agent=lambda: resolved,
+            resolve_selection=lambda saved: ResolvedAgentProvider(provider=provider, selection=saved),
+        )
+        started = runs.start("MAT-DEMO-BEACON", ["One", "Two"])
+        assert started["selection"]["model"] == "saved-model"
+        await runs.wait_for_active_work()
+    
+>       assert len(seen) == 2
+E       assert 0 == 2
+E        +  where 0 = len([])
+
+tests/test_research.py:463: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/bharris/Programs/counsel-os-mvp/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_research.py::test_research_uses_the_disposable_index_for_internal_sources
+FAILED tests/test_research.py::test_mock_research_is_labeled_and_not_filed_as_substantive_analysis
+FAILED tests/test_research.py::test_repeated_research_reuses_open_review_item
+FAILED tests/test_research.py::test_completed_research_review_gets_new_item_on_next_run
+FAILED tests/test_research.py::test_external_provider_hang_uses_one_total_budget_and_saves_partial_packet
+FAILED tests/test_research.py::test_research_uses_bound_research_agent_without_changing_manual_behavior
+FAILED tests/test_research.py::test_research_provider_output_saves_issue_paths_through_packet_boundary
+FAILED tests/test_research.py::test_queued_research_prompt_uses_frozen_request_and_internal_sources
+FAILED tests/test_research.py::test_queued_issue_research_uses_frozen_facts_and_cannot_replace_current_after_fact_change
+FAILED tests/test_research.py::test_research_refreshes_precomputed_dossier_orientation
+FAILED tests/test_research.py::test_research_run_reuses_saved_provider_selection
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! KeyboardInterrupt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/Users/bharris/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/runners.py:123: KeyboardInterrupt
+(to show a full traceback on KeyboardInterrupt use --full-trace)
+11 failed, 95 passed, 1 warning in 226.23s (0:03:46)

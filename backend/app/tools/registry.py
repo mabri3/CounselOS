@@ -16,6 +16,8 @@ Handler = Callable[["ToolExecutionContext", dict[str, Any]], Awaitable[dict[str,
 APP_CONTRACT_ROOT = Path(__file__).resolve().parents[1] / "blank_vault_template"
 logger = logging.getLogger(__name__)
 SCENARIO_READ_TOOLS = frozenset({"list_files", "read_file", "search_vault"})
+# run_research only presents source choices; confirmation starts the actual run.
+UNSCOPED_TOOLS = SCENARIO_READ_TOOLS | {"select_conversation_scope", "run_research"}
 
 
 @dataclass
@@ -39,8 +41,11 @@ class ToolExecutionContext:
     template_use: dict[str, Any] | None = None
     output_type: str = "general"
     preview: bool = False
+    model_selection: dict[str, str] | None = None
     workspace_action: str | None = None
     update_offer_id: str | None = None
+    investigation: Any = None
+    call_journal: Any = None
 
 
 
@@ -101,10 +106,22 @@ class ToolRegistry:
         tool_id: str,
         arguments: dict[str, Any],
     ) -> ToolExecutionResult:
+        from app.services.research_collection import INVESTIGATION_TOOLS
+        investigation_tools = {"collect_research_evidence", "read_research_source", "search_research_sources"}
+        if context.investigation is not None or tool_id in investigation_tools:
+            try:
+                from app.tools.research_investigation import authorized
+                authorized(context)
+                if agent.agent_id != "counsel-copilot" or tool_id not in INVESTIGATION_TOOLS:
+                    raise ValueError("This investigation only permits main-agent evidence and local read tools.")
+            except ValueError as exc:
+                return _failed_tool_result(tool_id, context, str(exc))
         scope = context.scope_state.get("scope")
+        if "research_scope" in context.frozen_context and tool_id not in SCENARIO_READ_TOOLS and context.investigation is None:
+            return _failed_tool_result(tool_id, context, "This research run uses only its confirmed search sources. Do not start another search or workflow; answer from the available material.")
         if (scope == "scenario" or (context.target and context.target.scenario_id)) and tool_id not in SCENARIO_READ_TOOLS and not (tool_id == "workspace_action" and arguments.get("action") == "save_scenario"):
             return _failed_tool_result(tool_id, context, "Scenario analysis can only read saved context. No actual matter change was made.")
-        if context.trusted_user_message and not scope and tool_id not in SCENARIO_READ_TOOLS | {"select_conversation_scope"}:
+        if context.trusted_user_message and not scope and tool_id not in UNSCOPED_TOOLS:
             return _failed_tool_result(tool_id, context, "First interpret this turn with select_conversation_scope. No change was made.")
         if tool_id not in self.allowed_tools(agent):
             return _failed_tool_result(
@@ -123,7 +140,32 @@ class ToolRegistry:
                 f"Tool specification points to an unknown handler: {definition.handler}.",
             )
         try:
-            payload = await handler(context, arguments)
+            if context.call_journal is not None or context.investigation is not None:
+                from app.services.workspace import digest
+                import json
+                access = context.investigation or context.call_journal
+                if context.investigation is not None and tool_id in SCENARIO_READ_TOOLS:
+                    path = str(arguments.get("path") or context.app.matters.matter_path(context.matter_id))
+                    canonical = context.app.vault.relative(context.app.vault.resolve(path))
+                    roots = [context.app.matters.matter_path(context.matter_id)]
+                    if access.scope.other_matters:
+                        roots.extend((access.run.get("frozen_context") or {}).get("allowed_matter_roots", []))
+                    if not any(canonical == root or canonical.startswith(root + "/") for root in roots):
+                        raise ValueError("Local read is outside this investigation scope.")
+                cp = access.checkpoints.load(access.matter_id, access.run_id)
+                tool_key = digest(tool_id + json.dumps(arguments, sort_keys=True) + (context.source_action_key or ""))
+                cached = cp.get("tool_results", {}).get(tool_key)
+                if cached is not None:
+                    payload = cached
+                else:
+                    payload = await handler(context, arguments)
+                    if context.investigation is not None and tool_id == "read_file" and isinstance(payload.get("data"), dict):
+                        payload["data"] = access.capture_local(payload["data"])
+                    cp = access.checkpoints.load(access.matter_id, access.run_id)
+                    cp.setdefault("tool_results", {})[tool_key] = payload
+                    access.checkpoints.save(access.matter_id, access.run_id, cp, expected_sequence=cp["sequence"])
+            else:
+                payload = await handler(context, arguments)
             changed_paths = [str(path) for path in payload.get("changed_paths", [])]
             operation_status = str(
                 payload.get("operation_status")
@@ -146,7 +188,7 @@ class ToolRegistry:
             operation_result = {
                 "action": context.source_action_key or tool_id,
                 "source_action_key": context.source_action_key,
-                "operation": tool_id,
+                "operation": str(payload.get("operation") or tool_id),
                 "status": operation_status,
                 "summary": str(payload.get("summary") or f"{tool_id} completed."),
                 "matter_id": context.matter_id,

@@ -8,17 +8,17 @@ import { isSafeDocumentPath } from "@/lib/documentNavigation";
 import styles from "./MatterDocuments.module.css";
 
 const SOURCE_MARKER = /\[source:([^\]|;\s]+)(?:\|([^\]]+))?\]/g;
-const TRANSPORT = /```(claim-support|decision-paths)[ \t]*\n([\s\S]*?)\n```[ \t]*(?:\n|$)/g;
+const TRANSPORT = /```(claim-support|decision-paths|problem-analysis)[ \t]*\n([\s\S]*?)\n```[ \t]*(?:\n|$)/g;
 
 export function visibleClaimProse(text: string): string {
   const visible = text.replace(TRANSPORT, (block, kind: string, payload: string) => {
     try {
       const parsed = JSON.parse(payload);
       if (!parsed || typeof parsed !== "object") return block;
-      const structured = kind === "claim-support" ? Array.isArray(parsed.claims)
+      const structured = kind === "problem-analysis" ? parsed.schema_version === 1 && typeof parsed.objective === "string" && typeof parsed.integrated_answer === "string" : kind === "claim-support" ? Array.isArray(parsed.claims)
         : Array.isArray(parsed.issue_analyses) || (parsed.issue_analysis && typeof parsed.issue_analysis === "object" && !Array.isArray(parsed.issue_analysis));
       return structured ? "" : block;
-    } catch { return block; }
+    } catch { return kind === "problem-analysis" ? "Problem breakdown unavailable. The useful answer was retained." : block; }
   }).trimEnd();
   return visible.trim() ? visible : text.trimEnd();
 }

@@ -1,0 +1,143 @@
+{
+  "schemaVersion": "presentation-finalization.v1",
+  "finalSha256": "c9e92367dfc48916f42af769a108fbab85c4f00368674dc9028675ee0eaa9d99",
+  "byteCount": 433627,
+  "packageIntegrity": {
+    "chart_count": 0,
+    "claim_boundary": "Structural package checks only; no slide text, notes, formulas, chart values, or native PowerPoint execution were inspected.",
+    "finding_count": 0,
+    "findings": [],
+    "notes_parts_skipped": 1,
+    "relationship_part_count": 7,
+    "slide_count": 1,
+    "status": "pass",
+    "exitCode": 0,
+    "findingCount": 0,
+    "warnings": []
+  },
+  "presentationLayout": {
+    "finding_count": 0,
+    "findings": [],
+    "font_policy": {
+      "checked_text_script_count": 52,
+      "native_font_rendering_verified": false,
+      "observed_font_families": [
+        "Figtree",
+        "Quattrocento Sans"
+      ],
+      "observed_font_use_counts": {
+        "Figtree": 16,
+        "Quattrocento Sans": 36
+      },
+      "passed": true,
+      "performed": true
+    },
+    "slide_count": 1,
+    "slide_size_in": [
+      10.8333,
+      7.5
+    ],
+    "warning_count": 0,
+    "warnings": [],
+    "exitCode": 0,
+    "findingCount": 0,
+    "fontPolicy": {
+      "checked_text_script_count": 52,
+      "native_font_rendering_verified": false,
+      "observed_font_families": [
+        "Figtree",
+        "Quattrocento Sans"
+      ],
+      "observed_font_use_counts": {
+        "Figtree": 16,
+        "Quattrocento Sans": 36
+      },
+      "passed": true,
+      "performed": true
+    }
+  },
+  "fontSelection": {
+    "basis": "reference",
+    "approvedFamilies": [
+      "Figtree",
+      "Quattrocento Sans",
+      "Arial"
+    ],
+    "scriptFonts": {},
+    "referenceSha256": "120397a0aa1c46cbb100fd08915fa4a056fe1f101b1cc2b14421090e12646475",
+    "referenceFontsVerifiedInEncodedText": true,
+    "checked_text_script_count": 52,
+    "native_font_rendering_verified": false,
+    "observed_font_families": [
+      "Figtree",
+      "Quattrocento Sans"
+    ],
+    "observed_font_use_counts": {
+      "Figtree": 16,
+      "Quattrocento Sans": 36
+    },
+    "passed": true,
+    "performed": true
+  },
+  "firstPartyImport": {
+    "performed": true,
+    "passed": true,
+    "slideCount": 1,
+    "sha256": "c9e92367dfc48916f42af769a108fbab85c4f00368674dc9028675ee0eaa9d99",
+    "runtimeNodeModules": "/Users/bharris/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules",
+    "nodeExecutable": "/Users/bharris/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node"
+  },
+  "nativeTableArithmetic": {
+    "performed": true,
+    "checked_column_count": 0,
+    "checks": [],
+    "claim_boundary": "Displayed-value arithmetic with rounding tolerance; not source-data verification.",
+    "eligible_table_count": 0,
+    "finding_count": 0,
+    "findings": [],
+    "native_table_count": 0,
+    "passed": true,
+    "schema_version": "presentation-native-table-arithmetic.v1",
+    "skipped_tables": [],
+    "slide_count": 1,
+    "warning_count": 0,
+    "warnings": []
+  },
+  "nativeChartTitles": {
+    "performed": true,
+    "checks": [],
+    "finding_count": 0,
+    "findings": [],
+    "native_chart_count": 0,
+    "native_powerpoint_verified": false,
+    "passed": true,
+    "presentation_sha256": "c9e92367dfc48916f42af769a108fbab85c4f00368674dc9028675ee0eaa9d99",
+    "schema_version": "presentation-native-chart-titles.v1",
+    "slide_count": 1,
+    "source_text_emitted": false,
+    "unresolved_linked_title_count": 0
+  },
+  "sourceDerivedPolicyFlags": [
+    "--expected-slide-size-emu",
+    "9906000,6858000",
+    "--validate-heading-fit",
+    "--cover-role",
+    "none",
+    "--expected-slide-count",
+    "1",
+    "--approved-font-family",
+    "Figtree",
+    "--approved-font-family",
+    "Quattrocento Sans",
+    "--approved-font-family",
+    "Arial"
+  ],
+  "nativeChartValidation": {
+    "detectedOwnerSlides": [],
+    "detectedChartCount": 0,
+    "targetApplication": null,
+    "sourceChartOwnersExplicitlyDeclared": false,
+    "validatorRan": false,
+    "passed": true
+  }
+}

@@ -1,0 +1,292 @@
+{"kind":"slide","id":"sl/swhxgs","slide":1,"title":"The lawyer makes the call.","textShapes":4}
+{"kind":"shape","id":"sh/dobahg7a","slide":1,"name":"cover-scrim","bbox":[0,0,760,720]}
+{"kind":"shape","id":"sh/cn2tobqp","slide":1,"name":"logo-ground","bbox":[48,38,190,58]}
+{"kind":"textbox","id":"sh/2h0ri18n","slide":1,"textChars":71,"textLines":2}
+{"kind":"textbox","id":"sh/pkradgry","slide":1,"textChars":66,"textLines":2}
+{"kind":"textbox","id":"sh/4jitkbqd","slide":1,"textChars":270,"textLines":1}
+{"kind":"shape","id":"sh/fups7m9w","slide":1,"name":"cover-bottom","bbox":[0,596,760,124]}
+{"kind":"textbox","id":"sh/utgre18b","slide":1,"textChars":90,"textLines":1}
+{"kind":"image","id":"im/bq9cjy5w","slide":1,"name":"","alt":"A lawyer directing a beam across uncertain terrain in black and white","bbox":[0,0,1280,720]}
+{"kind":"image","id":"im/21gb694z","slide":1,"name":"","alt":"Themis.ai logo","bbox":[62,48,162,38]}
+{"kind":"notes","id":"nt/swhxgs","slide":1,"text":"[Sources] | /Users/bharris/Programs/counsel-os-mvp/output/deck/Themis-ai-Comp..."}
+{"kind":"slide","id":"sl/aidhi7","slide":2,"title":"THEMIS THESIS  /  02","textShapes":10}
+{"kind":"shape","id":"sh/za1of2l4","slide":2,"name":"image-edge","bbox":[698,0,22,720]}
+{"kind":"textbox","id":"sh/y9s76h4j","slide":2,"textChars":20,"textLines":1}
+{"kind":"textbox","id":"sh/x8z6dc3y","slide":2,"textChars":66,"textLines":1}
+{"kind":"textbox","id":"sh/c7qp47md","slide":2,"textChars":198,"textLines":1}
+{"kind":"textbox","id":"sh/b6hob2l8","slide":2,"textChars":43,"textLines":1}
+{"kind":"textbox","id":"sh/a5872x4n","slide":2,"textChars":19,"textLines":1}
+{"kind":"textbox","id":"sh/p4z69s32","slide":2,"textChars":6,"textLines":1}
+{"kind":"shape","id":"sh/o3qp0nmh","slide":2,"name":"s2-quote-bar","bbox":[54,405,10,96]}
+{"kind":"textbox","id":"sh/e107mton","slide":2,"textChars":46,"textLines":1}
+{"kind":"textbox","id":"sh/fm9ovyp8","slide":2,"textChars":197,"textLines":1}
+{"kind":"textbox","id":"sh/gn2po36t","slide":2,"textChars":205,"textLines":1}
+{"kind":"shape","id":"sh/1ob6x87e","slide":2,"name":"s2-source-ground","bbox":[740,538,510,146]}
+{"kind":"textbox","id":"sh/6x07i9or","slide":2,"textChars":266,"textLines":1}
+{"kind":"image","id":"im/xoz21c3u","slide":2,"name":"","alt":"A professional studying branching paths and hidden terrain","bbox":[720,0,560,720]}
+{"kind":"notes","id":"nt/aidhi7","slide":2,"text":"[Sources] | /Users/bharris/Programs/counsel-os-mvp/output/deck/Themis-ai-Comp..."}
+{"kind":"slide","id":"sl/7ayr1e","slide":3,"title":"THEMIS THESIS  /  03","textShapes":20}
+{"kind":"shape","id":"sh/94zudgfa","slide":3,"name":"s3-top-accent","bbox":[0,0,18,520]}
+{"kind":"textbox","id":"sh/m18bi1wz","slide":3,"textChars":20,"textLines":1}
+{"kind":"textbox","id":"sh/n2hcb6xk","slide":3,"textChars":76,"textLines":1}
+{"kind":"shape","id":"sh/w7atobe1","slide":3,"name":"rule-54-150","bbox":[54,150,1172,3]}
+{"kind":"textbox","id":"sh/x8juhgfm","slide":3,"textChars":179,"textLines":1}
+{"kind":"textbox","id":"sh/a5sbmlwv","slide":3,"textChars":101,"textLines":1}
+{"kind":"shape","id":"sh/v61cf6xg","slide":3,"name":"s3-closing-ground","bbox":[54,416,400,84]}
+{"kind":"textbox","id":"sh/kvatsvex","slide":3,"textChars":67,"textLines":1}
+{"kind":"textbox","id":"sh/5w3ul0fi","slide":3,"textChars":20,"textLines":1}
+{"kind":"textbox","id":"sh/lc7uh43y","slide":3,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/krytoz2d","slide":3,"textChars":73,"textLines":1}
+{"kind":"shape","id":"sh/jqpcful8","slide":3,"name":"rule-500-260","bbox":[500,260,692,1]}
+{"kind":"textbox","id":"sh/ypgbmpkn","slide":3,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/tgrul43a","slide":3,"textChars":86,"textLines":1}
+{"kind":"shape","id":"sh/8fitsj2p","slide":3,"name":"rule-500-314","bbox":[500,314,692,1]}
+{"kind":"textbox","id":"sh/7epcjel4","slide":3,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/6dgbq9kj","slide":3,"textChars":30,"textLines":1}
+{"kind":"shape","id":"sh/9kna9k3q","slide":3,"name":"rule-500-368","bbox":[500,368,692,1]}
+{"kind":"textbox","id":"sh/ojetgf25","slide":3,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/0f2lcjed","slide":3,"textChars":53,"textLines":1}
+{"kind":"shape","id":"sh/1gb2lofy","slide":3,"name":"rule-500-422","bbox":[500,422,692,1]}
+{"kind":"textbox","id":"sh/ed03a9w7","slide":3,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/zetkjexs","slide":3,"textChars":63,"textLines":1}
+{"kind":"shape","id":"sh/o32lgjep","slide":3,"name":"rule-500-476","bbox":[500,476,692,1]}
+{"kind":"shape","id":"sh/94b2pofu","slide":3,"name":"s3-bottom","bbox":[0,520,1280,200]}
+{"kind":"textbox","id":"sh/mhk3e9wj","slide":3,"textChars":23,"textLines":1}
+{"kind":"textbox","id":"sh/nitknex4","slide":3,"textChars":219,"textLines":1}
+{"kind":"textbox","id":"sh/w7mlk3el","slide":3,"textChars":11,"textLines":1}
+{"kind":"textbox","id":"sh/x8v2t8f6","slide":3,"textChars":121,"textLines":1}
+{"kind":"notes","id":"nt/7ayr1e","slide":3,"text":"[Sources] | /Users/bharris/Programs/counsel-os-mvp/output/deck/Themis-ai-Comp..."}
+{"kind":"slide","id":"sl/w77ry7","slide":4,"title":"THEMIS THESIS  /  04","textShapes":13}
+{"kind":"textbox","id":"sh/32lg3qx8","slide":4,"textChars":20,"textLines":1}
+{"kind":"textbox","id":"sh/43uhwvet","slide":4,"textChars":110,"textLines":1}
+{"kind":"shape","id":"sh/p4ny50ve","slide":4,"name":"s4-context-ground","bbox":[54,166,1172,88]}
+{"kind":"textbox","id":"sh/uxczqlwr","slide":4,"textChars":305,"textLines":1}
+{"kind":"shape","id":"sh/fylgzqxc","slide":4,"name":"rule-54-286","bbox":[54,286,536,5]}
+{"kind":"textbox","id":"sh/gzuhsvex","slide":4,"textChars":31,"textLines":1}
+{"kind":"textbox","id":"sh/h03y1gfi","slide":4,"textChars":119,"textLines":1}
+{"kind":"shape","id":"sh/etwz25wv","slide":4,"name":"rule-654-286","bbox":[654,286,536,5]}
+{"kind":"textbox","id":"sh/zu50badg","slide":4,"textChars":40,"textLines":1}
+{"kind":"textbox","id":"sh/feh43yt0","slide":4,"textChars":142,"textLines":1}
+{"kind":"shape","id":"sh/ut8nutsv","slide":4,"name":"rule-54-424","bbox":[54,424,536,5]}
+{"kind":"textbox","id":"sh/hgzm58r6","slide":4,"textChars":43,"textLines":1}
+{"kind":"textbox","id":"sh/gfq5w3al","slide":4,"textChars":93,"textLines":1}
+{"kind":"shape","id":"sh/3i147i9c","slide":4,"name":"rule-654-424","bbox":[654,424,536,5]}
+{"kind":"textbox","id":"sh/2hsnydsr","slide":4,"textChars":49,"textLines":1}
+{"kind":"textbox","id":"sh/pkjm9sri","slide":4,"textChars":189,"textLines":1}
+{"kind":"shape","id":"sh/4ja50nax","slide":4,"name":"s4-bottom","bbox":[0,574,1280,146]}
+{"kind":"textbox","id":"sh/rm14bi98","slide":4,"textChars":165,"textLines":1}
+{"kind":"textbox","id":"sh/qlsn2dsn","slide":4,"textChars":334,"textLines":1}
+{"kind":"notes","id":"nt/w77ry7","slide":4,"text":"[Sources] | /Users/bharris/Programs/counsel-os-mvp/output/deck/Themis-ai-Comp..."}
+{"kind":"slide","id":"sl/h84yuo","slide":5,"title":"THEMIS THESIS  /  05","textShapes":19}
+{"kind":"textbox","id":"sh/v2xgr25g","slide":5,"textChars":20,"textLines":1}
+{"kind":"textbox","id":"sh/w36xknm1","slide":5,"textChars":102,"textLines":1}
+{"kind":"textbox","id":"sh/x4fytsnm","slide":5,"textChars":171,"textLines":1}
+{"kind":"textbox","id":"sh/md4fed4z","slide":5,"textChars":53,"textLines":1}
+{"kind":"textbox","id":"sh/nedgni5k","slide":5,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/8fmxgnm5","slide":5,"textChars":29,"textLines":1}
+{"kind":"textbox","id":"sh/9gvypsnq","slide":5,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/69ofqh43","slide":5,"textChars":29,"textLines":1}
+{"kind":"textbox","id":"sh/7ahgzmlo","slide":5,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/3qhsze5g","slide":5,"textChars":55,"textLines":1}
+{"kind":"textbox","id":"sh/ip8rq94v","slide":5,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/5cja1on6","slide":5,"textChars":45,"textLines":1}
+{"kind":"shape","id":"sh/4ra9sjm1","slide":5,"name":"s5-contrast","bbox":[54,294,510,132]}
+{"kind":"textbox","id":"sh/re1s3e5c","slide":5,"textChars":8,"textLines":1}
+{"kind":"textbox","id":"sh/qdsru94r","slide":5,"textChars":206,"textLines":1}
+{"kind":"shape","id":"sh/dgja5oni","slide":5,"name":"s5-bottom","bbox":[0,462,1280,258]}
+{"kind":"textbox","id":"sh/sfa9wjmx","slide":5,"textChars":20,"textLines":1}
+{"kind":"textbox","id":"sh/fi1s7y5o","slide":5,"textChars":275,"textLines":1}
+{"kind":"textbox","id":"sh/ehsryt43","slide":5,"textChars":13,"textLines":1}
+{"kind":"textbox","id":"sh/adwvqxob","slide":5,"textChars":153,"textLines":1}
+{"kind":"textbox","id":"sh/be5cz2pw","slide":5,"textChars":179,"textLines":1}
+{"kind":"notes","id":"nt/h84yuo","slide":5,"text":"[Sources] | /Users/bharris/Programs/counsel-os-mvp/output/deck/Themis-ai-Comp..."}
+{"kind":"slide","id":"sl/kcwo57","slide":6,"title":"THEMIS THESIS  /  06","textShapes":23}
+{"kind":"shape","id":"sh/1snaloj2","slide":6,"name":"s6-title-ground","bbox":[30,24,1220,160]}
+{"kind":"textbox","id":"sh/0re9cj2h","slide":6,"textChars":20,"textLines":1}
+{"kind":"textbox","id":"sh/rml8ful0","slide":6,"textChars":77,"textLines":1}
+{"kind":"textbox","id":"sh/qlcr6pkf","slide":6,"textChars":221,"textLines":1}
+{"kind":"shape","id":"sh/donqh43q","slide":6,"name":"s6-item-ground-0","bbox":[34,202,190,156]}
+{"kind":"textbox","id":"sh/sne98z2l","slide":6,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/3yl8bulo","slide":6,"textChars":23,"textLines":1}
+{"kind":"textbox","id":"sh/ixcr2pk3","slide":6,"textChars":86,"textLines":1}
+{"kind":"shape","id":"sh/43qlwri9","slide":6,"name":"s6-item-ground-1","bbox":[240,364,190,156]}
+{"kind":"textbox","id":"sh/p4z25czu","slide":6,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/21o3uh0j","slide":6,"textChars":24,"textLines":1}
+{"kind":"textbox","id":"sh/32xk3mho","slide":6,"textChars":110,"textLines":1}
+{"kind":"shape","id":"sh/gz6ls7id","slide":6,"name":"s6-item-ground-2","bbox":[446,202,190,156]}
+{"kind":"textbox","id":"sh/h0f21czy","slide":6,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/uxo3qx07","slide":6,"textChars":24,"textLines":1}
+{"kind":"textbox","id":"sh/fyxkz2hs","slide":6,"textChars":109,"textLines":1}
+{"kind":"shape","id":"sh/0val4bih","slide":6,"name":"s6-item-ground-3","bbox":[652,364,190,156]}
+{"kind":"textbox","id":"sh/1wjmdwz2","slide":6,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/90vu1cnu","slide":6,"textChars":25,"textLines":1}
+{"kind":"textbox","id":"sh/ofmt876p","slide":6,"textChars":133,"textLines":1}
+{"kind":"shape","id":"sh/nedcz254","slide":6,"name":"s6-item-ground-4","bbox":[858,202,190,156]}
+{"kind":"textbox","id":"sh/md4b6xoj","slide":6,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/1cvuxsny","slide":6,"textChars":29,"textLines":1}
+{"kind":"textbox","id":"sh/0b2t4n6d","slide":6,"textChars":100,"textLines":1}
+{"kind":"shape","id":"sh/zatcvi5s","slide":6,"name":"s6-item-ground-5","bbox":[1064,364,190,156]}
+{"kind":"textbox","id":"sh/e9kb2xo7","slide":6,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/d8butsn2","slide":6,"textChars":24,"textLines":1}
+{"kind":"textbox","id":"sh/c72t0n6h","slide":6,"textChars":92,"textLines":1}
+{"kind":"shape","id":"sh/2d0rat4z","slide":6,"name":"s6-bottom","bbox":[0,594,1280,126]}
+{"kind":"textbox","id":"sh/3e983ylk","slide":6,"textChars":98,"textLines":1}
+{"kind":"textbox","id":"sh/4fi9cjm5","slide":6,"textChars":225,"textLines":1}
+{"kind":"image","id":"im/nuhsny5k","slide":6,"name":"","alt":"A lawyer using a yellow beam to reveal color within otherwise grayscale uncertain terrain","bbox":[0,0,1280,720]}
+{"kind":"notes","id":"nt/kcwo57","slide":6,"text":"[Sources] | /Users/bharris/Programs/counsel-os-mvp/output/deck/Themis-ai-Comp..."}
+{"kind":"slide","id":"sl/c3c1ig","slide":7,"title":"THEMIS THESIS  /  07","textShapes":19}
+{"kind":"shape","id":"sh/c7ydo7ep","slide":7,"name":"s7-cobalt-field","bbox":[0,0,26,720]}
+{"kind":"textbox","id":"sh/b65cvmd4","slide":7,"textChars":20,"textLines":1}
+{"kind":"textbox","id":"sh/a5wvmhwj","slide":7,"textChars":82,"textLines":1}
+{"kind":"textbox","id":"sh/p4nutcve","slide":7,"textChars":351,"textLines":3}
+{"kind":"shape","id":"sh/n25cr2d8","slide":7,"name":"rule-54-536","bbox":[54,536,748,4]}
+{"kind":"textbox","id":"sh/21wvixwn","slide":7,"textChars":12,"textLines":1}
+{"kind":"textbox","id":"sh/90re5wvi","slide":7,"textChars":56,"textLines":1}
+{"kind":"textbox","id":"sh/8zidwrux","slide":7,"textChars":31,"textLines":1}
+{"kind":"textbox","id":"sh/itc721ov","slide":7,"textChars":60,"textLines":1}
+{"kind":"textbox","id":"sh/jul8b650","slide":7,"textChars":15,"textLines":1}
+{"kind":"textbox","id":"sh/kvup4b6l","slide":7,"textChars":59,"textLines":1}
+{"kind":"textbox","id":"sh/5w3qdgn6","slide":7,"textChars":25,"textLines":1}
+{"kind":"textbox","id":"sh/aps7yhoj","slide":7,"textChars":64,"textLines":1}
+{"kind":"textbox","id":"sh/vql87m54","slide":7,"textChars":22,"textLines":1}
+{"kind":"textbox","id":"sh/wrup0r6p","slide":7,"textChars":66,"textLines":1}
+{"kind":"shape","id":"sh/xs3q9wna","slide":7,"name":"s7-bottom","bbox":[54,548,1172,136]}
+{"kind":"textbox","id":"sh/ulwralon","slide":7,"textChars":43,"textLines":1}
+{"kind":"textbox","id":"sh/fm58jq58","slide":7,"textChars":191,"textLines":1}
+{"kind":"textbox","id":"sh/ruxwfeho","slide":7,"textChars":213,"textLines":1}
+{"kind":"textbox","id":"sh/qtovm903","slide":7,"textChars":82,"textLines":1}
+{"kind":"textbox","id":"sh/dwfehozu","slide":7,"textChars":9,"textLines":1}
+{"kind":"textbox","id":"sh/cv6doji9","slide":7,"textChars":2,"textLines":1}
+{"kind":"image","id":"im/pgzqdsza","slide":7,"name":"","alt":"Current Themis matter page","bbox":[54,236,748,294]}
+{"kind":"notes","id":"nt/c3c1ig","slide":7,"text":"[Sources] | /Users/bharris/Programs/counsel-os-mvp/output/deck/Themis-ai-Comp..."}
+{"kind":"slide","id":"sl/6n82ul","slide":8,"title":"THEMIS THESIS  /  08","textShapes":24}
+{"kind":"textbox","id":"sh/zqlk3ylk","slide":8,"textChars":20,"textLines":1}
+{"kind":"textbox","id":"sh/0rulw325","slide":8,"textChars":43,"textLines":1}
+{"kind":"textbox","id":"sh/1s3m583q","slide":8,"textChars":84,"textLines":1}
+{"kind":"textbox","id":"sh/qls3qt43","slide":8,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/rm1kzelo","slide":8,"textChars":25,"textLines":1}
+{"kind":"textbox","id":"sh/cnalsj29","slide":8,"textChars":73,"textLines":1}
+{"kind":"shape","id":"sh/do321o3u","slide":8,"name":"rule-96-290","bbox":[96,290,520,1]}
+{"kind":"textbox","id":"sh/ahw32dk7","slide":8,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/bi54bils","slide":8,"textChars":32,"textLines":1}
+{"kind":"textbox","id":"sh/36pgjq1s","slide":8,"textChars":74,"textLines":1}
+{"kind":"shape","id":"sh/i5gfalk7","slide":8,"name":"rule-700-290","bbox":[700,290,520,1]}
+{"kind":"textbox","id":"sh/587ylgjy","slide":8,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/47yxcv2d","slide":8,"textChars":23,"textLines":1}
+{"kind":"textbox","id":"sh/rapgnq14","slide":8,"textChars":77,"textLines":1}
+{"kind":"shape","id":"sh/q9gfelkj","slide":8,"name":"rule-96-398","bbox":[96,398,520,1]}
+{"kind":"textbox","id":"sh/dcryp0ju","slide":8,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/sbixgvi9","slide":8,"textChars":26,"textLines":1}
+{"kind":"textbox","id":"sh/fy9gra10","slide":8,"textChars":91,"textLines":1}
+{"kind":"shape","id":"sh/ed0zi50f","slide":8,"name":"rule-700-398","bbox":[700,398,520,1]}
+{"kind":"textbox","id":"sh/a54r6t8z","slide":8,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/b6dszypk","slide":8,"textChars":29,"textLines":1}
+{"kind":"textbox","id":"sh/w7m98365","slide":8,"textChars":89,"textLines":1}
+{"kind":"shape","id":"sh/x8fa187q","slide":8,"name":"rule-96-506","bbox":[96,506,520,1]}
+{"kind":"textbox","id":"sh/mh4r2t8n","slide":8,"textChars":2,"textLines":1}
+{"kind":"textbox","id":"sh/nidsvyp8","slide":8,"textChars":26,"textLines":1}
+{"kind":"textbox","id":"sh/ojm94jqt","slide":8,"textChars":100,"textLines":1}
+{"kind":"shape","id":"sh/94vaxo7e","slide":8,"name":"rule-700-506","bbox":[700,506,520,1]}
+{"kind":"shape","id":"sh/6dobedo7","slide":8,"name":"s8-bottom","bbox":[0,540,1280,180]}
+{"kind":"textbox","id":"sh/7exs7ips","slide":8,"textChars":114,"textLines":1}
+{"kind":"textbox","id":"sh/h8judcru","slide":8,"textChars":20,"textLines":1}
+{"kind":"textbox","id":"sh/g7ad47q9","slide":8,"textChars":213,"textLines":1}
+{"kind":"notes","id":"nt/6n82ul","slide":8,"text":"[Sources] | /Users/bharris/Programs/counsel-os-mvp/output/deck/Themis-ai-Comp..."}
+{"kind":"slide","id":"sl/4t1cwj","slide":9,"title":"THEMIS THESIS  /  09","textShapes":18}
+{"kind":"shape","id":"sh/q14bm1s3","slide":9,"name":"s9-left","bbox":[0,0,730,720]}
+{"kind":"textbox","id":"sh/r2xsf69o","slide":9,"textChars":20,"textLines":1}
+{"kind":"textbox","id":"sh/076tsba5","slide":9,"textChars":75,"textLines":1}
+{"kind":"shape","id":"sh/18falgrq","slide":9,"name":"rule-54-211","bbox":[54,211,120,6]}
+{"kind":"textbox","id":"sh/e5obq1sf","slide":9,"textChars":242,"textLines":1}
+{"kind":"textbox","id":"sh/z6xsj69k","slide":9,"textChars":235,"textLines":1}
+{"kind":"shape","id":"sh/gbm9gra1","slide":9,"name":"s9-right-panel","bbox":[760,34,480,648]}
+{"kind":"textbox","id":"sh/hcva9crm","slide":9,"textChars":21,"textLines":1}
+{"kind":"textbox","id":"sh/xo7m9svy","slide":9,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/wny5gnud","slide":9,"textChars":84,"textLines":1}
+{"kind":"textbox","id":"sh/bm547ids","slide":9,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/alwnexcn","slide":9,"textChars":123,"textLines":1}
+{"kind":"textbox","id":"sh/ls7mdcva","slide":9,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/kry5k7up","slide":9,"textChars":136,"textLines":1}
+{"kind":"shape","id":"sh/jqp4b2d4","slide":9,"name":"rule-790-292","bbox":[790,292,410,2]}
+{"kind":"textbox","id":"sh/ypgnixcj","slide":9,"textChars":20,"textLines":1}
+{"kind":"textbox","id":"sh/tgr6hcv6","slide":9,"textChars":107,"textLines":1}
+{"kind":"textbox","id":"sh/8fi5o7ul","slide":9,"textChars":26,"textLines":1}
+{"kind":"textbox","id":"sh/cbqx0f69","slide":9,"textChars":177,"textLines":1}
+{"kind":"textbox","id":"sh/dcjy9k7e","slide":9,"textChars":20,"textLines":1}
+{"kind":"textbox","id":"sh/q98fy5o3","slide":9,"textChars":178,"textLines":1}
+{"kind":"textbox","id":"sh/rahg7apo","slide":9,"textChars":158,"textLines":1}
+{"kind":"image","id":"im/43qxwbex","slide":9,"name":"","alt":"A luminous path becoming coherent through repeated decision points","bbox":[0,0,1280,720]}
+{"kind":"notes","id":"nt/4t1cwj","slide":9,"text":"[Sources] | /Users/bharris/Programs/counsel-os-mvp/output/deck/Themis-ai-Comp..."}
+{"kind":"slide","id":"sl/70onur","slide":10,"title":"THEMIS THESIS  /  10","textShapes":25}
+{"kind":"textbox","id":"sh/twvy5cfq","slide":10,"textChars":20,"textLines":1}
+{"kind":"textbox","id":"sh/6tkzahwf","slide":10,"textChars":66,"textLines":1}
+{"kind":"shape","id":"sh/rutg3mxk","slide":10,"name":"s10-assumption-ground","bbox":[54,154,1172,90]}
+{"kind":"textbox","id":"sh/gjmhgreh","slide":10,"textChars":18,"textLines":1}
+{"kind":"textbox","id":"sh/1kvy9wf2","slide":10,"textChars":79,"textLines":1}
+{"kind":"textbox","id":"sh/eh4zehwb","slide":10,"textChars":22,"textLines":1}
+{"kind":"textbox","id":"sh/fidg7mxw","slide":10,"textChars":33,"textLines":1}
+{"kind":"textbox","id":"sh/wnix4nex","slide":10,"textChars":2,"textLines":1}
+{"kind":"shape","id":"sh/xoryxsfi","slide":10,"name":"s10-a-0-head","bbox":[94,309,508,28]}
+{"kind":"textbox","id":"sh/9ob6l8ve","slide":10,"textChars":78,"textLines":1}
+{"kind":"textbox","id":"sh/on2ps3et","slide":10,"textChars":2,"textLines":1}
+{"kind":"shape","id":"sh/nmtojyd8","slide":10,"name":"s10-a-1-head","bbox":[94,367,508,28]}
+{"kind":"textbox","id":"sh/mlk7qtw3","slide":10,"textChars":93,"textLines":1}
+{"kind":"textbox","id":"sh/xsv6psvq","slide":10,"textChars":2,"textLines":1}
+{"kind":"shape","id":"sh/wrmpwne5","slide":10,"name":"s10-a-2-head","bbox":[94,425,508,28]}
+{"kind":"textbox","id":"sh/bqtonidk","slide":10,"textChars":104,"textLines":1}
+{"kind":"textbox","id":"sh/apk7udwz","slide":10,"textChars":2,"textLines":1}
+{"kind":"shape","id":"sh/lgvqtsvm","slide":10,"name":"s10-a-3-head","bbox":[94,483,508,28]}
+{"kind":"textbox","id":"sh/kfmp0ne1","slide":10,"textChars":96,"textLines":1}
+{"kind":"textbox","id":"sh/4behcvqp","slide":10,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/5wnil07u","slide":10,"textChars":77,"textLines":1}
+{"kind":"textbox","id":"sh/i9wzal8j","slide":10,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/3a50jqp4","slide":10,"textChars":83,"textLines":1}
+{"kind":"textbox","id":"sh/czy1gfql","slide":10,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/d07ip076","slide":10,"textChars":67,"textLines":1}
+{"kind":"textbox","id":"sh/qxwze58f","slide":10,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/ry50nap0","slide":10,"textChars":117,"textLines":1}
+{"kind":"shape","id":"sh/83uh4bqh","slide":10,"name":"s10-bottom","bbox":[0,560,1280,160]}
+{"kind":"textbox","id":"sh/t43idg72","slide":10,"textChars":84,"textLines":1}
+{"kind":"textbox","id":"sh/bytkje9k","slide":10,"textChars":15,"textLines":1}
+{"kind":"textbox","id":"sh/ax03a9sz","slide":10,"textChars":239,"textLines":1}
+{"kind":"notes","id":"nt/70onur","slide":10,"text":"[Sources] | /Users/bharris/Programs/counsel-os-mvp/output/deck/Themis-ai-Comp..."}
+{"kind":"slide","id":"sl/pvs4ps","slide":11,"title":"APPENDIX","textShapes":31}
+{"kind":"textbox","id":"sh/ed0r6lov","slide":11,"textChars":8,"textLines":1}
+{"kind":"textbox","id":"sh/1grah07m","slide":11,"textChars":12,"textLines":1}
+{"kind":"shape","id":"sh/gfi98v61","slide":11,"name":"appendix-card-0","bbox":[54,184,356,448]}
+{"kind":"shape","id":"sh/rapsbqpk","slide":11,"name":"appendix-card-top-0","bbox":[54,184,356,14]}
+{"kind":"textbox","id":"sh/6pgr2loz","slide":11,"textChars":24,"textLines":1}
+{"kind":"textbox","id":"sh/tc7ad07q","slide":11,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/sby94v65","slide":11,"textChars":11,"textLines":1}
+{"kind":"textbox","id":"sh/b6tsnapo","slide":11,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/qlkbe5o3","slide":11,"textChars":20,"textLines":1}
+{"kind":"textbox","id":"sh/on2tc3m1","slide":11,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/poba583m","slide":11,"textChars":29,"textLines":1}
+{"kind":"textbox","id":"sh/2lkbat4v","slide":11,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/3mts3ylg","slide":11,"textChars":10,"textLines":1}
+{"kind":"textbox","id":"sh/gj2t8jm5","slide":11,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/1kba1o3a","slide":11,"textChars":28,"textLines":1}
+{"kind":"shape","id":"sh/eh0b6t4z","slide":11,"name":"appendix-card-1","bbox":[450,184,356,448]}
+{"kind":"shape","id":"sh/fi9szelk","slide":11,"name":"appendix-card-top-1","bbox":[450,184,356,14]}
+{"kind":"textbox","id":"sh/svi94jmt","slide":11,"textChars":15,"textLines":1}
+{"kind":"textbox","id":"sh/tgraxo3e","slide":11,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/9cjq10v2","slide":11,"textChars":55,"textLines":1}
+{"kind":"textbox","id":"sh/8ba98feh","slide":11,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/7a18zadc","slide":11,"textChars":49,"textLines":1}
+{"kind":"textbox","id":"sh/m9sr65wr","slide":11,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/lojqx0v6","slide":11,"textChars":67,"textLines":1}
+{"kind":"shape","id":"sh/knqp4vel","slide":11,"name":"appendix-card-2","bbox":[846,184,356,448]}
+{"kind":"shape","id":"sh/zmh8vqx0","slide":11,"name":"appendix-card-top-2","bbox":[846,184,356,14]}
+{"kind":"textbox","id":"sh/yl872lwf","slide":11,"textChars":27,"textLines":1}
+{"kind":"textbox","id":"sh/5k3q9kva","slide":11,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/4ju9gzep","slide":11,"textChars":90,"textLines":1}
+{"kind":"textbox","id":"sh/2ponuhc7","slide":11,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/nqxo3mts","slide":11,"textChars":91,"textLines":1}
+{"kind":"textbox","id":"sh/or65wrud","slide":11,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/psf65wby","slide":11,"textChars":91,"textLines":1}
+{"kind":"textbox","id":"sh/el4n6hcb","slide":11,"textChars":1,"textLines":1}
+{"kind":"textbox","id":"sh/fmdozmdw","slide":11,"textChars":66,"textLines":1}
+{"kind":"textbox","id":"sh/0nm5sruh","slide":11,"textChars":9,"textLines":1}
+{"kind":"textbox","id":"sh/1ov61cvm","slide":11,"textChars":2,"textLines":1}
+{"kind":"notes","id":"nt/pvs4ps","slide":11,"text":"[Sources] | /Users/bharris/Programs/counsel-os-mvp/output/deck/Themis-ai-Comp..."}
+{"kind":"notice","message":"Truncated: omitted 0 lines. Increase maxChars or narrow target."}

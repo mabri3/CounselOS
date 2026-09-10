@@ -19,6 +19,12 @@
 .row { display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
 .brand { font:600 28px/1 var(--serif); letter-spacing:-1px; }
 .brandDot { color:var(--ink-4); }
+.globalNav { position:relative; }
+.globalNav > summary { font:600 28px/1 var(--serif); letter-spacing:-1px; }
+.globalNav > summary::after { display:none; }
+.globalNav > summary > span { font-size:12px; }
+.globalNav > nav { top:40px; }
+.globalNav :global(.nav-link) { display:block; padding:10px 12px; }
 .experimentBadge { margin-left:14px; padding-left:18px; border-left:1px solid var(--line); font-size:12px; color:var(--ink-4); }
 .root .navigationToggle { border:0; background:transparent; font-size:17px; padding:6px 9px; margin-right:4px; }
 .layout { flex:1; display:grid; grid-template-columns:236px minmax(0,1fr); min-height:0; }
@@ -219,3 +225,9 @@
 .nextStepOptions .choiceButton { display: flex; align-items: center; justify-content: space-between; gap: 16px; text-align: left; padding: 14px 16px; }
 .nextStepOptions strong { display: block; font-size: 14px; font-weight: 600; }
 .nextStepOptions small { display: block; margin-top: 4px; font-size: 13px; font-weight: 400; line-height: 1.5; color: var(--ink-3); }
+
+/* The shared breakdown has nested disclosures; only its outer panel floats. */
+.chatTools { flex-wrap: wrap; }
+.chatTools > [data-problem-breakdown] { flex: 1 1 220px; margin-block: 0 !important; }
+.chatTools [data-problem-breakdown] details[open] { position: static; width: auto; max-height: none; box-shadow: none; padding: 8px 0; border: 0; background: transparent; }
+.chatTools [data-problem-breakdown] section { padding-block: 10px; }

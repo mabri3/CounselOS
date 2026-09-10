@@ -1,0 +1,6 @@
+# Generated builds and acceptance artifacts are not application source.
+frontend/.next*/
+output/
+test-results/
+.tmp/
+Mosaic Relay UX Experiment*/

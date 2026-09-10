@@ -43,7 +43,7 @@ _CITATION_MARKER = re.compile(
     r"|claim:CLM-[A-Za-z0-9][A-Za-z0-9-]*)\]"
 )
 _STRUCTURED_OUTPUT = re.compile(
-    r"(?ms)^```(?:claim-support|decision-paths)[ \t]*\n.*?\n```[ \t]*(?=\n|$)"
+    r"(?ms)^```(?:claim-support|decision-paths|research-synthesis|problem-analysis)[ \t]*\n.*?\n```[ \t]*(?=\n|$)"
 )
 _ABSOLUTE_PATH = re.compile(r"(?<!\w)/(?:Users|home|private|tmp|var)/[^\s)`\]}>,;]+")
 _VAULT_PATH = re.compile(
@@ -94,7 +94,8 @@ def _humanize_outside_citation_markers(line: str) -> str:
     """Keep closed citation markers exact and clean their surrounding prose."""
     visible: list[str] = []
     cursor = 0
-    for marker in _CITATION_MARKER.finditer(line):
+    preserved = re.compile(_CITATION_MARKER.pattern + r"|\[[^\]\n]+\]\((?:00_System|01_Playbooks|02_Company_Knowledge|03_Matters)/[^\s)]+\)")
+    for marker in preserved.finditer(line):
         visible.append(_humanize_internal_fragment(line[cursor:marker.start()]))
         visible.append(marker.group())
         cursor = marker.end()

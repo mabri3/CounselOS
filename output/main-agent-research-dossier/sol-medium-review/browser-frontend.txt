@@ -1,0 +1,14 @@
+npm notice run themis.ai-frontend@0.1.0 dev
+npm notice run next dev --port 3127
+▲ Next.js 16.3.3 (Turbopack)
+- Local:         http://localhost:3127
+- Network:       http://192.168.50.222:3127
+- Environments: .env.local
+✓ Ready in 298ms
+✓ Running next.config.ts took 23ms
+
+ GET /matters/MAT-DEMO-BEACON 200 in 2.6s (next.js: 2.3s, application-code: 227ms)
+ GET /matters/MAT-DEMO-BEACON?file=03_Matters%2Fbeacon-instant-onboarding%2Fresearch%2FRES-20260910-f0c613.md 200 in 180ms (next.js: 139ms, application-code: 41ms)
+ GET /matters/MAT-DEMO-BEACON/research?file=03_Matters%2Fbeacon-instant-onboarding%2Fresearch%2FRES-20260910-f0c613.md 200 in 862ms (next.js: 812ms, application-code: 50ms)
+ GET /matters/MAT-DEMO-BEACON/research?file=03_Matters%2Fbeacon-instant-onboarding%2Fresearch%2FRES-20260910-f0c613.md 200 in 77ms (next.js: 23ms, application-code: 53ms)
+[?25h

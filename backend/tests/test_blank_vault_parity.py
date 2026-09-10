@@ -3,7 +3,6 @@ from __future__ import annotations
 from pathlib import Path
 
 from app.agents.registry import AgentRegistry
-from app.config import PROJECT_ROOT
 from app.services.vault import VaultService
 from app.tools.handlers import build_handlers
 from app.tools.registry import ToolRegistry
@@ -35,29 +34,30 @@ def _tool_contract(registry: ToolRegistry) -> dict[str, dict]:
     }
 
 
-def test_new_vault_matches_shipped_agent_and_typed_tool_contracts(tmp_path: Path) -> None:
+def test_new_vault_matches_fixture_agent_and_typed_tool_contracts(tmp_path: Path) -> None:
     current = tmp_path / "current"
     copy_test_vault(current)
     created = VaultManager(current).create(str(tmp_path / "created"))
 
-    shipped_vault = VaultService(PROJECT_ROOT / "vault")
+    # Compare with the committed test fixture, never a developer's working vault.
+    fixture_vault = VaultService(current)
     created_vault = VaultService(created)
-    shipped_agents = AgentRegistry(shipped_vault)
+    fixture_agents = AgentRegistry(fixture_vault)
     created_agents = AgentRegistry(created_vault)
-    shipped_tools = ToolRegistry(shipped_vault, build_handlers())
+    fixture_tools = ToolRegistry(fixture_vault, build_handlers())
     created_tools = ToolRegistry(created_vault, build_handlers())
 
     # Workspace-local guidance remains intact; the same managed runtime contract
     # is layered over it in ContextBuilder rather than overwriting local files.
-    for agent in shipped_agents.list():
-        assert shipped_agents.get(agent["agent_id"]).instructions == shipped_vault.read_markdown(agent["path"])["content"]
-    assert _tool_contract(created_tools) == _tool_contract(shipped_tools)
-    shipped_agent_ids = {item["agent_id"] for item in shipped_agents.list()}
+    for agent in fixture_agents.list():
+        assert fixture_agents.get(agent["agent_id"]).instructions == fixture_vault.read_markdown(agent["path"])["content"]
+    assert _tool_contract(created_tools) == _tool_contract(fixture_tools)
+    fixture_agent_ids = {item["agent_id"] for item in fixture_agents.list()}
     created_agent_ids = {item["agent_id"] for item in created_agents.list()}
-    assert created_agent_ids == shipped_agent_ids
-    for agent_id in sorted(shipped_agent_ids):
+    assert created_agent_ids == fixture_agent_ids
+    for agent_id in sorted(fixture_agent_ids):
         assert _agent_contract(created_agents.get(agent_id), created_agents) == _agent_contract(
-            shipped_agents.get(agent_id), shipped_agents
+            fixture_agents.get(agent_id), fixture_agents
         )
 
 

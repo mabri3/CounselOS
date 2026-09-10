@@ -1,0 +1,193 @@
+Browser tab: 2, Title: "Themis.ai", URL: "http://localhost:3136/matters/MAT-20260910-0e3709?view=draft".
+0 AXWebArea Themis.ai, URL: localhost:3136/matters/MAT-20260910-0e3709?view=draft
+	1 container
+		2 button (collapsed) themis.ai, Secondary Actions: Expand
+			3 text themis.ai
+		4 container matter-MAT-20260910-0e3709
+			5 container
+				6 text Waiting on you
+				7 link Description: Matters, Value: localhost:3136/matters
+				8 heading Lumen Learning: US family launch with analytics and shared-device accounts, Value: 1
+					9 text Lumen Learning: US family launch with analytics and shared-device accounts
+				10 button (collapsed) Matter details, Secondary Actions: Expand
+					11 text Matter details
+				12 button (collapsed) Tools and history, Secondary Actions: Expand
+			13 container Matter workspace
+				14 container
+					15 container Matter workspace view
+						16 text Matter workspace view
+						17 radio button (settable, integer) Description: Understand, Value: 0, ID: workspace-view-MAT-20260910-0e3709-understand
+						18 container Read the current matter
+							19 text Understand
+						20 radio button (settable, integer) Description: Discuss, Value: 0, ID: workspace-view-MAT-20260910-0e3709-discuss
+						21 container Continue one matter conversation
+							22 text Discuss
+						23 radio button (settable, integer) Description: Draft, Value: 1, ID: workspace-view-MAT-20260910-0e3709-draft
+						24 container Review and prepare work product
+							25 text Draft
+					26 button Decision map
+				111 container
+					112 container Documents
+						113 container Work products (5)
+							114 heading Work products (5), Value: 3, ID: work-products-heading
+								115 text Work products ( 5 )
+							116 content list
+								117 container
+									118 button Acceptance final
+									119 text MD  ·  Editing draft  · Saved 03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/work-product/draft/acceptance-final-909263.md
+									120 button (expanded) Earlier versions (1), Secondary Actions: Collapse
+										121 text Earlier versions (
+										122 text 1
+										123 text )
+									124 content list
+										125 container
+											126 button FINAL-20260910-82f8cc
+											127 text MD  ·  Final  · Saved
+								128 container
+									129 button Business reply
+									130 text MD  ·  Editing draft  · Saved
+								131 container
+									132 button Launch advice
+									133 text MD  ·  Editing draft  · Saved
+								134 container
+									135 button Lumen product specification working copy
+									136 text MD  ·  Editing draft  · Saved
+								137 container
+									138 button Product control checklist
+									139 text MD  ·  Editing draft  · Saved
+						140 container Sources (2)
+							141 heading Sources (2), Value: 3, ID: sources-heading
+								142 text Sources ( 2 )
+							143 content list
+								144 container
+									145 button 16 CFR 312.2 — definitions
+									146 text MD  ·  Reading source  · Saved
+									147 button Create working copy
+								148 container
+									149 button Lumen product specification
+									150 text MD  ·  Reading source  · Saved
+									151 button Create working copy
+						152 button (collapsed) Matter records (14), Secondary Actions: Expand
+							153 text Matter records (
+							154 text 14
+							155 text )
+						156 button (collapsed) Find a document, Secondary Actions: Expand
+							157 text Find a document
+					158 container Open documents
+						159 button Acceptance final Final · Saved
+							160 text Acceptance final
+							161 text Final
+							162 text  · Saved
+						163 button Close Acceptance final. 
+						220 button Launch advice Editing draft · Saved
+							221 text Launch advice
+							222 text Editing draft
+							223 text  · Saved
+						224 button Close Launch advice. 
+					225 text Editing:  Launch advice Editing draft · saved
+					226 button Editing, Help: Edit the document with formatting controls.
+					227 button Markdown, Help: Edit the Markdown source text directly.
+					228 button Close document
+					229 toolbar Document review
+						230 button All Markup
+						231 button No Markup
+						232 button Original
+						233 checkbox Redline off, Help: Record new edits as redlines., Value: 0
+						234 checkbox Comments off (0), Value: 0
+							261 text Comments 
+							262 text off
+							263 text  (
+							264 text 0
+							265 text )
+						235 container
+							266 text Author
+							236 pop up button (collapsed, settable) Description: Active review author, Value: Unattributed lawyer, Secondary Actions: Expand
+								237 menu
+									238 (selected) Unattributed lawyer
+									267 Themis.ai
+									268 Custom name…
+					239 toolbar Document formatting
+						240 pop up button (collapsed, settable) Description: Block style, Value: Body text, Secondary Actions: Expand
+							241 menu
+								242 (selected) Body text
+								269 Heading
+								270 Quote
+						243 button Bold
+						244 button Italic
+						245 button Underline
+						246 button Bullet list
+						247 button Numbered list
+						248 button Quote
+						249 button Add or remove link
+						250 button Add a comment to the selected text
+						251 button Ask Themis.ai to redraft
+					252 text entry area (settable) Lawyer acceptance edit: preserve this draft.# Launch advice
+
+Confirm audience and identifier use before release.
+
+Read the product specification and definitions.
+						271 text Lawyer acceptance edit: preserve this draft.# Launch advice
+						272 text Confirm audience and identifier use before release.
+						273 container
+							274 text Read the 
+							275 link Description: product specification, Value: 03_matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/documents/product-spec.md
+							276 text  and 
+							277 link Description: definitions, Value: 03_matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/documents/coppa-definitions.md
+							278 text .
+					253 text Saved Redline  off
+					254 button Word
+					255 button PDF
+					256 button Reload saved file
+					257 button (disabled) Save
+					279 text Export version
+					258 pop up button (collapsed, settable) Export version, Value: Saved changes as markup, Secondary Actions: Expand
+						259 menu
+							260 (selected) Saved changes as markup
+							280 Accepted text only
+				106 button (collapsed) Discussion help, Secondary Actions: Expand
+					107 text Discussion help
+				108 button (collapsed) Show discussion, Secondary Actions: Expand
+				180 container Draft controls
+					181 text WORK PRODUCT
+					182 heading Draft controls, Value: 2, ID: draft-tools-title
+						183 text Draft controls
+					184 container
+						185 text Request
+						186 text entry area (settable) Request
+					187 text Output template
+					188 text No template selected
+					189 text A template is optional for a direct request.
+					190 button Output templates
+					191 button (disabled) Request draft
+				192 container Available work product
+					193 heading Available work product, Value: 2
+						194 text Available work product
+					195 container
+						196 text Acceptance final general  · version  ac308932f409cd3f5b9e6119a3791cc32ebd0a3cadb1641d8c76769731d10035
+						197 text Recorded choice changed · Review draft
+						198 button Open work
+					199 container
+						200 text Business reply general  · version  495de8e59e530d4afca5eabc7e368af37d6160a4f5a25ac61c8ea067f08af6f0
+						201 text Recorded choice changed · Review draft
+						202 button Open work
+						203 text Update offer ·  offered
+						204 button Accept update
+						205 button Decline update
+					206 container
+						207 text Launch advice general  · version  809d4db3b70eec4217eb6c6be7be7b70a14782ad82ca0181cda8ed6f16e06720
+						208 text Recorded choice changed · Review draft
+						209 button Open
+						210 button (collapsed) Why this version changed, Secondary Actions: Expand
+							211 text Why this version changed
+					212 container
+						213 text Lumen product specification working copy general  · version  8ddb318245b6ed0677e07748d70c1817a8f8c2e918107b0bfc7270ce5f5f90c9
+						214 text Recorded choice changed · Review draft
+						215 button Open work
+					216 container
+						217 text Product control checklist general  · version  9588b50cdc80d377fbb2438ab7b31c12382a20f440827f475214e204335eb046
+						218 text Recorded choice changed · Review draft
+						219 button Open work
+	109 pop up button (collapsed) Description: Open Next.js Dev Tools, ID: next-logo, Secondary Actions: Expand
+		110 image
+
+The focused UI element is 254 button Word

@@ -13,6 +13,7 @@ import yaml
 
 # Keep safe YAML semantics while avoiding repeated pure-Python parsing on reads.
 _SafeLoader = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
+_SafeDumper = getattr(yaml, "CSafeDumper", yaml.SafeDumper)
 
 
 @dataclass
@@ -60,8 +61,9 @@ def load(source: str | Path | TextIO) -> Post:
 
 
 def dumps(post: Post) -> str:
-    metadata = yaml.safe_dump(
+    metadata = yaml.dump(
         post.metadata,
+        Dumper=_SafeDumper,
         sort_keys=False,
         allow_unicode=True,
         default_flow_style=False,

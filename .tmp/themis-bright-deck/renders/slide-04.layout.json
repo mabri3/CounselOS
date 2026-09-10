@@ -1,0 +1,1165 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/w77ry7",
+    "id": "w77ry7",
+    "slide": 4,
+    "layoutId": "94302c2b-6a1f-40e6-875c-bb9de263a0ea",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "0bdeb33e-220c-474b-889e-c35a5c6bbebb",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#FCFAF4",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "Arial",
+      "Georgia"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "94302c2b-6a1f-40e6-875c-bb9de263a0ea",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "0bdeb33e-220c-474b-889e-c35a5c6bbebb",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "0bdeb33e-220c-474b-889e-c35a5c6bbebb",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/32lg3qx8",
+      "id": "1",
+      "name": "kicker-4",
+      "bbox": [
+        54,
+        36,
+        1172,
+        22
+      ],
+      "geometry": "rect",
+      "text": "THEMIS THESIS  /  04",
+      "textPreview": "THEMIS THESIS  /  04",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "#C86449",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "THEMIS THESIS  /  04"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "THEMIS THESIS  /  04",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "typeface": "Arial",
+            "color": "#C86449",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "THEMIS THESIS  /  04",
+              "fontSize": 12,
+              "typeface": "Arial",
+              "color": "#C86449",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/43uhwvet",
+      "id": "2",
+      "name": "title-4",
+      "bbox": [
+        54,
+        64,
+        1172,
+        100
+      ],
+      "geometry": "rect",
+      "text": "Lawyers are not only asking for faster work. They want a second perspective as they work through the decision.",
+      "textPreview": "Lawyers are not only asking for faster work. They want a second perspective as they work through the decision.",
+      "resolvedFontSize": 36,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 36,
+        "typeface": "Georgia",
+        "color": "#16233F",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Lawyers are not only asking for faster work. They want a"
+          },
+          {
+            "index": 2,
+            "text": "second perspective as they work through the decision."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Lawyers are not only asking for faster work. They want a second perspective as they work through the decision.",
+          "lineSpacingPercent": 98000,
+          "resolvedTextStyle": {
+            "fontSize": 36,
+            "typeface": "Georgia",
+            "color": "#16233F",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 0.98
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Lawyers are not only asking for faster work. They want a second perspective as they work through the decision.",
+              "fontSize": 36,
+              "typeface": "Georgia",
+              "color": "#16233F",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 0.98
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/p4ny50ve",
+      "id": "3",
+      "name": "s4-context-ground",
+      "bbox": [
+        54,
+        166,
+        1172,
+        88
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#FCFAF4",
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/uxczqlwr",
+      "id": "4",
+      "name": "s4-context",
+      "bbox": [
+        78,
+        182,
+        1124,
+        64
+      ],
+      "geometry": "rect",
+      "text": "Across four interviews with in-house lawyers and 203 de-duplicated Reddit discussions about legal AI, the requested tasks and features varied. The recurring need was more consistent: a capable second perspective that helps the lawyer examine the question, test their reasoning, and decide with confidence.",
+      "textPreview": "Across four interviews with in-house lawyers and 203 de-duplicated Reddit discussions about legal AI, the requested tasks and features va...",
+      "resolvedFontSize": 16.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 16.51,
+        "typeface": "Arial",
+        "color": "#16233F",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Across four interviews with in-house lawyers and 203 de-duplicated Reddit discussions about legal AI, the requested tasks and features varied. The"
+          },
+          {
+            "index": 2,
+            "text": "recurring need was more consistent: a capable second perspective that helps the lawyer examine the question, test their reasoning, and decide with"
+          },
+          {
+            "index": 3,
+            "text": "confidence."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Across four interviews with in-house lawyers and 203 de-duplicated Reddit discussions about legal AI, the requested tasks and features varied. The recurring need was more consistent: a capable second perspective that helps the lawyer examine the question, test their reasoning, and decide with confidence.",
+          "lineSpacingPercent": 112000,
+          "resolvedTextStyle": {
+            "fontSize": 16.51,
+            "typeface": "Arial",
+            "color": "#16233F",
+            "alignment": "left",
+            "lineSpacing": 1.12
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Across four interviews with in-house lawyers and 203 de-duplicated Reddit discussions about legal AI, the requested tasks and features varied. The recurring need was more consistent: a capable second perspective that helps the lawyer examine the question, test their reasoning, and decide with confidence.",
+              "fontSize": 16.51,
+              "typeface": "Arial",
+              "color": "#16233F",
+              "alignment": "left",
+              "lineSpacing": 1.12
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/fylgzqxc",
+      "id": "5",
+      "name": "rule-54-286",
+      "bbox": [
+        54,
+        286,
+        536,
+        5
+      ],
+      "geometry": "rect",
+      "fillColor": "#16233F",
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/gzuhsvex",
+      "id": "6",
+      "name": "s4-quote-0",
+      "bbox": [
+        54,
+        302,
+        536,
+        38
+      ],
+      "geometry": "rect",
+      "text": "“I need someone to think with.”",
+      "textPreview": "“I need someone to think with.”",
+      "resolvedFontSize": 22,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 22,
+        "typeface": "Georgia",
+        "color": "#16233F",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "“I need someone to think with.”"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "“I need someone to think with.”",
+          "lineSpacingPercent": 103000,
+          "resolvedTextStyle": {
+            "fontSize": 22,
+            "typeface": "Georgia",
+            "color": "#16233F",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.03
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "“I need someone to think with.”",
+              "fontSize": 22,
+              "typeface": "Georgia",
+              "color": "#16233F",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.03
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/h03y1gfi",
+      "id": "7",
+      "name": "s4-voice-0",
+      "bbox": [
+        54,
+        344,
+        536,
+        65
+      ],
+      "geometry": "rect",
+      "text": "A second legal perspective helps the lawyer work through ambiguity instead of facing a blank page or a finished answer.",
+      "textPreview": "A second legal perspective helps the lawyer work through ambiguity instead of facing a blank page or a finished answer.",
+      "resolvedFontSize": 15.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 15.51,
+        "typeface": "Arial",
+        "color": "#16233F",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "A second legal perspective helps the lawyer work through ambiguity instead"
+          },
+          {
+            "index": 2,
+            "text": "of facing a blank page or a finished answer."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "A second legal perspective helps the lawyer work through ambiguity instead of facing a blank page or a finished answer.",
+          "lineSpacingPercent": 113000,
+          "resolvedTextStyle": {
+            "fontSize": 15.51,
+            "typeface": "Arial",
+            "color": "#16233F",
+            "alignment": "left",
+            "lineSpacing": 1.13
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "A second legal perspective helps the lawyer work through ambiguity instead of facing a blank page or a finished answer.",
+              "fontSize": 15.51,
+              "typeface": "Arial",
+              "color": "#16233F",
+              "alignment": "left",
+              "lineSpacing": 1.13
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/etwz25wv",
+      "id": "8",
+      "name": "rule-654-286",
+      "bbox": [
+        654,
+        286,
+        536,
+        5
+      ],
+      "geometry": "rect",
+      "fillColor": "#C79A2B",
+      "lineWidth": 0
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/zu50badg",
+      "id": "9",
+      "name": "s4-quote-1",
+      "bbox": [
+        654,
+        302,
+        536,
+        38
+      ],
+      "geometry": "rect",
+      "text": "“I need to know what I may have missed.”",
+      "textPreview": "“I need to know what I may have missed.”",
+      "resolvedFontSize": 22,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 22,
+        "typeface": "Georgia",
+        "color": "#16233F",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "“I need to know what I may have missed.”"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "“I need to know what I may have missed.”",
+          "lineSpacingPercent": 103000,
+          "resolvedTextStyle": {
+            "fontSize": 22,
+            "typeface": "Georgia",
+            "color": "#16233F",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.03
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "“I need to know what I may have missed.”",
+              "fontSize": 22,
+              "typeface": "Georgia",
+              "color": "#16233F",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.03
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/feh43yt0",
+      "id": "10",
+      "name": "s4-voice-1",
+      "bbox": [
+        654,
+        344,
+        536,
+        65
+      ],
+      "geometry": "rect",
+      "text": "The lawyer wants thoughtful challenge: another issue, another fact, another interpretation, or another consequence that could change the path.",
+      "textPreview": "The lawyer wants thoughtful challenge: another issue, another fact, another interpretation, or another consequence that could change the ...",
+      "resolvedFontSize": 15.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 15.51,
+        "typeface": "Arial",
+        "color": "#16233F",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "The lawyer wants thoughtful challenge: another issue, another fact, another"
+          },
+          {
+            "index": 2,
+            "text": "interpretation, or another consequence that could change the path."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "The lawyer wants thoughtful challenge: another issue, another fact, another interpretation, or another consequence that could change the path.",
+          "lineSpacingPercent": 113000,
+          "resolvedTextStyle": {
+            "fontSize": 15.51,
+            "typeface": "Arial",
+            "color": "#16233F",
+            "alignment": "left",
+            "lineSpacing": 1.13
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "The lawyer wants thoughtful challenge: another issue, another fact, another interpretation, or another consequence that could change the path.",
+              "fontSize": 15.51,
+              "typeface": "Arial",
+              "color": "#16233F",
+              "alignment": "left",
+              "lineSpacing": 1.13
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 11,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ut8nutsv",
+      "id": "11",
+      "name": "rule-54-424",
+      "bbox": [
+        54,
+        424,
+        536,
+        5
+      ],
+      "geometry": "rect",
+      "fillColor": "#16233F",
+      "lineWidth": 0
+    },
+    {
+      "order": 12,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/hgzm58r6",
+      "id": "12",
+      "name": "s4-quote-2",
+      "bbox": [
+        54,
+        440,
+        536,
+        38
+      ],
+      "geometry": "rect",
+      "text": "“I need support that respects my judgment.”",
+      "textPreview": "“I need support that respects my judgment.”",
+      "resolvedFontSize": 22,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 22,
+        "typeface": "Georgia",
+        "color": "#16233F",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "“I need support that respects my judgment.”"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "“I need support that respects my judgment.”",
+          "lineSpacingPercent": 103000,
+          "resolvedTextStyle": {
+            "fontSize": 22,
+            "typeface": "Georgia",
+            "color": "#16233F",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.03
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "“I need support that respects my judgment.”",
+              "fontSize": 22,
+              "typeface": "Georgia",
+              "color": "#16233F",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.03
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 13,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/gfq5w3al",
+      "id": "13",
+      "name": "s4-voice-2",
+      "bbox": [
+        54,
+        482,
+        536,
+        65
+      ],
+      "geometry": "rect",
+      "text": "The system can inform, question, and test. The lawyer must remain the author of the decision.",
+      "textPreview": "The system can inform, question, and test. The lawyer must remain the author of the decision.",
+      "resolvedFontSize": 15.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 15.51,
+        "typeface": "Arial",
+        "color": "#16233F",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "The system can inform, question, and test. The lawyer must remain the"
+          },
+          {
+            "index": 2,
+            "text": "author of the decision."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "The system can inform, question, and test. The lawyer must remain the author of the decision.",
+          "lineSpacingPercent": 113000,
+          "resolvedTextStyle": {
+            "fontSize": 15.51,
+            "typeface": "Arial",
+            "color": "#16233F",
+            "alignment": "left",
+            "lineSpacing": 1.13
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "The system can inform, question, and test. The lawyer must remain the author of the decision.",
+              "fontSize": 15.51,
+              "typeface": "Arial",
+              "color": "#16233F",
+              "alignment": "left",
+              "lineSpacing": 1.13
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 14,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/3i147i9c",
+      "id": "14",
+      "name": "rule-654-424",
+      "bbox": [
+        654,
+        424,
+        536,
+        5
+      ],
+      "geometry": "rect",
+      "fillColor": "#C79A2B",
+      "lineWidth": 0
+    },
+    {
+      "order": 15,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/2hsnydsr",
+      "id": "15",
+      "name": "s4-quote-3",
+      "bbox": [
+        654,
+        440,
+        536,
+        38
+      ],
+      "geometry": "rect",
+      "text": "“I need my reasoning tested before I rely on it.”",
+      "textPreview": "“I need my reasoning tested before I rely on it.”",
+      "resolvedFontSize": 22,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 22,
+        "typeface": "Georgia",
+        "color": "#16233F",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "“I need my reasoning tested before I rely on it.”"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "“I need my reasoning tested before I rely on it.”",
+          "lineSpacingPercent": 103000,
+          "resolvedTextStyle": {
+            "fontSize": 22,
+            "typeface": "Georgia",
+            "color": "#16233F",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.03
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "“I need my reasoning tested before I rely on it.”",
+              "fontSize": 22,
+              "typeface": "Georgia",
+              "color": "#16233F",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.03
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 16,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/pkjm9sri",
+      "id": "16",
+      "name": "s4-voice-3",
+      "bbox": [
+        654,
+        482,
+        536,
+        65
+      ],
+      "geometry": "rect",
+      "text": "Confidence becomes fragile when material counterexamples, conflicting facts, or overlooked problems remain outside the lawyer's view. Themis should surface them before the decision is made.",
+      "textPreview": "Confidence becomes fragile when material counterexamples, conflicting facts, or overlooked problems remain outside the lawyer's view. The...",
+      "resolvedFontSize": 15.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 15.51,
+        "typeface": "Arial",
+        "color": "#16233F",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Confidence becomes fragile when material counterexamples, conflicting"
+          },
+          {
+            "index": 2,
+            "text": "facts, or overlooked problems remain outside the lawyer's view. Themis"
+          },
+          {
+            "index": 3,
+            "text": "should surface them before the decision is made."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Confidence becomes fragile when material counterexamples, conflicting facts, or overlooked problems remain outside the lawyer's view. Themis should surface them before the decision is made.",
+          "lineSpacingPercent": 113000,
+          "resolvedTextStyle": {
+            "fontSize": 15.51,
+            "typeface": "Arial",
+            "color": "#16233F",
+            "alignment": "left",
+            "lineSpacing": 1.13
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Confidence becomes fragile when material counterexamples, conflicting facts, or overlooked problems remain outside the lawyer's view. Themis should surface them before the decision is made.",
+              "fontSize": 15.51,
+              "typeface": "Arial",
+              "color": "#16233F",
+              "alignment": "left",
+              "lineSpacing": 1.13
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 17,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/4ja50nax",
+      "id": "17",
+      "name": "s4-bottom",
+      "bbox": [
+        0,
+        574,
+        1280,
+        146
+      ],
+      "geometry": "rect",
+      "fillColor": "#16233F",
+      "lineWidth": 0
+    },
+    {
+      "order": 18,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/rm14bi98",
+      "id": "18",
+      "name": "s4-implication",
+      "bbox": [
+        54,
+        596,
+        486,
+        92
+      ],
+      "geometry": "rect",
+      "text": "The adoption opportunity may not be another feature bundle. It may be a product relationship in which the lawyer receives useful challenge without giving up control.",
+      "textPreview": "The adoption opportunity may not be another feature bundle. It may be a product relationship in which the lawyer receives useful challeng...",
+      "resolvedFontSize": 17,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 17,
+        "typeface": "Georgia",
+        "color": "#FCFAF4",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 4,
+        "lines": [
+          {
+            "index": 1,
+            "text": "The adoption opportunity may not be another feature"
+          },
+          {
+            "index": 2,
+            "text": "bundle. It may be a product relationship in which the"
+          },
+          {
+            "index": 3,
+            "text": "lawyer receives useful challenge without giving up"
+          },
+          {
+            "index": 4,
+            "text": "control."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "The adoption opportunity may not be another feature bundle. It may be a product relationship in which the lawyer receives useful challenge without giving up control.",
+          "lineSpacingPercent": 112000,
+          "resolvedTextStyle": {
+            "fontSize": 17,
+            "typeface": "Georgia",
+            "color": "#FCFAF4",
+            "bold": true,
+            "alignment": "left",
+            "lineSpacing": 1.12
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "The adoption opportunity may not be another feature bundle. It may be a product relationship in which the lawyer receives useful challenge without giving up control.",
+              "fontSize": 17,
+              "typeface": "Georgia",
+              "color": "#FCFAF4",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.12
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 19,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/qlsn2dsn",
+      "id": "19",
+      "name": "s4-source",
+      "bbox": [
+        602,
+        596,
+        624,
+        94
+      ],
+      "geometry": "rect",
+      "text": "Source: Themis analysis of 203 de-duplicated Reddit discussions about legal AI and four discovery interviews with in-house lawyers, August 2026. The statements above synthesize recurring themes; they are not direct quotations. Interview quotations should not appear externally without approval and verification against the recordings.",
+      "textPreview": "Source: Themis analysis of 203 de-duplicated Reddit discussions about legal AI and four discovery interviews with in-house lawyers, Augus...",
+      "resolvedFontSize": 13.51,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 13.51,
+        "typeface": "Arial",
+        "color": "#FCFAF4",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "textLayout": {
+        "lineCount": 4,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Source: Themis analysis of 203 de-duplicated Reddit discussions about legal AI and four discovery"
+          },
+          {
+            "index": 2,
+            "text": "interviews with in-house lawyers, August 2026. The statements above synthesize recurring themes;"
+          },
+          {
+            "index": 3,
+            "text": "they are not direct quotations. Interview quotations should not appear externally without approval and"
+          },
+          {
+            "index": 4,
+            "text": "verification against the recordings."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Source: Themis analysis of 203 de-duplicated Reddit discussions about legal AI and four discovery interviews with in-house lawyers, August 2026. The statements above synthesize recurring themes; they are not direct quotations. Interview quotations should not appear externally without approval and verification against the recordings.",
+          "lineSpacingPercent": 112000,
+          "resolvedTextStyle": {
+            "fontSize": 13.51,
+            "typeface": "Arial",
+            "color": "#FCFAF4",
+            "alignment": "left",
+            "lineSpacing": 1.12
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Source: ",
+              "fontSize": 13.51,
+              "typeface": "Arial",
+              "color": "#FCFAF4",
+              "bold": true,
+              "alignment": "left",
+              "lineSpacing": 1.12
+            },
+            {
+              "index": 2,
+              "text": "Themis analysis of 203 de-duplicated Reddit discussions about legal AI and four discovery interviews with in-house lawyers, August 2026. The statements above synthesize recurring themes; they are not direct quotations. Interview quotations should not appear externally without approval and verification against the recordings.",
+              "fontSize": 13.51,
+              "typeface": "Arial",
+              "color": "#FCFAF4",
+              "alignment": "left",
+              "lineSpacing": 1.12
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

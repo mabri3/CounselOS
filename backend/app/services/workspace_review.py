@@ -667,7 +667,8 @@ class WorkspaceReviewService:
             if source_path and document["metadata"].get("record_type") == "extracted_document":
                 companions[str(source_path)] = document["path"]
         result = []
-        excluded = {"events", "conversations", "dossier-revisions", "continuity", "scenarios"}
+        referenced_units = set()
+        excluded = {"events", "conversations", "continuity", "scenarios"}
         for path in self.vault.iter_files(base):
             relative = self.vault.relative(path)
             local = PurePosixPath(relative).relative_to(PurePosixPath(base))
@@ -681,6 +682,12 @@ class WorkspaceReviewService:
                     lifecycle_state="matter_record", editable=False, immutable=True).model_dump())
                 continue
             metadata = document.get("metadata", {})
+            for source in metadata.get("source_records", []):
+                source_path = source.get("path") if isinstance(source, dict) else None
+                if source_path and self.vault._in_source_library(source_path):
+                    referenced_units.add(source_path)
+            if local.parts[0] == "dossier-revisions" and not metadata.get("publication_key"):
+                continue
             if metadata.get("matter_id") not in {None, matter_id}:
                 continue
             source = sources.get(relative) or sources.get(str(metadata.get("source_path") or ""))
@@ -702,15 +709,36 @@ class WorkspaceReviewService:
             immutable = bool(metadata.get("immutable")) or lifecycle in {"final", "approved"} or not document.get("editable", False)
             revision = hashlib.sha256(document.get("content", "").encode("utf-8")).hexdigest() if document.get("kind") in {"markdown", "text"} else hashlib.sha256(path.read_bytes()).hexdigest()
             result.append(DocumentIdentity(document_id=document_id, path=relative,
-                title=str(metadata.get("title") or path.stem), kind=kind, revision=revision,
+                title=str(metadata.get("title") or ("Research-based dossier revision" if metadata.get("publication_key") else path.stem)), kind=kind, revision=revision,
                 version_id=metadata.get("version_id") or metadata.get("final_id") or (source or {}).get("version"),
                 work_product_id=work_product_id, lifecycle_state=lifecycle,
                 source_url=metadata.get("url") if kind == "source" else None,
                 editable=bool(document.get("editable", False)) and not immutable and kind != "source", immutable=immutable,
                 original_path=metadata.get("source_path") if metadata.get("record_type") == "extracted_document" else metadata.get("original_path"),
                 extracted_path=metadata.get("extracted_path") or companions.get(relative)).model_dump())
+        for path in sorted(referenced_units):
+            try:
+                result.append(self._library_document(matter_id, path))
+            except (OSError, ValueError, KeyError):
+                continue
         return sorted(result, key=lambda item: (item["kind"], item["title"].casefold(),
             item["document_id"], not item["editable"], item["path"]))
+
+    def _library_document(self, matter_id, path):
+        from app.services.source_library import SourceLibraryService
+        self.workspace._validate_path(matter_id, path)
+        document = self.vault.read_markdown(path)
+        meta = document["metadata"]
+        library = SourceLibraryService(self.vault, None, self.matters)
+        manifest = library.describe(matter_id, meta["source_id"], meta["source_version"])
+        unit = next((unit for unit in manifest["units"] if unit["path"] == path), None)
+        if not unit or hashlib.sha256(document["content"].encode()).hexdigest() != unit["body_sha256"]:
+            raise ValueError("Saved source unit no longer matches its published hash.")
+        label = f"Page {unit['page_number']}" if unit.get("page_number") else unit["section_label"]
+        return DocumentIdentity(document_id=meta["source_id"], path=path,
+            title=f"{manifest['title']} — {label}", kind="source", revision=unit["body_sha256"],
+            version_id=meta["source_version"], lifecycle_state="reading_source", editable=False, immutable=True,
+            original_path=manifest["original_path"], source_url=manifest.get("requested_url")).model_dump()
 
     def resolve_document(self, matter_id: str, target: DocumentReferenceTarget | dict[str, Any]) -> dict[str, Any]:
         requested = DocumentReferenceTarget.model_validate(target)
@@ -720,6 +748,10 @@ class WorkspaceReviewService:
         if not self.vault.exists(requested.path):
             return ResolvedDocumentReference(target=requested, document=None, passage_state="missing",
                 message="Document unavailable.").model_dump()
+        if document is None and self.vault._in_source_library(requested.path):
+            document = self._library_document(matter_id, requested.path)
+            if document["document_id"] != requested.document_id:
+                raise ValueError("Document identity and path do not match this matter.")
         if document is None:
             raise ValueError("Document identity and path do not match this matter.")
         try:

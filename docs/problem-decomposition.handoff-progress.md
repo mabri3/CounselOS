@@ -1,0 +1,12 @@
+# Progress — explicit problem decomposition
+
+Implementation started September 10, 2026. Update each line immediately after its verification.
+
+- [x] Step 1: Establish baseline and executable examples — 65 backend tests passed (27.82s); frontend typecheck passed. Source baseline and synthetic examples saved under output/problem-decomposition/. Configured compatible model first request failed with ReadTimeout after 120.11s; comparison remains unverified. See verification note.
+- [x] Step 2: Typed transport, reasoning contract, and capture — 36 tests passed in the focused problem-analysis/issue-analysis check; real no-issue intake, malformed transport, foreign references, exclusions and output-only changes covered.
+- [x] Step 3: Immutable publication and read projection — 55 focused tests passed; exact replay/conflict, concurrent facts and newer pointer, edited/missing output, source changes, pointer-failure retry and index rebuild covered.
+- [x] Step 4: Intake and ordinary chat integration — 89 tests passed in the required focused group. HTTP/runner/provider-boundary tests cover actual chat, intake observation receipts, recommendation save, scenario, preview, selected artifact, no-save, malformed output, drafting without research and final recovery.
+- [x] Step 5: Research and change reassessment integration — required group: 48 passed (65.67s); final problem-analysis unit/integration recheck: 37 passed (33.58s). Queued, scoped, concurrent, malformed, public passage and saved-packet pointer retry paths covered. Judgment stories remain for Acceptance.
+- [x] Step 6: Shared visible breakdown — typecheck and all required frontend groups pass. Browser checks cover issue/map/source navigation, keyboard disclosure, widths through 390px, saved drafts, and scenario state. Native 200% zoom remains unavailable.
+- [x] Step 7: Verification and judgment evaluation executed — final backend: 1,389 passed, 6 warnings. Build, typecheck, four frontend groups, fixture integrity audit, and graph refresh pass. Timeout and draft-read defects fixed. Five configured-model responses parse; judgment remains mixed.
+- [ ] Acceptance check: CONDITIONAL — automated checks pass and browser workflow was exercised. Native 200% zoom remains unverified because controls are unavailable. Model examples still contain unsupported conclusions. See the September 10 acceptance continuation in problem-decomposition.verification.md for evidence and precise browser limits. No unrestricted acceptance claim.

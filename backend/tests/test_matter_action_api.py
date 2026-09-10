@@ -120,12 +120,13 @@ def test_research_run_api_forwards_source_action_key(app_context, monkeypatch, i
     client = TestClient(app)
     captured = {}
 
-    def start(matter_id, questions, *, source_action_key=None, issue_id=None):
+    def start(matter_id, questions, *, source_action_key=None, issue_id=None, search_scope=None):
         captured.update({
             "matter_id": matter_id,
             "questions": questions,
             "source_action_key": source_action_key,
             "issue_id": issue_id,
+            "search_scope": search_scope.model_dump(),
         })
         return {"run_id": "RUN-1", "source_action_key": source_action_key}
 
@@ -143,6 +144,9 @@ def test_research_run_api_forwards_source_action_key(app_context, monkeypatch, i
         "questions": ["Check the rule"],
         "source_action_key": "chat:RUN-1:tool-2",
         "issue_id": issue_id,
+        "search_scope": {"external": False, "other_matters": False, "public_query": "", "provider_ids": [],
+                         "native": False, "allow_firecrawl": False, "model_selection": None,
+                         "main_model_selection": None, "collector_model_selection": None, "allow_followup_queries": False},
     }
 
 

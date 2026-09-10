@@ -1,0 +1,3160 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/y90nupkv",
+    "id": "y90nupkv",
+    "slide": 1,
+    "layoutId": "/ppt/slideLayouts/slideLayout1.xml",
+    "layoutName": "Lean Canvas",
+    "masterLayoutId": "/ppt/slideMasters/slideMaster1.xml",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1040,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "Neos Chronos",
+    "colors": {
+      "accent1": "#669933",
+      "accent2": "#38BEEA",
+      "accent3": "#EA38C0",
+      "accent4": "#EABB38",
+      "accent5": "#788C92",
+      "accent6": "#EA6238",
+      "dk1": "#444444",
+      "lt1": "#FFFFFF",
+      "dk2": "#222222",
+      "lt2": "#F3F3F3",
+      "hlink": "#787828",
+      "folHlink": "#9AA291"
+    },
+    "fontScheme": {
+      "name": "Office",
+      "majorFont": {
+        "latinTypeface": "Arial"
+      },
+      "minorFont": {
+        "latinTypeface": "Arial"
+      }
+    },
+    "typefaces": [
+      "Arial",
+      "Figtree",
+      "Quattrocento Sans"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "/ppt/slideLayouts/slideLayout1.xml",
+      "name": "Lean Canvas",
+      "parentLayoutId": "/ppt/slideMasters/slideMaster1.xml",
+      "elements": [
+        {
+          "order": 1,
+          "kind": "shape",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout1.xml/35",
+          "id": "35",
+          "name": "Google Shape;35;p3",
+          "bbox": [
+            493.02,
+            40,
+            147.34,
+            24
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "fillColor": "#FFFFFF",
+          "lineWidth": 0
+        },
+        {
+          "order": 2,
+          "kind": "shape",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout1.xml/36",
+          "id": "36",
+          "name": "Google Shape;36;p3",
+          "bbox": [
+            673.89,
+            40,
+            147.34,
+            24
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "fillColor": "#FFFFFF",
+          "lineWidth": 0
+        },
+        {
+          "order": 3,
+          "kind": "shape",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout1.xml/37",
+          "id": "37",
+          "name": "Google Shape;37;p3",
+          "bbox": [
+            891.69,
+            40,
+            121.32,
+            24
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "fillColor": "#FFFFFF",
+          "lineWidth": 0
+        },
+        {
+          "order": 4,
+          "kind": "shape",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout1.xml/38",
+          "id": "38",
+          "name": "Google Shape;38;p3",
+          "bbox": [
+            32.49,
+            112,
+            184.18,
+            160.63
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "lineWidth": 0
+        },
+        {
+          "order": 5,
+          "kind": "shape",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout1.xml/39",
+          "id": "39",
+          "name": "Google Shape;39;p3",
+          "bbox": [
+            229.43,
+            112,
+            184.18,
+            160.63
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "lineWidth": 0
+        },
+        {
+          "order": 6,
+          "kind": "shape",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout1.xml/40",
+          "id": "40",
+          "name": "Google Shape;40;p3",
+          "bbox": [
+            427.05,
+            112,
+            184.18,
+            160.63
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "lineWidth": 0
+        },
+        {
+          "order": 7,
+          "kind": "shape",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout1.xml/41",
+          "id": "41",
+          "name": "Google Shape;41;p3",
+          "bbox": [
+            624.52,
+            110.87,
+            184.18,
+            160.63
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "lineWidth": 0
+        },
+        {
+          "order": 8,
+          "kind": "shape",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout1.xml/42",
+          "id": "42",
+          "name": "Google Shape;42;p3",
+          "bbox": [
+            822.66,
+            110.87,
+            184.18,
+            160.63
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "fillColor": "#FFFFFF",
+          "lineWidth": 0
+        },
+        {
+          "order": 9,
+          "kind": "shape",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout1.xml/43",
+          "id": "43",
+          "name": "Google Shape;43;p3",
+          "bbox": [
+            32.49,
+            311.37,
+            184.18,
+            160.63
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "lineWidth": 0
+        },
+        {
+          "order": 10,
+          "kind": "shape",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout1.xml/44",
+          "id": "44",
+          "name": "Google Shape;44;p3",
+          "bbox": [
+            230.63,
+            311.37,
+            184.18,
+            160.63
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "lineWidth": 0
+        },
+        {
+          "order": 11,
+          "kind": "shape",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout1.xml/45",
+          "id": "45",
+          "name": "Google Shape;45;p3",
+          "bbox": [
+            427.57,
+            311.37,
+            184.18,
+            160.63
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "lineWidth": 0
+        },
+        {
+          "order": 12,
+          "kind": "shape",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout1.xml/46",
+          "id": "46",
+          "name": "Google Shape;46;p3",
+          "bbox": [
+            624.89,
+            311.37,
+            184.18,
+            160.63
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "lineWidth": 0
+        },
+        {
+          "order": 13,
+          "kind": "shape",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout1.xml/47",
+          "id": "47",
+          "name": "Google Shape;47;p3",
+          "bbox": [
+            822.66,
+            311.35,
+            184.18,
+            160.63
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "fillColor": "#FFFFFF",
+          "lineWidth": 0
+        },
+        {
+          "order": 14,
+          "kind": "shape",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout1.xml/48",
+          "id": "48",
+          "name": "Google Shape;48;p3",
+          "bbox": [
+            32.49,
+            512,
+            478.85,
+            152
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "lineWidth": 0
+        },
+        {
+          "order": 15,
+          "kind": "shape",
+          "scope": "layout",
+          "aid": "template/layout//ppt/slideLayouts/slideLayout1.xml/49",
+          "id": "49",
+          "name": "Google Shape;49;p3",
+          "bbox": [
+            530.85,
+            512,
+            475.99,
+            152
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "lineWidth": 0
+        }
+      ]
+    },
+    {
+      "scope": "master",
+      "id": "/ppt/slideMasters/slideMaster1.xml",
+      "type": "master",
+      "backgroundColor": "#FFFCF8",
+      "elements": [
+        {
+          "order": 1,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/6",
+          "id": "6",
+          "name": "Google Shape;6;p2",
+          "bbox": [
+            25.67,
+            80,
+            987.65,
+            592
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 2,
+            "verticalAlignment": "middle",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "fillColor": "#FFFFFF",
+          "lineColor": "lt1",
+          "lineWidth": 1
+        },
+        {
+          "order": 2,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/7",
+          "id": "7",
+          "name": "Google Shape;7;p2",
+          "bbox": [
+            25.67,
+            80,
+            197.32,
+            400
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 2,
+            "verticalAlignment": "middle",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "lineColor": "dk1",
+          "lineWidth": 1
+        },
+        {
+          "order": 3,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/8",
+          "id": "8",
+          "name": "Google Shape;8;p2",
+          "bbox": [
+            223,
+            79.83,
+            197.5,
+            197.67
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 2,
+            "verticalAlignment": "middle",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "lineColor": "dk1",
+          "lineWidth": 1
+        },
+        {
+          "order": 4,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/9",
+          "id": "9",
+          "name": "Google Shape;9;p2",
+          "bbox": [
+            223,
+            277.5,
+            197.5,
+            202.5
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 2,
+            "verticalAlignment": "middle",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "lineColor": "dk1",
+          "lineWidth": 1
+        },
+        {
+          "order": 5,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/10",
+          "id": "10",
+          "name": "Google Shape;10;p2",
+          "bbox": [
+            420.5,
+            80,
+            197.33,
+            400
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 2,
+            "verticalAlignment": "middle",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "lineColor": "dk1",
+          "lineWidth": 1
+        },
+        {
+          "order": 6,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/11",
+          "id": "11",
+          "name": "Google Shape;11;p2",
+          "bbox": [
+            617.83,
+            80,
+            197.33,
+            197.67
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 2,
+            "verticalAlignment": "middle",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "lineColor": "dk1",
+          "lineWidth": 1
+        },
+        {
+          "order": 7,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/12",
+          "id": "12",
+          "name": "Google Shape;12;p2",
+          "bbox": [
+            617.83,
+            277.5,
+            197.33,
+            202.5
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 2,
+            "verticalAlignment": "middle",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "lineColor": "dk1",
+          "lineWidth": 1
+        },
+        {
+          "order": 8,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/13",
+          "id": "13",
+          "name": "Google Shape;13;p2",
+          "bbox": [
+            815.83,
+            80,
+            197.5,
+            400
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 2,
+            "verticalAlignment": "middle",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "lineColor": "dk1",
+          "lineWidth": 1
+        },
+        {
+          "order": 9,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/14",
+          "id": "14",
+          "name": "Google Shape;14;p2",
+          "bbox": [
+            25.67,
+            480.83,
+            494.83,
+            191.17
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 2,
+            "verticalAlignment": "middle",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "lineColor": "dk1",
+          "lineWidth": 1
+        },
+        {
+          "order": 10,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/15",
+          "id": "15",
+          "name": "Google Shape;15;p2",
+          "bbox": [
+            520.5,
+            480.83,
+            492.67,
+            191.17
+          ],
+          "geometry": "rect",
+          "resolvedTextStyle": {
+            "anchor": 2,
+            "verticalAlignment": "middle",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "lineColor": "dk1",
+          "lineWidth": 1
+        },
+        {
+          "order": 11,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/16",
+          "id": "16",
+          "name": "Google Shape;16;p2",
+          "bbox": [
+            486.34,
+            19.33,
+            147.34,
+            21.01
+          ],
+          "geometry": "rect",
+          "text": "Project / Company Name:",
+          "textPreview": "Project / Company Name:",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "resizeShapeToFitText",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Project / Company Name:",
+              "lineSpacingPercent": 100000,
+              "resolvedTextStyle": {
+                "alignment": "left"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Project / Company Name:",
+                  "fontSize": 9.33,
+                  "typeface": "Figtree",
+                  "color": "dk1",
+                  "italic": true,
+                  "textTransform": "none"
+                }
+              ]
+            }
+          ],
+          "lineWidth": 0
+        },
+        {
+          "order": 12,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/17",
+          "id": "17",
+          "name": "Google Shape;17;p2",
+          "bbox": [
+            667.51,
+            19,
+            147.34,
+            21.01
+          ],
+          "geometry": "rect",
+          "text": "Owner:",
+          "textPreview": "Owner:",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "resizeShapeToFitText",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Owner:",
+              "lineSpacingPercent": 100000,
+              "resolvedTextStyle": {
+                "alignment": "left"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Owner:",
+                  "fontSize": 9.33,
+                  "typeface": "Figtree",
+                  "color": "dk1",
+                  "italic": true,
+                  "textTransform": "none"
+                }
+              ]
+            }
+          ],
+          "lineWidth": 0
+        },
+        {
+          "order": 13,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/18",
+          "id": "18",
+          "name": "Google Shape;18;p2",
+          "bbox": [
+            885.67,
+            19,
+            127.5,
+            21.01
+          ],
+          "geometry": "rect",
+          "text": "Date:",
+          "textPreview": "Date:",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "resizeShapeToFitText",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Date:",
+              "lineSpacingPercent": 100000,
+              "resolvedTextStyle": {
+                "alignment": "left"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Date:",
+                  "fontSize": 9.33,
+                  "typeface": "Figtree",
+                  "color": "dk1",
+                  "italic": true,
+                  "textTransform": "none"
+                }
+              ]
+            }
+          ],
+          "lineWidth": 0
+        },
+        {
+          "order": 14,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/19",
+          "id": "19",
+          "name": "Google Shape;19;p2",
+          "bbox": [
+            25.67,
+            82.83,
+            183.65,
+            25.86
+          ],
+          "geometry": "rect",
+          "text": "Problem",
+          "textPreview": "Problem",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "resizeShapeToFitText",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Problem",
+              "lineSpacingPercent": 100000,
+              "resolvedTextStyle": {
+                "alignment": "left"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Problem",
+                  "fontSize": 13.33,
+                  "typeface": "Figtree",
+                  "color": "dk1",
+                  "bold": true,
+                  "textTransform": "none"
+                }
+              ]
+            }
+          ],
+          "lineWidth": 0
+        },
+        {
+          "order": 15,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/20",
+          "id": "20",
+          "name": "Google Shape;20;p2",
+          "bbox": [
+            25.67,
+            278.17,
+            183.65,
+            25.86
+          ],
+          "geometry": "rect",
+          "text": "Existing Alternatives",
+          "textPreview": "Existing Alternatives",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "resizeShapeToFitText",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Existing Alternatives",
+              "lineSpacingPercent": 100000,
+              "resolvedTextStyle": {
+                "alignment": "left"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Existing Alternatives",
+                  "fontSize": 13.33,
+                  "typeface": "Figtree",
+                  "color": "dk1",
+                  "bold": true,
+                  "textTransform": "none"
+                }
+              ]
+            }
+          ],
+          "lineWidth": 0
+        },
+        {
+          "order": 16,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/21",
+          "id": "21",
+          "name": "Google Shape;21;p2",
+          "bbox": [
+            25.67,
+            480,
+            183.65,
+            25.86
+          ],
+          "geometry": "rect",
+          "text": "Cost Structure",
+          "textPreview": "Cost Structure",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "resizeShapeToFitText",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Cost Structure",
+              "lineSpacingPercent": 100000,
+              "resolvedTextStyle": {
+                "alignment": "left"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Cost Structure",
+                  "fontSize": 13.33,
+                  "typeface": "Figtree",
+                  "color": "dk1",
+                  "bold": true,
+                  "textTransform": "none"
+                }
+              ]
+            }
+          ],
+          "lineWidth": 0
+        },
+        {
+          "order": 17,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/22",
+          "id": "22",
+          "name": "Google Shape;22;p2",
+          "bbox": [
+            223,
+            82.83,
+            183.84,
+            25.86
+          ],
+          "geometry": "rect",
+          "text": "Solution",
+          "textPreview": "Solution",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "resizeShapeToFitText",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Solution",
+              "lineSpacingPercent": 100000,
+              "resolvedTextStyle": {
+                "alignment": "left"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Solution",
+                  "fontSize": 13.33,
+                  "typeface": "Figtree",
+                  "color": "dk1",
+                  "bold": true,
+                  "textTransform": "none"
+                }
+              ]
+            }
+          ],
+          "lineWidth": 0
+        },
+        {
+          "order": 18,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/23",
+          "id": "23",
+          "name": "Google Shape;23;p2",
+          "bbox": [
+            223,
+            278.17,
+            183.84,
+            25.86
+          ],
+          "geometry": "rect",
+          "text": "Key Metrics",
+          "textPreview": "Key Metrics",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "resizeShapeToFitText",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Key Metrics",
+              "lineSpacingPercent": 100000,
+              "resolvedTextStyle": {
+                "alignment": "left"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Key Metrics",
+                  "fontSize": 13.33,
+                  "typeface": "Figtree",
+                  "color": "dk1",
+                  "bold": true,
+                  "textTransform": "none"
+                }
+              ]
+            }
+          ],
+          "lineWidth": 0
+        },
+        {
+          "order": 19,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/24",
+          "id": "24",
+          "name": "Google Shape;24;p2",
+          "bbox": [
+            422.67,
+            82.83,
+            183.65,
+            25.86
+          ],
+          "geometry": "rect",
+          "text": "Unique Value Proposition",
+          "textPreview": "Unique Value Proposition",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "resizeShapeToFitText",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Unique Value Proposition",
+              "lineSpacingPercent": 100000,
+              "resolvedTextStyle": {
+                "alignment": "left"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Unique Value Proposition",
+                  "fontSize": 13.33,
+                  "typeface": "Figtree",
+                  "color": "dk1",
+                  "bold": true,
+                  "textTransform": "none"
+                }
+              ]
+            }
+          ],
+          "lineWidth": 0
+        },
+        {
+          "order": 20,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/25",
+          "id": "25",
+          "name": "Google Shape;25;p2",
+          "bbox": [
+            422.67,
+            278.17,
+            183.65,
+            25.86
+          ],
+          "geometry": "rect",
+          "text": "High-Level Concept",
+          "textPreview": "High-Level Concept",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "resizeShapeToFitText",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "High-Level Concept",
+              "lineSpacingPercent": 100000,
+              "resolvedTextStyle": {
+                "alignment": "left"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "High-Level Concept",
+                  "fontSize": 13.33,
+                  "typeface": "Figtree",
+                  "color": "dk1",
+                  "bold": true,
+                  "textTransform": "none"
+                }
+              ]
+            }
+          ],
+          "lineWidth": 0
+        },
+        {
+          "order": 21,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/26",
+          "id": "26",
+          "name": "Google Shape;26;p2",
+          "bbox": [
+            621.5,
+            82.17,
+            183.65,
+            25.86
+          ],
+          "geometry": "rect",
+          "text": "Unfair Advantage",
+          "textPreview": "Unfair Advantage",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "resizeShapeToFitText",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Unfair Advantage",
+              "lineSpacingPercent": 100000,
+              "resolvedTextStyle": {
+                "alignment": "left"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Unfair Advantage",
+                  "fontSize": 13.33,
+                  "typeface": "Figtree",
+                  "color": "dk1",
+                  "bold": true,
+                  "textTransform": "none"
+                }
+              ]
+            }
+          ],
+          "lineWidth": 0
+        },
+        {
+          "order": 22,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/27",
+          "id": "27",
+          "name": "Google Shape;27;p2",
+          "bbox": [
+            621.5,
+            277.5,
+            183.65,
+            25.86
+          ],
+          "geometry": "rect",
+          "text": "Channels",
+          "textPreview": "Channels",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "resizeShapeToFitText",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Channels",
+              "lineSpacingPercent": 100000,
+              "resolvedTextStyle": {
+                "alignment": "left"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Channels",
+                  "fontSize": 13.33,
+                  "typeface": "Figtree",
+                  "color": "dk1",
+                  "bold": true,
+                  "textTransform": "none"
+                }
+              ]
+            }
+          ],
+          "lineWidth": 0
+        },
+        {
+          "order": 23,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/28",
+          "id": "28",
+          "name": "Google Shape;28;p2",
+          "bbox": [
+            820.83,
+            82.83,
+            183.65,
+            25.86
+          ],
+          "geometry": "rect",
+          "text": "Customer Segments",
+          "textPreview": "Customer Segments",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "resizeShapeToFitText",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Customer Segments",
+              "lineSpacingPercent": 100000,
+              "resolvedTextStyle": {
+                "alignment": "left"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Customer Segments",
+                  "fontSize": 13.33,
+                  "typeface": "Figtree",
+                  "color": "dk1",
+                  "bold": true,
+                  "textTransform": "none"
+                }
+              ]
+            }
+          ],
+          "lineWidth": 0
+        },
+        {
+          "order": 24,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/29",
+          "id": "29",
+          "name": "Google Shape;29;p2",
+          "bbox": [
+            820.83,
+            278.17,
+            183.65,
+            25.86
+          ],
+          "geometry": "rect",
+          "text": "Early Adopters",
+          "textPreview": "Early Adopters",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "resizeShapeToFitText",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Early Adopters",
+              "lineSpacingPercent": 100000,
+              "resolvedTextStyle": {
+                "alignment": "left"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Early Adopters",
+                  "fontSize": 13.33,
+                  "typeface": "Figtree",
+                  "color": "dk1",
+                  "bold": true,
+                  "textTransform": "none"
+                }
+              ]
+            }
+          ],
+          "lineWidth": 0
+        },
+        {
+          "order": 25,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/30",
+          "id": "30",
+          "name": "Google Shape;30;p2",
+          "bbox": [
+            522.17,
+            480,
+            183.65,
+            25.86
+          ],
+          "geometry": "rect",
+          "text": "Revenue Streams",
+          "textPreview": "Revenue Streams",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "resizeShapeToFitText",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Revenue Streams",
+              "lineSpacingPercent": 100000,
+              "resolvedTextStyle": {
+                "alignment": "left"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Revenue Streams",
+                  "fontSize": 13.33,
+                  "typeface": "Figtree",
+                  "color": "dk1",
+                  "bold": true,
+                  "textTransform": "none"
+                }
+              ]
+            }
+          ],
+          "lineWidth": 0
+        },
+        {
+          "order": 26,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/31",
+          "id": "31",
+          "name": "Google Shape;31;p2",
+          "bbox": [
+            58.87,
+            12.85,
+            252,
+            56.57
+          ],
+          "geometry": "rect",
+          "text": "\nLean Canvas",
+          "textPreview": "| Lean Canvas",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "resizeShapeToFitText",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "\nLean Canvas",
+              "lineSpacingPercent": 100000,
+              "resolvedTextStyle": {
+                "alignment": "left"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "\n",
+                  "alignment": "left"
+                },
+                {
+                  "index": 2,
+                  "text": "Lean Canvas",
+                  "fontSize": 17.33,
+                  "typeface": "Figtree",
+                  "color": "#444444",
+                  "bold": true,
+                  "textTransform": "none"
+                }
+              ]
+            }
+          ],
+          "lineWidth": 0
+        },
+        {
+          "order": 27,
+          "kind": "shape",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/32",
+          "id": "32",
+          "name": "Google Shape;32;p2",
+          "bbox": [
+            26,
+            678,
+            988,
+            32.85
+          ],
+          "geometry": "rect",
+          "text": "www.builtdifferent.vc \nLean Canvas template is adapted from Running Lean, by Ash Maurya. (Link to Book)",
+          "textPreview": "www.builtdifferent.vc  | Lean Canvas template is adapted from Running Lean, by Ash Maurya. (Link to Book)",
+          "resolvedTextStyle": {
+            "anchor": 1,
+            "verticalAlignment": "top",
+            "wrap": "square",
+            "autoFit": "none",
+            "insets": {
+              "top": 4.8,
+              "right": 9.6,
+              "bottom": 4.8,
+              "left": 9.6
+            },
+            "useParagraphSpacing": true
+          },
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "www.builtdifferent.vc \nLean Canvas template is adapted from Running Lean, by Ash Maurya. (Link to Book)",
+              "lineSpacingPercent": 100000,
+              "resolvedTextStyle": {
+                "alignment": "left"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "www.builtdifferent.vc",
+                  "fontSize": 9.33,
+                  "typeface": "Quattrocento Sans",
+                  "color": "#787828"
+                },
+                {
+                  "index": 2,
+                  "text": " ",
+                  "fontSize": 9.33,
+                  "typeface": "Quattrocento Sans",
+                  "color": "#808080"
+                },
+                {
+                  "index": 3,
+                  "text": "\n",
+                  "alignment": "left"
+                },
+                {
+                  "index": 4,
+                  "text": "Lean Canvas template is adapted from Running Lean, by Ash Maurya. (",
+                  "fontSize": 9.33,
+                  "typeface": "Quattrocento Sans",
+                  "color": "#808080",
+                  "textTransform": "none"
+                },
+                {
+                  "index": 5,
+                  "text": "Link to Book",
+                  "fontSize": 9.33,
+                  "typeface": "Quattrocento Sans",
+                  "color": "#787828",
+                  "textTransform": "none"
+                },
+                {
+                  "index": 6,
+                  "text": ")",
+                  "fontSize": 9.33,
+                  "typeface": "Quattrocento Sans",
+                  "color": "#808080",
+                  "textTransform": "none"
+                }
+              ]
+            }
+          ],
+          "lineWidth": 0
+        },
+        {
+          "order": 28,
+          "kind": "image",
+          "scope": "master",
+          "aid": "template/master//ppt/slideMasters/slideMaster1.xml/33",
+          "id": "33",
+          "name": "Google Shape;33;p2",
+          "bbox": [
+            25.67,
+            16,
+            139.39,
+            36.9
+          ],
+          "contentType": "image/png",
+          "asset": {
+            "assetId": "/ppt/media/image1.png",
+            "contentType": "image/png",
+            "byteLength": 17791
+          },
+          "fillImage": {
+            "assetId": "/ppt/media/image1.png",
+            "contentType": "image/png",
+            "byteLength": 17791
+          }
+        }
+      ]
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/kvqx0vqd",
+      "id": "54",
+      "name": "Google Shape;54;p1",
+      "bbox": [
+        32.5,
+        112,
+        184.17,
+        160.67
+      ],
+      "geometry": "rect",
+      "text": "Top 3 problems\nProblem 1",
+      "textPreview": "Top 3 problems | Problem 1",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Quattrocento Sans",
+        "color": "dk1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "textTransform": "none",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        },
+        "useParagraphSpacing": true
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Top 3 problems"
+          },
+          {
+            "index": 2,
+            "text": "▪ Problem 1"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Top 3 problems",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Top 3 problems",
+              "color": "#999999"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        },
+        {
+          "index": 2,
+          "text": "Problem 1",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Problem 1",
+              "alignment": "left"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        }
+      ],
+      "fillColor": "#FFFFFF",
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/lwzy90ry",
+      "id": "55",
+      "name": "Google Shape;55;p1",
+      "bbox": [
+        229.5,
+        112,
+        184.16,
+        160.66
+      ],
+      "geometry": "rect",
+      "text": "Top 3 features\nFeature 1\n",
+      "textPreview": "Top 3 features | Feature 1 |",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Quattrocento Sans",
+        "color": "dk1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "textTransform": "none",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        },
+        "useParagraphSpacing": true
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Top 3 features"
+          },
+          {
+            "index": 2,
+            "text": "▪ Feature 1"
+          },
+          {
+            "index": 3,
+            "text": ""
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Top 3 features",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Top 3 features",
+              "color": "#808080"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        },
+        {
+          "index": 2,
+          "text": "Feature 1",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Feature 1",
+              "alignment": "left"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        }
+      ],
+      "fillColor": "#FFFFFF",
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/yt8fyl87",
+      "id": "56",
+      "name": "Google Shape;56;p1",
+      "bbox": [
+        427,
+        112,
+        184.17,
+        160.67
+      ],
+      "geometry": "rect",
+      "text": "Single, clear and compelling message that states why you are different and worth buying",
+      "textPreview": "Single, clear and compelling message that states why you are different and worth buying",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Quattrocento Sans",
+        "color": "dk1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "textTransform": "none",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        },
+        "useParagraphSpacing": true
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Single, clear and compelling"
+          },
+          {
+            "index": 2,
+            "text": "message that states why you"
+          },
+          {
+            "index": 3,
+            "text": "are different and worth buying"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Single, clear and compelling message that states why you are different and worth buying",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Single, clear and compelling message that states why you are different and worth buying",
+              "color": "#808080"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        }
+      ],
+      "fillColor": "#FFFFFF",
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/juhg7q9s",
+      "id": "57",
+      "name": "Google Shape;57;p1",
+      "bbox": [
+        624.5,
+        110.83,
+        184.17,
+        160.67
+      ],
+      "geometry": "rect",
+      "text": "Can’t be easily copied or bought",
+      "textPreview": "Can’t be easily copied or bought",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Quattrocento Sans",
+        "color": "dk1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "textTransform": "none",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        },
+        "useParagraphSpacing": true
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Can’t be easily copied or"
+          },
+          {
+            "index": 2,
+            "text": "bought"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Can’t be easily copied or bought",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Can’t be easily copied or bought",
+              "color": "#808080"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        }
+      ],
+      "fillColor": "#FFFFFF",
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/wr6xwbq1",
+      "id": "58",
+      "name": "Google Shape;58;p1",
+      "bbox": [
+        822.67,
+        110.83,
+        184.17,
+        160.67
+      ],
+      "geometry": "rect",
+      "text": "Target Customers\nSegment 1",
+      "textPreview": "Target Customers | Segment 1",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Quattrocento Sans",
+        "color": "dk1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "textTransform": "none",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        },
+        "useParagraphSpacing": true
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Target Customers"
+          },
+          {
+            "index": 2,
+            "text": "▪ Segment 1"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Target Customers",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Target Customers",
+              "color": "#808080"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        },
+        {
+          "index": 2,
+          "text": "Segment 1",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Segment 1",
+              "alignment": "left"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        }
+      ],
+      "fillColor": "#FFFFFF",
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/xsfy5grm",
+      "id": "59",
+      "name": "Google Shape;59;p1",
+      "bbox": [
+        230.67,
+        311.33,
+        184.17,
+        160.67
+      ],
+      "geometry": "rect",
+      "text": "Key activities you measure\nMetric 1\n",
+      "textPreview": "Key activities you measure | Metric 1 |",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Quattrocento Sans",
+        "color": "dk1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "textTransform": "none",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        },
+        "useParagraphSpacing": true
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Key activities you measure"
+          },
+          {
+            "index": 2,
+            "text": "▪ Metric 1"
+          },
+          {
+            "index": 3,
+            "text": ""
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Key activities you measure",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Key activities you measure",
+              "color": "#808080"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        },
+        {
+          "index": 2,
+          "text": "Metric 1",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Metric 1",
+              "alignment": "left"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        }
+      ],
+      "fillColor": "#FFFFFF",
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/dc7md8fe",
+      "id": "60",
+      "name": "Google Shape;60;p1",
+      "bbox": [
+        427.5,
+        311.33,
+        184.33,
+        160.67
+      ],
+      "geometry": "rect",
+      "text": "Write down, briefly and clearly, how you would describe this idea to your friends. (e.g. Uber for boats).",
+      "textPreview": "Write down, briefly and clearly, how you would describe this idea to your friends. (e.g. Uber for boats).",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Quattrocento Sans",
+        "color": "dk1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "textTransform": "none",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        },
+        "useParagraphSpacing": true
+      },
+      "textLayout": {
+        "lineCount": 5,
+        "lines": [
+          {
+            "index": 1,
+            "text": ""
+          },
+          {
+            "index": 2,
+            "text": "Write down, briefly and clearly,"
+          },
+          {
+            "index": 3,
+            "text": "how you would describe this"
+          },
+          {
+            "index": 4,
+            "text": "idea to your friends. (e.g. Uber"
+          },
+          {
+            "index": 5,
+            "text": "for boats)."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Write down, briefly and clearly, how you would describe this idea to your friends. (e.g. Uber for boats).",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Write down, briefly and clearly, how you would ",
+              "alignment": "left"
+            },
+            {
+              "index": 2,
+              "text": "describe",
+              "alignment": "left"
+            },
+            {
+              "index": 3,
+              "text": " this idea to your friends. (e.g. Uber for boats).",
+              "alignment": "left"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        }
+      ],
+      "fillColor": "#FFFFFF",
+      "lineWidth": 0
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/cby5k3yt",
+      "id": "61",
+      "name": "Google Shape;61;p1",
+      "bbox": [
+        624.83,
+        311.33,
+        184.17,
+        160.67
+      ],
+      "geometry": "rect",
+      "text": "Path to customers\nChannel 1\n\n",
+      "textPreview": "Path to customers | Channel 1 |  |",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Quattrocento Sans",
+        "color": "dk1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "textTransform": "none",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        },
+        "useParagraphSpacing": true
+      },
+      "textLayout": {
+        "lineCount": 4,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Path to customers"
+          },
+          {
+            "index": 2,
+            "text": "▪ Channel 1"
+          },
+          {
+            "index": 3,
+            "text": ""
+          },
+          {
+            "index": 4,
+            "text": ""
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Path to customers",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Path to customers",
+              "color": "#808080"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        },
+        {
+          "index": 2,
+          "text": "Channel 1",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Channel 1",
+              "alignment": "left"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        }
+      ],
+      "fillColor": "#FFFFFF",
+      "lineWidth": 0
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ra54bix8",
+      "id": "62",
+      "name": "Google Shape;62;p1",
+      "bbox": [
+        822.67,
+        311.33,
+        184.17,
+        160.67
+      ],
+      "geometry": "rect",
+      "text": "List the characteristics of your ideal customers.\nCharacteristic 1",
+      "textPreview": "List the characteristics of your ideal customers. | Characteristic 1",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Quattrocento Sans",
+        "color": "dk1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "textTransform": "none",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        },
+        "useParagraphSpacing": true
+      },
+      "textLayout": {
+        "lineCount": 3,
+        "lines": [
+          {
+            "index": 1,
+            "text": "List the characteristics of your"
+          },
+          {
+            "index": 2,
+            "text": "ideal customers."
+          },
+          {
+            "index": 3,
+            "text": "▪ Characteristic 1"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "List the characteristics of your ideal customers.",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "List the characteristics of your ideal customers.",
+              "color": "#808080"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        },
+        {
+          "index": 2,
+          "text": "Characteristic 1",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Characteristic 1",
+              "alignment": "left"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        }
+      ],
+      "fillColor": "#FFFFFF",
+      "lineWidth": 0
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/q9wnidgn",
+      "id": "63",
+      "name": "Google Shape;63;p1",
+      "bbox": [
+        530.83,
+        512,
+        476,
+        152
+      ],
+      "geometry": "rect",
+      "text": "List your sources of revenue.\nRevenue Model (separate one-time vs recurring and include pricing)\nLife Time Value (LTV)\nGross Margin",
+      "textPreview": "List your sources of revenue. | Revenue Model (separate one-time vs recurring and include pricing) | Life Time Value (LTV) | Gross Margin",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Quattrocento Sans",
+        "color": "dk1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "textTransform": "none",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        },
+        "useParagraphSpacing": true
+      },
+      "textLayout": {
+        "lineCount": 4,
+        "lines": [
+          {
+            "index": 1,
+            "text": "List your sources of revenue."
+          },
+          {
+            "index": 2,
+            "text": "▪Revenue Model (separate one-time vs recurring and include pricing)"
+          },
+          {
+            "index": 3,
+            "text": "▪ Life Time Value (LTV)"
+          },
+          {
+            "index": 4,
+            "text": "▪ Gross Margin"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "List your sources of revenue.",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "List your sources of revenue.",
+              "color": "#808080"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        },
+        {
+          "index": 2,
+          "text": "Revenue Model (separate one-time vs recurring and include pricing)",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Revenue Model (separate one-time vs recurring and include pricing)",
+              "alignment": "left"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        },
+        {
+          "index": 3,
+          "text": "Life Time Value (LTV)",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Life Time Value (LTV)",
+              "alignment": "left"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        },
+        {
+          "index": 4,
+          "text": "Gross Margin",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Gross Margin",
+              "alignment": "left"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        }
+      ],
+      "fillColor": "#FFFFFF",
+      "lineWidth": 0
+    },
+    {
+      "order": 11,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/5onm98f2",
+      "id": "64",
+      "name": "Google Shape;64;p1",
+      "bbox": [
+        32.5,
+        512,
+        478.83,
+        152
+      ],
+      "geometry": "rect",
+      "text": "List your fixed and variable costs.\nCustomer acquisition costs\nDistribution costs\nHosting\nPeople\nEtc.",
+      "textPreview": "List your fixed and variable costs. | Customer acquisition costs | Distribution costs | Hosting | People | Etc.",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Quattrocento Sans",
+        "color": "dk1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "textTransform": "none",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        },
+        "useParagraphSpacing": true
+      },
+      "textLayout": {
+        "lineCount": 6,
+        "lines": [
+          {
+            "index": 1,
+            "text": "List your fixed and variable costs."
+          },
+          {
+            "index": 2,
+            "text": "▪ Customer acquisition costs"
+          },
+          {
+            "index": 3,
+            "text": "▪ Distribution costs"
+          },
+          {
+            "index": 4,
+            "text": "▪ Hosting"
+          },
+          {
+            "index": 5,
+            "text": "▪ People"
+          },
+          {
+            "index": 6,
+            "text": "▪ Etc."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "List your fixed and variable costs.",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "List your fixed and variable costs.",
+              "color": "#808080"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        },
+        {
+          "index": 2,
+          "text": "Customer acquisition costs",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Customer acquisition costs",
+              "alignment": "left"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        },
+        {
+          "index": 3,
+          "text": "Distribution costs",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Distribution costs",
+              "alignment": "left"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        },
+        {
+          "index": 4,
+          "text": "Hosting",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Hosting",
+              "alignment": "left"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        },
+        {
+          "index": 5,
+          "text": "People",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "People",
+              "alignment": "left"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        },
+        {
+          "index": 6,
+          "text": "Etc.",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Etc.",
+              "alignment": "left"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        }
+      ],
+      "fillColor": "#FFFFFF",
+      "lineWidth": 0
+    },
+    {
+      "order": 12,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/4ne5g3yh",
+      "id": "65",
+      "name": "Google Shape;65;p1",
+      "bbox": [
+        493.02,
+        40,
+        147.34,
+        24
+      ],
+      "geometry": "rect",
+      "text": "Startup Name",
+      "textPreview": "Startup Name",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "dk1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "textTransform": "none",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        },
+        "useParagraphSpacing": true
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Startup Name"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Startup Name",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Startup Name",
+              "typeface": "Arial"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        }
+      ],
+      "fillColor": "#FFFFFF",
+      "lineWidth": 0
+    },
+    {
+      "order": 13,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/3m547yxw",
+      "id": "66",
+      "name": "Google Shape;66;p1",
+      "bbox": [
+        675.33,
+        40,
+        147.34,
+        24
+      ],
+      "geometry": "rect",
+      "text": "Name1, Name2, …",
+      "textPreview": "Name1, Name2, …",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "dk1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "textTransform": "none",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        },
+        "useParagraphSpacing": true
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Name1, Name2, …"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Name1, Name2, …",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Name1, Name2, …",
+              "typeface": "Arial"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        }
+      ],
+      "fillColor": "#FFFFFF",
+      "lineWidth": 0
+    },
+    {
+      "order": 14,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ilw3etgr",
+      "id": "67",
+      "name": "Google Shape;67;p1",
+      "bbox": [
+        891.69,
+        40,
+        121.32,
+        24
+      ],
+      "geometry": "rect",
+      "text": "DD/MM/YYYY",
+      "textPreview": "DD/MM/YYYY",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Arial",
+        "color": "dk1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "textTransform": "none",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        },
+        "useParagraphSpacing": true
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "DD/MM/YYYY"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "DD/MM/YYYY",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "DD/MM/YYYY",
+              "typeface": "Arial"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        }
+      ],
+      "fillColor": "#FFFFFF",
+      "lineWidth": 0
+    },
+    {
+      "order": 15,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/9kr6lsfm",
+      "id": "68",
+      "name": "Google Shape;68;p1",
+      "bbox": [
+        32.5,
+        311.33,
+        184.17,
+        160.67
+      ],
+      "geometry": "rect",
+      "text": "List how these problems are solved today (include internal).\nAlternative 1\n",
+      "textPreview": "List how these problems are solved today (include internal). | Alternative 1 |",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "anchor": 1,
+        "fontSize": 12,
+        "typeface": "Quattrocento Sans",
+        "color": "dk1",
+        "alignment": "left",
+        "verticalAlignment": "top",
+        "textTransform": "none",
+        "wrap": "square",
+        "autoFit": "none",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        },
+        "useParagraphSpacing": true
+      },
+      "textLayout": {
+        "lineCount": 4,
+        "lines": [
+          {
+            "index": 1,
+            "text": "List how these problems are"
+          },
+          {
+            "index": 2,
+            "text": "solved today (include internal)."
+          },
+          {
+            "index": 3,
+            "text": "▪ Alternative 1"
+          },
+          {
+            "index": 4,
+            "text": ""
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "List how these problems are solved today (include internal).",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "List how these problems are solved today (include internal).",
+              "color": "#808080"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        },
+        {
+          "index": 2,
+          "text": "Alternative 1",
+          "lineSpacingPercent": 100000,
+          "resolvedTextStyle": {
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Alternative 1",
+              "alignment": "left"
+            }
+          ],
+          "bulletCharacter": "",
+          "marginLeft": 457200,
+          "indent": -228600
+        }
+      ],
+      "fillColor": "#FFFFFF",
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

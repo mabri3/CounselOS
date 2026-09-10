@@ -62,6 +62,7 @@ runInNewContext(panelCompilation.outputText, {
     if (id === "react-markdown") return { __esModule: true, default: ({ children }: { children?: React.ReactNode }) => React.createElement("div", { "data-markdown": "rendered" }, children) };
     if (id === "remark-gfm") return { __esModule: true, default: () => {} };
     if (id === "@/lib/impactPresentation") return impactPresentation;
+    if (id.endsWith("/MatterIcon")) return { __esModule: true, default: () => React.createElement("svg", { "aria-hidden": true }) };
     return {};
   },
 });

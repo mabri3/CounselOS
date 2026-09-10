@@ -1,0 +1,19 @@
+{"fixture_vault": "/var/folders/xb/kzc31shn1pz2s_5l2fy6d7rh0000gn/T/main-research-live-y25h6pmv/vault", "roles": {"main": {"agent_id": "counsel-copilot", "provider": "openai_compatible", "model": "deepseek-v4-flash", "reasoning_effort": "default"}, "collector": {"agent_id": "research-agent", "provider": "mock", "model": "mock", "reasoning_effort": "default"}}}
+{"matter": "MAT-DEMO-BEACON", "external": true, "run_id": "RUN-20260910-3bd11c", "state": "completed", "seconds": 5.96, "publication": {"state": "published", "receipts": {"packet": {"state": "saved", "path": "03_Matters/beacon-instant-onboarding/research/RES-20260910-191368.md"}, "recommendation": {"state": "proposed", "version_id": "REC-20260910-b672df"}, "dossier": {"state": "applied", "path": "03_Matters/beacon-instant-onboarding/dossier.md", "revision_path": "03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-b0cce3cf1cc5f011cdc9.md", "content_hash": "5c887857496871ed3a8063f1dbb68003b03af6ef8cab761c70df8da61c0ddb64"}, "conversation": {"state": "saved", "message_id": "MSG-20260910-782a1a"}}, "warnings": [], "basis_warning": ""}, "budget": {"main_calls": 1, "batches": 0, "requests": 0, "fetches": 0, "active_seconds": 4.697409542000969, "evidence_chars": 0}, "failure": null, "packet_paths": ["03_Matters/beacon-instant-onboarding/research/RES-20260910-191368.md"]}
+{"matter": "MAT-DEMO-ORBIT", "external": false, "run_id": "RUN-20260910-050bf4", "state": "completed", "seconds": 3.32, "publication": {"state": "published", "receipts": {"packet": {"state": "saved", "path": "03_Matters/orbit-bank-data/research/RES-20260910-68cea2.md"}, "recommendation": {"state": "proposed", "version_id": "REC-20260910-71d8aa"}, "dossier": {"state": "applied", "path": "03_Matters/orbit-bank-data/dossier.md", "revision_path": "03_Matters/orbit-bank-data/dossier-revisions/DOS-d04fed97ad9c67f1dcb0.md", "content_hash": "b61cf668cc43d969cea1256d2359f939de03a7f296e786dd20ecf5467d59cb5d"}, "conversation": {"state": "saved", "message_id": "MSG-20260910-789e4f"}}, "warnings": [], "basis_warning": ""}, "budget": {"main_calls": 1, "batches": 0, "requests": 0, "fetches": 0, "active_seconds": 2.095847499993397, "evidence_chars": 0}, "failure": null, "packet_paths": ["03_Matters/orbit-bank-data/research/RES-20260910-68cea2.md"]}
+Traceback (most recent call last):
+  File "/Users/bharris/Programs/counsel-os-mvp/backend/tests/manual/evaluate_research_investigation.py", line 53, in <module>
+    asyncio.run(main())
+  File "/Users/bharris/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/Users/bharris/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/bharris/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/bharris/Programs/counsel-os-mvp/backend/tests/manual/evaluate_research_investigation.py", line 50, in main
+    await context.provider_router.aclose()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ProviderRouter' object has no attribute 'aclose'. Did you mean: 'close'?

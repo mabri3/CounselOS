@@ -16,6 +16,18 @@ def _write(app_context, content: str, metadata: dict | None = None) -> None:
     app_context.vault.write_markdown(PATH, content, metadata or {"record_type": "draft"})
 
 
+def test_untracked_review_projects_the_saved_markdown_after_normalization(app_context):
+    _write(app_context, "Original")
+    app_context.document_reviews.apply(PATH, DocumentReviewAction(
+        action="save_untracked", content="\nLawyer edit.\nOriginal\n"))
+    before = app_context.vault.read_text(PATH)
+    review = app_context.document_reviews.get(PATH)
+    visible = "".join(item["text"] for item in review["segments"] if item["kind"] != "delete")
+    assert visible == app_context.vault.read_markdown(PATH)["content"]
+    assert not review["tracking"]
+    assert app_context.vault.read_text(PATH) == before
+
+
 def test_track_changes_can_accept_and_reject_individual_changes(app_context):
     _write(app_context, "The notice period is 10 days.")
     app_context.document_reviews.apply(PATH, DocumentReviewAction(action="set_tracking", enabled=True))

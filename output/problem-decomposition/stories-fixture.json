@@ -1,0 +1,35 @@
+{
+  "vault": "/var/folders/xb/kzc31shn1pz2s_5l2fy6d7rh0000gn/T/problem-breakdown-browser-1yxxlm3o/vault",
+  "stories": {
+    "A": "MAT-20260910-a20dd2",
+    "B": "MAT-20260910-886577",
+    "C": "MAT-20260910-c5eaaf"
+  },
+  "decision": {
+    "decision_id": "DEC-20260910-ec1c28",
+    "matter_id": "MAT-20260910-886577",
+    "path": "03_Matters/synthetic-story-b-886577/decisions/DEC-20260910-ec1c28.md",
+    "title": "Synthetic earlier pilot decision",
+    "chosen_path": "Allow under fictional 2025 rule.",
+    "rationale": "Fixture only.",
+    "decision_maker": "Synthetic lawyer",
+    "decision_type": "legal_decision",
+    "decided_at": "2026-09-10T13:24:24+00:00",
+    "next_review_at": null,
+    "last_reviewed_at": "2026-09-10T13:24:24+00:00",
+    "risk_level": "unknown",
+    "review_status": "fresh",
+    "staleness_reason": "",
+    "linked_paths": "[]",
+    "conditions": [],
+    "not_decided": [],
+    "mitigation_ids": [],
+    "review_packet_ids": [],
+    "revises_decision_id": null,
+    "recommendation_disposition": "not_applicable",
+    "recommendation_disposition_reason": "",
+    "recommendation_version_id": null,
+    "map_basis": null,
+    "request_fingerprint": "b02ad5e426afc2cf6e7b7c7e0446ef3678505a635a16bc6c29891b298ac721e1"
+  }
+}

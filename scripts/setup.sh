@@ -36,6 +36,7 @@ fi
 "$PYTHON_BIN" -m venv --clear "$ROOT/backend/.venv"
 "$ROOT/backend/.venv/bin/pip" install --upgrade pip
 "$ROOT/backend/.venv/bin/pip" install -r "$ROOT/backend/requirements.txt"
+"$ROOT/backend/.venv/bin/python" -m playwright install chromium
 
 cd "$ROOT/frontend"
 npm install

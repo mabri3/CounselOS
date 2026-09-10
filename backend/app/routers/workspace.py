@@ -657,3 +657,14 @@ def answer_path_condition(matter_id: str, issue_id: str, condition_id: str,
     history.append(entry)
     context.vault.write_markdown(doc["path"], doc["content"], doc["metadata"])
     return entry
+
+
+@router.get("/problem-analysis")
+def get_historical_problem_analysis(matter_id: str, reference: str, context=Depends(get_context)):
+    """Read an exact saved breakdown without changing its current pointer."""
+    import json
+    def load():
+        ref = json.loads(reference)
+        analysis = context.problem_analysis.load(matter_id, reference=ref)
+        return {"state": "historical", "analysis": analysis, "reference": ref, "warnings": analysis["warnings"]}
+    return invoke(load)

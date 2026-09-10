@@ -1,0 +1,86 @@
+ M backend/app/agents/runner.py
+ M backend/app/blank_vault_template/00_System/agents/counsel-copilot.md
+ M backend/app/blank_vault_template/00_System/tools/run_research.md
+ M backend/app/blank_vault_template/00_System/tools/save_work_product.md
+ M backend/app/intelligence/fetch.py
+ M backend/app/models/api.py
+ M backend/app/models/awareness.py
+ M backend/app/routers/chat.py
+ M backend/app/routers/matters.py
+ M backend/app/services/dossier.py
+ M backend/app/services/index.py
+ M backend/app/services/matter_state.py
+ M backend/app/services/matters.py
+ M backend/app/services/recommendations.py
+ M backend/app/services/research.py
+ M backend/app/services/research_runs.py
+ M backend/app/services/scheduler.py
+ M backend/app/services/vault.py
+ M backend/app/tools/capabilities.py
+ M backend/app/tools/handlers.py
+ M backend/app/tools/registry.py
+ M backend/requirements.txt
+ M backend/tests/test_agents.py
+ M backend/tests/test_firecrawl.py
+ M backend/tests/test_matter_action_api.py
+ M backend/tests/test_research.py
+ M frontend/app/matters/[matterId]/research/page.tsx
+ M frontend/app/matters/page.tsx
+ M frontend/components/AppShell.tsx
+ M frontend/components/ChatCards.tsx
+ M frontend/components/MatterWorkspace.tsx
+ M frontend/components/Phase2Icon.tsx
+ M frontend/components/experimental/ExperimentalChat.module.css
+ M frontend/components/experimental/ExperimentalChat.tsx
+ M frontend/components/experimental/ExperimentalNextSteps.tsx
+ M frontend/lib/api.ts
+ M frontend/lib/types.ts
+ M scripts/setup.sh
+?? .tmp/
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/"
+?? backend/app/models/research_scope.py
+?? backend/app/services/matter_storage.py
+?? backend/app/services/native_research.py
+?? backend/app/services/research_reader.py
+?? backend/tests/test_living_dossier.py
+?? backend/tests/test_matter_storage.py
+?? backend/tests/test_native_research.py
+?? backend/tests/test_research_scope.py
+?? docs/living-dossier.md
+?? docs/main-agent-research-dossier.handoff-plan.md
+?? docs/main-agent-research-dossier.handoff-progress.md
+?? docs/main-agent-research-dossier.handoff-prompt.md
+?? docs/matter-storage.md
+?? docs/research-source-choices.md
+?? frontend/.next-card-drag-build/
+?? frontend/.next-choice-workflow-dev/
+?? frontend/.next-citation-reading-build/
+?? frontend/.next-dossier-check/
+?? frontend/.next-firecrawl-repair-build/
+?? frontend/.next-matter-a-build/
+?? frontend/.next-matter-a-dev/
+?? frontend/.next-matter-storage-check/
+?? frontend/.next-matter-storage-dev/
+?? frontend/.next-native-research-build/
+?? frontend/.next-native-research-dev/
+?? frontend/.next-phase2-build/
+?? frontend/.next-phase2-dev/
+?? frontend/.next-research-gate-check/
+?? frontend/.next-research-gate-dev/
+?? frontend/.next-research-scope-build/
+?? frontend/.next-research-scope-dev/
+?? frontend/app/matters/storage/
+?? frontend/components/ResearchScopeChoice.module.css
+?? frontend/components/ResearchScopeChoice.tsx
+?? frontend/components/experimental/nextSteps.ts
+?? frontend/lib/researchScope.ts
+?? frontend/scripts/check-next-steps.ts
+?? output/choice-revision-captures/
+?? output/experimental-chat/
+?? output/living-dossier/
+?? output/main-agent-research-dossier/
+?? output/matter-storage/
+?? output/research-scope/
+?? output/shared-questions/
+?? output/uiphase2-implementation/test-root/
+?? test-results/

@@ -1,0 +1,69 @@
+{
+  "matter_id": "MAT-20260910-5e5646",
+  "vault": "/var/folders/xb/kzc31shn1pz2s_5l2fy6d7rh0000gn/T/problem-breakdown-browser-1yxxlm3o/vault",
+  "initial": {
+    "analysis_id": "PA-3bca4d2ebdfac82528b4528c",
+    "analysis_revision": "b5f6270103a4274bf54cec2cc46a09a9ce2a14d02e73a3bc9b9adb9b4fd790c4",
+    "source_path": "03_Matters/synthetic-lifecycle-d-5e5646/conversations/inquiries/RUN-20260910-f9947c.md",
+    "output_revision": "d5805b8a2c3ce979be5adfbbe25af97f5ea744f9116f35ca0a398866bf6aef17",
+    "run_id": "RUN-20260910-f9947c",
+    "captured_at": "2026-09-10T13:29:40.980247+00:00"
+  },
+  "current": {
+    "analysis_id": "PA-1beea800054c168ca05893d0",
+    "analysis_revision": "fdf5f2f3b8dbb267f236af22406657fa9e6290f7a202f4af039016168603c936",
+    "source_path": "03_Matters/synthetic-lifecycle-d-5e5646/conversations/inquiries/RUN-20260910-dd35ff.md",
+    "output_revision": "d5805b8a2c3ce979be5adfbbe25af97f5ea744f9116f35ca0a398866bf6aef17",
+    "run_id": "RUN-20260910-dd35ff",
+    "captured_at": "2026-09-10T13:29:43.764750+00:00"
+  },
+  "historical_research": {
+    "run_id": "RUN-20260910-117db9",
+    "path": "03_Matters/synthetic-lifecycle-d-5e5646/research/RES-20260910-bad877.md",
+    "analysis_id": "PA-a7630f1b5e396989b9b42713"
+  },
+  "typed_answer": {
+    "receipt_id": "IRC-2d36be7f4bb8355992126b08",
+    "source_action_key": "D-answer",
+    "operation": "answer_question",
+    "target": {
+      "condition_id": null,
+      "analysis_id": null,
+      "analysis_revision": null,
+      "option_id": null,
+      "option_revision": null,
+      "matter_id": "MAT-20260910-5e5646",
+      "business_question_id": "BQ-ac9d3fd41fc73423",
+      "business_question_revision": null,
+      "issue_id": null,
+      "source_id": null,
+      "scenario_id": null,
+      "artifact_path": null,
+      "artifact_revision": null,
+      "artifact_review_revision": null,
+      "selected_range": null,
+      "local_draft_snapshot": null
+    },
+    "state": "applied",
+    "before_revision": "70af90de63db882619123f03ed8add980bd10e58a4b06e66e5c192ebaa06c6e1",
+    "after_revision": "742c5e274929af184458281301fc61e25c29f82b9653f743de239458ec10bf84",
+    "source_message_id": null,
+    "run_id": null,
+    "changed_links": [
+      "03_Matters/synthetic-lifecycle-d-5e5646/facts.md",
+      "03_Matters/synthetic-lifecycle-d-5e5646/workspace.md"
+    ],
+    "completed_parts": [
+      "reported_fact",
+      "supporting_question"
+    ],
+    "failure_detail": null,
+    "created_at": "2026-09-10T13:29:40+00:00",
+    "request_fingerprint": "6194b4336fec7dafc5df35ebf09a5a0700f1170ccd0de11cad2872ecceaf390f"
+  },
+  "fact_count": 3,
+  "provider_research_calls": 1,
+  "retry_no_calls": true,
+  "index_rebuild_same": true,
+  "pass": true
+}

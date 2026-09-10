@@ -9,7 +9,7 @@ const flow = readFileSync(resolve(root, "components/workspace/BusinessFlow.tsx")
 const inquiry = readFileSync(resolve(root, "components/workspace/InquiryActions.tsx"), "utf8");
 
 assert.match(scenario, /onCreate\(\{[\s\S]*baseline_revisions: input.currentRevisions/, "scenario creation must freeze the current baseline");
-assert.match(scenario, /Actual matter facts are unchanged/, "scenario creation must state its historical boundary");
+assert.match(scenario, /Actual matter facts and decisions are unchanged/, "scenario creation must state its historical boundary");
 assert.match(scenario, /new Set\(\[\.\.\.Object\.keys\(scenario\.baseline_revisions\), \.\.\.Object\.keys\(current\)\]\)/, "stale comparison must include sources added after a scenario baseline");
 assert.match(scenario, /hasCompleteBaseline[\s\S]*Baseline unavailable/, "a missing baseline must not be labelled complete");
 assert.match(scenario, /onAnalyze\(selected\.scenario_id, analysisInstruction\.trim\(\), sourceActionKey\)/, "analysis must use the durable action path with a stable retry key");
@@ -23,7 +23,7 @@ assert.match(scenario, /style=\{previewIsOneLongBlock \? \{ maxHeight: "30rem", 
 assert.match(explorationStyles, /scenario-analysis__table[\s\S]*scenario-analysis__code[^}]*overflow-x: auto/, "wide analysis tables and code must scroll inside the analysis card");
 assert.match(explorationStyles, /scenario-analysis \.reading[\s\S]*overflow-wrap: anywhere/, "long analysis words must wrap within the reading width");
 assert.match(scenario, /onAdopt\(selected\.scenario_id, selectedChanges, currentRevisions/, "adoption must send only selected changes with revision checks");
-assert.match(scenario, /Correct a fact[\s\S]*separate from adopting a hypothetical scenario/, "actual fact correction must remain separate from scenarios");
+assert.match(scenario, /Correct a fact[\s\S]*Real-record editing/, "actual fact correction must remain separate from scenarios");
 assert.match(scenario, /const expectedRevisions = correctionRevisions \?\? currentRevisions/, "a correction must keep its original revision baseline");
 assert.match(scenario, /Use latest matter facts/, "a stale correction must offer an explicit rebase while retaining text");
 assert.match(scenario, /onOpenArtifact\(path\)/, "internal scenario sources must open through the workspace artifact seam");
@@ -32,7 +32,7 @@ assert.match(scenario, /disabled=\{locked\}/, "scenario inputs must lock while a
 assert.match(scenario, /Your (changes|question|selection|text) (are|is) retained/, "scenario failures must retain lawyer input");
 
 assert.match(flow, /ordered relationships/i, "flow must be a readable list editor");
-assert.match(flow, /Flow sketch[\s\S]*This diagram mirrors the editable ordered relationship list below/, "flow must pair its editable list with an equivalent diagram");
+assert.match(flow, /Business flow sketch[\s\S]*aria-label="Business flow diagram"/, "flow must pair its editable list with an equivalent diagram");
 assert.match(flow, /business-flow__sketch-route[\s\S]*From[\s\S]*Relationship[\s\S]*To/, "each diagram step must show the named from, relationship, and to route");
 assert.match(flow, /edgeDetails[\s\S]*Timing[\s\S]*Custody[\s\S]*Ownership[\s\S]*Uncertainty/, "the diagram must surface recorded operational details without inventing them");
 assert.match(explorationStyles, /@media \(max-width: 760px\)[\s\S]*business-flow__sketch-route[\s\S]*grid-template-columns: 1fr;/, "the diagram must stack safely on a narrow screen");
@@ -40,7 +40,7 @@ assert.doesNotMatch(flow, /dangerouslySetInnerHTML/, "flow labels must remain Re
 assert.match(flow, /Timing[\s\S]*Custody[\s\S]*Ownership[\s\S]*Uncertainty/, "each flow relationship needs material operational fields");
 assert.match(flow, /onSave\([\s\S]*baseRevision/, "flow save must carry its expected revision");
 assert.match(flow, /if \(dirty \|\| flow\.revision === baseRevision\) return/, "incoming flow refreshes must not reset unsaved edits");
-assert.match(flow, /onAcceptFactChanges\(selectedChanges, currentRevisions/, "acceptance must be an explicit action with revision checks");
+assert.match(flow, /onAcceptFactChanges\(\s*selectedChanges,\s*currentRevisions/, "acceptance must be an explicit action with revision checks");
 assert.match(flow, /Your edits are retained/, "flow conflicts must preserve local edits");
 assert.match(flow, /Refresh current flow[\s\S]*Copy local edits[\s\S]*Rebase my edits/, "a flow conflict must offer refresh, copy, and explicit rebase paths");
 assert.match(flow, /disabled=\{locked\}/, "flow inputs must lock while a conflicting save is pending");

@@ -14,9 +14,10 @@ from app.services.workspace import WorkspaceService, WorkspaceConflict, digest
 
 
 class WorkspaceEvidenceService:
-    def __init__(self, vault, matters, workspace=None):
+    def __init__(self, vault, matters, workspace=None, source_library=None):
         self.vault, self.matters = vault, matters
         self.workspace = workspace or WorkspaceService(vault, matters)
+        self.source_library = source_library
 
     def selection(self, matter_id: str) -> dict[str, Any]:
         doc = self.workspace._document(matter_id, "workspace.md")
@@ -221,6 +222,33 @@ class WorkspaceEvidenceService:
         passage = "\n".join(lines[start:end]).strip()
         return passage or None
 
+    def _library_states(self, matter_id: str) -> dict[str, dict[str, Any]]:
+        """Report the saved source library's own extraction state for each original.
+
+        The editable companion keeps its own state; this reports evidence
+        extraction, so a partly extracted source does not read as fully saved.
+        """
+        if self.source_library is None:
+            return {}
+        states: dict[str, dict[str, Any]] = {}
+        try:
+            versions = self.source_library.versions(matter_id)
+        except Exception:
+            return {}
+        for record in versions:
+            entry = {"library_source_id": record["source_id"], "library_source_version": record["source_version"],
+                     "library_extraction_state": record["extraction_state"],
+                     "library_unread_pages": record["unread_page_count"]}
+            if record["extraction_state"] != "complete":
+                entry["extraction_state"] = "partial" if record["extraction_state"] == "partial" else "unavailable"
+                entry["failure_detail"] = (
+                    f"Source saved; {record['unread_page_count']} pages are not extracted yet."
+                    if record["unread_page_count"] else "Source saved; no text could be extracted from it.")
+            previous = states.get(record["original_path"])
+            if previous is None or record["extraction_state"] == "complete":
+                states[record["original_path"]] = entry
+        return states
+
     def library(self, matter_id: str, *, query: str = "") -> list[dict[str, Any]]:
         base = self.matters.matter_path(matter_id)
         root = self.vault.resolve(base)
@@ -237,6 +265,7 @@ class WorkspaceEvidenceService:
             except (OSError, ValueError, TypeError, yaml.YAMLError):
                 continue
         result = []
+        library = self._library_states(matter_id)
         selected = self.selection(matter_id)["selections"]
         for path in files:
             relative = self.vault.relative(path)
@@ -261,7 +290,8 @@ class WorkspaceEvidenceService:
                            "extracted_path": companion["path"] if companion else None,
                            "extraction_state": source_meta.get("extraction_state") or ("available" if companion and "No extractable text was found." not in companion["content"] else "unavailable"),
                            "support_state": "supplied" if not is_output else "generated",
-                           "uploaded_at": source_meta.get("created_at"), "available": True})
+                           "uploaded_at": source_meta.get("created_at"), "available": True,
+                           **library.get(relative, {})})
         for item in result:
             item.setdefault("reference_id", item.get("source_id") or "FILE-" + digest(item["path"])[:20])
             item.setdefault("selected", any((s.get("reference_id") == item["reference_id"] or s.get("path") == item["path"])

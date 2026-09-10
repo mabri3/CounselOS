@@ -1,0 +1,52 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____ test_source_confirmation_pdf_followup_origin_and_publication[False] ______
+
+app_context = <app.runtime.AppContext object at 0x10bd136e0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10bf1eab0>
+external = False
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("external", [True, False])
+    async def test_source_confirmation_pdf_followup_origin_and_publication(app_context, monkeypatch, external):
+        main, discoveries, fetches = install_boundaries(app_context, monkeypatch)
+        app = make_app(app_context, "http://localhost:3127")
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+            created = await client.post("/api/matters", json={"title": "Synthetic asset acquisition" if external else "Synthetic vendor termination", "request_text": "Research transfer permission for an asset purchase." if external else "Compare supplied vendor termination versions."})
+            assert created.status_code == 201, created.text
+            matter = created.json()["matter_id"]
+            if not external:
+                root = app_context.matters.matter_path(matter)
+                app_context.vault.write_markdown(root + "/documents/contract-v1.md", "Signed version A requires 30 days notice.")
+                app_context.vault.write_markdown(root + "/documents/contract-v2.md", "Version B requires 60 days notice. Signature status not confirmed.")
+                app_context.index.rebuild()
+            response = await client.post("/api/chat", json={"matter_id": matter, "message": "Research this matter using the available sources.", "experimental_chat": True})
+            assert response.status_code == 200, response.text
+            data = response.json()
+            proposal = next(r for r in data["operation_results"] if r["operation"] == "run_research")
+            conversation = data["conversation_id"]
+            payload = {"matter_id": matter, "conversation_id": conversation, "message": "Start research", "experimental_chat": True,
+                       "card_action": {"card_id": "operation-result:" + proposal["action"], "action": "apply", "values": ["yes" if external else "no", "no", "Synthetic transfer permission rule", "yes" if external else "no", "no", "yes"]}}
+            confirmed = await client.post("/api/chat", json=payload)
+            assert confirmed.status_code == 200, confirmed.text
+            await app_context.research_runs.wait_for_active_work()
+            runs = app_context.research_runs.list(matter)
+            assert len(runs) == 1, runs
+            run = runs[0]
+>           assert run["state"] == "completed", run
+E           AssertionError: {'batch_id': 'RB-20260910-5c2c1d', 'batch_position': 1, 'batch_run_ids': ['RUN-20260910-ddc482'], 'batch_source_action_key': 'MSG-20260910-17bcf0:tool:04978eb5e83c2364d7ec129a', ...}
+E           assert 'failed' == 'completed'
+E             
+E             - completed
+E             + failed
+
+tests/test_research_lifecycle.py:35: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/bharris/Programs/counsel-os-mvp/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_research_lifecycle.py::test_source_confirmation_pdf_followup_origin_and_publication[False]
+1 failed, 1 warning in 9.94s

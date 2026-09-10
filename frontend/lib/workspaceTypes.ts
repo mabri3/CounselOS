@@ -1,3 +1,4 @@
+import type { ProblemAnalysisStatus } from "./problemAnalysisTypes";
 import type { IssueAnalysisStatus, DecisionPathPrefill } from "./decisionMapTypes";
 // Shared workspace projections. Keep aligned with backend/app/models/workspace.py.
 import type { ReactNode } from "react";
@@ -546,6 +547,7 @@ export interface AssumptionWatchLink {
 }
 
 export interface WorkspaceSnapshot {
+  problem_analysis?: ProblemAnalysisStatus | null;
   issue_analyses?: Record<string, IssueAnalysisStatus>;
   update_offers?: UpdateOffer[];
   claims?: WorkspaceClaim[];
@@ -655,6 +657,7 @@ export interface ReviewOrientationProps {
   onShowAllIssues: () => void;
 }
 export interface UnderstandPanelProps extends WorkspaceActions {
+  onProblemDiscuss?: (instruction: string) => void;
   snapshot: WorkspaceSnapshot | null;
   loading?: boolean;
   error?: string | null;

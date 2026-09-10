@@ -14,6 +14,17 @@ from app.providers.base import ProviderSelection
 from app.tools.handlers import run_research
 from app.tools.registry import ToolExecutionContext
 from app.services.workspace import digest
+from app.models.research_scope import ResearchScope
+
+
+async def external_research(app_context, matter_id, question="", **kwargs):
+    """These legacy retrieval tests explicitly opt into the configured providers."""
+    return await app_context.research.run(
+        matter_id, question, search_scope=ResearchScope(
+            external=True, public_query=question,
+            provider_ids=app_context.research.search_options()["provider_ids"],
+        ), execution_version=1, **kwargs,
+    )
 
 
 @pytest.mark.asyncio
@@ -43,15 +54,17 @@ async def test_research_projection_failure_preserves_packet_without_fake_revisio
         raise RuntimeError("projection offline")
 
     monkeypatch.setattr(app_context.dossiers, "project_current_work_state", fail_projection)
-    result = await app_context.research.run(
-        "MAT-DEMO-BEACON", "Which rules control?", change_stage=False,
-    )
+    async def main_answer(request, **kwargs):
+        return ChatResponse(reply="Useful synthetic answer requiring a dossier update.")
+    app_context.research.bind_agent_runner(main_answer)
+    run = app_context.research_runs.start("MAT-DEMO-BEACON", ["Which rules control?"])
+    await app_context.research_runs.wait_for_active_work()
+    saved = app_context.research_runs.get("MAT-DEMO-BEACON", run["run_id"])
+    assert app_context.vault.exists(saved["results"][0]["path"])
+    assert saved["publication"]["state"] == "partial"
+    assert "dossier" not in saved["publication"]["receipts"]
+    assert any("Dossier publication failed" in warning for warning in saved["publication"]["warnings"])
 
-    assert app_context.vault.exists(result["path"])
-    assert result["dossier_projection"]["state"] == "failed"
-    assert "path" not in result["dossier_projection"]
-    assert "revision_path" not in result["dossier_projection"]
-    assert "dossier did not refresh" in result["warning"]
 
 
 @pytest.mark.asyncio
@@ -92,14 +105,14 @@ async def test_repeated_research_reuses_open_review_item(app_context):
         return {"external": [{"title": "Agency rule", "url": "https://agency.example/rule"}]}
 
     app_context.research.search.search_external = public_search
-    first = await app_context.research.run("MAT-DEMO-ORBIT", "First question")
+    first = await external_research(app_context, "MAT-DEMO-ORBIT", "First question")
     first_items = app_context.index.list_work_items("MAT-DEMO-ORBIT")
     first_review = next(
         item for item in first_items
         if app_context.vault.read_markdown(item["path"])["metadata"].get("source_kind") == "research_review"
     )
 
-    second = await app_context.research.run("MAT-DEMO-ORBIT", "Second question")
+    second = await external_research(app_context, "MAT-DEMO-ORBIT", "Second question")
     reviews = [
         item for item in app_context.index.list_work_items("MAT-DEMO-ORBIT")
         if app_context.vault.read_markdown(item["path"])["metadata"].get("source_kind") == "research_review"
@@ -117,7 +130,7 @@ async def test_completed_research_review_gets_new_item_on_next_run(app_context):
         return {"external": [{"title": "Agency rule", "url": "https://agency.example/rule"}]}
 
     app_context.research.search.search_external = public_search
-    await app_context.research.run("MAT-DEMO-ORBIT", "First question")
+    await external_research(app_context, "MAT-DEMO-ORBIT", "First question")
     review = next(
         item for item in app_context.index.list_work_items("MAT-DEMO-ORBIT")
         if app_context.vault.read_markdown(item["path"])["metadata"].get("source_kind") == "research_review"
@@ -125,7 +138,7 @@ async def test_completed_research_review_gets_new_item_on_next_run(app_context):
     app_context.vault.update_markdown(review["path"], metadata_updates={"status": "done"})
     app_context.index.rebuild()
 
-    await app_context.research.run("MAT-DEMO-ORBIT", "Second question")
+    await external_research(app_context, "MAT-DEMO-ORBIT", "Second question")
     reviews = [
         item for item in app_context.index.list_work_items("MAT-DEMO-ORBIT")
         if app_context.vault.read_markdown(item["path"])["metadata"].get("source_kind") == "research_review"
@@ -158,8 +171,8 @@ async def test_external_provider_hang_uses_one_total_budget_and_saves_partial_pa
     })
 
     result = await asyncio.wait_for(
-        app_context.research.run(
-            "MAT-DEMO-ORBIT", "Which rules control?", change_stage=False
+        external_research(
+            app_context, "MAT-DEMO-ORBIT", "Which rules control?", change_stage=False
         ),
         timeout=0.3,
     )
@@ -214,7 +227,7 @@ async def test_research_completes_only_supplied_exact_work_item(app_context):
 
 
 @pytest.mark.asyncio
-async def test_research_uses_bound_research_agent_without_changing_manual_behavior(app_context):
+async def test_research_uses_bound_main_agent_without_changing_manual_behavior(app_context):
     requests = []
 
     async def run_agent(request):
@@ -224,7 +237,7 @@ async def test_research_uses_bound_research_agent_without_changing_manual_behavi
     app_context.research.bind_agent_runner(run_agent)
     result = await app_context.research.run("MAT-DEMO-ORBIT", "Which rules control?")
 
-    assert requests[0].agent_id == "research-agent"
+    assert requests[0].agent_id == "counsel-copilot"
     assert "Configured agent analysis" in app_context.vault.read_markdown(result["path"])["content"]
     assert app_context.index.get_matter("MAT-DEMO-ORBIT")["status"] == "explore"
 
@@ -298,8 +311,8 @@ async def test_queued_research_prompt_uses_frozen_request_and_internal_sources(a
     app.vault.write_markdown(request_path, "CHANGED AFTER QUEUE", original["metadata"])
     await runs.wait(started["run_id"])
     assert requests
-    assert "Can we remove manual review" in requests[0].message
-    assert "CHANGED AFTER QUEUE" not in requests[0].message
+    assert "Can we remove manual review" in requests[0].frozen_context["context"]
+    assert "CHANGED AFTER QUEUE" not in requests[0].frozen_context["context"]
 
 
 @pytest.mark.asyncio
@@ -334,8 +347,8 @@ async def test_queued_issue_research_uses_frozen_facts_and_cannot_replace_curren
     changed_fact = old_fact + " Changed after enqueue."
 
     async def run_agent(request, **_kwargs):
-        assert old_fact in request.message
-        assert changed_fact not in request.message
+        assert old_fact in request.frozen_context["context"]
+        assert changed_fact not in request.frozen_context["context"]
         return ChatResponse(reply=(
             "Useful queued analysis.\n\n```decision-paths\n"
             + json.dumps(structure)
@@ -361,7 +374,6 @@ async def test_queued_issue_research_uses_frozen_facts_and_cannot_replace_curren
 async def test_research_refreshes_precomputed_dossier_orientation(app_context):
     decision_question_before = (
         app_context.dossiers.orientation("MAT-DEMO-ORBIT")["decision_question"]
-        or app_context.index.get_matter("MAT-DEMO-ORBIT")["next_action"]
     )
     async def run_agent(_request):
         return ChatResponse(
@@ -379,12 +391,11 @@ async def test_research_refreshes_precomputed_dossier_orientation(app_context):
         )
 
     app_context.research.bind_agent_runner(run_agent)
-    result = await app_context.research.run(
-        "MAT-DEMO-ORBIT",
-        "What notice and reason-code work is needed?",
-        change_stage=False,
-    )
-
+    run = app_context.research_runs.start("MAT-DEMO-ORBIT", ["What notice and reason-code work is needed?"])
+    await app_context.research_runs.wait_for_active_work()
+    saved = app_context.research_runs.get("MAT-DEMO-ORBIT", run["run_id"])
+    assert saved["state"] == "completed", saved
+    result = saved["results"][0]
     assert result["orientation_warning"] is None
     assert app_context.dossiers.orientation("MAT-DEMO-ORBIT") == {
         "summary": (
@@ -432,6 +443,8 @@ async def test_research_run_reuses_saved_provider_selection(app_context):
         reasoning_effort="high",
     )
     resolved = ResolvedAgentProvider(provider=provider, selection=selection)
+    main_selection = ProviderSelection(agent_id="counsel-copilot", provider="codex", model="saved-main-model", reasoning_effort="medium")
+    main_resolved = ResolvedAgentProvider(provider=provider, selection=main_selection)
     seen = []
 
     async def run_agent(_request, *, resolved_provider=None):
@@ -443,6 +456,7 @@ async def test_research_run_reuses_saved_provider_selection(app_context):
         app_context.vault,
         app_context.research,
         resolve_agent=lambda: resolved,
+        resolve_main=lambda: main_resolved,
         resolve_selection=lambda saved: ResolvedAgentProvider(provider=provider, selection=saved),
     )
     started = runs.start("MAT-DEMO-BEACON", ["One", "Two"])
@@ -450,7 +464,7 @@ async def test_research_run_reuses_saved_provider_selection(app_context):
     await runs.wait_for_active_work()
 
     assert len(seen) == 2
-    assert all(item is not None and item.selection == selection for item in seen)
+    assert all(item is not None and item.selection == main_selection for item in seen)
 
 
 @pytest.mark.asyncio
@@ -485,7 +499,7 @@ async def test_automatic_research_enters_research_while_intake_run_is_active(app
 
 
 @pytest.mark.asyncio
-async def test_chat_research_tool_returns_while_background_run_is_active(app_context):
+async def test_chat_research_tool_waits_for_source_choice(app_context):
     app_context.matters.move_stage("MAT-DEMO-BEACON", "explore")
     entered = asyncio.Event()
     release = asyncio.Event()
@@ -503,27 +517,17 @@ async def test_chat_research_tool_returns_while_background_run_is_active(app_con
         ),
         timeout=0.1,
     )
-    await entered.wait()
-
     active = app_context.research_runs.list("MAT-DEMO-BEACON")
-    assert len(active) == 1
-    assert active[0]["state"] == "running"
-    assert app_context.index.get_matter("MAT-DEMO-BEACON")["status"] == "research"
-
-    assert result["data"]["run_id"] == active[0]["run_id"]
-    assert result["data"]["state"] in {"queued", "running"}
-    assert result["changed_paths"] == [active[0]["path"]]
-
-    release.set()
-    await app_context.research_runs.wait(active[0]["run_id"])
-    completed = app_context.research_runs.get("MAT-DEMO-BEACON", active[0]["run_id"])
-
-    assert completed["state"] == "completed"
+    assert active == []
+    assert not entered.is_set()
+    assert result["operation_status"] == "confirmation_required"
+    assert result["changed_paths"] == []
+    assert result["data"]["proposal"]["question"] == "What applies?"
     assert app_context.index.get_matter("MAT-DEMO-BEACON")["status"] == "explore"
 
 
 @pytest.mark.asyncio
-async def test_chat_reply_contains_polling_card_for_background_research(app_context):
+async def test_chat_reply_contains_source_confirmation_before_background_research(app_context):
     entered = asyncio.Event()
     release = asyncio.Event()
 
@@ -558,14 +562,11 @@ async def test_chat_reply_contains_polling_card_for_background_research(app_cont
         )),
         timeout=0.1,
     )
-    await entered.wait()
-
-    card = next(item for item in response.cards if item.type == "research_status")
-    assert card.state in {"queued", "running"}
-    assert card.status in {"Research is queued.", "Research is running."}
-
-    release.set()
-    await app_context.research_runs.wait(card.run_id)
+    assert not entered.is_set()
+    assert not any(item.type == "research_status" for item in response.cards)
+    result = next(item for item in response.operation_results if item["operation"] == "run_research")
+    assert result["status"] == "confirmation_required"
+    assert result["proposal"]["question"] == "What applies?"
 
 
 @pytest.mark.asyncio
@@ -592,7 +593,7 @@ def test_research_provider_resolution_failure_leaves_intake_without_run(app_cont
     runs = ResearchRunService(
         app_context.vault,
         app_context.research,
-        resolve_agent=fail_resolution,
+        resolve_main=fail_resolution,
     )
 
     with pytest.raises(ValueError, match="Saved provider is unavailable"):
@@ -665,8 +666,10 @@ async def test_three_question_batch_is_independent_reorderable_and_idempotent(ap
         if len(seen) == 1:
             entered.set()
             await release.wait()
+        path = f"{app_context.matters.matter_path(_matter_id)}/research/{question}.md"
+        app_context.vault.write_markdown(path, "Synthetic queue result.", {"matter_id": _matter_id, "run_id": _kwargs["run_id"], "output_revision": digest(question), "research_prose": "Synthetic queue result.", "source_records": []})
         return {
-            "path": f"research/{question}.md", "public_research_status": "unavailable",
+            "path": path, "public_research_status": "unavailable",
             "internal_sources": 1, "external_sources": 0,
         }
 
@@ -968,10 +971,10 @@ async def test_blank_research_intent_uses_matter_title(app_context):
 
 @pytest.mark.asyncio
 async def test_missing_source_keys_preserve_packet_with_citation_warning(app_context):
-    async def malformed_search(_query, *, matter_path=None):
-        return {"internal": [{"snippet": "Useful lead without a path"}], "external": []}
+    def malformed_search(_query, *, matter_path=None, limit=8):
+        return [{"snippet": "Useful lead without a path"}]
 
-    app_context.research.search.search = malformed_search
+    app_context.research.search.search_internal = malformed_search
     result = await app_context.research.run("MAT-DEMO-BEACON", "What applies?", change_stage=False)
     packet = app_context.vault.read_markdown(result["path"])
     assert "Working Analysis" in packet["content"]
@@ -992,20 +995,17 @@ async def test_research_source_lines_use_clean_label_and_bounded_body_excerpt(ap
         },
     )
 
-    async def search(_query, *, matter_path=None):
-        return {
-            "internal": [{
+    def search(_query, *, matter_path=None, limit=8):
+        return [{
                 "path": source_path,
                 "title": "Launch Policy",
                 "snippet": (
                     "--- record_type: internal_policy matter_id: MAT-DEMO-BEACON "
                     "secret_internal_key: do-not-display --- raw search material"
                 ),
-            }],
-            "external": [],
-        }
+            }]
 
-    app_context.research.search.search = search
+    app_context.research.search.search_internal = search
     result = await app_context.research.run(
         "MAT-DEMO-BEACON", "What applies?", change_stage=False
     )
@@ -1014,7 +1014,9 @@ async def test_research_source_lines_use_clean_label_and_bounded_body_excerpt(ap
     )[1].split("\n\n## Last-mile work", 1)[0]
 
     assert "Launch Policy" in sources
-    assert "The limited pilot needs a manual review before launch." in sources
+    assert "The limited pilot needs a manual review before launch." not in sources
+    assert "No relevant passage has been selected" in sources
+    assert "The limited pilot needs a manual review before launch." in app_context.vault.read_markdown(source_path)["content"]
     assert f"]({source_path})" in sources
     assert "[source:SRC-" in sources
     assert "secret_internal_key" not in sources
@@ -1039,16 +1041,18 @@ async def test_research_excludes_chat_runs_packets_and_duplicate_dossiers_as_sup
             "research_id": "RES-old" if record_type == "research_packet" else None,
         })
 
-    async def search(_query, *, matter_path=None):
-        return {"internal": [{"path": path, "title": kind} for path, kind in sources], "external": []}
+    def search(_query, *, matter_path=None, limit=8):
+        return [{"path": path, "title": kind} for path, kind in sources]
 
-    app_context.research.search.search = search
+    app_context.research.search.search_internal = search
     result = await app_context.research.run(
         "MAT-DEMO-BEACON", "What support applies?", change_stage=False
     )
     content = app_context.vault.read_markdown(result["path"])["content"]
     assert f"[facts]({matter_path}/facts.md)" in content
-    assert content.count("Useful body") == 2
+    assert "No relevant passage has been selected" in content
+    assert "conversations/CONV-old.md" not in content
+    assert "research/runs/RUN-old.md" not in content
     assert "Chat Transcript" not in content
     assert "Research Run" not in content
 
@@ -1087,8 +1091,8 @@ async def test_polaris_public_material_is_synthesized_locally_and_labeled_suppli
     app_context.research.bind_agent_runner(run_agent)
     original_stage = app_context.index.get_matter("MAT-DEMO-BEACON")["status"]
 
-    result = await app_context.research.run(
-        "MAT-DEMO-BEACON",
+    result = await external_research(
+        app_context, "MAT-DEMO-BEACON",
         "What public federal rules govern customer due diligence?",
         change_stage=False,
     )
@@ -1126,7 +1130,8 @@ async def test_provider_diagnostics_stay_in_metadata_not_lawyer_packet(app_conte
     async def no_native_results(_query):
         return {"external": [], "warning": "Native public research was unavailable."}
 
-    async def useful_local_analysis(_request, *, resolved_provider=None):
+    async def useful_local_analysis(_request, *, resolved_provider=None, investigation=None, **kwargs):
+        await investigation.collect({"requests": [{"proposition_id": "public-rule", "proposition": "Public federal rule", "public_query": "What public federal rules apply?", "source_goal": "operative_rule"}]})
         return ChatResponse(reply="Useful local fallback analysis remains available.")
 
     app_context.research.bind_polaris(Polaris())
@@ -1134,7 +1139,10 @@ async def test_provider_diagnostics_stay_in_metadata_not_lawyer_packet(app_conte
     app_context.research.bind_agent_runner(useful_local_analysis)
     runs = ResearchRunService(app_context.vault, app_context.research)
 
-    started = runs.start("MAT-DEMO-BEACON", ["What public federal rules apply?"])
+    started = runs.start("MAT-DEMO-BEACON", ["What public federal rules apply?"], search_scope=ResearchScope(
+        external=True, public_query="What public federal rules apply?",
+        provider_ids=app_context.research.search_options()["provider_ids"],
+    ))
     await runs.wait(started["run_id"])
 
     run = runs.get("MAT-DEMO-BEACON", started["run_id"])
@@ -1193,8 +1201,8 @@ async def test_private_polaris_question_is_blocked_before_network_and_kept_local
 
     app_context.research.search.search_external = external_search
 
-    result = await app_context.research.run(
-        "MAT-DEMO-BEACON",
+    result = await external_research(
+        app_context, "MAT-DEMO-BEACON",
         "What rules apply to MAT-DEMO-BEACON?",
         change_stage=False,
     )

@@ -1,0 +1,300 @@
+{
+  "temporary_root": "/var/folders/xb/kzc31shn1pz2s_5l2fy6d7rh0000gn/T/themis-decision-map-acceptance-oyk_603c",
+  "vault": "/var/folders/xb/kzc31shn1pz2s_5l2fy6d7rh0000gn/T/themis-decision-map-acceptance-oyk_603c/vault",
+  "backend_port": 8136,
+  "frontend_port": 3136,
+  "matter_id": "MAT-20260910-0e3709",
+  "matter_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709",
+  "issue_ids": [
+    "ISS-6f4db355eb-beceace28ad3b977",
+    "ISS-6f4db355eb-dfedecd1f6e194c9",
+    "ISS-6f4db355eb-f4adb6d37c427ddb",
+    "ISS-6f4db355eb-556f5297a1df7e1a",
+    "ISS-6f4db355eb-f9bf9b33e40dd688",
+    "ISS-6f4db355eb-6a74558db33a76cc"
+  ],
+  "products": [
+    {
+      "record_type": "work_product",
+      "work_product_id": "WP-4728e0e18203",
+      "title": "Launch advice",
+      "vault_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/work-product/draft/launch-advice-e18203.md",
+      "state": "draft",
+      "summary": "Saved the canonical work-product draft.",
+      "source_action_key": "demo-draft-0",
+      "recommendation_version_id": null,
+      "recommendation_proposal_id": null,
+      "changed_paths": [
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/work-product/draft/launch-advice-e18203.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/matter.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/events/2026-09-10-EVT-20260910-5e2694.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/dossier.md"
+      ],
+      "dossier_projection": {
+        "state": "applied",
+        "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/dossier.md",
+        "revision_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/dossier-revisions/DOS-20260910-5b2c67.md",
+        "content_hash": "86387efd22977c6efc9d77caf7adcda93e15bcab7d7e018de5af78e7c1a7f093"
+      },
+      "artifact": {
+        "work_product_id": "WP-4728e0e18203",
+        "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/work-product/draft/launch-advice-e18203.md",
+        "decision_review_required": false,
+        "title": "Launch advice",
+        "output_type": "general",
+        "revision": "6b5a4414a4fd6d4d0b27e6849b4f996d9c55cadd1d09c43b73fd94689cde0c59",
+        "review_revision": "24b399ea483305c65f5826818f589d5a2a47d435e6201ab86f9409b0118c9c9e",
+        "pending_review": false,
+        "source_run_id": null,
+        "claim_ids": [],
+        "template_use": null,
+        "preview": false,
+        "version_changes": [],
+        "proposal_paths": []
+      },
+      "action": "demo-draft-0",
+      "operation": "save_work_product_draft",
+      "status": "changed",
+      "matter_id": "MAT-20260910-0e3709",
+      "entity_refs": [
+        {
+          "type": "work_product",
+          "id": "WP-4728e0e18203"
+        }
+      ],
+      "resulting_matter_state": {
+        "stage": "explore",
+        "next_action": "Orient to the request",
+        "work_state": {
+          "next_action": "Orient to the request",
+          "next_work_item_id": "WI-20260910-3d6d90",
+          "next_owner": "Alex Morgan",
+          "next_actor": "named_owner",
+          "due_at": null,
+          "execution_state": "not_running",
+          "active_run_id": null,
+          "execution_note": "",
+          "signal": {
+            "kind": "waiting_on_owner",
+            "label": "Waiting on Alex Morgan"
+          }
+        },
+        "consistency_issues": []
+      },
+      "available_next_actions": [],
+      "recommendation_review_needed": false,
+      "required_user_action": null,
+      "error": null,
+      "recovery": null
+    },
+    {
+      "record_type": "work_product",
+      "work_product_id": "WP-94aaed4113c2",
+      "title": "Product control checklist",
+      "vault_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/work-product/draft/product-control-checklist-4113c2.md",
+      "state": "draft",
+      "summary": "Saved the canonical work-product draft.",
+      "source_action_key": "demo-draft-1",
+      "recommendation_version_id": null,
+      "recommendation_proposal_id": null,
+      "changed_paths": [
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/work-product/draft/product-control-checklist-4113c2.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/matter.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/events/2026-09-10-EVT-20260910-89f414.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/dossier.md"
+      ],
+      "dossier_projection": {
+        "state": "applied",
+        "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/dossier.md",
+        "revision_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/dossier-revisions/DOS-20260910-1f6b2c.md",
+        "content_hash": "b6519be87390255df6f6d2b9102d25f3f7346dd7e4988335e3bad5ae9e495103"
+      },
+      "artifact": {
+        "work_product_id": "WP-94aaed4113c2",
+        "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/work-product/draft/product-control-checklist-4113c2.md",
+        "decision_review_required": false,
+        "title": "Product control checklist",
+        "output_type": "general",
+        "revision": "9588b50cdc80d377fbb2438ab7b31c12382a20f440827f475214e204335eb046",
+        "review_revision": "5db557731400d74414178fd17cf0a6aae385b2387a891319e8611eb35e67ae87",
+        "pending_review": false,
+        "source_run_id": null,
+        "claim_ids": [],
+        "template_use": null,
+        "preview": false,
+        "version_changes": [],
+        "proposal_paths": []
+      },
+      "action": "demo-draft-1",
+      "operation": "save_work_product_draft",
+      "status": "changed",
+      "matter_id": "MAT-20260910-0e3709",
+      "entity_refs": [
+        {
+          "type": "work_product",
+          "id": "WP-94aaed4113c2"
+        }
+      ],
+      "resulting_matter_state": {
+        "stage": "explore",
+        "next_action": "Orient to the request",
+        "work_state": {
+          "next_action": "Orient to the request",
+          "next_work_item_id": "WI-20260910-3d6d90",
+          "next_owner": "Alex Morgan",
+          "next_actor": "named_owner",
+          "due_at": null,
+          "execution_state": "not_running",
+          "active_run_id": null,
+          "execution_note": "",
+          "signal": {
+            "kind": "waiting_on_owner",
+            "label": "Waiting on Alex Morgan"
+          }
+        },
+        "consistency_issues": []
+      },
+      "available_next_actions": [],
+      "recommendation_review_needed": false,
+      "required_user_action": null,
+      "error": null,
+      "recovery": null
+    },
+    {
+      "record_type": "work_product",
+      "work_product_id": "WP-39e2e2bb8f3e",
+      "title": "Business reply",
+      "vault_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/work-product/draft/business-reply-bb8f3e.md",
+      "state": "draft",
+      "summary": "Saved the canonical work-product draft.",
+      "source_action_key": "demo-draft-2",
+      "recommendation_version_id": null,
+      "recommendation_proposal_id": null,
+      "changed_paths": [
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/work-product/draft/business-reply-bb8f3e.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/matter.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/events/2026-09-10-EVT-20260910-b8bd20.md",
+        "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/dossier.md"
+      ],
+      "dossier_projection": {
+        "state": "applied",
+        "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/dossier.md",
+        "revision_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/dossier-revisions/DOS-20260910-0f59ea.md",
+        "content_hash": "64d11d7b8e27e679645ba28163ea2da85ec7fffc5370053f6231ee0e8ad14ded"
+      },
+      "artifact": {
+        "work_product_id": "WP-39e2e2bb8f3e",
+        "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/work-product/draft/business-reply-bb8f3e.md",
+        "decision_review_required": false,
+        "title": "Business reply",
+        "output_type": "general",
+        "revision": "495de8e59e530d4afca5eabc7e368af37d6160a4f5a25ac61c8ea067f08af6f0",
+        "review_revision": "137034ce0ce1c9e9acf0761344c3b6e7f38c01d4712437ce9095f84cedcd1363",
+        "pending_review": false,
+        "source_run_id": null,
+        "claim_ids": [],
+        "template_use": null,
+        "preview": false,
+        "version_changes": [],
+        "proposal_paths": []
+      },
+      "action": "demo-draft-2",
+      "operation": "save_work_product_draft",
+      "status": "changed",
+      "matter_id": "MAT-20260910-0e3709",
+      "entity_refs": [
+        {
+          "type": "work_product",
+          "id": "WP-39e2e2bb8f3e"
+        }
+      ],
+      "resulting_matter_state": {
+        "stage": "explore",
+        "next_action": "Orient to the request",
+        "work_state": {
+          "next_action": "Orient to the request",
+          "next_work_item_id": "WI-20260910-3d6d90",
+          "next_owner": "Alex Morgan",
+          "next_actor": "named_owner",
+          "due_at": null,
+          "execution_state": "not_running",
+          "active_run_id": null,
+          "execution_note": "",
+          "signal": {
+            "kind": "waiting_on_owner",
+            "label": "Waiting on Alex Morgan"
+          }
+        },
+        "consistency_issues": []
+      },
+      "available_next_actions": [],
+      "recommendation_review_needed": false,
+      "required_user_action": null,
+      "error": null,
+      "recovery": null
+    }
+  ],
+  "decision_id": "DEC-6FA86904FBFABB366089",
+  "final": {
+    "record_type": "work_product",
+    "work_product_id": "WP-228216909263",
+    "title": "Acceptance final",
+    "vault_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/work-product/final/acceptance-final-909263-82f8cc.md",
+    "state": "final",
+    "summary": "Finalized the canonical work product and reconciled the matter to Respond.",
+    "final_id": "FINAL-20260910-82f8cc",
+    "changed_paths": [
+      "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/work-product/final/acceptance-final-909263-82f8cc.md",
+      "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/events/2026-09-10-EVT-20260910-fd64d3.md",
+      "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/matter.md",
+      "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/events/2026-09-10-EVT-20260910-26c4cd.md",
+      "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/dossier.md"
+    ],
+    "dossier_projection": {
+      "state": "applied",
+      "path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/dossier.md",
+      "revision_path": "03_Matters/lumen-learning-us-family-launch-with-analytics-and-shared-device-0e3709/dossier-revisions/DOS-20260910-be2a60.md",
+      "content_hash": "ab43312f09a5c8ad95d3e9b0458e418d658bb47e0bcb88ee60e7f54a9a0db927"
+    },
+    "action": "finalize_work_product",
+    "operation": "finalize_work_product",
+    "status": "changed",
+    "matter_id": "MAT-20260910-0e3709",
+    "source_action_key": null,
+    "entity_refs": [
+      {
+        "type": "work_product",
+        "id": "WP-228216909263"
+      },
+      {
+        "type": "final",
+        "id": "FINAL-20260910-82f8cc"
+      }
+    ],
+    "resulting_matter_state": {
+      "stage": "respond",
+      "next_action": "Approve the final response.",
+      "work_state": {
+        "next_action": "Approve the final response.",
+        "next_work_item_id": null,
+        "next_owner": null,
+        "next_actor": "you",
+        "due_at": null,
+        "execution_state": "not_running",
+        "active_run_id": null,
+        "execution_note": "",
+        "signal": {
+          "kind": "waiting_on_you",
+          "label": "Waiting on you"
+        }
+      },
+      "consistency_issues": []
+    },
+    "available_next_actions": [
+      "approve_response"
+    ],
+    "required_user_action": "Approve the final response with the direct approval control.",
+    "error": null,
+    "recovery": null
+  }
+}

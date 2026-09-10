@@ -6,10 +6,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import AppShell from "@/components/AppShell";
+import { useResearchScope } from "@/components/ResearchScopeChoice";
 import LinkifiedText from "@/components/LinkifiedText";
 import ResearchQueuePanel from "@/components/ResearchQueuePanel";
 import styles from "@/components/ResearchPhase2.module.css";
-import { answerAnnotation, createAnnotation, getAnnotations, getFile, getMatter, getResearchQueue, reorderResearchQueue, resumeResearchQueue, retryResearchItem, startResearchRun, stopResearchQueue } from "@/lib/api";
+import { answerAnnotation, createAnnotation, getAnnotations, getFile, getMatter, getResearchQueue, reorderResearchQueue, resumeResearchQueue, retryResearchItem, stopResearchQueue } from "@/lib/api";
 import { formatDateTime } from "@/lib/design";
 import { parseMemo, splitCitations } from "@/lib/research";
 import type { Citation as ResearchCitation, FileNode, MatterDetail, ResearchMemo, ResearchNote, ResearchRun } from "@/lib/types";
@@ -30,6 +31,7 @@ export default function ResearchPage() {
   const params = useParams<{ matterId: string }>();
   const searchParams = useSearchParams();
   const matterId = params.matterId;
+  const { startScopedResearch: startResearchRun, researchScopeDialog } = useResearchScope(matterId);
   const requestedFile = searchParams.get("file");
 
   const [detail, setDetail] = useState<MatterDetail | null>(null);
@@ -105,7 +107,8 @@ export default function ResearchPage() {
         const question = researchQuestion(selectedQuestion, enteredQuestion, detail.title);
         setQueueBusy(true);
         try {
-          await startResearchRun(matterId, question, `research-ui:${Date.now()}`);
+          const run = await startResearchRun(matterId, question, `research-ui:${Date.now()}`);
+          if (!run) return;
           setEnteredQuestion(""); setSelectedQuestion(""); await load();
         } catch (caught) { setError(caught instanceof Error ? caught.message : "Could not queue research."); }
         finally { setQueueBusy(false); }
@@ -127,6 +130,7 @@ export default function ResearchPage() {
   if (!detail || !memo) {
     return (
       <AppShell>
+        {researchScopeDialog}
         <main className="page">
           {detail && !memo ? (
             <div className="empty-state">
@@ -147,6 +151,7 @@ export default function ResearchPage() {
 
   return (
     <AppShell>
+      {researchScopeDialog}
       <main className={styles.page}>
         <Link className={styles.back} href={`/matters/${encodeURIComponent(matterId)}`}>‹ Back to matter</Link>
         <header className={styles.header}>

@@ -1,0 +1,88 @@
+Isolated fixture vault: /var/folders/xb/kzc31shn1pz2s_5l2fy6d7rh0000gn/T/main-research-browser-6phvwnk2/vault
+INFO:     Started server process [87707]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8127 (Press CTRL+C to quit)
+INFO:     127.0.0.1:55709 - "POST /api/matters HTTP/1.1" 201 Created
+INFO:     127.0.0.1:55746 - "OPTIONS /api/team HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55746 - "GET /api/team HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55746 - "OPTIONS /api/matters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55746 - "GET /api/matters HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55746 - "OPTIONS /api/experimental-chat/skills HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55748 - "OPTIONS /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55750 - "OPTIONS /api/matters/MAT-20260910-781631 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55753 - "OPTIONS /api/matters/MAT-20260910-781631/workspace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55746 - "OPTIONS /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55755 - "OPTIONS /api/matters/MAT-20260910-781631/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55748 - "OPTIONS /api/matters/MAT-20260910-781631 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55750 - "OPTIONS /api/matters/MAT-20260910-781631/workspace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55753 - "OPTIONS /api/matters/MAT-20260910-781631/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55756 - "OPTIONS /api/experimental-chat/skills HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55753 - "GET /api/matters/MAT-20260910-781631/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55746 - "GET /api/experimental-chat/skills HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55748 - "GET /api/matters/MAT-20260910-781631 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55753 - "GET /api/matters/MAT-20260910-781631 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55748 - "GET /api/experimental-chat/skills HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55753 - "GET /api/matters/MAT-20260910-781631/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55750 - "GET /api/matters/MAT-20260910-781631/workspace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55746 - "GET /api/matters/MAT-20260910-781631/workspace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55756 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55755 - "GET /api/settings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55852 - "OPTIONS /api/matters/MAT-20260910-781631/chat-runs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55852 - "POST /api/matters/MAT-20260910-781631/chat-runs HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:55852 - "OPTIONS /api/matters/MAT-20260910-781631/conversations/CONV-20260910-b2fc3d HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55855 - "OPTIONS /api/matters/MAT-20260910-781631/chat-runs/RUN-20260910-f66736 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55852 - "GET /api/matters/MAT-20260910-781631/chat-runs/RUN-20260910-f66736 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55852 - "OPTIONS /api/matters/MAT-20260910-781631/conversations/CONV-20260910-b2fc3d HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55855 - "GET /api/matters/MAT-20260910-781631/conversations/CONV-20260910-b2fc3d HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55852 - "GET /api/matters/MAT-20260910-781631/conversations/CONV-20260910-b2fc3d HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55852 - "OPTIONS /api/matters/MAT-20260910-781631 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55855 - "OPTIONS /api/matters/MAT-20260910-781631/workspace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55857 - "OPTIONS /api/matters/MAT-20260910-781631/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55857 - "GET /api/matters/MAT-20260910-781631/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55855 - "GET /api/matters/MAT-20260910-781631 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55852 - "GET /api/matters/MAT-20260910-781631/workspace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55885 - "OPTIONS /api/matters/MAT-20260910-781631/chat-runs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55885 - "POST /api/matters/MAT-20260910-781631/chat-runs HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:55885 - "OPTIONS /api/matters/MAT-20260910-781631/conversations/CONV-20260910-b2fc3d HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55888 - "OPTIONS /api/matters/MAT-20260910-781631/chat-runs/RUN-20260910-c87a0b HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55888 - "GET /api/matters/MAT-20260910-781631/chat-runs/RUN-20260910-c87a0b HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55888 - "OPTIONS /api/matters/MAT-20260910-781631/conversations/CONV-20260910-b2fc3d HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55885 - "GET /api/matters/MAT-20260910-781631/conversations/CONV-20260910-b2fc3d HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55888 - "GET /api/matters/MAT-20260910-781631/conversations/CONV-20260910-b2fc3d HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55888 - "OPTIONS /api/matters/MAT-20260910-781631/research-runs/RUN-20260910-9c9ff5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55885 - "OPTIONS /api/matters/MAT-20260910-781631/research-runs/RUN-20260910-9c9ff5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55892 - "OPTIONS /api/matters/MAT-20260910-781631 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55893 - "OPTIONS /api/matters/MAT-20260910-781631/workspace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55894 - "OPTIONS /api/matters/MAT-20260910-781631/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55885 - "GET /api/matters/MAT-20260910-781631/research-runs/RUN-20260910-9c9ff5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55888 - "GET /api/matters/MAT-20260910-781631/research-runs/RUN-20260910-9c9ff5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55888 - "OPTIONS /api/matters/MAT-20260910-781631 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55885 - "OPTIONS /api/matters/MAT-20260910-781631/workspace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55888 - "OPTIONS /api/matters/MAT-20260910-781631/conversations/CONV-20260910-b2fc3d HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55896 - "OPTIONS /api/matters/MAT-20260910-781631/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55894 - "GET /api/matters/MAT-20260910-781631/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55894 - "GET /api/matters/MAT-20260910-781631/conversations/CONV-20260910-b2fc3d HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55888 - "GET /api/matters/MAT-20260910-781631/conversations HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55885 - "GET /api/matters/MAT-20260910-781631 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55892 - "GET /api/matters/MAT-20260910-781631 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55893 - "GET /api/matters/MAT-20260910-781631/workspace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55896 - "GET /api/matters/MAT-20260910-781631/workspace HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56047 - "OPTIONS /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56049 - "OPTIONS /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56047 - "OPTIONS /api/files/review?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56049 - "OPTIONS /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56052 - "OPTIONS /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56056 - "OPTIONS /api/files/review?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56054 - "GET /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56049 - "GET /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56047 - "GET /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56052 - "GET /api/files/review?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:56057 - "GET /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56056 - "GET /api/files/review?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:56093 - "OPTIONS /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56093 - "GET /api/files?path=03_Matters%2Fsynthetic-vendor-termination-browser-test-781631%2Fdossier-revisions%2FDOS-582ae2aeffff756623bc.md HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [87707]

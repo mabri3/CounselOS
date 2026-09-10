@@ -1,0 +1,2 @@
+{"state": "in_flight", "main_calls_reserved": 1, "purpose": "Synthetic tool-free adapter diagnosis"}
+{"state": "outcome_unknown", "seconds": 20.00250916699588, "error_class": "TimeoutError", "client_closed": false}

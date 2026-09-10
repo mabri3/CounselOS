@@ -1,0 +1,69 @@
+themis.ai
+⌄
+Waiting on Alex Morgan
+Matters
+Lumen Learning: US family launch with analytics and shared-device accounts
+Matter details
+Tools and history
+Matter workspace view
+Understand
+Discuss
+Draft
+Decision map
+BUSINESS QUESTION
+Can Lumen launch its US family learning app with analytics?
+WORKING ANSWER · AGENT WORK
+
+Confirm the launch audience and identifier purpose before choosing the controls. A child is under 13 under the rule 16 CFR 312.2 — definitions · Saved copy.
+
+Material qualification
+Working analysis. Audience coverage and the internal-operations question remain open.
+
+Audience changes which launch controls require legal review.
+
+Needs attention
+Owner: Alex Morgan
+Review audience and identifier controls before launch
+Problem breakdown · Not yet analyzed
+Needs your review
+UP TO 3 ITEMS
+ISSUES (6)
+ALL ISSUES
+1
+Audience age and the proposed launch to families with children…
+Open
+No disposition recorded
+2
+Persistent analytics identifiers on shared devices
+Open
+No disposition recorded
+3
+Parental notice and consent before collection
+Open
+No disposition recorded
+4
+Data retention and deletion requests
+Open
+No disposition recorded
+5
+Vendor use of learning events for its own advertising
+Open
+No disposition recorded
+6
+Support access and account recovery
+Open
+No disposition recorded
+Evidence & question history
+Explore & business flow
+Prior work & watches
+Research & work
+Materials & activity
+SOURCES
+2
+View sources 
+DECISION
+Not recorded
+Record decision 
+Supporting material and history
+Discussion help
+Show discussion
