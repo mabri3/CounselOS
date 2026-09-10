@@ -24,7 +24,7 @@ class Provider:
     async def complete(self,messages,tools=None):
         self.calls+=1
         if self.calls == 1:
-            return ProviderReply(tool_calls=[ProviderToolCall(id="scope",name="select_conversation_scope",arguments={"scope":self.scope,"instruction_quote":"Assess this actual matter."})])
+            return ProviderReply(tool_calls=[ProviderToolCall(id="scope",name="select_conversation_scope",arguments={"scope":self.scope,"instruction_quote":next(m["content"] for m in reversed(messages) if m["role"] == "user")})])
         if self.calls == 2 and self.mutation:
             return ProviderReply(tool_calls=[ProviderToolCall(id="mutation",name=self.mutation[0],arguments=self.mutation[1])])
         return ProviderReply(content="A useful conditional answer.\n\n```problem-analysis\n"+("{bad}" if self.malformed else json.dumps(payload()))+"\n```")
@@ -70,7 +70,7 @@ async def test_intake_observes_saved_facts_before_final_map(app_context):
         async def complete(self,messages,tools=None):
             self.calls+=1
             if self.calls==1:
-                return ProviderReply(tool_calls=[ProviderToolCall(id="scope",name="select_conversation_scope",arguments={"scope":"actual","instruction_quote":"Assess this actual matter."})])
+                return ProviderReply(tool_calls=[ProviderToolCall(id="scope",name="select_conversation_scope",arguments={"scope":"actual","instruction_quote":next(m["content"] for m in reversed(messages) if m["role"] == "user")})])
             if self.calls==2:
                 return ProviderReply(tool_calls=[ProviderToolCall(id="intake",name="update_matter_intake",arguments={"working_ask":"Assess this support pilot.","reported_facts":[{"statement":"The vendor reuses chats for general model training."}],"intake_state":"complete"})])
             observed=json.loads(next(m["content"] for m in reversed(messages) if m.get("name")=="update_matter_intake"))["data"]["observed_problem_inputs"]
@@ -106,7 +106,7 @@ async def test_final_recovery_keeps_optional_map(app_context,mode):
         async def complete(self,messages,tools=None):
             self.calls+=1
             if self.calls==1:
-                return ProviderReply(tool_calls=[ProviderToolCall(id="scope",name="select_conversation_scope",arguments={"scope":"actual","instruction_quote":"Assess this actual matter."})])
+                return ProviderReply(tool_calls=[ProviderToolCall(id="scope",name="select_conversation_scope",arguments={"scope":"actual","instruction_quote":next(m["content"] for m in reversed(messages) if m["role"] == "user")})])
             if tools is not None:
                 if mode=="failure": raise RuntimeError("Synthetic provider failure")
                 return ProviderReply(tool_calls=[ProviderToolCall(id=f"read-{self.calls}",name="list_files",arguments={"path":app_context.matters.matter_path(MATTER)})])
@@ -253,7 +253,7 @@ async def test_actual_correction_reassesses_without_erasing_prior(app_context):
             p['parts'][0].update(status='reported',references=[{'kind':'fact','record_id':fact['fact_id']}])
             p['changes']=[{'kind':'assessment_changed','prior_question_keys':['purpose'],'current_question_keys':['purpose'],'reason':'The lawyer corrected internal-only use.','answer_effect':'Assess the vendor training purpose separately.'}]
             return ProviderReply(content=p['integrated_answer']+'\n```problem-analysis\n'+json.dumps(p)+'\n```')
-    response=await run_chat(ctx,CorrectionProvider(mutation=('workspace_action',{'action':'correct_fact','values':{'fact_id':original['fact_id'],'replacement':'The vendor retains chats and trains its general model.'}})),conversation_id=first['conversation_id'])
+    response=await run_chat(ctx,CorrectionProvider(mutation=('workspace_action',{'action':'correct_fact','instruction_quote':'Correction: the vendor retains chats and trains its general model.','values':{'fact_id':original['fact_id'],'replacement':'The vendor retains chats and trains its general model.'}})),message='Correction: the vendor retains chats and trains its general model.',conversation_id=first['conversation_id'])
     saved=ctx.problem_analysis.resolve(MATTER)
     assert saved['state']=='saved',(saved,response)
     assert saved['analysis']['prior_reference']==prior

@@ -43,7 +43,7 @@ _CITATION_MARKER = re.compile(
     r"|claim:CLM-[A-Za-z0-9][A-Za-z0-9-]*)\]"
 )
 _STRUCTURED_OUTPUT = re.compile(
-    r"(?ms)^```(?:claim-support|decision-paths|research-synthesis|problem-analysis)[ \t]*\n.*?\n```[ \t]*(?=\n|$)"
+    r"(?ms)^```(?:claim-support|decision-paths|research-synthesis|problem-analysis|working-memory)[ \t]*\n.*?\n```[ \t]*(?=\n|$)"
 )
 _ABSOLUTE_PATH = re.compile(r"(?<!\w)/(?:Users|home|private|tmp|var)/[^\s)`\]}>,;]+")
 _VAULT_PATH = re.compile(

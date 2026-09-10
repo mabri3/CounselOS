@@ -1,0 +1,39 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________ test_excluded_source_cannot_return_through_selected_conditions ________
+
+app_context = <app.runtime.AppContext object at 0x10cb05ca0>
+
+    @pytest.mark.asyncio
+    async def test_excluded_source_cannot_return_through_selected_conditions(app_context):
+        import json
+        from app.models.api import ChatRequest
+        from app.routers.chat import freeze_run_context
+        app=app_context;s=app.solution_paths;a=s.ensure_baseline(M)
+        b=s.explore(M,parent_path_id=a['scenario_id'],parent_revision=a['revision'],title='Bank',source_action_key='excluded-b')
+        secret='UNREAD-EXCLUDED-CONDITION'
+        s.transition(M,path_id=b['scenario_id'],expected_path_revision=b['revision'],expected_mainline_revision=s.state(M)['revision'],source_action_key='exclude-promotion',run_id='fixture',message_id='fixture',instruction_quote='Select the direction.',conditions=[secret])
+        context=ctx(app,b);context.frozen_context['excluded_paths']=['excluded.txt']
+        result=await app.tools.execute(app.agents.get('counsel-copilot'),context,'workspace_action',{'action':'inspect_paths','values':{}})
+>       assert secret not in json.dumps(result.data)
+E       assert 'UNREAD-EXCLUDED-CONDITION' not in '{"state": {...fset": null}'
+E         
+E         'UNREAD-EXCLUDED-CONDITION' is contained here:
+E           tions": ["UNREAD-EXCLUDED-CONDITION"], "transition_history_refs": ["paths/transitions/"], "revision": "cffedfaa2c39aff393348bbe75eb663ee2c0cdaa145ce07219e2e3417dc4bf08"}, "projection_state": "applied", "paths": [{"scenario_id": "SCN-e4c55d0c59b0e314bc34e3d7", "title": "Saved path (text withheld)", "revision": "9d77f4c1218bff9383f0081c0c6844a801438446ca4a35b8d93d7ac1e3409428", "parent_path_id": null, "path_kind": "baseline", "archived_at": null, "unresolved_conditions": [], "role": "alternative"}, {"scenario_id": "SCN-9be183...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_matter_paths_lifecycle.py:65: AssertionError
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/backend/.venv/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_matter_paths_lifecycle.py::test_excluded_source_cannot_return_through_selected_conditions
+1 failed, 3 deselected, 2 warnings in 0.33s

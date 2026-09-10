@@ -817,3 +817,20 @@ partial writes, removed-person retries, extraction failure, immutable finals,
 declined offers, and read-only requests. Record those separately from configured
 model and browser results. Rebuild SQLite and verify authoritative Markdown,
 source originals, and team queues remain intact.
+
+## Matter memory and solution paths — September 10, 2026
+
+The isolated scripted browser walk exercised the applicable matter-header, chat, source, integrity and skill-edit checks above. It did not repeat unrelated approval, delivery, scheduling or live-provider journeys.
+
+- [x] Both chat views create and preserve A/B/C paths, compare them, select direction and restore the original approach.
+- [x] Mainline and per-conversation working focus survive reload. Explicitly open each saved conversation when checking separate focus.
+- [x] Actual correction remains after restoration. Path selection creates no formal decision or implementation fact.
+- [x] Working-note details and pending conditions are readable. Shared skill edits apply to later runs; old captured revisions remain.
+- [x] Saved dense page 99 continues to page 100. OCR page 20 retains text and image access.
+- [x] SQLite deletion/rebuild preserves Markdown paths, notes, receipts and saved-source reads.
+- [x] Concurrent dossier edit remains intact; a committed direction can show “Dossier: review needed” after restart.
+- [x] No duplicate assistant answer or transition appears from repeated polling.
+- [ ] Native browser file upload: not exercised. Real ingestion API upload passed.
+- [ ] Live semantic model evaluation: not authorized or run.
+
+Reproduction, exact limits and artifacts: `output/matter-memory-paths/browser.md` and `docs/matter-memory-paths.verification.md`.

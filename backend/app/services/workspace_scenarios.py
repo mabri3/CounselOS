@@ -160,8 +160,37 @@ class WorkspaceScenarioService:
         if source_action_key:
             metadata["source_action"] = {"key": source_action_key, "fingerprint": fingerprint}
         metadata["revision"] = self._revision(content, metadata)
+        if current:
+            self.snapshot(matter_id, scenario_id)
         self.vault.write_markdown(path, content or "# Saved scenario\n", metadata)
         return self.get(matter_id, scenario_id)
+
+    @serialized
+    def snapshot(self, matter_id: str, scenario_id: str) -> str:
+        """Preserve the exact scenario and accessible factual basis before replacement."""
+        document = self._document(matter_id, scenario_id)
+        revision = self._revision(document["content"], document["metadata"])
+        base = self.matters.matter_path(matter_id)
+        path = f"{base}/scenarios/history/{scenario_id}/{revision}.md"
+        facts_path = self.records._path(matter_id)
+        evidence = {}
+        for name in (facts_path, f"{base}/recommendations.md", f"{base}/dossier.md"):
+            if self.vault.exists(name):
+                doc = self.vault.read_markdown(name)
+                evidence[name] = {"content": doc["content"], "metadata": doc["metadata"]}
+        work_items = self.matters.index.list_work_items(matter_id=matter_id)
+        basis = digest({'records':evidence,'work_items':work_items})
+        if self.vault.exists(path):
+            prior = self.vault.read_markdown(path)['metadata']
+            prior_basis = digest({'records':prior.get('preserved_records',{}),'work_items':prior.get('captured_work_items',[])})
+            if prior_basis != basis:
+                path = f"{base}/scenarios/history/{scenario_id}/{revision}-{basis}.md"
+        if not self.vault.exists(path):
+            metadata = dict(document["metadata"])
+            metadata.update(immutable=True, captured_at=iso_now(), snapshot_revision=revision,
+                            preserved_records=evidence, basis_revision=basis, captured_work_items=work_items)
+            self.vault.write_markdown(path, document["content"], metadata)
+        return path
 
     def readonly_overlay(self, matter_id: str, scenario_id: str) -> dict[str, Any]:
         scenario = self.get(matter_id, scenario_id)

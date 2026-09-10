@@ -322,3 +322,11 @@ The frontend performs no direct file or model access.
 | Local web app | Tauri wrapper or cloud deployment |
 
 These are seams, not current requirements.
+
+## Matter-path continuity
+
+`MatterPathService` in `app/services/matter_paths_state.py` is wired as `AppContext.solution_paths`; the existing `matter_paths` filesystem policy is unchanged. `paths/state.md` assigns the mainline role to one scenario ID. Scenario revision snapshots and transition receipts preserve history. One serialized local transition commits the pointer; idempotent local recovery completes dossier projection or records review/pending state. Conversation Markdown carries `working_path_id`. A promotion does not rewrite facts, tasks or decisions.
+
+`MatterMemoryService` validates a complete 4000-character payload, binds run/message provenance, stages writes and retains immutable prior notes. Context treats notes as fallible, resolves lineage and withholds unattributed historical text under source exclusions. `matter-paths.md` is the shared editable skill; submission freezes its content. Narrow path/archive/source actions use the existing `workspace_action` transport. `context_selection.py` packs whole structured records and bounded history. `BoundedDispatch` measures messages plus schemas in UTF-8; the default 256000-byte ceiling is configurable through `MODEL_DISPATCH_MAX_BYTES`. Provider usage may be unavailable.
+
+The two frontends share `SolutionPaths` and `SavedSourcePassage`. Mainline work uses matter scope; alternatives carry explicit path targets. Source originals and immutable page/section versions stay in the existing library. The extraction subprocess starts from the backend package directory for portable imports. See the memory/path verification report for recovery, corpus, browser and evaluation evidence.

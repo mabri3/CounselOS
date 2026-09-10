@@ -1,0 +1,31 @@
+npm notice run themis.ai-frontend@0.1.0 check:lawyer-continuity
+npm notice run node --experimental-strip-types scripts/check-orientation-presentation.ts && node --experimental-strip-types scripts/check-team-interactions.ts && node --experimental-strip-types scripts/check-change-impact-presentation.ts && node --experimental-strip-types scripts/check-continuity-integrity.ts
+(node:92595) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/scripts/check-orientation-presentation.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Orientation presentation checks passed.
+(node:92596) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/scripts/check-team-interactions.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Team interaction presentation checks passed.
+(node:92597) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/scripts/check-change-impact-presentation.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Change impact presentation checks passed.
+(node:92598) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/scripts/check-continuity-integrity.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Continuity integration checks passed: scoped views, exact retry commands, trusted transport, and concrete targets.
+The production continuity callback retries the existing failed run and retains its frozen target and conversation.
+Loaded document review receives the stable human ID and preserves other saved authors.
+Completed wording survives person switches, signals the original view, and preserves newer drafts and commands.
+Handoff deep links resolve the exact saved scope once and retain later person-scoped choices.
+Handoff saves refresh canonical owner props and invalidate old scope without losing drafts or durable receipts.
+A response timeout reports the uncertain save accurately and retains the exact retry command.
+Approve, deliver, close, complete, assign, prioritize and finalize freeze the selected person with blank legacy review settings.
+Continuity reads publish immediately, defer unused catalogs, reload on panel open, and discard late context results.
+Delayed save/run completion refreshes the active Compare panel and keeps its catalog results after a panel switch.

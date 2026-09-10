@@ -1,0 +1,27 @@
+Re-extracting code files in . (no LLM needed)...
+  AST extraction: 100/1723 uncached files (5%) [10 workers]
+  AST extraction: 200/1723 uncached files (11%) [10 workers]
+  AST extraction: 300/1723 uncached files (17%) [10 workers]
+  AST extraction: 400/1723 uncached files (23%) [10 workers]
+  AST extraction: 500/1723 uncached files (29%) [10 workers]
+  AST extraction: 600/1723 uncached files (34%) [10 workers]
+  AST extraction: 700/1723 uncached files (40%) [10 workers]
+  AST extraction: 800/1723 uncached files (46%) [10 workers]
+  AST extraction: 900/1723 uncached files (52%) [10 workers]
+  AST extraction: 1000/1723 uncached files (58%) [10 workers]
+  AST extraction: 1100/1723 uncached files (63%) [10 workers]
+  AST extraction: 1200/1723 uncached files (69%) [10 workers]
+  AST extraction: 1300/1723 uncached files (75%) [10 workers]
+  AST extraction: 1400/1723 uncached files (81%) [10 workers]
+  AST extraction: 1500/1723 uncached files (87%) [10 workers]
+  AST extraction: 1600/1723 uncached files (92%) [10 workers]
+  AST extraction: 1700/1723 uncached files (98%) [10 workers]
+  AST extraction: 1723/1723 uncached files (100%) [10 workers]
+  warning: 5 source file(s) produced zero nodes and are absent from the graph: launch.json, hooks.json, active-vault.json, .counsel-os-vault.json, cases.json. A re-run will retry them (empties are no longer cached); if it persists, please report the file(s) (#1666).
+Graph has 14885 nodes (above 5000 limit). Building aggregated community view...
+graph.html written (aggregated: 1517 community nodes, 1056 cross-community edges)
+Tip: run with --obsidian for full node-level detail.
+[graphify watch] Rebuilt: 14885 nodes, 29051 edges, 1517 communities
+[graphify watch] graph.json, graph.html and GRAPH_REPORT.md updated in graphify-out
+Code graph updated. For doc/paper/image changes run /graphify --update in your AI assistant.
+Tip: set GEMINI_API_KEY or GOOGLE_API_KEY to use Gemini for semantic extraction.

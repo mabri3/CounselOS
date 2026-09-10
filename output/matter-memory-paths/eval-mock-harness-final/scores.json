@@ -1,0 +1,59 @@
+{
+  "dimensions": {
+    "intent_reference": {
+      "available": 0,
+      "earned": 0,
+      "loss": 0
+    },
+    "factual_decision_integrity": {
+      "available": 0,
+      "earned": 0,
+      "loss": 0
+    },
+    "path_preservation": {
+      "available": 0,
+      "earned": 0,
+      "loss": 0
+    },
+    "continuity": {
+      "available": 0,
+      "earned": 0,
+      "loss": 0
+    },
+    "research_application": {
+      "available": 0,
+      "earned": 0,
+      "loss": 0
+    },
+    "citation_locator": {
+      "available": 0,
+      "earned": 0,
+      "loss": 0
+    }
+  },
+  "available": 0,
+  "earned": 0,
+  "substance_excluding_support_citations": {
+    "intent_reference": {
+      "available": 0,
+      "earned": 0,
+      "loss": 0
+    },
+    "factual_decision_integrity": {
+      "available": 0,
+      "earned": 0,
+      "loss": 0
+    },
+    "path_preservation": {
+      "available": 0,
+      "earned": 0,
+      "loss": 0
+    },
+    "continuity": {
+      "available": 0,
+      "earned": 0,
+      "loss": 0
+    }
+  },
+  "integrity_failures": []
+}

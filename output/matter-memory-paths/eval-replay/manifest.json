@@ -1,0 +1,18 @@
+{
+  "mode": "replay",
+  "case_hash": "889aca0d6c6f85f2087041cbf3c0c41696d9cb722db20d27a713103e2dee1dae",
+  "rubric": {
+    "intent_reference": 25,
+    "factual_decision_integrity": 25,
+    "path_preservation": 20,
+    "continuity": 15,
+    "research_application": 10,
+    "citation_locator": 5
+  },
+  "rubric_hash": "44bc55154933df03c3a2e3242c846bbe407bb013c084a6778d0f057fc40bd848",
+  "skill_hash": "1c18568bec8735b07aed5b2c5b11c3ac3aa4a47984c650af88b9e705e84f713e",
+  "semantic_model_behavior": "unverified",
+  "paid_calls": 0,
+  "provider_usage": null,
+  "assessment": "Arithmetic and recorded-evidence replay; no new model calls."
+}

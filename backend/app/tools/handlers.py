@@ -933,7 +933,7 @@ async def select_conversation_scope(context: ToolExecutionContext, arguments: di
         raise ValueError("Choose actual or scenario context.")
     current = context.scope_state.get("scope")
     if current and current != scope:
-        raise ValueError("This run's scope is already frozen. Continue within that scope.")
+        raise ValueError("This run scope is frozen. Use narrow path or explicit correction actions.")
     context.scope_state["scope"] = scope
     return {"summary": "Scenario analysis; actual matter unchanged." if scope == "scenario" else "Current matter context selected.", "data": {"scope": scope}}
 
@@ -1062,6 +1062,11 @@ async def workspace_action(context: ToolExecutionContext, arguments: dict[str, A
     from app.services.workspace import digest
     from app.models.awareness import WatchDraftCreate
     action = arguments.get("action")
+    from app.tools.matter_paths import PATH_ACTIONS, path_action
+    if action in PATH_ACTIONS:
+        return await path_action(context, arguments)
+    if action == "correct_fact":
+        _instruction(context, arguments)
     values = dict(arguments.get("values") or {})
     matter_id = context.matter_id
     if not matter_id:

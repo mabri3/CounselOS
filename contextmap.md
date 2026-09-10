@@ -61,3 +61,12 @@ Start with `AGENTS.md` and `current.md`. Read only the paths mapped to the activ
 ## Known Navigation Gaps
 
 - Live readiness for OpenAI-compatible, OpenCode Go, Codex CLI, and Antigravity CLI depends on local credentials or signed-in CLI sessions. Missing sessions must remain visible as environment limits, not be reported as passing.
+
+## Matter memory and paths
+
+- Contract and status: `docs/matter-memory-paths.handoff-prompt.md`, `docs/matter-memory-paths.handoff-progress.md`, `docs/matter-memory-paths.verification.md`.
+- Storage and projections: `backend/app/services/matter_paths_state.py`, `workspace_scenarios.py`, `matter_memory.py`, `memory_publication.py`.
+- Harness: `backend/app/tools/matter_paths.py`, `backend/app/agents/context_selection.py`, `dispatch_budget.py`, `backend/app/routers/chat.py`.
+- Shared skill: `backend/app/blank_vault_template/00_System/skills/matter-paths.md`; normal and experimental skill APIs.
+- UI: `frontend/components/workspace/SolutionPaths.tsx`, `SavedSourcePassage.tsx`.
+- Evidence and evaluation: `output/matter-memory-paths/`, `backend/tests/evals/matter_paths/`, `backend/scripts/evaluate_matter_paths.py`.

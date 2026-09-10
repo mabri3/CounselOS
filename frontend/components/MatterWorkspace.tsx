@@ -1,4 +1,5 @@
 "use client";
+import SolutionPaths from "./workspace/SolutionPaths";
 
 import { useResearchScope } from "@/components/ResearchScopeChoice";
 
@@ -5423,6 +5424,7 @@ function MatterWorkspaceContent({
                 <ResearchQueuePanel items={researchQueue} mode="summary" />
               </div>
             ) : null}
+            <SolutionPaths matterId={detail.matter_id} conversationId={currentConversationId} workingPathId={conversationTarget?.scenario_id} onSelect={(id,isMainline) => setConversationTarget({matter_id:detail.matter_id,...(!isMainline ? {scenario_id:id} : {})})} />
             <ChatPanel
               inquiryRail={<><InquiryActions target={effectiveTarget ?? { matter_id: detail.matter_id }} onAction={runWorkspaceShortcut} /><section className={matterStyles.inquiryTools}><span className="record-meta">Tools &amp; history</span><button className="btn quiet" onClick={() => showMatterTool("facts")} type="button"><MatterIcon name="chat" />Business replies</button><button className="btn quiet" onClick={() => showMatterTool("handoff")} type="button"><MatterIcon name="user" />Hand off work</button><button className="btn quiet" onClick={() => showMatterTool("impact")} type="button"><MatterIcon name="file" />Compare supplied versions</button></section></>}
               contextKey={contextKey}

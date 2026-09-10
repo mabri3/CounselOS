@@ -7,11 +7,16 @@ DEFAULTS = Path(__file__).resolve().parents[1] / "experimental_skills"
 
 
 def read_skill(vault, name):
+    if name == "matter-paths":
+        from app.skills.registry import SkillRegistry
+        shared = SkillRegistry(vault).matter_paths_snapshot()
+        return {"name":name, "path":shared["path"], "content":shared["instructions"],
+                "revision":shared["revision"], "scope":"shared", "enabled":shared["enabled"]}
     if name not in SKILLS:
         raise ValueError("Unknown experimental skill.")
     path = f"00_System/experimental-chat/{name}.md"
     content = vault.read_markdown(path)["content"] if vault.exists(path) else (DEFAULTS / f"{name}.md").read_text()
-    return {"name": name, "path": path, "content": content,
+    return {"name": name, "path": path, "content": content, "scope":"page_only",
             "revision": hashlib.sha256(content.encode()).hexdigest()}
 
 

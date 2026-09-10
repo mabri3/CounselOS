@@ -842,3 +842,7 @@ export interface DraftWorkspaceProps {
 }
 export interface FileUploadOutcome { name: string; state: "saved" | "partial" | "failed"; file?: MatterFileEntry | null; failure_detail?: string | null; retry_key: string }
 export interface FileUploadBatch { outcomes: FileUploadOutcome[]; destination: "library" | "inquiry" }
+
+export type SolutionPath = { scenario_id: string; title: string; revision: string; role: "mainline" | "alternative"; parent_path_id?: string | null; unresolved_conditions: string[]; archived_at?: string | null };
+export type SolutionPathState = { projection_state?: string | null; working_path_id?: string | null; state: { mainline_path_id: string | null; revision: string }; paths: SolutionPath[]; next_offset: number | null };
+export type PathReceipt = { state?: "committed" | "no_change" | "conflict" | "not_saved"; projection_state?: string; operation_id?: string; actual_facts_changed?: boolean; decision_recorded?: boolean };

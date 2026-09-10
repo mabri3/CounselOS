@@ -43,6 +43,7 @@ class ProviderToolCall:
 class ProviderReply:
     content: str = ""
     tool_calls: list[ProviderToolCall] = field(default_factory=list)
+    usage: dict[str, int | None] | None = None
 
 
 class LLMProvider(Protocol):

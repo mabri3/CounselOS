@@ -297,7 +297,35 @@ def freeze_run_context(payload: ChatRequest, context: AppContext, run_id: str) -
         selections=selections, target=payload.target,
         attachments=[item.model_dump() for item in payload.attachments],
         applied_notes=context.workspace_reuse.applied_practice_notes(payload.matter_id),
-        expected_question_revision=payload.expected_question_revision)
+        expected_question_revision=payload.expected_question_revision, budget=44000, query=payload.message)
+    frozen["conversation_id"] = payload.conversation_id
+    if payload.agent_id in {"counsel-copilot", "intake-agent"}:
+        baseline = context.solution_paths.ensure_baseline(payload.matter_id)
+        state = context.solution_paths.state(payload.matter_id)
+        working_id = payload.target.scenario_id if payload.target and payload.target.scenario_id else state["mainline_path_id"]
+        conv = context.chat_history.get(payload.matter_id, payload.conversation_id) if payload.conversation_id else None
+        if conv and not (payload.target and payload.target.scenario_id):
+            working_id = context.vault.read_markdown(conv["path"])["metadata"].get("working_path_id") or working_id
+        working = context.workspace_scenarios.get(payload.matter_id, working_id)
+        frozen["active_path"] = {"path_id":working_id,"revision":working["revision"]}
+        frozen["mainline_state"] = state
+        from app.agents.context_selection import pack
+        path_packet = {"mainline":state,"working_path":frozen["active_path"],
+            "assumptions":working["proposed_fact_changes"],"conditions":working["unresolved_conditions"]}
+        if frozen.get("excluded_paths"):
+            path_packet = {"mainline":{k:v for k,v in state.items() if k != "conditions"},"working_path":frozen["active_path"],"historical_material_withheld":True}
+        comparison = next((m for m in reversed(conv['messages']) if m.get('comparison_path_ids')),None) if conv else None
+        if comparison:
+            path_packet['last_comparison'] = {'message_id':comparison['message_id'],'ordered_path_ids':comparison['comparison_path_ids']}
+        path_text, _ = pack(json.dumps(path_packet,ensure_ascii=False),8000,payload.message)
+        if not path_text:
+            path_text = json.dumps({"mainline":{k:v for k,v in state.items() if k != "conditions"},"working_path":frozen["active_path"],"last_comparison":path_packet.get("last_comparison"),"large_assumptions_omitted":True},ensure_ascii=False)
+        note = context.matter_memory.context_view(payload.matter_id,working_id,excluded_paths=frozen.get("excluded_paths",[]))
+        frozen["memory_sequence"] = note.get("sequence",0)
+        frozen["memory_revision"] = note.get("revision", "")
+        frozen["path_context"] = "\nCurrent direction and working path (reference data):\n"+path_text+"\nFallible working memory:\n"+json.dumps(note,ensure_ascii=False)
+        frozen["context"] += frozen["path_context"]
+        frozen["matter_paths_skill"] = context.skills.matter_paths_snapshot()
     templates = context.skills.list_output_templates()
     if payload.experimental_chat:
         from app.services.experimental_chat import guidance, freeze_comment
@@ -320,7 +348,8 @@ def freeze_run_context(payload: ChatRequest, context: AppContext, run_id: str) -
                                "reason": "Use only the eligible facts and current hypothetical instruction in the submitted context."}
         overlay_text = json.dumps(visible_overlay, ensure_ascii=False)
         remaining = max(0, 60000 - sum(entry.get("supplied_chars", 0) for entry in frozen["manifest"]["entries"]))
-        supplied_overlay = overlay_text[:remaining]
+        from app.agents.context_selection import pack
+        supplied_overlay, _ = pack(overlay_text, min(remaining,8000), payload.message)
         state = "included" if len(supplied_overlay) == len(overlay_text) else "truncated" if supplied_overlay else "omitted"
         overlay_id = "scenario:" + payload.target.scenario_id
         version = hashlib.sha256(supplied_overlay.encode()).hexdigest()
@@ -426,6 +455,7 @@ async def execute_chat(
             elif not conversation_id:
                 raise ValueError("An internal recovery needs an existing conversation.")
             conversation_id = saved["conversation_id"]
+            run_state.frozen_context["conversation_id"] = conversation_id
             conversation = context.chat_history.get(payload.matter_id, conversation_id)
             current_user = existing_user or (conversation["messages"][-1] if persist_user_message else None)
             _remember_submission(context, saved, current_user, payload)
@@ -576,6 +606,12 @@ async def execute_chat(
                 checkpoint=checkpoint,
                 resolved_provider=resolved_provider,
             )
+        active_path = (run_state.frozen_context.get("active_path") or {}).get("path_id")
+        current_direction = context.solution_paths.state(payload.matter_id) if payload.matter_id else {}
+        captured_direction = run_state.frozen_context.get("mainline_state") or {}
+        path_historical = bool(payload.matter_id and active_path and (active_path != current_direction["mainline_path_id"] or (captured_direction.get("revision") and captured_direction["revision"] != current_direction["revision"])))
+        if path_historical:
+            run_state.scope_state["scope"] = "scenario"
         if payload.matter_id and run_state.scope_state.get("scope") == "scenario":
             response.cards = []
         if payload.matter_id:
@@ -642,6 +678,14 @@ async def execute_chat(
                         applied_skills=[item.model_dump() for item in response.applied_skills],
                         operation_results=response.operation_results,
                     )
+            if response.reply.strip() and saved.get("path"):
+                doc = context.vault.read_markdown(saved["path"])
+                messages = doc["metadata"].get("messages", [])
+                last_assistant = next((m for m in reversed(messages) if m.get("role") == "assistant"), None)
+                if last_assistant is not None:
+                    last_assistant["path_id"] = active_path
+                    last_assistant["comparison_path_ids"] = run_state.frozen_context.get("comparison_path_ids", [])
+                    context.vault.write_markdown(doc["path"],doc["content"],doc["metadata"])
         else:
             saved = context.chat_history.append_daily(
                 workspace_day,
@@ -670,6 +714,13 @@ async def execute_chat(
                     response.changed_paths.append(impact["path"])
                 except (OSError, ValueError, KeyError):
                     response.reply += "\n\nThe useful comparison remains in this conversation. Its comparison record could not be updated."
+            elif response.reply.strip() and path_historical and not (payload.target and payload.target.scenario_id):
+                try:
+                    path_capture = run_state.frozen_context["active_path"]
+                    context.workspace_scenarios.persist_analysis(payload.matter_id,active_path,response.reply,
+                        expected_revision=path_capture["revision"],source_action_key=payload.source_action_key or run_id)
+                except (OSError,ValueError,KeyError):
+                    response.reply += "\n\nThe answer is saved in this conversation; path analysis remains pending."
             elif response.reply.strip() and payload.target and payload.target.scenario_id:
                 scenario = frozen.get("scenario", {})
                 try:

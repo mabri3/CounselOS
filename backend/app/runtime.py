@@ -39,6 +39,8 @@ from app.services.problem_analysis import ProblemAnalysisService
 from app.services.workspace_actions import WorkspaceActionsService
 from app.services.workspace_evidence import WorkspaceEvidenceService
 from app.services.workspace_scenarios import WorkspaceScenarioService
+from app.services.matter_paths_state import MatterPathService
+from app.services.matter_memory import MatterMemoryService
 from app.services.workspace_review import WorkspaceReviewService
 from app.services.workspace_flow import WorkspaceFlowService
 from app.services.workspace_reuse import WorkspaceReuseService
@@ -191,6 +193,8 @@ class AppContext:
         self.skills.install_missing_output_template_starters()
         self.workspace_evidence = WorkspaceEvidenceService(self.vault, self.matters, self.workspace, self.source_library)
         self.workspace_scenarios = WorkspaceScenarioService(self.vault, self.matters, self.workspace, self.matter_records)
+        self.solution_paths = MatterPathService(self.workspace_scenarios)
+        self.matter_memory = MatterMemoryService(self)
         self.workspace_review = WorkspaceReviewService(
             self.vault, self.matters, self.workspace, self.matter_records, self.workspace_scenarios
         )

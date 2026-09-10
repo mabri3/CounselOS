@@ -453,6 +453,16 @@ class ScenarioStaleness(WorkspaceModel):
 
 
 class Scenario(WorkspaceModel):
+    parent_path_id: str | None = None
+    parent_revision: str | None = None
+    path_kind: Literal["baseline", "alternative"] = "alternative"
+    archived_at: str | None = None
+    hypothesis_summary: str = ""
+    actual_basis_refs: list[str] = Field(default_factory=list)
+    current_analysis_ref: str | None = None
+    recommendation_refs: list[str] = Field(default_factory=list)
+    work_item_refs: list[str] = Field(default_factory=list)
+    memory_ref: str | None = None
     scenario_id: str
     matter_id: str
     title: str

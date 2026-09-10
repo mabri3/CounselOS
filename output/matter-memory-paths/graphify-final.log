@@ -1,0 +1,14 @@
+Re-extracting code files in . (no LLM needed)...
+  AST extraction: 100/217 uncached files (46%) [10 workers]
+  AST extraction: 200/217 uncached files (92%) [10 workers]
+  AST extraction: 217/217 uncached files (100%) [10 workers]
+  warning: 5 source file(s) produced zero nodes and are absent from the graph: launch.json, hooks.json, active-vault.json, .counsel-os-vault.json, cases.json. A re-run will retry them (empties are no longer cached); if it persists, please report the file(s) (#1666).
+[graphify watch] community set changed since labeling (1517 saved labels, 1520 communities now; renamed 112 community(ies) by their hub). Run `graphify label` to refresh names with the LLM.
+[graphify] backed up curated graph (4 files) -> 2026-09-10/
+Graph has 14908 nodes (above 5000 limit). Building aggregated community view...
+graph.html written (aggregated: 1520 community nodes, 1144 cross-community edges)
+Tip: run with --obsidian for full node-level detail.
+[graphify watch] Rebuilt: 14908 nodes, 29093 edges, 1520 communities
+[graphify watch] graph.json, graph.html and GRAPH_REPORT.md updated in graphify-out
+Code graph updated. For doc/paper/image changes run /graphify --update in your AI assistant.
+Tip: set GEMINI_API_KEY or GOOGLE_API_KEY to use Gemini for semantic extraction.

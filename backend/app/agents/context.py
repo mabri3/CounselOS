@@ -19,6 +19,7 @@ from app.services.index import IndexService
 from app.services.matter_state import MatterStateService
 from app.services.vault import VaultService
 from app.skills.registry import SkillDefinition
+from app.agents.context_selection import pack, recent_messages
 
 
 class ContextBuilder:
@@ -163,7 +164,7 @@ class ContextBuilder:
         active_file: str | None = None, run_id: str = "", created_at: str | None = None,
         selections: list[dict[str, Any]] | None = None, target: Any = None,
         attachments: list[Any] | None = None, applied_notes: list[dict[str, Any]] | None = None,
-        expected_question_revision: str | None = None, budget: int = 60000,
+        expected_question_revision: str | None = None, budget: int = 60000, query: str = "",
     ) -> dict[str, Any]:
         """Collect the exact supplied text and its provenance at submission.
 
@@ -225,7 +226,8 @@ class ContextBuilder:
                 # Canonical records are always selected, with any size limit
                 # shown explicitly instead of claiming unread text was supplied.
                 allowed = max(0, min(remaining, 24000 if mandatory else 12000))
-                supplied = text[:allowed]
+                supplied, omitted = pack(text, allowed, query)
+                entry["omitted_record_ids"] = omitted
                 remaining -= len(supplied)
                 entry.update(state="included" if len(supplied) == len(text) else "truncated" if supplied else "omitted",
                              reason=reason if len(supplied) == len(text) else "Context size limit.",
@@ -281,7 +283,7 @@ class ContextBuilder:
                     if any(item.get(key) in excluded_ids for key in ("fact_id", "source_id", "source_message_id", "contribution_id")):
                         return False
                     return not any(s in excluded_ids or sources.get(s, {}).get("path") in excluded_paths for s in item.get("source_ids", []))
-                active = [{k: f.get(k) for k in ("fact_id", "text", "source_ids", "created_at", "updated_at", "origin", "verification_status")}
+                active = [{k: f.get(k) for k in ("fact_id", "text", "source_ids", "created_at", "updated_at", "origin", "verification_status", "status", "supersedes")}
                           for f in facts.get("facts", []) if f.get("status") == "active" and not f.get("withdrawn_at") and eligible(f)]
                 for fact in active:
                     fact["verification_status"] = fact.get("verification_status") or "reported"
@@ -333,15 +335,8 @@ class ContextBuilder:
                     decisions = self._durable_decisions(matter_id)
                     if decisions:
                         add("recorded_decisions", "Recorded durable decisions", "These are human-recorded decisions, not recommendations.\n" + json.dumps(decisions, ensure_ascii=False, default=str))
-                    # Existing research is useful generated work, never fresh authority.
-                    for path in list(self.vault.iter_files(matter["path"], {".md"})):
-                        try:
-                            research = self.vault.read_markdown(self.vault.relative(path))
-                            if not research["metadata"].get("research_id"):
-                                continue
-                            file(self.vault.relative(path), "prior_research_generated_analysis", self.vault.relative(path))
-                        except (OSError, ValueError, TypeError, yaml.YAMLError):
-                            continue
+                    # The archive remains searchable. Do not inject every research packet.
+                    add("prior_research_archive", "archive_pointer", "Saved research is available through scoped search_vault and read_file. Select only work relevant to this question.")
                 else:
                     add("historical_summaries", "history", selected=False, reason="Unattributed history and summaries withheld to enforce source exclusions.")
         for filename in self.USER_CONTEXT_FILES:
@@ -419,7 +414,7 @@ class ContextBuilder:
     def filter_history(history: list[Any], frozen_context: dict[str, Any]) -> list[Any]:
         # Legacy messages have no reliable per-passage source lineage. Withhold
         # them when a source was excluded; canonical structured memory remains.
-        return [] if frozen_context.get("withhold_unattributed_history") else history[-12:]
+        return [] if frozen_context.get("withhold_unattributed_history") else recent_messages(history)
 
     SOURCE_POINTER_LIMIT = 2_000
 

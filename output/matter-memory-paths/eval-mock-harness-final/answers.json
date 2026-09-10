@@ -1,0 +1,534 @@
+[
+  {
+    "episode_id": "E07",
+    "message_id": "MSG-E07-1",
+    "status": "available",
+    "answer": "Here is the useful first-pass view: start with the business objective and the decision that must be made, then identify the two or three facts that could change the path. The active matter context and source files are available in the workspace. In mock mode I can also move the matter, run a scaffolded research pass, create work items, audit decisions, and create basic schedules. Configure an OpenAI-compatible provider in `.env` for model-generated analysis.",
+    "fixture": {
+      "path_ids": {
+        "A": "SCN-e4c55d0c59b0e314bc34e3d7",
+        "B": "SCN-48ce75d57b76d7045276130d",
+        "C": "SCN-53d8f500258dce86f9406502"
+      },
+      "conversation_id": "CONV-20260910-319345",
+      "source_id": "SRC-977B5942AC654257",
+      "source_version": "9b1d11c01356df1e568dca16f960c82d",
+      "environment_events": [],
+      "environment_event_status": "covered by deterministic lifecycle tests; not injected in this live conversation harness"
+    },
+    "dispatch_metrics": [
+      {
+        "original_bytes": 76856,
+        "dispatched_bytes": 76856,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      }
+    ],
+    "memory_receipt": {
+      "memory_sequence": 1,
+      "memory_revision": "6c972f587a6ba478ddaae92acbfda075bf3270482c38b38c6e70c85129db7ed5"
+    },
+    "before": {
+      "paths": {
+        "state": {
+          "schema_version": 1,
+          "matter_id": "MAT-DEMO-RELAY",
+          "mainline_path_id": "SCN-e4c55d0c59b0e314bc34e3d7",
+          "last_transition_id": null,
+          "conditions": [],
+          "transition_history_refs": [
+            "paths/transitions/"
+          ],
+          "revision": "739ffc961f503171c4532fa29ff5819daca2d9c737b1d50795bd1ca0b435f4bc"
+        },
+        "paths": [
+          {
+            "scenario_id": "SCN-53d8f500258dce86f9406502",
+            "title": "Timing C",
+            "revision": "74f6bbd46089405d8d2e42b761b57409afb371e2b4c0080225c524cf1a3e33d3",
+            "parent_path_id": "SCN-48ce75d57b76d7045276130d",
+            "path_kind": "alternative",
+            "archived_at": null,
+            "unresolved_conditions": [
+              "Bank agreement is pending."
+            ],
+            "role": "alternative"
+          },
+          {
+            "scenario_id": "SCN-48ce75d57b76d7045276130d",
+            "title": "Bank B",
+            "revision": "a918c1087339b55909b134368fe69d8025c502fd768119fa008ac741357ee739",
+            "parent_path_id": "SCN-e4c55d0c59b0e314bc34e3d7",
+            "path_kind": "alternative",
+            "archived_at": null,
+            "unresolved_conditions": [
+              "Bank agreement is pending."
+            ],
+            "role": "alternative"
+          },
+          {
+            "scenario_id": "SCN-e4c55d0c59b0e314bc34e3d7",
+            "title": "Original A",
+            "revision": "0cb05aac5a8aceeb7892e33397325863b34a8e8f6c56206a8021c8e8b7a24885",
+            "parent_path_id": null,
+            "path_kind": "baseline",
+            "archived_at": null,
+            "unresolved_conditions": [],
+            "role": "mainline"
+          }
+        ],
+        "next_offset": null
+      },
+      "facts": {
+        "path": "03_Matters/relay-open-banking/facts.md",
+        "content": "# Known Facts\n\n- Actual report: operator holds funds.\n\n## Assumptions\n\nNo open assumptions.\n",
+        "matter_id": "MAT-DEMO-RELAY",
+        "record_type": "facts",
+        "facts": [
+          {
+            "fact_id": "FACT-eval-custody",
+            "text": "Actual report: operator holds funds.",
+            "status": "active",
+            "material": true,
+            "source_ids": [],
+            "supersedes": null,
+            "created_at": "2026-09-10T19:58:30+00:00",
+            "withdrawn_at": null,
+            "action_id": "ACT-20260910-d141d8"
+          }
+        ],
+        "sources": [],
+        "support": [],
+        "conflicts": [],
+        "actions": [
+          {
+            "action_id": "ACT-20260910-d141d8",
+            "summary": "Matter facts updated",
+            "actor": "assistant",
+            "created_at": "2026-09-10T19:58:30+00:00",
+            "status": "applied",
+            "created": {
+              "facts": [
+                "FACT-eval-custody"
+              ],
+              "sources": [],
+              "support": [],
+              "assumptions": []
+            },
+            "source_action_key": null
+          }
+        ],
+        "assumptions": [],
+        "working_ask": "",
+        "issues": [
+          "**Authorization design.** What information must be shown before a customer authorizes API access, and when must that permission be renewed?",
+          "**Migration.** Can existing connections continue until technical reauthentication, or must customers make a new affirmative choice before data continues to flow?",
+          "**Purpose limits.** Which uses are necessary for the customer-selected product, and which uses require a separate optional choice?",
+          "**Marketing and underwriting.** Should historical transaction data be used to build cross-product offer segments or lending inputs?",
+          "**Revocation and deletion.** What must stop when a customer disconnects, and what information may be retained for disputes, fraud, legal duties, or model evidence?",
+          "**Regulatory change.** Which design choices remain useful even while the federal section 1033 rule and compliance dates may change?",
+          "**Aggregator contract.** Are security, incident notice, subcontractor, purpose, deletion, audit, and transition-assistance terms sufficient?",
+          "**Customer support.** Can the company explain connection status, permission, refresh failure, and deletion without sending the customer to the aggregator?"
+        ],
+        "open_questions": [],
+        "public_research_questions": [],
+        "intake_answers": [],
+        "intake_state": "active"
+      }
+    },
+    "after": {
+      "paths": {
+        "state": {
+          "schema_version": 1,
+          "matter_id": "MAT-DEMO-RELAY",
+          "mainline_path_id": "SCN-e4c55d0c59b0e314bc34e3d7",
+          "last_transition_id": null,
+          "conditions": [],
+          "transition_history_refs": [
+            "paths/transitions/"
+          ],
+          "revision": "739ffc961f503171c4532fa29ff5819daca2d9c737b1d50795bd1ca0b435f4bc"
+        },
+        "paths": [
+          {
+            "scenario_id": "SCN-53d8f500258dce86f9406502",
+            "title": "Timing C",
+            "revision": "74f6bbd46089405d8d2e42b761b57409afb371e2b4c0080225c524cf1a3e33d3",
+            "parent_path_id": "SCN-48ce75d57b76d7045276130d",
+            "path_kind": "alternative",
+            "archived_at": null,
+            "unresolved_conditions": [
+              "Bank agreement is pending."
+            ],
+            "role": "alternative"
+          },
+          {
+            "scenario_id": "SCN-48ce75d57b76d7045276130d",
+            "title": "Bank B",
+            "revision": "a918c1087339b55909b134368fe69d8025c502fd768119fa008ac741357ee739",
+            "parent_path_id": "SCN-e4c55d0c59b0e314bc34e3d7",
+            "path_kind": "alternative",
+            "archived_at": null,
+            "unresolved_conditions": [
+              "Bank agreement is pending."
+            ],
+            "role": "alternative"
+          },
+          {
+            "scenario_id": "SCN-e4c55d0c59b0e314bc34e3d7",
+            "title": "Original A",
+            "revision": "0cb05aac5a8aceeb7892e33397325863b34a8e8f6c56206a8021c8e8b7a24885",
+            "parent_path_id": null,
+            "path_kind": "baseline",
+            "archived_at": null,
+            "unresolved_conditions": [],
+            "role": "mainline"
+          }
+        ],
+        "next_offset": null
+      },
+      "facts": {
+        "path": "03_Matters/relay-open-banking/facts.md",
+        "content": "# Known Facts\n\n- Actual report: operator holds funds.\n\n## Assumptions\n\nNo open assumptions.\n",
+        "matter_id": "MAT-DEMO-RELAY",
+        "record_type": "facts",
+        "facts": [
+          {
+            "fact_id": "FACT-eval-custody",
+            "text": "Actual report: operator holds funds.",
+            "status": "active",
+            "material": true,
+            "source_ids": [],
+            "supersedes": null,
+            "created_at": "2026-09-10T19:58:30+00:00",
+            "withdrawn_at": null,
+            "action_id": "ACT-20260910-d141d8"
+          }
+        ],
+        "sources": [],
+        "support": [],
+        "conflicts": [],
+        "actions": [
+          {
+            "action_id": "ACT-20260910-d141d8",
+            "summary": "Matter facts updated",
+            "actor": "assistant",
+            "created_at": "2026-09-10T19:58:30+00:00",
+            "status": "applied",
+            "created": {
+              "facts": [
+                "FACT-eval-custody"
+              ],
+              "sources": [],
+              "support": [],
+              "assumptions": []
+            },
+            "source_action_key": null
+          }
+        ],
+        "assumptions": [],
+        "working_ask": "",
+        "issues": [
+          "**Authorization design.** What information must be shown before a customer authorizes API access, and when must that permission be renewed?",
+          "**Migration.** Can existing connections continue until technical reauthentication, or must customers make a new affirmative choice before data continues to flow?",
+          "**Purpose limits.** Which uses are necessary for the customer-selected product, and which uses require a separate optional choice?",
+          "**Marketing and underwriting.** Should historical transaction data be used to build cross-product offer segments or lending inputs?",
+          "**Revocation and deletion.** What must stop when a customer disconnects, and what information may be retained for disputes, fraud, legal duties, or model evidence?",
+          "**Regulatory change.** Which design choices remain useful even while the federal section 1033 rule and compliance dates may change?",
+          "**Aggregator contract.** Are security, incident notice, subcontractor, purpose, deletion, audit, and transition-assistance terms sufficient?",
+          "**Customer support.** Can the company explain connection status, permission, refresh failure, and deletion without sending the customer to the aggregator?"
+        ],
+        "open_questions": [],
+        "public_research_questions": [],
+        "intake_answers": [],
+        "intake_state": "active"
+      }
+    },
+    "expected": {
+      "mainline": "A",
+      "working_path": "A",
+      "facts": "unchanged",
+      "decisions": "unchanged",
+      "tasks": "unchanged",
+      "note": {
+        "minimum_sequence": 1,
+        "maximum_payload_chars": 4000,
+        "malformed_update": "retain previous valid note"
+      },
+      "sources": "fixture saved source ID and exact immutable version",
+      "publication": "A",
+      "assumptions": "path-local; agreement pending unless explicitly reported",
+      "recommendation": "selection does not accept wording"
+    },
+    "assessment_method": "qualitative review pending"
+  },
+  {
+    "episode_id": "E07",
+    "message_id": "MSG-E07-2",
+    "status": "available",
+    "answer": "Here is the useful first-pass view: start with the business objective and the decision that must be made, then identify the two or three facts that could change the path. The active matter context and source files are available in the workspace. In mock mode I can also move the matter, run a scaffolded research pass, create work items, audit decisions, and create basic schedules. Configure an OpenAI-compatible provider in `.env` for model-generated analysis.",
+    "fixture": {
+      "path_ids": {
+        "A": "SCN-e4c55d0c59b0e314bc34e3d7",
+        "B": "SCN-48ce75d57b76d7045276130d",
+        "C": "SCN-53d8f500258dce86f9406502"
+      },
+      "conversation_id": "CONV-20260910-319345",
+      "source_id": "SRC-977B5942AC654257",
+      "source_version": "9b1d11c01356df1e568dca16f960c82d",
+      "environment_events": [],
+      "environment_event_status": "covered by deterministic lifecycle tests; not injected in this live conversation harness"
+    },
+    "dispatch_metrics": [
+      {
+        "original_bytes": 77439,
+        "dispatched_bytes": 77439,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      }
+    ],
+    "memory_receipt": {
+      "memory_sequence": 1,
+      "memory_revision": "6c972f587a6ba478ddaae92acbfda075bf3270482c38b38c6e70c85129db7ed5"
+    },
+    "before": {
+      "paths": {
+        "state": {
+          "schema_version": 1,
+          "matter_id": "MAT-DEMO-RELAY",
+          "mainline_path_id": "SCN-e4c55d0c59b0e314bc34e3d7",
+          "last_transition_id": null,
+          "conditions": [],
+          "transition_history_refs": [
+            "paths/transitions/"
+          ],
+          "revision": "739ffc961f503171c4532fa29ff5819daca2d9c737b1d50795bd1ca0b435f4bc"
+        },
+        "paths": [
+          {
+            "scenario_id": "SCN-53d8f500258dce86f9406502",
+            "title": "Timing C",
+            "revision": "74f6bbd46089405d8d2e42b761b57409afb371e2b4c0080225c524cf1a3e33d3",
+            "parent_path_id": "SCN-48ce75d57b76d7045276130d",
+            "path_kind": "alternative",
+            "archived_at": null,
+            "unresolved_conditions": [
+              "Bank agreement is pending."
+            ],
+            "role": "alternative"
+          },
+          {
+            "scenario_id": "SCN-48ce75d57b76d7045276130d",
+            "title": "Bank B",
+            "revision": "a918c1087339b55909b134368fe69d8025c502fd768119fa008ac741357ee739",
+            "parent_path_id": "SCN-e4c55d0c59b0e314bc34e3d7",
+            "path_kind": "alternative",
+            "archived_at": null,
+            "unresolved_conditions": [
+              "Bank agreement is pending."
+            ],
+            "role": "alternative"
+          },
+          {
+            "scenario_id": "SCN-e4c55d0c59b0e314bc34e3d7",
+            "title": "Original A",
+            "revision": "0cb05aac5a8aceeb7892e33397325863b34a8e8f6c56206a8021c8e8b7a24885",
+            "parent_path_id": null,
+            "path_kind": "baseline",
+            "archived_at": null,
+            "unresolved_conditions": [],
+            "role": "mainline"
+          }
+        ],
+        "next_offset": null
+      },
+      "facts": {
+        "path": "03_Matters/relay-open-banking/facts.md",
+        "content": "# Known Facts\n\n- Actual report: operator holds funds.\n\n## Assumptions\n\nNo open assumptions.\n",
+        "matter_id": "MAT-DEMO-RELAY",
+        "record_type": "facts",
+        "facts": [
+          {
+            "fact_id": "FACT-eval-custody",
+            "text": "Actual report: operator holds funds.",
+            "status": "active",
+            "material": true,
+            "source_ids": [],
+            "supersedes": null,
+            "created_at": "2026-09-10T19:58:30+00:00",
+            "withdrawn_at": null,
+            "action_id": "ACT-20260910-d141d8"
+          }
+        ],
+        "sources": [],
+        "support": [],
+        "conflicts": [],
+        "actions": [
+          {
+            "action_id": "ACT-20260910-d141d8",
+            "summary": "Matter facts updated",
+            "actor": "assistant",
+            "created_at": "2026-09-10T19:58:30+00:00",
+            "status": "applied",
+            "created": {
+              "facts": [
+                "FACT-eval-custody"
+              ],
+              "sources": [],
+              "support": [],
+              "assumptions": []
+            },
+            "source_action_key": null
+          }
+        ],
+        "assumptions": [],
+        "working_ask": "",
+        "issues": [
+          "**Authorization design.** What information must be shown before a customer authorizes API access, and when must that permission be renewed?",
+          "**Migration.** Can existing connections continue until technical reauthentication, or must customers make a new affirmative choice before data continues to flow?",
+          "**Purpose limits.** Which uses are necessary for the customer-selected product, and which uses require a separate optional choice?",
+          "**Marketing and underwriting.** Should historical transaction data be used to build cross-product offer segments or lending inputs?",
+          "**Revocation and deletion.** What must stop when a customer disconnects, and what information may be retained for disputes, fraud, legal duties, or model evidence?",
+          "**Regulatory change.** Which design choices remain useful even while the federal section 1033 rule and compliance dates may change?",
+          "**Aggregator contract.** Are security, incident notice, subcontractor, purpose, deletion, audit, and transition-assistance terms sufficient?",
+          "**Customer support.** Can the company explain connection status, permission, refresh failure, and deletion without sending the customer to the aggregator?"
+        ],
+        "open_questions": [],
+        "public_research_questions": [],
+        "intake_answers": [],
+        "intake_state": "active"
+      }
+    },
+    "after": {
+      "paths": {
+        "state": {
+          "schema_version": 1,
+          "matter_id": "MAT-DEMO-RELAY",
+          "mainline_path_id": "SCN-e4c55d0c59b0e314bc34e3d7",
+          "last_transition_id": null,
+          "conditions": [],
+          "transition_history_refs": [
+            "paths/transitions/"
+          ],
+          "revision": "739ffc961f503171c4532fa29ff5819daca2d9c737b1d50795bd1ca0b435f4bc"
+        },
+        "paths": [
+          {
+            "scenario_id": "SCN-53d8f500258dce86f9406502",
+            "title": "Timing C",
+            "revision": "74f6bbd46089405d8d2e42b761b57409afb371e2b4c0080225c524cf1a3e33d3",
+            "parent_path_id": "SCN-48ce75d57b76d7045276130d",
+            "path_kind": "alternative",
+            "archived_at": null,
+            "unresolved_conditions": [
+              "Bank agreement is pending."
+            ],
+            "role": "alternative"
+          },
+          {
+            "scenario_id": "SCN-48ce75d57b76d7045276130d",
+            "title": "Bank B",
+            "revision": "a918c1087339b55909b134368fe69d8025c502fd768119fa008ac741357ee739",
+            "parent_path_id": "SCN-e4c55d0c59b0e314bc34e3d7",
+            "path_kind": "alternative",
+            "archived_at": null,
+            "unresolved_conditions": [
+              "Bank agreement is pending."
+            ],
+            "role": "alternative"
+          },
+          {
+            "scenario_id": "SCN-e4c55d0c59b0e314bc34e3d7",
+            "title": "Original A",
+            "revision": "0cb05aac5a8aceeb7892e33397325863b34a8e8f6c56206a8021c8e8b7a24885",
+            "parent_path_id": null,
+            "path_kind": "baseline",
+            "archived_at": null,
+            "unresolved_conditions": [],
+            "role": "mainline"
+          }
+        ],
+        "next_offset": null
+      },
+      "facts": {
+        "path": "03_Matters/relay-open-banking/facts.md",
+        "content": "# Known Facts\n\n- Actual report: operator holds funds.\n\n## Assumptions\n\nNo open assumptions.\n",
+        "matter_id": "MAT-DEMO-RELAY",
+        "record_type": "facts",
+        "facts": [
+          {
+            "fact_id": "FACT-eval-custody",
+            "text": "Actual report: operator holds funds.",
+            "status": "active",
+            "material": true,
+            "source_ids": [],
+            "supersedes": null,
+            "created_at": "2026-09-10T19:58:30+00:00",
+            "withdrawn_at": null,
+            "action_id": "ACT-20260910-d141d8"
+          }
+        ],
+        "sources": [],
+        "support": [],
+        "conflicts": [],
+        "actions": [
+          {
+            "action_id": "ACT-20260910-d141d8",
+            "summary": "Matter facts updated",
+            "actor": "assistant",
+            "created_at": "2026-09-10T19:58:30+00:00",
+            "status": "applied",
+            "created": {
+              "facts": [
+                "FACT-eval-custody"
+              ],
+              "sources": [],
+              "support": [],
+              "assumptions": []
+            },
+            "source_action_key": null
+          }
+        ],
+        "assumptions": [],
+        "working_ask": "",
+        "issues": [
+          "**Authorization design.** What information must be shown before a customer authorizes API access, and when must that permission be renewed?",
+          "**Migration.** Can existing connections continue until technical reauthentication, or must customers make a new affirmative choice before data continues to flow?",
+          "**Purpose limits.** Which uses are necessary for the customer-selected product, and which uses require a separate optional choice?",
+          "**Marketing and underwriting.** Should historical transaction data be used to build cross-product offer segments or lending inputs?",
+          "**Revocation and deletion.** What must stop when a customer disconnects, and what information may be retained for disputes, fraud, legal duties, or model evidence?",
+          "**Regulatory change.** Which design choices remain useful even while the federal section 1033 rule and compliance dates may change?",
+          "**Aggregator contract.** Are security, incident notice, subcontractor, purpose, deletion, audit, and transition-assistance terms sufficient?",
+          "**Customer support.** Can the company explain connection status, permission, refresh failure, and deletion without sending the customer to the aggregator?"
+        ],
+        "open_questions": [],
+        "public_research_questions": [],
+        "intake_answers": [],
+        "intake_state": "active"
+      }
+    },
+    "expected": {
+      "mainline": "B",
+      "working_path": "B",
+      "facts": "unchanged",
+      "decisions": "unchanged",
+      "tasks": "unchanged",
+      "note": {
+        "minimum_sequence": 1,
+        "maximum_payload_chars": 4000,
+        "malformed_update": "retain previous valid note"
+      },
+      "sources": "fixture saved source ID and exact immutable version",
+      "publication": "B",
+      "assumptions": "path-local; agreement pending unless explicitly reported",
+      "recommendation": "selection does not accept wording"
+    },
+    "assessment_method": "qualitative review pending"
+  }
+]

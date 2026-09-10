@@ -150,7 +150,16 @@ class ProblemAnalysisService:
             value = {"reference": reference, **{k: analysis[k] for k in ProblemAnalysisPayload.model_fields}}
             text = json.dumps(value, ensure_ascii=False)
             if len(text) > 12000:
-                return "", "Prior breakdown omitted because it exceeds the context limit."
+                from app.agents.context_selection import pack
+                compact = {"reference":reference, "detail_available":True}
+                remaining = 7500
+                for key, item in value.items():
+                    if key == "reference": continue
+                    selected, _ = pack(json.dumps(item,ensure_ascii=False),remaining)
+                    if selected:
+                        compact[key] = json.loads(selected)
+                        remaining -= len(selected)
+                return json.dumps(compact,ensure_ascii=False), "Compact prior generated analysis; retrieve omitted detail by reference."
             return text, "Generated analysis from the stated prior inputs; reassess it against current facts."
         except (OSError, ValueError, KeyError, TypeError, YAMLError):
             return "", "Prior breakdown unavailable."

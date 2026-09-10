@@ -10,6 +10,7 @@ import yaml
 from app.agents.registry import AgentDefinition
 from app.services.vault import VaultService
 from app.tools.capabilities import ToolCapabilities
+from app.tools.matter_paths import SCENARIO_ACTIONS, PATH_READ_ACTIONS
 
 
 Handler = Callable[["ToolExecutionContext", dict[str, Any]], Awaitable[dict[str, Any]]]
@@ -119,9 +120,9 @@ class ToolRegistry:
         scope = context.scope_state.get("scope")
         if "research_scope" in context.frozen_context and tool_id not in SCENARIO_READ_TOOLS and context.investigation is None:
             return _failed_tool_result(tool_id, context, "This research run uses only its confirmed search sources. Do not start another search or workflow; answer from the available material.")
-        if (scope == "scenario" or (context.target and context.target.scenario_id)) and tool_id not in SCENARIO_READ_TOOLS and not (tool_id == "workspace_action" and arguments.get("action") == "save_scenario"):
+        if (scope == "scenario" or (context.target and context.target.scenario_id)) and tool_id not in SCENARIO_READ_TOOLS | {"select_conversation_scope"} and not (tool_id == "workspace_action" and arguments.get("action") in SCENARIO_ACTIONS):
             return _failed_tool_result(tool_id, context, "Scenario analysis can only read saved context. No actual matter change was made.")
-        if context.trusted_user_message and not scope and tool_id not in UNSCOPED_TOOLS:
+        if context.trusted_user_message and not scope and tool_id not in UNSCOPED_TOOLS and not (tool_id == "workspace_action" and arguments.get("action") in PATH_READ_ACTIONS):
             return _failed_tool_result(tool_id, context, "First interpret this turn with select_conversation_scope. No change was made.")
         if tool_id not in self.allowed_tools(agent):
             return _failed_tool_result(

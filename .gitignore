@@ -6,6 +6,7 @@ __pycache__/
 backend/.venv/
 frontend/node_modules/
 frontend/.next/
+frontend/.next-*/
 frontend/out/
 frontend/tsconfig.tsbuildinfo
 vault/.counsel_os/

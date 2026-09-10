@@ -1,5 +1,10 @@
 # Current Project State
 
+## Matter-path implementation checkpoint — September 10, 2026
+
+The isolated worktree includes preserved solution paths, a single mainline pointer, per-conversation focus, bounded working notes, shared editable/frozen guidance and bounded source/archive reads. Full backend check passed 1,480 tests. Frontend typecheck/build and both scripted browser stories passed, with limits in `docs/matter-memory-paths.verification.md`. Source-library baseline changes were preserved before this work. The saved source checkout remains unchanged. No paid semantic evaluation ran; use the frozen evaluation artifacts before any later authorized benchmark. Changes are uncommitted and undeployed.
+
+
 Last updated: 2026-09-06
 
 ## Phase 2 UI checkpoint — September 6, 2026

@@ -668,3 +668,57 @@ def get_historical_problem_analysis(matter_id: str, reference: str, context=Depe
         analysis = context.problem_analysis.load(matter_id, reference=ref)
         return {"state": "historical", "analysis": analysis, "reference": ref, "warnings": analysis["warnings"]}
     return invoke(load)
+
+
+@router.get('/paths')
+def inspect_paths(matter_id: str, offset: int = 0, limit: int = 20, conversation_id: str | None = None, context=Depends(get_context)):
+    result = invoke(context.solution_paths.inspect, matter_id, offset=offset, limit=limit)
+    if conversation_id:
+        conversation = invoke(context.chat_history.get,matter_id,conversation_id)
+        result["working_path_id"] = context.vault.read_markdown(conversation["path"])["metadata"].get("working_path_id")
+    return result
+
+
+@router.get('/paths/transitions')
+def path_transitions(matter_id: str, offset: int = 0, limit: int = 20, context=Depends(get_context)):
+    return invoke(context.solution_paths.transitions, matter_id, offset=offset, limit=limit)
+
+from app.models.matter_memory import StrictModel
+from pydantic import Field
+from typing import Any
+
+class DirectPathAction(StrictModel):
+    action: str
+    values: dict[str, Any] = Field(default_factory=dict)
+    source_action_key: str = Field(min_length=1,max_length=256)
+    conversation_id: str | None = None
+
+@router.post('/paths/actions')
+async def direct_path_action(matter_id: str,payload: DirectPathAction,context=Depends(get_context)):
+    from app.tools.matter_paths import PATH_ACTIONS, path_action
+    from app.tools.registry import ToolExecutionContext
+    if payload.action not in PATH_ACTIONS:
+        raise HTTPException(422,'Unknown path action.')
+    baseline=invoke(context.solution_paths.ensure_baseline,matter_id)
+    frozen={'conversation_id':payload.conversation_id,'active_path':{'path_id':baseline['scenario_id'],'revision':baseline['revision']}}
+    tool_context=ToolExecutionContext(app=context,matter_id=matter_id,run_id='UI-'+payload.source_action_key,
+        source_action_key=payload.source_action_key,trusted_message_id='UI-'+payload.source_action_key,
+        trusted_user_message='Direct control: '+payload.action,frozen_context=frozen,scope_state={'scope':'scenario'})
+    try:
+        return await path_action(tool_context,{'action':payload.action,'values':payload.values,'instruction_quote':tool_context.trusted_user_message})
+    except WorkspaceConflict as exc:
+        raise HTTPException(409,detail=exc.detail) from exc
+    except (ValueError,KeyError) as exc:
+        raise HTTPException(422,detail=str(exc)) from exc
+
+@router.get('/paths/{path_id}/memory')
+def path_memory(matter_id: str,path_id: str,context=Depends(get_context)):
+    return invoke(context.matter_memory.context_view,matter_id,path_id)
+
+@router.get('/saved-sources')
+def saved_source_catalog(matter_id: str,context=Depends(get_context)):
+    return invoke(context.source_library.catalog,matter_id)
+
+@router.get('/saved-sources/passage')
+def saved_source_passage(matter_id: str,source_id: str,source_version: str,unit_id: str,start: int=0,context=Depends(get_context)):
+    return invoke(context.source_library.read,matter_id,source_id,source_version,unit_id,start=start,max_chars=6000)

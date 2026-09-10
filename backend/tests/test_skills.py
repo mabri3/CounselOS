@@ -549,7 +549,8 @@ def test_chat_preserves_slash_command_and_applied_skill_after_reload(app_context
 
     assert response.status_code == 200
     assert response.json()["applied_skills"] == [
-        {"skill_id": "product-launch-review", "name": "Product Launch Review"}
+        {"skill_id": "product-launch-review", "name": "Product Launch Review"},
+        {"skill_id": "matter-paths", "name": "Matter paths"},
     ]
     saved = _client(app_context).get(
         f"/api/matters/MAT-DEMO-BEACON/conversations/{response.json()['conversation_id']}"

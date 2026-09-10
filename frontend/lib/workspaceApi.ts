@@ -119,3 +119,6 @@ export function templateCommand<T>(path = "", method = "GET", body?: unknown): P
 
 export const getProblemAnalysis = (matterId: string, reference: import("./problemAnalysisTypes").ProblemAnalysisReference) =>
   request<import("./problemAnalysisTypes").ProblemAnalysisStatus>(`${base(matterId)}/problem-analysis?reference=${encodeURIComponent(JSON.stringify(reference))}`);
+
+export const getSolutionPaths = (matterId: string, conversationId?: string | null) => request<import("./workspaceTypes").SolutionPathState>(`${base(matterId)}/paths${conversationId ? `?conversation_id=${encodeURIComponent(conversationId)}` : ""}`);
+export const actOnSolutionPath = (matterId: string, action: string, values: Record<string, unknown>, conversationId?: string | null) => request<{data: import("./workspaceTypes").PathReceipt}>(`${base(matterId)}/paths/actions`, json("POST", {action, values, conversation_id: conversationId, source_action_key: `path:${crypto.randomUUID()}`}));

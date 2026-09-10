@@ -58,6 +58,26 @@ class SkillRegistry:
     def __init__(self, vault: VaultService):
         self.vault = vault
 
+    def matter_paths_snapshot(self) -> dict[str, Any]:
+        """One automatic first-party skill, resolved anew only at submission."""
+        path = self._path("matter-paths")
+        status = "saved"
+        try:
+            document = self.vault.read_markdown(path)
+            if document["metadata"].get("enabled") is False:
+                return {"skill_id":"matter-paths", "name":"Matter paths", "enabled":False,
+                        "instructions":"", "revision":hashlib.sha256(self.vault.read_text(path).encode()).hexdigest(), "status":"disabled", "path":path}
+            instructions = self._instructions(document["content"])
+            if not instructions.strip() or len(instructions)>8000:
+                raise ValueError("Invalid shared path guidance.")
+        except (OSError, ValueError, TypeError):
+            import frontmatter
+            document = frontmatter.loads((STARTER_ROOT / "matter-paths.md").read_text())
+            instructions = self._instructions(document.content)
+            status = "bundled_fallback"
+        return {"skill_id":"matter-paths", "name":"Matter paths", "enabled":True, "instructions":instructions,
+                "revision":hashlib.sha256(instructions.encode()).hexdigest(), "status":status, "path":path}
+
     def list(self) -> list[SkillDefinition]:
         return list(self._load_all().values())
 
@@ -69,6 +89,8 @@ class SkillRegistry:
 
     def create(self, *, skill_id: str, name: str, description: str, instructions: str) -> SkillDefinition:
         clean_id = self._validated_id(skill_id)
+        if clean_id == "matter-paths" and (not instructions.strip() or len(instructions)>8000):
+            raise ValueError("Shared path guidance must contain 1 to 8000 characters.")
         path = self._path(clean_id)
         if self.vault.exists(path):
             raise ValueError(f"Skill already exists: {clean_id}")
@@ -89,6 +111,11 @@ class SkillRegistry:
 
     def update(self, skill_id: str, *, name: str | None = None, description: str | None = None,
                instructions: str | None = None, example: str | None = None) -> SkillDefinition:
+        if skill_id == "matter-paths" and instructions is not None and (not instructions.strip() or len(instructions)>8000):
+            raise ValueError("Shared path guidance must contain 1 to 8000 characters.")
+        if skill_id == "matter-paths" and not self.vault.exists(self._path(skill_id)):
+            snapshot = self.matter_paths_snapshot()
+            self.create(skill_id=skill_id, name=snapshot["name"], description="Shared across matter conversations", instructions=snapshot["instructions"])
         definition = self.get(skill_id)
         document = self.vault.read_markdown(definition.path)
         metadata = dict(document["metadata"])

@@ -1,0 +1,44 @@
+npm notice run themis.ai-frontend@0.1.0 check:single-lawyer-workspace
+npm notice run npm run check:workspace-understand && npm run check:workspace-exploration && npm run check:workspace-evidence && npm run check:workspace-reuse && npm run check:workspace-drafting && npm run check:output-templates
+npm notice run themis.ai-frontend@0.1.0 check:workspace-understand
+npm notice run node --experimental-strip-types scripts/check-workspace-understand.ts
+(node:92420) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/scripts/check-workspace-understand.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Workspace Understand checks passed.
+npm notice run themis.ai-frontend@0.1.0 check:workspace-exploration
+npm notice run node --experimental-strip-types scripts/check-workspace-exploration.ts
+(node:92443) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/scripts/check-workspace-exploration.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Workspace exploration checks passed.
+npm notice run themis.ai-frontend@0.1.0 check:workspace-evidence
+npm notice run node --experimental-strip-types scripts/check-workspace-evidence.ts
+(node:92466) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/scripts/check-workspace-evidence.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Workspace evidence and context checks passed.
+npm notice run themis.ai-frontend@0.1.0 check:workspace-reuse
+npm notice run node --experimental-strip-types scripts/check-workspace-reuse.ts
+(node:92490) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/scripts/check-workspace-reuse.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Workspace reuse checks passed.
+npm notice run themis.ai-frontend@0.1.0 check:workspace-drafting
+npm notice run node --experimental-strip-types scripts/check-workspace-drafting.ts
+(node:92514) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/scripts/check-workspace-drafting.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Workspace drafting checks passed.
+npm notice run themis.ai-frontend@0.1.0 check:output-templates
+npm notice run node --experimental-strip-types scripts/check-output-templates.ts
+(node:92537) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/scripts/check-output-templates.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/frontend/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Output template checks passed.

@@ -1,0 +1,155 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-8.4.2, pluggy-1.6.0
+rootdir: /Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/backend
+configfile: pytest.ini
+plugins: asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 1480 items
+
+tests/test_agent_action_permissions.py ............                      [  0%]
+tests/test_agents.py ................................................... [  4%]
+....................                                                     [  5%]
+tests/test_annotations.py .....                                          [  5%]
+tests/test_answer_contract.py ..............                             [  6%]
+tests/test_antigravity_cli_provider.py ......                            [  7%]
+tests/test_api_limits.py .................                               [  8%]
+tests/test_automations_api.py ........                                   [  8%]
+tests/test_awareness_api.py .........                                    [  9%]
+tests/test_awareness_demo_content.py ....                                [  9%]
+tests/test_awareness_end_to_end.py ..                                    [ 10%]
+tests/test_awareness_failures.py ...                                     [ 10%]
+tests/test_awareness_hostile_outputs.py ...                              [ 10%]
+tests/test_awareness_index.py ...........................                [ 12%]
+tests/test_awareness_lifecycle.py ..                                     [ 12%]
+tests/test_awareness_matching.py ......                                  [ 12%]
+tests/test_awareness_models.py ..................                        [ 13%]
+tests/test_awareness_rebuild.py ..                                       [ 14%]
+tests/test_awareness_records.py ..............                           [ 15%]
+tests/test_awareness_scheduler.py ........                               [ 15%]
+tests/test_blank_vault_parity.py ...                                     [ 15%]
+tests/test_change_impact.py ..................................           [ 18%]
+tests/test_chat_history.py .....................                         [ 19%]
+tests/test_chat_runs.py ................................................ [ 22%]
+.......                                                                  [ 23%]
+tests/test_claim_export.py ......                                        [ 23%]
+tests/test_codex_cli_provider.py .......                                 [ 24%]
+tests/test_company_interview.py .........................                [ 25%]
+tests/test_continuity_identity.py ......                                 [ 26%]
+tests/test_continuity_integration.py ....                                [ 26%]
+tests/test_continuity_recovery.py ..........                             [ 27%]
+tests/test_decision_map_generation_integration.py ..                     [ 27%]
+tests/test_decisions.py ...........................                      [ 29%]
+tests/test_demo_content.py ..                                            [ 29%]
+tests/test_document_review.py ..........................                 [ 31%]
+tests/test_document_review_docx.py ..............                        [ 31%]
+tests/test_dossier.py ..............                                     [ 32%]
+tests/test_experimental_chat.py ............                             [ 33%]
+tests/test_fact_requests.py ...........                                  [ 34%]
+tests/test_firecrawl.py ...                                              [ 34%]
+tests/test_fixture_isolation.py ....                                     [ 34%]
+tests/test_frontmatter.py ..                                             [ 35%]
+tests/test_ingestion.py .........                                        [ 35%]
+tests/test_ingestion_limits.py ........                                  [ 36%]
+tests/test_intelligence_providers.py ...........................         [ 38%]
+tests/test_intelligence_security.py ............................         [ 39%]
+tests/test_issue_analysis.py ....................                        [ 41%]
+tests/test_issue_choice.py .....                                         [ 41%]
+tests/test_living_dossier.py ......                                      [ 42%]
+tests/test_main_agent_research.py ................                       [ 43%]
+tests/test_matter_action_api.py ...........                              [ 43%]
+tests/test_matter_action_tools.py ..................................     [ 46%]
+tests/test_matter_led_contracts.py .....                                 [ 46%]
+tests/test_matter_lifecycle.py ...................                       [ 47%]
+tests/test_matter_memory.py ..........                                   [ 48%]
+tests/test_matter_memory_context.py .....                                [ 48%]
+tests/test_matter_memory_sources.py ...                                  [ 48%]
+tests/test_matter_path_eval.py ...                                       [ 49%]
+tests/test_matter_path_skill.py ...                                      [ 49%]
+tests/test_matter_paths.py ..................                            [ 50%]
+tests/test_matter_paths_baseline.py ..                                   [ 50%]
+tests/test_matter_paths_lifecycle.py ...                                 [ 50%]
+tests/test_matter_paths_state.py ...........                             [ 51%]
+tests/test_matter_records.py ......................                      [ 53%]
+tests/test_matter_review_integration.py ......                           [ 53%]
+tests/test_matter_state.py ..........................                    [ 55%]
+tests/test_matter_storage.py ..............                              [ 56%]
+tests/test_matters.py ...................                                [ 57%]
+tests/test_mitigations.py ..                                             [ 57%]
+tests/test_native_research.py .............                              [ 58%]
+tests/test_observability.py ...                                          [ 58%]
+tests/test_openai_compatible_provider.py ...                             [ 58%]
+tests/test_opencode_go_provider.py ........                              [ 59%]
+tests/test_output_citations.py ..........                                [ 60%]
+tests/test_output_templates.py ......                                    [ 60%]
+tests/test_problem_analysis.py ......................                    [ 62%]
+tests/test_problem_analysis_integration.py ..................            [ 63%]
+tests/test_prompt_trust_boundary.py ..                                   [ 63%]
+tests/test_provider_conformance.py ...........                           [ 64%]
+tests/test_recommendations.py .................                          [ 65%]
+tests/test_research.py ................................................. [ 68%]
+....                                                                     [ 68%]
+tests/test_research_checkpoints.py ......                                [ 69%]
+tests/test_research_documents.py ......                                  [ 69%]
+tests/test_research_lifecycle.py ...                                     [ 69%]
+tests/test_research_publication.py ........                              [ 70%]
+tests/test_research_recovery.py ..                                       [ 70%]
+tests/test_research_review_followup.py ...                               [ 70%]
+tests/test_research_scope.py ..........                                  [ 71%]
+tests/test_research_tool_instructions.py ....                            [ 71%]
+tests/test_review_outcomes.py .......                                    [ 72%]
+tests/test_review_packets.py ..                                          [ 72%]
+tests/test_scheduler.py ...                                              [ 72%]
+tests/test_scheduler_observability.py .......                            [ 73%]
+tests/test_settings.py ...................                               [ 74%]
+tests/test_skills.py ......................                              [ 75%]
+tests/test_source_library.py .......                                     [ 76%]
+tests/test_source_library_extraction.py .........                        [ 76%]
+tests/test_source_library_index.py .........                             [ 77%]
+tests/test_source_library_lifecycle.py ...                               [ 77%]
+tests/test_source_library_repairs.py .............                       [ 78%]
+tests/test_source_library_tools.py ..........                            [ 79%]
+tests/test_system.py ...                                                 [ 79%]
+tests/test_vault.py ...                                                  [ 79%]
+tests/test_vault_management.py ......................                    [ 81%]
+tests/test_watch_builder_skill.py .......                                [ 81%]
+tests/test_watch_scans.py ..............                                 [ 82%]
+tests/test_work_product.py .........................                     [ 84%]
+tests/test_workspace_actions.py .............                            [ 85%]
+tests/test_workspace_context.py ......                                   [ 85%]
+tests/test_workspace_drafting.py .....................................   [ 88%]
+tests/test_workspace_evidence.py ..............                          [ 88%]
+tests/test_workspace_files.py .......                                    [ 89%]
+tests/test_workspace_flow.py .....                                       [ 89%]
+tests/test_workspace_interactions.py .................                   [ 90%]
+tests/test_workspace_lifecycle.py .........................              [ 92%]
+tests/test_workspace_orientation.py .......................              [ 94%]
+tests/test_workspace_records.py ........................................ [ 96%]
+                                                                         [ 96%]
+tests/test_workspace_reuse.py ...                                        [ 97%]
+tests/test_workspace_review.py .................                         [ 98%]
+tests/test_workspace_scenarios.py .......                                [ 98%]
+tests/test_workspace_team.py ...................                         [100%]
+
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/backend/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/bharris/.codex/worktrees/0adf/counsel-os-mvp/backend/.venv/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================= 1480 passed, 7 warnings in 798.37s (0:13:18) =================
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

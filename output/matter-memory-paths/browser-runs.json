@@ -1,0 +1,551 @@
+[
+  {
+    "run_id": "RUN-20260910-60c7dc",
+    "status": "Chat is complete.",
+    "skill_revision": "efcd8d9f6987e0b08f761eaf548140a7f32a21e65cd31093871d85afd78e9a28",
+    "edited_skill": false,
+    "reply_count": 1,
+    "trace": [
+      {
+        "tool": "select_conversation_scope",
+        "status": "success",
+        "summary": "Current matter context selected.",
+        "mutation_status": null
+      },
+      {
+        "tool": "workspace_action",
+        "status": "success",
+        "summary": "compare paths: read",
+        "mutation_status": "no_change"
+      }
+    ],
+    "metrics": [
+      {
+        "original_bytes": 95266,
+        "dispatched_bytes": 95266,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 95826,
+        "dispatched_bytes": 95826,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 97314,
+        "dispatched_bytes": 97314,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      }
+    ]
+  },
+  {
+    "run_id": "RUN-20260910-447b98",
+    "status": "Chat is complete.",
+    "skill_revision": "efcd8d9f6987e0b08f761eaf548140a7f32a21e65cd31093871d85afd78e9a28",
+    "edited_skill": false,
+    "reply_count": 1,
+    "trace": [
+      {
+        "tool": "select_conversation_scope",
+        "status": "success",
+        "summary": "Scenario analysis; actual matter unchanged.",
+        "mutation_status": null
+      },
+      {
+        "tool": "workspace_action",
+        "status": "success",
+        "summary": "explore path: saved",
+        "mutation_status": "no_change"
+      }
+    ],
+    "metrics": [
+      {
+        "original_bytes": 94918,
+        "dispatched_bytes": 94918,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 95396,
+        "dispatched_bytes": 95396,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 98882,
+        "dispatched_bytes": 98882,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      }
+    ]
+  },
+  {
+    "run_id": "RUN-20260910-ad13ae",
+    "status": "Chat is complete.",
+    "skill_revision": "efcd8d9f6987e0b08f761eaf548140a7f32a21e65cd31093871d85afd78e9a28",
+    "edited_skill": false,
+    "reply_count": 1,
+    "trace": [],
+    "metrics": [
+      {
+        "original_bytes": 71592,
+        "dispatched_bytes": 71592,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      }
+    ]
+  },
+  {
+    "run_id": "RUN-20260910-019183",
+    "status": "Chat is complete.",
+    "skill_revision": "efcd8d9f6987e0b08f761eaf548140a7f32a21e65cd31093871d85afd78e9a28",
+    "edited_skill": false,
+    "reply_count": 1,
+    "trace": [
+      {
+        "tool": "select_conversation_scope",
+        "status": "success",
+        "summary": "Current matter context selected.",
+        "mutation_status": null
+      },
+      {
+        "tool": "workspace_action",
+        "status": "success",
+        "summary": "search local sources: read",
+        "mutation_status": "no_change"
+      },
+      {
+        "tool": "workspace_action",
+        "status": "success",
+        "summary": "read local source: read",
+        "mutation_status": "no_change"
+      }
+    ],
+    "metrics": [
+      {
+        "original_bytes": 78361,
+        "dispatched_bytes": 78361,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 78813,
+        "dispatched_bytes": 78813,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 80214,
+        "dispatched_bytes": 80214,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 85878,
+        "dispatched_bytes": 85878,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      }
+    ]
+  },
+  {
+    "run_id": "RUN-20260910-4b42df",
+    "status": "Chat is complete.",
+    "skill_revision": "efcd8d9f6987e0b08f761eaf548140a7f32a21e65cd31093871d85afd78e9a28",
+    "edited_skill": false,
+    "reply_count": 1,
+    "trace": [
+      {
+        "tool": "select_conversation_scope",
+        "status": "success",
+        "summary": "Scenario analysis; actual matter unchanged.",
+        "mutation_status": null
+      },
+      {
+        "tool": "workspace_action",
+        "status": "success",
+        "summary": "explore path: saved",
+        "mutation_status": "no_change"
+      }
+    ],
+    "metrics": [
+      {
+        "original_bytes": 89503,
+        "dispatched_bytes": 89503,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 91438,
+        "dispatched_bytes": 91438,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 94905,
+        "dispatched_bytes": 94905,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      }
+    ]
+  },
+  {
+    "run_id": "RUN-20260910-47a5c0",
+    "status": "Chat is complete.",
+    "skill_revision": "efcd8d9f6987e0b08f761eaf548140a7f32a21e65cd31093871d85afd78e9a28",
+    "edited_skill": false,
+    "reply_count": 1,
+    "trace": [
+      {
+        "tool": "select_conversation_scope",
+        "status": "success",
+        "summary": "Scenario analysis; actual matter unchanged.",
+        "mutation_status": null
+      },
+      {
+        "tool": "workspace_action",
+        "status": "success",
+        "summary": "explore path: saved",
+        "mutation_status": "no_change"
+      }
+    ],
+    "metrics": [
+      {
+        "original_bytes": 77775,
+        "dispatched_bytes": 77775,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 78253,
+        "dispatched_bytes": 78253,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 81526,
+        "dispatched_bytes": 81526,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      }
+    ]
+  },
+  {
+    "run_id": "RUN-20260910-eb27ce",
+    "status": "Chat is complete.",
+    "skill_revision": "efcd8d9f6987e0b08f761eaf548140a7f32a21e65cd31093871d85afd78e9a28",
+    "edited_skill": false,
+    "reply_count": 1,
+    "trace": [
+      {
+        "tool": "select_conversation_scope",
+        "status": "success",
+        "summary": "Current matter context selected.",
+        "mutation_status": null
+      },
+      {
+        "tool": "workspace_action",
+        "status": "success",
+        "summary": "compare paths: read",
+        "mutation_status": "no_change"
+      }
+    ],
+    "metrics": [
+      {
+        "original_bytes": 78009,
+        "dispatched_bytes": 78009,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 78455,
+        "dispatched_bytes": 78455,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 79943,
+        "dispatched_bytes": 79943,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      }
+    ]
+  },
+  {
+    "run_id": "RUN-20260910-d1f782",
+    "status": "Chat is complete.",
+    "skill_revision": "efcd8d9f6987e0b08f761eaf548140a7f32a21e65cd31093871d85afd78e9a28",
+    "edited_skill": false,
+    "reply_count": 1,
+    "trace": [
+      {
+        "tool": "select_conversation_scope",
+        "status": "success",
+        "summary": "Current matter context selected.",
+        "mutation_status": null
+      },
+      {
+        "tool": "workspace_action",
+        "status": "success",
+        "summary": "Workspace action saved.",
+        "mutation_status": "changed"
+      }
+    ],
+    "metrics": [
+      {
+        "original_bytes": 79012,
+        "dispatched_bytes": 79012,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 79492,
+        "dispatched_bytes": 79492,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 80826,
+        "dispatched_bytes": 80826,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      }
+    ]
+  },
+  {
+    "run_id": "RUN-20260910-485507",
+    "status": "Chat is complete.",
+    "skill_revision": "97a9261b964aa28234bf8301ee1812c611377f8d8839c2d64da47593c67200bb",
+    "edited_skill": true,
+    "reply_count": 1,
+    "trace": [
+      {
+        "tool": "select_conversation_scope",
+        "status": "success",
+        "summary": "Current matter context selected.",
+        "mutation_status": null
+      },
+      {
+        "tool": "workspace_action",
+        "status": "success",
+        "summary": "search local sources: read",
+        "mutation_status": "no_change"
+      },
+      {
+        "tool": "workspace_action",
+        "status": "success",
+        "summary": "read local source: read",
+        "mutation_status": "no_change"
+      }
+    ],
+    "metrics": [
+      {
+        "original_bytes": 92190,
+        "dispatched_bytes": 92190,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 92642,
+        "dispatched_bytes": 92642,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 94043,
+        "dispatched_bytes": 94043,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 99707,
+        "dispatched_bytes": 99707,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      }
+    ]
+  },
+  {
+    "run_id": "RUN-20260910-2ddf51",
+    "status": "Chat is complete.",
+    "skill_revision": "97a9261b964aa28234bf8301ee1812c611377f8d8839c2d64da47593c67200bb",
+    "edited_skill": true,
+    "reply_count": 1,
+    "trace": [
+      {
+        "tool": "select_conversation_scope",
+        "status": "success",
+        "summary": "Current matter context selected.",
+        "mutation_status": null
+      },
+      {
+        "tool": "workspace_action",
+        "status": "success",
+        "summary": "Workspace action saved.",
+        "mutation_status": "changed"
+      }
+    ],
+    "metrics": [
+      {
+        "original_bytes": 91667,
+        "dispatched_bytes": 91667,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 92147,
+        "dispatched_bytes": 92147,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 93671,
+        "dispatched_bytes": 93671,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      }
+    ]
+  },
+  {
+    "run_id": "RUN-20260910-ec51e6",
+    "status": "Chat is complete.",
+    "skill_revision": "efcd8d9f6987e0b08f761eaf548140a7f32a21e65cd31093871d85afd78e9a28",
+    "edited_skill": false,
+    "reply_count": 1,
+    "trace": [
+      {
+        "tool": "select_conversation_scope",
+        "status": "success",
+        "summary": "Scenario analysis; actual matter unchanged.",
+        "mutation_status": null
+      },
+      {
+        "tool": "workspace_action",
+        "status": "success",
+        "summary": "explore path: saved",
+        "mutation_status": "no_change"
+      }
+    ],
+    "metrics": [
+      {
+        "original_bytes": 72268,
+        "dispatched_bytes": 72268,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 74203,
+        "dispatched_bytes": 74203,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      },
+      {
+        "original_bytes": 77457,
+        "dispatched_bytes": 77457,
+        "ceiling_bytes": 256000,
+        "omitted_context_indices": [],
+        "provider_usage": null,
+        "requested_output_tokens": null,
+        "state": "completed"
+      }
+    ]
+  }
+]

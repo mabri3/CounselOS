@@ -1537,3 +1537,7 @@ The first demo is complete when a lawyer can:
 12. Submit an incomplete matter, answer contextual intake questions in Chat with Themis.ai, and receive privacy-safe Polaris research plus a useful editable dossier.
 
 The demo does not need to prove that the assistant is always right. It needs to prove that the assistant materially reduces setup work and gets a lawyer to useful judgment faster.
+
+## Matter memory and solution paths (September 10, 2026)
+
+Matter conversations distinguish reported facts, current direction and the path under discussion. Lawyers can preserve alternatives, compare them, select a direction and restore a former approach using current facts. Selection is separate from formal decisions and implementation reports. A bounded per-path working note keeps useful findings, open work and the next action. It is editable guidance, not another factual authority. Shared matter-path guidance applies to both conversation views and is frozen per request. Saved-source passages and conversation history are available through bounded reads. See `docs/matter-memory-paths.verification.md` for tested behavior and live-model limits.

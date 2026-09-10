@@ -31,7 +31,8 @@
     "check:matter-review-integration": "node --experimental-strip-types scripts/check-matter-review-integration.ts",
     "check:matter-review-decision-map": "npm run check:review-layout && npm run check:issue-review && npm run check:decision-map && npm run check:document-navigation && npm run check:document-reference-behavior && npm run check:matter-review-integration",
     "check:decision-path-layout": "node --experimental-strip-types scripts/check-decision-path-layout.ts",
-    "check:decision-path-recording": "node --experimental-strip-types scripts/check-decision-path-recording.ts"
+    "check:decision-path-recording": "node --experimental-strip-types scripts/check-decision-path-recording.ts",
+    "check:matter-memory-paths": "node --experimental-strip-types scripts/check-matter-memory-paths.ts"
   },
   "dependencies": {
     "@lexical/link": "^0.49.0",

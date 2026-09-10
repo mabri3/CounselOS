@@ -1,0 +1,22 @@
+{
+  "mode": "live",
+  "case_hash": "fdc0b01b5aef4b21d2bb4ef9afaf723b15971701aadff5795cde143447ce27c3",
+  "rubric": {
+    "intent_reference": 25,
+    "factual_decision_integrity": 25,
+    "path_preservation": 20,
+    "continuity": 15,
+    "research_application": 10,
+    "citation_locator": 5
+  },
+  "rubric_hash": "44bc55154933df03c3a2e3242c846bbe407bb013c084a6778d0f057fc40bd848",
+  "candidate_hash": "9991f9e71a423cb4fef7f681e24c3eb0df034a096a2ccd3e4724f7bf87b92423",
+  "skill_hash": "1c18568bec8735b07aed5b2c5b11c3ac3aa4a47984c650af88b9e705e84f713e",
+  "semantic_model_behavior": "unverified; mock harness only",
+  "paid_calls": 0,
+  "provider_usage": null,
+  "limits": "Input is a serialized-text estimate. Requested output is an instruction allowance; the adapter has no hard output cap. Actual usage remains unavailable unless returned.",
+  "provider_calls": 2,
+  "estimated_input": 38550,
+  "requested_output": 2000
+}

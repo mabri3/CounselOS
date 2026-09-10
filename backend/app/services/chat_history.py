@@ -116,6 +116,7 @@ class ChatHistoryService:
             path,
             self._render(messages, heading="# Matter chat"),
             {
+                **(self.vault.read_markdown(path)["metadata"] if self.vault.exists(path) else {}),
                 "conversation_id": conversation_id,
                 "matter_id": matter_id,
                 "scope": "matter",
@@ -451,3 +452,22 @@ class ChatHistoryService:
                 )
                 sections[-1] += f"\n\n### Actions\n\n{actions}"
         return "\n\n".join(sections) + "\n"
+
+    def archive_read(self, matter_id: str, conversation_id: str, *, query: str = '', message_id: str | None = None,
+                     start: int = 0, max_chars: int = 6000) -> dict[str, Any]:
+        """Exact bounded historical messages; assistant text is not a legal source."""
+        if start < 0 or not 1 <= max_chars <= 6000 or len(query)>2000:
+            raise ValueError('Invalid archive read limits.')
+        conversation = self.get(matter_id,conversation_id)
+        matches = [m for m in conversation['messages'] if (not message_id or m['message_id']==message_id)
+                   and (not query or any(t.casefold() in m['content'].casefold() for t in query.split()))]
+        result=[];remaining=max_chars
+        for message in matches:
+            if remaining<=0: break
+            text=message['content'];excerpt=text[start:start+remaining]
+            result.append({'message_id':message['message_id'],'role':message['role'],'text':excerpt,
+                           'start':start,'end':start+len(excerpt),'date':message.get('created_at'),
+                           'path_id':message.get('path_id'),'comparison_path_ids':message.get('comparison_path_ids',[]),
+                           'next_read':{'conversation_id':conversation_id,'message_id':message['message_id'],'start':start+len(excerpt)} if start+len(excerpt)<len(text) else None})
+            remaining-=len(excerpt)
+        return {'messages':result,'historical_not_authority':True,'matches':len(matches)}

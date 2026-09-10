@@ -122,7 +122,8 @@ async def run_page_extraction(pdf_path: Path, staging: Path, *, start_page: int 
     staging.mkdir(parents=True, exist_ok=True)
     process = await asyncio.create_subprocess_exec(
         sys.executable, "-m", __name__, str(pdf_path), str(staging), str(start_page), str(target_page or 0),
-        stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.DEVNULL, start_new_session=True)
+        stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.DEVNULL, start_new_session=True,
+        cwd=str(Path(__file__).resolve().parents[2]))
     timed_out = False
     try:
         stdout, _ = await asyncio.wait_for(process.communicate(), INVOCATION_SECONDS)

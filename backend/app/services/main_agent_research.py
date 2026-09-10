@@ -35,7 +35,7 @@ async def run_main_research(research, matter_id, question, *, run_id, frozen_con
             collector = None
         frozen_context = dict(frozen_context or {})
         frozen_context.setdefault("research_inputs", runs._freeze_research_inputs(matter_id, question, other_matters=scope.other_matters, internal_sources=(initial_search or {}).get("internal")))
-        frozen_context["context"] = frozen_context["research_inputs"]["context"]
+        frozen_context["context"] = frozen_context["research_inputs"]["context"] + frozen_context.get("path_context", "")
         frozen_context["manifest"] = {"entries": frozen_context["research_inputs"]["manifest_entries"]}
         prior, _ = app.problem_analysis.prior_context(matter_id, frozen_context)
         if prior:

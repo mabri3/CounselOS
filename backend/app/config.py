@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     llm_model: str | None = Field(None, alias="LLM_MODEL")
     llm_reasoning_effort: str | None = Field(None, alias="LLM_REASONING_EFFORT")
     llm_timeout_seconds: int = Field(120, alias="LLM_TIMEOUT_SECONDS")
+    model_dispatch_max_bytes: int = Field(256000, alias="MODEL_DISPATCH_MAX_BYTES", ge=10000)
     max_agent_steps: int = Field(6, alias="MAX_AGENT_STEPS")
     chat_run_timeout_seconds: int = Field(180, alias="CHAT_RUN_TIMEOUT_SECONDS")
 

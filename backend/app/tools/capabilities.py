@@ -73,6 +73,8 @@ class DecisionCapabilities(Protocol):
 class ToolCapabilities(Protocol):
     """The application services used by allow-listed tool handlers."""
 
+    solution_paths: Any
+    matter_memory: Any
     workspace: Any
     settings: Any
     dossiers: Any

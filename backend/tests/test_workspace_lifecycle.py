@@ -45,6 +45,10 @@ class Provider:
 
 
 async def turn(client, context, message, calls=(), *, scope="actual", hook=None, **extra):
+    calls = copy.deepcopy(calls)
+    for name, arguments in calls:
+        if scope == "actual" and name == "workspace_action" and arguments.get("action") == "correct_fact":
+            arguments["instruction_quote"] = message
     provider = Provider(message, calls, scope=scope, hook=hook)
     context.runner.provider = provider
     response = await client.post("/api/chat", json={"matter_id": MATTER, "message": message, **extra})
@@ -115,11 +119,14 @@ async def test_scenario_save_is_historical_and_canonical_actions_are_denied(appl
             ("workspace_action", {"action": "correct_fact", "values": {"fact_id": None, "replacement": "Hostile actual fact."}}),
         ], scope="scenario")
         scenarios = (await client.get(BASE + "/scenarios")).json()
-        assert len(scenarios) == 1 and "later timing" in scenarios[0]["analysis"]
+        assert len(scenarios) == 2
+        assert sum(p["path_kind"] == "baseline" for p in scenarios) == 1
+        assert "later timing" in next(p for p in scenarios if p["title"] == "A day later")["analysis"]
         assert app_context.vault.read_text(facts_path) == before
         assert any(item["status"] == "failed" for item in reply["operation_results"])
         exposed = next(t for t in provider.seen[1][1] if t["function"]["name"] == "workspace_action")
-        assert exposed["function"]["parameters"]["properties"]["action"]["enum"] == ["save_scenario"]
+        from app.tools.matter_paths import SCENARIO_ACTIONS
+        assert set(exposed["function"]["parameters"]["properties"]["action"]["enum"]) == SCENARIO_ACTIONS
 
 
 @pytest.mark.asyncio

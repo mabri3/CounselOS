@@ -1,0 +1,20 @@
+{
+  "mode": "dry-run",
+  "case_hash": "fdc0b01b5aef4b21d2bb4ef9afaf723b15971701aadff5795cde143447ce27c3",
+  "rubric": {
+    "intent_reference": 25,
+    "factual_decision_integrity": 25,
+    "path_preservation": 20,
+    "continuity": 15,
+    "research_application": 10,
+    "citation_locator": 5
+  },
+  "rubric_hash": "44bc55154933df03c3a2e3242c846bbe407bb013c084a6778d0f057fc40bd848",
+  "candidate_hash": "2998ad1199c5dc53c892a205d7743e8ce452d134c54b9e19f6822ed99f6e2a52",
+  "skill_hash": "1c18568bec8735b07aed5b2c5b11c3ac3aa4a47984c650af88b9e705e84f713e",
+  "semantic_model_behavior": "unverified",
+  "paid_calls": 0,
+  "provider_usage": null,
+  "episodes": 28,
+  "assessment": "Fixture validation only; no answers generated or quality points awarded."
+}

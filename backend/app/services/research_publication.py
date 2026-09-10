@@ -25,6 +25,18 @@ def publish_research_result(app, *, matter_id, run_id, packet_path, prose, synth
     own = next((v for v in [current.get("proposal"), *(v for v in current["versions"] if v["version_id"] == current.get("current_version_id"))] if v and (v.get("research_publication") or {}).get("key") == key), None)
     now = research_basis(app, matter_id)
     stale = any(now[k] != cp["basis"].get(k) for k in ("business_question_revision", "facts_hash"))
+    frozen = run.get("frozen_context") or {}
+    path_capture = frozen.get("active_path") or {}
+    current_direction = app.solution_paths.state(matter_id)
+    captured_direction = frozen.get("mainline_state") or {}
+    path_historical = bool(path_capture.get("path_id") and (path_capture["path_id"] != current_direction["mainline_path_id"] or (captured_direction.get("revision") and captured_direction["revision"] != current_direction["revision"])))
+    stale = stale or path_historical
+    if path_capture.get("path_id") and "path_analysis" not in receipts:
+        try:
+            receipts["path_analysis"] = app.workspace_scenarios.persist_analysis(matter_id,path_capture["path_id"],prose,expected_revision=path_capture["revision"],source_action_key=key+":path")
+            checkpoints.update(matter_id,run_id,publication_receipts=receipts)
+        except (OSError,ValueError,KeyError):
+            pass
     changed_advice = now["recommendations_hash"] != cp["basis"].get("recommendations_hash") and own is None
     warning = ("This answer uses earlier facts or an earlier question. Current advice was not replaced. Rerun on the current facts." if stale else
                "The saved advice changed during research. This answer is a review-only research result. Review or rerun before adoption." if changed_advice else "")

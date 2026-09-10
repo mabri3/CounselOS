@@ -4,6 +4,7 @@ import { request } from "@/lib/api";
 import styles from "./ExperimentalChat.module.css";
 type Skill = {
     name: string;
+    scope?: "shared" | "page_only";
     content: string;
     revision: string;
     path: string;
@@ -16,7 +17,7 @@ export default function ExperimentalSkills() {
     useEffect(() => { void request<{
         skills: Skill[];
     }>("/experimental-chat/skills").then(value => setSkills(value.skills)).catch(e => setError(e.message)); }, []);
-    return <details name="experimental-tools" className={styles.skillsMenu}><summary>Skills</summary><p>These instructions apply only to this page. Saved changes apply to new requests.</p>{error && <p role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}{skills.map(skill => <details key={skill.name}><summary>{skill.name}</summary><label htmlFor={`skill-${skill.name}`}>Editable instructions</label><textarea id={`skill-${skill.name}`} rows={12} value={skill.content} onChange={e => setSkills(current => current.map(item => item.name === skill.name ? { ...item, content: e.target.value } : item))}/><button disabled={busy} onClick={async () => { setBusy(true); setError(""); setNotice(""); try {
+    return <details name="experimental-tools" className={styles.skillsMenu}><summary>Skills</summary><p>Matter paths applies to both matter conversations. Other guidance applies only to this page. Saved changes apply to new requests.</p>{error && <p role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}{skills.map(skill => <details key={skill.name}><summary>{skill.name} — {skill.scope === "shared" ? "Shared" : "This page"}</summary><label htmlFor={`skill-${skill.name}`}>Editable instructions</label><textarea id={`skill-${skill.name}`} rows={12} value={skill.content} onChange={e => setSkills(current => current.map(item => item.name === skill.name ? { ...item, content: e.target.value } : item))}/><button disabled={busy} onClick={async () => { setBusy(true); setError(""); setNotice(""); try {
         const saved = await request<Skill>(`/experimental-chat/skills/${skill.name}`, { method: "PUT", body: JSON.stringify({ content: skill.content, expected_revision: skill.revision }) });
         setSkills(current => current.map(item => item.name === skill.name ? saved : item));
         setNotice(`${skill.name} saved.`);

@@ -12,7 +12,10 @@ router = APIRouter(prefix="/skills", tags=["skills"])
 
 @router.get("")
 def list_skills(context: AppContext = Depends(get_context)):
-    return {"skills": [skill.as_dict() for skill in context.skills.list()]}
+    skills = [skill.as_dict() for skill in context.skills.list()]
+    if not any(skill['skill_id'] == 'matter-paths' for skill in skills):
+        skills.append({**context.skills.matter_paths_snapshot(), 'description':'Shared across both matter conversations.'})
+    return {"skills": skills}
 
 
 @router.get("/questions")
@@ -83,6 +86,8 @@ def default_template(payload: dict, context: AppContext = Depends(get_context)):
 
 @router.get("/{skill_id}")
 def get_skill(skill_id: str, context: AppContext = Depends(get_context)):
+    if skill_id == 'matter-paths':
+        return {**context.skills.matter_paths_snapshot(), 'description':'Shared across both matter conversations.'}
     try:
         return context.skills.get(skill_id).as_dict()
     except KeyError as exc:
