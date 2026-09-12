@@ -132,7 +132,8 @@ class CodexCLIProvider:
         try:
             return await asyncio.to_thread(self._complete_sync, prompt, prepared_tools, allowed)
         except asyncio.CancelledError:
-            self.close()
+            # Abort this transport, not the cached provider used by later requests.
+            self._stop_server()
             raise
 
     @staticmethod
@@ -425,7 +426,7 @@ class CodexCLIProvider:
                 self._apply_event(pending, message)
         try:
             if not pending.event.wait(self.timeout_seconds):
-                self.close()
+                self._stop_server()
                 raise _AppServerFailure("Codex turn timed out.", turn_started=True)
             if pending.error or pending.status not in {None, "completed"}:
                 raise _AppServerFailure(pending.error or "Codex turn failed.", turn_started=True)

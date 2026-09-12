@@ -431,11 +431,26 @@ export type ToolTrace = {
 export type AppliedSkillSummary = { skill_id: string; name: string };
 
 export type ChatChoice = { value: string; label: string; suggested?: boolean };
+export type DossierPriority = { key: string; text: string; why: string; issue_ids: string[]; changed?: boolean };
+export type DossierIssueStatus = { issue_id: string; title: string; state: string; planned_order?: number | null; selected_first?: boolean; sources_read: number; sources_retrieved: number; sources_discovered?: number; initial_answer?: string; next_action?: string; support?: string | null; packet_path?: string | null; answer_path?: string | null; last_error?: string | null; run_id?: string | null };
+export type DossierPublication = { key?: string; issue_ids?: string[]; state?: string; revision_path?: string | null; composed_at?: string | null; warning?: string | null; receipts?: Record<string, unknown> };
+export type DossierRequestStatus = {
+  request_id: string; matter_id: string; state: string; phase: string; sequence: number; plan_revision: string;
+  execution_mode?: "research" | "saved_only" | null; scope?: "top_three" | "all" | null; stop_requested?: boolean;
+  origin?: { conversation_id?: string | null; message_id?: string | null }; priorities: DossierPriority[];
+  first_issue_ids: string[]; planned_issue_ids: string[]; new_issue_candidates: Array<Record<string, unknown>>;
+  waiting_for_existing_research?: boolean;
+  unknown_writer_outcome?: boolean; counts: Record<string, number>; issues: DossierIssueStatus[]; publications: DossierPublication[];
+  latest_publication?: DossierPublication | null; first_pass_ready_at?: string | null; finished_at?: string | null;
+  last_error?: string | null; source_scope?: Record<string, unknown> | null; model_selections?: Record<string, unknown>;
+  preparation?: string;
+};
 export type ChatCard =
   | { type: "question"; question_id: string; text: string; reason?: string | null; priority?: "could_change_answer" | "could_refine_advice" | "helpful_detail" | null; topic?: string | null; selection_mode: "single" | "multiple" | "free_text"; choices: ChatChoice[]; progress_current?: number | null; progress_total?: number | null; allow_skip: boolean; allow_stop: boolean; conflict: boolean; record_target?: "fact" | "jurisdiction_scope" | "product_area" | "business_team" | "matter_type" | "target_date" | "requester" | "business_owner" | "risk_level" }
   | { type: "matter_update"; action_id: string; summary: string; changed_sections: string[]; can_edit: boolean; can_undo: boolean }
   | { execution_version?: number; main_selection?: Record<string, string> | null; collector_selection?: Record<string, string> | null; publication?: { state: string; warnings?: string[] }; type: "research_status"; run_id: string; state: "queued" | "running" | "completed" | "failed" | "interrupted"; total: number; completed: number; status: string; dossier_effect: string; selection?: { provider: string; model: string; reasoning_effort: string } | null }
   | { type: "work_product"; preview?: boolean; title: string; vault_path: string; state: "draft" | "final"; summary: string }
+  | { type: "dossier_research"; request_id: string; matter_id: string; state?: string; phase?: string; presentation?: "setup" | "progress"; status?: unknown }
   | AwarenessChatCard;
 
 export type AttachmentReference = { source_id: string; path: string; name: string; version?: string };
@@ -453,12 +468,14 @@ export type ChatResponse = {
   applied_skills: AppliedSkillSummary[];
   review_author?: string | null;
   operation_results: OperationResult[];
+  source_records?: Array<Record<string, unknown>>;
 };
 
 export type ChatRunState = "queued" | "running" | "completed" | "failed" | "interrupted";
 export type ChatRunFailureClass = "provider" | "timeout" | "output_shape" | "tool_validation" | "tool_execution" | "interrupted" | "unknown";
 
 export type ChatRun = {
+  background?: boolean;
   run_id: string;
   matter_id: string;
   conversation_id?: string | null;
@@ -493,6 +510,7 @@ export type ChatHistoryMessage = {
   attachments?: AttachmentReference[];
   applied_skills?: AppliedSkillSummary[];
   operation_results?: OperationResult[];
+  source_records?: Array<Record<string, unknown>>;
 };
 
 export type SkillDefinition = {

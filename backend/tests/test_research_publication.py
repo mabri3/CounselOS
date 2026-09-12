@@ -100,7 +100,10 @@ async def test_real_research_publication_returns_to_origin_and_preserves_changes
         assert recommendations.get(MATTER)["proposal"] is None
         assert "earlier facts" in completion[0]["content"]
     else:
-        assert recommendations.get(MATTER)["proposal"]["content"].startswith("Synthetic new view")
+        proposal_text = recommendations.get(MATTER)["proposal"]["content"]
+        assert "Synthetic new view: obtain permission before migration." in proposal_text
+        assert proposal_text.index("Synthetic new view") < proposal_text.index("<summary>Earlier saved position")
+        assert "Synthetic old view. No external authority retrieved." in proposal_text
         assert len(records.get(MATTER)["facts"]) == baseline_fact_count
         assert next(a for a in records.get(MATTER)["assumptions"] if a["assumption_id"] == "ASM-SYNTHETIC-LICENSE")["status"] == "retired"
     if edited:

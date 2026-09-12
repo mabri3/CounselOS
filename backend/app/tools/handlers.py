@@ -629,12 +629,13 @@ async def run_research(context: ToolExecutionContext, arguments: dict[str, Any])
         collector_selection = None
         options["collection_warning"] = "Collection model unavailable; main analysis can still use available context."
     options.update(native_options(collector_selection, context.app.settings))
+    options["native"] = False
     options.update(main_model_selection=context.model_selection,
                    collector_model_selection=options["model_selection"],
                    allow_followup_queries=True)
     # Suggestions are not authorization. Only the direct card action starts a run.
     user_text = context.trusted_user_message or ""
-    external = bool(re.search(r"\b(?:external(?:ly)?|web|internet|online|public sources)\b", user_text, re.I))
+    external = bool(re.search(r"\b(?:external(?:ly)?|outside research|web|internet|online|public sources)\b", user_text, re.I))
     other = bool(re.search(r"\b(?:other|prior|across) matters\b", user_text, re.I))
     if re.search(r"\b(?:not|don't|do not|without)\b|\bonly\s+(?:the\s+)?(?:current|this)\s+matter\b", user_text, re.I):
         external = other = False
@@ -935,7 +936,32 @@ async def select_conversation_scope(context: ToolExecutionContext, arguments: di
     if current and current != scope:
         raise ValueError("This run scope is frozen. Use narrow path or explicit correction actions.")
     context.scope_state["scope"] = scope
-    return {"summary": "Scenario analysis; actual matter unchanged." if scope == "scenario" else "Current matter context selected.", "data": {"scope": scope}}
+    data = {"scope": scope}
+    intent = arguments.get("path_intent", "none")
+    if intent not in {"new", "existing", "none"}:
+        raise ValueError("Choose new, existing or none for path_intent.")
+    if scope == "actual" and intent != "none":
+        raise ValueError("Hypothetical paths require scenario scope.")
+    if scope == "scenario" and intent != "none":
+        from app.tools.matter_paths import path_action
+        action = "explore_path" if intent == "new" else "select_working_path"
+        values = arguments.get("new_path") if intent == "new" else {"path_id": arguments.get("path_id")}
+        result = await path_action(context, {"action": action, "values": values or {},
+            "instruction_quote": arguments["instruction_quote"]})
+        return {"summary": result["summary"], "data": {"scope": scope, **result["data"]},
+                "changed_paths": result.get("changed_paths", []), "refresh": result.get("refresh", [])}
+    if scope == "scenario":
+        data["path_saved_by_this_action"] = False
+        data["continuation"] = (
+            "Scope selection does not save assumptions or a path. For a concrete hypothetical with new "
+            "assumptions, call workspace_action explore_path next, using the relevant saved parent ID "
+            "and revision. Save the new assumptions there before saving its working note. "
+            "Reuse an existing path only if its material assumptions already match; a shared topic is not enough. "
+            "For a general conceptual question or an explicit no-save request, answer without creating a path."
+        )
+        if context.matter_id and not context.frozen_context.get("excluded_paths"):
+            data["saved_paths"] = context.app.solution_paths.inspect(context.matter_id)
+    return {"summary": "Hypothetical scope selected." if scope == "scenario" else "Current matter context selected.", "data": data}
 
 
 def _workspace_command(context: ToolExecutionContext, arguments: dict[str, Any], *, explicit: bool = True) -> dict[str, Any]:

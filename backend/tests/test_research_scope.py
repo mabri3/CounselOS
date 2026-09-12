@@ -10,11 +10,16 @@ from app.tools.registry import ToolExecutionContext
 
 
 @pytest.mark.asyncio
-async def test_research_choices_available_before_scope_without_starting_search(app_context):
-    message = "Can you do external research the document is only based on the model."
+@pytest.mark.parametrize("scenario", [False, True])
+async def test_research_choices_available_before_scope_without_starting_search(app_context, scenario):
+    message = "Can you do some outside research on this issue?"
+    from app.models.workspace import ConversationTarget
+    path = app_context.solution_paths.ensure_baseline("MAT-DEMO-BEACON") if scenario else None
 
     class ResearchProvider:
+        calls = 0
         async def complete(self, messages, tools=None):
+            self.calls += 1
             if not any(item.get("role") == "tool" for item in messages):
                 names = {item["function"]["name"] for item in tools}
                 assert "run_research" in names
@@ -30,8 +35,11 @@ async def test_research_choices_available_before_scope_without_starting_search(a
     response = await app_context.runner.run(ChatRequest(
         message=message, trusted_user_message=message,
         matter_id="MAT-DEMO-BEACON", experimental_chat=True,
-        source_action_key="chat:unscoped-research"))
+        source_action_key="chat:unscoped-research",
+        target=ConversationTarget(matter_id="MAT-DEMO-BEACON",scenario_id=path["scenario_id"]) if path else None),
+        execution_state=RunnerExecutionState(scope_state={"scope": "scenario"} if scenario else {}))
     proposal = next(item for item in response.operation_results if item["operation"] == "run_research")
+    assert app_context.runner.provider.calls == 1
     assert proposal["status"] == "confirmation_required"
     assert proposal["proposal"]["external"] is True
     assert app_context.research_runs.list("MAT-DEMO-BEACON") == []
@@ -145,3 +153,58 @@ def test_archived_and_trash_sources_are_not_in_cross_matter_research(app_context
     current = app_context.matters.matter_path("MAT-DEMO-BEACON")
     assert app_context.research._eligible_internal_sources([
         {"path": f"{other}/facts.md"}, {"path": "99_Trash/MAT-OLD/facts.md"}], current, other_matters=True) == []
+
+
+def test_pending_source_choice_is_not_reported_as_failed_search():
+    from app.agents.output import reconcile_user_facing_reply
+    text = reconcile_user_facing_reply(
+        "Choose sources below.\n\nNo durable research run was started.",
+        [{"operation":"run_research","status":"confirmation_required"}])
+    assert "waiting for your source choice" in text
+    assert "No durable" not in text
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("scenario", [False, True])
+@pytest.mark.parametrize("external,other", [(False, False), (True, False), (False, True), (True, True)])
+async def test_continue_routes_saved_choice_without_asking_again(app_context, monkeypatch, scenario, external, other):
+    from app.models.workspace import ConversationTarget
+    from app.routers.chat import execute_chat
+
+    matter = "MAT-DEMO-BEACON"
+    path = app_context.solution_paths.ensure_baseline(matter)
+    tool_context = ToolExecutionContext(app=app_context, matter_id=matter,
+        trusted_user_message="Research this question.", source_action_key="continue-proof")
+    proposed = await run_research(tool_context, {
+        "question": "Review customer due diligence requirements.",
+        "public_query": "Federal customer due diligence rules"})
+    saved = app_context.chat_history.append(matter, None, role="assistant",
+        content="Choose sources.", operation_results=[{
+            "action": "continue-proof", "operation": "run_research",
+            "status": "confirmation_required", "proposal": proposed["data"]["proposal"]}])
+
+    async def forbidden(*args, **kwargs):
+        pytest.fail("Continue must apply the saved choice, not ask the chat model again")
+    monkeypatch.setattr(app_context.runner, "run", forbidden)
+
+    async def analysis(*args, **kwargs):
+        return ChatResponse(reply="Review completed from the available evidence.")
+    app_context.research.bind_agent_runner(analysis)
+    request = ChatRequest(matter_id=matter, conversation_id=saved["conversation_id"],
+        experimental_chat=True, message="Continue",
+        target=ConversationTarget(matter_id=matter, scenario_id=path["scenario_id"]) if scenario else None,
+        card_action={"card_id": "operation-result:continue-proof", "action": "apply",
+                     "values": ["yes" if external else "no", "yes" if other else "no",
+                                "Federal customer due diligence rules", "no", "no", "yes"]})
+    response = await execute_chat(request, app_context)
+    assert len(response.cards) == 1
+    assert response.cards[0].type == "research_status"
+    assert response.operation_results[0]["status"] == "changed"
+    run_id = response.cards[0].run_id
+    repeat = await execute_chat(request, app_context)
+    assert repeat.cards[0].run_id == run_id
+    await app_context.research_runs.wait(run_id)
+    run = app_context.research_runs.get(matter, run_id)
+    assert run["search_scope"]["external"] is external
+    assert run["search_scope"]["other_matters"] is other
+    assert len(app_context.research_runs.list(matter)) == 1

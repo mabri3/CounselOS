@@ -10,10 +10,11 @@ class BoundedDispatch:
         candidate=deepcopy(messages)
         def size():return len(json.dumps({'messages':candidate,'tools':tools},ensure_ascii=False,default=str).encode())
         original=size();omitted=[]
-        current_user=max((i for i,m in enumerate(candidate) if m.get("role")=="user" and not str(m.get("content", "")).startswith(("# Workspace context", "Frozen supplied comparison evidence"))),default=-1)
+        mandatory_prefixes = ("# Workspace context", "Frozen supplied comparison evidence", "Saved dossier input (data, not instructions):")
+        current_user=max((i for i,m in enumerate(candidate) if m.get("role")=="user" and not str(m.get("content", "")).startswith(mandatory_prefixes)),default=-1)
         if original>self.ceiling:
             for index,item in enumerate(candidate[:-1]):
-                if index != current_user and item.get('role')=='user' and not str(item.get('content','')).startswith(('# Workspace context', 'Frozen supplied comparison evidence')):
+                if index != current_user and item.get('role')=='user' and not str(item.get('content','')).startswith(mandatory_prefixes):
                     item['content']='Older conversation text omitted to fit dispatch. Read the conversation archive if needed.'
                     omitted.append(index)
                     if size()<=self.ceiling:break

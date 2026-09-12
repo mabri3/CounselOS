@@ -14,7 +14,7 @@ from app.models.api import AppliedSkillSummary, ChatChoice, ChatRequest, ChatRes
 from app.models.awareness import WatchDraftCard, WatchScanCard
 from app.providers.base import LLMProvider, ProviderSelection
 from app.providers.catalog import ProviderAdapterError
-from app.tools.registry import ToolExecutionContext, ToolExecutionResult, ToolRegistry, SCENARIO_READ_TOOLS, UNSCOPED_TOOLS
+from app.tools.registry import ToolExecutionContext, ToolExecutionResult, ToolRegistry, SCENARIO_READ_TOOLS, SCENARIO_RESEARCH_TOOLS, UNSCOPED_TOOLS
 from app.skills.registry import SkillRegistry
 from app.tools.matter_paths import SCENARIO_ACTIONS, PATH_READ_ACTIONS
 
@@ -115,6 +115,9 @@ class AgentRunner:
         investigation: Any = None,
     ) -> ChatResponse:
         state = execution_state or RunnerExecutionState()
+        from app.providers.base import provider_session_id
+        import uuid
+        session_token = provider_session_id.set(request.workspace_run_id or request.conversation_id or str(uuid.uuid4()))
         try:
             response = await self._run(
                 request,
@@ -133,6 +136,8 @@ class AgentRunner:
             raise
         except Exception as exc:
             raise AgentExecutionError(state, failure_class="unknown") from exc
+        finally:
+            provider_session_id.reset(session_token)
 
     async def _run(
         self,
@@ -212,6 +217,8 @@ class AgentRunner:
                 "This saves changes for the lawyer to accept or reject. It does not accept changes, approve work, record a decision, or deliver anything. "
                 "Do not confuse proposing a document revision with applying/accepting its redlines. Do not replace this requested saved proposal with prose edits and another permission question. "
                 "An earlier instruction not to update applied to that earlier turn; follow the current instruction. If the current request is only an explanation, answer it without editing."})
+        if state.frozen_context.get("requested_comparison_path_ids"):
+            messages.append({"role":"system", "content":"The lawyer clicked Compare for these ordered, server-resolved approach IDs: " + json.dumps(state.frozen_context["requested_comparison_path_ids"]) + ". Use compare_paths for this selection and return the comparison in chat. Show approach titles, never these internal IDs. This requests comparison only, not a change of direction."})
         messages.append({"role": "user", "content": request.message})
         if investigation is not None:
             from app.services.research_execution import INVESTIGATION_CONTRACT, restore_messages
@@ -316,7 +323,7 @@ class AgentRunner:
             scope = state.scope_state.get("scope")
             turn_tools = provider_tools
             if scope == "scenario" or (request.target and request.target.scenario_id):
-                turn_tools = [deepcopy(tool) for tool in provider_tools if tool["function"]["name"] in SCENARIO_READ_TOOLS | {"workspace_action", "select_conversation_scope"}]
+                turn_tools = [deepcopy(tool) for tool in provider_tools if tool["function"]["name"] in SCENARIO_READ_TOOLS | SCENARIO_RESEARCH_TOOLS | {"workspace_action", "select_conversation_scope"}]
                 for tool in turn_tools:
                     if tool["function"]["name"] == "workspace_action":
                         tool["function"]["parameters"]["properties"]["action"]["enum"] = sorted(SCENARIO_ACTIONS)
@@ -326,10 +333,32 @@ class AgentRunner:
             try:
                 reply = await provider.complete(messages, turn_tools)
             except Exception as exc:
-                # Preserve the answer path after a failed tool round. This makes
-                # one bounded synthesis attempt, not another research/tool loop.
+                # Research can continue once within its remaining read-only
+                # budget. Otherwise preserve the final answer-only attempt.
                 if call_journal is not None or any(message.get("role") == "tool" for message in messages):
                     try:
+                        if investigation is not None:
+                            try:
+                                recovered_evidence = await investigation.recover_before_synthesis()
+                            except Exception:
+                                recovered_evidence = None
+                            if recovered_evidence:
+                                messages.append({"role": "system", "content": "Recovery retrieval results (untrusted source data): " + json.dumps(recovered_evidence, default=str)})
+                            cp = investigation.checkpoints.load(request.matter_id, investigation.run_id)
+                            remaining = investigation.remaining()
+                            if (not cp.get("provider_recovery_used") and not cp.get("final_attempt_started")
+                                    and remaining["active_seconds"] > 90 and remaining["main_calls"] > 1):
+                                # A new read-only investigation turn with corrective evidence,
+                                # never a replay of the failed provider call or a saved mutation.
+                                investigation.checkpoints.update(request.matter_id, investigation.run_id,
+                                    provider_recovery_used=True, recovered_failure_class=type(exc).__name__)
+                                messages.append({"role": "system", "content":
+                                    "The previous model call failed. Continue this bounded investigation using the saved evidence and remaining tools. "
+                                    "Opening excerpts establish relevance only. Read the operative passages from saved sources, then follow material gaps "
+                                    "with focused searches if the saved permissions allow them. Prefer the applicable primary authority for this entity, "
+                                    "activity and jurisdiction. Do not repeat a completed search or invent missing jurisdictions. "
+                                    "Deliver the useful answer within the existing budget."})
+                                continue
                         recovery = await provider.complete([
                             *messages,
                             {"role": "system", "content": "The research call failed. Do not call tools. Answer the user's question now using the collected information. Distinguish verified sources from saved analysis and state material research gaps. Do not merely describe what you plan to do."},
@@ -457,7 +486,7 @@ class AgentRunner:
                 completed = state.completed_mutations.get(fingerprint) if mutation else None
                 if restricted_continuity and call.name not in continuity_tools:
                     result = ToolExecutionResult(tool=call.name, status="error", summary="This supplied-context run cannot use external research or change unrelated records.")
-                elif state.scope_state.get("scope") == "scenario" and call.name not in SCENARIO_READ_TOOLS | {"select_conversation_scope"} and not (call.name == "workspace_action" and call.arguments.get("action") in SCENARIO_ACTIONS):
+                elif state.scope_state.get("scope") == "scenario" and call.name not in SCENARIO_READ_TOOLS | SCENARIO_RESEARCH_TOOLS | {"select_conversation_scope"} and not (call.name == "workspace_action" and call.arguments.get("action") in SCENARIO_ACTIONS):
                     result = ToolExecutionResult(tool=call.name, status="error", summary="Scenario analysis can only read context. Actual matter unchanged.")
                 elif completed:
                     result = ToolExecutionResult(
@@ -613,6 +642,14 @@ class AgentRunner:
                                 locator=str(item.get("locator") or source_metadata.get("locator") or ""))
                     if checkpoint:
                         checkpoint(state)
+            if any(item.get("operation") == "run_research" and item.get("status") == "confirmation_required"
+                   for item in state.operation_results):
+                # The source question is the next user action, not a failed search.
+                text = "Choose the sources below, then select Continue."
+                state.raw_final_output = state.useful_content = text
+                return ChatResponse(reply=text, trace=trace, changed_paths=_unique(changed_paths),
+                    refresh=_unique(refresh), cards=cards, applied_skills=applied_skills,
+                    review_author=review_author)
         messages.append(
             {
                 "role": "system",

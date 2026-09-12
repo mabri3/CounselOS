@@ -186,8 +186,13 @@ async def test_grouped_intake_submits_once_and_keeps_unknowns(app_context):
     questions = [{"question_id": f"group-{i}", "text": f"Scope detail {i}?", "reason": "Could change research scope.", "priority": "could_change_answer", "selection_mode": "single", "choices": [{"value": "yes", "label": "Yes"}, {"value": "no", "label": "No"}]} for i in range(8)]
     class Provider:
         calls = 0
+        dossier_calls = 0
         last_messages = []
         async def complete(self, messages, tools=None):
+            if any(str(m.get("content", "")).startswith("Dossier-generation action.") for m in messages):
+                self.dossier_calls += 1
+                assert [t["function"]["name"] for t in tools] == ["read_dossier_record"]
+                return ProviderReply(content="# Dossier\n\n## Current position\n\nThe pilot scope remains provisional.")
             self.calls += 1
             self.last_messages = messages
             if self.calls == 1:
@@ -214,6 +219,7 @@ async def test_grouped_intake_submits_once_and_keeps_unknowns(app_context):
     result = app_context.chat_runs.get(MATTER, second["run_id"])
     assert result["state"] == "completed", result.get("failure_detail")
     assert provider.calls == 4
+    assert provider.dossier_calls == 2
     assert "Assumptions used" in result["response"]["reply"]
     assert all(text in str(provider.last_messages) for text in ["Employee pilot only.", "Scope detail 0?", "Skipped", "Leave gaps unknown"])
     record = app_context.matter_records.get(MATTER)
@@ -226,6 +232,7 @@ async def test_grouped_intake_submits_once_and_keeps_unknowns(app_context):
     assert app_context.chat_history.get(MATTER, first["conversation_id"])["intake_state"] == "complete"
     assert app_context.chat_runs.start(MATTER, request)["run_id"] == second["run_id"]
     assert provider.calls == 4
+    assert provider.dossier_calls == 2
 
 
 def test_experimental_schema_leaves_shared_tool_unchanged(app_context):

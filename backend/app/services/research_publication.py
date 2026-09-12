@@ -3,6 +3,7 @@ from app.services.dossier import serialized
 from app.services.main_agent_research import research_basis
 from app.services.recommendations import RecommendationService
 from app.services.research_checkpoints import ResearchCheckpoints
+from app.services.dossier_research import assumption_view, prepare_publication, publication_sources, render_publication
 
 
 @serialized
@@ -40,12 +41,17 @@ def publish_research_result(app, *, matter_id, run_id, packet_path, prose, synth
     changed_advice = now["recommendations_hash"] != cp["basis"].get("recommendations_hash") and own is None
     warning = ("This answer uses earlier facts or an earlier question. Current advice was not replaced. Rerun on the current facts." if stale else
                "The saved advice changed during research. This answer is a review-only research result. Review or rerun before adoption." if changed_advice else "")
+    issues = app.workspace.issues(matter_id)
+    issue_ids = {issue["issue_id"] for issue in issues}
+    structure = metadata.get("problem_analysis_structure") or {}
+    addressed_ids = {item.get("issue_id") for item in [*(synthesis or {}).get("issue_updates", []), *structure.get("questions", [])]} & issue_ids
+    focused = bool(frozen.get("issue_id") or addressed_ids and addressed_ids != issue_ids)
     if metadata.get("problem_analysis_structure") is not None and (not receipts.get("problem_analysis", {}).get("saved") or receipts.get("problem_analysis", {}).get("retry_projection")):
         try:
             receipts["problem_analysis"] = app.problem_analysis.publish(matter_id, path=packet_path, run_id=run_id,
                 output_revision=metadata["output_revision"], structure=metadata["problem_analysis_structure"],
                 capture=metadata.get("problem_analysis_capture"),
-                current_eligible=not stale and not changed_advice and not bool((run.get("frozen_context") or {}).get("issue_id")))
+                current_eligible=not stale and not changed_advice and not focused)
             # A failed pointer write remains retryable without another model call.
             if not receipts["problem_analysis"].get("projection_saved") and receipts["problem_analysis"].get("saved"):
                 receipts["problem_analysis"]["retry_projection"] = True
@@ -76,20 +82,24 @@ def publish_research_result(app, *, matter_id, run_id, packet_path, prose, synth
                     known = {a["assumption_id"] for a in records["assumptions"]}
                     if relied - known:
                         advisory.append("Unknown relied-on assumption IDs ignored.")
-                    open_items = [a for a in records["assumptions"] if a.get("status") == "open"]
-                    relied_text = [a["text"] for a in open_items if a["assumption_id"] in relied]
-                    unreconciled = [a["text"] for a in open_items if a["assumption_id"] not in relied]
-                    retired = [a["text"] for a in records["assumptions"] if a.get("retired_by_run") == run_id]
-                    publication["assumption_summary"] = ("Relied on by this analysis:\n" + ("\n".join("- " + t for t in relied_text) or "- None explicitly identified.")
-                        + "\n\nNot yet reconciled with this research:\n" + ("\n".join("- " + t for t in unreconciled) or "- None.")
-                        + "\n\nHistorical generated assumptions not relied on:\n" + ("\n".join("- " + t for t in retired) or "- None.") )
-                    publication["orientation"] = {"summary": app.dossiers.section(prose, "Matter summary"), "open_questions": app.dossiers.list_section(prose, "Open questions")}
-                    publication["source_support"] = "\n".join("- " + ("Retrieved source" if s.get("url") and s.get("support_state") == "retrieved" else "Unverified lead" if s.get("url") else "Supplied source") + ": [" + str(s.get("source_label") or s.get("title") or s["source_id"]) + "](" + str(s.get("path") or s.get("url")) + "). Retrieval does not establish claim support." for s in metadata.get("source_records", [])) or "No external source was retrieved; see the conditional analysis and supplied context."
-                    content = (synthesis or {}).get("recommendation") or prose
-                    if not content.strip():
+                    if not ((synthesis or {}).get("recommendation") or prose).strip():
                         raise ValueError("No useful main-agent analysis is available for a recommendation.")
+                    publication = prepare_publication(current, run, metadata, synthesis, prose, issues, publication)
+                    publication["assumption_summary"] = assumption_view(records, synthesis)
+                    # A focused answer cannot replace the whole matter's summary
+                    # or questions. A broad answer can fill an empty orientation;
+                    # replacing existing content requires coverage of every issue.
+                    if not focused:
+                        orientation = app.dossiers.orientation(matter_id)
+                        all_issues = bool(issue_ids and addressed_ids == issue_ids)
+                        publication["orientation"] = {
+                            "summary": app.dossiers.section(prose, "Matter summary") if all_issues or not orientation["summary"] else "",
+                            "open_questions": app.dossiers.list_section(prose, "Open questions") if all_issues or not orientation["open_questions"] else [],
+                        }
+                    publication["source_support"] = publication_sources(publication, issues)
+                    content = render_publication(publication, issues, current_basis=now)
                     kwargs = {"actor": "counsel-copilot", "rebuild": False, "project_dossier": False,
-                              "next_action": (synthesis or {}).get("next_action", ""), "publication": publication}
+                              "next_action": publication["next_action"], "publication": publication}
                     result = recommendation.propose(matter_id, content, **kwargs) if current["current_version_id"] or current["content"].strip() else recommendation.set_working(matter_id, content, origin="initial_agent", **kwargs)
                     own = result.get("proposal") or next((v for v in result["versions"] if v["version_id"] == result["current_version_id"]), None)
                 receipts["recommendation"] = {"state": "proposed" if current.get("current_version_id") or current["content"].strip() else "initial", "version_id": own["version_id"]}

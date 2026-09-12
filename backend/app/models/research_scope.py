@@ -10,6 +10,7 @@ class ResearchScope(BaseModel):
     public_query: str = Field(default="", max_length=2000)
     provider_ids: list[str] = Field(default_factory=list, max_length=4)
     native: StrictBool = False
+    collection_enabled: StrictBool = False
     allow_firecrawl: StrictBool = False
     model_selection: dict[str, str] | None = None
 

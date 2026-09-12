@@ -151,18 +151,23 @@ async def test_q5_scenario_runner_and_executor_deny_mutations_and_alias_then_ado
     before = ctx.workspace.business_question(MATTER)
     facts = ctx.matter_records.get(MATTER)["facts"]
     msg = "What if the bank alone controlled that settlement account?"
-    mutations = [("answer_workspace_question", {"question_id": question["question_id"], "expected_revision": question["source_revision"], "state": "answered", "answer": "Bank alone", "instruction_quote": msg}), ("write_markdown", {"path": ctx.matters.matter_path(MATTER) + "/facts.md", "content": "hypothesis"}), ("run_research", {"question": "hypothesis"}), ("select_conversation_scope", {"scope": "actual", "instruction_quote": msg})]
+    mutations = [("answer_workspace_question", {"question_id": question["question_id"], "expected_revision": question["source_revision"], "state": "answered", "answer": "Bank alone", "instruction_quote": msg}), ("write_markdown", {"path": ctx.matters.matter_path(MATTER) + "/facts.md", "content": "hypothesis"}), ("select_conversation_scope", {"scope": "actual", "instruction_quote": msg})]
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=http_app), base_url="http://testserver") as client:
         result, provider = await turn(client, ctx, msg, mutations, scope="scenario", reply="If only the bank controls releases, the custody analysis changes.")
         assert "custody analysis" in result["reply"]
         assert ctx.workspace.business_question(MATTER) == before
         assert ctx.matter_records.get(MATTER)["facts"] == facts
-        assert {t["function"]["name"] for t in provider.seen[1][1]} == {"list_files", "read_file", "search_vault", "workspace_action", "select_conversation_scope"}
+        assert {t["function"]["name"] for t in provider.seen[1][1]} == {"list_files", "read_file", "search_vault", "workspace_action", "select_conversation_scope", "run_research"}
         assert next(t for t in provider.seen[1][1] if t["function"]["name"] == "workspace_action")["function"]["parameters"]["properties"]["action"]["enum"] == sorted(__import__("app.tools.matter_paths", fromlist=["SCENARIO_ACTIONS"]).SCENARIO_ACTIONS)
         agent = ctx.agents.get("counsel-copilot")
-        for name in ["write_markdown", "run_research", "save_fact_alias", "change_business_question"]:
+        for name in ["write_markdown", "save_fact_alias", "change_business_question"]:
             blocked = await ctx.tools.execute(agent, ToolExecutionContext(app=ctx, matter_id=MATTER, scope_state={"scope": "scenario"}), name, {})
             assert blocked.status == "error"
+        choice = await ctx.tools.execute(agent, ToolExecutionContext(app=ctx, matter_id=MATTER, scope_state={"scope": "scenario"}), "run_research", {"question": "Research the hypothetical control arrangement."})
+        assert choice.status == "success"
+        assert choice.operation_result["status"] == "confirmation_required"
+        assert choice.changed_paths == []
+        assert ctx.research_runs.list(MATTER) == []
         msg = "That is the actual arrangement. Record my answer: the bank alone controls releases."
         adopted, _ = await turn(client, ctx, msg, [("answer_workspace_question", {"question_id": question["question_id"], "expected_revision": question["source_revision"], "state": "answered", "answer": "The bank alone controls releases.", "instruction_quote": msg})])
         assert receipts(adopted)[0]["state"] == "applied"
@@ -294,6 +299,8 @@ async def test_q5_saved_scenario_and_recovery_remain_read_only(http_app, app_con
     scenario_id = "SCN-READONLY"
     ctx.vault.write_markdown(f"{ctx.matters.matter_path(MATTER)}/scenarios/{scenario_id}.md", "# Hypothetical bank control\n", {"matter_id": MATTER, "scenario_id": scenario_id})
     target = ConversationTarget(matter_id=MATTER, scenario_id=scenario_id)
+    root = ctx.matters.matter_path(MATTER)
+    before = {name: ctx.vault.read_text(root + "/" + name) for name in ("facts.md", "dossier.md")}
     message = "Could that arrangement work?"
     ctx.runner.provider = Provider(message, [("write_markdown", {"path": ctx.matters.matter_path(MATTER) + "/escape.md", "content": "bad"})], scope="actual")
     response = await ctx.runner.run(ChatRequest(matter_id=MATTER, message=message, target=target), execution_state=RunnerExecutionState(scope_state={"scope": "scenario"}))
@@ -302,9 +309,16 @@ async def test_q5_saved_scenario_and_recovery_remain_read_only(http_app, app_con
     # Also hit the HTTP path with an already selected scenario.
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=http_app), base_url="http://testserver") as client:
         result, provider = await turn(client, ctx, message, [("run_research", {"question": "control"})], extra={"target": target.model_dump()})
-        assert all({t["function"]["name"] for t in tools} <= {"list_files", "read_file", "search_vault", "workspace_action", "select_conversation_scope"} for _, tools in provider.seen)
+        assert all({t["function"]["name"] for t in tools} <= {"list_files", "read_file", "search_vault", "workspace_action", "select_conversation_scope", "run_research"} for _, tools in provider.seen)
         assert all(t["function"]["parameters"]["properties"]["action"]["enum"] == sorted(__import__("app.tools.matter_paths", fromlist=["SCENARIO_ACTIONS"]).SCENARIO_ACTIONS) for _, tools in provider.seen for t in tools if t["function"]["name"] == "workspace_action")
         assert not result["cards"]
+        proposal = next(item for item in result["operation_results"] if item["operation"] == "run_research")
+        assert proposal["status"] == "confirmation_required"
+        assert proposal["proposal"]["question"] == "control"
+        assert ctx.research_runs.list(MATTER) == []
+        assert not proposal["changed_paths"]
+        assert all(path.startswith(root + "/conversations/") for path in result["changed_paths"])
+        assert all(ctx.vault.read_text(root + "/" + name) == text for name, text in before.items())
 
 
 @pytest.mark.asyncio
@@ -370,5 +384,5 @@ async def test_q5_direct_scenario_retry_cannot_unlock_actual_scope(http_app, app
         await turn(client, ctx, msg, scope="scenario", key="scenario-retry")
         _, provider = await turn(client, ctx, msg, calls, scope="actual", key="scenario-retry")
         assert ctx.matter_records.get(MATTER)["facts"] == before
-        assert all({t["function"]["name"] for t in tools} <= {"list_files", "read_file", "search_vault", "workspace_action", "select_conversation_scope"} for _, tools in provider.seen)
+        assert all({t["function"]["name"] for t in tools} <= {"list_files", "read_file", "search_vault", "workspace_action", "select_conversation_scope", "run_research"} for _, tools in provider.seen)
         assert all(t["function"]["parameters"]["properties"]["action"]["enum"] == sorted(__import__("app.tools.matter_paths", fromlist=["SCENARIO_ACTIONS"]).SCENARIO_ACTIONS) for _, tools in provider.seen for t in tools if t["function"]["name"] == "workspace_action")

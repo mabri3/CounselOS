@@ -2,7 +2,11 @@ from __future__ import annotations
 
 import os
 import tempfile
+from collections import OrderedDict
+from copy import deepcopy
+from dataclasses import dataclass
 from pathlib import Path
+from threading import RLock
 from typing import Any, Iterable
 
 import frontmatter
@@ -10,12 +14,28 @@ import frontmatter
 from app.utils.paths import ensure_within
 
 
+@dataclass(frozen=True)
+class _MarkdownRead:
+    stamp: tuple[int, ...]
+    size: int
+    document: dict[str, Any]
+
+
 class VaultService:
     """Safe, atomic access to the Markdown-first vault."""
+
+    # Bound retained source bytes and entry count; parsed metadata adds overhead.
+    # Long conversations include their frozen audit inputs. Keep room for a
+    # transcript above 32 MiB so each submit does not repeatedly parse it.
+    MARKDOWN_CACHE_MAX_BYTES = 64 * 1024 * 1024
+    MARKDOWN_CACHE_MAX_FILES = 256
 
     def __init__(self, root: Path):
         self.root = root.resolve()
         self.root.mkdir(parents=True, exist_ok=True)
+        self._markdown_cache: OrderedDict[Path, _MarkdownRead] = OrderedDict()
+        self._markdown_cache_bytes = 0
+        self._markdown_cache_lock = RLock()
 
     def resolve(self, relative_path: str | Path) -> Path:
         return ensure_within(self.root, relative_path)
@@ -32,14 +52,38 @@ class VaultService:
 
     def read_markdown(self, relative_path: str | Path) -> dict[str, Any]:
         path = self.resolve(relative_path)
-        post = frontmatter.loads(path.read_text(encoding="utf-8"))
-        return {
-            "path": self.relative(path),
-            "name": path.name,
-            "content": post.content,
-            "metadata": dict(post.metadata),
-            "updated_at": path.stat().st_mtime,
-        }
+        # Parallel page requests must not parse the same large transcript again.
+        with self._markdown_cache_lock:
+            stat = path.stat()
+            stamp = self._markdown_stamp(stat)
+            cached = self._markdown_cache.get(path)
+            if cached is not None and cached.stamp == stamp:
+                self._markdown_cache.move_to_end(path)
+                document = cached.document
+            else:
+                if cached is not None:
+                    self._markdown_cache_bytes -= self._markdown_cache.pop(path).size
+                post = frontmatter.loads(path.read_text(encoding="utf-8"))
+                document = {
+                    "path": self.relative(path), "name": path.name,
+                    "content": post.content, "metadata": dict(post.metadata),
+                    "updated_at": stat.st_mtime,
+                }
+                # An external edit during parsing belongs to the next read.
+                if (stat.st_size <= self.MARKDOWN_CACHE_MAX_BYTES
+                        and self._markdown_stamp(path.stat()) == stamp):
+                    self._markdown_cache[path] = _MarkdownRead(stamp, stat.st_size, document)
+                    self._markdown_cache_bytes += stat.st_size
+                    while (len(self._markdown_cache) > self.MARKDOWN_CACHE_MAX_FILES
+                           or self._markdown_cache_bytes > self.MARKDOWN_CACHE_MAX_BYTES):
+                        _, removed = self._markdown_cache.popitem(last=False)
+                        self._markdown_cache_bytes -= removed.size
+        # Callers often edit nested metadata before saving. Never share that state.
+        return deepcopy(document)
+
+    @staticmethod
+    def _markdown_stamp(stat: os.stat_result) -> tuple[int, ...]:
+        return stat.st_dev, stat.st_ino, stat.st_mtime_ns, stat.st_ctime_ns, stat.st_size
 
     def read_document(self, relative_path: str | Path) -> dict[str, Any]:
         path = self.resolve(relative_path)

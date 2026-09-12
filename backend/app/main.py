@@ -9,7 +9,7 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from app.config import get_settings
 from app.active_context import ActiveContextManager
 from app.observability import configure_logging
-from app.routers import experimental_chat, awareness, automations, chat, decisions, files, matters, settings as settings_router, skills, system, workspace, team
+from app.routers import dossier_requests, experimental_chat, awareness, automations, chat, decisions, files, matters, settings as settings_router, skills, system, workspace, team
 
 
 @asynccontextmanager
@@ -39,7 +39,11 @@ app.add_middleware(
 )
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_origin],
+    allow_origins=list(dict.fromkeys([
+        settings.frontend_origin,
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ])),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -50,6 +54,7 @@ for router in (
     system.router,
     awareness.router,
     matters.router,
+    dossier_requests.router,
     files.router,
     skills.router,
     chat.router,

@@ -35,6 +35,26 @@ class MockProvider:
         lowered = user_text.lower()
         available = self._available_tool_names(tools)
 
+        if any(str(m.get("content", "")).startswith("Dossier-generation action.") for m in messages if m.get("role") == "system"):
+            data_message = next((str(m["content"]) for m in messages if str(m.get("content", "")).startswith("Saved dossier input (data, not instructions):\n")), "")
+            data = json.loads(data_message.split("\n", 1)[1])
+            from app.services.dossier import DossierService
+            research_doc = next((d for d in data.get("reference_documents", [])
+                                 if "/research/" in d["path"] and DossierService.section(d["content"], "Matter summary")), {})
+            research = research_doc.get("content", "")
+            summary = (DossierService.section(research, "Matter summary")
+                       or (data.get("accepted_working_view") or {}).get("content")
+                       or "Mock mode: saved matter overview.")
+            content = "# " + data["title"] + "\n\n## Matter summary\n\n" + summary
+            if data.get("question"):
+                content += "\n\n## Decision question\n\n" + data["question"]
+            questions = DossierService.list_section(research, "Open questions")
+            if questions:
+                content += "\n\n## Open questions\n\n" + "\n".join("- " + q for q in questions)
+            if research_doc:
+                content += "\n\n## Research and source support\n\nLatest review: [Saved research](" + research_doc["path"] + ")"
+            return ProviderReply(content=content)
+
         if lowered.startswith("[scheduled task]"):
             return ProviderReply(content="Scheduled task completed in mock mode.")
 

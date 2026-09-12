@@ -81,6 +81,15 @@ class SkillRegistry:
     def list(self) -> list[SkillDefinition]:
         return list(self._load_all().values())
 
+    def dossier_generation_snapshot(self) -> dict[str, Any]:
+        from app.skills.dossier import snapshot
+        return snapshot(self)
+
+    def install_dossier_starter(self) -> None:
+        path = self._path("dossier-generation")
+        if not self.vault.exists(path):
+            self.vault.write_bytes(path, (STARTER_ROOT / "dossier-generation.md").read_bytes())
+
     def get(self, skill_id: str) -> SkillDefinition:
         skill = self._load_all().get(skill_id)
         if skill is None:

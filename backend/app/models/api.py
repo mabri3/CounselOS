@@ -457,8 +457,25 @@ class WorkProductCard(BaseModel):
     summary: str = ""
 
 
+class DossierResearchCard(BaseModel):
+    """Setup/progress card for a research-first dossier parent request.
+
+    The card carries a saved request id and a compact, read-only status
+    projection. The frontend fetches full detail and polls status through the
+    dossier-requests endpoints; nothing here is authoritative on its own.
+    """
+
+    type: Literal["dossier_research"] = "dossier_research"
+    request_id: str
+    matter_id: str
+    state: str
+    phase: str
+    presentation: Literal["setup", "progress"] = "setup"
+    status: dict[str, Any] = Field(default_factory=dict)
+
+
 ChatCard = Annotated[
-    QuestionCard | MatterUpdateCard | ResearchStatusCard | WorkProductCard | WatchDraftCard | WatchScanCard,
+    QuestionCard | MatterUpdateCard | ResearchStatusCard | WorkProductCard | WatchDraftCard | WatchScanCard | DossierResearchCard,
     Field(discriminator="type"),
 ]
 
@@ -498,6 +515,7 @@ class ChatModelSelection(BaseModel):
 
 
 class ChatRequest(BaseModel):
+    comparison_path_ids: list[str] = Field(default_factory=list, max_length=20)
     model_selection: ChatModelSelection | None = None
     experimental_chat: bool = False
     experimental_intake: bool = False
@@ -559,6 +577,7 @@ class ChatResponse(BaseModel):
     applied_skills: list[AppliedSkillSummary] = Field(default_factory=list)
     review_author: str | None = None
     operation_results: list[dict[str, Any]] = Field(default_factory=list)
+    source_records: list[dict[str, Any]] = Field(default_factory=list)
 
 
 ChatRunState = Literal["queued", "running", "completed", "failed", "interrupted"]
@@ -569,6 +588,7 @@ ChatRunFailureClass = Literal[
 
 
 class ChatRun(BaseModel):
+    background: bool = False
     action_actor: dict[str, Any] | None = None
     run_id: str
     matter_id: str

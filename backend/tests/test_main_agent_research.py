@@ -6,6 +6,20 @@ import pytest
 from app.providers.base import ProviderReply
 
 
+def test_generated_main_research_prompt_fits_chat_limit_and_keeps_final_instruction():
+    from app.models.api import MAX_CHAT_MESSAGE_CHARS, ChatRequest
+    from app.services.main_agent_research import _bounded_research_message
+
+    message = "START " + ("saved matter context " * 4_000) + " FINAL INSTRUCTION"
+    bounded = _bounded_research_message(message)
+
+    request = ChatRequest(message=bounded)
+    assert len(request.message) == MAX_CHAT_MESSAGE_CHARS
+    assert request.message.startswith("START ")
+    assert request.message.endswith(" FINAL INSTRUCTION")
+    assert "Middle of generated research context omitted" in request.message
+
+
 class RoutingSpy:
     def __init__(self, replies=()):
         self.replies = list(replies)
@@ -211,7 +225,10 @@ async def test_real_main_runner_owns_collection_and_final_answer(app_context, mo
     await app_context.research_runs.wait_for_active_work()
     saved = app_context.research_runs.get("MAT-DEMO-BEACON", run["run_id"])
     assert saved["state"] == "completed", saved
-    assert len(spy.calls) == 2
+    # Collection and the main answer are followed by one saved-input dossier write.
+    assert len(spy.calls) == 3
+    assert [t["function"]["name"] for t in spy.calls[-1]["tools"]] == ["read_dossier_record"]
+    assert spy.calls[-1]["messages"][0]["content"].startswith("Dossier-generation action.")
     assert len(workers) == 1
     assert workers[0][1]["agent_id"] == "research-agent"
     assert "Synthetic public rule requiring consent" in str(spy.calls[1]["messages"])
@@ -293,7 +310,9 @@ async def test_collection_failure_or_hostile_page_keeps_useful_main_answer(app_c
     packet = app_context.vault.read_markdown(saved["results"][0]["path"])
     assert "Obtain the executed agreement" in packet["content"]
     assert app_context.matter_records.get("MAT-DEMO-BEACON")["facts"] == before
-    assert len(spy.calls) == 2
+    assert len(spy.calls) == 3
+    assert [t["function"]["name"] for t in spy.calls[-1]["tools"]] == ["read_dossier_record"]
+    assert spy.calls[-1]["messages"][0]["content"].startswith("Dossier-generation action.")
     names = {tool["function"]["name"] for tool in spy.calls[1]["tools"]}
     assert names <= {"collect_research_evidence", "read_research_source", "search_research_sources", "read_file", "list_files", "search_vault"}
     if failure == "malicious":
@@ -316,3 +335,118 @@ async def test_local_snapshot_keeps_middle_exception_outside_opening_view(app_co
     saved = app_context.vault.read_markdown(view["source_snapshot_path"])["content"]
     assert "Middle omitted" not in saved
     assert saved[passage["start"]:passage["end"]] == passage["text"]
+
+@pytest.mark.asyncio
+async def test_service_failure_uses_main_model_web_in_separate_session(app_context, monkeypatch):
+    from app.services.research_collection import ResearchCollection
+    from app.services import native_research
+    access = prepared_collection(app_context)
+    scope = {**access.scope.model_dump(), 'external': True, 'public_query': 'public licensing rule', 'provider_ids': ['firecrawl', 'polaris']}
+    app_context.research_runs._write(access.matter_id, access.run_id, search_scope=scope,
+        main_selection={'provider': 'codex', 'model': 'test-main', 'reasoning_effort': 'medium'},
+        collector_selection={'provider': 'openai_compatible', 'model': 'cheap-collector'})
+    access = ResearchCollection(app_context, access.matter_id, access.run_id)
+    calls = []
+    async def failed_service(provider, *args, **kwargs):
+        calls.append(provider)
+        raise RuntimeError('service failed')
+    async def native(query, selection, settings, **kwargs):
+        calls.append((query, selection['model']))
+        return 'test response'
+    async def fetch(candidate):
+        return {**candidate, 'support_state': 'retrieved'}
+    monkeypatch.setattr(app_context.research, '_run_external_provider', failed_service)
+    monkeypatch.setattr(native_research, 'discover', native)
+    monkeypatch.setattr(native_research, 'source_urls', lambda raw: ['https://example.com/rule'])
+    monkeypatch.setattr(native_research, 'answer_text', lambda raw: 'Retrieved rule')
+    monkeypatch.setattr(access, '_fetch', fetch)
+    result = await access.recover_before_synthesis()
+    assert calls == ['firecrawl', 'polaris', ('public licensing rule', 'test-main')]
+    assert result['status'] == 'retrieved'
+    assert await access.recover_before_synthesis() is None
+    assert len(calls) == 3
+
+
+@pytest.mark.asyncio
+async def test_background_research_start_does_not_wait_for_research(app_context):
+    import asyncio
+    entered, release = asyncio.Event(), asyncio.Event()
+    async def held_research(*args, **kwargs):
+        entered.set()
+        await release.wait()
+        return {'path': 'synthetic-packet', 'external_sources': 0}
+    app_context.research.run = held_research
+    run = app_context.research_runs.start('MAT-DEMO-BEACON', ['Synthetic question'])
+    try:
+        await asyncio.wait_for(entered.wait(), 2)
+        assert app_context.research_runs.has_active_work
+        assert run['run_id']
+        # The foreground can still read the workspace while research is suspended.
+        assert app_context.matters.get('MAT-DEMO-BEACON')
+    finally:
+        release.set()
+        await app_context.research_runs.wait_for_active_work()
+
+@pytest.mark.asyncio
+async def test_native_fallback_failure_is_saved_and_not_repeated(app_context, monkeypatch):
+    from app.services.research_collection import ResearchCollection
+    from app.services import native_research
+    access = prepared_collection(app_context)
+    app_context.research_runs._write(access.matter_id, access.run_id,
+        search_scope={**access.scope.model_dump(), 'external': True},
+        main_selection={'provider': 'codex', 'model': 'test-main'})
+    access = ResearchCollection(app_context, access.matter_id, access.run_id)
+    calls = []
+    async def fail(*args, **kwargs):
+        calls.append(args)
+        raise RuntimeError('test failure')
+    monkeypatch.setattr(native_research, 'discover', fail)
+    first = await access.native_fallback('public rule', 'test-fallback')
+    assert first['candidates'] == []
+    assert 'failed' in first['warning']
+    assert await access.native_fallback('public rule', 'test-fallback') == first
+    assert len(calls) == 1
+
+
+@pytest.mark.asyncio
+async def test_no_external_permission_never_starts_fallback(app_context, monkeypatch):
+    from app.services import native_research
+    access = prepared_collection(app_context)
+    async def forbidden(*args, **kwargs):
+        pytest.fail('External search was not authorized')
+    monkeypatch.setattr(native_research, 'discover', forbidden)
+    assert await access.recover_before_synthesis() is None
+    assert (await access.native_fallback('public rule', 'blocked'))['candidates'] == []
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize('enabled', [False, True])
+async def test_collection_toggle_controls_worker_not_search(app_context, monkeypatch, enabled):
+    from types import SimpleNamespace
+    from app.services.research_collection import ResearchCollection
+    from app.models.research_investigation import ResearchEvidenceRequest
+    from app.providers.base import ProviderReply, ProviderToolCall, provider_session_id
+    access = prepared_collection(app_context)
+    app_context.research_runs._write(access.matter_id, access.run_id,
+        search_scope={**access.scope.model_dump(), 'external': True, 'public_query': 'public rule', 'provider_ids': ['firecrawl'], 'collection_enabled': enabled},
+        collector_selection={'agent_id':'research-agent','provider':'mock','model':'mock'})
+    access = ResearchCollection(app_context, access.matter_id, access.run_id)
+    workers, searches = [], []
+    class Worker:
+        async def complete(self, messages, tools):
+            workers.append((messages, provider_session_id.get()))
+            return ProviderReply(content='', tool_calls=[ProviderToolCall(id='s', name='search_public_sources', arguments={})])
+    monkeypatch.setattr(app_context.research_runs, '_resolve_saved_selection', lambda _: SimpleNamespace(provider=Worker()))
+    async def search(provider, outbound, result, **kwargs):
+        searches.append(provider)
+        result['external'] = [{'url':'https://example.com/rule'}]
+    monkeypatch.setattr(app_context.research, '_run_external_provider', search)
+    async def fetch(candidate): return {**candidate, 'support_state':'retrieved'}
+    monkeypatch.setattr(access, '_fetch', fetch)
+    result = await access._request(ResearchEvidenceRequest(proposition_id='p', proposition='public rule', public_query='public rule', source_goal='operative_rule'))
+    assert result['status'] == 'retrieved'
+    assert searches == ['firecrawl']
+    assert len(workers) == int(enabled)
+    if enabled:
+        assert workers[0][1] == access.run_id + ':collector'
+        assert workers[0][0][-1]['content'] == 'public rule'
+        assert 'Beacon' not in str(workers)

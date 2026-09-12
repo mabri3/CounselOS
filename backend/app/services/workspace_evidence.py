@@ -254,7 +254,9 @@ class WorkspaceEvidenceService:
         root = self.vault.resolve(base)
         # Keep the internal review archive out of default source discovery.
         # Explicit saved selections and direct history reads remain available.
-        files = [path for path in self.vault.iter_files(base) if ".history" not in path.relative_to(root).parts]
+        files = [path for path in self.vault.iter_files(base)
+                 if ".history" not in path.relative_to(root).parts
+                 and path.relative_to(root).parts[0] != "conversations"]
         companions: dict[str, dict[str, Any]] = {}
         for path in files:
             if not path.name.endswith(".extracted.md"):

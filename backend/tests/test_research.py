@@ -5,10 +5,11 @@ import json
 
 import pytest
 
-from app.models.api import ChatRequest, ChatResponse, WorkItemCreate
+from app.models.api import MAX_CHAT_MESSAGE_CHARS, ChatRequest, ChatResponse, WorkItemCreate
 from app.intelligence.polaris import PolarisProviderResult
 from app.models.awareness import DevelopmentCandidate, ProviderScanResult, SourceReference
 from app.services.research_runs import ResearchRunService
+from app.services.research import _bounded_agent_message
 from app.agents.runner import ResolvedAgentProvider
 from app.providers.base import ProviderSelection
 from app.tools.handlers import run_research
@@ -315,6 +316,18 @@ async def test_queued_research_prompt_uses_frozen_request_and_internal_sources(a
     assert "CHANGED AFTER QUEUE" not in requests[0].frozen_context["context"]
 
 
+def test_generated_research_prompt_is_bounded_without_losing_final_instructions():
+    message = "START " + ("matter context " * 5_000) + " FINAL INSTRUCTION"
+
+    bounded = _bounded_agent_message(message)
+
+    request = ChatRequest(message=bounded)
+    assert len(request.message) == MAX_CHAT_MESSAGE_CHARS
+    assert request.message.startswith("START ")
+    assert request.message.endswith(" FINAL INSTRUCTION")
+    assert "Middle of generated research context omitted" in request.message
+
+
 @pytest.mark.asyncio
 async def test_queued_issue_research_uses_frozen_facts_and_cannot_replace_current_after_fact_change(app_context):
     app = app_context
@@ -414,7 +427,9 @@ async def test_research_refreshes_precomputed_dossier_orientation(app_context):
     assert "## Summary" not in dossier
     assert dossier.count("## Research and source support") == 1
     assert "## Research\n" not in dossier
-    assert f"Latest review: `{result['path']}`" in dossier
+    assert "Latest review:" in dossier
+    assert f"]({result['path']})" in dossier, "the saved review is a readable artifact link"
+    assert f"`{result['path']}`" not in dossier
     assert "Research has not been added yet." not in dossier
 
 

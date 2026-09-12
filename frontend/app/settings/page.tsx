@@ -16,45 +16,7 @@ import type { ProviderCapability } from "@/lib/watchTypes";
 
 import { loadContinuityIdentity, useContinuityIdentity } from "@/lib/continuityApi";
 
-function alignModelRows(rows: SettingRow[], settings: WorkspaceSettings): SettingRow[] {
-  const providerRow = rows.find((row) => row.config_key === "agents.provider");
-  const provider = settings.model_catalog.providers.find((entry) => entry.id === providerRow?.value)
-    ?? settings.model_catalog.providers[0];
-  const currentModel = rows.find((row) => row.config_key === "agents.reasoning_model")?.value;
-  const model = provider?.models.find((entry) => entry.id === currentModel) ?? provider?.models[0];
-  const currentEffort = rows.find((row) => row.config_key === "agents.reasoning_effort")?.value;
-  const effort: string = model?.reasoning_efforts.includes(currentEffort ?? "")
-    ? currentEffort ?? "default"
-    : model?.reasoning_efforts[0] ?? currentEffort ?? "default";
-  const modelOptions = provider?.models.length
-    ? provider.models
-    : currentModel
-      ? [{ id: currentModel, label: `${currentModel} (unavailable)`, reasoning_efforts: [] }]
-      : [];
-
-  return rows.map((row) => {
-    if (row.config_key === "agents.reasoning_model") {
-      return {
-        ...row,
-        value: model?.id ?? currentModel ?? "",
-        options: modelOptions.map((entry) => entry.id),
-        option_labels: Object.fromEntries(modelOptions.map((entry) => [entry.id, entry.label])),
-      };
-    }
-    if (row.config_key === "agents.reasoning_effort") {
-      const efforts = model?.reasoning_efforts.length ? model.reasoning_efforts : [effort];
-      return {
-        ...row,
-        value: effort,
-        options: efforts,
-        option_labels: Object.fromEntries(
-          efforts.map((entry) => [entry, effortLabel(entry)]),
-        ),
-      };
-    }
-    return row;
-  });
-}
+import { alignModelRows } from "@/lib/modelSettingsRows";
 
 function providerState(provider: ModelCatalogProvider): { label: string; color: string } {
   if (provider.readiness === "ready") return { label: "Ready", color: role.healthy };
@@ -146,7 +108,7 @@ export default function SettingsPage() {
         }
         return {
           ...entry,
-          rows: entry.id === "agents" ? alignModelRows(rows, current) : rows,
+          rows: ["agents", "research"].includes(entry.id) ? alignModelRows(rows, current, entry.id === "research") : rows,
         };
       }),
     }));
@@ -420,7 +382,7 @@ export default function SettingsPage() {
                   <div className={styles.summary}>
                     <div className="field-label">Active research route</div>
                     <p style={{ margin: "5px 0 0" }}>
-                      Start with {RESEARCH_PROVIDER_LABELS[primaryResearch] ?? primaryResearch}. If it cannot return useful sources, try {RESEARCH_PROVIDER_LABELS[backupResearch] ?? backupResearch}.
+                      {current.rows.some(row => row.config_key === "research.collection_enabled" && row.on) ? "The collection agent searches with " : "Search directly with "}{RESEARCH_PROVIDER_LABELS[primaryResearch] ?? primaryResearch}, then {RESEARCH_PROVIDER_LABELS[backupResearch] ?? backupResearch}. If neither returns useful sources, the main model type searches the web in a separate session.
                     </p>
                   </div>
                   {current.rows.map((row, index) => {
@@ -429,7 +391,7 @@ export default function SettingsPage() {
                     return (
                       <details key={row.id} open style={{ marginTop: 20 }}>
                         <summary className="setting-heading" style={{ cursor: "pointer" }}>{row.label}</summary>
-                        {advancedRows.map((advancedRow) => (
+                        {advancedRows.filter(row => !["research.model_fallback_provider", "research.model_fallback_model", "research.collection_reasoning_effort"].includes(row.config_key ?? "") || current.rows.some(r => r.config_key === "research.collection_enabled" && r.on)).map((advancedRow) => (
                           <div className="setting-row" key={advancedRow.id}>
                             <div><div className="setting-label">{advancedRow.label}</div>{advancedRow.help ? <div className="setting-help"><LinkifiedText text={advancedRow.help} /></div> : null}</div>
                             {advancedRow.kind === "toggle" ? <input type="checkbox" aria-label={advancedRow.label} checked={!!advancedRow.on} onChange={(event) => update(advancedRow.id, { on: event.target.checked })} /> : advancedRow.kind === "text" ? <input aria-label={advancedRow.label} className="text-input setting-control" onChange={(event) => update(advancedRow.id, { value: event.target.value })} value={advancedRow.value ?? ""} /> : <select aria-label={advancedRow.label} className="select-input setting-control" onChange={(event) => update(advancedRow.id, { value: event.target.value })} value={advancedRow.value}>{(advancedRow.options ?? [advancedRow.value ?? ""]).map((option) => <option key={option} value={option}>{advancedRow.option_labels?.[option] ?? option}</option>)}</select>}
@@ -445,7 +407,7 @@ export default function SettingsPage() {
                   return (
                     <details key={row.id} open style={{ marginTop: 20 }}>
                       <summary className="setting-heading" style={{ cursor: "pointer" }}>{row.label}</summary>
-                      {advancedRows.map((advancedRow) => (
+                      {advancedRows.filter(row => !["research.model_fallback_provider", "research.model_fallback_model", "research.collection_reasoning_effort"].includes(row.config_key ?? "") || current.rows.some(r => r.config_key === "research.collection_enabled" && r.on)).map((advancedRow) => (
                         <div className="setting-row" key={advancedRow.id}>
                           <div>
                             <div className="setting-label">{advancedRow.label}</div>

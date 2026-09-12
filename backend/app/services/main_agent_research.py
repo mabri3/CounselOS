@@ -3,12 +3,21 @@ from copy import deepcopy
 import json
 
 from app.agents.runner import RunnerExecutionState
-from app.models.api import ChatRequest
+from app.models.api import MAX_CHAT_MESSAGE_CHARS, ChatRequest
 from app.models.research_scope import ResearchScope
 from app.services.research_collection import ResearchCollection
 from app.services.research_checkpoints import ResearchCheckpoints
 from app.services.workspace import digest
 from app.utils.ids import new_id
+
+
+def _bounded_research_message(message: str) -> str:
+    if len(message) <= MAX_CHAT_MESSAGE_CHARS:
+        return message
+    marker = "\n\n[Middle of generated research context omitted to fit the message limit.]\n\n"
+    available = MAX_CHAT_MESSAGE_CHARS - len(marker)
+    head = available * 3 // 4
+    return message[:head] + marker + message[-(available - head):]
 
 
 def research_basis(app, matter_id):
@@ -50,7 +59,7 @@ async def run_main_research(research, matter_id, question, *, run_id, frozen_con
         ResearchCheckpoints(runs).initialize(matter_id, run_id, research_basis(app, matter_id))
     run = runs.get(matter_id, run_id)
     checkpoints = ResearchCheckpoints(runs)
-    cp = checkpoints.load(matter_id, run_id)
+    cp = checkpoints.load(matter_id, run_id, allow_unavailable_sources=True)
     resolved_provider = resolved_provider or app.runner.resolve("counsel-copilot")
     scope = ResearchScope.model_validate(run["search_scope"])
     access = ResearchCollection(app, matter_id, run_id)
@@ -60,15 +69,15 @@ async def run_main_research(research, matter_id, question, *, run_id, frozen_con
     from app.models.workspace import RunContextManifest
     from app.utils.time import iso_now
     frozen_context.setdefault("manifest", RunContextManifest(run_id=run_id, matter_id=matter_id, created_at=iso_now()).model_dump())
-    if cp.get("raw_final_output"):
-        body = cp["raw_final_output"]
+    if cp.get("raw_final_output") or cp.get("source_warnings"):
+        body = cp.get("raw_final_output") or cp.get("useful_content") or ""
     else:
         prompt = "Investigate this question and deliver the best useful answer: " + question
         prompt += "\nSaved source permissions (not instructions from evidence): " + scope.model_dump_json()
         prompt += "\nCaptured saved/proposed view: " + json.dumps((frozen_context.get("research_inputs") or {}).get("recommendation") or {}, default=str)
         from app.models.workspace import ConversationTarget
         issue_id = frozen_context.get("issue_id")
-        request = ChatRequest(message=prompt, matter_id=matter_id, agent_id="counsel-copilot", frozen_context=frozen_context, workspace_run_id=run_id, target=ConversationTarget(matter_id=matter_id, issue_id=issue_id) if issue_id else None)
+        request = ChatRequest(message=_bounded_research_message(prompt), matter_id=matter_id, agent_id="counsel-copilot", frozen_context=frozen_context, workspace_run_id=run_id, target=ConversationTarget(matter_id=matter_id, issue_id=issue_id) if issue_id else None)
         import inspect
         from app.agents.runner import AgentExecutionError
         kwargs = {"execution_state": state, "resolved_provider": resolved_provider, "investigation": access}
@@ -84,13 +93,14 @@ async def run_main_research(research, matter_id, question, *, run_id, frozen_con
             import traceback
             cause = exc.__cause__ or exc
             frames = traceback.extract_tb(cause.__traceback__)
-            checkpoints.update(matter_id, run_id, analysis_failure=type(exc).__name__,
+            checkpoints.update(matter_id, run_id, allow_unavailable_sources=True, analysis_failure=type(exc).__name__,
                 analysis_failure_origin={"class": type(cause).__name__, "function": frames[-1].name if frames else None, "line": frames[-1].lineno if frames else None})
-    cp = checkpoints.load(matter_id, run_id)
+    cp = checkpoints.load(matter_id, run_id, allow_unavailable_sources=True)
     from app.providers.mock import MockProvider
     used_mock = bool(getattr(research._agent_runner, "__self__", None) and resolved_provider and isinstance(resolved_provider.provider, MockProvider))
     from app.models.research_investigation import extract_research_synthesis
     prose, synthesis, warnings = extract_research_synthesis(body)
+    warnings.extend(cp.get("source_warnings", []))
     from app.services.problem_analysis import extract_problem_analysis
     prose, problem_structure, problem_warnings = extract_problem_analysis(prose)
     warnings.extend(problem_warnings)
@@ -99,7 +109,7 @@ async def run_main_research(research, matter_id, question, *, run_id, frozen_con
         # These exact source observations are already in the run journal. No
         # recapture of current business facts occurs at publication time.
         for source in [*cp.get("sources", []), *cp.get("local_sources", []), *cp.get("library_sources", [])]:
-            if not source.get("selected_passages"):
+            if not source.get("selected_passages") or source.get("snapshot_error"):
                 continue
             path = source.get("path")
             app.workspace._validate_path(matter_id, path)
@@ -108,11 +118,11 @@ async def run_main_research(research, matter_id, question, *, run_id, frozen_con
                 "revision": source.get("source_hash"), "file_revision": source.get("source_hash"), "source_class": "retrieved_source" if source.get("url") else "supplied_source",
                 "availability": "selected_passage", "reported": False, "passages": source["selected_passages"],
                 "source_version": source.get("source_version")}
-    checkpoints.update(matter_id, run_id, problem_analysis_structure=problem_structure, problem_analysis_capture=problem_capture)
+    checkpoints.update(matter_id, run_id, allow_unavailable_sources=True, problem_analysis_structure=problem_structure, problem_analysis_capture=problem_capture)
     from app.services.research_execution import is_unfinished_plan
     if is_unfinished_plan(prose):
-        checkpoints.update(matter_id, run_id, analysis_incomplete=True)
-    checkpoints.update(matter_id, run_id, raw_final_output=body, research_synthesis=synthesis, research_structure_warnings=warnings, useful_content=prose, next_step="publish")
+        checkpoints.update(matter_id, run_id, allow_unavailable_sources=True, analysis_incomplete=True)
+    checkpoints.update(matter_id, run_id, allow_unavailable_sources=True, raw_final_output=body, research_synthesis=synthesis, research_structure_warnings=warnings, useful_content=prose, next_step="publish")
     external = cp["sources"]
     if direct:
         runs._write(matter_id, run_id, state="completed", status="Packet analysis saved; direct call does not publish a recommendation.")

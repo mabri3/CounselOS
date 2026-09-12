@@ -112,9 +112,9 @@
 .notice,.runStatus { max-width:720px; margin:18px auto 0; font-size:12px; color:var(--ink-4); }
 .notice { color:var(--agent); background:var(--agent-wash); border-left:2px solid var(--agent); padding:8px 14px; }
 .error { color:var(--failure); background:var(--failure-wash); border-radius:8px; padding:12px; font-size:13px; }
-.documents { min-width:0; min-height:0; overflow:auto; border-left:1px solid var(--line); background:var(--rail); padding:0 20px 30px; }
-.tabs { position:sticky; top:0; z-index:3; display:flex; gap:4px; flex-wrap:wrap; padding:14px 0; border-bottom:1px solid var(--line); margin-bottom:20px; background:var(--rail); }
-.root .tabs button { border:0; background:transparent; font-size:12px; padding:8px 10px; }
+.documents { min-width:0; min-height:0; overflow:auto; scroll-padding-top:84px; border-left:1px solid var(--line); background:var(--rail); padding:0 20px 30px; }
+.tabs { position:sticky; top:0; z-index:3; display:flex; gap:4px; flex-wrap:nowrap; overflow-x:auto; padding:14px 0; border-bottom:1px solid var(--line); margin-bottom:20px; background:var(--rail); }
+.root .tabs button { flex:0 0 auto; max-width:16rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; border:0; background:transparent; font-size:12px; padding:8px 10px; }
 .root .tabs button[aria-pressed=true] { background:var(--paper); box-shadow:0 1px 4px color-mix(in srgb,var(--ink) 8%,transparent); font-weight:600; }
 .tabs button:last-child { margin-left:auto; color:var(--ink-4); }
 .documents>button { font-size:12px; margin:0 0 14px; text-align:left; }
@@ -218,8 +218,8 @@
 .intakeWriteIn input { width: 100%; box-sizing: border-box; padding: 9px 12px; font: inherit; font-size: 14px; color: var(--ink); background: var(--raised); border: 1px solid var(--line); border-radius: 8px; }
 .intakeWriteIn input:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
-.nextSteps { padding: 24px 0 8px; border-top: 1px solid var(--line-soft); }
-.nextSteps h2 { margin: 0; font: 600 16px/1.5 var(--sans); color: var(--ink); }
+.nextSteps { padding: 14px 0 8px; border-top: 1px solid var(--line-soft); }
+.nextSteps > summary { cursor: pointer; margin: 0; font: 600 16px/1.5 var(--sans); color: var(--ink); }
 .nextSteps > p { margin: 0; font: 400 15px/1.5 var(--sans); color: var(--ink); }
 .nextStepOptions { display: grid; gap: 10px; margin-top: 20px; }
 .nextStepOptions .choiceButton { display: flex; align-items: center; justify-content: space-between; gap: 16px; text-align: left; padding: 14px 16px; }
@@ -231,3 +231,10 @@
 .chatTools > [data-problem-breakdown] { flex: 1 1 220px; margin-block: 0 !important; }
 .chatTools [data-problem-breakdown] details[open] { position: static; width: auto; max-height: none; box-shadow: none; padding: 8px 0; border: 0; background: transparent; }
 .chatTools [data-problem-breakdown] section { padding-block: 10px; }
+
+/* Keep generated comparison tables readable in the split chat/document view. */
+.assistant :global(.claim-table-scroll) table { min-width:36rem; width:100%; border-collapse:collapse; }
+.assistant :global(.claim-table-scroll) th,
+.assistant :global(.claim-table-scroll) td { min-width:8rem; padding:10px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; overflow-wrap:normal; }
+.assistant :global(.claim-table-scroll) th { background:var(--sunken); }
+.assistant :global(.claim-table-scroll)::before { content:"Scroll sideways if columns are out of view."; display:block; margin-bottom:8px; font-size:12px; color:var(--ink-3); }

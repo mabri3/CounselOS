@@ -39,10 +39,56 @@ class ResearchRunService:
         self.resolve_agent = resolve_agent
         self.resolve_selection = resolve_selection
         self._tasks: dict[str, asyncio.Task[None]] = {}
+        # A parent dossier request reserves this matter's dossier-research work.
+        # Ownership is a short serialized decision so simultaneous starts cannot
+        # create a fourth concurrent worker.
+        import threading
+
+        self._ownership_lock = threading.RLock()
+        self._managed_owner: dict[str, str] = {}
 
     @property
     def has_active_work(self) -> bool:
         return any(not task.done() for task in self._tasks.values())
+
+    # --- Parent-managed matter ownership --------------------------------
+
+    def matter_owner(self, matter_id: str) -> str | None:
+        with self._ownership_lock:
+            return self._managed_owner.get(matter_id)
+
+    def _has_active_standalone(self, matter_id: str) -> bool:
+        matter_run_ids = {
+            str(item["run_id"]) for item in self.list(matter_id) if not item.get("managed")
+        }
+        if any(run_id in matter_run_ids and not task.done() for run_id, task in self._tasks.items()):
+            return True
+        return any(
+            not item.get("managed") and item.get("state") in {"queued", "running"}
+            for item in self.list(matter_id)
+        )
+
+    def acquire_matter_ownership(self, matter_id: str, request_id: str) -> dict[str, Any]:
+        """Reserve this matter's dossier-research work for one parent request.
+
+        Ordinary research already running may finish first; the parent shows
+        Waiting for current research. A different active owner blocks acquisition.
+        """
+        with self._ownership_lock:
+            owner = self._managed_owner.get(matter_id)
+            if owner and owner != request_id:
+                return {"acquired": False, "owner": owner}
+            self._managed_owner[matter_id] = request_id
+            return {
+                "acquired": True,
+                "owner": request_id,
+                "waiting_for_standalone": self._has_active_standalone(matter_id),
+            }
+
+    def release_matter_ownership(self, matter_id: str, request_id: str) -> None:
+        with self._ownership_lock:
+            if self._managed_owner.get(matter_id) == request_id:
+                self._managed_owner.pop(matter_id, None)
 
     def start(
         self, matter_id: str, questions: list[str], *,
@@ -55,6 +101,7 @@ class ResearchRunService:
     ) -> dict[str, Any]:
         search_scope = search_scope or ResearchScope()
         options = self.research.search_options()
+        search_scope = search_scope.model_copy(update={"collection_enabled": bool(self.research._settings.get("collection_enabled", False))})
         if search_scope.external and not search_scope.public_query.strip():
             raise ValueError("Enter a public search query without private matter details.")
         if search_scope.external and not search_scope.native and (
@@ -132,6 +179,8 @@ class ResearchRunService:
                 "research_inputs": research_inputs,
                 "allowed_matter_roots": [m["path"] for m in self.research.index.list_matters()] if search_scope.other_matters else [],
             }
+            if hasattr(self.research, "app"):
+                frozen_context["dossier_skill"] = self.research.app.skills.dossier_generation_snapshot()
             from app.services.problem_analysis import ProblemAnalysisService
             problem_service = ProblemAnalysisService(self.vault, self.research.matters)
             prior, reason = problem_service.prior_context(matter_id, frozen_context)
@@ -174,22 +223,215 @@ class ResearchRunService:
                 search_notices=options,
             ))
         if original_stage in {"intake", "explore"}:
-            self.research.matters.move_stage(
-                matter_id, "research", reason="Research run started", actor="research-agent"
-            )
+            # The stage transition belongs to the research run. HTTP teardown
+            # must not generate an early dossier before its research is saved.
+            from app.services.dossier_generation import generation_owner
+            token = generation_owner.set("research:" + run_ids[0])
+            try:
+                self.research.matters.move_stage(
+                    matter_id, "research", reason="Research run started", actor="research-agent"
+                )
+            finally:
+                generation_owner.reset(token)
         from app.services.research_checkpoints import ResearchCheckpoints
         from app.services.main_agent_research import research_basis
         if hasattr(self.research, "app"):
             for record in records:
                 ResearchCheckpoints(self).initialize(matter_id, record["run_id"], research_basis(self.research.app, matter_id))
         first = records[0]
-        if not self._matter_has_active_task(matter_id):
+        # While a parent dossier request owns the matter, ordinary research stays
+        # in the saved pending list; it must not consume a fourth concurrent slot.
+        if not self._matter_has_active_task(matter_id) and not self.matter_owner(matter_id):
             next_item = self._pending(matter_id)[0]
             next_id = str(next_item["run_id"])
             self._tasks[next_id] = asyncio.create_task(
                 self._execute(matter_id, next_id, self._execution_questions(next_item))
             )
         return first
+
+    # --- Parent-managed children ----------------------------------------
+
+    def managed_children(self, matter_id: str, parent_request_id: str) -> list[dict[str, Any]]:
+        return [
+            item for item in self.list(matter_id)
+            if item.get("managed") and item.get("parent_request_id") == parent_request_id
+        ]
+
+    def create_managed_child(
+        self,
+        matter_id: str,
+        *,
+        parent_request_id: str,
+        issue_id: str,
+        question: str,
+        focused_topic: str = "",
+        source_scope: dict[str, Any] | None = None,
+        main_selection: dict[str, Any] | None = None,
+        collector_selection: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Create one parent-managed research child with server-side inputs only.
+
+        Deterministic on (parent_request_id, issue_id) so a repeat Start reuses the
+        same child. This never accepts client-supplied frozen context; it freezes
+        the matter's saved records for the assigned issue and applies the parent's
+        approved scope and focused topic. It is the only managed-run creator; the
+        public ResearchRunStart endpoint cannot set the managed flag.
+        """
+        run_id = "RUN-" + digest(parent_request_id + ":" + issue_id)[:16]
+        if self.vault.exists(self._path(matter_id, run_id)):
+            return self.get(matter_id, run_id)
+
+        source_scope = dict(source_scope or {})
+        external = bool(source_scope.get("external"))
+
+        def _clean_selection(values):
+            if not values:
+                return None
+            return {k: values[k] for k in ("provider", "model", "reasoning_effort") if k in values and values[k]}
+
+        scope = ResearchScope(
+            external=external,
+            other_matters=bool(source_scope.get("other_matters")),
+            public_query=(source_scope.get("public_query") or focused_topic or source_scope.get("overall_topic") or "") if external else "",
+            native=bool(source_scope.get("native")), allow_firecrawl=bool(source_scope.get("allow_firecrawl")),
+            model_selection=_clean_selection(source_scope.get("model_selection")),
+            provider_ids=list(source_scope.get("provider_ids") or []),
+            collection_enabled=bool(source_scope.get("collection_enabled")),
+            allow_followup_queries=bool(source_scope.get("allow_followup_queries")),
+            main_model_selection=_clean_selection(main_selection),
+            collector_model_selection=_clean_selection(collector_selection),
+        )
+        scope = scope.model_copy(update={"collection_enabled": bool(self.research._settings.get("collection_enabled", False)) and scope.collection_enabled})
+
+        research_inputs = self._freeze_research_inputs(
+            matter_id, question, issue_id=issue_id, other_matters=scope.other_matters
+        )
+        analysis_service = IssueAnalysisService(self.vault, self.research.matters)
+        captured = analysis_service.capture(
+            matter_id, issue_id,
+            frozen_context={
+                "research_question": question,
+                "manifest": {"entries": research_inputs["manifest_entries"]},
+                "context": research_inputs["context"],
+            },
+        )
+        frozen_context = {
+            "issue_id": issue_id,
+            "research_question": question,
+            "issue_analysis_capture": captured,
+            "manifest": {"entries": research_inputs["manifest_entries"]},
+            "context": research_inputs["context"],
+            "research_inputs": research_inputs,
+            "allowed_matter_roots": [m["path"] for m in self.research.index.list_matters()] if scope.other_matters else [],
+            "managed_parent_request_id": parent_request_id,
+        }
+        if hasattr(self.research, "app"):
+            frozen_context["dossier_skill"] = self.research.app.skills.dossier_generation_snapshot()
+        from app.services.problem_analysis import ProblemAnalysisService
+        problem_service = ProblemAnalysisService(self.vault, self.research.matters)
+        prior, _ = problem_service.prior_context(matter_id, frozen_context)
+        if prior:
+            frozen_context["context"] += "\nPrior generated problem breakdown (untrusted reference data):\n" + prior
+            frozen_context["manifest"]["entries"].append({"reference_id": "prior_problem_analysis", "role": "prior_generated_problem_analysis", "state": "included", "supplied_chars": len(prior)})
+        frozen_context["problem_analysis_capture"] = problem_service.capture(matter_id, frozen_context=frozen_context)
+
+        main = self._resolve_saved_selection({"agent_id": "counsel-copilot", **_clean_selection(main_selection)}) if _clean_selection(main_selection) else (self.resolve_main() if self.resolve_main else None)
+        collector_values = _clean_selection(collector_selection)
+        try:
+            collector = self._resolve_saved_selection({"agent_id": "research-agent", **collector_values}) if collector_values else (self.resolve_agent() if self.resolve_agent is not None else None)
+            collector_out = self._selection_values(collector) if collector is not None else None
+        except Exception:
+            collector_out = {"agent_id": "research-agent", **collector_values} if collector_values else None
+
+        from app.services.workspace import WorkspaceService
+        question_revision = WorkspaceService(self.vault, self.research.matters, self.research.dossiers).business_question(matter_id)["revision"]
+        record = self._write(
+            matter_id, run_id, state="queued", questions=[question], completed=0,
+            status="Dossier research is queued.", managed=True, parent_request_id=parent_request_id,
+            managed_state="queued", focused_topic=focused_topic, issue_id=issue_id, question=question,
+            question_id=new_id("RQ"), queue_item_version=1, expected_question_revision=question_revision,
+            execution_version=2, main_selection=self._selection_values(main) if main else None,
+            collector_selection=collector_out, selection=collector_out,
+            frozen_context=frozen_context, search_scope=scope.model_dump(),
+            search_notices=self.research.search_options(), origin="dossier_request",
+        )
+        if hasattr(self.research, "app"):
+            from app.services.research_checkpoints import ResearchCheckpoints
+            from app.services.main_agent_research import research_basis
+            ResearchCheckpoints(self).initialize(matter_id, run_id, research_basis(self.research.app, matter_id))
+        return record
+
+    def launch_managed_child(self, matter_id: str, run_id: str) -> asyncio.Task[None]:
+        """Schedule one managed child. The parent owns and awaits this task."""
+        task = asyncio.create_task(self._execute_managed(matter_id, run_id))
+        self._tasks[run_id] = task
+        return task
+
+    async def _execute_managed(self, matter_id: str, run_id: str) -> None:
+        """Run one managed child: save packet/sources only. No shared publication."""
+        current = self.get(matter_id, run_id)
+        question = str(current.get("question") or "").strip()
+        results: list[dict[str, Any]] = list(current.get("results") or [])
+        self._write(matter_id, run_id, state="running", managed_state="running",
+                    status="Dossier research is running.", started_at=iso_now(), finished_at=None)
+        try:
+            resolved = self._resolve_saved_selection(current.get("main_selection"))
+
+            def persist_packet(saved: dict[str, Any]) -> None:
+                results[:] = [dict(saved)]
+                from app.services.research_checkpoints import ResearchCheckpoints
+                try:
+                    ResearchCheckpoints(self).update(matter_id, run_id, packet_path=saved["path"], next_step="compose")
+                except Exception:
+                    pass
+                self._write(matter_id, run_id, state="running", managed_state="collecting",
+                            completed=1, status="Dossier research · packet saved.", results=results)
+
+            result = await self.research.run(
+                matter_id, question, change_stage=False, resolved_provider=resolved,
+                on_packet_saved=persist_packet,
+                expected_question_revision=current.get("expected_question_revision"),
+                issue_id=current.get("issue_id"), run_id=run_id,
+                frozen_context=current.get("frozen_context"),
+                search_scope=ResearchScope.model_validate(current.get("search_scope") or {}),
+                execution_version=2, managed=True,
+            )
+            if not results:
+                results = [result]
+            packet = self.vault.read_markdown(result["path"])["metadata"]
+            # A saved fallback scaffold is not a researched answer; the packet's
+            # question_answered flag (set before any fallback) is the true signal.
+            has_analysis = bool(packet.get("question_answered")) and bool((packet.get("research_prose") or "").strip())
+            self._write(
+                matter_id, run_id,
+                state="completed",
+                managed_state="ready_for_composition" if has_analysis else "partial",
+                completed=len(results), status="Dossier research result ready for composition.",
+                results=results, finished_at=iso_now(),
+                useful_support=sum(int(item.get("internal_sources", 0)) + int(item.get("external_sources", 0)) for item in results if isinstance(item, dict)),
+            )
+        except asyncio.CancelledError:
+            self._write(matter_id, run_id, state="interrupted", managed_state="interrupted",
+                        status="Dossier research was interrupted.", results=results, finished_at=iso_now())
+            raise
+        except Exception as exc:
+            self._write(matter_id, run_id, state="failed", managed_state="failed",
+                        failure_detail=f"{type(exc).__name__}: {exc}",
+                        status="Dossier research stopped; saved evidence retained.",
+                        results=results, finished_at=iso_now())
+        finally:
+            self._tasks.pop(run_id, None)
+
+    def schedule_next_pending(self, matter_id: str) -> None:
+        """After a parent releases the matter, resume the ordinary research queue."""
+        if self.matter_owner(matter_id) or self._matter_has_active_task(matter_id):
+            return
+        pending = self._pending(matter_id)
+        if pending:
+            next_id = str(pending[0]["run_id"])
+            self._tasks[next_id] = asyncio.create_task(
+                self._execute(matter_id, next_id, self._execution_questions(pending[0]))
+            )
 
     def _freeze_research_inputs(
         self, matter_id: str, question: str, *, issue_id: str | None = None, other_matters: bool = False, internal_sources=None,
@@ -321,7 +563,12 @@ class ResearchRunService:
         matter_run_ids = {str(item.get("run_id")) for item in self.list(matter_id)}
         if any(run_id in matter_run_ids and not task.done() for run_id, task in self._tasks.items()):
             return None
-        interrupted = [item for item in self.list(matter_id) if item.get("state") == "interrupted"]
+        if self.matter_owner(matter_id):
+            # A parent dossier request owns this matter; its resume path drives
+            # the managed children. Ordinary resume waits for release.
+            return None
+        interrupted = [item for item in self.list(matter_id)
+                       if item.get("state") == "interrupted" and not item.get("managed")]
         if not interrupted:
             return None
         item = interrupted[0]
@@ -404,7 +651,7 @@ class ResearchRunService:
             finished_at=None, failure_detail=None,
             attempt_count=int(current.get("attempt_count") or 1) + 1,
         )
-        if not self._matter_has_active_task(matter_id):
+        if not self._matter_has_active_task(matter_id) and not self.matter_owner(matter_id):
             next_item = self._pending(matter_id)[0]
             next_id = str(next_item["run_id"])
             self._tasks[next_id] = asyncio.create_task(
@@ -473,7 +720,10 @@ class ResearchRunService:
                     except (ValueError, OSError):
                         self.vault.update_markdown(relative, metadata_updates={"failure_detail": "Checkpoint recovery failed; saved evidence preserved."})
                 count += 1
-                interrupted.append((str(metadata.get("matter_id") or ""), str(metadata.get("run_id") or path.stem)))
+                # Managed dossier children are marked interrupted, but stage is
+                # owned by the parent recovery, not the ordinary run restore.
+                if not metadata.get("managed"):
+                    interrupted.append((str(metadata.get("matter_id") or ""), str(metadata.get("run_id") or path.stem)))
         for matter_id, run_id in interrupted:
             if matter_id:
                 self._restore_stage(matter_id, run_id, reason="Research is ready to resume after restart")
@@ -485,6 +735,10 @@ class ResearchRunService:
         from app.services.research_publication import publish_research_result
         for matter in self.research.index.list_matters():
             for run in self.list(matter["matter_id"]):
+                # Managed dossier children publish only through the parent's checked
+                # group publication; the ordinary single-run publisher skips them.
+                if run.get("managed"):
+                    continue
                 cp = run.get("checkpoint") or {}
                 if run.get("execution_version") != 2 or cp.get("next_step") != "publish" or not cp.get("packet_path") or cp.get("stop_requested"):
                     continue
@@ -507,6 +761,8 @@ class ResearchRunService:
             await asyncio.gather(*tasks, return_exceptions=True)
 
     async def _execute(self, matter_id: str, run_id: str, questions: list[str]) -> None:
+        from app.services.dossier_generation import generation_owner, generate_pending
+        dossier_since = self.research.dossiers.generation_sequence
         current = self.get(matter_id, run_id)
         all_questions = [
             str(question) for question in current.get("questions", []) if str(question).strip()
@@ -524,6 +780,8 @@ class ResearchRunService:
             completed=completed_before, status="Research is running.", started_at=iso_now(),
             finished_at=None,
         )
+        dossier_owner = "research:" + run_id
+        dossier_token = generation_owner.set(dossier_owner)
         try:
             saved_selection = self.get(matter_id, run_id).get("main_selection" if current.get("execution_version") == 2 else "selection")
             resolved = self._resolve_saved_selection(saved_selection) if questions else None
@@ -579,6 +837,14 @@ class ResearchRunService:
                 if isinstance((observation := item.get("polaris_observability")), dict)
                 and observation.get("failure_class")
             ]
+            self._restore_stage(matter_id, run_id, reason="Research results are ready for counsel exploration")
+            if hasattr(self.research, "app"):
+                frozen = current.get("frozen_context") or {}
+                generation = await generate_pending(self.research.app, since=dossier_since, matter_id=matter_id,
+                    owner=dossier_owner, resolved_provider=resolved, snapshot=frozen.get("dossier_skill"),
+                    allowed=not (frozen.get("excluded_paths") or frozen.get("withhold_unattributed_history")))
+                if generation and results:
+                    results[-1]["dossier_generation"] = generation[-1]
             self._write(
                 matter_id, run_id, state="failed" if publication and publication["state"] in {"partial", "analysis_incomplete"} else "completed", questions=all_questions, completed=len(results),
                 status=(
@@ -594,7 +860,6 @@ class ResearchRunService:
                 public_research_status=("retrieved" if has_public else "failed" if "failed" in public_statuses else "unavailable"),
                 provider_observability=provider_observability,
             )
-            self._restore_stage(matter_id, run_id, reason="Research results are ready for counsel exploration")
         except asyncio.CancelledError:
             cancelled = True
             self._write(
@@ -611,9 +876,12 @@ class ResearchRunService:
             )
             self._restore_stage(matter_id, run_id, reason="Research stopped; review the saved results")
         finally:
+            generation_owner.reset(dossier_token)
             self._tasks.pop(run_id, None)
             pending = self._pending(matter_id)
-            if pending and not cancelled:
+            # A grouped flow may own the matter; do not start an unrelated ordinary
+            # run from a standalone child's teardown while a parent is active.
+            if pending and not cancelled and not self.matter_owner(matter_id):
                 next_item = pending[0]
                 next_id = str(next_item["run_id"])
                 self._tasks[next_id] = asyncio.create_task(self._execute(
@@ -663,9 +931,11 @@ class ResearchRunService:
         return f"{self._matter_path(matter_id)}/research/runs/{run_id}.md"
 
     def _pending(self, matter_id: str) -> list[dict[str, Any]]:
+        # Managed dossier children are never scheduled by the ordinary queue; the
+        # parent coordinator launches and awaits them explicitly.
         return [
             item for item in self.list(matter_id)
-            if item.get("state") == "queued"
+            if item.get("state") == "queued" and not item.get("managed")
         ]
 
     def _next_order(self, matter_id: str) -> int:

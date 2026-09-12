@@ -7,6 +7,11 @@ DEFAULTS = Path(__file__).resolve().parents[1] / "experimental_skills"
 
 
 def read_skill(vault, name):
+    if name == "dossier-generation":
+        from app.skills.registry import SkillRegistry
+        shared = SkillRegistry(vault).dossier_generation_snapshot()
+        return {"name": name, "path": shared["path"], "content": shared["instructions"],
+                "revision": shared["revision"], "scope": "shared", "enabled": shared["enabled"]}
     if name == "matter-paths":
         from app.skills.registry import SkillRegistry
         shared = SkillRegistry(vault).matter_paths_snapshot()

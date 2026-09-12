@@ -27,7 +27,7 @@ def _reject_generic_recommendation_path(path: str, context: AppContext) -> None:
 @router.get("/tree")
 def tree(
     path: str = Query(default=""),
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         return {"tree": context.vault.list_tree(path)}
@@ -38,7 +38,7 @@ def tree(
 @router.get("/raw")
 def raw_file(
     path: str = Query(...),
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         resolved = context.vault.resolve(path)
@@ -52,7 +52,7 @@ def raw_file(
 @router.get("/review")
 def get_review(
     path: str = Query(...),
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         _reject_generic_recommendation_path(path, context)
@@ -62,7 +62,7 @@ def get_review(
 
 
 @router.put("/review")
-def update_review(payload: DocumentReviewAction, path: str = Query(...), context: AppContext = Depends(get_context),
+def update_review(payload: DocumentReviewAction, path: str = Query(...), context: AppContext = Depends(get_context, scope="function"),
                   person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     from app.models.continuity import ActionActor
     from app.services.dossier import WORKSPACE_LOCK
@@ -108,7 +108,7 @@ def export_file(
     expected_revision: str | None = None,
     expected_review_revision: str | None = None,
     revision_path: str | None = None,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         output_path, media_type = context.document_exports.export(path, format, mode=mode, expected_revision=expected_revision, expected_review_revision=expected_review_revision, revision_path=revision_path)
@@ -121,7 +121,7 @@ def export_file(
 @router.get("")
 def read_file(
     path: str = Query(...),
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         _reject_generic_recommendation_path(path, context)
@@ -134,23 +134,27 @@ def read_file(
 def update_file(
     payload: FileUpdate,
     path: str = Query(...),
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
+    from app.services.dossier import WORKSPACE_LOCK
+
     try:
-        _reject_generic_recommendation_path(path, context)
-        current = context.vault.read_document(path)
-        if current.get("metadata", {}).get("immutable"):
-            raise ValueError("This is an immutable original record. Create a new version instead.")
-        if not current.get("editable"):
-            raise ValueError("This file type is read-only in the MVP.")
-        if path.lower().endswith(".md") and current.get("metadata", {}).get("review", {}).get("tracking"):
-            raise ValueError("Use save_revision with an explicit review author while Track Changes is on.")
-        if path.lower().endswith(".md"):
-            saved = context.vault.write_markdown(path, payload.content, payload.metadata)
-            context.matter_records.reconcile_edited_document(path, actor="user")
-        else:
-            saved = context.vault.write_bytes(path, payload.content.encode("utf-8"))
-        context.index.rebuild()
+        # Editor saves and dossier commits must not interleave their checks and writes.
+        with WORKSPACE_LOCK:
+            _reject_generic_recommendation_path(path, context)
+            current = context.vault.read_document(path)
+            if current.get("metadata", {}).get("immutable"):
+                raise ValueError("This is an immutable original record. Create a new version instead.")
+            if not current.get("editable"):
+                raise ValueError("This file type is read-only in the MVP.")
+            if path.lower().endswith(".md") and current.get("metadata", {}).get("review", {}).get("tracking"):
+                raise ValueError("Use save_revision with an explicit review author while Track Changes is on.")
+            if path.lower().endswith(".md"):
+                saved = context.vault.write_markdown(path, payload.content, payload.metadata)
+                context.matter_records.reconcile_edited_document(path, actor="user")
+            else:
+                saved = context.vault.write_bytes(path, payload.content.encode("utf-8"))
+            context.index.rebuild()
         return {"status": "saved", "path": saved}
     except (ValueError, FileNotFoundError) as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc

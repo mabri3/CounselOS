@@ -33,6 +33,7 @@ from app.services.developments import DevelopmentService
 from app.services.document_export import DocumentExportService
 from app.services.document_review import DocumentReviewService
 from app.services.dossier import DossierService
+from app.services.dossier_requests import DossierRequestService
 from app.services.workspace import WorkspaceService
 from app.services.issue_analysis import IssueAnalysisService
 from app.services.problem_analysis import ProblemAnalysisService
@@ -191,6 +192,7 @@ class AppContext:
         self.provider_router = ProviderRouter(self.settings, self.provider)
         self.skills = SkillRegistry(self.vault)
         self.skills.install_missing_output_template_starters()
+        self.skills.install_dossier_starter()
         self.workspace_evidence = WorkspaceEvidenceService(self.vault, self.matters, self.workspace, self.source_library)
         self.workspace_scenarios = WorkspaceScenarioService(self.vault, self.matters, self.workspace, self.matter_records)
         self.solution_paths = MatterPathService(self.workspace_scenarios)
@@ -239,9 +241,15 @@ class AppContext:
             resolve_selection=self.provider_router.resolve_selection,
         )
         self.research.app = self
+        self.dossier_requests = DossierRequestService(self)
         if recover_interrupted:
-            self.research_runs.mark_running_interrupted()
+            # Saved parent ownership must exist before ordinary publication
+            # recovery inspects child runs. Managed children publish only through
+            # their parent request.
+            self.dossier_requests.restore_managed_ownership()
             self.research_runs.recover_saved_publications()
+            self.research_runs.mark_running_interrupted()
+            self.dossier_requests.mark_running_interrupted()
         self.chat_runs = ChatRunService(
             self.vault, self, timeout_seconds=self.settings.chat_run_timeout_seconds
         )
@@ -271,13 +279,17 @@ class AppContext:
 
     def recover_interrupted_work(self) -> None:
         self.watch_scans.mark_interrupted_runs()
+        self.dossier_requests.restore_managed_ownership()
+        self.research_runs.recover_saved_publications()
         self.research_runs.mark_running_interrupted()
+        self.dossier_requests.mark_running_interrupted()
         self.chat_runs.mark_running_interrupted()
 
     def has_active_work(self) -> bool:
         return (
             any(not task.done() for task in self._intake_start_tasks)
             or self.scheduler.has_active_work
+            or self.dossier_requests.has_active_work
             or self.research_runs.has_active_work
             or self.chat_runs.has_active_work
         )
@@ -356,6 +368,8 @@ class AppContext:
             "primary_external_provider": str(values.get("research.primary_external_provider", "polaris")),
             "fallback_external_provider": str(values.get("research.fallback_external_provider", "tavily")),
             "model_fallback_enabled": bool(values.get("research.model_fallback_enabled", True)),
+            "collection_enabled": bool(values.get("research.collection_enabled", False)),
+            "collection_reasoning_effort": str(values.get("research.collection_reasoning_effort", "default")),
             "model_fallback_provider": str(values.get("research.model_fallback_provider", "openai_compatible")),
             "model_fallback_model": str(values.get("research.model_fallback_model", "kimi-k3-fast")),
             "external_timeout_seconds": timeout,
@@ -363,8 +377,6 @@ class AppContext:
         }
 
     def _resolve_research_model(self):
-        if not self.research_settings.get("model_fallback_enabled"):
-            return self.runner.resolve("research-agent")
         if (
             self.research_settings.get("model_fallback_provider") == "openai_compatible"
             and not self.settings.llm_api_key
@@ -374,7 +386,7 @@ class AppContext:
             agent_id="research-agent",
             provider=str(self.research_settings["model_fallback_provider"]),
             model=str(self.research_settings["model_fallback_model"]),
-            reasoning_effort="default",
+            reasoning_effort=str(self.research_settings.get("collection_reasoning_effort", "default")),
         ))
 
     async def configure_model(self, provider: str, model: str, effort: str) -> None:

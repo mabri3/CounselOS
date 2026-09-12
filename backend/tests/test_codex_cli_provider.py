@@ -158,3 +158,46 @@ def test_close_terminates_process_and_cleans_directory():
 
     assert process.terminated
     assert not __import__("pathlib").Path(path).exists()
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("interruption", ["cancel", "timeout"])
+async def test_interrupted_call_does_not_disable_later_requests(monkeypatch, interruption):
+    import asyncio
+    from app.providers.base import ProviderReply
+
+    provider = CodexCLIProvider("gpt-test", timeout_seconds=0.01)
+    started = threading.Event()
+    released = threading.Event()
+    process = FakeProcess()
+    provider._process = process
+    provider._directory = tempfile.TemporaryDirectory(prefix="codex-interrupted-")
+
+    if interruption == "cancel":
+        def complete(*_args):
+            started.set()
+            released.wait(2)
+            return ProviderReply(content="Stopped", tool_calls=[])
+        monkeypatch.setattr(provider, "_complete_sync", complete)
+        task = asyncio.create_task(provider.complete([{"role": "user", "content": "First"}]))
+        await asyncio.to_thread(started.wait, 1)
+        task.cancel()
+        try:
+            with pytest.raises(asyncio.CancelledError):
+                await task
+        finally:
+            released.set()
+    else:
+        monkeypatch.setattr(provider, "_ensure_server", lambda: None)
+        monkeypatch.setattr(provider, "_rpc", lambda method, *_args, **_kwargs:
+                            {"thread": {"id": "thread"}} if method == "thread/start"
+                            else {"turn": {"id": "turn"}})
+        with pytest.raises(ProviderAdapterError, match="not replayed"):
+            await provider.complete([{"role": "user", "content": "First"}])
+
+    assert process.terminated
+    monkeypatch.setattr(provider, "_complete_sync",
+                        lambda *_args: ProviderReply(content="Comparison delivered", tool_calls=[]))
+    reply = await provider.complete([{"role": "user", "content": "Compare again"}])
+    assert reply.content == "Comparison delivered"
+    provider.close()

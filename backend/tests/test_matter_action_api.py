@@ -145,7 +145,7 @@ def test_research_run_api_forwards_source_action_key(app_context, monkeypatch, i
         "source_action_key": "chat:RUN-1:tool-2",
         "issue_id": issue_id,
         "search_scope": {"external": False, "other_matters": False, "public_query": "", "provider_ids": [],
-                         "native": False, "allow_firecrawl": False, "model_selection": None,
+                         "native": False, "collection_enabled": False, "allow_firecrawl": False, "model_selection": None,
                          "main_model_selection": None, "collector_model_selection": None, "allow_followup_queries": False},
     }
 
@@ -160,10 +160,14 @@ def test_finalize_moves_generate_to_respond_and_retry_is_idempotent(app_context)
     draft = app_context.work_products.create_draft(
         matter_id, title="Response", content="Ready for review"
     )
-    stage_events_before = len([
-        event for event in app_context.matters.get(matter_id)["events"]
-        if event.get("event_type") == "stage_changed"
-    ])
+    def stage_event_ids():
+        # The UI returns only six recent events, not the full audit history.
+        root = app_context.matters.matter_path(matter_id) + "/events"
+        events = [app_context.vault.read_markdown(app_context.vault.relative(path))["metadata"]
+                  for path in app_context.vault.iter_files(root, {".md"})]
+        return {event["event_id"] for event in events if event.get("event_type") == "stage_changed"}
+
+    stage_events_before = stage_event_ids()
 
     first = client.post(
         f"/api/matters/{matter_id}/work-product/finalize",
@@ -177,11 +181,9 @@ def test_finalize_moves_generate_to_respond_and_retry_is_idempotent(app_context)
     assert first.status_code == retry.status_code == 200
     assert retry.json()["vault_path"] == first.json()["vault_path"]
     assert app_context.index.get_matter(matter_id)["status"] == "respond"
-    stage_events_after = [
-        event for event in app_context.matters.get(matter_id)["events"]
-        if event.get("event_type") == "stage_changed"
-    ]
-    assert len(stage_events_after) == stage_events_before + 1
+    stage_events_after = stage_event_ids()
+    assert stage_events_before < stage_events_after
+    assert len(stage_events_after - stage_events_before) == 1
     assert first.json()["status"] == "changed"
     assert retry.json()["status"] == "no_change"
     assert first.json()["resulting_matter_state"]["next_action"] == "Approve the final response."

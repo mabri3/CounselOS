@@ -384,6 +384,108 @@ class WorkspaceService:
         node.update({k: v for k, v in changes.items() if k in allowed})
         return self.save_issues(matter_id, nodes, expected_revision=expected_revision)
 
+    @serialized
+    def append_generated_issues(
+        self,
+        matter_id: str,
+        candidates: list[dict[str, Any]],
+        *,
+        expected_revision: str,
+        request_id: str,
+    ) -> dict[str, Any]:
+        """Append planned generated issues without weakening save_issues.
+
+        Each candidate carries a stable ``candidate_key``, a title, why it
+        matters, referenced fact IDs, and an optional parent (an existing issue
+        ID or another candidate_key added in this same batch). Existing nodes,
+        titles, parents, and lawyer dispositions are preserved. The operation is
+        idempotent on ``candidate_key`` and returns a candidate_key -> issue_id
+        mapping so priorities and briefs can be resolved once.
+
+        Unlike save_issues this adds IDs; it never removes or renames existing
+        ones, and it never adds issues for a preview or a mere card display —
+        that is the caller's responsibility (append only on Start).
+        """
+        self._check(expected_revision, self.issues_revision(matter_id))
+        current = self.issues(matter_id)
+        known_ids = {n["issue_id"] for n in current}
+        # Idempotency: a candidate already applied for any request is reused.
+        existing_by_key: dict[str, str] = {}
+        for node in current:
+            key = node.get("generated_candidate_key")
+            if isinstance(key, str) and key and node.get("generated_request_id") == request_id:
+                existing_by_key[key] = node["issue_id"]
+
+        records = self.records.get(matter_id)
+        fact_ids = {f["fact_id"] for f in records["facts"]}
+
+        # Assign deterministic IDs first so intra-batch parents resolve.
+        prefix = f"ISS-{digest(matter_id)[:10]}-"
+        mapping: dict[str, str] = {}
+        pending: list[dict[str, Any]] = []
+        for candidate in candidates:
+            if not isinstance(candidate, dict):
+                continue
+            key = candidate.get("candidate_key")
+            title = str(candidate.get("title") or "").strip()
+            if not isinstance(key, str) or not key or not title:
+                continue
+            if "\n" in title or "<!-- issue:" in title:
+                raise ValueError("Use a single generated issue title.")
+            if key in existing_by_key:
+                mapping[key] = existing_by_key[key]
+                continue
+            if key in mapping:
+                continue
+            issue_id = f"{prefix}{digest('generated:' + request_id + ':' + key)[:16]}"
+            # A collision with an existing id means it was already applied.
+            if issue_id in known_ids:
+                mapping[key] = issue_id
+                continue
+            mapping[key] = issue_id
+            pending.append({"issue_id": issue_id, "candidate": candidate, "title": title})
+
+        if not pending:
+            return {"mapping": {**existing_by_key, **mapping}, "issues": current, "added": 0}
+
+        doc = self._document(matter_id, "issues.md")
+        content = doc["content"]
+        properties = doc["metadata"].get("issue_nodes")
+        properties = dict(properties) if isinstance(properties, dict) else {}
+        appended_lines: list[str] = []
+        for item in pending:
+            candidate = item["candidate"]
+            issue_id = item["issue_id"]
+            supplied_facts = candidate.get("fact_ids") if isinstance(candidate.get("fact_ids"), list) else []
+            clean_facts = [f for f in supplied_facts if isinstance(f, str) and f in fact_ids]
+            parent = candidate.get("parent_issue_id")
+            if isinstance(parent, str) and parent in mapping:
+                parent = mapping[parent]
+            if not (isinstance(parent, str) and parent in known_ids):
+                parent = None
+            node = IssueNode.model_validate(
+                {
+                    "issue_id": issue_id,
+                    "title": item["title"],
+                    "parent_issue_id": parent,
+                    "why_it_matters": str(candidate.get("why_it_matters") or ""),
+                    "fact_ids": clean_facts,
+                    "lawyer_state": "open",
+                    "generated_origin": "dossier_preparation",
+                    "generated_request_id": request_id,
+                    "generated_candidate_key": candidate.get("candidate_key"),
+                    "updated_at": iso_now(),
+                }
+            ).model_dump()
+            properties[issue_id] = node
+            appended_lines.append(f"- {item['title']} <!-- issue:{issue_id} -->")
+
+        content = content.rstrip() + "\n" + "\n".join(appended_lines) + "\n"
+        doc["metadata"]["issue_nodes"] = properties
+        self.vault.write_markdown(doc["path"], content, doc["metadata"])
+        issues = self.issues(matter_id)
+        return {"mapping": {**existing_by_key, **mapping}, "issues": issues, "added": len(pending)}
+
     def questions(self, matter_id: str) -> list[dict[str, Any]]:
         questions = []
         for raw in self._document(matter_id, "workspace.md")["metadata"].get("questions", []):
@@ -776,7 +878,7 @@ class WorkspaceService:
         root = self.vault.resolve(base)
         for path in self.vault.iter_files(base, {".md"}):
             # Review snapshots are explicit history, not current outputs.
-            if ".history" in path.relative_to(root).parts:
+            if ".history" in path.relative_to(root).parts or path.relative_to(root).parts[0] == "conversations":
                 continue
             relative = self.vault.relative(path)
             try:

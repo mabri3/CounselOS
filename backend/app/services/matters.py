@@ -551,6 +551,10 @@ class MatterService:
     ) -> None:
         for node in tree:
             if node["type"] == "folder":
+                # The conversation pass already labels transcripts. Run traces
+                # do not need to be decoded to label the matter's file tree.
+                if node["name"] == "conversations":
+                    continue
                 self._label_internal_records(
                     node.get("children", []), legacy_root_path=legacy_root_path
                 )
@@ -595,7 +599,8 @@ class MatterService:
         kept: list[dict[str, Any]] = []
         for node in tree:
             if node["type"] == "folder":
-                self._exclude_research_run_records(node.get("children", []))
+                if node["name"] != "conversations":
+                    self._exclude_research_run_records(node.get("children", []))
                 kept.append(node)
                 continue
             if node.get("extension") == ".md":

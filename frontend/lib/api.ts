@@ -1,3 +1,4 @@
+import { alignModelRows } from "./modelSettingsRows.ts";
 import type {
   AgentDefinition,
   AgentDetail,
@@ -8,6 +9,7 @@ import type {
   ChatRun,
   ChatConversation,
   ChatConversationSummary,
+  DossierRequestStatus,
   CompanyInterview,
   CompanyInterviewDraft,
   CompanyInterviewTurn,
@@ -126,7 +128,9 @@ function formatErrorDetail(detail: unknown, fallback: string): string {
 export async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const controller = new AbortController();
   let timedOut = false;
-  const timeout = globalThis.setTimeout(() => { timedOut = true; controller.abort(); }, 15_000);
+  // This is the local HTTP acceptance/read limit, not the model deadline.
+  // Large saved matters can take longer to load, especially during dev reload.
+  const timeout = globalThis.setTimeout(() => { timedOut = true; controller.abort(); }, 60_000);
   const abortFromCaller = () => controller.abort();
   if (init?.signal?.aborted) controller.abort();
   else init?.signal?.addEventListener("abort", abortFromCaller, { once: true });
@@ -572,6 +576,22 @@ export async function getConversation(matterId: string, conversationId: string):
   );
 }
 
+export async function getDossierRequest(matterId: string, requestId: string, signal?: AbortSignal): Promise<DossierRequestStatus> {
+  return request(`/matters/${encodeURIComponent(matterId)}/dossier-requests/${encodeURIComponent(requestId)}`, { signal });
+}
+
+export async function startDossierRequest(matterId: string, requestId: string, payload: Record<string, unknown>): Promise<DossierRequestStatus> {
+  return request(`/matters/${encodeURIComponent(matterId)}/dossier-requests/${encodeURIComponent(requestId)}/start`, { method: "POST", body: JSON.stringify(payload) });
+}
+
+export async function stopDossierRequest(matterId: string, requestId: string, expectedSequence: number): Promise<DossierRequestStatus> {
+  return request(`/matters/${encodeURIComponent(matterId)}/dossier-requests/${encodeURIComponent(requestId)}/stop`, { method: "POST", body: JSON.stringify({ expected_sequence: expectedSequence }) });
+}
+
+export async function resumeDossierRequest(matterId: string, requestId: string, expectedSequence: number, retryIssueIds?: string[], retryUnknown = false): Promise<DossierRequestStatus> {
+  return request(`/matters/${encodeURIComponent(matterId)}/dossier-requests/${encodeURIComponent(requestId)}/resume`, { method: "POST", body: JSON.stringify({ expected_sequence: expectedSequence, retry_unknown: retryUnknown, retry_issue_ids: retryIssueIds }) });
+}
+
 export async function getDailyConversations(): Promise<{ conversations: DailyConversationSummary[] }> {
   return request("/daily-conversations");
 }
@@ -695,6 +715,8 @@ export async function getSettings({ includeModelCatalog = true } = {}): Promise<
       if (!["Themis.ai", lawyer].includes(defaultAuthor.value ?? "")) defaultAuthor.value = "Themis.ai";
     }
   }
+  const research = sections.find(section => section.id === "research");
+  if (research) research.rows = alignModelRows(research.rows, { model_catalog: catalog, sections }, true);
   return { model_catalog: catalog, sections };
 }
 

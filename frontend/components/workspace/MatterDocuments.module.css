@@ -270,6 +270,24 @@
   overflow-wrap: anywhere;
 }
 
+.markdownDisclosure {
+  margin-block: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: 6px;
+}
+
+.markdownDisclosure > summary {
+  cursor: pointer;
+  font-family: var(--font-sans);
+  color: var(--ink-2);
+}
+
+.markdownDisclosure > summary:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
+
 .claim :global(.claim-source-link) {
   color: var(--agent);
 }
@@ -277,6 +295,28 @@
 .claim :global(.claim-table-scroll) {
   border: 1px solid var(--line-faint);
   border-radius: 8px;
+  overflow-x: auto;
+}
+
+.claim table {
+  width: 100%;
+  border-collapse: collapse;
+  font: 400 13px/1.5 var(--sans);
+}
+
+.claim th,
+.claim td {
+  min-width: 8rem;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: top;
+  text-align: left;
+  overflow-wrap: normal;
+}
+
+.claim th {
+  background: var(--raised);
+  font-weight: 600;
 }
 
 .panel {

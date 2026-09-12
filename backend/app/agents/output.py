@@ -94,7 +94,7 @@ def _humanize_outside_citation_markers(line: str) -> str:
     """Keep closed citation markers exact and clean their surrounding prose."""
     visible: list[str] = []
     cursor = 0
-    preserved = re.compile(_CITATION_MARKER.pattern + r"|\[[^\]\n]+\]\((?:00_System|01_Playbooks|02_Company_Knowledge|03_Matters)/[^\s)]+\)")
+    preserved = re.compile(_CITATION_MARKER.pattern + r"|Reference unavailable: (?:FACT|ASM|Q|ISS|DEC|SRC|RES|EVT|WI|WP|MSG)-[A-Za-z0-9-]+|\[[^\]\n]+\]\((?:00_System|01_Playbooks|02_Company_Knowledge|03_Matters)/[^\s)]+\)")
     for marker in preserved.finditer(line):
         visible.append(_humanize_internal_fragment(line[cursor:marker.start()]))
         visible.append(marker.group())
@@ -184,17 +184,29 @@ _MUTATION_SUCCESS_CLAIMS: dict[str, tuple[re.Pattern[str], ...]] = {
 }
 
 
-def clean_user_facing_reply(content: str, *, preserve_paragraphs: bool = False) -> str:
-    """Remove internal control material while preserving useful answer text."""
+def clean_user_facing_reply(content: str, *, preserve_paragraphs: bool = False, references: dict | None = None) -> str:
+    """Remove internal control material while preserving useful answer text.
+
+    When ``references`` (an ID -> record catalog) is supplied, known bare record
+    IDs in the prose are bound to readable ``[source:ID]`` markers before the
+    cleaner humanizes anything, so exact references survive instead of collapsing
+    to "the internal record". Callers that pass no catalog keep prior behavior.
+    """
+    def prose(segment: str) -> str:
+        if references is not None:
+            from app.services.dossier_references import bind_references
+            segment = bind_references(segment, references)
+        return _clean_reply_prose(segment, preserve_paragraphs=preserve_paragraphs)
+
     # These blocks are declarative transport, validated by the publisher.
     # Cleaning IDs or paths inside them would destroy exact record links.
     parts: list[str] = []
     cursor = 0
     for block in _STRUCTURED_OUTPUT.finditer(content):
-        parts.append(_clean_reply_prose(content[cursor:block.start()], preserve_paragraphs=preserve_paragraphs))
+        parts.append(prose(content[cursor:block.start()]))
         parts.append(block.group())
         cursor = block.end()
-    parts.append(_clean_reply_prose(content[cursor:], preserve_paragraphs=preserve_paragraphs))
+    parts.append(prose(content[cursor:]))
     return "\n\n".join(part for part in parts if part).strip()
 
 
@@ -236,10 +248,26 @@ def clean_conversation_for_display(conversation: dict[str, object]) -> dict[str,
     if not isinstance(messages, list):
         return visible
     for message in messages:
-        if not isinstance(message, dict) or message.get("role") != "assistant":
+        if not isinstance(message, dict):
             continue
+        # These are durable execution inputs, not chat display fields. Repeated
+        # dossier snapshots can otherwise add megabytes to every history refresh.
+        submission = message.get("workspace_submission")
+        if isinstance(submission, dict):
+            for key in ("frozen_context", "frozen_template_use", "history"):
+                submission.pop(key, None)
+        if message.get("role") != "assistant":
+            continue
+        records = message.get("source_records") or []
+        grouped = {}
+        for record in records:
+            if isinstance(record, dict) and record.get("source_id"):
+                grouped.setdefault(record["source_id"], []).append(record)
+        catalog = {rid: entries[0] for rid, entries in grouped.items() if len(entries) == 1}
+        # Display repair uses only the raw output and records saved with this
+        # message. Lost IDs or uncaptured versions cannot be reconstructed.
         message["content"] = reconcile_user_facing_reply(
-            clean_user_facing_reply(str(message.get("content") or ""), preserve_paragraphs=visible.get("conversation_kind") == "experimental"),
+            clean_user_facing_reply(str(message.get("raw_output") or message.get("content") or ""), preserve_paragraphs=visible.get("conversation_kind") == "experimental", references=catalog),
             list(message.get("operation_results") or []),
         )
     return visible
@@ -247,6 +275,12 @@ def clean_conversation_for_display(conversation: dict[str, object]) -> dict[str,
 
 def reconcile_user_facing_reply(content: str, operation_results: list[dict[str, object]]) -> str:
     """Make a completed reply agree with its finalized typed mutation results."""
+    research_choice_pending = any(
+        result.get("operation") == "run_research" and result.get("status") == "confirmation_required"
+        for result in operation_results
+    )
+    if research_choice_pending:
+        content = content.replace("No durable research run was started.", "").strip()
     receipt_statuses = []
     for result in operation_results:
         receipt = result.get("receipt")
@@ -340,7 +374,7 @@ def reconcile_user_facing_reply(content: str, operation_results: list[dict[str, 
     if "stop_research" in unsupported_operations:
         status = "No durable research stop was recorded. Use Stop research in the queue."
     elif removed_research_claim or "run_research" in unsupported_operations:
-        status = "No durable research run was started."
+        status = "Research is waiting for your source choice." if research_choice_pending else "No durable research run was started."
     elif removed_decision_claim and unsupported_operations == {"chat_turn"}:
         status = "No durable decision was recorded."
     elif removed_mutation_claim:

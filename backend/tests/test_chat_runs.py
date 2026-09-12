@@ -941,9 +941,11 @@ async def test_timeout_fallback_summarizes_completed_work(app_context, monkeypat
     class TimeoutProvider:
         def __init__(self):
             self.calls = 0
+            self.final_instruction = ""
 
         async def complete(self, messages, tools=None):
             if tools is None:
+                self.final_instruction = messages[-1]["content"]
                 return ProviderReply(content="")
             self.calls += 1
             if self.calls == 1:
@@ -962,6 +964,7 @@ async def test_timeout_fallback_summarizes_completed_work(app_context, monkeypat
     )
     await app_context.chat_runs.wait(started["run_id"])
     completed = app_context.chat_runs.get("MAT-DEMO-BEACON", started["run_id"])
+    assert "Created the launch checklist." in provider.final_instruction
     assert completed["state"] == "completed"
     assert "Created the launch checklist." in completed["response"]["reply"]
     assert "Remaining work" in completed["response"]["reply"]

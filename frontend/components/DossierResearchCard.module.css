@@ -1,0 +1,27 @@
+.card { display: grid; gap: 14px; padding: 16px; border: 1px dashed var(--agent); border-radius: 10px; background: var(--agent-wash, #fdfdff); }
+.card h3, .card p { margin: 0; }
+.kicker { color: var(--agent); font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.priorities { display: grid; gap: 10px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.priorities fieldset, .issues, .scope { display: grid; gap: 8px; min-width: 0; margin: 0; padding: 12px; border: 1px solid var(--line); border-radius: 8px; }
+.priorities label, .issues label { display: grid; gap: 5px; font-size: 13px; font-weight: 600; }
+.priorities input, .priorities textarea, .issues select { box-sizing: border-box; width: 100%; padding: 8px; border: 1px solid var(--control); border-radius: 6px; background: var(--raised); color: var(--ink); font: inherit; }
+.priorities textarea { min-height: 72px; resize: vertical; }
+.scope label { display: flex; gap: 8px; align-items: center; }
+.scope input { accent-color: var(--ink); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.issueRows { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.issueRows li { display: grid; gap: 5px; padding: 12px; border-left: 3px solid var(--line); background: var(--raised); }
+.issueRows li > div { display: flex; justify-content: space-between; gap: 12px; }
+.issueRows p { color: var(--ink-3); font-size: 13px; }
+.state { flex: none; font-weight: 700; }
+.state_running, .state_queued { border-left-color: var(--agent) !important; }
+.state_saved { border-left-color: var(--healthy) !important; }
+.state_partial, .state_interrupted, .state_newly_identified { border-left-color: var(--attention) !important; }
+.state_failed { border-left-color: var(--failure) !important; background: var(--failure-wash, #fffaf8) !important; }
+.revision { justify-self: start; padding: 8px 10px; border: 1px solid var(--healthy); border-radius: 6px; background: var(--healthy-tint, #e0efe9); color: var(--healthy); font-weight: 700; }
+.attention { padding: 8px 10px; border-left: 3px solid var(--attention); background: var(--attention-wash, #fffdf4); font-weight: 700; }
+.newIssues { display: grid; gap: 8px; padding: 12px; border-left: 3px solid var(--attention); background: var(--attention-wash, #fffdf4); }
+.newIssues ul { margin: 0; padding-left: 20px; }
+.error { color: var(--failure) !important; }
+.card details code { overflow-wrap: anywhere; color: var(--ink-3); font-size: 11px; }
+@media (max-width: 760px) { .priorities { grid-template-columns: 1fr; } .issueRows li > div { display: grid; } }

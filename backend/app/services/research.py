@@ -10,7 +10,7 @@ from typing import Any
 
 from app.intelligence.outbound_policy import OutboundQueryPolicy, PublicResearchQuery
 from app.intelligence.polaris import PolarisIntelligenceProvider
-from app.models.api import ChatRequest, WorkItemCreate
+from app.models.api import MAX_CHAT_MESSAGE_CHARS, ChatRequest, WorkItemCreate
 from app.models.research_scope import ResearchScope
 from app.models.workspace import ConversationTarget
 from app.models.awareness import InternalScope, OutboundWatchQuery, PublicWatchQuery, Watch
@@ -32,6 +32,16 @@ from app.utils.time import iso_now
 
 
 logger = logging.getLogger(__name__)
+
+
+def _bounded_agent_message(message: str) -> str:
+    """Fit an internally generated prompt within the public chat request limit."""
+    if len(message) <= MAX_CHAT_MESSAGE_CHARS:
+        return message
+    marker = "\n\n[Middle of generated research context omitted to fit the message limit.]\n\n"
+    available = MAX_CHAT_MESSAGE_CHARS - len(marker)
+    head = available * 3 // 4
+    return message[:head] + marker + message[-(available - head):]
 
 
 class ResearchService:
@@ -120,7 +130,14 @@ class ResearchService:
         frozen_context: dict[str, Any] | None = None,
         search_scope: ResearchScope | None = None,
         execution_version: int = 2,
+        managed: bool = False,
     ) -> dict[str, Any]:
+        # A parent-managed dossier child saves its packet and sources but must not
+        # perform any shared workspace effect (latest-research pointer, stage,
+        # index rebuild, or workspace projection). The parent's checked
+        # publication owns those, so an incidental sibling write cannot change the
+        # parent's basis mid-batch.
+        dossier_since = self.dossiers.generation_sequence
         search_scope = search_scope or ResearchScope()
         matter = self.index.get_matter(matter_id)
         if not matter:
@@ -129,6 +146,8 @@ class ResearchService:
         workspace = WorkspaceService(self.vault, self.matters, self.dossiers)
         issue_analysis = IssueAnalysisService(self.vault, self.matters, workspace)
         frozen_context = dict(frozen_context or {})
+        if hasattr(self, "app") and "dossier_skill" not in frozen_context:
+            frozen_context["dossier_skill"] = self.app.skills.dossier_generation_snapshot()
         frozen_context["research_scope"] = search_scope.model_dump()
         research_inputs = frozen_context.get("research_inputs")
         research_inputs = research_inputs if isinstance(research_inputs, dict) else None
@@ -317,7 +336,7 @@ class ResearchService:
                         + json.dumps(selected_inputs, ensure_ascii=False, default=str)
                     )
                 request = ChatRequest(
-                    message=prompt, matter_id=matter_id, agent_id="research-agent",
+                    message=_bounded_agent_message(prompt), matter_id=matter_id, agent_id="research-agent",
                     target=ConversationTarget(matter_id=matter_id, issue_id=issue_id) if issue_id else None,
                     frozen_context=frozen_context,
                 )
@@ -479,7 +498,7 @@ class ResearchService:
             },
         )
         published_analysis: dict[str, Any] = {"warnings": [], "issue_analyses": [], "historical": False}
-        if decision_structure is not None:
+        if decision_structure is not None and not managed:
             try:
                 published_analysis = issue_analysis.publish(
                     matter_id, path=path, run_id=analysis_run_id,
@@ -491,7 +510,7 @@ class ResearchService:
                 structure_warnings.append(
                     f"Optional decision paths unavailable: {type(exc).__name__}. Useful research prose and prior analysis were retained."
                 )
-        if problem_structure is not None and (not investigation_result or investigation_result.get("direct_packet_only")):
+        if problem_structure is not None and not managed and (not investigation_result or investigation_result.get("direct_packet_only")):
             try:
                 ProblemAnalysisService(self.vault, self.matters, workspace).publish(matter_id,
                     path=path, run_id=analysis_run_id, output_revision=output_revision,
@@ -554,24 +573,25 @@ class ResearchService:
             except Exception as exc:
                 logger.warning("Research work-item update failed: %s", type(exc).__name__)
                 warnings.append(f"Research review work item update failed: {exc}")
-        try:
-            self.vault.update_markdown(
-                f"{matter['path']}/matter.md",
-                metadata_updates={
-                    "public_research_status": public_status,
-                    "external_authority_retrieved": external_authority_retrieved,
-                    "latest_research_path": path,
-                },
-            )
-            self.matters.append_event(
-                matter_id,
-                "research_completed",
-                {"title": "Research packet saved", "path": path, "public_research_status": public_status},
-                rebuild=False,
-            )
-        except Exception as exc:
-            logger.warning("Research completion record update failed: %s", type(exc).__name__)
-            warnings.append(f"Research completion record update failed: {exc}")
+        if not managed:
+            try:
+                self.vault.update_markdown(
+                    f"{matter['path']}/matter.md",
+                    metadata_updates={
+                        "public_research_status": public_status,
+                        "external_authority_retrieved": external_authority_retrieved,
+                        "latest_research_path": path,
+                    },
+                )
+                self.matters.append_event(
+                    matter_id,
+                    "research_completed",
+                    {"title": "Research packet saved", "path": path, "public_research_status": public_status},
+                    rebuild=False,
+                )
+            except Exception as exc:
+                logger.warning("Research completion record update failed: %s", type(exc).__name__)
+                warnings.append(f"Research completion record update failed: {exc}")
         moved_to_explore = False
         if change_stage and original_stage in {"intake", "research"}:
             try:
@@ -605,11 +625,18 @@ class ResearchService:
                 self.vault.update_markdown(path, metadata_updates={"warnings": warnings})
             except Exception:
                 pass
-        try:
-            await self.index.rebuild_async()
-        except Exception as exc:
-            logger.warning("Research index rebuild failed: %s", type(exc).__name__)
-            warnings.append("Research index rebuild failed.")
+        if execution_version == 1 and hasattr(self, "app"):
+            from app.services.dossier_generation import generate_pending, generation_owner
+            await generate_pending(self.app, since=dossier_since, matter_id=matter_id,
+                owner=generation_owner.get(), resolved_provider=resolved_provider,
+                snapshot=frozen_context.get("dossier_skill"),
+                allowed=not (frozen_context.get("excluded_paths") or frozen_context.get("withhold_unattributed_history")))
+        if not managed:
+            try:
+                await self.index.rebuild_async()
+            except Exception as exc:
+                logger.warning("Research index rebuild failed: %s", type(exc).__name__)
+                warnings.append("Research index rebuild failed.")
         return {
             "summary": (
                 "A partial research packet is saved; no public source was retrieved."
@@ -885,7 +912,8 @@ class ResearchService:
             if not isinstance(text, str) or not text.strip():
                 continue
             source_id = "SRC-" + digest(item.get("url") or item.get("title"))[:20]
-            text = text.strip() + "\n"
+            # Hash the same canonical text that Markdown readers return.
+            text = text.replace("\r\n", "\n").replace("\r", "\n").strip() + "\n"
             version = digest(text)
             path = f"{matter_path}/research/sources/{source_id}-{version[:12]}.md"
             try:
@@ -932,15 +960,17 @@ class ResearchService:
         if records is None:
             records = self._source_records(search_result)
         for item in records:
+            if not isinstance(item, dict):
+                continue
             support = {"supplied": "Internal support" if item.get("path") else "Supplied source",
-                       "retrieved": "Retrieved external authority", "verified": "Verified external authority"}.get(item["support_state"], "Unverified external lead")
+                       "retrieved": "Retrieved external authority", "verified": "Verified external authority"}.get(item.get("support_state"), "Unverified external lead")
             if search_result.get("execution_version") == 2:
-                support = {"supplied": "Supplied source", "retrieved": "Retrieved source", "verified": "Retrieved source"}.get(item["support_state"], "Unverified lead")
-            title = str(item["source_label"]).replace("[", "").replace("]", "")
+                support = {"supplied": "Supplied source", "retrieved": "Retrieved source", "verified": "Retrieved source"}.get(item.get("support_state"), "Unverified lead")
+            title = str(item.get("source_label") or item.get("title") or item.get("url") or item.get("path") or "Unidentified source").replace("[", "").replace("]", "")
             location = item.get("url") or item.get("path")
             rendered = f"[{title}]({location})" if location else f"**{title}**"
             locator = str(item.get("locator") or "").replace("]", "").strip()
-            marker = f"[source:{item['source_id']}" + (f"|{locator}]" if locator else "]")
+            marker = (f"[source:{item['source_id']}" + (f"|{locator}]" if locator else "]")) if item.get("source_id") else ""
             lines.append(f"- {support}: {rendered} {marker}")
             if search_result.get("execution_version") == 2 and not item.get("selected_passages"):
                 lines.append("  No relevant passage has been selected; open the source.")

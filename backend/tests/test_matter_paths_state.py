@@ -150,3 +150,29 @@ def test_snapshot_captures_changed_actual_basis_without_overwriting_history(app_
     assert after!=before and app.vault.read_text(before)==original
     assert 'Actual corrected settlement takes two days.' in app.vault.read_text(after)
     assert app.workspace_scenarios.snapshot(M,a['scenario_id'])==after
+
+
+def test_legacy_role_title_and_rename_preserve_identity_and_direction(app_context):
+    s, a, b, args = transition_setup(app_context)
+    path = s.scenarios._path(M, a['scenario_id'])
+    doc = s.vault.read_markdown(path)
+    doc['metadata']['scenario']['title'] = 'Current approach'
+    s.vault.write_markdown(path, doc['content'], doc['metadata'])
+    raw = s.vault.read_text(path)
+    legacy = s.scenarios.get(M, a['scenario_id'])
+    assert legacy['title'] == 'Original plan'
+    assert s.vault.read_text(path) == raw  # Reading old names does not rewrite history.
+    assert s.transition(M, **args)['state'] == 'committed'
+    pointer = s.state(M)
+    renamed = s.scenarios.save(M, {**legacy, 'title': 'Direct operation'},
+                               expected_revision=legacy['revision'])
+    assert renamed['scenario_id'] == a['scenario_id']
+    assert renamed['analysis'] == legacy['analysis']
+    assert s.state(M) == pointer
+    with pytest.raises(WorkspaceConflict):
+        s.scenarios.save(M, {**legacy, 'title': 'Stale rename'}, expected_revision=legacy['revision'])
+    restored = s.transition(M, **{**args, 'path_id':renamed['scenario_id'],
+        'expected_path_revision':renamed['revision'], 'expected_mainline_revision':pointer['revision'],
+        'source_action_key':'restore-renamed', 'restore':True})
+    assert restored['state'] == 'committed'
+    assert s.scenarios.get(M, a['scenario_id'])['title'] == 'Direct operation'

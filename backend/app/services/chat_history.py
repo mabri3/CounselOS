@@ -63,6 +63,7 @@ class ChatHistoryService:
         operation_results: list[dict[str, Any]] | None = None,
         run_id: str | None = None,
         source_ids: list[str] | None = None,
+        source_records: list[dict[str, Any]] | None = None,
         conversation_kind: str | None = None,
         intake_state: str | None = None,
         active_agent_id: str | None = None,
@@ -109,6 +110,7 @@ class ChatHistoryService:
                 "operation_results": operation_results or [],
                 "run_id": run_id,
                 "source_ids": source_ids or [],
+                "source_records": source_records or [],
             }
         )
         path = self._matter_path(matter_id, conversation_id)
@@ -208,6 +210,7 @@ class ChatHistoryService:
         cards: list[dict[str, Any]] | None = None,
         applied_skills: list[dict[str, str]] | None = None,
         operation_results: list[dict[str, Any]] | None = None,
+        source_records: list[dict[str, Any]] | None = None,
     ) -> dict[str, Any]:
         conversation = self.get(matter_id, conversation_id)
         existing = next(
@@ -219,6 +222,7 @@ class ChatHistoryService:
                 matter_id, conversation_id, role="assistant", content=content,
                 trace=trace, cards=cards, applied_skills=applied_skills,
                 operation_results=operation_results,
+                source_records=source_records,
                 run_id=run_id,
             )
         existing.update({
@@ -227,6 +231,7 @@ class ChatHistoryService:
             "cards": cards or [],
             "applied_skills": applied_skills or [],
             "operation_results": operation_results or [],
+            "source_records": source_records or [],
             "updated_at": iso_now(),
         })
         document = self.vault.read_markdown(conversation["path"])
@@ -422,6 +427,7 @@ class ChatHistoryService:
             message = dict(raw)
             message.setdefault("applied_skills", [])
             message.setdefault("source_ids", [])
+            message.setdefault("source_records", [])
             message.setdefault("operation_results", [])
             if raw.get("role") == "user":
                 latest_user_action = (raw.get("workspace_submission") or {}).get("workspace_action")

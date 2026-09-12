@@ -26,7 +26,7 @@ class ResearchCollection:
         run = self.app.research_runs.get(self.matter_id, self.run_id)
         if (matter_id != self.matter_id or run.get("execution_version") != 2
                 or run.get("state") not in {"queued", "running"}
-                or digest(json.dumps(run["search_scope"], sort_keys=True)) != self.scope_hash):
+                or digest(json.dumps(ResearchScope.model_validate(run["search_scope"]).model_dump(), sort_keys=True)) != self.scope_hash):
             raise ValueError("Investigation identity or saved scope changed.")
         cp = self.checkpoints.load(self.matter_id, self.run_id)
         if cp["stop_requested"] or cp["phase"] in {"publishing", "complete", "stopped"}:
@@ -69,6 +69,81 @@ class ResearchCollection:
         self.checkpoints.complete_call(self.matter_id, self.run_id, key, result)
         return {**result, "remaining_budget": self.remaining()}
 
+    async def native_fallback(self, query, request_key):
+        """Use the saved main model type in a fresh, public-query-only session."""
+        from app.services.native_research import discover, source_urls, answer_text, native_options
+        selection = self.run.get("main_selection") or self.scope.main_model_selection
+        if not self.scope.external or not native_options(selection, self.app.settings)["native_available"]:
+            return {"candidates": [], "warning": "Main model web search is unavailable."}
+        key = request_key + ":native-fallback"
+        call = self.checkpoints.reserve_call(self.matter_id, self.run_id, key, key, {})
+        if call["state"] == "completed":
+            return call["result_ref"]
+        try:
+            raw = await discover(query, selection, self.app.settings,
+                                 timeout=min(60, max(1, self.remaining()["active_seconds"] - 90)))
+            result = {"candidates": [{"url": url, "title": url} for url in source_urls(raw)[:4]],
+                      "generated_worker_notes": answer_text(raw)[:2000]}
+        except Exception as exc:
+            result = {"candidates": [], "warning": f"Main model web search failed: {type(exc).__name__}."}
+        self.checkpoints.complete_call(self.matter_id, self.run_id, key, result)
+        return result
+
+    async def recover_before_synthesis(self):
+        """If planning failed before retrieval, search the already approved topic."""
+        cp = self.validate(self.matter_id)
+        if not self.scope.external or cp["requests"] or not self.scope.public_query:
+            return None
+        from app.models.research_investigation import ResearchEvidenceRequest
+        return await self._request(ResearchEvidenceRequest(
+            proposition_id="planning-recovery", proposition=self.scope.public_query,
+            public_query=self.scope.public_query, source_goal="operative_rule"))
+
+    async def service_search(self, outbound, search_result, request_key):
+        for provider in self.scope.provider_ids:
+            provider_key = request_key + ":provider:" + provider
+            call = self.checkpoints.reserve_call(self.matter_id, self.run_id, provider_key, request_key, {})
+            if call["state"] == "completed":
+                search_result = call["result_ref"]
+            else:
+                import inspect
+                operation = self.app.research._run_external_provider
+                kwargs = {"transport_retry_count": 0} if "transport_retry_count" in inspect.signature(operation).parameters else {}
+                try:
+                    await asyncio.wait_for(operation(provider, outbound, search_result, **kwargs), timeout=min(30, float(self.app.research._settings.get("external_timeout_seconds", 90))))
+                except Exception as exc:
+                    search_result.setdefault("provider_legs", []).append({"provider": provider, "status": "failed", "error_class": type(exc).__name__})
+                self.checkpoints.complete_call(self.matter_id, self.run_id, provider_key, search_result)
+            if search_result["external"]:
+                break
+        return search_result
+
+    async def collector_search(self, query, outbound, search_result, request_key):
+        """The optional worker gets a public query and a search tool, never the matter."""
+        selected = self.app.research_runs._resolve_saved_selection(self.run.get("collector_selection"))
+        if selected is None:
+            raise ValueError("Collection model is unavailable.")
+        key = request_key + ":collector"
+        call = self.checkpoints.reserve_call(self.matter_id, self.run_id, key, key, {})
+        if call["state"] == "completed":
+            return call["result_ref"]
+        messages = [{"role": "system", "content": "You collect public evidence for another agent. Call search_public_sources for the supplied query. Do not decide the legal answer. Do not invent sources."},
+                    {"role": "user", "content": query}]
+        tools = [{"type": "function", "function": {"name": "search_public_sources", "description": "Search the configured public research services for the assigned query.", "parameters": {"type": "object", "properties": {}, "additionalProperties": False}}}]
+        from app.providers.base import provider_session_id
+        token = provider_session_id.set(self.run_id + ":collector")
+        try:
+            reply = await asyncio.wait_for(selected.provider.complete(messages, tools), timeout=45)
+        finally:
+            provider_session_id.reset(token)
+        if not any(c.name == "search_public_sources" for c in reply.tool_calls):
+            raise ValueError("Collection model did not request the search tool.")
+        # The worker cannot change the approved query or choose unrelated tools.
+        search_result.update(await self.service_search(outbound, search_result, request_key))
+        result = {"candidates": search_result["external"][:4], "generated_worker_notes": reply.content[:2000]}
+        self.checkpoints.complete_call(self.matter_id, self.run_id, key, result)
+        return result
+
     async def _request(self, request):
         request_key = "request:" + digest(request.model_dump_json())
         cp = self.validate(self.matter_id)
@@ -82,7 +157,7 @@ class ResearchCollection:
             return {**result, "status": "blocked", "warnings": [search_result.get("warning")]}
         outbound = self.app.research._prepare_public_query(self.matter_id, request.public_query, search_result)
         reservation = self.checkpoints.reserve_call(self.matter_id, self.run_id, request_key, request_key, {"requests": 1})
-        timeout = min(90, max(1, self.remaining()["active_seconds"] - 90))
+        timeout = min(180, max(1, self.remaining()["active_seconds"] - 90))
         self.checkpoints.update(self.matter_id, self.run_id, active_time_reservation=timeout)
         started = self.clock()
         try:
@@ -101,20 +176,23 @@ class ResearchCollection:
                     result["generated_worker_notes"] = answer_text(raw)[:2000]
                     candidates = [{"url": url, "title": url} for url in source_urls(raw)[:4]]
                 else:
-                    for provider in self.scope.provider_ids:
-                        provider_key = request_key + ":provider:" + provider
-                        call = self.checkpoints.reserve_call(self.matter_id, self.run_id, provider_key, request_key, {})
-                        if call["state"] == "completed":
-                            search_result = call["result_ref"]
-                        else:
-                            import inspect
-                            operation = self.app.research._run_external_provider
-                            kwargs = {"transport_retry_count": 0} if "transport_retry_count" in inspect.signature(operation).parameters else {}
-                            await operation(provider, outbound, search_result, **kwargs)
-                            self.checkpoints.complete_call(self.matter_id, self.run_id, provider_key, search_result)
-                        if search_result["external"]:
-                            break
+                    if self.scope.collection_enabled:
+                        try:
+                            collected = await self.collector_search(request.public_query, outbound, search_result, request_key)
+                            search_result["external"] = collected["candidates"]
+                            result["generated_worker_notes"] = collected.get("generated_worker_notes", "")
+                        except Exception as exc:
+                            result["warnings"].append(f"Collection agent failed: {type(exc).__name__}.")
+                            search_result.update(await self.service_search(outbound, search_result, request_key))
+                    else:
+                        search_result.update(await self.service_search(outbound, search_result, request_key))
                     candidates = search_result["external"][:4]
+                    if not candidates:
+                        fallback = await self.native_fallback(request.public_query, request_key)
+                        candidates = fallback["candidates"]
+                        result["generated_worker_notes"] = fallback.get("generated_worker_notes", "")
+                        if fallback.get("warning"):
+                            result["warnings"].append(fallback["warning"])
                 self.checkpoints.complete_call(self.matter_id, self.run_id, request_key, {"candidates": candidates, "generated_worker_notes": result.get("generated_worker_notes", "")})
                 for candidate in candidates:
                     if not isinstance(candidate, dict) or not isinstance(candidate.get("url"), str):
@@ -123,6 +201,17 @@ class ResearchCollection:
                     source = await self._fetch(candidate)
                     if source:
                         result["sources"].append(source)
+                if candidates and not self.scope.native and not request.public_url and not any(s.get("support_state") == "retrieved" for s in result["sources"]):
+                    fallback = await self.native_fallback(request.public_query, request_key)
+                    if fallback.get("warning"):
+                        result["warnings"].append(fallback["warning"])
+                    result["generated_worker_notes"] = fallback.get("generated_worker_notes", "")
+                    for candidate in fallback["candidates"]:
+                        if any(s.get("url") == candidate["url"] for s in result["sources"]):
+                            continue
+                        source = await self._fetch(candidate)
+                        if source:
+                            result["sources"].append(source)
                 result["status"] = "retrieved" if any(s.get("support_state") == "retrieved" for s in result["sources"]) else "partial" if result["sources"] else "no_results"
         except asyncio.CancelledError:
             raise
@@ -254,6 +343,7 @@ class ResearchCollection:
                   "path": saved_path, "original_path": document.get("path"), "title": (document.get("metadata") or {}).get("title") or str(document.get("path", "")).split("/")[-1],
                   "support_state": "supplied", "source_type": "workspace", "available_excerpt": selected,
                   "selected_passages": [{"start": 0, "end": len(selected), "text": selected}], "content_truncated": len(selected) < len(saved_text)}
+        record["source_label"] = record["title"]
         cp["local_sources"] = [s for s in cp.get("local_sources", []) if s["source_id"] != source_id] + [record]
         cp["budget_used"]["evidence_chars"] += len(selected)
         self.checkpoints.save(self.matter_id, self.run_id, cp, expected_sequence=cp["sequence"])

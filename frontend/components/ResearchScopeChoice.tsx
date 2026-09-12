@@ -6,15 +6,30 @@ import type { ResearchRun } from "@/lib/types";
 import type { ResearchScope, ResearchOptions } from "@/lib/researchScope";
 import styles from "./ResearchScopeChoice.module.css";
 
-export function ResearchScopeFields({ value, onChange, options, disabled }: {
-  value: ResearchScope; onChange: (value: ResearchScope) => void; options: ResearchOptions; disabled?: boolean;
+export function ResearchScopeFields({ value, onChange, options, disabled, compact = false }: {
+  value: ResearchScope; onChange: (value: ResearchScope) => void; options: ResearchOptions; disabled?: boolean; compact?: boolean;
 }) {
+  if (compact) return <fieldset disabled={disabled} className={styles.compact}>
+    <legend>What sources should I use?</legend>
+    <label className={styles.check}><input type="checkbox" checked={value.external} disabled={!options.provider_ids.length && !options.native_available && !options.firecrawl_available} onChange={event => onChange({ ...value, external: event.target.checked })} /> External sources</label>
+    <label className={styles.check}><input type="checkbox" checked={value.other_matters} onChange={event => onChange({ ...value, other_matters: event.target.checked })} /> Other matters</label>
+    <p>Leave both unchecked to review only this matter.</p>
+  </fieldset>;
+
   return <fieldset disabled={disabled} className={styles.fields}>
     <legend>Where should I look?</legend>
     <p>This matter is always included. Choose extra sources for this request only.</p>
+    <label className={styles.check}><input type="checkbox" checked={value.external} disabled={!options.provider_ids.length && !options.native_available && !options.firecrawl_available} onChange={event => onChange({ ...value, external: event.target.checked })} /> External sources</label>
+    <label className={styles.check}><input type="checkbox" checked={value.other_matters} onChange={event => onChange({ ...value, other_matters: event.target.checked })} /> Search other active matters</label>
+    {value.external && <p>{value.allow_followup_queries ? "Themis will turn your question into focused searches, compare relevant sources, and follow important gaps." : "Themis will plan focused searches from your question. Follow-up searches are off in Research options."}</p>}
+    <details><summary>Research options</summary>
+    {value.external && <label className={styles.query}>Public research topic
+      <textarea value={value.public_query} maxLength={2000} onChange={event => onChange({ ...value, public_query: event.target.value })} placeholder="Legal topic and jurisdiction. Do not include private names or facts." />
+      <span>{value.allow_followup_queries ? "Themis will use this topic to plan distinct searches, compare relevant sources, and follow important gaps. This is not a limit of one search." : "This topic guides the initial research. Follow-up searches are off; you can enable them in Research options."} Private matter details stay with the analysis model.</span>
+    </label>}
+
     {options.main_model_selection && <p>Main analysis: {options.main_model_selection.provider} · {options.main_model_selection.model}. Saved for this run.</p>}
     {options.model_selection && <p>Collection model: {options.model_selection.provider} · {options.model_selection.model} · {options.model_selection.reasoning_effort || "default"} effort. This selection is saved for this run.</p>}
-    <label className={styles.check}><input type="checkbox" checked={value.external} disabled={!options.provider_ids.length && !options.native_available && !options.firecrawl_available} onChange={event => onChange({ ...value, external: event.target.checked })} /> External sources</label>
     <p>{options.cost_notice}</p>
     {options.model_selection ? <>
       <label>Search method<select value={value.native ? "native" : "configured"} onChange={event => onChange({...value, native:event.target.value === "native"})}>
@@ -26,13 +41,9 @@ export function ResearchScopeFields({ value, onChange, options, disabled }: {
         {!options.firecrawl_available && <p>Firecrawl is not configured.</p>}
       </> : <p>Providers: {options.provider_ids.join(" → ") || "None configured"}.</p>}
     </> : <p>Providers: {options.provider_ids.join(" → ") || "None configured"}. A fallback is used if the first provider does not retrieve sources.</p>}
-    {value.external && <label className={styles.query}>Public search query
-      <textarea value={value.public_query} maxLength={2000} onChange={event => onChange({ ...value, public_query: event.target.value })} placeholder="Legal topic and jurisdiction. Do not include private names or facts." />
-      <span>This query sets the public topic. When follow-up is selected, focused public queries and relevant source links within that topic may be sent. Private matter details stay with the analysis model.</span>
-    </label>}
     {options.allow_followup_queries !== undefined && <><label className={styles.check}><input type="checkbox" checked={value.allow_followup_queries === true} onChange={event => onChange({...value, allow_followup_queries:event.target.checked})} /> Include focused follow-up searches for this question</label><p>Up to 3 batches, 4 requests per batch, 16 source fetches, and 10 active minutes. Fetched PDFs are read up to 30 pages, and OCR to 6 pages per attempt. Sources already saved to this matter are extracted to their full length and searched separately. Coverage gaps remain visible.</p></>}
-    <label className={styles.check}><input type="checkbox" checked={value.other_matters} onChange={event => onChange({ ...value, other_matters: event.target.checked })} /> Search other active matters</label>
     <p>{options.sensitivity_notice}</p>
+    </details>
     <p>Neither selected means this matter only. Normal model usage can still have costs.</p>
   </fieldset>;
 }

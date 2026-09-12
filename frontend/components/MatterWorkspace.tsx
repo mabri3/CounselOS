@@ -5646,6 +5646,8 @@ function MatterWorkspaceContent({
               </div>
               {referenceTarget ? (
                 <ReferencePreview
+                  documents={workspace?.documents ?? []}
+                  onOpenReference={(target) => void openReference(target)}
                   target={referenceTarget}
                   document={referenceDocument}
                   error={referenceError}

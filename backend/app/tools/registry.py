@@ -16,6 +16,8 @@ from app.tools.matter_paths import SCENARIO_ACTIONS, PATH_READ_ACTIONS
 Handler = Callable[["ToolExecutionContext", dict[str, Any]], Awaitable[dict[str, Any]]]
 APP_CONTRACT_ROOT = Path(__file__).resolve().parents[1] / "blank_vault_template"
 logger = logging.getLogger(__name__)
+# Research entry presents source choices; it does not publish actual matter facts.
+SCENARIO_RESEARCH_TOOLS = frozenset({"run_research"})
 SCENARIO_READ_TOOLS = frozenset({"list_files", "read_file", "search_vault"})
 # run_research only presents source choices; confirmation starts the actual run.
 UNSCOPED_TOOLS = SCENARIO_READ_TOOLS | {"select_conversation_scope", "run_research"}
@@ -120,7 +122,7 @@ class ToolRegistry:
         scope = context.scope_state.get("scope")
         if "research_scope" in context.frozen_context and tool_id not in SCENARIO_READ_TOOLS and context.investigation is None:
             return _failed_tool_result(tool_id, context, "This research run uses only its confirmed search sources. Do not start another search or workflow; answer from the available material.")
-        if (scope == "scenario" or (context.target and context.target.scenario_id)) and tool_id not in SCENARIO_READ_TOOLS | {"select_conversation_scope"} and not (tool_id == "workspace_action" and arguments.get("action") in SCENARIO_ACTIONS):
+        if (scope == "scenario" or (context.target and context.target.scenario_id)) and tool_id not in SCENARIO_READ_TOOLS | SCENARIO_RESEARCH_TOOLS | {"select_conversation_scope"} and not (tool_id == "workspace_action" and arguments.get("action") in SCENARIO_ACTIONS):
             return _failed_tool_result(tool_id, context, "Scenario analysis can only read saved context. No actual matter change was made.")
         if context.trusted_user_message and not scope and tool_id not in UNSCOPED_TOOLS and not (tool_id == "workspace_action" and arguments.get("action") in PATH_READ_ACTIONS):
             return _failed_tool_result(tool_id, context, "First interpret this turn with select_conversation_scope. No change was made.")

@@ -224,7 +224,7 @@ let timeoutSaved = false;
 const timeoutCommand = JSON.stringify({ action: "return", source_action_key: "return:exact-frozen-key", expected_revision: "handoff-original" });
 const timeoutDraftBefore = storage.getItem(alexKey);
 try {
-  globalThis.setTimeout = ((callback: () => void, delay: number) => { assert.equal(delay, 15_000); expireRequest = callback; return 1; }) as unknown as typeof globalThis.setTimeout;
+  globalThis.setTimeout = ((callback: () => void, delay: number) => { assert.equal(delay, 60_000); expireRequest = callback; return 1; }) as unknown as typeof globalThis.setTimeout;
   globalThis.clearTimeout = (() => {}) as typeof globalThis.clearTimeout;
   globalThis.fetch = async (_input, init) => {
     timeoutBodies.push(String(init?.body));

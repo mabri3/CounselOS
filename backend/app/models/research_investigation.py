@@ -51,15 +51,108 @@ class PropositionAssessment(BaseModel):
     remaining_gap: str = Field(default="", max_length=2000)
 
 
+class ResearchIssueUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+    issue_id: str = Field(min_length=1, max_length=160)
+    position: str = Field(min_length=1, max_length=6000)
+    next_action: str = Field(default="", max_length=2000)
+    # Optional depth fields. Each is validated independently; a malformed optional
+    # field or list entry must not discard the valid position or the useful prose.
+    analysis_markdown: str = Field(default="", max_length=60000)
+    rule_and_support: str = Field(default="", max_length=20000)
+    application: str = Field(default="", max_length=20000)
+    remaining_gaps: list = Field(default_factory=list, max_length=50)
+    proposed_actions: list = Field(default_factory=list, max_length=50)
+    new_issue_candidates: list = Field(default_factory=list, max_length=20)
+
+
 class ResearchSynthesis(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
-    summary: str = Field(min_length=1, max_length=12000)
-    recommendation: str = Field(min_length=1, max_length=60000)
-    next_action: str = Field(min_length=1, max_length=2000)
-    change_summary: str = Field(min_length=1, max_length=6000)
+    summary: str = Field(default="", max_length=12000)
+    recommendation: str = Field(default="", max_length=60000)
+    next_action: str = Field(default="", max_length=2000)
+    change_summary: str = Field(default="", max_length=6000)
     relied_on_assumption_ids: list[str] = Field(default_factory=list, max_length=50)
     assumption_updates: list[dict] = Field(default_factory=list, max_length=50)
     proposition_assessments: list[dict] = Field(default_factory=list, max_length=50)
+    issue_updates: list[dict] = Field(default_factory=list, max_length=50)
+
+
+def sanitize_gaps(value):
+    """Return a clean list of short gap strings; drop malformed entries."""
+    if not isinstance(value, list):
+        return []
+    gaps = []
+    for item in value[:50]:
+        if isinstance(item, str) and item.strip():
+            gaps.append(item.strip()[:2000])
+        elif isinstance(item, dict) and isinstance(item.get("gap"), str):
+            gaps.append(item["gap"].strip()[:2000])
+    return gaps
+
+
+def sanitize_proposed_actions(value, *, anchors=None):
+    """Validate proposed work items independently.
+
+    Each action keeps its useful text even when timing is missing or malformed.
+    A signed offset relative to an anchor date is resolved with the standard
+    date library; a bad date leaves the action useful and its date unknown.
+    """
+    import datetime as _dt
+
+    if not isinstance(value, list):
+        return []
+    actions = []
+    for entry in value[:50]:
+        if not isinstance(entry, dict):
+            continue
+        action = str(entry.get("action") or "").strip()
+        if not action:
+            continue
+        due_date = entry.get("due_date")
+        if not (isinstance(due_date, str) and _valid_date(due_date)):
+            due_date = None
+        anchor = entry.get("anchor_reference_id")
+        anchor = anchor if isinstance(anchor, str) and anchor else None
+        offset = entry.get("offset_calendar_days")
+        offset = offset if isinstance(offset, int) and not isinstance(offset, bool) else None
+        # The model's date is a lead. Only the frozen record supplies an anchor.
+        resolved = (anchors or {}).get(anchor) or {}
+        anchor_date = resolved.get("date")
+        due_date = None
+        if isinstance(anchor_date, str) and _valid_date(anchor_date):
+            try:
+                if offset is None and entry.get("due_date") == anchor_date:
+                    offset = 0
+                if offset is not None:
+                    due_date = (_dt.date.fromisoformat(anchor_date) + _dt.timedelta(days=offset)).isoformat()
+            except (ValueError, OverflowError):
+                pass
+        actions.append(
+            {
+                "issue_id": str(entry.get("issue_id") or "")[:160] or None,
+                "action": action[:2000],
+                "proposed_owner_role": str(entry.get("proposed_owner_role") or "")[:200],
+                "due_date": due_date,
+                "anchor_reference_id": anchor, "anchor_date": anchor_date,
+                "anchor_role": resolved.get("role"), "date_state": "proposed" if due_date else "anchor_needed",
+                "offset_calendar_days": offset,
+                "timing_basis": ((f"Proposed: {offset:+d} calendar days from {anchor_date} ({resolved.get('role') or 'saved event'}; {anchor}). " if due_date else "Date not resolved from saved evidence. ") + str(entry.get("timing_basis") or ""))[:2000],
+                "evidence_to_proceed": str(entry.get("evidence_to_proceed") or "")[:2000],
+                "fallback": str(entry.get("fallback") or "")[:2000],
+            }
+        )
+    return actions
+
+
+def _valid_date(value):
+    import datetime as _dt
+
+    try:
+        _dt.date.fromisoformat(value)
+        return True
+    except (ValueError, TypeError):
+        return False
 
 
 def extract_research_synthesis(raw):
@@ -76,16 +169,30 @@ def extract_research_synthesis(raw):
         data = json.loads(matches[0].group(1))
         # Validate list entries independently. Invalid entries cannot erase prose.
         updates, assessments = data.pop("assumption_updates", []), data.pop("proposition_assessments", [])
+        issue_updates = data.pop("issue_updates", [])
         synthesis = ResearchSynthesis.model_validate(data).model_dump()
-        for name, entries, model in [("assumption_updates", updates, AssumptionUpdate), ("proposition_assessments", assessments, PropositionAssessment)]:
+        for name, entries, model in [("assumption_updates", updates, AssumptionUpdate), ("proposition_assessments", assessments, PropositionAssessment), ("issue_updates", issue_updates, ResearchIssueUpdate)]:
             if not isinstance(entries, list):
                 warnings.append(f"Invalid {name}; reconciliation remains partial.")
                 continue
             for entry in entries[:50]:
                 try:
-                    synthesis[name].append(model.model_validate(entry).model_dump())
+                    if model is ResearchIssueUpdate and isinstance(entry, dict):
+                        required = {k: entry.get(k) for k in ("issue_id", "position")}
+                        cleaned = model.model_validate(required).model_dump()
+                        for key in model.model_fields:
+                            if key in required or key not in entry:
+                                continue
+                            try:
+                                cleaned[key] = model.model_validate({**required, key: entry[key]}).model_dump()[key]
+                            except (ValidationError, TypeError):
+                                warnings.append(f"Invalid optional issue field {key}; the issue answer was retained.")
+                        synthesis[name].append(cleaned)
+                    else:
+                        synthesis[name].append(model.model_validate(entry).model_dump())
                 except (ValidationError, TypeError):
                     warnings.append(f"Invalid {name} entry ignored; useful prose retained.")
-        return prose or synthesis["recommendation"], synthesis, warnings
+        useful = prose or synthesis["recommendation"] or synthesis["summary"] or "\n\n".join(item["position"] for item in synthesis["issue_updates"])
+        return useful, synthesis, warnings
     except (ValueError, TypeError, AttributeError):
         return prose, None, ["Optional research synthesis is malformed; useful prose retained and assumptions unreconciled."]

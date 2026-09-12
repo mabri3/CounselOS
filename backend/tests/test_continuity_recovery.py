@@ -191,8 +191,13 @@ async def test_explicit_draft_in_active_intake_saves_prose_and_replays_exactly(c
     body = "Qualification before the title stays in the draft.\n# Pilot review memo\n## Summary\nUse the supplied v1 as a working baseline.\n## Open items\nSupport access is reported, not independently verified."
     class ProseOnly:
         calls = 0
+        dossier_calls = 0
         tool_names = set()
         async def complete(self, messages, tools=None):
+            if str(messages[0].get("content", "")).startswith("Dossier-generation action."):
+                self.dossier_calls += 1
+                assert [t["function"]["name"] for t in tools] == ["read_dossier_record"]
+                return ProviderReply(content="# Updated dossier\n\n## Current position\n\nThe draft is ready for review.")
             self.calls += 1
             self.tool_names.update(tool["function"]["name"] for tool in tools or [])
             if self.calls == 1:
@@ -233,6 +238,7 @@ async def test_explicit_draft_in_active_intake_saves_prose_and_replays_exactly(c
         assert draft["metadata"]["draft_context"]["target"]["artifact_path"] == supplied_path
         assert draft["metadata"]["immutable"] is False
         assert provider.calls == 2
+        assert provider.dossier_calls <= 1
         assert saving_states == ["completed" if recover_existing else "running"], "A new run must finish the save before publishing completed state"
         second = await client.post(f"/api/matters/{MATTER}/chat-runs", json=command, headers={"X-Themis-Person-Id": "alex"})
         assert second.json()["run_id"] == run["run_id"] and len(ctx.work_products.list_drafts(MATTER)) == 1
@@ -295,7 +301,12 @@ async def test_saved_draft_retry_repairs_missing_conversation_projection(continu
     ctx = app_context; roster(ctx)
     class ProseOnly:
         calls = 0
+        dossier_calls = 0
         async def complete(self, messages, tools=None):
+            if str(messages[0].get("content", "")).startswith("Dossier-generation action."):
+                self.dossier_calls += 1
+                assert [t["function"]["name"] for t in tools] == ["read_dossier_record"]
+                return ProviderReply(content="# Updated dossier\n\n## Current position\n\nThe recovered draft is ready for review.")
             self.calls += 1
             return ProviderReply(content="# Recovery memo\nPreserve this useful draft response.")
     provider = ProseOnly(); ctx.runner.provider = provider
@@ -340,3 +351,4 @@ async def test_saved_draft_retry_repairs_missing_conversation_projection(continu
         assert len([op for op in assistant["operation_results"] if op.get("operation") == "save_work_product_draft"]) == 1
         assert ctx.vault.resolve(draft["path"]).read_bytes() == edited_bytes
         assert len(ctx.work_products.list_drafts(MATTER)) == 1 and provider.calls == 1
+        assert provider.dossier_calls == 1

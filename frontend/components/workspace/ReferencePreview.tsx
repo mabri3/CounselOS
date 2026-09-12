@@ -12,6 +12,7 @@ import { isSafeVaultPath } from "@/lib/research";
 import type { ReferencePreviewProps } from "@/lib/workspaceTypes";
 import type { VaultDocument } from "@/lib/types";
 import MatterIcon from "./MatterIcon";
+import ClaimMarkdown, { sourceRecordsForDisplay } from "./ClaimMarkdown";
 import styles from "./MatterDocuments.module.css";
 
 function passage(
@@ -38,6 +39,8 @@ export default function ReferencePreview({
   onOpenOriginal,
   onUseInRequest,
   onCreateWorkingCopy,
+  documents = [],
+  onOpenReference,
 }: ReferencePreviewProps) {
   const [loaded, setLoaded] = useState<VaultDocument | null>(null);
   const [loadError, setLoadError] = useState("");
@@ -297,13 +300,18 @@ export default function ReferencePreview({
               Extracted text · The original document layout is not shown.
             </p>
           ) : null}
-          <pre
-            className={styles.referenceReading}
-            data-passage-state={range ? "exact" : "document_only"}
-            ref={readingArea}
-          >
-            {passage(loaded.content, range, passageMark)}
-          </pre>
+          {!range && loaded.path.endsWith(".md") && Array.isArray(loaded.metadata.source_records) ? (
+            <ClaimMarkdown text={loaded.content} sources={sourceRecordsForDisplay(loaded.metadata.source_records)}
+              documents={documents} onOpenDocument={onOpenReference} surface="document" recordId={document?.document_id} />
+          ) : (
+            <pre
+              className={styles.referenceReading}
+              data-passage-state={range ? "exact" : "document_only"}
+              ref={readingArea}
+            >
+              {passage(loaded.content, range, passageMark)}
+            </pre>
+          )}
         </section>
       ) : null}
     </aside>

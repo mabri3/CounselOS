@@ -1,6 +1,7 @@
 "use client";
 
 import { DragEvent, useEffect, useRef, useState } from "react";
+import ClaimMarkdown, { sourceRecordsForDisplay } from "@/components/workspace/ClaimMarkdown";
 import DocumentReview from "@/components/DocumentReview";
 import LinkifiedText from "@/components/LinkifiedText";
 import MarkdownRichEditor from "@/components/MarkdownRichEditor";
@@ -45,7 +46,7 @@ export default function DocumentPanel({
 }: ReferenceAwareDocumentPanelProps) {
   const [document, setDocument] = useState<VaultDocument | null>(null);
   const [review, setReview] = useState<ReviewState | null>(null);
-  const [mode, setMode] = useState<"editing" | "markdown" | "review" | "sources">("editing");
+  const [mode, setMode] = useState<"editing" | "markdown" | "review" | "sources" | "reading">("editing");
   const [exportMode, setExportMode] = useState<"markup" | "accepted_text">("markup");
   const [dirty, setDirty] = useState(false);
   const [saveState, setSaveState] = useState<SaveState>("clean");
@@ -439,6 +440,7 @@ export default function DocumentPanel({
         <div className="doc-mode">
           {isMarkdown && canEdit ? (
             <>
+              <button className={mode === "reading" ? "active" : ""} onClick={() => setMode("reading")}>Reading</button>
               <button className={mode === "editing" ? "active" : ""} onClick={() => setMode("editing")} title="Edit the document with formatting controls.">Editing</button>
               <button className={mode === "markdown" ? "active" : ""} onClick={() => setMode("markdown")} title="Edit the Markdown source text directly.">Markdown</button>
               {isResearch ? (
@@ -453,7 +455,7 @@ export default function DocumentPanel({
 
       {!isMarkdown && review ? <p className="chat-history-status">Original supplied file. Drafting uses its saved extracted text. The original remains unchanged.</p> : null}
       {referenceTarget && onOpenReference ? <div className="chat-history-status"><button className="btn quiet tiny" type="button" onClick={() => onOpenReference(referenceTarget)}>Open referenced passage</button> The source opens separately and does not change this document&apos;s action target.</div> : null}
-      {isResearch && mode === "sources" ? (
+      {isMarkdown && (mode === "reading" || !canEdit) ? <div className="doc-scroll"><ClaimMarkdown text={document.content} sources={sourceRecordsForDisplay(Array.isArray(document.metadata.source_records) ? document.metadata.source_records : [])} documents={documents} onOpenDocument={onOpenReference} recordId={document.path} /></div> : isResearch && mode === "sources" ? (
         <div className="doc-scroll research-sources">
           {citations.length ? citations.map((citation) => (
             <article className="research-source-card" key={citation.id}>

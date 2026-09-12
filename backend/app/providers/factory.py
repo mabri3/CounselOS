@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import inspect
 from dataclasses import asdict
+from contextlib import asynccontextmanager
 from typing import Any
 
 from app.agents.runner import ResolvedAgentProvider
@@ -107,6 +108,27 @@ class ProviderRouter:
                 provider = self._construct(*key)
                 self._instances[key] = provider
         return ResolvedAgentProvider(provider=provider, selection=selection)
+
+    @asynccontextmanager
+    async def isolated(self, resolved: ResolvedAgentProvider, *, timeout_seconds: float):
+        """Give background work its own transport and deadline, without changing chat."""
+        selection = resolved.selection
+        if selection.provider in {"mock", "workspace_default"}:
+            yield resolved.provider
+            return
+        provider = build_provider(self.settings.model_copy(update={
+            "llm_provider": selection.provider, "llm_model": selection.model,
+            "llm_reasoning_effort": selection.reasoning_effort,
+            "llm_timeout_seconds": timeout_seconds,
+        }))
+        try:
+            yield provider
+        finally:
+            close = getattr(provider, "close", None)
+            if close is not None:
+                result = close()
+                if inspect.isawaitable(result):
+                    await result
 
     def _mock_provider(self) -> LLMProvider:
         if isinstance(self.workspace_provider, MockProvider):

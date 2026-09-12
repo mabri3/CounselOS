@@ -834,3 +834,26 @@ The isolated scripted browser walk exercised the applicable matter-header, chat,
 - [ ] Live semantic model evaluation: not authorized or run.
 
 Reproduction, exact limits and artifacts: `output/matter-memory-paths/browser.md` and `docs/matter-memory-paths.verification.md`.
+
+## Research-first dossier — September 11, 2026
+
+The isolated `browser-vault` walk exercised the relevant items in B, C, D, G,
+and H. It used five synthetic issues across employment, privacy, supplier
+contract, intellectual property, and marketing. It did not re-run unrelated
+matter closure, automations, export, mobile layout, zoom, or live-provider work.
+
+- [x] Experimental chat shows three priorities, all five mapped answers, the first-three selectors, All-five scope, and normal source fields before work starts.
+- [x] All-five starts three distinct first workers. The first dossier is readable while two later workers remain active.
+- [x] The first and latest exact revisions contain full conditions, checklists, reported facts, and the proposed date with its saved basis.
+- [x] Two different internal citation controls and one external saved-passage control open the correct source text and saved version.
+- [x] An unsent draft, selected context, open-document state, and a lawyer dossier edit survive later publication and reload.
+- [x] Stop persists through a same-vault backend restart. Resume reuses the saved child IDs and does not repeat completed model work.
+- [x] Standard matter chat shows setup, live progress, current state after reload, and final exact revision.
+- [x] Explicit saved-only generation and `Generate dossier without saving.` start no unrestricted research. Preview saves no parent request or dossier revision.
+- [x] Successful parents have unique child IDs, publication keys, revision paths, and completion message keys.
+- [x] Execution-owned servers stop cleanly and ports 8199 and 3199 are clear.
+- [ ] Configured-model legal quality: deferred to Step 13. The deterministic fixture proves application behavior only.
+- [ ] Narrow-screen, keyboard-only, reduced-motion, and 200% zoom: not required by this feature blueprint and not newly exercised.
+
+Exact browser observations, counts, screenshots, logs, resolved defects, and the
+active-vault safety note are in `output/dossier-research-first/browser-results.md`.

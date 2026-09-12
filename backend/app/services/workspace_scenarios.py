@@ -18,6 +18,13 @@ from app.utils.ids import new_id
 from app.utils.time import iso_now
 
 
+def approach_title(value: str, path_kind: str = "") -> str:
+    title = str(value or "").strip()
+    if title.casefold() in {"current approach", "current approach — not yet developed"}:
+        return "Original plan" if path_kind == "baseline" else "Saved approach"
+    return title or "Saved approach"
+
+
 class WorkspaceScenarioService:
     def __init__(self, vault: VaultService, matters: MatterService,
                  workspace: WorkspaceService | None = None,
@@ -57,7 +64,7 @@ class WorkspaceScenarioService:
         data = dict(raw)
         data.update({"matter_id": matter_id, "analysis": document["content"].strip() or str(data.get("analysis") or "")})
         data.setdefault("scenario_id", str(metadata.get("scenario_id") or ""))
-        data.setdefault("title", "Saved scenario")
+        data["title"] = approach_title(data.get("title"), data.get("path_kind", ""))
         data.setdefault("baseline_revisions", {})
         data.setdefault("created_at", metadata.get("created_at") or iso_now())
         data["revision"] = self._revision(document["content"], metadata)
@@ -145,7 +152,7 @@ class WorkspaceScenarioService:
         }
         extras = {key: value for key, value in supplied.items() if key not in known_fields}
         data = Scenario(
-            scenario_id=scenario_id, matter_id=matter_id, title=str(supplied.get("title") or "Saved scenario").strip(),
+            scenario_id=scenario_id, matter_id=matter_id, title=approach_title(supplied.get("title"), supplied.get("path_kind", "")),
             baseline_revisions={str(k): str(v) for k, v in dict(baseline).items()}, issue_ids=issue_ids,
             proposed_fact_changes=changes, unresolved_conditions=[str(item) for item in supplied.get("unresolved_conditions", [])],
             analysis=content, source_links=[str(item) for item in supplied.get("source_links", [])],

@@ -322,7 +322,7 @@ async def update_settings(
         "research.primary_external_provider", "research.fallback_external_provider",
         "research.model_fallback_enabled", "research.model_fallback_provider",
         "research.model_fallback_model", "research.external_timeout_seconds",
-        "research.external_retry_count",
+        "research.external_retry_count", "research.collection_enabled", "research.collection_reasoning_effort",
     }
     unknown_research = [key for key in payload.values if str(key).startswith("research.") and key not in research_keys]
     if unknown_research:
@@ -348,22 +348,16 @@ async def update_settings(
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     catalog = context.settings_store.normalize_model_catalog(await context.model_catalog())
-    fallback_enabled = bool(payload.values.get(
-        "research.model_fallback_enabled",
-        context.research_settings.get("model_fallback_enabled", True),
-    ))
-    if fallback_enabled and any(str(key).startswith("research.") for key in payload.values):
-        fallback_provider = next(
-            (item for item in catalog["providers"] if item.get("id") == "openai_compatible"), None
-        )
-        fallback_model = next(
-            (item for item in (fallback_provider or {}).get("models", []) if item.get("id") == "kimi-k3-fast"), None
-        )
-        if not fallback_provider or fallback_provider.get("readiness") != "ready" or not fallback_model:
-            raise HTTPException(
-                status_code=422,
-                detail="Kimi K3 Fast is not available from the configured OpenAI-compatible model catalog.",
-            )
+    merged_research = {**context.settings_store.read()["values"], **payload.values}
+    if merged_research.get("research.collection_enabled", False) and any(str(key).startswith("research.") for key in payload.values):
+        try:
+            collector = ProviderSettingsPolicy.agent_selection(
+                merged_research.get("research.model_fallback_provider", "openai_compatible"),
+                merged_research.get("research.model_fallback_model", "kimi-k3-fast"),
+                merged_research.get("research.collection_reasoning_effort", "default"))
+            ProviderSettingsPolicy.validate_catalog(collector, catalog)
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
     try:
         ProviderSettingsPolicy.validate_catalog(selection, catalog)
     except ValueError as exc:

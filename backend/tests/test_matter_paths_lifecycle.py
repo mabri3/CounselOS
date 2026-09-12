@@ -65,3 +65,29 @@ async def test_excluded_source_cannot_return_through_selected_conditions(app_con
     assert secret not in json.dumps(result.data)
     frozen=freeze_run_context(ChatRequest(matter_id=M,message='Continue.',context_selections=[{'reference_id':'excluded','path':'excluded.txt','role':'source','selected':False}]),app,'RUN-excluded').frozen_context
     assert secret not in frozen['context']
+
+
+@pytest.mark.asyncio
+async def test_scope_can_save_and_bind_variant_before_note(app_context):
+    from app.tools.handlers import select_conversation_scope
+    from app.tools.matter_paths import path_action
+    app=app_context
+    parent=app.solution_paths.ensure_baseline(M)
+    context=ctx(app,parent)
+    before=app.solution_paths.state(M)
+    facts=app.vault.read_text(app.matter_records._path(M))
+    result=await select_conversation_scope(context,{'scope':'scenario','path_intent':'new',
+        'instruction_quote':'Explore bank custody.','new_path':{
+            'parent_path_id':parent['scenario_id'],'parent_revision':parent['revision'],
+            'title':'Delayed integration test','hypothesis_summary':'Test readiness after launch.',
+            'proposed_fact_changes':[{'change_id':'readiness','text':'Hypothetically integration is ready after launch.'}],
+            'unresolved_conditions':['Bridge is undefined.']}})
+    new=result['data']['path']
+    assert new['scenario_id'] != parent['scenario_id']
+    assert context.scope_state['working_path_id']==new['scenario_id']
+    context.source_action_key='save-variant-note'
+    note=await path_action(context,{'action':'save_working_memory','instruction_quote':'Explore bank custody.',
+        'values':{'expected_sequence':0,'payload':{'current_task':'Test delayed integration.','next_action':'Resolve bridge.'}}})
+    assert note['data']['path_id']==new['scenario_id']
+    assert app.solution_paths.state(M)==before
+    assert app.vault.read_text(app.matter_records._path(M))==facts

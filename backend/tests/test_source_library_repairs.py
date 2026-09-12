@@ -137,11 +137,16 @@ async def test_published_library_citations(app_context, monkeypatch):
     from test_source_library_lifecycle import test_assembled_lifecycle_answers_from_a_late_page_and_survives_restart
     await test_assembled_lifecycle_answers_from_a_late_page_and_survives_restart(app_context, monkeypatch)
     paths = [app_context.vault.relative(p) for p in app_context.vault.iter_files(app_context.matters.matter_path(MATTER), {'.md'})]
-    packets = [app_context.vault.read_markdown(p) for p in paths if app_context.vault.read_markdown(p)['metadata'].get('source_records') is not None]
-    for p in packets:
+    documents = [app_context.vault.read_markdown(p) for p in paths]
+    packets = [p for p in documents if p['metadata'].get('research_id')]
+    for p in documents:
         meta = p['metadata']
-        assert any(('/source-library/' in str(s.get('path')) for s in meta['source_records']))
-        for source in meta['source_records']:
+        sources = meta.get('source_records') or []
+        # Dossier catalogs also contain exact internal issues/facts. Those are
+        # not research packets and must not be presented as library authority.
+        if meta.get('research_id'):
+            assert any('/source-library/' in str(s.get('path')) for s in sources), p['path']
+        for source in sources:
             if '/source-library/' not in str(source.get('path')):
                 continue
             resolved = app_context.workspace_review.resolve_document(MATTER, {'document_id': source['source_id'], 'path': source['path'], 'revision': source['source_hash'], 'available_excerpt': source['available_excerpt'], 'origin': {'surface': 'evidence', 'workspace_view': 'understand'}})

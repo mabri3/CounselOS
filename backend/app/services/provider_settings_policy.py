@@ -105,18 +105,14 @@ class ProviderSettingsPolicy:
         ):
             if key in values and str(values[key]) not in cls.EXTERNAL_RESEARCH_PROVIDERS:
                 raise ValueError(f"Unsupported external research provider: {values[key]}")
-        if (
-            "research.model_fallback_provider" in values
-            and values["research.model_fallback_provider"] != cls.MODEL_FALLBACK_PROVIDER
-        ):
-            raise ValueError(
-                "The research model fallback provider must be openai_compatible."
-            )
-        if (
-            "research.model_fallback_model" in values
-            and values["research.model_fallback_model"] != cls.MODEL_FALLBACK_MODEL
-        ):
-            raise ValueError("The research model fallback must be kimi-k3-fast.")
+        if "research.collection_enabled" in values and not isinstance(values["research.collection_enabled"], bool):
+            raise ValueError("Collection agent enabled must be true or false.")
+        if "research.model_fallback_provider" in values and not cls.is_agent_provider(values["research.model_fallback_provider"]):
+            raise ValueError("Unsupported collection model provider.")
+        if "research.model_fallback_model" in values and not str(values["research.model_fallback_model"]).strip():
+            raise ValueError("Select a collection model.")
+        if "research.collection_reasoning_effort" in values and values["research.collection_reasoning_effort"] not in cls.REASONING_EFFORTS:
+            raise ValueError("Unsupported collection reasoning effort.")
         if (
             "research.external_timeout_seconds" in values
             or "research.external_retry_count" in values

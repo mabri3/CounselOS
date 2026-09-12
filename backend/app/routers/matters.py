@@ -22,12 +22,12 @@ class MatterStorageRequest(BaseModel):
 
 
 @router.get("/storage")
-def list_stored_matters(view: Literal["active", "archived", "trash"] = "active", context: AppContext = Depends(get_context)):
+def list_stored_matters(view: Literal["active", "archived", "trash"] = "active", context: AppContext = Depends(get_context, scope="function")):
     return {"matters": MatterStorageService(context).list(view)}
 
 
 @router.post("/{matter_id}/storage")
-async def change_matter_storage(matter_id: str, payload: MatterStorageRequest, context: AppContext = Depends(get_context)):
+async def change_matter_storage(matter_id: str, payload: MatterStorageRequest, context: AppContext = Depends(get_context, scope="function")):
     try:
         return MatterStorageService(context).change(matter_id, payload.action)
     except KeyError as exc:
@@ -52,7 +52,7 @@ class WorkProductDraftRequest(BaseModel):
 
 
 @router.get("/{matter_id}/mitigations")
-def list_mitigations(matter_id: str, context: AppContext = Depends(get_context)):
+def list_mitigations(matter_id: str, context: AppContext = Depends(get_context, scope="function")):
     try:
         context.matters.get(matter_id)
         return {"items": context.mitigations.list(matter_id)}
@@ -64,7 +64,7 @@ def list_mitigations(matter_id: str, context: AppContext = Depends(get_context))
 def create_mitigation(
     matter_id: str,
     payload: MitigationCreate,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         context.matters.get(matter_id)
@@ -78,7 +78,7 @@ def update_mitigation(
     matter_id: str,
     mitigation_id: str,
     payload: MitigationPatch,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         return context.mitigations.update(
@@ -92,14 +92,14 @@ def update_mitigation(
 
 
 @router.get("")
-def list_matters(context: AppContext = Depends(get_context)):
+def list_matters(context: AppContext = Depends(get_context, scope="function")):
     return {"matters": context.matters.list(), "stages": context.workflow.stages()}
 
 
 @router.post("", status_code=201)
 async def create_matter(
     payload: MatterCreate,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     matter = context.matters.create(payload)
     context.schedule_intake_start(
@@ -145,7 +145,7 @@ async def create_matter(
 
 
 @router.post("/{matter_id}/intake", response_model=ChatResponse)
-async def start_intake(matter_id: str, context: AppContext = Depends(get_context)):
+async def start_intake(matter_id: str, context: AppContext = Depends(get_context, scope="function")):
     try:
         request = context.vault.read_markdown(
             f"{context.matters.matter_path(matter_id)}/request.md"
@@ -162,7 +162,7 @@ async def start_intake(matter_id: str, context: AppContext = Depends(get_context
 
 
 @router.get("/{matter_id}")
-def get_matter(matter_id: str, context: AppContext = Depends(get_context)):
+def get_matter(matter_id: str, context: AppContext = Depends(get_context, scope="function")):
     try:
         return context.matters.get(matter_id)
     except KeyError as exc:
@@ -170,7 +170,7 @@ def get_matter(matter_id: str, context: AppContext = Depends(get_context)):
 
 
 @router.get("/{matter_id}/conversations")
-def list_conversations(matter_id: str, context: AppContext = Depends(get_context)):
+def list_conversations(matter_id: str, context: AppContext = Depends(get_context, scope="function")):
     try:
         return {"conversations": context.chat_history.list(matter_id)}
     except KeyError as exc:
@@ -181,12 +181,14 @@ def list_conversations(matter_id: str, context: AppContext = Depends(get_context
 def get_conversation(
     matter_id: str,
     conversation_id: str,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         conversation = clean_conversation_for_display(
             context.chat_history.get(matter_id, conversation_id)
         )
+        from app.services.dossier_generation_chat import restore_dossier_cards
+        restore_dossier_cards(context, matter_id, conversation)
         return _hide_resolved_intake_questions(context, matter_id, conversation)
     except (KeyError, FileNotFoundError) as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
@@ -216,7 +218,7 @@ def _hide_resolved_intake_questions(
 def update_stage(
     matter_id: str,
     payload: StageUpdate,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         matter = context.matters.move_stage(matter_id, payload.stage, reason=payload.reason)
@@ -229,7 +231,7 @@ def update_stage(
 def update_risk(
     matter_id: str,
     payload: MatterRiskUpdate,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         matter = context.matters.update_risk(matter_id, payload.risk_level, actor=payload.actor)
@@ -258,7 +260,7 @@ def _lifecycle_actor(context: AppContext, person_id: str | None, legacy_actor: s
 def perform_action(
     matter_id: str,
     payload: MatterActionRequest,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
     person_id: str | None = Header(None, alias="X-Themis-Person-Id"),
 ):
     actor, action_actor = _lifecycle_actor(context, person_id, payload.actor)
@@ -276,7 +278,7 @@ def perform_action(
 def complete_work_item(
     matter_id: str,
     payload: WorkItemCompleteRequest,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
     person_id: str | None = Header(None, alias="X-Themis-Person-Id"),
 ):
     actor, action_actor = _lifecycle_actor(context, person_id, payload.actor)
@@ -290,7 +292,7 @@ def complete_work_item(
 def create_work_item(
     matter_id: str,
     payload: WorkItemCreate,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     if payload.matter_id != matter_id:
         raise HTTPException(status_code=422, detail="Work item matter does not match the route matter.")
@@ -316,7 +318,7 @@ def create_work_item(
 def assign_work_item(
     matter_id: str,
     payload: WorkItemAssignRequest,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
     person_id: str | None = Header(None, alias="X-Themis-Person-Id"),
 ):
     actor, action_actor = _lifecycle_actor(context, person_id, payload.actor)
@@ -335,7 +337,7 @@ def assign_work_item(
 def prioritize_work_item(
     matter_id: str,
     payload: WorkItemPriorityRequest,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
     person_id: str | None = Header(None, alias="X-Themis-Person-Id"),
 ):
     actor, action_actor = _lifecycle_actor(context, person_id, payload.actor)
@@ -351,7 +353,7 @@ def prioritize_work_item(
 def add_participant(
     matter_id: str,
     payload: ParticipantUpdateRequest,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         data = context.matters.add_participant(
@@ -371,7 +373,7 @@ def _recommendations(context: AppContext) -> RecommendationService:
 
 
 @router.get("/{matter_id}/recommendation")
-def get_recommendation(matter_id: str, context: AppContext = Depends(get_context)):
+def get_recommendation(matter_id: str, context: AppContext = Depends(get_context, scope="function")):
     try:
         return _recommendations(context).get(matter_id)
     except KeyError as exc:
@@ -381,7 +383,7 @@ def get_recommendation(matter_id: str, context: AppContext = Depends(get_context
 @router.put("/{matter_id}/recommendation", response_model=TypedOperationResult)
 def update_recommendation(
     matter_id: str, payload: RecommendationUpdateRequest,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         data = _recommendations(context).set_working(
@@ -398,7 +400,7 @@ def update_recommendation(
 @router.post("/{matter_id}/recommendation/proposals", response_model=TypedOperationResult)
 def propose_recommendation(
     matter_id: str, payload: RecommendationUpdateRequest,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         data = _recommendations(context).propose(matter_id, payload.content, actor=payload.actor)
@@ -414,7 +416,7 @@ def propose_recommendation(
 @router.post("/{matter_id}/recommendation/accept", response_model=TypedOperationResult)
 def accept_recommendation(
     matter_id: str, payload: RecommendationAcceptRequest,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         data = _recommendations(context).accept(matter_id, actor=payload.actor)
@@ -476,7 +478,7 @@ def _typed_mutation_result(
 def repair_matter_consistency(
     matter_id: str,
     payload: MatterConsistencyRepairRequest,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         return context.matters.repair_consistency(matter_id, actor=payload.actor)
@@ -485,13 +487,13 @@ def repair_matter_consistency(
 
 
 @router.get("/{matter_id}/research-options")
-def research_options(matter_id: str, context: AppContext = Depends(get_context)):
+def research_options(matter_id: str, context: AppContext = Depends(get_context, scope="function")):
     try:
         context.matters.get(matter_id)
         from app.services.native_research import native_options
         resolved = context.research_runs.resolve_agent()
         selection = context.research_runs._selection_values(resolved)
-        return {**context.research.search_options(), **native_options(selection, context.settings),
+        return {**context.research.search_options(), **native_options(selection, context.settings), "native": False,
                 "collector_model_selection": {k: v for k, v in selection.items() if k != "agent_id"},
                 "main_model_selection": {k: v for k, v in context.research_runs._selection_values(context.research_runs.resolve_main()).items() if k != "agent_id"},
                 "allow_followup_queries": True}
@@ -503,7 +505,7 @@ def research_options(matter_id: str, context: AppContext = Depends(get_context))
 async def run_research(
     matter_id: str,
     question: str = "",
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         matter = context.matters.get(matter_id)
@@ -519,7 +521,7 @@ async def run_research(
 async def start_research_run(
     matter_id: str,
     payload: ResearchRunStart,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         questions = payload.questions or ([payload.question] if payload.question.strip() else [])
@@ -537,7 +539,7 @@ async def start_research_run(
 
 
 @router.get("/{matter_id}/research-runs")
-def list_research_runs(matter_id: str, context: AppContext = Depends(get_context)):
+def list_research_runs(matter_id: str, context: AppContext = Depends(get_context, scope="function")):
     try:
         return {"runs": context.research_runs.list(matter_id)}
     except KeyError as exc:
@@ -545,7 +547,7 @@ def list_research_runs(matter_id: str, context: AppContext = Depends(get_context
 
 
 @router.get("/{matter_id}/research-runs/{run_id}")
-def get_research_run(matter_id: str, run_id: str, context: AppContext = Depends(get_context)):
+def get_research_run(matter_id: str, run_id: str, context: AppContext = Depends(get_context, scope="function")):
     try:
         return context.research_runs.get(matter_id, run_id)
     except KeyError as exc:
@@ -555,7 +557,7 @@ def get_research_run(matter_id: str, run_id: str, context: AppContext = Depends(
 @router.get("/{matter_id}/annotations")
 def list_annotations(
     matter_id: str,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         return {"annotations": context.annotations.list(matter_id)}
@@ -567,7 +569,7 @@ def list_annotations(
 def create_annotation(
     matter_id: str,
     payload: AnnotationCreate,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         return context.annotations.create(matter_id, **payload.model_dump())
@@ -579,7 +581,7 @@ def create_annotation(
 async def answer_annotation(
     matter_id: str,
     annotation_id: str,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         return await context.annotations.answer(matter_id, annotation_id)
@@ -593,7 +595,7 @@ async def answer_annotation(
 async def upload_document(
     matter_id: str,
     file: UploadFile = File(...),
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         return await context.ingestion.upload_to_matter(matter_id, file)
@@ -608,7 +610,7 @@ async def upload_documents(
     matter_id: str,
     files: list[UploadFile] = File(...),
     intent: str = Form(default=""),
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         return await context.ingestion.upload_many_to_matter(matter_id, files, intent=intent)
@@ -622,7 +624,7 @@ async def upload_documents(
 def batch_action(
     matter_id: str,
     payload: BatchActionRequest,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         if payload.action == "preview":
@@ -655,7 +657,7 @@ def batch_action(
 def finalize_work_product(
     matter_id: str,
     payload: WorkProductFinalizeRequest,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
     person_id: str | None = Header(None, alias="X-Themis-Person-Id"),
 ):
     actor, action_actor = _lifecycle_actor(context, person_id)
@@ -672,7 +674,7 @@ def finalize_work_product(
 def create_work_product_draft(
     matter_id: str,
     payload: WorkProductDraftRequest,
-    context: AppContext = Depends(get_context),
+    context: AppContext = Depends(get_context, scope="function"),
 ):
     try:
         return context.work_products.create_draft(

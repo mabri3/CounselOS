@@ -10,7 +10,7 @@ from app.services.dossier import serialized
 from app.services.workspace import WorkspaceConflict
 from app.services.workspace_review import WorkspaceReviewService
 
-def validate_read_person(request: Request, context=Depends(get_context), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
+def validate_read_person(request: Request, context=Depends(get_context, scope="function"), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     if request.method == "GET":
         invoke(context.workspace_team.resolve_actor, person_id or None)
 
@@ -37,7 +37,7 @@ def review_service(context) -> WorkspaceReviewService:
 
 
 @router.get("")
-def get_workspace(matter_id: str, context=Depends(get_context)):
+def get_workspace(matter_id: str, context=Depends(get_context, scope="function")):
     saved = invoke(context.workspace.get, matter_id)
     review = review_service(context)
     saved["qualification"] = str(saved.get("qualification") or "")
@@ -64,43 +64,43 @@ def get_workspace(matter_id: str, context=Depends(get_context)):
 
 
 @router.patch("/business-question")
-def change_question(matter_id: str, payload: QuestionCommand, context=Depends(get_context)):
+def change_question(matter_id: str, payload: QuestionCommand, context=Depends(get_context, scope="function")):
     return invoke(context.workspace.change_business_question, matter_id, payload)
 
 
 @router.post("/business-question/proposals")
-def propose_question(matter_id: str, payload: QuestionCommand, context=Depends(get_context)):
+def propose_question(matter_id: str, payload: QuestionCommand, context=Depends(get_context, scope="function")):
     return invoke(context.workspace.propose_business_question, matter_id, payload)
 
 
 @router.patch("/business-question/proposals/{proposal_id}")
-def act_on_proposal(matter_id: str, proposal_id: str, payload: ProposalAction, context=Depends(get_context)):
+def act_on_proposal(matter_id: str, proposal_id: str, payload: ProposalAction, context=Depends(get_context, scope="function")):
     return invoke(context.workspace.act_on_proposal, matter_id, proposal_id, payload)
 
 
 @router.get("/business-question/history")
-def question_history(matter_id: str, context=Depends(get_context)):
+def question_history(matter_id: str, context=Depends(get_context, scope="function")):
     return invoke(context.workspace.question_history, matter_id)
 
 
 @router.post("/business-question/restore")
-def restore_question(matter_id: str, payload: QuestionRestore, context=Depends(get_context)):
+def restore_question(matter_id: str, payload: QuestionRestore, context=Depends(get_context, scope="function")):
     return invoke(context.workspace.restore_business_question, matter_id, payload)
 
 
 @router.patch("/questions/{question_id}")
-def answer_question(matter_id: str, question_id: str, payload: SupportingQuestionCommand, context=Depends(get_context)):
+def answer_question(matter_id: str, question_id: str, payload: SupportingQuestionCommand, context=Depends(get_context, scope="function")):
     return invoke(context.workspace.answer_question, matter_id, question_id, payload)
 
 
 @router.patch("/issues/{issue_id}")
-def update_issue(matter_id: str, issue_id: str, payload: IssueUpdate, context=Depends(get_context)):
+def update_issue(matter_id: str, issue_id: str, payload: IssueUpdate, context=Depends(get_context, scope="function")):
     return invoke(context.workspace.update_issue, matter_id, issue_id, payload.model_dump(exclude_unset=True, exclude={"expected_revision"}), expected_revision=payload.expected_revision)
 
 
 @router.post("/issues/{issue_id}/disposition")
 def record_issue_disposition(matter_id: str, issue_id: str, payload: IssueDispositionCommand,
-                             context=Depends(get_context),
+                             context=Depends(get_context, scope="function"),
                              person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     actor = invoke(context.workspace_team.resolve_actor, person_id or None)
     if payload.workflow:
@@ -110,38 +110,38 @@ def record_issue_disposition(matter_id: str, issue_id: str, payload: IssueDispos
 
 
 @router.get("/decision-map")
-def decision_map(matter_id: str, issue_id: str | None = None, context=Depends(get_context)):
+def decision_map(matter_id: str, issue_id: str | None = None, context=Depends(get_context, scope="function")):
     return invoke(review_service(context).decision_map, matter_id, issue_id=issue_id)
 
 
 @router.get("/documents")
-def documents(matter_id: str, context=Depends(get_context)):
+def documents(matter_id: str, context=Depends(get_context, scope="function")):
     return invoke(review_service(context).documents, matter_id)
 
 
 @router.post("/documents/resolve")
-def resolve_document(matter_id: str, payload: DocumentReferenceTarget, context=Depends(get_context)):
+def resolve_document(matter_id: str, payload: DocumentReferenceTarget, context=Depends(get_context, scope="function")):
     return invoke(review_service(context).resolve_document, matter_id, payload)
 
 
 @router.get("/context")
-def get_context_selection(matter_id: str, context=Depends(get_context)):
+def get_context_selection(matter_id: str, context=Depends(get_context, scope="function")):
     return invoke(context.workspace_evidence.selection, matter_id)
 
 
 @router.put("/context")
-def set_context_selection(matter_id: str, payload: dict, context=Depends(get_context)):
+def set_context_selection(matter_id: str, payload: dict, context=Depends(get_context, scope="function")):
     return invoke(context.workspace_evidence.save_selection, matter_id, payload.get("selections", []), expected_revision=payload.get("expected_revision", ""))
 
 
 @router.get("/files")
-def workspace_files(matter_id: str, query: str = "", context=Depends(get_context)):
+def workspace_files(matter_id: str, query: str = "", context=Depends(get_context, scope="function")):
     entries = invoke(context.workspace_evidence.library, matter_id, query=query)
     return [entry for entry in entries if not any(part.startswith(".") for part in entry["path"].split("/"))]
 
 
 @router.get("/context/{run_id}")
-def run_manifest(matter_id: str, run_id: str, attempt: int | None = None, context=Depends(get_context)):
+def run_manifest(matter_id: str, run_id: str, attempt: int | None = None, context=Depends(get_context, scope="function")):
     manifest_id = run_id
     try:
         run = context.chat_runs.get(matter_id, run_id)
@@ -158,14 +158,14 @@ def run_manifest(matter_id: str, run_id: str, attempt: int | None = None, contex
 
 
 @router.post("/seen")
-def mark_seen(matter_id: str, payload: dict, context=Depends(get_context), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
+def mark_seen(matter_id: str, payload: dict, context=Depends(get_context, scope="function"), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     actor = invoke(context.workspace_team.resolve_actor, person_id or None)
     invoke(context.workspace_team.mark_seen, matter_id, actor=actor, expected_revision=payload.get("expected_revision", ""))
     return context.workspace.recap(matter_id)
 
 
 @router.post("/actions")
-async def start_action(matter_id: str, payload: dict, context=Depends(get_context), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
+async def start_action(matter_id: str, payload: dict, context=Depends(get_context, scope="function"), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     from app.models.api import ChatRequest
     from app.services.workspace_actions import INQUIRY_INSTRUCTIONS
     from app.routers.chat import trusted_chat_actor
@@ -180,12 +180,12 @@ async def start_action(matter_id: str, payload: dict, context=Depends(get_contex
 
 
 @router.get("/scenarios")
-def scenarios(matter_id: str, issue_id: str | None = None, context=Depends(get_context)):
+def scenarios(matter_id: str, issue_id: str | None = None, context=Depends(get_context, scope="function")):
     return invoke(context.workspace_scenarios.list, matter_id, issue_id=issue_id)
 
 
 @router.post("/scenarios")
-def save_scenario(matter_id: str, payload: dict, context=Depends(get_context)):
+def save_scenario(matter_id: str, payload: dict, context=Depends(get_context, scope="function")):
     if "scenario" in payload or "expected_revision" in payload:
         return invoke(context.workspace_scenarios.save, matter_id, payload.get("scenario", payload), expected_revision=payload.get("expected_revision"), source_action_key=payload.get("source_action_key"))
     command = invoke(ScenarioCreateCommand.model_validate, payload)
@@ -194,12 +194,12 @@ def save_scenario(matter_id: str, payload: dict, context=Depends(get_context)):
 
 
 @router.get("/scenarios/{scenario_id}")
-def scenario(matter_id: str, scenario_id: str, context=Depends(get_context)):
+def scenario(matter_id: str, scenario_id: str, context=Depends(get_context, scope="function")):
     return invoke(context.workspace_scenarios.get, matter_id, scenario_id)
 
 
 @router.post("/scenarios/{scenario_id}/analyze")
-async def analyze_scenario(matter_id: str, scenario_id: str, payload: dict, context=Depends(get_context),
+async def analyze_scenario(matter_id: str, scenario_id: str, payload: dict, context=Depends(get_context, scope="function"),
                            person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     from app.models.api import ChatRequest
     from app.routers.chat import trusted_chat_actor
@@ -255,7 +255,7 @@ def finish_fact_control(context, matter_id: str, payload: dict, result: dict) ->
 
 
 @router.post("/scenarios/{scenario_id}/adopt")
-async def adopt_scenario(matter_id: str, scenario_id: str, payload: ScenarioAdoptCommand, context=Depends(get_context)):
+async def adopt_scenario(matter_id: str, scenario_id: str, payload: ScenarioAdoptCommand, context=Depends(get_context, scope="function")):
     data = payload.model_dump()
     saved = invoke(context.workspace_scenarios.adopt_fact_changes, matter_id, scenario_id, data["change_ids"],
         expected_revisions=data["expected_revisions"], source_action_key=data["source_action_key"],
@@ -264,80 +264,80 @@ async def adopt_scenario(matter_id: str, scenario_id: str, payload: ScenarioAdop
 
 
 @router.post("/fact-corrections")
-async def correct_fact(matter_id: str, payload: dict, context=Depends(get_context)):
+async def correct_fact(matter_id: str, payload: dict, context=Depends(get_context, scope="function")):
     saved = invoke(context.workspace_scenarios.correct_fact, matter_id, fact_id=payload.get("fact_id"), replacement=payload.get("replacement", ""), expected_revisions=payload.get("expected_revisions", {}), source_action_key=payload["source_action_key"], trusted_user_action=True)
     return finish_fact_control(context, matter_id, payload, saved)
 
 
 @router.get("/flow")
-def flow(matter_id: str, context=Depends(get_context)):
+def flow(matter_id: str, context=Depends(get_context, scope="function")):
     return {**invoke(context.workspace_flow.get, matter_id), "proposed_fact_changes": invoke(context.workspace_flow.proposed_fact_changes, matter_id)}
 
 
 @router.patch("/flow")
-def save_flow(matter_id: str, payload: dict, context=Depends(get_context)):
+def save_flow(matter_id: str, payload: dict, context=Depends(get_context, scope="function")):
     return invoke(context.workspace_flow.save, matter_id, payload["flow"], expected_revision=payload["expected_revision"])
 
 
 @router.post("/flow/accept-facts")
-async def accept_flow(matter_id: str, payload: dict, context=Depends(get_context)):
+async def accept_flow(matter_id: str, payload: dict, context=Depends(get_context, scope="function")):
     saved = invoke(context.workspace_flow.accept_proposed_fact_changes, matter_id, payload.get("change_ids", []), expected_revisions=payload.get("expected_revisions", {}), source_action_key=payload["source_action_key"], trusted_user_action=True)
     return finish_fact_control(context, matter_id, payload, saved)
 
 
 @router.get("/prior-work")
-def prior_work(matter_id: str, query: str = "", context=Depends(get_context)):
+def prior_work(matter_id: str, query: str = "", context=Depends(get_context, scope="function")):
     return invoke(context.workspace_reuse.prior_work, matter_id, query)
 
 
 @router.get("/reuse")
-def reuse(matter_id: str, context=Depends(get_context)):
+def reuse(matter_id: str, context=Depends(get_context, scope="function")):
     return {"practice_notes": invoke(context.workspace_reuse.list_practice_notes), "applied_notes": invoke(context.workspace_reuse.applied_practice_notes, matter_id), "watches": invoke(context.workspace_reuse.assumption_watches, matter_id), "records": invoke(context.matter_records.get, matter_id)}
 
 
 @router.post("/practice-note-drafts")
-def draft_note(matter_id: str, payload: dict, context=Depends(get_context)):
+def draft_note(matter_id: str, payload: dict, context=Depends(get_context, scope="function")):
     return invoke(context.workspace_reuse.draft_practice_note, goal=payload.get("goal", ""), correction=payload.get("correction", ""), name=payload.get("name", ""))
 
 
 @router.post("/practice-notes")
-def save_note(matter_id: str, payload: dict, context=Depends(get_context)):
+def save_note(matter_id: str, payload: dict, context=Depends(get_context, scope="function")):
     return invoke(context.workspace_reuse.save_practice_note, payload)
 
 
 @router.post("/practice-notes/{skill_id}/apply")
-def apply_note(matter_id: str, skill_id: str, context=Depends(get_context)):
+def apply_note(matter_id: str, skill_id: str, context=Depends(get_context, scope="function")):
     return invoke(context.workspace_reuse.apply_practice_note, matter_id, skill_id)
 
 
 @router.post("/assumption-watches")
-def create_watch(matter_id: str, payload: dict, context=Depends(get_context)):
+def create_watch(matter_id: str, payload: dict, context=Depends(get_context, scope="function")):
     from app.models.awareness import WatchDraftCreate
     return invoke(context.workspace_reuse.create_assumption_watch, matter_id, WatchDraftCreate.model_validate(payload["request"]), assumption_ids=payload.get("assumption_ids", []), decision_ids=payload.get("decision_ids", []))
 
 
 @router.get("/drafts")
-def drafts(matter_id: str, context=Depends(get_context)):
+def drafts(matter_id: str, context=Depends(get_context, scope="function")):
     return invoke(context.work_products.list_drafts, matter_id)
 
 
 @router.post("/drafts/keep")
-def keep_preview(matter_id: str, payload: dict, context=Depends(get_context)):
+def keep_preview(matter_id: str, payload: dict, context=Depends(get_context, scope="function")):
     return invoke(context.work_products.keep_preview, matter_id, payload["path"], expected_revision=payload["expected_revision"])
 
 
 @router.post("/update-offers/{offer_id}/decline")
-def decline_offer(matter_id: str, offer_id: str, payload: dict, context=Depends(get_context)):
+def decline_offer(matter_id: str, offer_id: str, payload: dict, context=Depends(get_context, scope="function")):
     return invoke(context.workspace_actions.decline_offer, matter_id, offer_id, base_revision=payload["base_revision"])
 
 
 @router.get("/outside-counsel-packet")
-def outside_counsel_packet(matter_id: str, path: str, context=Depends(get_context)):
+def outside_counsel_packet(matter_id: str, path: str, context=Depends(get_context, scope="function")):
     return invoke(context.work_products.get_outside_counsel_packet, matter_id, path)
 
 
 @router.post("/outside-counsel-packet/export")
-def export_packet(matter_id: str, payload: dict, context=Depends(get_context)):
+def export_packet(matter_id: str, payload: dict, context=Depends(get_context, scope="function")):
     return invoke(context.work_products.export_outside_counsel_packet, matter_id, payload["brief_path"],
         reviewed_brief_revision=payload["reviewed_brief_revision"], reviewed_cover_revision=payload["reviewed_cover_revision"],
         attachments=payload.get("attachments", []), output_format=payload.get("output_format", "docx"), mode=payload.get("mode", "markup"), document_exports=context.document_exports)
@@ -388,7 +388,7 @@ def current_conversation(context, matter_id, supplied=None):
 
 
 @router.get("/orientation")
-def orientation(matter_id: str, context=Depends(get_context), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
+def orientation(matter_id: str, context=Depends(get_context, scope="function"), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     actor = invoke(context.workspace_team.resolve_actor, person_id or None)
     return invoke(context.workspace_orientation.get, matter_id, actor=actor,
         requests=context.fact_requests.list(matter_id), team_items=context.workspace_team.queue(actor=actor),
@@ -396,12 +396,12 @@ def orientation(matter_id: str, context=Depends(get_context), person_id: str | N
 
 
 @router.get("/scope")
-def continuity_scope(matter_id: str, work_item_id: str | None = None, context=Depends(get_context)):
+def continuity_scope(matter_id: str, work_item_id: str | None = None, context=Depends(get_context, scope="function")):
     return invoke(context.workspace_team.scope, matter_id, work_item_id=work_item_id)
 
 
 @router.get("/handoff-references")
-def handoff_references(matter_id: str, context=Depends(get_context)):
+def handoff_references(matter_id: str, context=Depends(get_context, scope="function")):
     results = []
     base = context.matters.matter_path(matter_id)
     for path in context.vault.iter_files(base, {".md", ".txt"}):
@@ -416,43 +416,43 @@ def handoff_references(matter_id: str, context=Depends(get_context)):
 
 
 @router.get("/fact-requests")
-def fact_requests(matter_id: str, context=Depends(get_context)):
+def fact_requests(matter_id: str, context=Depends(get_context, scope="function")):
     return invoke(context.fact_requests.list, matter_id)
 
 
 @router.post("/fact-requests")
-def create_fact_request(matter_id: str, payload: FactRequestCommand, context=Depends(get_context), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
+def create_fact_request(matter_id: str, payload: FactRequestCommand, context=Depends(get_context, scope="function"), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     actor = continuity_actor(context, matter_id, "fact_request.create", payload, person_id,
         question_id=payload.question_id, request_id=f"FRQ-{digest(matter_id + ':' + payload.source_action_key)[:24]}")
     return invoke(context.fact_requests.create, matter_id, payload, actor=actor)
 
 
 @router.patch("/fact-requests/{request_id}")
-def edit_fact_request(matter_id: str, request_id: str, payload: FactRequestEdit, context=Depends(get_context), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
+def edit_fact_request(matter_id: str, request_id: str, payload: FactRequestEdit, context=Depends(get_context, scope="function"), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     actor = continuity_actor(context, matter_id, "fact_request.edit", payload, person_id, request_id=request_id)
     return invoke(context.fact_requests.edit, matter_id, request_id, payload, actor=actor)
 
 
 @router.post("/fact-requests/{request_id}/actions")
-def act_fact_request(matter_id: str, request_id: str, payload: FactRequestAction, context=Depends(get_context), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
+def act_fact_request(matter_id: str, request_id: str, payload: FactRequestAction, context=Depends(get_context, scope="function"), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     actor = continuity_actor(context, matter_id, "fact_request.act", payload, person_id, request_id=request_id)
     return invoke(context.fact_requests.act, matter_id, request_id, payload, actor=actor)
 
 
 @router.post("/fact-requests/{request_id}/replies")
-def save_fact_reply(matter_id: str, request_id: str, payload: FactReplyCommand, context=Depends(get_context), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
+def save_fact_reply(matter_id: str, request_id: str, payload: FactReplyCommand, context=Depends(get_context, scope="function"), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     actor = continuity_actor(context, matter_id, "fact_request.save_reply", payload, person_id, request_id=request_id)
     return invoke(context.fact_requests.save_reply, matter_id, request_id, payload, actor=actor)
 
 
 @router.post("/fact-requests/{request_id}/replies/{reply_id}/record")
-def record_fact_reply(matter_id: str, request_id: str, reply_id: str, payload: RecordReplyCommand, context=Depends(get_context), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
+def record_fact_reply(matter_id: str, request_id: str, reply_id: str, payload: RecordReplyCommand, context=Depends(get_context, scope="function"), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     actor = continuity_actor(context, matter_id, "fact_request.record_reply", payload, person_id, request_id=request_id, reply_id=reply_id)
     return invoke(context.fact_requests.record_reply, matter_id, request_id, reply_id, payload, actor=actor)
 
 
 @router.post("/fact-requests/reassess")
-async def reassess_fact_reply(matter_id: str, payload: dict, context=Depends(get_context)):
+async def reassess_fact_reply(matter_id: str, payload: dict, context=Depends(get_context, scope="function")):
     from app.models.api import ChatRequest
     key = str(payload.get("source_action_key", ""))
     original_key = key.removesuffix(":reassess")
@@ -472,45 +472,45 @@ async def reassess_fact_reply(matter_id: str, payload: dict, context=Depends(get
 
 
 @router.get("/handoffs")
-def handoffs(matter_id: str, context=Depends(get_context)):
+def handoffs(matter_id: str, context=Depends(get_context, scope="function")):
     return invoke(context.workspace_team.list_handoffs, matter_id)
 
 
 @router.post("/handoffs")
-def create_handoff(matter_id: str, payload: HandoffCommand, context=Depends(get_context), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
+def create_handoff(matter_id: str, payload: HandoffCommand, context=Depends(get_context, scope="function"), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     actor = continuity_actor(context, matter_id, "handoff.create", payload, person_id, work_item_id=payload.scope.work_item_id, recipient_id=payload.recipient_id)
     return invoke(context.workspace_team.create_handoff, matter_id, payload, actor=actor)
 
 
 @router.post("/handoffs/{handoff_id}/actions")
-def act_handoff(matter_id: str, handoff_id: str, payload: HandoffAction, context=Depends(get_context), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
+def act_handoff(matter_id: str, handoff_id: str, payload: HandoffAction, context=Depends(get_context, scope="function"), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     actor = continuity_actor(context, matter_id, "handoff.act", payload, person_id, handoff_id=handoff_id)
     return invoke(context.workspace_team.act_on_handoff, matter_id, handoff_id, payload, actor=actor)
 
 
 @router.get("/impact-candidates")
-def impact_candidates(matter_id: str, context=Depends(get_context)):
+def impact_candidates(matter_id: str, context=Depends(get_context, scope="function")):
     return invoke(context.change_impact.candidates, matter_id)
 
 
 @router.get("/impacts")
-def impact_list(matter_id: str, context=Depends(get_context)):
+def impact_list(matter_id: str, context=Depends(get_context, scope="function")):
     return invoke(context.change_impact.list, matter_id)
 
 
 @router.get("/impacts/{comparison_id}")
-def impact_get(matter_id: str, comparison_id: str, context=Depends(get_context)):
+def impact_get(matter_id: str, comparison_id: str, context=Depends(get_context, scope="function")):
     return invoke(context.change_impact.get, matter_id, comparison_id)
 
 
 @router.post("/impacts")
-def impact_prepare(matter_id: str, payload: ComparisonCommand, context=Depends(get_context), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
+def impact_prepare(matter_id: str, payload: ComparisonCommand, context=Depends(get_context, scope="function"), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     actor = continuity_actor(context, matter_id, "impact.prepare", payload, person_id)
     return invoke(context.change_impact.prepare, matter_id, payload, actor=actor)
 
 
 @router.post("/impacts/{comparison_id}/analyze")
-async def impact_analyze(matter_id: str, comparison_id: str, payload: ContinuityRunCommand, context=Depends(get_context)):
+async def impact_analyze(matter_id: str, comparison_id: str, payload: ContinuityRunCommand, context=Depends(get_context, scope="function")):
     from app.models.api import ChatRequest
     import json
     frozen = invoke(context.change_impact.run_context, matter_id, comparison_id)
@@ -522,7 +522,7 @@ async def impact_analyze(matter_id: str, comparison_id: str, payload: Continuity
 
 
 @router.post("/impacts/{comparison_id}/update-draft")
-async def impact_update(matter_id: str, comparison_id: str, payload: dict, context=Depends(get_context), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
+async def impact_update(matter_id: str, comparison_id: str, payload: dict, context=Depends(get_context, scope="function"), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     from app.models.api import ChatRequest
     command = ImpactUpdateCommand.model_validate({k: v for k, v in payload.items() if k != "conversation_id"})
     actor = continuity_actor(context, matter_id, "impact.prepare_update", command, person_id, comparison_id=comparison_id, target_id=command.target_id)
@@ -556,7 +556,7 @@ async def impact_update(matter_id: str, comparison_id: str, payload: dict, conte
 
 
 @router.post("/prepare-communication")
-async def prepare_communication(matter_id: str, payload: dict, context=Depends(get_context), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
+async def prepare_communication(matter_id: str, payload: dict, context=Depends(get_context, scope="function"), person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     """Model wording uses existing runs, with exact scope frozen before dispatch."""
     from app.models.api import ChatRequest
     from app.routers.chat import trusted_chat_actor
@@ -587,7 +587,7 @@ class PathConditionAssessment(BaseModel):
 @router.post("/issues/{issue_id}/conditions/{condition_id}/assessment")
 @serialized
 def assess_path_condition(matter_id: str, issue_id: str, condition_id: str,
-                          payload: PathConditionAssessment, context=Depends(get_context),
+                          payload: PathConditionAssessment, context=Depends(get_context, scope="function"),
                           person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     actor = invoke(context.workspace_team.resolve_actor, person_id or None)
     snapshot = invoke(review_service(context).decision_map, matter_id)
@@ -617,7 +617,7 @@ class PathConditionAnswer(BaseModel):
 @router.post("/issues/{issue_id}/conditions/{condition_id}/answer")
 @serialized
 def answer_path_condition(matter_id: str, issue_id: str, condition_id: str,
-                          payload: PathConditionAnswer, context=Depends(get_context),
+                          payload: PathConditionAnswer, context=Depends(get_context, scope="function"),
                           person_id: str | None = Header(None, alias="X-Themis-Person-Id")):
     actor = invoke(context.workspace_team.resolve_actor, person_id or None)
     snapshot = invoke(review_service(context).decision_map, matter_id)
@@ -660,7 +660,7 @@ def answer_path_condition(matter_id: str, issue_id: str, condition_id: str,
 
 
 @router.get("/problem-analysis")
-def get_historical_problem_analysis(matter_id: str, reference: str, context=Depends(get_context)):
+def get_historical_problem_analysis(matter_id: str, reference: str, context=Depends(get_context, scope="function")):
     """Read an exact saved breakdown without changing its current pointer."""
     import json
     def load():
@@ -671,7 +671,7 @@ def get_historical_problem_analysis(matter_id: str, reference: str, context=Depe
 
 
 @router.get('/paths')
-def inspect_paths(matter_id: str, offset: int = 0, limit: int = 20, conversation_id: str | None = None, context=Depends(get_context)):
+def inspect_paths(matter_id: str, offset: int = 0, limit: int = 20, conversation_id: str | None = None, context=Depends(get_context, scope="function")):
     result = invoke(context.solution_paths.inspect, matter_id, offset=offset, limit=limit)
     if conversation_id:
         conversation = invoke(context.chat_history.get,matter_id,conversation_id)
@@ -680,7 +680,7 @@ def inspect_paths(matter_id: str, offset: int = 0, limit: int = 20, conversation
 
 
 @router.get('/paths/transitions')
-def path_transitions(matter_id: str, offset: int = 0, limit: int = 20, context=Depends(get_context)):
+def path_transitions(matter_id: str, offset: int = 0, limit: int = 20, context=Depends(get_context, scope="function")):
     return invoke(context.solution_paths.transitions, matter_id, offset=offset, limit=limit)
 
 from app.models.matter_memory import StrictModel
@@ -694,7 +694,7 @@ class DirectPathAction(StrictModel):
     conversation_id: str | None = None
 
 @router.post('/paths/actions')
-async def direct_path_action(matter_id: str,payload: DirectPathAction,context=Depends(get_context)):
+async def direct_path_action(matter_id: str,payload: DirectPathAction,context=Depends(get_context, scope="function")):
     from app.tools.matter_paths import PATH_ACTIONS, path_action
     from app.tools.registry import ToolExecutionContext
     if payload.action not in PATH_ACTIONS:
@@ -712,13 +712,13 @@ async def direct_path_action(matter_id: str,payload: DirectPathAction,context=De
         raise HTTPException(422,detail=str(exc)) from exc
 
 @router.get('/paths/{path_id}/memory')
-def path_memory(matter_id: str,path_id: str,context=Depends(get_context)):
+def path_memory(matter_id: str,path_id: str,context=Depends(get_context, scope="function")):
     return invoke(context.matter_memory.context_view,matter_id,path_id)
 
 @router.get('/saved-sources')
-def saved_source_catalog(matter_id: str,context=Depends(get_context)):
+def saved_source_catalog(matter_id: str,context=Depends(get_context, scope="function")):
     return invoke(context.source_library.catalog,matter_id)
 
 @router.get('/saved-sources/passage')
-def saved_source_passage(matter_id: str,source_id: str,source_version: str,unit_id: str,start: int=0,context=Depends(get_context)):
+def saved_source_passage(matter_id: str,source_id: str,source_version: str,unit_id: str,start: int=0,context=Depends(get_context, scope="function")):
     return invoke(context.source_library.read,matter_id,source_id,source_version,unit_id,start=start,max_chars=6000)

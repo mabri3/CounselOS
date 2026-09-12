@@ -33,7 +33,7 @@ class ResearchCheckpoints:
             "instruction_version": "main-investigation-v1"})
         return self.load(matter_id, run_id)
 
-    def load(self, matter_id, run_id):
+    def load(self, matter_id, run_id, *, allow_unavailable_sources=False):
         run = self.runs.get(matter_id, run_id)
         if run.get("execution_version") != 2 or run.get("checkpoint_version") != 1:
             raise ValueError("Unsupported investigation checkpoint version.")
@@ -51,11 +51,23 @@ class ResearchCheckpoints:
             raise ValueError("Invalid saved checkpoint state.")
         for source in [*cp.get("sources", []), *cp.get("local_sources", [])]:
             path = source.get("path")
-            if not path or not self.vault.exists(path):
-                raise ValueError("Saved source snapshot is missing.")
-            text = self.vault.read_markdown(path)["content"]
-            if digest(text) != source.get("source_hash"):
-                raise ValueError("Saved source snapshot hash changed.")
+            try:
+                if not path or not self.vault.exists(path):
+                    raise ValueError("Saved source snapshot is missing.")
+                text = self.vault.read_markdown(path)["content"]
+                if digest(text) != source.get("source_hash"):
+                    # Older snapshots hashed CRLF bytes before the Markdown
+                    # reader normalized newlines. Accept only an exact saved
+                    # body hash, never a changed source or a guessed version.
+                    import frontmatter
+                    raw = frontmatter.loads(self.vault.resolve(path).read_bytes().decode("utf-8")).content
+                    if digest(raw) != source.get("source_hash"):
+                        raise ValueError("Saved source snapshot hash changed.")
+            except (OSError, ValueError) as exc:
+                if not allow_unavailable_sources:
+                    raise
+                source.update(snapshot_error=str(exc), support_state="unverified")
+                cp["source_warnings"] = list(dict.fromkeys([*cp.get("source_warnings", []), str(exc)]))
         cp["sequence"] = run["checkpoint_sequence"]
         return cp
 
@@ -80,8 +92,8 @@ class ResearchCheckpoints:
         return {**cp, "sequence": expected_sequence + 1}
 
     @serialized
-    def update(self, matter_id, run_id, **values):
-        cp = self.load(matter_id, run_id)
+    def update(self, matter_id, run_id, *, allow_unavailable_sources=False, **values):
+        cp = self.load(matter_id, run_id, allow_unavailable_sources=allow_unavailable_sources)
         return self.save(matter_id, run_id, {**cp, **values}, expected_sequence=cp["sequence"])
 
     @serialized
@@ -122,8 +134,8 @@ class ResearchCheckpoints:
         return call
 
     @serialized
-    def recover(self, matter_id, run_id, *, explicit_retry=False):
-        cp = self.load(matter_id, run_id)
+    def recover(self, matter_id, run_id, *, explicit_retry=False, allow_unavailable_sources=False):
+        cp = self.load(matter_id, run_id, allow_unavailable_sources=allow_unavailable_sources)
         # A process death loses the monotonic clock. Charge the saved maximum
         # duration of the unfinished operation instead of resetting its time.
         reservation = cp.pop("active_time_reservation", 0)

@@ -25,9 +25,10 @@ class Settings(BaseSettings):
     llm_model: str | None = Field(None, alias="LLM_MODEL")
     llm_reasoning_effort: str | None = Field(None, alias="LLM_REASONING_EFFORT")
     llm_timeout_seconds: int = Field(120, alias="LLM_TIMEOUT_SECONDS")
+    dossier_timeout_seconds: int = Field(300, alias="DOSSIER_TIMEOUT_SECONDS", gt=0, le=600)
     model_dispatch_max_bytes: int = Field(256000, alias="MODEL_DISPATCH_MAX_BYTES", ge=10000)
     max_agent_steps: int = Field(6, alias="MAX_AGENT_STEPS")
-    chat_run_timeout_seconds: int = Field(180, alias="CHAT_RUN_TIMEOUT_SECONDS")
+    chat_run_timeout_seconds: int = Field(300, alias="CHAT_RUN_TIMEOUT_SECONDS")
 
     search_provider: str = Field("disabled", alias="SEARCH_PROVIDER")
     tavily_api_key: str | None = Field(None, alias="TAVILY_API_KEY")

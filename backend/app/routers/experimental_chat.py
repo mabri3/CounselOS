@@ -14,7 +14,7 @@ class SkillUpdate(BaseModel):
 
 @router.get("/skills")
 def skills(context=Depends(get_context)):
-    return {"skills": [read_skill(context.vault, name) for name in (*SKILLS, "matter-paths")]}
+    return {"skills": [read_skill(context.vault, name) for name in (*SKILLS, "matter-paths", "dossier-generation")]}
 
 
 @router.put("/skills/{name}")
@@ -24,7 +24,7 @@ def save_skill(name: str, payload: SkillUpdate, context=Depends(get_context)):
         current = read_skill(context.vault, name)
         if current["revision"] != payload.expected_revision:
             raise HTTPException(409, "This skill changed. Reload before replacing it.")
-        if name == "matter-paths":
+        if name in {"matter-paths", "dossier-generation"}:
             context.skills.update(name, instructions=payload.content)
         else:
             context.vault.write_markdown(current["path"], payload.content, {"kind": "experimental_chat_skill"})

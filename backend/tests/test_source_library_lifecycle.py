@@ -91,13 +91,21 @@ async def test_assembled_lifecycle_answers_from_a_late_page_and_survives_restart
     assert "Page 900 of the synthetic authority" in serialized
     assert described_all["units"][500]["body_sha256"] not in serialized
     assert described_all["units"][500]["path"] not in serialized
-    assert len(serialized) < 400_000
+    # Keep the investigation's original total limit. The separate dossier write
+    # has its own dispatch limit and still must not receive bulk source content.
+    assert len(spy.calls) == 5
+    refresh = spy.calls[-1]
+    assert [t["function"]["name"] for t in refresh["tools"]] == ["read_dossier_record"]
+    assert refresh["messages"][0]["content"].startswith("Dossier-generation action.")
+    assert len(json.dumps(spy.calls[:-1], default=str)) < 400_000
+    assert len(json.dumps(refresh, default=str).encode()) <= app_context.settings.model_dispatch_max_bytes
     assert checkpoint["budget_used"]["evidence_chars"] <= 48000
 
     # Published once: a second wait does not add another packet or dossier revision.
     before = len(app_context.research_runs.get(MATTER, run["run_id"])["results"])
     await app_context.research_runs.wait_for_active_work()
     assert len(app_context.research_runs.get(MATTER, run["run_id"])["results"]) == before
+    assert len(spy.calls) == 5
 
     # Reload the app and rebuild the disposable index from Markdown alone.
     from app.runtime import AppContext

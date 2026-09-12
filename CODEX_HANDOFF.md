@@ -1,5 +1,30 @@
 # Codex handoff prompt
 
+## Research-first dossier checkpoint — September 11, 2026
+
+Manual unrestricted dossier generation now creates a saved setup card before
+research starts. The lawyer can edit priorities, choose the first three or all
+mapped issues, select sources, and then Start. One durable parent owns normal
+research children, publishes the first three as a useful first dossier, and can
+publish a later review revision. Stop, same-vault restart, Resume, saved-only
+generation, preview, exact revision links, and saved-conversation hydration work
+in both experimental and standard matter chat.
+
+The isolated five-issue browser fixture used ports 8199 and 3199 and the owned
+vault under `output/dossier-research-first/browser-vault`. It proved real card,
+button, editor, citation, reload, and recovery behavior with deterministic model,
+search, and fetch boundaries. Exact results are in
+`output/dossier-research-first/browser-results.md`. Full-suite and final Step 12
+evidence are in `output/dossier-research-first/pytest.xml` and `step-12.md`.
+Step 13 remains: run one bounded configured-model quality check on a separate
+synthetic matter. Do not use Harbor or change the selected model.
+
+The first fixture smoke attempt rebuilt the disposable SQLite index in the saved
+active Mosaic Relay vault before it failed. It did not change the active pointer
+or Markdown source files. The fixture now constructs `AppContext` directly from
+its owned vault and refuses configured or saved-active vault paths. See the Step
+12 safety record before any future fixture reset.
+
 ## Matter-path implementation checkpoint — September 10, 2026
 
 The isolated worktree includes preserved solution paths, a single mainline pointer, per-conversation focus, bounded working notes, shared editable/frozen guidance and bounded source/archive reads. Full backend check passed 1,480 tests. Frontend typecheck/build and both scripted browser stories passed, with limits in `docs/matter-memory-paths.verification.md`. Source-library baseline changes were preserved before this work. The saved source checkout remains unchanged. No paid semantic evaluation ran; use the frozen evaluation artifacts before any later authorized benchmark. Changes are uncommitted and undeployed.

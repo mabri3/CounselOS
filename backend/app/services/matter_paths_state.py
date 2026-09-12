@@ -50,7 +50,7 @@ class MatterPathService:
             recommendation = f'{base}/recommendations.md'
             content = self.vault.read_markdown(recommendation)['content'] if self.vault.exists(recommendation) else ''
             baseline = self.scenarios.save(matter_id, {
-                'scenario_id':baseline_id, 'title':'Current approach' if content.strip() else 'Current approach — not yet developed',
+                'scenario_id':baseline_id, 'title':'Original plan',
                 'path_kind':'baseline', 'analysis':content,
                 'recommendation_refs':[recommendation] if content else [],
                 'work_item_refs':[item['work_item_id'] for item in self.matters.index.list_work_items(matter_id=matter_id)],

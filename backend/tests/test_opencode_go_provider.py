@@ -145,7 +145,8 @@ async def test_catalog_filters_unknown_protocols_and_has_default_effort():
 
 
 @pytest.mark.asyncio
-async def test_missing_and_malformed_catalogs_keep_saved_model_visible(monkeypatch):
+async def test_missing_and_malformed_catalogs_keep_saved_model_visible(monkeypatch, tmp_path):
+    monkeypatch.setenv("XDG_DATA_HOME", str(tmp_path))
     monkeypatch.delenv("OPENCODE_GO_API_KEY", raising=False)
     monkeypatch.delenv("OPENCODE_API_KEY", raising=False)
     missing = await OpenCodeGoProvider.catalog(saved_model="saved")
@@ -169,3 +170,29 @@ async def test_secret_reflection_is_rejected_without_secret_in_error():
         await provider.complete([{"role": "user", "content": "Go"}])
 
     assert "very-secret" not in str(caught.value)
+
+@pytest.mark.asyncio
+async def test_v41_sends_session_header_and_max_effort():
+    from app.providers.base import provider_session_id
+    client = Client(Response({'choices':[{'message':{'content':'OK'}}]}))
+    provider = OpenCodeGoProvider('deepseek-v4.1-flash', reasoning_effort='max', api_key='test-key', client=client)
+    token = provider_session_id.set('research-session')
+    try:
+        await provider.complete([{'role':'user','content':'Test'}])
+    finally:
+        provider_session_id.reset(token)
+    assert client.calls[0][1]['headers']['x-opencode-session'] == 'research-session'
+    assert client.calls[0][1]['headers']['User-Agent'] == 'CounselOS/0.1'
+    assert client.calls[0][1]['json']['reasoning_effort'] == 'max'
+
+
+def test_cli_credential_reused_without_copying(monkeypatch, tmp_path):
+    from app.providers.opencode_go import resolve_api_key
+    monkeypatch.delenv('OPENCODE_GO_API_KEY', raising=False)
+    monkeypatch.delenv('OPENCODE_API_KEY', raising=False)
+    monkeypatch.setenv('XDG_DATA_HOME', str(tmp_path))
+    (tmp_path/'opencode').mkdir()
+    (tmp_path/'opencode/auth.json').write_text(json.dumps({'opencode-go':{'type':'api','key':'test-cli-key'}}))
+    assert resolve_api_key() == 'test-cli-key'
+    monkeypatch.setenv('OPENCODE_GO_API_KEY', 'explicit-key')
+    assert resolve_api_key() == 'explicit-key'

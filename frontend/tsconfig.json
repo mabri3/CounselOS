@@ -38,7 +38,11 @@
     ".next-firecrawl-repair-build/types/**/*.ts",
     ".next-firecrawl-repair-build/dev/types/**/*.ts",
     ".next-citation-reading-build/types/**/*.ts",
-    ".next-citation-reading-build/dev/types/**/*.ts"
+    ".next-citation-reading-build/dev/types/**/*.ts",
+    ".next-dossier-research-first-build/types/**/*.ts",
+    ".next-dossier-research-first-build/dev/types/**/*.ts",
+    ".next-dossier-research-first-dev/types/**/*.ts",
+    ".next-dossier-research-first-dev/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",

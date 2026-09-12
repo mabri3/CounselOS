@@ -1,4 +1,5 @@
 """Narrow path operations through the existing workspace_action transport."""
+from copy import deepcopy
 from app.models.matter_memory import PathRead, PathExplore, PathUpdate, PathTransition, PathCompare, MemorySave, ArchiveRead
 from app.services.workspace import digest
 
@@ -44,7 +45,7 @@ async def path_action(context,arguments):
         v=ArchiveRead.model_validate(values)
         saved={'state':'withheld'} if excluded else app.chat_history.archive_read(matter,**v.model_dump())
     elif action=='inspect_paths':
-        v=PathRead.model_validate(values)
+        v=PathRead.model_validate({} if values == {'inspect': {}} else values)
         saved=service.inspect(matter,offset=v.offset,limit=v.limit)
         if excluded:
             for p in saved['paths']:
@@ -54,7 +55,10 @@ async def path_action(context,arguments):
         paths=[app.workspace_scenarios.get(matter,p) for p in v.path_ids]
         context.frozen_context['comparison_path_ids']=v.path_ids
         saved={'ordered_path_ids':v.path_ids,'paths':[{'path_id':p['scenario_id'],'revision':p['revision'],
-            **({} if excluded else {'title':p['title'],'assumptions':p['proposed_fact_changes'],'conditions':p['unresolved_conditions']})} for p in paths]}
+            **({} if excluded else {'title':p['title'],'assumptions':p['proposed_fact_changes'],'conditions':p['unresolved_conditions'],
+                'hypothesis_summary':p['hypothesis_summary'][:2000], 'analysis':p['analysis'][:6000],
+                'analysis_truncated':len(p['analysis'])>6000, 'stale':p['stale'],
+                'read_path':app.workspace_scenarios._path(matter,p['scenario_id'])})} for p in paths]}
     elif action=='read_matter_memory':
         v=PathRead.model_validate(values)
         identity=v.path_id or context.scope_state.get('working_path_id') or (context.frozen_context.get('active_path') or {}).get('path_id')
@@ -86,7 +90,7 @@ async def path_action(context,arguments):
             old=app.workspace_scenarios.get(matter,v.path_id)
             saved=app.workspace_scenarios.save(matter,{**old,**v.model_dump(exclude_none=True,exclude={'path_id','expected_path_revision'})},expected_revision=v.expected_path_revision)
     elif action=='save_working_memory':
-        v=MemorySave.model_validate(values)
+        v=MemorySave.model_validate(_memory_source_units(app,matter,values))
         path_id=context.scope_state.get('working_path_id') or (context.frozen_context.get('active_path') or {}).get('path_id')
         if not path_id: raise ValueError('Select a working path first.')
         saved=app.matter_memory.save(matter,path_id,**v.model_dump(),run_id=context.run_id,
@@ -108,3 +112,22 @@ def _identity_only(value):
     if isinstance(value,dict):return {k:_identity_only(v) for k,v in value.items() if k in allowed}
     if isinstance(value,list):return [_identity_only(v) for v in value]
     return value
+
+
+def _memory_source_units(app, matter_id, values):
+    """Resolve a numeric page/section only against the exact stored source version."""
+    result = deepcopy(values)
+    payload = result.get('payload') or {}
+    for ref in app.matter_memory._references(payload | {
+        key: payload.get(key, []) for key in ('findings', 'open_items', 'pending_effects')
+    }):
+        unit = str(ref.get('unit_id') or '')
+        if ref.get('kind') != 'source' or not unit.isdecimal():
+            continue
+        doc = app.source_library.describe(matter_id, ref['record_id'], ref.get('source_version') or '')
+        matches = [u['unit_id'] for u in doc['units']
+                   if u['unit_id'][1:].isdigit() and int(u['unit_id'][1:]) == int(unit)]
+        if len(matches) != 1:
+            raise ValueError('Source page or section is ambiguous or absent. Read the source and use its returned unit_id.')
+        ref['unit_id'] = matches[0]
+    return result

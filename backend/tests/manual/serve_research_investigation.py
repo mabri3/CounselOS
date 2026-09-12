@@ -1,5 +1,6 @@
 """Isolated real-API browser demo. Only provider and network boundaries are fake."""
 import argparse
+from contextlib import asynccontextmanager
 import json
 from pathlib import Path
 import shutil
@@ -15,6 +16,12 @@ class ScriptedMain:
 
     async def complete(self, messages, tools=None):
         self.calls.append(messages)
+        if str(messages[0].get("content", "")).startswith("Dossier-generation action."):
+            supplied = next(m["content"] for m in messages if str(m.get("content", "")).startswith("Saved dossier input"))
+            data = json.loads(supplied.split("\n", 1)[1])
+            return ProviderReply(content="# Matter dossier\n\n## Current position\n\n"
+                + (data.get("accepted_working_view") or {}).get("content", "Keep implementation conditional on the saved requirements.")
+                + "\n\n## Decision question\n\n" + data.get("question", ""))
         names = {t["function"]["name"] for t in tools or []}
         tool_messages = [m for m in messages if m.get("role") == "tool"]
         def call(name, arguments):
@@ -62,6 +69,12 @@ def install_boundaries(context, monkeypatch=None):
     context.runner.provider_resolver = lambda agent: resolve(ProviderSelection(agent.agent_id, "codex", "fixture-collector" if agent.agent_id == "research-agent" else "gpt-5.6-sol", "medium"))
     context.provider_router.resolve_selection = resolve
     context.research_runs.resolve_selection = resolve
+    @asynccontextmanager
+    async def isolated(resolved, *, timeout_seconds):
+        # Keep the separate background transport at the same scripted boundary.
+        # Retain selection metadata without constructing a real CLI client.
+        yield resolved.provider
+    context.provider_router.isolated = isolated
     async def discover(query, selection, settings):
         discoveries.append({"query": query, "selection": selection})
         return json.dumps({"response": "Vendor background only: https://example.com/fixture-overview"})
@@ -87,11 +100,11 @@ def install_boundaries(context, monkeypatch=None):
 def make_app(context, origin):
     from fastapi import FastAPI
     from fastapi.middleware.cors import CORSMiddleware
-    from app.routers import matters, system, team, settings, workspace, experimental_chat, files, chat, decisions, automations, skills, awareness
+    from app.routers import matters, system, team, settings, workspace, experimental_chat, files, chat, decisions, automations, skills, awareness, dossier_requests
     app = FastAPI()
     app.state.context, app.state.ready = context, True
     app.add_middleware(CORSMiddleware, allow_origins=[origin], allow_methods=["*"], allow_headers=["*"], allow_credentials=True)
-    for module in (matters, system, team, settings, workspace, experimental_chat, files, chat, decisions, automations, skills, awareness):
+    for module in (matters, dossier_requests, system, team, settings, workspace, experimental_chat, files, chat, decisions, automations, skills, awareness):
         app.include_router(module.router, prefix="/api")
     return app
 

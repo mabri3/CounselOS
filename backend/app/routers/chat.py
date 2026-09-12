@@ -30,12 +30,12 @@ def trusted_chat_actor(payload, context, person_id=None):
     # Public bodies never choose trusted human provenance or comparison context.
     clean = payload.model_copy(update={"action_actor": None, "continuity_context": None, "frozen_context": None, "frozen_template_use": None})
     if clean.matter_id and clean.source_action_key:
-        for run in context.chat_runs.list(clean.matter_id):
+        run = context.chat_runs.find_by_action_key(clean.matter_id, clean.source_action_key)
+        if run:
             submitted = run.get("request") or {}
-            if submitted.get("source_action_key") == clean.source_action_key:
-                # start() checks exact command identity before returning this run.
-                saved = submitted.get("action_actor") or {"person_id": "historical-unknown", "display_name": "Unattributed lawyer", "mode": "single"}
-                return clean.model_copy(update={"action_actor": ActionActor.model_validate(saved).model_dump(), "lawyer_author": saved["display_name"]})
+            # start() checks exact command identity before returning this run.
+            saved = submitted.get("action_actor") or {"person_id": "historical-unknown", "display_name": "Unattributed lawyer", "mode": "single"}
+            return clean.model_copy(update={"action_actor": ActionActor.model_validate(saved).model_dump(), "lawyer_author": saved["display_name"]})
     if clean.matter_id and clean.source_action_key:
         for summary in context.chat_history.list(clean.matter_id):
             conversation = context.chat_history.get(clean.matter_id, summary["conversation_id"])
@@ -158,7 +158,7 @@ async def recover_intake_question(
 
 
 @router.get("/matters/{matter_id}/chat-runs", response_model=list[ChatRun])
-async def list_chat_runs(matter_id: str, conversation_id: str | None = None, context: AppContext = Depends(get_context)):
+def list_chat_runs(matter_id: str, conversation_id: str | None = None, context: AppContext = Depends(get_context)):
     try:
         return context.chat_runs.list(matter_id, conversation_id)
     except (KeyError, FileNotFoundError) as exc:
@@ -166,7 +166,7 @@ async def list_chat_runs(matter_id: str, conversation_id: str | None = None, con
 
 
 @router.get("/matters/{matter_id}/chat-runs/{run_id}", response_model=ChatRun)
-async def get_chat_run(matter_id: str, run_id: str, context: AppContext = Depends(get_context)):
+def get_chat_run(matter_id: str, run_id: str, context: AppContext = Depends(get_context)):
     try:
         return context.chat_runs.get(matter_id, run_id)
     except WorkspaceConflict as exc:
@@ -285,8 +285,10 @@ def freeze_run_context(payload: ChatRequest, context: AppContext, run_id: str) -
     selections = payload.context_selections
     if selections is None:
         selections = context.workspace_evidence.selection(payload.matter_id)["selections"]
-    library = context.workspace_evidence.library(payload.matter_id)
     selections = [dict(item) for item in selections]
+    # Most UI selections already name the file. Do not scan the matter's full
+    # document library just to resolve an ID that was not submitted.
+    library = context.workspace_evidence.library(payload.matter_id) if any(not item.get("path") for item in selections) else []
     for selection in selections:
         if not selection.get("path"):
             match = next((item for item in library if selection.get("reference_id") in {item.get("reference_id"), item.get("source_id")}), None)
@@ -312,8 +314,17 @@ def freeze_run_context(payload: ChatRequest, context: AppContext, run_id: str) -
         from app.agents.context_selection import pack
         path_packet = {"mainline":state,"working_path":frozen["active_path"],
             "assumptions":working["proposed_fact_changes"],"conditions":working["unresolved_conditions"]}
+        if payload.comparison_path_ids:
+            if len(payload.comparison_path_ids) < 2 or len(set(payload.comparison_path_ids)) != len(payload.comparison_path_ids):
+                raise ValueError("Select at least two distinct approaches to compare.")
+            # Resolve in this matter; labels in the visible message are not identities.
+            for path_id in payload.comparison_path_ids:
+                context.workspace_scenarios.get(payload.matter_id, path_id)
+            frozen["requested_comparison_path_ids"] = list(payload.comparison_path_ids)
         if frozen.get("excluded_paths"):
             path_packet = {"mainline":{k:v for k,v in state.items() if k != "conditions"},"working_path":frozen["active_path"],"historical_material_withheld":True}
+        if payload.comparison_path_ids:
+            path_packet["requested_comparison_path_ids"] = list(payload.comparison_path_ids)
         comparison = next((m for m in reversed(conv['messages']) if m.get('comparison_path_ids')),None) if conv else None
         if comparison:
             path_packet['last_comparison'] = {'message_id':comparison['message_id'],'ordered_path_ids':comparison['comparison_path_ids']}
@@ -381,6 +392,11 @@ def freeze_run_context(payload: ChatRequest, context: AppContext, run_id: str) -
         frozen["continuity"] = deepcopy(payload.continuity_context)
     if payload.action_actor:
         frozen["action_actor"] = deepcopy(payload.action_actor)
+    from app.services.dossier_generation import requested
+    frozen["dossier_skill"] = context.skills.dossier_generation_snapshot()
+    if requested(payload):
+        from app.services.dossier_generation_context import capture
+        frozen["dossier_inputs"] = capture(context, payload.matter_id, frozen)
     return payload.model_copy(update={"frozen_context": frozen, "frozen_template_use": use, "workspace_run_id": run_id})
 
 
@@ -394,6 +410,11 @@ async def execute_chat(
     resolved_provider=None,
     persist_user_message: bool = True,
 ) -> ChatResponse:
+    from app.services.dossier_generation import requested, generate_pending, generation_owner, preview_only
+    dossier_request = requested(payload)
+    dossier_since = context.dossiers.generation_sequence
+    dossier_owner = generation_owner.get() or new_id("DOSOP")
+    dossier_token = generation_owner.set(dossier_owner)
     try:
         if not payload.message.strip() and not payload.card_action and not payload.attachments:
             raise ValueError("Send a message, card action, or attachment.")
@@ -406,7 +427,7 @@ async def execute_chat(
             payload = freeze_run_context(payload, context, run_id)
         user_content = payload.message.strip() or _action_text(payload)
         try:
-            skill_id, model_content = (None, user_content) if payload.experimental_chat and user_content.startswith("/audit") else context.skills.parse_invocation(user_content)
+            skill_id, model_content = (None, user_content) if dossier_request or payload.experimental_chat and user_content.startswith("/audit") else context.skills.parse_invocation(user_content)
         except KeyError as exc:
             raise ValueError(str(exc)) from exc
         if skill_id is None and _watch_builder_requested(user_content, payload):
@@ -555,7 +576,7 @@ async def execute_chat(
             _confirm_saved_operation(
                 context, payload, saved, execution_state=run_state,
             )
-            if payload.matter_id and not (payload.target and payload.target.scenario_id) else None
+            if payload.matter_id else None
         )
         if response is None:
             response = (
@@ -566,6 +587,13 @@ async def execute_chat(
                 )
                 if payload.matter_id and not (payload.target and payload.target.scenario_id) else None
             )
+        if response is None and dossier_request:
+            from app.services.dossier_generation_chat import respond
+            response = await respond(context, payload.model_copy(update={
+                "expected_dossier_hash": expected_dossier_hash,
+                "conversation_id": conversation_id,
+            }), run_state, resolved_provider=resolved_provider, checkpoint=checkpoint,
+                run_id=run_id, message_id=(current_user or {}).get("message_id"))
         if response is None:
             routed_agent_id = resolved_provider.selection.agent_id if resolved_provider else _route_matter_agent(
                 payload,
@@ -613,15 +641,17 @@ async def execute_chat(
         if path_historical:
             run_state.scope_state["scope"] = "scenario"
         if payload.matter_id and run_state.scope_state.get("scope") == "scenario":
-            response.cards = []
+            # An explicit dossier request still needs its setup/progress card
+            # when this conversation previously explored another approach.
+            response.cards = [card for card in response.cards if card.type in {"research_status", "dossier_research"}]
         if payload.matter_id:
-            if run_state.scope_state.get("scope") != "scenario":
+            if not dossier_request and run_state.scope_state.get("scope") != "scenario":
                 _apply_matter_actions(
                     context, payload, saved, response,
                     execution_state=run_state, run_id=run_id,
                 )
             intake_record = context.matter_records.get(payload.matter_id)
-            if (conversation.get("conversation_kind") == "intake" or conversation.get("conversation_kind") == "experimental" and conversation.get("intake_state") is not None) and run_state.scope_state.get("scope") != "scenario":
+            if not dossier_request and (conversation.get("conversation_kind") == "intake" or conversation.get("conversation_kind") == "experimental" and conversation.get("intake_state") is not None) and run_state.scope_state.get("scope") != "scenario":
                 intake_state = intake_record.get("intake_state", "active")
                 context.chat_history.update_state(
                     payload.matter_id,
@@ -641,22 +671,23 @@ async def execute_chat(
                 response.reply, response.operation_results
             )
         from app.services.problem_analysis import extract_problem_analysis
-        _, problem_structure, problem_warnings = extract_problem_analysis(run_state.raw_final_output or response.reply)
-        response.reply, _, _ = extract_problem_analysis(response.reply)
+        _, problem_structure, problem_warnings = extract_problem_analysis(run_state.raw_final_output or response.reply) if not dossier_request else (response.reply, None, [])
+        if not dossier_request:
+            response.reply, _, _ = extract_problem_analysis(response.reply)
         if problem_warnings:
             response.reply += "\n\n" + " ".join(problem_warnings)
-        problem_eligible = (run_state.scope_state.get("scope") != "scenario" and not payload.preview
+        read_only_reply = bool(payload.preview or re.search(r"\b(?:do not|don't|don’t|never)\s+(?:save\b|(?:update|change)\s+(?:any\s+)?(?:records\b|the\s+(?:matter|facts|breakdown|map)\b))|\b(?:no[- ]save|read[- ]only)\b|\bwithout\s+saving\b", payload.message, re.I))
+        problem_eligible = (run_state.scope_state.get("scope") != "scenario" and not read_only_reply
             and not (payload.target and (payload.target.artifact_path or payload.target.scenario_id or payload.target.issue_id))
-            and payload.workspace_action not in {"draft", "prepare_handoff"}
-            and not re.search(r"\b(?:do not|don't|don’t|never)\s+(?:save\b|(?:update|change)\s+(?:any\s+)?(?:records\b|the\s+(?:matter|facts|breakdown|map)\b))|\b(?:no[- ]save|read[- ]only)\b|\bwithout\s+saving\b", payload.message, re.I))
+            and payload.workspace_action not in {"draft", "prepare_handoff"})
         claim_structure = None
-        if response.reply.strip():
+        if response.reply.strip() and not dossier_request:
             visible_reply, claim_structure, _claim_warnings = extract_claim_support(response.reply)
             # A malformed block stays visible. A valid metadata block is hidden
             # only when useful prose remains for the lawyer.
             if visible_reply.strip():
                 response.reply = visible_reply
-        if payload.experimental_chat:
+        if payload.experimental_chat and not dossier_request:
             from app.services.experimental_chat import extract_choices
             extract_choices(response, run_id)
         if payload.experimental_chat and payload.experimental_comment_id:
@@ -670,6 +701,7 @@ async def execute_chat(
                         trace=[item.model_dump() for item in response.trace], cards=[item.model_dump() for item in response.cards],
                         applied_skills=[item.model_dump() for item in response.applied_skills],
                         operation_results=response.operation_results,
+                        source_records=response.source_records,
                     )
                 else:
                     saved = context.chat_history.append(
@@ -677,6 +709,7 @@ async def execute_chat(
                         trace=[item.model_dump() for item in response.trace], cards=[item.model_dump() for item in response.cards],
                         applied_skills=[item.model_dump() for item in response.applied_skills],
                         operation_results=response.operation_results,
+                        source_records=response.source_records,
                     )
             if response.reply.strip() and saved.get("path"):
                 doc = context.vault.read_markdown(saved["path"])
@@ -704,9 +737,10 @@ async def execute_chat(
                 except (OSError, ValueError):
                     response.reply += "\n\nThe answer is saved. Its context record could not be saved."
 
-            if payload.workspace_action in {"prepare_handoff", "draft"}:
+            if dossier_request or read_only_reply or payload.workspace_action in {"prepare_handoff", "draft"}:
                 # Communication and draft output stay in their conversation and
-                # editable work. They are not replacement matter inquiry answers.
+                # editable work. Explicit read-only replies must not replace a
+                # path's analysis and invalidate a concurrent dossier's inputs.
                 pass
             elif response.reply.strip() and payload.workspace_action == "analyze_change_impact" and frozen.get("continuity"):
                 try:
@@ -798,6 +832,11 @@ async def execute_chat(
             context.chat_runs._write(payload.matter_id, access.run_id, state="completed", status="Main answer saved.",
                 response=response.model_dump(mode="json"), conversation_id=conversation_id)
         response.conversation_id = conversation_id
+        if execution_state is None and payload.matter_id and not dossier_request:
+            await generate_pending(context, since=dossier_since, matter_id=payload.matter_id,
+                owner=dossier_owner, resolved_provider=resolved_provider,
+                snapshot=(payload.frozen_context or {}).get("dossier_skill"),
+                allowed=not preview_only(payload) and run_state.scope_state.get("scope") != "scenario")
         response.changed_paths = list(dict.fromkeys([*response.changed_paths, saved["path"]]))
         return response
     except WorkspaceConflict as exc:
@@ -806,6 +845,8 @@ async def execute_chat(
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+    finally:
+        generation_owner.reset(dossier_token)
 
 
 _SUBSTANTIVE_INTAKE_REQUEST = re.compile(
@@ -1150,6 +1191,8 @@ def _confirm_saved_operation(
         raise ValueError("The saved confirmation proposal is no longer available.")
     matter_id = str(payload.matter_id)
     operation = str(proposal_result.get("operation") or "")
+    if payload.target and payload.target.scenario_id and operation != "run_research":
+        return None
     proposal = proposal_result.get("proposal")
     proposal = dict(proposal) if isinstance(proposal, dict) else {}
     source_action_key = str(

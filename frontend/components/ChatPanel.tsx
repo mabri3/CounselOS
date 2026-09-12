@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type ReactNode, KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
 import AttachmentPicker from "@/components/AttachmentPicker";
+import BackgroundDossierRuns from "@/components/BackgroundDossierRuns";
 import ChatCards, { WorkspaceReceiptCards } from "@/components/ChatCards";
 import SkillCommandMenu from "@/components/SkillCommandMenu";
 import LinkifiedText from "@/components/LinkifiedText";
@@ -11,16 +12,17 @@ import UploadIntentCard from "@/components/UploadIntentCard";
 import { cancelChatRun, getChatRun, getChatRuns, getConversation, getConversations, getSkills, recoverIntakeQuestion, retryChatRun, saveWorkProductDraft, startChatRun, uploadDocuments } from "@/lib/api";
 import { chatAgentId, chatDraftStorageKey, chatFailureGuidance, chatProgressLabel, chatRunStateLabel, chatRunStorageKey, chatSuggestions, conversationChatDraftStorageKey, durableChatProgress, historicalQuestionStates, intakeRecoveryKey, legacyChatDraftStorageKey, legacyChatRunStorageKey, mergeChatMessages, needsIntakeQuestionRecovery, pendingChatRunId, promoteConversationComposer, rememberChatRun, remainingComposerValue, safeChatFailureDetail, shouldCompactIntakeTurn, shouldShowChatRunStatus, storeConversationComposer } from "@/lib/chatRunLogic";
 import { legacyQuestionModeStorageKey, questionModeStorageKey } from "@/lib/chatCardLogic";
+import { mergeBackgroundDraft } from "@/lib/dossierRequests";
 import { skillBuilderGoal } from "@/lib/skills";
 import type { AppliedSkillSummary, AttachmentReference, CardAction, ChatCard, ChatRun, IntakeAnswer, OperationResult, QuestionMode, SkillDefinition, ToolTrace } from "@/lib/types";
 import ChatMatterQuestions from "@/components/workspace/ChatMatterQuestions";
 import { notifyMatterChanged, subscribeMatterChanges } from "@/lib/api";
-import ClaimMarkdown from "@/components/workspace/ClaimMarkdown";
+import ClaimMarkdown, { sourceRecordsForDisplay } from "@/components/workspace/ClaimMarkdown";
 import type { ConversationTarget, DocumentIdentity, DocumentReferenceTarget, InteractionReceipt, WorkspaceClaim } from "@/lib/workspaceTypes";
 import styles from "@/components/workspace/MatterConversation.module.css";
 
 type ChatOperationResult = OperationResult & { proposal?: Record<string, unknown> };
-type Message = { message_id?: string; run_id?: string; workspace_action?: string | null; role: "user" | "assistant"; content: string; trace?: ToolTrace[]; cards?: ChatCard[]; attachments?: AttachmentReference[]; applied_skills?: AppliedSkillSummary[]; card_action?: CardAction | null; operation_results?: ChatOperationResult[] };
+type Message = { source_records?: Array<Record<string, unknown>>; message_id?: string; run_id?: string; workspace_action?: string | null; role: "user" | "assistant"; content: string; trace?: ToolTrace[]; cards?: ChatCard[]; attachments?: AttachmentReference[]; applied_skills?: AppliedSkillSummary[]; card_action?: CardAction | null; operation_results?: ChatOperationResult[] };
 
 function conversationTargetLabel(target: ConversationTarget | undefined, matterTitle: string): string {
   if (target?.condition_id) return "Selected numbered question";
@@ -197,7 +199,7 @@ export default function ChatPanel({
   const latestAnswerElement = useRef<HTMLDivElement>(null);
   const followLatest = useRef(true);
   useEffect(() => { if (followLatest.current) { const frame = requestAnimationFrame(() => { const node = threadElement.current; if (node) node.scrollTop = node.scrollHeight; }); return () => cancelAnimationFrame(frame); } }, [messages, busy]);
-  useEffect(() => { if (externalRun?.run_id) { setActiveRun(externalRun); setBusy(["queued", "running"].includes(externalRun.state)); setWaiting(["queued", "running"].includes(externalRun.state)); } }, [externalRun]);
+  useEffect(() => { if (externalRun?.run_id) { setActiveRun(externalRun); setBusy(!externalRun.background && ["queued", "running"].includes(externalRun.state)); setWaiting(!externalRun.background && ["queued", "running"].includes(externalRun.state)); } }, [externalRun]);
   const [waiting, setWaiting] = useState(false);
   const [refreshingRun, setRefreshingRun] = useState(false);
   const [questionMode, setQuestionMode] = useState<QuestionMode>("guided");
@@ -334,19 +336,19 @@ export default function ChatPanel({
         setMessages((current) => {
           const merged = mergeChatMessages(current, saved.messages);
           return run.response?.reply && !merged.some(item => item.role === "assistant" && item.content === run.response?.reply)
-            ? [...merged, { role: "assistant", workspace_action: "unreconciled_run", content: run.response.reply, trace: run.response.trace, cards: run.response.cards, operation_results: run.response.operation_results }]
+            ? [...merged, { role: "assistant", workspace_action: "unreconciled_run", content: run.response.reply, source_records: run.response.source_records, trace: run.response.trace, cards: run.response.cards, operation_results: run.response.operation_results }]
             : merged;
         });
         onConversationChange?.(saved.conversation_id);
       } catch {
         if (run.response) setMessages((current) => current.some((item) => item.role === "assistant" && item.content === run.response?.reply)
           ? current
-          : [...current, { role: "assistant", workspace_action: "unreconciled_run", content: run.response!.reply, trace: run.response!.trace, cards: run.response!.cards, applied_skills: run.response!.applied_skills, operation_results: run.response!.operation_results }]);
+          : [...current, { role: "assistant", workspace_action: "unreconciled_run", content: run.response!.reply, source_records: run.response!.source_records, trace: run.response!.trace, cards: run.response!.cards, applied_skills: run.response!.applied_skills, operation_results: run.response!.operation_results }]);
       }
     } else if (run.response) {
       setMessages((current) => current.some((item) => item.role === "assistant" && item.content === run.response?.reply)
         ? current
-        : [...current, { role: "assistant", workspace_action: "unreconciled_run", content: run.response!.reply, trace: run.response!.trace, cards: run.response!.cards, applied_skills: run.response!.applied_skills, operation_results: run.response!.operation_results }]);
+        : [...current, { role: "assistant", workspace_action: "unreconciled_run", content: run.response!.reply, source_records: run.response!.source_records, trace: run.response!.trace, cards: run.response!.cards, applied_skills: run.response!.applied_skills, operation_results: run.response!.operation_results }]);
     }
     if (["failed", "interrupted"].includes(run.state)) rememberChatRun(window.localStorage, matterId, run);
     else window.localStorage.removeItem(chatRunStorageKey(matterId, run.conversation_id));
@@ -370,7 +372,7 @@ export default function ChatPanel({
   }, [matterId, contextKey, onConversationChange, onRefresh, onReviewAuthorChange]);
 
   useEffect(() => {
-    if (!activeRun || !["queued", "running"].includes(activeRun.state)) return;
+    if (!activeRun || activeRun.background || !["queued", "running"].includes(activeRun.state)) return;
     reconciliationHint(contextKey, matterId, activeRun.conversation_id, null);
     let cancelled = false;
     const check = async () => {
@@ -432,6 +434,7 @@ export default function ChatPanel({
       if (!run) { setBusy(false); setWaiting(false); return; }
       rememberChatRun(window.localStorage, matterId, run);
       setActiveRun(run);
+      if (run.background) { setBusy(false); setWaiting(false); return; }
       if (!["queued", "running"].includes(run.state)) {
         await finishRun(run, shouldRefreshReconnectedRun(run, messages, conversationId, pendingRunId, reconciliationHint(contextKey, matterId, conversationId)));
       } else reconciliationHint(contextKey, matterId, run.conversation_id, null);
@@ -529,8 +532,9 @@ export default function ChatPanel({
       setActiveRun(run);
       setInput((current) => remainingComposerValue(current, previousInput, consumeInput, ""));
       setAttachments((current) => remainingComposerValue(current, previousAttachments, consumeAttachments, []));
-      setWaiting(["queued", "running"].includes(run.state));
-      rememberChatRun(window.localStorage, matterId, run);
+      setWaiting(!run.background && ["queued", "running"].includes(run.state));
+      if (run.background) setBusy(false);
+      else rememberChatRun(window.localStorage, matterId, run);
       if (run.conversation_id) {
         const saved = await getConversation(matterId, run.conversation_id);
         const promotedValue = remainingComposerValue(
@@ -544,7 +548,7 @@ export default function ChatPanel({
         setMessages((current) => mergeChatMessages(current, saved.messages));
         onConversationChange?.(saved.conversation_id);
       }
-      if (!["queued", "running"].includes(run.state)) await finishRun(run);
+      if (!run.background && !["queued", "running"].includes(run.state)) await finishRun(run);
     } catch (caught) {
       setBusy(false);
       setWaiting(false);
@@ -604,6 +608,22 @@ export default function ChatPanel({
       setLoadingHistory(false);
     }
   }
+
+  const refreshDossierConversation = useCallback(async (originConversationId: string) => {
+    if (syncState.current.conversationId !== originConversationId) return;
+    const node = threadElement.current;
+    const scrollTop = node?.scrollTop ?? 0;
+    const wasFollowing = followLatest.current;
+    const [, saved] = await Promise.all([syncState.current.onRefresh(), getConversation(matterId, originConversationId)]);
+    if (syncState.current.conversationId !== originConversationId) return;
+    setMessages(current => mergeChatMessages(current, saved.messages));
+    if (!wasFollowing) requestAnimationFrame(() => { if (threadElement.current) threadElement.current.scrollTop = scrollTop; });
+  }, [matterId]);
+
+  const prepareDossierFollowUp = useCallback((text: string) => {
+    setInput(current => mergeBackgroundDraft(current, text));
+    inputRef.current?.focus();
+  }, []);
 
   async function retryRun() {
     if (!activeRun || !["failed", "interrupted"].includes(activeRun.state)) return;
@@ -744,14 +764,14 @@ export default function ChatPanel({
           </summary>
           <div className="bubble-agent">
             <div className="intake-history-context">This response shows what was known at that point. The latest turn shows the current status.</div>
-            <ClaimMarkdown claims={workspaceClaims} documents={workspaceDocuments} onOpenDocument={onOpenReference} onOpenEvidence={onOpenEvidence} recordId={message.message_id} surface="conversation" text={message.content} />
-            <ChatCards cards={message.cards} currentWorkProductDraftPath={currentWorkProductDraftPath} disabled matterId={matterId} onAction={handleCardAction} onOpenDocument={onOpenDocument} onRefresh={onRefresh} operationResults={currentOperationResults} questionStates={questionStates} questionsDisabled />
+            <ClaimMarkdown claims={workspaceClaims} documents={workspaceDocuments} onOpenDocument={onOpenReference} onOpenEvidence={onOpenEvidence} sources={sourceRecordsForDisplay(message.source_records)} recordId={message.message_id} surface="conversation" text={message.content} />
+            <ChatCards activeConversationId={conversationId} cards={message.cards} currentWorkProductDraftPath={currentWorkProductDraftPath} disabled matterId={matterId} onAction={handleCardAction} onConversationRefresh={refreshDossierConversation} onOpenDocument={onOpenDocument} onPrepareFollowUp={prepareDossierFollowUp} onRefresh={onRefresh} operationResults={currentOperationResults} questionStates={questionStates} questionsDisabled />
           </div>
         </details>
       ) : <div className="bubble-agent">
-        <div className="answer-reading" id={`answer-reading-${messageKey}`} data-collapsed={index === latestAssistantIndex && message.content.length > 700 && !intakeActive && !expandedAnswerKeys.includes(messageKey) ? "true" : undefined}><ClaimMarkdown claims={workspaceClaims} documents={workspaceDocuments} onOpenDocument={onOpenReference} onOpenEvidence={onOpenEvidence} recordId={message.message_id} surface="conversation" text={message.content} /></div>
+        <div className="answer-reading" id={`answer-reading-${messageKey}`} data-collapsed={index === latestAssistantIndex && message.content.length > 700 && !intakeActive && !expandedAnswerKeys.includes(messageKey) ? "true" : undefined}><ClaimMarkdown claims={workspaceClaims} documents={workspaceDocuments} onOpenDocument={onOpenReference} onOpenEvidence={onOpenEvidence} sources={sourceRecordsForDisplay(message.source_records)} recordId={message.message_id} surface="conversation" text={message.content} /></div>
         {index === latestAssistantIndex && message.content.length > 700 && !intakeActive ? <button className="btn quiet" aria-controls={`answer-reading-${messageKey}`} aria-expanded={expandedAnswerKeys.includes(messageKey)} onClick={() => setExpandedAnswerKeys((keys) => keys.includes(messageKey) ? keys.filter((key) => key !== messageKey) : [...keys, messageKey])} type="button">{expandedAnswerKeys.includes(messageKey) ? "Show shorter answer" : "Read full answer"}</button> : null}
-        <ChatCards cards={message.cards} currentWorkProductDraftPath={currentWorkProductDraftPath} disabled={busy} matterId={matterId} onAction={handleCardAction} onOpenDocument={onOpenDocument} onQuestionModeChange={changeQuestionMode} onRefresh={onRefresh} operationResults={currentOperationResults} questionMode={questionMode} questionStates={questionStates} showQuestionMode={intakeActive} />
+        <ChatCards activeConversationId={conversationId} cards={message.cards} currentWorkProductDraftPath={currentWorkProductDraftPath} disabled={busy} matterId={matterId} onAction={handleCardAction} onConversationRefresh={refreshDossierConversation} onOpenDocument={onOpenDocument} onPrepareFollowUp={prepareDossierFollowUp} onQuestionModeChange={changeQuestionMode} onRefresh={onRefresh} operationResults={currentOperationResults} questionMode={questionMode} questionStates={questionStates} showQuestionMode={intakeActive} />
         {SHOW_AGENT_TRACES && message.trace?.length ? <details className="chat-actions"><summary>Actions taken ({message.trace.length})</summary><div className="trace-list">{message.trace.map((item, traceIndex) => <div className="trace-item" key={traceIndex}><span style={{ flex: "none", color: item.status === "success" ? "var(--healthy)" : "var(--failure)" }}>{item.status === "success" ? "✓" : "!"}</span><span style={{ flex: 1 }}><LinkifiedText text={item.summary} /></span></div>)}</div></details> : null}
         {saveAnswerErrors[messageKey] ? <div className="error chat-card-detail" role="alert">{saveAnswerErrors[messageKey]}</div> : null}
         {savedAnswerPaths[messageKey] ? <div className="mutation-status recorded">{savedAnswerNotices[messageKey]} <button className="text-button" onClick={() => onOpenDocument?.(savedAnswerPaths[messageKey])} type="button">Open draft</button></div>
@@ -771,7 +791,8 @@ export default function ChatPanel({
       {historyError ? <p className="error chat-history-status">{historyError}</p> : null}
       {intakeRecoveryNotice ? <div className="chat-history-status" role="status">{intakeRecoveryNotice} <button className="btn tiny quiet" disabled={busy} onClick={retryIntakeQuestion} type="button">Retry intake question</button></div> : null}
       {loadingHistory ? <p className="chat-history-status">Loading saved chat…</p> : null}
-      {activeRun && (shouldShowChatRunStatus(activeRun.state) || activeRun.finished_at) ? (
+      <BackgroundDossierRuns matterId={matterId} conversationId={conversationId} startedRun={activeRun?.background ? activeRun : null} onConversationRefresh={refreshDossierConversation} />
+      {activeRun && !activeRun.background && (shouldShowChatRunStatus(activeRun.state) || activeRun.finished_at) ? (
         <section className={`chat-card ${activeRun.state === "failed" || activeRun.state === "interrupted" ? "wash-failure" : activeRun.state === "completed" ? "wash-healthy" : "wash-agent"}`} role="status">
           <div className="chat-card-kicker">Themis.ai · {chatRunStateLabel(activeRun.state)}</div>
           {activeRun.state === "failed" || activeRun.state === "interrupted" ? (
@@ -779,7 +800,7 @@ export default function ChatPanel({
               <div className="chat-card-summary">{activeRunHasSavedWork ? "Partial work was saved. Review it, then continue with the next matter action." : "Themis.ai could not finish this request."}</div>
               <div className="chat-card-detail">{chatFailureGuidance(activeRun.failure_class)}</div>
               {safeChatFailureDetail(activeRun.failure_detail) ? <div className="chat-card-detail">{safeChatFailureDetail(activeRun.failure_detail)}</div> : null}
-              {activeRun.response?.reply ? <div className="chat-card-detail"><strong>Saved response</strong><ClaimMarkdown claims={workspaceClaims} documents={workspaceDocuments} onOpenDocument={onOpenReference} onOpenEvidence={onOpenEvidence} recordId={activeRun.run_id} surface="conversation" text={activeRun.response.reply} /></div> : null}
+              {activeRun.response?.reply ? <div className="chat-card-detail"><strong>Saved response</strong><ClaimMarkdown claims={workspaceClaims} documents={workspaceDocuments} onOpenDocument={onOpenReference} onOpenEvidence={onOpenEvidence} sources={sourceRecordsForDisplay(activeRun.response.source_records)} recordId={activeRun.run_id} surface="conversation" text={activeRun.response.reply} /></div> : null}
             </>
           ) : activeRun.state === "completed" ? <div className="chat-card-summary">{activeRun.status} Review the saved result below.</div>
             : <div className="chat-card-summary">{activeRunHasSavedIntakeAnswer ? "Answer saved · Preparing the next question" : readingInitialRequest ? "Themis.ai is reading your request…" : durableChatProgress(activeRun)}</div>}

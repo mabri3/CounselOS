@@ -13,6 +13,7 @@
     "check:matter-workspace-helpers": "node --experimental-strip-types scripts/check-matter-workspace-helpers.ts",
     "check:initial-load-integrity": "node --experimental-strip-types scripts/check-initial-load-integrity.ts",
     "check:research-queue": "node --experimental-strip-types scripts/check-research-queue.ts",
+    "check:dossier-research": "node --experimental-strip-types scripts/check-dossier-research.ts",
     "check:workspace-ux": "node --experimental-strip-types scripts/check-transport-preservation.ts && node --experimental-strip-types scripts/check-workspace-ux.ts && npm run check:initial-load-integrity && npm run check:provider-admin && npm run check:adaptive-intake && npm run check:chat-run-recovery && npm run check:research-queue",
     "check:workspace-understand": "node --experimental-strip-types scripts/check-workspace-understand.ts",
     "check:workspace-exploration": "node --experimental-strip-types scripts/check-workspace-exploration.ts",

@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 class ChatRunService:
     """Owns durable, in-process matter chat work."""
 
-    def __init__(self, vault: VaultService, context: Any, timeout_seconds: int = 180):
+    def __init__(self, vault: VaultService, context: Any, timeout_seconds: int = 300):
         self.vault = vault
         self.context = context
         self.timeout_seconds = timeout_seconds
@@ -44,19 +44,19 @@ class ChatRunService:
         if request.matter_id not in {None, matter_id}:
             raise ValueError("The chat request belongs to a different matter.")
         submitted_command = request.model_dump(mode="json", exclude={"action_actor", "lawyer_author", "review_author", "frozen_context", "frozen_template_use", "history"})
-        matter = self.context.matters.get(matter_id)
+        # Starting work needs the saved routing fields, not the complete UI tree
+        # (which reads every historical artifact in a long-running matter).
+        root = self.context.matters.matter_path(matter_id)
+        matter = {**self.vault.read_markdown(root + "/matter.md")["metadata"], "path": root}
         if request.source_action_key:
             from app.services.workspace import WorkspaceConflict
-            directory = self.vault.resolve(f"{matter['path']}/conversations/runs")
-            for path in directory.glob("RUN-*.md"):
-                existing = self.vault.read_markdown(self.vault.relative(path))["metadata"]
+            existing = self.find_by_action_key(matter_id, request.source_action_key)
+            if existing:
                 submitted = existing.get("request") or {}
-                if submitted.get("source_action_key") != request.source_action_key:
-                    continue
                 if existing.get("submitted_command") is not None:
                     if existing["submitted_command"] != submitted_command:
                         raise WorkspaceConflict("This action key was already used for another request.", "", code="action_key_conflict")
-                    return self._recover_draft_output({**existing, "path": self.vault.relative(path)})
+                    return self._recover_draft_output(existing)
                 current = request.model_dump(mode="json")
                 fields = ["message", "active_file", "agent_id", "card_action", "attachments", "context_selections", "output_type", "template_id", "template_overrides", "preview", "workspace_action", "update_offer_id", "continuity_context"]
                 if request.target is not None:
@@ -65,7 +65,7 @@ class ChatRunService:
                     fields.append("expected_question_revision")
                 if any((existing.get("requested_agent_id", submitted.get(field)) if field == "agent_id" else submitted.get(field)) != current.get(field) for field in fields):
                     raise WorkspaceConflict("This action key was already used for another request.", submitted.get("expected_question_revision") or "", code="action_key_conflict")
-                return self._recover_draft_output({**existing, "path": self.vault.relative(path)})
+                return self._recover_draft_output(existing)
         if request.action_actor is None:
             request = request.model_copy(update={"action_actor": self.context.workspace_team.resolve_actor().model_dump()})
         request = request.model_copy(update={"lawyer_author": request.action_actor["display_name"]})
@@ -94,6 +94,7 @@ class ChatRunService:
         })
         payload = freeze_run_context(payload, self.context, run_id)
         from app.services.experimental_chat import resolve_chat_provider
+        from app.services.dossier_generation import requested
         resolved = resolve_chat_provider(payload, self.context)
         if not persist_user_message and not payload.conversation_id:
             raise ValueError("An internal chat run needs an existing conversation.")
@@ -126,6 +127,7 @@ class ChatRunService:
                 self.context.chat_history.update_state(matter_id, saved["conversation_id"], intake_state="active", active_agent_id="intake-agent")
         record = self._write(
             matter_id, run_id, state="queued", status="Chat is queued.",
+            background=requested(payload),
             request=payload.model_dump(mode="json"), submitted_command=submitted_command, action_actor=payload.action_actor, conversation_id=payload.conversation_id,
             frozen_context=payload.frozen_context, frozen_template_use=payload.frozen_template_use,
             persist_user_message=persist_user_message, requested_agent_id=requested_agent_id,
@@ -204,6 +206,20 @@ class ChatRunService:
         actions = dict(current.get("automatic_actions", {}))
         actions[key] = {**dict(actions.get(key, {})), **values}
         return self._write(matter_id, run_id, automatic_actions=actions)
+
+    def find_by_action_key(self, matter_id: str, key: str) -> dict[str, Any] | None:
+        """Check exact saved identity without decoding every historical run."""
+        directory = self.vault.resolve(f"{self.context.matters.matter_path(matter_id)}/conversations/runs")
+        plain_key = bool(re.fullmatch(r"[A-Za-z0-9:._-]+", key))
+        for path in directory.glob("RUN-*.md"):
+            relative = self.vault.relative(path)
+            if plain_key and key not in self.vault.read_text(relative):
+                continue
+            item = self.vault.read_markdown(relative)["metadata"]
+            if (item.get("record_type") == "chat_run" and item.get("matter_id") == matter_id
+                    and (item.get("request") or {}).get("source_action_key") == key):
+                return {**item, "path": relative}
+        return None
 
     def list(self, matter_id: str, conversation_id: str | None = None) -> list[dict[str, Any]]:
         directory = self.vault.resolve(f"{self.context.matters.matter_path(matter_id)}/conversations/runs")
@@ -309,10 +325,14 @@ class ChatRunService:
 
     async def _execute(self, matter_id: str, run_id: str) -> None:
         from app.routers.chat import execute_chat
+        from app.services.dossier_generation import generation_owner, generate_pending, preview_only, requested, saved_material_only
+        dossier_since = self.context.dossiers.generation_sequence
 
         current = self.get(matter_id, run_id)
+        submitted = ChatRequest.model_validate(current["request"])
+        preparing_plan = requested(submitted) and not preview_only(submitted) and not saved_material_only(submitted)
         self._write(
-            matter_id, run_id, state="running", status="Model is working.",
+            matter_id, run_id, state="running", status="Preparing the dossier research plan. No research has started." if preparing_plan else "Model is working.",
             milestone="Model is working.", started_at=iso_now(), failure_class=None,
         )
         execution = RunnerExecutionState(
@@ -340,6 +360,8 @@ class ChatRunService:
                 status=_execution_milestone(state),
                 milestone=_execution_milestone(state),
             )
+        dossier_owner = "chat:" + run_id
+        dossier_token = generation_owner.set(dossier_owner)
         try:
             request = ChatRequest.model_validate(current["request"])
             request = request.model_copy(
@@ -358,8 +380,12 @@ class ChatRunService:
                     resolved_provider=resolved,
                     persist_user_message=bool(current.get("persist_user_message", True)),
                 ),
-                timeout=self.timeout_seconds,
+                timeout=max(self.timeout_seconds, self.context.settings.dossier_timeout_seconds + 30) if requested(request) else self.timeout_seconds,
             )
+            if response.reply.strip() and response.conversation_id:
+                self._sync_assistant_message(
+                    matter_id, response.conversation_id, run_id, response, execution
+                )
             # Keep polling in the running state until the explicit draft save
             # has finished, so the editor cannot observe completion too early.
             completed = self._recover_draft_output({
@@ -367,13 +393,24 @@ class ChatRunService:
                 "response": response.model_dump(mode="json"), "conversation_id": response.conversation_id,
                 "request": request.model_copy(update={"conversation_id": response.conversation_id}).model_dump(mode="json"),
             })
+            generation = []
+            if not requested(request):
+                generation = await generate_pending(self.context, since=dossier_since, matter_id=matter_id,
+                    owner=dossier_owner, resolved_provider=resolved,
+                    snapshot=(request.frozen_context or {}).get("dossier_skill"),
+                    allowed=not preview_only(request) and execution.scope_state.get("scope") != "scenario")
+            dossier_error = next((item.get("error") for item in response.operation_results
+                if item.get("operation") == "generate_dossier" and item.get("status") == "failed"), None)
             saved_run = self._write(
-                matter_id, run_id, state="completed", status="Chat is complete.",
+                matter_id, run_id, state="failed" if dossier_error else "completed",
+                status="Dossier generation did not finish. Earlier text is available." if dossier_error else "Chat is complete.",
                 response=completed["response"], conversation_id=response.conversation_id,
                 operation_results=completed["response"].get("operation_results", execution.operation_results),
                 request=request.model_copy(update={"conversation_id": response.conversation_id}).model_dump(mode="json"),
-                finished_at=iso_now(), failure_detail=None, failure_class=None,
-                milestone="Completed.",
+                finished_at=iso_now(), failure_detail=dossier_error.get("message") if dossier_error else None,
+                failure_class=dossier_error.get("code") if dossier_error else None,
+                milestone="Dossier generation failed." if dossier_error else "Completed.",
+                dossier_generation=generation,
             )
         except asyncio.TimeoutError:
             self._restore_persisted_evidence(matter_id, run_id, execution)
@@ -531,6 +568,7 @@ class ChatRunService:
                     matter_id, conversation_id, run_id, response, execution
                 )
         finally:
+            generation_owner.reset(dossier_token)
             self._tasks.pop(run_id, None)
 
     async def _timeout_result(
@@ -540,7 +578,12 @@ class ChatRunService:
         messages = list(execution.messages) or [message.model_dump() for message in request.history[-12:]]
         if not execution.messages:
             messages.append({"role": "user", "content": request.message})
-        messages.append({"role": "system", "content": "The time limit was reached. Do not call tools. Give the best useful answer from the information already present. State remaining work."})
+        completed = [item.summary for item in execution.trace if item.status == "success"]
+        messages.append({"role": "system", "content": (
+            "The time limit was reached. Do not call tools. Give the best useful answer from the information already present. "
+            "State remaining work. The following tool receipts confirm completed work; do not say these saves are unconfirmed. "
+            "Earlier draft prose may predate these saves.\n" + "\n".join(completed[-12:])
+        )})
         try:
             selection = current.get("selection")
             provider = (
@@ -608,6 +651,9 @@ class ChatRunService:
         """
         request = run.get("request") or {}
         if run.get("state") != "completed" or request.get("workspace_action") != "draft":
+            return run
+        from app.services.dossier_generation import requested
+        if requested(ChatRequest(message=request.get("message", ""))):
             return run
         target = request.get("target") or {}
         if target.get("scenario_id") or (run.get("scope_state") or {}).get("scope") == "scenario":
@@ -719,6 +765,7 @@ class ChatRunService:
                 cards=[item.model_dump(mode="json") for item in response.cards],
                 applied_skills=[item.model_dump(mode="json") for item in response.applied_skills],
                 operation_results=execution.operation_results,
+                source_records=response.source_records,
             )
             return True
         except Exception as exc:

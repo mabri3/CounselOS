@@ -2,6 +2,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any, Literal, Protocol
+from contextvars import ContextVar
+
+provider_session_id: ContextVar[str | None] = ContextVar("provider_session_id", default=None)
 
 
 ReasoningEffort = Literal["none", "minimal", "low", "medium", "high", "xhigh", "max", "ultra"]

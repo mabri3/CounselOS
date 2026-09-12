@@ -3,6 +3,8 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import uuid
+from pathlib import Path
 from typing import Any
 
 import httpx
@@ -26,6 +28,7 @@ from app.providers.catalog import (
 OPENCODE_GO_ENDPOINT = "https://opencode.ai/zen/go/v1"
 OPENCODE_GO_PROTOCOLS = {
     "deepseek-v4-flash": "chat",
+    "deepseek-v4.1-flash": "chat",
     "minimax-m3": "messages",
 }
 _DEFAULT_EFFORTS = ("default", "minimal", "low", "medium", "high", "max")
@@ -33,7 +36,16 @@ _SELECTABLE_EFFORTS = _DEFAULT_EFFORTS[1:]
 
 
 def resolve_api_key() -> str | None:
-    return os.environ.get("OPENCODE_GO_API_KEY") or os.environ.get("OPENCODE_API_KEY")
+    explicit = os.environ.get("OPENCODE_GO_API_KEY") or os.environ.get("OPENCODE_API_KEY")
+    if explicit:
+        return explicit
+    # Reuse the same provider credential as the installed OpenCode CLI.
+    auth_path = Path(os.environ.get("XDG_DATA_HOME", str(Path.home() / ".local/share"))) / "opencode/auth.json"
+    try:
+        auth = json.loads(auth_path.read_text()).get("opencode-go", {})
+        return auth.get("key") if auth.get("type") == "api" and isinstance(auth.get("key"), str) else None
+    except (OSError, ValueError, AttributeError):
+        return None
 
 
 class OpenCodeGoProvider:
@@ -61,6 +73,7 @@ class OpenCodeGoProvider:
             raise ValueError("OpenCode Go reasoning effort is invalid.")
         if reasoning_effort and OPENCODE_GO_PROTOCOLS[normalized] == "messages":
             raise ValueError("This OpenCode Go model does not support reasoning effort.")
+        self._session_id = str(uuid.uuid4())
         self.model = normalized
         self.reasoning_effort = reasoning_effort
         self.api_key = api_key or resolve_api_key()
@@ -114,7 +127,9 @@ class OpenCodeGoProvider:
 
     def _headers(self, protocol: str) -> dict[str, str]:
         assert self.api_key
-        headers = {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}
+        from app.providers.base import provider_session_id
+        headers = {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json",
+                   "User-Agent": "CounselOS/0.1", "x-opencode-session": provider_session_id.get() or self._session_id}
         if protocol == "messages":
             headers.update({"x-api-key": self.api_key, "anthropic-version": "2023-06-01"})
         return headers

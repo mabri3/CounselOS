@@ -31,6 +31,18 @@ class DossierService:
     def __init__(self, vault: VaultService, matters: MatterService):
         self.vault = vault
         self.matters = matters
+        self.generation_sequence = 0
+        self.generation_pending: dict[str, dict[str, Any]] = {}
+
+    def _request_generation(self, matter_id: str, result: dict[str, Any]) -> dict[str, Any]:
+        from app.services.dossier_generation import generation_owner
+        self.generation_sequence += 1
+        self.generation_pending[matter_id] = {
+            "sequence": self.generation_sequence, "owner": generation_owner.get(),
+            "expected_hash": result.get("content_hash") if result["state"] in {"applied", "not_required"} else "review-required",
+            "run_id": new_id("DOSGEN"),
+        }
+        return result
 
     def get(self, matter_id: str) -> dict[str, Any] | None:
         path = self._path(matter_id)
@@ -48,6 +60,7 @@ class DossierService:
         return {
             "summary": (
                 self.section(content, "Matter summary")
+                or self.section(content, "Current position")
                 or self.section(content, "Summary")
                 or self.section(content, "Current ask")
             ),
@@ -201,13 +214,18 @@ class DossierService:
             projected = self._set_section(projected, "Research and source support", "Latest review: `" + research_publication["packet_path"] + "`\n\n" + (research_publication.get("source_support") or "No relevant source passage selected."))
             projected = self._set_section(projected, "Assumptions", research_publication.get("assumption_summary") or "Recorded assumptions are not yet reconciled with this research.")
         if current and self._hash(projected) == self._hash(content):
-            return {
+            return self._request_generation(matter_id, {
                 "state": "not_required",
                 "path": self._path(matter_id),
                 "content_hash": self._hash(content),
-            }
+            })
+        publication_key = (research_publication or {}).get("key")
+        if publication_key and research_publication.get("view_version") in (2, 3):
+            # Acceptance and input changes produce a new projection of the same
+            # research. Only identical content is an idempotent retry.
+            publication_key += ":view:" + self._hash(projected) + ":base:" + str(expected_hash)
         return self.propose_update(
-            matter_id, projected, expected_hash=expected_hash, publication_key=(research_publication or {}).get("key")
+            matter_id, projected, expected_hash=expected_hash, publication_key=publication_key
         )
 
     def project_current_work_state(
@@ -223,10 +241,24 @@ class DossierService:
         proposal = recommendation.get("proposal")
         latest = next((v for v in recommendation["versions"] if v.get("version_id") == recommendation.get("current_version_id")), {})
         publication = (proposal or latest).get("research_publication")
-        if proposal:
+        next_action = str(detail["work_state"].get("next_action") or "")
+        if publication and publication.get("view_version") in (2, 3):
+            from app.services.dossier_research import render_publication
+            # Render freshness from current records without rewriting the saved answer.
+            from app.services.workspace import WorkspaceService, digest
+            from app.services.matter_records import MatterRecordService
+            import json
+            workspace = WorkspaceService(self.vault, self.matters, self)
+            basis = {"business_question_revision": workspace.business_question(matter_id)["revision"],
+                     "facts_hash": digest(json.dumps(MatterRecordService(self.vault, self.matters).get(matter_id)["facts"], sort_keys=True, default=str))}
+            recommendation_text = render_publication(publication, workspace.issues(matter_id), current_basis=basis)
+            recommendation_text = ("### Latest research-based proposal — not yet accepted\n\n" if proposal else "") + recommendation_text
+            if (proposal or latest).get("next_action"):
+                next_action = ("Proposed: " if proposal else "") + (proposal or latest)["next_action"]
+        elif proposal:
             if publication:
                 recommendation_text = ("### Latest research-based proposal — not yet accepted\n\n" + str(proposal["content"])
-                    + "\n\nProposed next action: " + str(proposal.get("next_action") or "Unknown")
+                    + ("\n\nProposed next action: " + proposal["next_action"] if proposal.get("next_action") else "")
                     + "\n\n### Earlier saved position — " + str(latest.get("created_at") or "date unknown") + "\n\n" + recommendation_text)
             else:
                 recommendation_text += "\n\n### Proposed working view — not yet accepted\n\n" + str(proposal["content"])
@@ -262,7 +294,7 @@ class DossierService:
             recommendation=recommendation_text,
             draft=linked_work(detail.get("current_work_product_draft_path"), "Current draft"),
             final=linked_work(detail.get("current_work_product_final_path"), "Current final"),
-            next_action=str(detail["work_state"].get("next_action") or ""),
+            next_action=next_action,
             expected_hash=expected_hash,
             other_work=other_work,
             research_publication=publication,
@@ -272,6 +304,7 @@ class DossierService:
     def propose_update(
         self, matter_id: str, content: str, *, expected_hash: str | None,
         material: bool = True, force: bool = False, publication_key: str | None = None,
+        generated: bool = False,
     ) -> dict[str, Any]:
         current = self.get(matter_id)
         current_hash = self._hash(current["content"]) if current else None
@@ -290,7 +323,9 @@ class DossierService:
         content = self._preserve_question(current, content)
         stored_hash = str(current["metadata"].get("content_hash") or "") if current else ""
         lawyer_edited = bool(stored_hash and stored_hash != current_hash)
-        guard_failed = current is not None and (expected_hash != current_hash or lawyer_edited)
+        # A missing dossier is a version too; changed-input markers must still
+        # keep a first generation (or a deleted dossier's replacement) for review.
+        guard_failed = expected_hash != current_hash or lawyer_edited
         if current is not None and not material and not force:
             return {"state": "not_required", "path": self._path(matter_id), "content_hash": current_hash}
         history = {}
@@ -300,11 +335,13 @@ class DossierService:
             )
         revision = self._write_revision(matter_id, content, current_hash, "draft" if guard_failed else "applied", publication_key=publication_key)
         if guard_failed:
-            return {"state": "review_required", "revision_path": revision, "content_hash": current_hash, **history}
+            result = {"state": "review_required", "revision_path": revision, "content_hash": current_hash, **history}
+            return result if generated or expected_hash == "review-only" else self._request_generation(matter_id, result)
         self._write_current(matter_id, content, revision)
         self.matters.append_event(matter_id, "dossier_updated", {"revision_path": revision, "title": "Dossier updated"})
-        return {"state": "applied", "path": self._path(matter_id), "revision_path": revision,
-                "content_hash": self._hash(content), **history}
+        result = {"state": "applied", "path": self._path(matter_id), "revision_path": revision,
+                  "content_hash": self._hash(content), **history}
+        return result if generated else self._request_generation(matter_id, result)
 
     @serialized
     def apply_revision(self, matter_id: str, revision_path: str, *, expected_hash: str | None) -> dict[str, Any]:
@@ -394,7 +431,9 @@ class DossierService:
             rf"(?ms)^##\s+{re.escape(heading)}\s*\n+(.*?)(?=^##\s+|\Z)",
             content,
         )
-        return match.group(1).strip() if match else ""
+        # Hidden retention/source markers are not the section's visible text.
+        # In particular they must not turn an empty business question into scope.
+        return re.sub(r"<!--.*?-->", "", match.group(1), flags=re.S).strip() if match else ""
 
     @classmethod
     def list_section(cls, content: str, heading: str) -> list[str]:

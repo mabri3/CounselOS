@@ -3,6 +3,7 @@
 import type { InteractionReceipt } from "@/lib/workspaceTypes";
 import Link from "next/link";
 import { ResearchScopeFields } from "@/components/ResearchScopeChoice";
+import DossierResearchCard from "@/components/DossierResearchCard";
 import type { ResearchScope } from "@/lib/researchScope";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { getResearchRun } from "@/lib/api";
@@ -28,9 +29,12 @@ type Props = {
   currentWorkProductDraftPath?: string | null;
   showResearchDocuments?: boolean;
   operationResults?: ChatOperationResult[];
+  activeConversationId?: string | null;
+  onConversationRefresh?: (conversationId: string) => void | Promise<void>;
+  onPrepareFollowUp?: (text: string) => void;
 };
 
-export default function ChatCards({ cards = [], matterId, disabled, questionsDisabled, questionStates, questionMode = "guided", showQuestionMode = false, onQuestionModeChange, onAction, onOpenDocument, onRefresh, currentWorkProductDraftPath, showResearchDocuments = false, operationResults = [] }: Props) {
+export default function ChatCards({ cards = [], matterId, disabled, questionsDisabled, questionStates, questionMode = "guided", showQuestionMode = false, onQuestionModeChange, onAction, onOpenDocument, onRefresh, currentWorkProductDraftPath, showResearchDocuments = false, operationResults = [], activeConversationId, onConversationRefresh, onPrepareFollowUp }: Props) {
   const questions = cards.filter((card): card is Extract<ChatCard, { type: "question" }> => card.type === "question");
   const activeQuestions = questions.filter((card) => (questionStates?.[card.question_id]?.state ?? "active") === "active");
   const historicalQuestions = questions.filter((card) => (questionStates?.[card.question_id]?.state ?? "active") !== "active");
@@ -48,9 +52,14 @@ export default function ChatCards({ cards = [], matterId, disabled, questionsDis
       {otherCards.map((card, index) => {
         const key = card.type === "matter_update" ? card.action_id
           : card.type === "research_status" ? card.run_id
-          : `${card.vault_path}-${index}`;
+          : card.type === "dossier_research" ? card.request_id
+          : "vault_path" in card ? `${card.vault_path}-${index}` : `card-${index}`;
         if (card.type === "matter_update") return null;
         if (card.type === "research_status") return <ResearchCard card={card} key={key} matterId={matterId} onRefresh={onRefresh} onOpenDocument={showResearchDocuments ? onOpenDocument : undefined} />;
+        if (card.type === "dossier_research") {
+          const origin = (card.status && typeof card.status === "object" && !Array.isArray(card.status) ? (card.status as { origin?: { conversation_id?: string } }).origin?.conversation_id : undefined);
+          return <DossierResearchCard activeConversationId={activeConversationId ?? origin} card={card} disabled={disabled} key={key} onConversationRefresh={onConversationRefresh ?? (async () => { await onRefresh?.(); })} onOpenDocument={onOpenDocument} onPrepareFollowUp={onPrepareFollowUp ?? ((text) => window.dispatchEvent(new CustomEvent("themis-dossier-follow-up", { detail: { matterId: card.matter_id, conversationId: origin, text } })))} />;
+        }
         if (card.type === "watch_draft") return <WatchCard card={card} disabled={disabled} key={key} onAction={onAction} />;
         if (card.type === "watch_scan") return <WatchCard card={card} disabled={disabled} key={key} onAction={onAction} />;
         return <WorkProductCard card={card} currentWorkProductDraftPath={currentWorkProductDraftPath} key={key} onOpenDocument={onOpenDocument} />;
@@ -112,16 +121,15 @@ function OperationResultCard({ disabled, onAction, onOpenDocument, result }: {
         : "No change";
   return (
     <section className={`chat-card ${failed ? "wash-failure" : needsConfirmation ? "wash-attention" : recorded ? "wash-healthy" : ""}`}>
-      <div className="chat-card-kicker">Workspace action · {label}</div>
-      <div className="chat-card-summary">{protectedWriteFailure ? "Use the matching workspace action for this record." : result.status === "no_change" ? "No workspace change recorded" : result.summary}</div>
+      {!(researchConfirmation && needsConfirmation) && <div className="chat-card-kicker">Workspace action · {label}</div>}
+      {!(researchConfirmation && needsConfirmation) && <div className="chat-card-summary">{protectedWriteFailure ? "Use the matching workspace action for this record." : result.status === "no_change" ? "No workspace change recorded" : result.summary}</div>}
       {changedRecords.length ? <div className="chat-card-detail">Updated records: {changedRecords.map((record) => record.label).join(" · ")}</div> : null}
-      {result.required_user_action ? <div className="chat-card-detail">{result.required_user_action}</div> : null}
+      {result.required_user_action && !(researchConfirmation && needsConfirmation) ? <div className="chat-card-detail">{result.required_user_action}</div> : null}
       {protectedWriteFailure ? <div className="chat-card-detail">Use Save work product, Run research, Stop research, or the matching direct control.</div> : result.recovery && (failed || result.status === "no_change") ? <div className="chat-card-detail">{result.recovery}</div> : null}
       {failed && result.error && !protectedWriteFailure ? <div className="chat-card-detail">{result.error}</div> : null}
       {error ? <div className="error chat-card-detail" role="alert">{error}</div> : null}
       {researchConfirmation && needsConfirmation && <>
-        <p>{String(result.proposal?.question ?? "")}</p>
-        <ResearchScopeFields value={researchScope} onChange={setResearchScope} disabled={disabled || busy} options={{
+        <ResearchScopeFields compact value={researchScope} onChange={setResearchScope} disabled={disabled || busy} options={{
           provider_ids: researchScope.provider_ids,
           native_available: result.proposal?.native_available === true,
           firecrawl_available: result.proposal?.firecrawl_available === true,
@@ -146,7 +154,7 @@ function OperationResultCard({ disabled, onAction, onOpenDocument, result }: {
           <input disabled={disabled || busy} onChange={(event) => setReason(event.target.value)} value={reason} />
         </label> : null}
       </div> : null}
-      {needsConfirmation ? <div className="chat-card-actions"><button className="btn primary compact" disabled={disabled || busy || (researchConfirmation && researchScope.external && !researchScope.public_query.trim()) || (decisionConfirmation && (!disposition || (reasonRequired && !reason.trim())))} onClick={() => void confirm()} type="button">{busy ? "Recording…" : operationActionLabel(result.operation)}</button></div> : null}
+      {needsConfirmation ? <div className="chat-card-actions"><button className="btn primary compact" disabled={disabled || busy || (researchConfirmation && researchScope.external && !researchScope.public_query.trim()) || (decisionConfirmation && (!disposition || (reasonRequired && !reason.trim())))} onClick={() => void confirm()} type="button">{busy ? (researchConfirmation ? "Starting…" : "Recording…") : operationActionLabel(result.operation)}</button></div> : null}
       {recorded && onOpenDocument && changedRecords.length ? <div className="chat-card-actions">
         {changedRecords.map((record) => <button className="btn tiny quiet" key={record.path} onClick={() => onOpenDocument(record.path)} type="button">Open {record.label}</button>)}
       </div> : null}
@@ -156,7 +164,7 @@ function OperationResultCard({ disabled, onAction, onOpenDocument, result }: {
 
 function operationActionLabel(operation: string): string {
   const labels: Record<string, string> = {
-    run_research: "Start research",
+    run_research: "Continue",
     approve_response: "Approve response",
     mark_response_sent: "Record manual delivery",
     mark_as_sent: "Record manual delivery",

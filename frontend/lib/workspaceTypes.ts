@@ -196,6 +196,9 @@ export interface SupportingQuestionCommand {
 }
 
 export interface ClaimEvidence {
+  reference_key?: string;
+  source_class?: string;
+  selected_passages?: Array<{text?: string; quote?: string; start?: number; end?: number}>;
   claim_id: string;
   source_id: string;
   available_excerpt?: string | null;
@@ -777,6 +780,8 @@ export interface DocumentTabsProps {
   onDiscardLocalEdit: (documentId: string) => void;
 }
 export interface ReferencePreviewProps {
+  documents?: DocumentIdentity[];
+  onOpenReference?: (target: DocumentReferenceTarget) => void;
   target: DocumentReferenceTarget | null;
   document: DocumentIdentity | null;
   loading?: boolean;

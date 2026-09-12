@@ -79,3 +79,22 @@ def test_optional_note_parser_keeps_useful_prose():
     prose,note,warning=extract_working_memory('Useful conditional answer.\n\n```working-memory\n{broken}\n```')
     assert prose=='Useful conditional answer.' and note is None and warning
     assert extract_working_memory('Answer without optional structure.')==('Answer without optional structure.',None,None)
+
+
+@pytest.mark.asyncio
+async def test_numeric_source_unit_resolves_before_note_save(app_context):
+    import io
+    from fastapi import UploadFile
+    from app.tools.matter_paths import _memory_source_units
+    path,kw=setup(app_context)
+    uploaded=await app_context.ingestion.upload_to_matter(M,UploadFile(filename='test.txt',file=io.BytesIO(b'Fictional readiness is December 3.')))
+    ref={'kind':'source','record_id':uploaded['library_source_id'],
+         'source_version':uploaded['library_source_version'],'unit_id':'1'}
+    values={'payload':{**payload(),'findings':[{'text':'Test readiness is December 3.','status':'qualified','references':[ref]}]}}
+    resolved=_memory_source_units(app_context,M,values)
+    saved=app_context.matter_memory.save(M,path,resolved['payload'],**kw)
+    assert saved['payload']['findings'][0]['references'][0]['unit_id']=='s000001'
+    assert ref['unit_id']=='1'
+    ref['unit_id']='999'
+    with pytest.raises(ValueError,match='absent'):
+        _memory_source_units(app_context,M,values)

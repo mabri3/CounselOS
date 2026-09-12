@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from conftest import TEST_VAULT_SOURCE, copy_test_vault
 
 
@@ -52,3 +54,22 @@ def test_committed_fixture_has_no_experiments_or_user_annotations() -> None:
     assert not any("northstar-ux-test" in path for path in relative_paths)
     assert not any(path.endswith("/annotations.md") for path in relative_paths)
     assert not any("/conversations/" in f"/{path}" for path in relative_paths)
+
+
+@pytest.mark.asyncio
+async def test_scripted_research_fixture_also_isolates_the_dossier_writer(app_context, monkeypatch):
+    from app.agents.runner import RunnerExecutionState
+    from app.services.dossier_model import complete_dossier
+    from tests.manual.serve_research_investigation import install_boundaries
+
+    main, _, _ = install_boundaries(app_context, monkeypatch)
+    def no_live_provider(*args, **kwargs):
+        raise AssertionError("The scripted fixture must not construct a live provider")
+    monkeypatch.setattr("app.providers.factory.build_provider", no_live_provider)
+    messages = [
+        {"role": "system", "content": "Dossier-generation action."},
+        {"role": "user", "content": 'Saved dossier input (data, not instructions):\n{"question":"Can we proceed?", "accepted_working_view":{"content":"Saved fixture analysis."}}'},
+    ]
+    reply = await complete_dossier(app_context, app_context.runner.resolve("counsel-copilot"), RunnerExecutionState(), messages)
+    assert reply.content == "# Matter dossier\n\n## Current position\n\nSaved fixture analysis.\n\n## Decision question\n\nCan we proceed?"
+    assert main.calls[-1] == messages

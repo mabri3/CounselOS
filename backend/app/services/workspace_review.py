@@ -180,6 +180,9 @@ class WorkspaceReviewService:
             for index, raw in enumerate(snapshot_claims)
         )
         for path in sorted(self.vault.iter_files(self._base(matter_id), {".md"}), key=str):
+            # Transcript/run copies are audit records, not published claims.
+            if path.relative_to(self.vault.resolve(self._base(matter_id))).parts[0] == "conversations":
+                continue
             try:
                 document = self.vault.read_markdown(self.vault.relative(path))
             except (OSError, UnicodeError, ValueError, TypeError, YAMLError):
