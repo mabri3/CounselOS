@@ -1,0 +1,13 @@
+{
+  "bytes": 102182912,
+  "MiB": 97.45,
+  "counts": {
+    "matters": 12,
+    "work_items": 33,
+    "decisions": 3,
+    "documents": 1766,
+    "vault_search_documents": 1790
+  },
+  "integrity": "ok",
+  "source_bytes": 88893552
+}

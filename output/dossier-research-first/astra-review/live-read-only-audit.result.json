@@ -1,0 +1,12 @@
+{
+  "name": "live-read-only-audit",
+  "command": [
+    ".venv/bin/python",
+    "../output/dossier-research-first/astra-review/audit_live.py"
+  ],
+  "cwd": "/Users/bharris/Programs/counsel-os-mvp/backend",
+  "started_at": "2026-09-12T07:04:50.887975+00:00",
+  "exit_code": 1,
+  "duration_seconds": 0.024,
+  "baseline": "baseline.json"
+}

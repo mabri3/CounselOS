@@ -1,0 +1,48 @@
+ 
+8 
+ 
+on behalf of its affiliate[, or a professional employment organization subject to regulation under 
+other applicable state law]. 
+(y) 
+"Person" means any individual, general partnership, limited partnership, 
+limited liability company, corporation, trust, association, joint stock corporation, or other corporate 
+entity identified by the [Commissioner]. 
+(z) 
+"Receiving money for transmission" or "money received for transmission" 
+means receiving money or monetary value in the United States for transmission within or outside 
+the United States by electronic or other means. 
+(aa) 
+"Stored value" means monetary value representing a claim against the issuer 
+evidenced by an electronic or digital record, and that is intended and accepted for use as a means 
+of redemption for money or monetary value, or payment for goods or services. The term includes, 
+but is not limited to, "prepaid access" as defined by 31 C.F.R. Section 1010.100, as amended or 
+recodified from time to time.  Notwithstanding the foregoing, the term "stored value" does not 
+include a payment instrument or closed loop stored value, or stored value not sold to the public 
+but issued and distributed as part of a loyalty, rewards, or promotional program. 
+(bb) 
+"Tangible net worth" shall mean the aggregate assets of a licensee excluding 
+all intangible assets, less liabilities, as determined in accordance with United States generally 
+accepted accounting principles. 
+ARTICLE III 
+Exemptions 
+Section 3.01 Exemptions. 
+This [Act] does not apply to: 
+(a) 
+An operator of a payment system to the extent that it provides processing, 
+clearing, or settlement services, between or among persons exempted by this [Section 3.01] or 
+licensees, in connection with wire transfers, credit card transactions, debit card transactions, 
+stored-value transactions, automated clearing house transfers, or similar funds transfers. 
+(b) 
+A person appointed as an agent of a payee to collect and process a payment 
+from a payor to the payee for goods or services, other than money transmission itself, provided to 
+the payor by the payee, provided that: 
+(1) 
+there exists a written agreement between the payee and the agent 
+directing the agent to collect and process payments from payors on the payee's behalf; 
+(2) 
+the payee holds the agent out to the public as accepting payments 
+for goods or services on the payee's behalf; and 
+(3) 
+payment for the goods and services is treated as received by the 
+payee upon receipt by the agent so that the payor's obligation is extinguished and there is 
+no risk of loss to the payor if the agent fails to remit the funds to the payee. 

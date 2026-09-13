@@ -1,0 +1,178 @@
+/* [project]/components/DossierResearchCard.module.css [app-client] (css) */
+.DossierResearchCard-module__wgxboq__card {
+  border: 1px dashed var(--agent);
+  background: var(--agent-wash, #fdfdff);
+  border-radius: 10px;
+  gap: 14px;
+  padding: 16px;
+  display: grid;
+}
+
+.DossierResearchCard-module__wgxboq__card h3, .DossierResearchCard-module__wgxboq__card p {
+  margin: 0;
+}
+
+.DossierResearchCard-module__wgxboq__kicker {
+  color: var(--agent);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.DossierResearchCard-module__wgxboq__priorities {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  display: grid;
+}
+
+.DossierResearchCard-module__wgxboq__priorities fieldset, .DossierResearchCard-module__wgxboq__issues, .DossierResearchCard-module__wgxboq__scope {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 12px;
+  display: grid;
+}
+
+.DossierResearchCard-module__wgxboq__priorities label, .DossierResearchCard-module__wgxboq__issues label {
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  display: grid;
+}
+
+.DossierResearchCard-module__wgxboq__priorities input, .DossierResearchCard-module__wgxboq__priorities textarea, .DossierResearchCard-module__wgxboq__issues select {
+  box-sizing: border-box;
+  border: 1px solid var(--control);
+  background: var(--raised);
+  width: 100%;
+  color: var(--ink);
+  font: inherit;
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.DossierResearchCard-module__wgxboq__priorities textarea {
+  resize: vertical;
+  min-height: 72px;
+}
+
+.DossierResearchCard-module__wgxboq__scope label {
+  align-items: center;
+  gap: 8px;
+  display: flex;
+}
+
+.DossierResearchCard-module__wgxboq__scope input {
+  accent-color: var(--ink);
+}
+
+.DossierResearchCard-module__wgxboq__actions {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  display: flex;
+}
+
+.DossierResearchCard-module__wgxboq__issueRows {
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+}
+
+.DossierResearchCard-module__wgxboq__issueRows li {
+  border-left: 3px solid var(--line);
+  background: var(--raised);
+  gap: 5px;
+  padding: 12px;
+  display: grid;
+}
+
+.DossierResearchCard-module__wgxboq__issueRows li > div {
+  justify-content: space-between;
+  gap: 12px;
+  display: flex;
+}
+
+.DossierResearchCard-module__wgxboq__issueRows p {
+  color: var(--ink-3);
+  font-size: 13px;
+}
+
+.DossierResearchCard-module__wgxboq__state {
+  flex: none;
+  font-weight: 700;
+}
+
+.DossierResearchCard-module__wgxboq__state_running, .DossierResearchCard-module__wgxboq__state_queued {
+  border-left-color: var(--agent) !important;
+}
+
+.DossierResearchCard-module__wgxboq__state_saved {
+  border-left-color: var(--healthy) !important;
+}
+
+.DossierResearchCard-module__wgxboq__state_partial, .DossierResearchCard-module__wgxboq__state_interrupted, .DossierResearchCard-module__wgxboq__state_newly_identified {
+  border-left-color: var(--attention) !important;
+}
+
+.DossierResearchCard-module__wgxboq__state_failed {
+  border-left-color: var(--failure) !important;
+  background: var(--failure-wash, #fffaf8) !important;
+}
+
+.DossierResearchCard-module__wgxboq__revision {
+  border: 1px solid var(--healthy);
+  background: var(--healthy-tint, #e0efe9);
+  color: var(--healthy);
+  border-radius: 6px;
+  justify-self: start;
+  padding: 8px 10px;
+  font-weight: 700;
+}
+
+.DossierResearchCard-module__wgxboq__attention {
+  border-left: 3px solid var(--attention);
+  background: var(--attention-wash, #fffdf4);
+  padding: 8px 10px;
+  font-weight: 700;
+}
+
+.DossierResearchCard-module__wgxboq__newIssues {
+  border-left: 3px solid var(--attention);
+  background: var(--attention-wash, #fffdf4);
+  gap: 8px;
+  padding: 12px;
+  display: grid;
+}
+
+.DossierResearchCard-module__wgxboq__newIssues ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.DossierResearchCard-module__wgxboq__error {
+  color: var(--failure) !important;
+}
+
+.DossierResearchCard-module__wgxboq__card details code {
+  overflow-wrap: anywhere;
+  color: var(--ink-3);
+  font-size: 11px;
+}
+
+@media (max-width: 760px) {
+  .DossierResearchCard-module__wgxboq__priorities {
+    grid-template-columns: 1fr;
+  }
+
+  .DossierResearchCard-module__wgxboq__issueRows li > div {
+    display: grid;
+  }
+}
+
+/*# sourceMappingURL=components_DossierResearchCard_module_css_1igg3k2._.single.css.map*/

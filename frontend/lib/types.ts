@@ -432,7 +432,7 @@ export type AppliedSkillSummary = { skill_id: string; name: string };
 
 export type ChatChoice = { value: string; label: string; suggested?: boolean };
 export type DossierPriority = { key: string; text: string; why: string; issue_ids: string[]; changed?: boolean };
-export type DossierIssueStatus = { issue_id: string; title: string; state: string; planned_order?: number | null; selected_first?: boolean; sources_read: number; sources_retrieved: number; sources_discovered?: number; initial_answer?: string; next_action?: string; support?: string | null; packet_path?: string | null; answer_path?: string | null; last_error?: string | null; run_id?: string | null };
+export type DossierIssueStatus = { issue_id: string; title: string; state: string; planned_order?: number | null; selected_first?: boolean; sources_read: number; sources_retrieved: number; sources_discovered?: number; initial_answer?: string; next_action?: string; support?: string | null; packet_path?: string | null; answer_path?: string | null; last_error?: string | null; recovery_status?: string | null; run_id?: string | null; web_run_id?: string | null };
 export type DossierPublication = { key?: string; issue_ids?: string[]; state?: string; revision_path?: string | null; composed_at?: string | null; warning?: string | null; receipts?: Record<string, unknown> };
 export type DossierRequestStatus = {
   request_id: string; matter_id: string; state: string; phase: string; sequence: number; plan_revision: string;

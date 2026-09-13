@@ -147,9 +147,9 @@ def test_document_discovery_does_not_decode_conversation_run_archives(app_contex
     archive = root + "/conversations/runs/RUN-archived.md"
     app.vault.write_markdown(archive, "# Audit only", {"record_type": "chat_run", "trace": ["old result"]})
     original = app.vault.read_markdown
-    def read(path):
+    def read(path, **kwargs):
         assert str(path) != archive, "Document discovery must not decode old chat runs."
-        return original(path)
+        return original(path, **kwargs)
     monkeypatch.setattr(app.vault, "read_markdown", read)
     app.workspace_evidence.library(MATTER)
     app.workspace._output_revisions(MATTER)

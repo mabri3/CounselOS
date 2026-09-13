@@ -1,0 +1,50 @@
+         167210426 function calls (158432733 primitive calls) in 49.752 seconds
+
+   Ordered by: cumulative time
+   List reduced from 649 to 42 due to restriction <42>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+     1204    0.109    0.000   46.803    0.039 vault.py:51(read_markdown)
+        1    0.030    0.030   44.302   44.302 chat_runs.py:36(start)
+      916    0.126    0.000   41.166    0.045 frontmatter.py:32(loads)
+      915    0.356    0.000   39.149    0.043 __init__.py:74(load)
+      915    7.571    0.008   38.606    0.042 constructor.py:47(get_single_data)
+        1    0.014    0.014   26.244   26.244 chat.py:278(freeze_run_context)
+        9    0.026    0.003   22.368    2.485 chat_history.py:36(get)
+  7709109   14.908    0.000   16.100    0.000 resolver.py:143(resolve)
+        1    0.001    0.001   14.592   14.592 context.py:162(build_run_context)
+        5    0.056    0.011   14.404    2.881 workspace.py:489(questions)
+      915    0.160    0.000   12.301    0.013 constructor.py:54(construct_document)
+        1    0.014    0.014   11.869   11.869 chat_history.py:51(append)
+914946/747986    0.136    0.000   11.021    0.000 constructor.py:410(construct_yaml_map)
+   457473    0.194    0.000   10.835    0.000 constructor.py:215(construct_mapping)
+   457473    1.013    0.000    9.932    0.000 constructor.py:132(construct_mapping)
+  6949288    4.360    0.000    8.937    0.000 constructor.py:67(construct_object)
+        1    0.000    0.000    5.617    5.617 problem_analysis.py:81(capture)
+        1    0.009    0.009    5.451    5.451 chat.py:28(trusted_chat_actor)
+7181208/1206    2.370    0.000    4.892    0.004 copy.py:118(deepcopy)
+471375/1206    0.824    0.000    4.890    0.004 copy.py:217(_deepcopy_dict)
+234018/1966    0.142    0.000    4.827    0.002 copy.py:191(_deepcopy_list)
+  5569897    0.607    0.000    3.627    0.000 constructor.py:402(construct_yaml_str)
+  6169969    1.358    0.000    3.254    0.000 constructor.py:173(construct_scalar)
+        1    0.000    0.000    3.089    3.089 issue_analysis.py:50(capture)
+        1    0.000    0.000    2.855    2.855 workspace.py:803(issue_analyses)
+        5    0.000    0.000    2.851    0.570 issue_analysis.py:183(resolve)
+        1    0.000    0.000    2.839    2.839 issue_analysis.py:539(_current_basis)
+        1    0.000    0.000    2.705    2.705 problem_analysis.py:51(_inputs)
+        1    0.014    0.014    2.477    2.477 chat_history.py:26(list)
+        2    0.000    0.000    1.914    0.957 vault.py:113(write_markdown)
+        2    0.008    0.004    1.874    0.937 frontmatter.py:63(dumps)
+ 25425652    1.328    0.000    1.861    0.000 {built-in method builtins.isinstance}
+        2    0.000    0.000    1.859    0.930 __init__.py:248(dump)
+        2    0.029    0.015    1.859    0.930 __init__.py:215(dump_all)
+        2    0.569    0.285    1.820    0.910 representer.py:26(represent)
+  6169969    1.422    0.000    1.625    0.000 constructor.py:117(construct_scalar)
+ 26788048    1.440    0.000    1.441    0.000 {method 'get' of 'dict' objects}
+  6575361    1.385    0.000    1.385    0.000 nodes.py:27(__init__)
+   684272    0.080    0.000    1.242    0.000 {built-in method builtins.next}
+   451710    0.068    0.000    1.145    0.000 constructor.py:405(construct_yaml_seq)
+     1830    0.603    0.000    1.126    0.001 frontmatter.py:40(<genexpr>)
+   728356    1.107    0.000    1.107    0.000 nodes.py:36(__init__)
+
+

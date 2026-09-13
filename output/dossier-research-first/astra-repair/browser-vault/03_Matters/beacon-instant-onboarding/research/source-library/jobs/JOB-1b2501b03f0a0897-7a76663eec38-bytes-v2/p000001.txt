@@ -1,0 +1,2 @@
+SYNTHETIC RULE: Written consent is required before transfer.
+Exception: express permission covers the named receiving entity.

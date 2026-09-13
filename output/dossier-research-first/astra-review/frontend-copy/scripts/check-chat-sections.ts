@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import { separateChatSections } from '../lib/chatMarkdown.ts';
+const raw = '- **Open work:** Review existing alerts.\n**Bank-held funds structure**\nA bank holds funds.\n- **Added work:** New contracts.\n**Working view**\nThe choice remains open.\n**Next step**\nReview the operating model.';
+const parse = (s: string) => unified().use(remarkParse).parse(s);
+assert.equal(parse(raw).children.length, 1, 'Reproduce accidental list continuation');
+const tree = parse(separateChatSections(raw));
+assert.deepEqual(tree.children.map(n=>n.type), ['list','paragraph','paragraph','list','paragraph','paragraph','paragraph','paragraph']);
+for (const code of ['```md\n**Example**\n```','~~~~\n**Example**\n~~~\n**Still code**\n~~~~','    **Indented code**','> **Quoted heading**']) assert.equal(separateChatSections(code),code);
+assert.equal(separateChatSections('- **Risk:** A material point.\n  Continuation.'),'- **Risk:** A material point.\n  Continuation.');
+console.log('Chat section structure and code preservation passed.');

@@ -1,0 +1,67 @@
+// Run only against backend/tests/serve_issue_choice_demo.py on isolated ports.
+import assert from 'node:assert/strict';
+import { pathToFileURL } from 'node:url';
+import { mkdir } from 'node:fs/promises';
+assert.equal(process.env.SHARED_QUESTIONS_ISOLATED, '1');
+const { chromium, expect } = await import(pathToFileURL(process.env.PLAYWRIGHT_MODULE).href);
+const browser = await chromium.launch({headless:true, executablePath:process.env.CHROME_PATH});
+const context = await browser.newContext({viewport:{width:1440,height:1000}});
+context.setDefaultTimeout(15000);
+const mapPage = await context.newPage(), chatPage = await context.newPage();
+const errors = [];
+for (const page of [mapPage,chatPage]) page.on('pageerror', e => errors.push(e.message));
+const base = 'http://localhost:3001/matters/MAT-DEMO-RELAY';
+const output = new URL('../../output/shared-questions/', import.meta.url).pathname;
+await mkdir(output, {recursive:true});
+const waitText = async (locator, text) => {
+  await locator.filter({hasText:text}).first().waitFor({state:'visible'});
+};
+try {
+  await mapPage.goto(base + '/decision-map?issue=ISS-AGE');
+  await mapPage.getByRole('navigation',{name:'Issue choices'}).getByRole('button').first().click();
+  const first = mapPage.locator('article').filter({has:mapPage.getByRole('button',{name:'Discuss Question 1',exact:true})}).first();
+  await first.getByLabel('Starting answer').waitFor();
+  const id = (await first.getAttribute('id')).replace('path-question-', '');
+  await chatPage.goto(base);
+  await chatPage.getByText('Discuss',{exact:true}).first().click();
+  const shared = chatPage.locator('details[aria-label="Shared matter actions"]');
+  await shared.locator('summary').click();
+  await shared.getByLabel('Question to answer or discuss').selectOption(id);
+  await shared.getByLabel('Your answer',{exact:true}).waitFor();
+  await chatPage.locator('.composer textarea').fill('Unsent lawyer message stays here.');
+  await first.getByLabel('Starting answer').selectOption('0');
+  assert.ok((await first.getByLabel('Your answer',{exact:true}).inputValue()).trim());
+  await first.getByLabel('Your answer',{exact:true}).fill('Map answer: partner confirmation is pending.');
+  await first.getByRole('button',{name:'Save answer',exact:true}).click();
+  await waitText(shared.locator('p'), 'Map answer: partner confirmation is pending.');
+  assert.equal(await chatPage.locator('.composer textarea').inputValue(),'Unsent lawyer message stays here.');
+  await shared.getByLabel('Your answer',{exact:true}).fill('Chat answer: written partner confirmation is now available.');
+  await first.getByLabel('Your answer',{exact:true}).fill('Map correction: still awaiting the signed copy.');
+  await first.getByRole('button',{name:'Save answer',exact:true}).click();
+  await waitText(shared.locator('p'), 'Map correction: still awaiting the signed copy.');
+  await shared.getByRole('button',{name:'Keep my draft after review'}).waitFor();
+  assert.equal(await shared.getByLabel('Your answer',{exact:true}).inputValue(),'Chat answer: written partner confirmation is now available.');
+  assert.equal(await shared.getByRole('button',{name:'Save answer',exact:true}).isDisabled(),true);
+  await shared.getByRole('button',{name:'Keep my draft after review'}).click();
+  await shared.getByRole('button',{name:'Save answer',exact:true}).click();
+  await waitText(first.locator('p'), 'Chat answer: written partner confirmation is now available.');
+  await shared.getByRole('button',{name:'Help me answer this question'}).click();
+  await chatPage.getByText('Prepared request · Not sent.',{exact:false}).first().waitFor();
+  assert.equal(await chatPage.locator('.composer textarea').inputValue(),'Unsent lawyer message stays here.');
+  await shared.scrollIntoViewIfNeeded();
+  await chatPage.screenshot({path:output+'chat-shared-question.png',fullPage:true});
+  await first.scrollIntoViewIfNeeded();
+  await mapPage.screenshot({path:output+'map-shared-question.png',fullPage:true});
+  await shared.getByLabel('Your answer',{exact:true}).fill('Unsaved answer retained across the page change.');
+  await chatPage.goto(base + '/decision-map?issue=ISS-AGE');
+  await chatPage.getByRole('navigation',{name:'Issue choices'}).getByRole('button').first().click();
+  const returned = chatPage.locator('#path-question-'+id);
+  await returned.getByLabel('Your answer',{exact:true}).waitFor();
+  assert.equal(await returned.getByLabel('Your answer',{exact:true}).inputValue(),'Unsaved answer retained across the page change.');
+  assert.deepEqual(errors,[]);
+  console.log('PASS: map-to-chat, chat-to-map, newer-answer conflict, unsent composer, draft continuity, numbered controls. Screenshots: '+output);
+} catch (error) {
+  console.log('Map:', (await mapPage.locator('body').innerText()).slice(-6000));
+  console.log('Chat:', (await chatPage.locator('body').innerText()).slice(-6000));
+  throw error;
+} finally { await browser.close(); }

@@ -1,0 +1,22 @@
+{
+  "sha256": "b4a09b656b1cb1fcab8ea95ba4d7419d872c0478294ad229933ee3fe1c977a05",
+  "lawyer_condition_saved": true,
+  "fixture_state": {
+    "fixture": "counsel-os-dossier-research-browser-v1",
+    "matter_id": "MAT-DEMO-BEACON",
+    "active_workers": 0,
+    "active_worker_ids": [],
+    "research_workers_started": 5,
+    "counts": {
+      "model_calls": 23,
+      "planning_calls": 1,
+      "research_workers_started": 5,
+      "research_model_calls": 20,
+      "writer_calls": 2
+    },
+    "search_calls_this_process": 0,
+    "fetch_calls_this_process": 5,
+    "first_released": true,
+    "remaining_released": true
+  }
+}

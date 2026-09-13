@@ -1,0 +1,15 @@
+import assert from "node:assert/strict";
+import { documentContext, followActive, freezeMessageContext, contextSelections } from "../components/experimental/messageContext.ts";
+import type { DocumentIdentity } from "../lib/workspaceTypes.ts";
+const draft: DocumentIdentity = { document_id:"draft", path:"03_Matters/demo/draft.md", title:"Response", revision:"v3", kind:"work_product", editable:true, immutable:false, lifecycle_state:"editing_draft" };
+const explanation: DocumentIdentity = {...draft,document_id:"explanation",path:"03_Matters/demo/explanation.md",title:"Explanation",revision:"v1"};
+const first = documentContext("MAT-1",draft);
+assert.equal(followActive(first,documentContext("MAT-1",explanation)).documents[0].path,explanation.path);
+const locked=freezeMessageContext(first);
+assert.equal(followActive(locked,documentContext("MAT-1",explanation)).documents[0].path,draft.path);
+first.documents[0].revision="newer";
+assert.equal(locked.documents[0].revision,"v3");
+const both=freezeMessageContext({...locked,documents:[...locked.documents,documentContext("MAT-1",explanation).documents[0]]});
+assert.deepEqual(contextSelections(both).map(item=>item.revision),["v3","v1"]);
+assert.equal(both.target?.artifact_path,draft.path,"Including another reference must not change the edit target");
+console.log("Experimental context: active tab, fixed request, versions, and two-document target passed.");

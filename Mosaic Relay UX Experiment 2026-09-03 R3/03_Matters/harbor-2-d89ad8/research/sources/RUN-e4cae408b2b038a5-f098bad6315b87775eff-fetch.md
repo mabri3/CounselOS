@@ -1,0 +1,64 @@
+---
+record_type: research_fetch
+url: https://www.ecfr.gov/current/title-31/subtitle-B/chapter-X/part-1022/subpart-D/section-1022.320
+final_url: https://unblock.federalregister.gov
+content_type: text/html
+charset: utf-8
+binary_path: 03_Matters/harbor-2-d89ad8/research/sources/RUN-e4cae408b2b038a5-f098bad6315b87775eff-fetch.md.bin
+binary_hash: 4d49b9dbbfd1780d4359bba43bc6d4c0eca786be905df28d63970dd09a22f960
+extracted_result:
+  content: "Federal Register :: Request Access Request Access Due to aggressive automated
+    scraping of FederalRegister.gov and eCFR.gov,\n  programmatic access to these
+    sites is limited to access to our extensive\n  developer APIs. Please visit FederalRegister.gov
+    API documentation or eCFR.gov API documentation to learn more about how to access
+    the API. Your request has been flagged as potentially automated. If you are human
+    user\n  receiving this message, please complete the CAPTCHA (bot test) below and\n
+    \ click \"Request Access\". You may occassionally be asked to complete the\n  CAPTCHA
+    again, this is normal and part of our security measures. Request Access An official
+    website of the United States government. If you experiencing issues with the CAPTCHA
+    or want to request a wider IP range,\n  you can use the \"Site Help\" button found
+    in the lower, right of this page\n  to make a request. × IP Access Help This contact
+    form is only for IP Access help.\n          Please do not provide confidential
+    information or personal data. * Your Name * Email * How can we help you? Upload
+    Attachment * I am requesting technical help. Site Help"
+  retrieved_content: "Federal Register :: Request Access Request Access Due to aggressive
+    automated scraping of FederalRegister.gov and eCFR.gov,\n  programmatic access
+    to these sites is limited to access to our extensive\n  developer APIs. Please
+    visit FederalRegister.gov API documentation or eCFR.gov API documentation to learn
+    more about how to access the API. Your request has been flagged as potentially
+    automated. If you are human user\n  receiving this message, please complete the
+    CAPTCHA (bot test) below and\n  click \"Request Access\". You may occassionally
+    be asked to complete the\n  CAPTCHA again, this is normal and part of our security
+    measures. Request Access An official website of the United States government.
+    If you experiencing issues with the CAPTCHA or want to request a wider IP range,\n
+    \ you can use the \"Site Help\" button found in the lower, right of this page\n
+    \ to make a request. × IP Access Help This contact form is only for IP Access
+    help.\n          Please do not provide confidential information or personal data.
+    * Your Name * Email * How can we help you? Upload Attachment * I am requesting
+    technical help. Site Help"
+  available_excerpt: "Federal Register :: Request Access Request Access Due to aggressive
+    automated scraping of FederalRegister.gov and eCFR.gov,\n  programmatic access
+    to these sites is limited to access to our extensive\n  developer APIs. Please
+    visit FederalRegister.gov API documentation or eCFR.gov API documentation to learn
+    more about how to access the API. Your request has been flagged as potentially
+    automated. If you are human user\n  receiving this message, please complete the
+    CAPTCHA (bot test) below and\n  click \"Request Access\". You may occassionally
+    be asked to complete the\n  CAPTCHA again, this is normal and part of our security
+    measures. Request Access An official website of the United States government.
+    If you experiencing issues with the CAPTCHA or want to request a wider IP range,\n
+    \ you can use the \"Site Help\" button found in the lower, right of this page\n
+    \ to make a request. × IP Access Help This contact form is only for IP Access
+    help.\n          Please do not provide confidential information or personal data.
+    * Your Name * Email * How can we help you? Upload Attachment * I am requesting
+    technical help. Site Help"
+  support_state: retrieved
+  retrieved_at: '2026-09-13T02:18:02.449650+00:00'
+  source_hash: 30c6f35fd2d7a7e86de607e3928995d30c205a2b15c633f80085191159b393ae
+  retrieval_method: direct_fetch
+  content_truncated: false
+  links:
+  - https://unblock.federalregister.gov/
+  - https://www.federalregister.gov/developers/documentation/api/v1
+  - https://www.ecfr.gov/developers/documentation/api/v1
+---
+Fetched source bytes; extraction is separate.

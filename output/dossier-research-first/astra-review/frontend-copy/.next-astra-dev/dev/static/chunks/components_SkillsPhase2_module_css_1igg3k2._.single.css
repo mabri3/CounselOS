@@ -1,0 +1,304 @@
+/* [project]/components/SkillsPhase2.module.css [app-client] (css) */
+.SkillsPhase2-module__h8wW8a__shell.SkillsPhase2-module__h8wW8a__shell {
+  background: var(--raised);
+  border: 0;
+  grid-template-columns: 32% minmax(0, 1fr);
+  height: auto;
+  min-height: 680px;
+  display: grid;
+  overflow: visible;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .admin-rail {
+  border-right: 1px solid var(--line-soft);
+  background: none;
+  width: auto;
+  min-width: 0;
+  padding: 0 22px 22px 0;
+  overflow: visible;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .skill-rail-head {
+  padding: 12px 14px 20px;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .admin-rail-link {
+  margin-bottom: 10px;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .agent-rail-item {
+  border: 0;
+  border-bottom: 1px solid var(--line-soft);
+  text-align: left;
+  background: none;
+  border-radius: 0;
+  width: 100%;
+  padding: 20px 16px;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .agent-rail-item.active {
+  border: 1px solid var(--line);
+  box-shadow: inset 3px 0 var(--ink);
+  background: var(--paper);
+  border-radius: 6px;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .agent-rail-name {
+  font: 400 18px/1.3 var(--sans);
+}
+
+.SkillsPhase2-module__h8wW8a__shell .agent-rail-role {
+  color: var(--ink-3);
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .skill-command {
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--ink-3);
+  font-size: 13px;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .admin-main {
+  min-width: 0;
+  overflow: visible;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .admin-scroll {
+  overflow: visible;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .admin-body.wide {
+  max-width: none;
+  padding: 0 0 24px 30px;
+}
+
+.SkillsPhase2-module__h8wW8a__shell h1 {
+  font: 400 48px/1.12 var(--serif);
+  margin: 0 0 18px;
+}
+
+.SkillsPhase2-module__h8wW8a__shell h2 {
+  font: 400 25px/1.2 var(--serif);
+}
+
+.SkillsPhase2-module__h8wW8a__shell .skill-draft-head {
+  justify-content: start;
+  gap: 0;
+  margin-bottom: 20px;
+  display: grid;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .skill-draft-head .skill-card-command {
+  font: 400 18px var(--sans);
+  color: var(--ink-2);
+  background: none;
+  padding: 0;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .skill-form-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  margin-top: 28px;
+  display: grid;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .field-block {
+  margin-top: 24px;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .field-label {
+  font: 500 15px/1.4 var(--sans);
+  margin-bottom: 8px;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .text-input {
+  border: 1px solid var(--line);
+  background: var(--raised);
+  border-radius: 6px;
+  min-height: 44px;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .text-input:disabled {
+  opacity: 1;
+  color: var(--ink-3);
+  background: var(--paper);
+}
+
+.SkillsPhase2-module__h8wW8a__shell textarea[aria-label="Requested guidance"] {
+  min-height: 470px;
+  font: 400 14px/1.8 var(--mono);
+}
+
+:is(.SkillsPhase2-module__h8wW8a__shell .skill-field-help, .SkillsPhase2-module__h8wW8a__shell .skill-step-help, .SkillsPhase2-module__h8wW8a__shell .skill-intro) {
+  color: var(--ink-3);
+  font: 400 15px/1.6 var(--sans);
+}
+
+.SkillsPhase2-module__h8wW8a__shell .admin-foot {
+  background: none;
+  border: 0;
+  gap: 16px;
+  padding: 0 0 0 30px;
+  display: grid;
+  position: static;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .admin-foot .btn-row {
+  justify-content: space-between;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .btn {
+  min-height: 42px;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .skill-start-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+}
+
+:is(.SkillsPhase2-module__h8wW8a__shell .skill-start-card, .SkillsPhase2-module__h8wW8a__shell .skill-start-card.lead, .SkillsPhase2-module__h8wW8a__shell .skill-card) {
+  border: 1px solid var(--line-soft);
+  background: var(--raised);
+  box-shadow: none;
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.SkillsPhase2-module__h8wW8a__shell .skill-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.SkillsPhase2-module__h8wW8a__shell .question-choice.active {
+  border-color: var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.SkillsPhase2-module__h8wW8a__shell .skill-progress-fill {
+  background: var(--ink);
+}
+
+.SkillsPhase2-module__h8wW8a__new {
+  margin: 24px 12px 0;
+}
+
+.SkillsPhase2-module__h8wW8a__guided.SkillsPhase2-module__h8wW8a__guided {
+  min-height: 600px;
+  display: block;
+}
+
+.SkillsPhase2-module__h8wW8a__guided .admin-rail {
+  display: none;
+}
+
+:is(.SkillsPhase2-module__h8wW8a__guided .admin-body.wide, .SkillsPhase2-module__h8wW8a__guided .admin-foot) {
+  padding-left: 0;
+}
+
+.SkillsPhase2-module__h8wW8a__flowHeader {
+  margin-bottom: 26px;
+}
+
+.SkillsPhase2-module__h8wW8a__flowHeader > p {
+  font: 400 12px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin: 24px 0 12px;
+}
+
+.SkillsPhase2-module__h8wW8a__steps {
+  gap: 28px;
+  margin: 26px 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+}
+
+.SkillsPhase2-module__h8wW8a__steps li {
+  flex: 1;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  display: flex;
+}
+
+.SkillsPhase2-module__h8wW8a__steps span {
+  border: 1px solid var(--ink-3);
+  border-radius: 50%;
+  flex-shrink: 0;
+  place-items: center;
+  width: 29px;
+  height: 29px;
+  display: grid;
+}
+
+.SkillsPhase2-module__h8wW8a__steps li[aria-current="step"] span {
+  background: var(--ink);
+  color: var(--raised);
+}
+
+.SkillsPhase2-module__h8wW8a__guided .admin-body.wide {
+  border: 1px solid var(--line-soft);
+  border-radius: 6px;
+  padding: 28px;
+}
+
+.SkillsPhase2-module__h8wW8a__guided .admin-body h1 {
+  font: 400 26px/1.25 var(--serif);
+}
+
+.SkillsPhase2-module__h8wW8a__generated .admin-body.wide {
+  border: 1px dashed var(--agent-edge);
+  background: var(--agent-wash);
+}
+
+.SkillsPhase2-module__h8wW8a__guided .admin-foot {
+  padding-top: 20px;
+}
+
+@media (max-width: 760px) {
+  .SkillsPhase2-module__h8wW8a__shell.SkillsPhase2-module__h8wW8a__shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .SkillsPhase2-module__h8wW8a__shell .admin-rail {
+    border-right: 0;
+    border-bottom: 1px solid var(--line-soft);
+    margin-bottom: 24px;
+    padding-right: 0;
+  }
+
+  .SkillsPhase2-module__h8wW8a__shell .skill-rail-list {
+    max-height: 240px;
+    overflow-y: auto;
+  }
+
+  :is(.SkillsPhase2-module__h8wW8a__shell .admin-body.wide, .SkillsPhase2-module__h8wW8a__shell .admin-foot) {
+    padding-left: 0;
+  }
+
+  .SkillsPhase2-module__h8wW8a__shell h1 {
+    font-size: 36px;
+  }
+
+  .SkillsPhase2-module__h8wW8a__guided .admin-body.wide {
+    padding: 18px;
+  }
+
+  .SkillsPhase2-module__h8wW8a__steps {
+    gap: 12px;
+  }
+
+  .SkillsPhase2-module__h8wW8a__steps li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .SkillsPhase2-module__h8wW8a__shell textarea[aria-label="Requested guidance"] {
+    min-height: 330px;
+  }
+}
+
+/*# sourceMappingURL=components_SkillsPhase2_module_css_1igg3k2._.single.css.map*/

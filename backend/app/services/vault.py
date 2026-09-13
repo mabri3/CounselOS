@@ -11,6 +11,7 @@ from typing import Any, Iterable
 
 import frontmatter
 
+from app.services.execution_inputs import ExecutionInputs
 from app.utils.paths import ensure_within
 
 
@@ -28,7 +29,7 @@ class VaultService:
     # Long conversations include their frozen audit inputs. Keep room for a
     # transcript above 32 MiB so each submit does not repeatedly parse it.
     MARKDOWN_CACHE_MAX_BYTES = 64 * 1024 * 1024
-    MARKDOWN_CACHE_MAX_FILES = 256
+    MARKDOWN_CACHE_MAX_FILES = 1024
 
     def __init__(self, root: Path):
         self.root = root.resolve()
@@ -36,6 +37,7 @@ class VaultService:
         self._markdown_cache: OrderedDict[Path, _MarkdownRead] = OrderedDict()
         self._markdown_cache_bytes = 0
         self._markdown_cache_lock = RLock()
+        self.execution_inputs = ExecutionInputs(self.resolve, self.write_bytes)
 
     def resolve(self, relative_path: str | Path) -> Path:
         return ensure_within(self.root, relative_path)
@@ -50,7 +52,7 @@ class VaultService:
         path = self.resolve(relative_path)
         return path.read_text(encoding="utf-8")
 
-    def read_markdown(self, relative_path: str | Path) -> dict[str, Any]:
+    def read_markdown(self, relative_path: str | Path, *, include_execution: bool = True) -> dict[str, Any]:
         path = self.resolve(relative_path)
         # Parallel page requests must not parse the same large transcript again.
         with self._markdown_cache_lock:
@@ -79,17 +81,19 @@ class VaultService:
                         _, removed = self._markdown_cache.popitem(last=False)
                         self._markdown_cache_bytes -= removed.size
         # Callers often edit nested metadata before saving. Never share that state.
+        if include_execution:
+            document = {**document, "metadata": self.execution_inputs.restore(document["metadata"])}
         return deepcopy(document)
 
     @staticmethod
     def _markdown_stamp(stat: os.stat_result) -> tuple[int, ...]:
         return stat.st_dev, stat.st_ino, stat.st_mtime_ns, stat.st_ctime_ns, stat.st_size
 
-    def read_document(self, relative_path: str | Path) -> dict[str, Any]:
+    def read_document(self, relative_path: str | Path, *, include_execution: bool = True) -> dict[str, Any]:
         path = self.resolve(relative_path)
         suffix = path.suffix.lower()
         if suffix == ".md":
-            result = self.read_markdown(relative_path)
+            result = self.read_markdown(relative_path, include_execution=include_execution)
             result.update({"editable": not (bool(result["metadata"].get("immutable")) or self._in_source_library(self.relative(path))), "kind": "markdown"})
             return result
         if suffix in {".txt", ".csv", ".json", ".yaml", ".yml"}:
@@ -120,7 +124,7 @@ class VaultService:
     ) -> str:
         path = self.resolve(relative_path)
         path.parent.mkdir(parents=True, exist_ok=True)
-        post = frontmatter.Post(content.strip() + "\n", **(metadata or {}))
+        post = frontmatter.Post(content.strip() + "\n", **self.execution_inputs.separate(metadata or {}))
         self._atomic_write(path, frontmatter.dumps(post))
         return self.relative(path)
 
@@ -214,7 +218,17 @@ class VaultService:
         root = self.resolve(relative_path)
         if not root.exists():
             return []
-        files = (path for path in root.rglob("*") if path.is_file() and not path.name.startswith("."))
+        def visible_files():
+            for directory, children, names in os.walk(root):
+                # Historical document versions remain addressable by reference.
+                # Only frozen execution inputs are outside ordinary file walks.
+                children[:] = [name for name in children if name != ".execution-inputs"]
+                for name in names:
+                    if not name.startswith("."):
+                        path = Path(directory) / name
+                        if path.is_file():
+                            yield path
+        files = visible_files()
         if not include_source_library and not self._in_source_library(str(relative_path)):
             files = (path for path in files if not self._in_source_library(self.relative(path)))
         if suffixes is None:

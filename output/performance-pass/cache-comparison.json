@@ -1,0 +1,34 @@
+[
+  {
+    "files_limit": 256,
+    "attempt": 0,
+    "matter": 7.078,
+    "workspace": 5.836,
+    "cache_files": 256,
+    "cache_bytes": 45569806
+  },
+  {
+    "files_limit": 256,
+    "attempt": 1,
+    "matter": 4.902,
+    "workspace": 5.932,
+    "cache_files": 256,
+    "cache_bytes": 45569806
+  },
+  {
+    "files_limit": 1024,
+    "attempt": 0,
+    "matter": 5.357,
+    "workspace": 4.319,
+    "cache_files": 331,
+    "cache_bytes": 64892731
+  },
+  {
+    "files_limit": 1024,
+    "attempt": 1,
+    "matter": 3.863,
+    "workspace": 4.079,
+    "cache_files": 331,
+    "cache_bytes": 64892731
+  }
+]

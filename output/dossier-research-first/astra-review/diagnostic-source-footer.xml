@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.658" timestamp="2026-09-12T00:07:26.450400-07:00" hostname="Mac"><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR26_local_source_records_do_not_break_the_sources_footer" time="0.214"><failure message="KeyError: 'source_label'">app_context = &lt;app.runtime.AppContext object at 0x1095a9760&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR26_local_source_records_do_not_break_the_sources_footer(app_context):
+        app=app_context; iid=app.workspace.issues(MATTER)[0]['issue_id']
+        child=app.research_runs.create_managed_child(MATTER,parent_request_id='DOR-source-footer',issue_id=iid,question='Read saved records.',source_scope={'external':False})
+        access=ResearchCollection(app,MATTER,child['run_id'])
+        path=app.matters.matter_path(MATTER)+'/facts.md'
+        # Local source read is a production boundary; its returned source shape
+        # must be printable alongside the external source records.
+        access.capture_local(app.vault.read_markdown(path))
+        cp=ResearchCheckpoints(app.research_runs).load(MATTER,child['run_id'])
+        records=cp.get('local_sources') or []
+        assert records
+&gt;       text=app.research._source_lines({'execution_version':2,'source_records':records})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:473: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;app.services.research.ResearchService object at 0x1096193a0&gt;
+search_result = {'execution_version': 2, 'source_records': [{'available_excerpt': "# Facts\n\n## Confirmed facts\n\n- Relay has about ...n-banking/facts.md', 'path': '03_Matters/relay-open-banking/research/sources/SRC-LOCAL-89eb49f1729a4924bb89.md', ...}]}
+
+    def _source_lines(self, search_result: dict[str, Any]) -&gt; str:
+        lines: list[str] = []
+        records = search_result.get("source_records")
+        if records is None:
+            records = self._source_records(search_result)
+        for item in records:
+            support = {"supplied": "Internal support" if item.get("path") else "Supplied source",
+                       "retrieved": "Retrieved external authority", "verified": "Verified external authority"}.get(item["support_state"], "Unverified external lead")
+            if search_result.get("execution_version") == 2:
+                support = {"supplied": "Supplied source", "retrieved": "Retrieved source", "verified": "Retrieved source"}.get(item["support_state"], "Unverified lead")
+&gt;           title = str(item["source_label"]).replace("[", "").replace("]", "")
+                        ^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'source_label'
+
+app/services/research.py:966: KeyError</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,324 @@
+"use client";
+
+import { useEffect } from "react";
+import type { KeyboardEvent, MouseEvent } from "react";
+import { AutoLinkNode, autoLinkUrlMatcher, LinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
+import { ListItemNode, ListNode, INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND } from "@lexical/list";
+import {
+  $convertFromMarkdownString,
+  $convertToMarkdownString,
+  BOLD_ITALIC_STAR,
+  BOLD_STAR,
+  BOLD_UNDERSCORE,
+  HEADING,
+  ITALIC_STAR,
+  ITALIC_UNDERSCORE,
+  LINK,
+  ORDERED_LIST,
+  QUOTE,
+  type Transformer,
+  UNORDERED_LIST,
+} from "@lexical/markdown";
+import { $setBlocksType } from "@lexical/selection";
+import { $createHeadingNode, $createQuoteNode, HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import { AutoLinkPlugin } from "@lexical/react/LexicalAutoLinkPlugin";
+import { ClickableLinkPlugin } from "@lexical/react/LexicalClickableLinkPlugin";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { ContentEditable } from "@lexical/react/LexicalContentEditable";
+import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
+import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { RevisionTextNode } from "@/components/RevisionTextNode";
+import RevisionPlugin, { REVIEW_SYNC_TAG, REVISION_BOUNDARY, type ReviewDisplayMode } from "@/components/RevisionPlugin";
+import type { DocumentComment, DocumentReviewSegment } from "@/lib/types";
+import type { DocumentIdentity, DocumentReferenceTarget } from "@/lib/workspaceTypes";
+import { isModifiedDocumentEnd, moveSelectionToDocumentEnd } from "@/lib/editorSelection";
+import { documentForEditorHref } from "@/lib/workspaceApi";
+import {
+  $createParagraphNode,
+  $getSelection,
+  $isRangeSelection,
+  FORMAT_TEXT_COMMAND,
+  COMMAND_PRIORITY_HIGH,
+  KEY_DOWN_COMMAND,
+  type TextFormatType,
+} from "lexical";
+
+const MARKDOWN_TRANSFORMERS: Transformer[] = [
+  HEADING,
+  QUOTE,
+  UNORDERED_LIST,
+  ORDERED_LIST,
+  BOLD_ITALIC_STAR,
+  BOLD_STAR,
+  BOLD_UNDERSCORE,
+  ITALIC_STAR,
+  ITALIC_UNDERSCORE,
+  LINK,
+];
+const AUTO_LINK_MATCHERS = [autoLinkUrlMatcher];
+
+function DocumentEndShortcut() {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => editor.registerCommand(KEY_DOWN_COMMAND, (event) => {
+    if (!isModifiedDocumentEnd(event)) return false;
+    moveSelectionToDocumentEnd();
+    event.preventDefault();
+    return true;
+  }, COMMAND_PRIORITY_HIGH), [editor]);
+
+  return null;
+}
+
+function SavedDocumentLinkKeyboardAccess({ documents }: { documents: DocumentIdentity[] }) {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    let disposed = false;
+    let frame: number | null = null;
+    const markLinks = () => {
+      if (frame != null) cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        frame = null;
+        if (disposed) return;
+        const root = editor.getRootElement();
+        if (!root) return;
+        for (const anchor of root.querySelectorAll<HTMLAnchorElement>("a[href]")) {
+          const href = anchor.getAttribute("href") ?? "";
+          if (documentForEditorHref(documents, href, window.location.origin)) {
+            anchor.tabIndex = 0;
+            anchor.dataset.savedDocumentLink = "true";
+          } else if (anchor.dataset.savedDocumentLink === "true") {
+            anchor.removeAttribute("tabindex");
+            delete anchor.dataset.savedDocumentLink;
+          }
+        }
+      });
+    };
+    const unregisterRoot = editor.registerRootListener(markLinks);
+    const unregisterUpdate = editor.registerUpdateListener(markLinks);
+    markLinks();
+    return () => {
+      disposed = true;
+      if (frame != null) cancelAnimationFrame(frame);
+      unregisterRoot();
+      unregisterUpdate();
+    };
+  }, [documents, editor]);
+
+  return null;
+}
+
+function ToolbarButton({
+  label,
+  title,
+  glyph,
+  onClick,
+}: {
+  label: string;
+  title: string;
+  glyph?: "b" | "i" | "u";
+  onClick: () => void;
+}) {
+  return (
+    <button
+      className={`rich-toolbar-button ${glyph ? `glyph ${glyph}` : ""}`}
+      type="button"
+      aria-label={title}
+      title={title}
+      onClick={onClick}
+    >
+      {label}
+    </button>
+  );
+}
+
+/** Canvas 4c — a real editor bar: block style, marks, lists, and one agent action. */
+function EditorToolbar({
+  onAskAgent,
+  onAddComment,
+}: {
+  onAskAgent?: () => void;
+  onAddComment?: (context: { quote: string; anchorStart?: number; anchorEnd?: number; returnFocus: HTMLElement | null; rect: DOMRect | null }) => void;
+}) {
+  const [editor] = useLexicalComposerContext();
+
+  function formatText(format: TextFormatType) {
+    editor.dispatchCommand(FORMAT_TEXT_COMMAND, format);
+  }
+
+  function formatBlock(kind: "paragraph" | "heading" | "quote") {
+    editor.update(() => {
+      const selection = $getSelection();
+      if (!$isRangeSelection(selection)) return;
+      if (kind === "heading") $setBlocksType(selection, () => $createHeadingNode("h2"));
+      if (kind === "quote") $setBlocksType(selection, () => $createQuoteNode());
+      if (kind === "paragraph") $setBlocksType(selection, () => $createParagraphNode());
+    });
+  }
+
+  function addLink() {
+    const url = window.prompt("Link URL");
+    if (url === null) return;
+    editor.dispatchCommand(TOGGLE_LINK_COMMAND, url.trim() || null);
+  }
+
+  function addComment() {
+    let quote = "";
+    editor.getEditorState().read(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) quote = selection.getTextContent().trim();
+    });
+    if (!quote) {
+      window.alert("Select the text that the comment applies to.");
+      return;
+    }
+    const native = window.getSelection();
+    onAddComment?.({ quote, returnFocus: editor.getRootElement(), rect: native?.rangeCount ? native.getRangeAt(0).getBoundingClientRect() : null });
+  }
+
+  return (
+    <div className="rich-toolbar" role="toolbar" aria-label="Document formatting">
+      <select
+        aria-label="Block style"
+        className="select-input"
+        onChange={(event) => { formatBlock(event.target.value as "paragraph" | "heading" | "quote"); }}
+        style={{ width: 132, padding: "5px 10px", fontSize: 14, borderRadius: 6 }}
+        value="paragraph"
+      >
+        <option value="paragraph">Body text</option>
+        <option value="heading">Heading</option>
+        <option value="quote">Quote</option>
+      </select>
+      <span className="rich-toolbar-separator" />
+      <ToolbarButton glyph="b" label="B" title="Bold" onClick={() => formatText("bold")} />
+      <ToolbarButton glyph="i" label="I" title="Italic" onClick={() => formatText("italic")} />
+      <ToolbarButton glyph="u" label="U" title="Underline" onClick={() => formatText("underline")} />
+      <span className="rich-toolbar-separator" />
+      <ToolbarButton label="List" title="Bullet list" onClick={() => editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined)} />
+      <ToolbarButton label="Numbered" title="Numbered list" onClick={() => editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined)} />
+      <ToolbarButton label="Quote" title="Quote" onClick={() => formatBlock("quote")} />
+      <ToolbarButton label="Link" title="Add or remove link" onClick={addLink} />
+      {onAddComment ? <ToolbarButton label="Comment" title="Add a comment to the selected text" onClick={addComment} /> : null}
+      <span className="rich-toolbar-spacer" />
+      {onAskAgent ? (
+        <button className="btn agent tiny" type="button" onClick={onAskAgent}>Ask Themis.ai to redraft</button>
+      ) : null}
+    </div>
+  );
+}
+
+export default function MarkdownRichEditor({
+  markdown,
+  onChange,
+  onAskAgent,
+  onAddComment,
+  readOnly = false,
+  reviewSegments,
+  reviewComments = [],
+  reviewMode = "current",
+  reviewReviewers = new Set<string>(),
+  reviewTracking = false,
+  reviewAuthor,
+  onOpenCommentThread,
+  onSelectionContext,
+  documents = [],
+  onOpenDocument,
+}: {
+  markdown: string;
+  onChange?: (markdown: string) => void;
+  onAskAgent?: () => void;
+  onAddComment?: (context: { quote: string; anchorStart?: number; anchorEnd?: number; returnFocus: HTMLElement | null; rect: DOMRect | null }) => void;
+  readOnly?: boolean;
+  reviewSegments?: DocumentReviewSegment[];
+  reviewComments?: DocumentComment[];
+  reviewMode?: ReviewDisplayMode;
+  reviewReviewers?: Set<string>;
+  reviewTracking?: boolean;
+  reviewAuthor?: { author_id: string; name: string; color: string };
+  onOpenCommentThread?: (threadId: string, returnFocus: HTMLElement | null) => void;
+  onSelectionContext?: (context: { quote: string; anchorStart?: number; anchorEnd?: number; returnFocus: HTMLElement | null; rect: DOMRect | null }) => void;
+  documents?: DocumentIdentity[];
+  onOpenDocument?: (target: DocumentReferenceTarget) => void;
+}) {
+  const initialConfig = {
+    namespace: "ThemisAiMarkdownEditor",
+    nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, LinkNode, AutoLinkNode, RevisionTextNode],
+    theme: {
+      heading: {
+        h1: "rich-heading rich-heading-h1",
+        h2: "rich-heading rich-heading-h2",
+        h3: "rich-heading rich-heading-h3",
+      },
+      link: "rich-link",
+      list: { listitem: "rich-list-item", nested: { listitem: "rich-list-item-nested" }, ol: "rich-list-ordered", ul: "rich-list-unordered" },
+      paragraph: "rich-paragraph",
+      quote: "rich-quote",
+      text: { bold: "rich-bold", italic: "rich-italic", underline: "rich-underline" },
+    },
+    editorState: () => $convertFromMarkdownString(markdown, MARKDOWN_TRANSFORMERS),
+    editable: !readOnly,
+    onError(error: Error) {
+      throw error;
+    },
+  };
+
+  function openSavedDocumentLink(event: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>) {
+    const direct = (event.target as HTMLElement).closest("a");
+    const focused = document.activeElement instanceof HTMLElement
+      ? document.activeElement.closest("a")
+      : null;
+    const anchor = direct ?? focused;
+    const href = anchor?.getAttribute("href");
+    if (!href) return;
+    const target = documentForEditorHref(documents, href, window.location.origin);
+    if (!target || !onOpenDocument) return;
+    event.preventDefault();
+    event.stopPropagation();
+    onOpenDocument({ document_id: target.document_id, path: target.path, revision: target.revision, origin: { surface: "draft", focus_id: anchor?.id || null, scroll_offset: window.scrollY } });
+  }
+
+  return (
+    <LexicalComposer initialConfig={initialConfig}>
+      <div
+        className="rich-editor-shell"
+        onClickCapture={openSavedDocumentLink}
+        onKeyDownCapture={(event) => {
+          if (event.key === "Enter") openSavedDocumentLink(event);
+        }}
+      >
+        {readOnly ? null : <EditorToolbar onAddComment={onAddComment} onAskAgent={onAskAgent} />}
+        <div className="rich-editor-surface">
+          <RichTextPlugin
+            contentEditable={<ContentEditable className="rich-content" />}
+            placeholder={<div className="rich-placeholder">Start drafting…</div>}
+            ErrorBoundary={LexicalErrorBoundary}
+          />
+        </div>
+      </div>
+      <AutoLinkPlugin matchers={AUTO_LINK_MATCHERS} />
+      <SavedDocumentLinkKeyboardAccess documents={documents} />
+      {readOnly ? null : <DocumentEndShortcut />}
+      <ClickableLinkPlugin />
+      {reviewSegments && reviewAuthor ? <RevisionPlugin comments={reviewComments} markdown={markdown} mode={reviewMode} onOpenThread={onOpenCommentThread ?? (() => undefined)} onSelectionContext={onSelectionContext ?? (() => undefined)} readOnly={readOnly} reviewers={reviewReviewers} segments={reviewSegments} tracking={reviewTracking} trackingAuthor={reviewAuthor} /> : null}
+      {readOnly ? null : (
+        <>
+          <HistoryPlugin />
+          <ListPlugin />
+          <LinkPlugin />
+          <MarkdownShortcutPlugin transformers={MARKDOWN_TRANSFORMERS} />
+          <OnChangePlugin
+            ignoreSelectionChange
+            onChange={(editorState, _editor, tags) => { if (!tags.has(REVIEW_SYNC_TAG)) editorState.read(() => onChange?.($convertToMarkdownString(MARKDOWN_TRANSFORMERS).replaceAll(REVISION_BOUNDARY, ""))); }}
+          />
+        </>
+      )}
+    </LexicalComposer>
+  );
+}

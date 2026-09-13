@@ -1,0 +1,136 @@
+Browser tab: 4, Title: "Themis.ai", URL: "http://localhost:3207/matters/MAT-DEMO-BEACON".
+0 AXWebArea Themis.ai, URL: localhost:3207/matters/MAT-DEMO-BEACON
+	1 container
+		2 button (collapsed) themis.ai, Secondary Actions: Expand
+			3 text themis.ai
+		4 container matter-MAT-DEMO-BEACON
+			5 container
+				6 text Themis.ai is working
+				7 link Description: Matters, Value: localhost:3207/matters
+				8 heading Beacon: Instant Business Onboarding, Value: 1
+					9 text Beacon: Instant Business Onboarding
+				10 button (collapsed) Matter details, Secondary Actions: Expand
+					11 text Matter details
+				12 button (collapsed) Tools and history, Secondary Actions: Expand
+			33 text MATTER
+			34 heading Beacon: Instant Business Onboarding, Value: 1
+				35 text Beacon: Instant Business Onboarding
+			13 container Matter workspace
+				14 container
+					15 container Matter workspace view
+						16 text Matter workspace view
+						17 radio button (settable, integer) Description: Understand, Value: 0, ID: workspace-view-MAT-DEMO-BEACON-understand
+						18 container Read the current matter
+							19 text Understand
+						20 radio button (settable, integer) Description: Discuss, Value: 1, ID: workspace-view-MAT-DEMO-BEACON-discuss
+						21 container Continue one matter conversation
+							22 text Discuss
+						23 radio button (settable, integer) Description: Draft, Value: 0, ID: workspace-view-MAT-DEMO-BEACON-draft
+						24 container Review and prepare work product
+							25 text Draft
+					26 button Decision map
+				36 container Matter conversation
+					37 container
+						38 text INQUIRY SCOPE Matter context Business question
+						39 button Clear scope
+					40 button (collapsed) Approaches, Secondary Actions: Expand
+						41 text Approaches
+					42 text Inquiry target:
+					43 text Business question
+					44 button Clear target
+					45 button Jump to latest answer
+					46 container
+						47 text THEMIS.AI ·  COMPLETED Chat is complete.  Review the saved result below.
+					48 container
+						49 text LATEST ANSWER Applied skill:  Dossier generation
+						132 text ✧
+						133 text Themis.ai
+						134 container answer-reading-MSG-20260912-afb359
+							135 heading Suggested priorities, Value: 2
+								136 text Suggested priorities
+							246 text Review the five saved issues across employment, privacy, supplier, intellectual-property, and marketing workstreams. The first three suggested priorities focus on launch blockers, vendor dependencies, and supported claims.
+							247 text Dossier research is ready for your choices. No research has started.
+						139 container
+							140 text WORKSPACE ACTION ·  RECORDED
+						141 text Dossier research is ready for your choices. No research has started.
+						142 container
+							143 text Updated records:  DOR 20260912 F1da57
+						144 text Review the priorities and source choices.
+						145 button Open DOR 20260912 F1da57
+							146 text Open 
+							147 text DOR 20260912 F1da57
+						229 container
+							230 text DOSSIER RESEARCH ·  STOPPED
+						149 heading Researching 3 of 3 issues, Value: 3
+							150 text Researching 3 of 3 issues
+						231 content list
+							232 container
+								233 text Employment terms: Confirm worker terms and launch staffing conditions. Interrupted 0  sources read ·  0  sources retrieved
+							234 container
+								235 text Customer privacy: Confirm notice, purpose, and access controls. Interrupted 0  sources read ·  0  sources retrieved
+							236 container
+								237 text Supplier contract: Confirm service levels, termination, and transfer terms. Interrupted 0  sources read ·  0  sources retrieved
+							238 container
+								239 text Intellectual property: Confirm ownership and trademark permission. Unselected 0  sources read ·  0  sources retrieved
+							240 container
+								241 text Marketing claims: Confirm evidence for public launch claims. Unselected 0  sources read ·  0  sources retrieved
+						242 text Research started. You can continue this conversation.
+						248 button Resume
+						244 button (collapsed) Diagnostic details, Secondary Actions: Expand
+							245 text Diagnostic details
+					80 container
+						81 text YOUR QUESTION Generate a dossier.
+					82 button (collapsed) Earlier conversation (4 messages), Secondary Actions: Expand
+						83 text Earlier conversation (
+						84 text 4
+						85 text  messages)
+					86 container Run an inquiry
+						87 container Ask about This matter
+							88 text RUN AN INQUIRY
+							89 heading Ask about This matter, Value: 2
+								90 text Ask about  This matter
+							91 container Inquiry type
+								92 text Inquiry type
+								93 container
+									94 radio button (settable, integer) Description: Explain, Value: 1
+									95 text Explain
+								96 container
+									97 radio button (settable, integer) Description: Stress-test, Value: 0
+									98 text Stress-test
+								99 container
+									100 radio button (settable, integer) Description: Ask the business, Value: 0
+									101 text Ask the business
+								102 container
+									103 radio button (settable, integer) Description: Explore question, Value: 0
+									104 text Explore question
+							105 text Question or instruction
+							106 text entry area (settable) Question or instruction
+							107 container Inquiry actions
+								108 button Start inquiry, Help: Explain the selected issue or source in the current matter.
+								109 button Copy question
+							110 container
+								111 text Selected action:  Explain .  Explain the selected issue or source in the current matter.
+						112 container
+							113 text TOOLS & HISTORY
+							114 button Business replies
+							115 button Hand off work
+							116 button Compare supplied versions
+					117 container Shared matter actions
+						118 button (collapsed) Questions and actions · Same saved matter, Secondary Actions: Expand
+							119 text Questions and actions · Same saved matter
+					120 button Run inquiry: Which other matters does this touch?
+						121 text Run inquiry: 
+						225 text Which other matters does this touch?
+					123 button Run inquiry: What would change your view?
+						124 text Run inquiry: 
+						226 text What would change your view?
+					126 button Add files
+					127 text entry area (settable)
+					128 button (disabled) Send
+					129 container
+						130 text Themis.ai can research, draft and move this matter. It records a decision only when you explicitly ask it to. 
+						131 link Description: Build a skill, Value: localhost:3207/skills
+				31 button (collapsed) Discussion help, Secondary Actions: Expand
+					32 text Discussion help
+
+The focused UI element is 0 AXWebArea Themis.ai, URL: localhost:3207/matters/MAT-DEMO-BEACON

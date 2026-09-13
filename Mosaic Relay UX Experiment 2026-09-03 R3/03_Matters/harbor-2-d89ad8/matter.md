@@ -31,9 +31,9 @@ response_sent_at: null
 closed_at: null
 source_action_key: matter-create:form:1f715f41-d2fe-470f-8333-61ea5d9dbae0
 created_at: '2026-09-09T20:52:45+00:00'
-updated_at: '2026-09-10T00:48:18+00:00'
+updated_at: '2026-09-11T16:50:51+00:00'
 public_research_status: retrieved
 external_authority_retrieved: true
-latest_research_path: 03_Matters/harbor-2-d89ad8/research/RES-20260910-fab195.md
+latest_research_path: 03_Matters/harbor-2-d89ad8/research/RES-20260911-0a5f07.md
 ---
 # Matter

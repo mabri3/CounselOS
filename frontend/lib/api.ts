@@ -144,7 +144,10 @@ export async function request<T>(path: string, init?: RequestInit): Promise<T> {
     });
   } catch (error) {
     if (timedOut && error instanceof DOMException && error.name === "AbortError") {
-      throw new Error("The request timed out. The save may have completed. Reload to check the saved result, or retry the same action.");
+      const reading = !init?.method || ["GET", "HEAD"].includes(init.method.toUpperCase());
+      throw new Error(reading
+        ? "Loading took too long. Retry loading the saved result."
+        : "The request timed out. The save may have completed. Reload to check the saved result, or retry the same action.");
     }
     if (error instanceof TypeError || (error instanceof DOMException && error.name === "AbortError")) {
       throw new Error("Counsel OS cannot reach the local service. Check that it is running, then retry.");
@@ -586,6 +589,14 @@ export async function startDossierRequest(matterId: string, requestId: string, p
 
 export async function stopDossierRequest(matterId: string, requestId: string, expectedSequence: number): Promise<DossierRequestStatus> {
   return request(`/matters/${encodeURIComponent(matterId)}/dossier-requests/${encodeURIComponent(requestId)}/stop`, { method: "POST", body: JSON.stringify({ expected_sequence: expectedSequence }) });
+}
+
+export async function startDossierIssue(matterId: string, requestId: string, issueId: string, planRevision: string): Promise<DossierRequestStatus> {
+  return request(`/matters/${encodeURIComponent(matterId)}/dossier-requests/${encodeURIComponent(requestId)}/issues/${encodeURIComponent(issueId)}/start`, { method: "POST", body: JSON.stringify({ plan_revision: planRevision }) });
+}
+
+export async function addDossierIssueWebResearch(matterId: string, requestId: string, issueId: string, planRevision: string, sourceChoice: import("./researchScope").ResearchScope): Promise<ResearchRun> {
+  return request(`/matters/${encodeURIComponent(matterId)}/dossier-requests/${encodeURIComponent(requestId)}/issues/${encodeURIComponent(issueId)}/web-research`, { method: "POST", body: JSON.stringify({ plan_revision: planRevision, source_choice: sourceChoice }) });
 }
 
 export async function resumeDossierRequest(matterId: string, requestId: string, expectedSequence: number, retryIssueIds?: string[], retryUnknown = false): Promise<DossierRequestStatus> {

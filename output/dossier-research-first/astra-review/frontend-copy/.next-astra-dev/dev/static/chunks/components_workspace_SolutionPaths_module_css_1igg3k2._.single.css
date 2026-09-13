@@ -1,0 +1,138 @@
+/* [project]/components/workspace/SolutionPaths.module.css [app-client] (css) */
+.SolutionPaths-module__iNOD1G__panel {
+  min-width: 0;
+}
+
+.SolutionPaths-module__iNOD1G__overview {
+  gap: 12px;
+  display: grid;
+}
+
+.SolutionPaths-module__iNOD1G__panel .SolutionPaths-module__iNOD1G__hint {
+  color: var(--ink-3);
+  margin: 0;
+  font-size: 13px;
+}
+
+.SolutionPaths-module__iNOD1G__choices {
+  gap: 8px;
+  display: grid;
+}
+
+.SolutionPaths-module__iNOD1G__choice {
+  border: 1px solid var(--line);
+  background: var(--raised);
+  border-radius: 8px;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  display: flex;
+}
+
+.SolutionPaths-module__iNOD1G__choice:has(input:checked) {
+  background: var(--sunken);
+  border-color: var(--ink-4);
+}
+
+.SolutionPaths-module__iNOD1G__selection {
+  cursor: pointer;
+  flex: 1;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  font-size: 14px;
+  display: flex;
+}
+
+.SolutionPaths-module__iNOD1G__selection input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--ink);
+  flex-shrink: 0;
+}
+
+.SolutionPaths-module__iNOD1G__selection span {
+  overflow-wrap: anywhere;
+}
+
+.SolutionPaths-module__iNOD1G__selection small {
+  color: var(--ink-3);
+  margin-top: 2px;
+  font-size: 12px;
+  display: block;
+}
+
+.SolutionPaths-module__iNOD1G__panel .SolutionPaths-module__iNOD1G__detailButton {
+  flex-shrink: 0;
+  padding: 6px 8px;
+  font-size: 12px;
+}
+
+.SolutionPaths-module__iNOD1G__panel .SolutionPaths-module__iNOD1G__compare {
+  background: var(--ink);
+  width: 100%;
+  color: var(--raised);
+  text-align: center;
+  font-size: 14px;
+}
+
+.SolutionPaths-module__iNOD1G__panel .SolutionPaths-module__iNOD1G__compare:hover:not(:disabled) {
+  background: var(--ink-2);
+  color: var(--raised);
+}
+
+.SolutionPaths-module__iNOD1G__detail {
+  font-size: 14px;
+}
+
+.SolutionPaths-module__iNOD1G__detail h3 {
+  margin: 16px 0 8px;
+  font-size: 17px;
+}
+
+.SolutionPaths-module__iNOD1G__detail h4 {
+  margin: 14px 0 6px;
+  font-size: 14px;
+}
+
+.SolutionPaths-module__iNOD1G__detail li {
+  margin: 6px 0;
+}
+
+.SolutionPaths-module__iNOD1G__more {
+  border-top: 1px solid var(--line);
+  margin-top: 18px;
+  padding-top: 12px;
+}
+
+.SolutionPaths-module__iNOD1G__pathActions {
+  gap: 8px;
+  margin: 12px 0;
+  display: grid;
+}
+
+.SolutionPaths-module__iNOD1G__pathActions p {
+  color: var(--ink-3);
+  margin: 0;
+  font-size: 13px;
+}
+
+.SolutionPaths-module__iNOD1G__rename {
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+  display: flex;
+}
+
+.SolutionPaths-module__iNOD1G__rename label {
+  gap: 6px;
+  width: 100%;
+  display: grid;
+}
+
+.SolutionPaths-module__iNOD1G__rename input {
+  width: 100%;
+  min-width: 0;
+}
+
+/*# sourceMappingURL=components_workspace_SolutionPaths_module_css_1igg3k2._.single.css.map*/

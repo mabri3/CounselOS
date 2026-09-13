@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { dossierCompletionStage, dossierControls, dossierStateWord, mergeBackgroundDraft, normalizeDossierStatus, pollingScopeMatches, publicationToken, setIssueAt, startPayload } from "../lib/dossierRequests.ts";
+import { canResumeDossierIssue, dossierCompletionStage, dossierControls, dossierStateWord, mergeBackgroundDraft, normalizeDossierStatus, pollingScopeMatches, publicationToken, setIssueAt, startPayload } from "../lib/dossierRequests.ts";
 
 const fallback = { requestId: "DOR-1", matterId: "MAT-1" };
 const legacy = normalizeDossierStatus(undefined, fallback);
@@ -36,6 +36,12 @@ assert.equal(dossierStateWord("partial"), "Partial");
 assert.deepEqual(dossierControls(base), { stop: true, resume: false, retry: false });
 assert.deepEqual(dossierControls({ ...base, state: "stopped" }), { stop: false, resume: true, retry: false });
 assert.deepEqual(dossierControls({ ...base, state: "failed" }), { stop: false, resume: false, retry: true });
+const researching = { ...base, execution_mode: "research" as const };
+assert.equal(canResumeDossierIssue(researching, base.issues[1]), true, "An unfinished issue can resume while siblings run.");
+assert.equal(canResumeDossierIssue({ ...researching, state: "completed" }, base.issues[1]), true, "Legacy complete parents do not hide unfinished work.");
+assert.equal(canResumeDossierIssue(researching, base.issues[0]), false, "A complete issue is not repeated.");
+assert.equal(canResumeDossierIssue(researching, base.issues[2]), false, "A running issue cannot get a duplicate worker.");
+assert.equal(canResumeDossierIssue({ ...researching, stop_requested: true }, base.issues[1]), false);
 assert.equal(dossierCompletionStage(base), "working");
 const firstPass = { ...base, first_pass_ready_at: "2026-09-11T00:00:00Z", publications: [{ key: "first", state: "applied", revision_path: "dossier-revisions/one.md" }] };
 assert.equal(dossierCompletionStage(firstPass), "first_pass");

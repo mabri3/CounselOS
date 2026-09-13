@@ -98,7 +98,7 @@ class CheckpointedResearchProvider:
             return ProviderReply(content=result["content"], tool_calls=[ProviderToolCall(**c) for c in result["tool_calls"]])
         final = tools is None
         reserve = getattr(a, "synthesis_reserve", 90)
-        if not final and (a.remaining()["active_seconds"] <= reserve or cp["budget_used"]["main_calls"] >= 12):
+        if not final and (a.remaining()["active_seconds"] <= reserve or a.remaining()["main_calls"] <= 1):
             raise RuntimeError("Collection/iteration budget reached; finish with no tools.")
         if final:
             if cp["final_attempt_started"] and cp.get("final_call_key") != key:
@@ -138,10 +138,11 @@ class CheckpointedResearchProvider:
             a.checkpoints.save(a.matter_id, a.run_id, cp, expected_sequence=cp["sequence"])
             return reply
         except Exception as exc:
+            from app.services.research_recovery import temporary_failure
             cp = a.checkpoints.load(a.matter_id, a.run_id)
             call = next(c for c in cp["pending_calls"] if c["key"] == key)
             if call["state"] != "completed":
-                call.update(state="outcome_unknown", error_class=type(exc).__name__)
+                call.update(state="outcome_unknown", error_class=type(exc).__name__, temporary_failure=temporary_failure(exc))
                 a.checkpoints.save(a.matter_id, a.run_id, cp, expected_sequence=cp["sequence"])
             raise
         finally:
@@ -172,6 +173,8 @@ def restore_messages(access, initial):
         messages = messages[:assistant_index]
     elif messages and messages[-1].get("role") == "assistant" and not messages[-1].get("tool_calls"):
         messages = messages[:-1]
+    if not pending and cp.get("recovery_note"):
+        messages.append({"role": "system", "content": cp["recovery_note"]})
     return messages
 
 INVESTIGATION_CONTRACT += """

@@ -1,0 +1,299 @@
+/* [project]/components/TemplatesPhase2.module.css [app-client] (css) */
+.TemplatesPhase2-module__PwEBSG__page {
+  width: 100%;
+  max-width: 1600px;
+  color: var(--ink);
+  margin: 0 auto;
+  padding: 28px 40px 40px;
+  position: relative;
+}
+
+.TemplatesPhase2-module__PwEBSG__heading {
+  font: 400 48px/1.12 var(--serif);
+  margin: 0;
+  padding-right: 250px;
+}
+
+.TemplatesPhase2-module__PwEBSG__lede {
+  color: var(--ink-3);
+  margin: 10px 0 20px;
+  padding-right: 250px;
+}
+
+.TemplatesPhase2-module__PwEBSG__tabs {
+  border-bottom: 1px solid var(--line-soft);
+  gap: 28px;
+  margin-bottom: 22px;
+  display: flex;
+}
+
+.TemplatesPhase2-module__PwEBSG__tabs button {
+  color: var(--ink-3);
+  cursor: pointer;
+  background: none;
+  border: 0;
+  border-bottom: 3px solid #0000;
+  padding: 12px 0;
+}
+
+.TemplatesPhase2-module__PwEBSG__tabs button[aria-pressed="true"] {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+.TemplatesPhase2-module__PwEBSG__matter {
+  gap: 7px;
+  max-width: 580px;
+  display: grid;
+}
+
+.TemplatesPhase2-module__PwEBSG__matter select {
+  border: 1px solid var(--line);
+  background: var(--raised);
+  border-radius: 5px;
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 12px;
+}
+
+.TemplatesPhase2-module__PwEBSG__library.TemplatesPhase2-module__PwEBSG__library, .TemplatesPhase2-module__PwEBSG__editor.TemplatesPhase2-module__PwEBSG__editor {
+  box-shadow: none;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+
+.TemplatesPhase2-module__PwEBSG__library.TemplatesPhase2-module__PwEBSG__library .template-library__head {
+  justify-content: flex-end;
+  margin: 0;
+  display: flex;
+  position: absolute;
+  top: 48px;
+  right: 40px;
+}
+
+.TemplatesPhase2-module__PwEBSG__library.TemplatesPhase2-module__PwEBSG__library .template-library__head > div {
+  display: none;
+}
+
+.TemplatesPhase2-module__PwEBSG__library.TemplatesPhase2-module__PwEBSG__library .template-layout {
+  margin-top: 0;
+  display: block;
+}
+
+.TemplatesPhase2-module__PwEBSG__table {
+  border: 1px solid var(--line-soft);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.TemplatesPhase2-module__PwEBSG__tableHead, .TemplatesPhase2-module__PwEBSG__tableRow {
+  text-align: left;
+  grid-template-columns: minmax(0, 1fr) 22% 17% 14px;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 13px 20px;
+  display: grid;
+}
+
+.TemplatesPhase2-module__PwEBSG__tableHead {
+  font: 400 12px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  min-height: 46px;
+}
+
+.TemplatesPhase2-module__PwEBSG__tableRow {
+  border: 0;
+  border-top: 1px solid var(--line-faint);
+  background: var(--raised);
+  color: var(--ink);
+  cursor: pointer;
+  min-height: 50px;
+}
+
+.TemplatesPhase2-module__PwEBSG__tableRow[aria-pressed="true"] {
+  box-shadow: inset 3px 0 var(--ink);
+  background: var(--paper);
+}
+
+.TemplatesPhase2-module__PwEBSG__tableRow:hover {
+  background: var(--hover);
+}
+
+.TemplatesPhase2-module__PwEBSG__tableRow small {
+  color: var(--ink-3);
+  margin-top: 2px;
+  font-size: 12px;
+  display: block;
+}
+
+.TemplatesPhase2-module__PwEBSG__tableRow > span {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+.TemplatesPhase2-module__PwEBSG__tableRow strong {
+  font-weight: 400;
+}
+
+.TemplatesPhase2-module__PwEBSG__library.TemplatesPhase2-module__PwEBSG__library .template-detail {
+  border: 1px solid var(--line-soft);
+  border-radius: 6px;
+  margin-top: 22px;
+  padding: 20px;
+}
+
+.TemplatesPhase2-module__PwEBSG__library.TemplatesPhase2-module__PwEBSG__library .template-detail__head h3 {
+  font: 400 28px/1.2 var(--serif);
+}
+
+.TemplatesPhase2-module__PwEBSG__library.TemplatesPhase2-module__PwEBSG__library .template-summary {
+  font: 400 15px/1.6 var(--sans);
+}
+
+:is(.TemplatesPhase2-module__PwEBSG__library.TemplatesPhase2-module__PwEBSG__library .preview-overrides, .TemplatesPhase2-module__PwEBSG__editor.TemplatesPhase2-module__PwEBSG__editor .preview-box) {
+  background: var(--raised);
+  border: 1px solid var(--line-soft);
+  margin-top: 24px;
+  padding: 20px;
+}
+
+:is(.TemplatesPhase2-module__PwEBSG__library.TemplatesPhase2-module__PwEBSG__library .preview-overrides legend, .TemplatesPhase2-module__PwEBSG__editor.TemplatesPhase2-module__PwEBSG__editor .preview-box legend) {
+  font: 400 23px var(--serif);
+}
+
+:is(.TemplatesPhase2-module__PwEBSG__library.TemplatesPhase2-module__PwEBSG__library .preview-result, .TemplatesPhase2-module__PwEBSG__editor.TemplatesPhase2-module__PwEBSG__editor .preview-result) {
+  border: 1px dashed var(--agent-edge);
+  border-radius: 6px;
+  padding: 20px;
+}
+
+:is(.TemplatesPhase2-module__PwEBSG__library.TemplatesPhase2-module__PwEBSG__library .btn.agent, .TemplatesPhase2-module__PwEBSG__editor.TemplatesPhase2-module__PwEBSG__editor .btn.agent) {
+  background: var(--ink);
+  color: var(--raised);
+  border: 1px solid var(--ink);
+  width: fit-content;
+}
+
+.TemplatesPhase2-module__PwEBSG__editor.TemplatesPhase2-module__PwEBSG__editor .template-editor__head {
+  margin-bottom: 30px;
+}
+
+.TemplatesPhase2-module__PwEBSG__editor.TemplatesPhase2-module__PwEBSG__editor .template-editor__head h2 {
+  font: 400 48px/1.15 var(--serif);
+  margin-top: 12px;
+}
+
+.TemplatesPhase2-module__PwEBSG__editorColumns {
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  gap: 32px;
+  display: grid;
+}
+
+.TemplatesPhase2-module__PwEBSG__editor.TemplatesPhase2-module__PwEBSG__editor .TemplatesPhase2-module__PwEBSG__editorColumns .template-fields {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  margin: 0;
+}
+
+.TemplatesPhase2-module__PwEBSG__editor.TemplatesPhase2-module__PwEBSG__editor .TemplatesPhase2-module__PwEBSG__editorColumns .template-fields--details {
+  margin-top: 24px;
+}
+
+.TemplatesPhase2-module__PwEBSG__editor.TemplatesPhase2-module__PwEBSG__editor .TemplatesPhase2-module__PwEBSG__editorColumns .editor-field {
+  margin: 0 0 24px;
+}
+
+.TemplatesPhase2-module__PwEBSG__editor.TemplatesPhase2-module__PwEBSG__editor .editor-field h3 {
+  font: 500 15px var(--sans);
+}
+
+.TemplatesPhase2-module__PwEBSG__editor.TemplatesPhase2-module__PwEBSG__editor .editor-field p {
+  font-size: 13px;
+}
+
+.TemplatesPhase2-module__PwEBSG__editor.TemplatesPhase2-module__PwEBSG__editor .template-long-fields {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 20px;
+}
+
+:is(.TemplatesPhase2-module__PwEBSG__editor.TemplatesPhase2-module__PwEBSG__editor .text-input, .TemplatesPhase2-module__PwEBSG__library.TemplatesPhase2-module__PwEBSG__library .text-input) {
+  min-height: 42px;
+}
+
+.TemplatesPhase2-module__PwEBSG__editor.TemplatesPhase2-module__PwEBSG__editor .save-actions {
+  justify-content: flex-end;
+}
+
+.TemplatesPhase2-module__PwEBSG__editor.TemplatesPhase2-module__PwEBSG__editor .revision-detail {
+  border: 1px solid var(--line-soft);
+  border-radius: 6px;
+  padding: 18px;
+}
+
+.TemplatesPhase2-module__PwEBSG__outline {
+  resize: vertical;
+  min-height: 265px;
+  font-family: var(--mono);
+  width: 100%;
+}
+
+.TemplatesPhase2-module__PwEBSG__back {
+  margin-bottom: 24px;
+}
+
+.TemplatesPhase2-module__PwEBSG__page [hidden] {
+  display: none !important;
+}
+
+@media (max-width: 760px) {
+  .TemplatesPhase2-module__PwEBSG__page {
+    padding: 24px 20px;
+  }
+
+  .TemplatesPhase2-module__PwEBSG__heading {
+    font-size: 36px;
+  }
+
+  .TemplatesPhase2-module__PwEBSG__editor.TemplatesPhase2-module__PwEBSG__editor .template-editor__head h2 {
+    font-size: 36px;
+  }
+
+  .TemplatesPhase2-module__PwEBSG__library.TemplatesPhase2-module__PwEBSG__library .template-library__head {
+    margin: 0 0 20px;
+    position: static;
+  }
+
+  .TemplatesPhase2-module__PwEBSG__heading, .TemplatesPhase2-module__PwEBSG__lede {
+    padding-right: 0;
+  }
+
+  .TemplatesPhase2-module__PwEBSG__editorColumns {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .TemplatesPhase2-module__PwEBSG__editor.TemplatesPhase2-module__PwEBSG__editor .template-long-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .TemplatesPhase2-module__PwEBSG__tableHead, .TemplatesPhase2-module__PwEBSG__tableRow {
+    grid-template-columns: minmax(0, 1fr) 18% 25%;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .TemplatesPhase2-module__PwEBSG__tableHead > :last-child, .TemplatesPhase2-module__PwEBSG__tableRow > :last-child {
+    display: none;
+  }
+
+  .TemplatesPhase2-module__PwEBSG__library.TemplatesPhase2-module__PwEBSG__library .template-detail {
+    padding: 14px;
+  }
+}
+
+/*# sourceMappingURL=components_TemplatesPhase2_module_css_1igg3k2._.single.css.map*/

@@ -1,0 +1,10 @@
+{
+  "pid": 89001,
+  "command": [
+    "npm",
+    "run",
+    "typecheck"
+  ],
+  "cwd": "/Users/bharris/Programs/counsel-os-mvp/frontend",
+  "started_at": "2026-09-12T06:46:16.500685+00:00"
+}

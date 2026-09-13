@@ -84,14 +84,14 @@ class DossierRequestService:
 
     # --- Raw record access ----------------------------------------------
 
-    def _load_record(self, matter_id: str, request_id: str) -> dict[str, Any]:
+    def _load_record(self, matter_id: str, request_id: str, *, include_execution: bool = True) -> dict[str, Any]:
         """Read and validate a saved record. Never mutates the file."""
         if not isinstance(request_id, str) or not request_id.startswith("DOR-"):
             raise DossierRequestNotFound("No such dossier request.")
         path = self._path(matter_id, request_id)
         if not self.vault.exists(path):
             raise DossierRequestNotFound("No such dossier request.")
-        document = self.vault.read_markdown(path)
+        document = self.vault.read_markdown(path, include_execution=include_execution)
         metadata = document["metadata"]
         validate_saved_metadata(metadata)
         if metadata.get("matter_id") != matter_id:
@@ -99,13 +99,13 @@ class DossierRequestService:
             raise DossierRequestNotFound("This dossier request belongs to a different matter.")
         return {"metadata": metadata, "content": document["content"], "path": path}
 
-    def _iter_records(self, matter_id: str) -> list[dict[str, Any]]:
+    def _iter_records(self, matter_id: str, *, include_execution: bool = True) -> list[dict[str, Any]]:
         directory = self._dir(matter_id)
         if not self.vault.exists(directory):
             return []
         records: list[dict[str, Any]] = []
         for path in sorted(self.vault.iter_files(directory, {".md"}), key=lambda p: p.name):
-            document = self.vault.read_markdown(self.vault.relative(path))
+            document = self.vault.read_markdown(self.vault.relative(path), include_execution=include_execution)
             metadata = document["metadata"]
             try:
                 validate_saved_metadata(metadata)
@@ -120,15 +120,26 @@ class DossierRequestService:
     # --- Public read API -------------------------------------------------
 
     def get(self, matter_id: str, request_id: str) -> dict[str, Any]:
-        record = self._load_record(matter_id, request_id)
-        return compact_status(record["metadata"], record["content"])
+        record = self._load_record(matter_id, request_id, include_execution=False)
+        status = compact_status(record["metadata"], record["content"])
+        # Older partial rows did not record their cause. Project the saved child
+        # error read-only; do not restart research or rewrite the user's matter.
+        from app.services.research_recovery import research_failure
+        for issue in status["issues"]:
+            if issue["state"] in {"partial", "failed"} and not issue["last_error"] and issue.get("run_id"):
+                try:
+                    child = self.app.research_runs.get(matter_id, issue["run_id"], include_execution=False)
+                    issue["last_error"] = research_failure(child)[0]
+                except (KeyError, ValueError, OSError):
+                    pass
+        return status
 
     def get_record(self, matter_id: str, request_id: str) -> dict[str, Any]:
         return self._load_record(matter_id, request_id)
 
     def list(self, matter_id: str, *, conversation_id: str | None = None) -> list[dict[str, Any]]:
         statuses: list[dict[str, Any]] = []
-        for record in self._iter_records(matter_id):
+        for record in self._iter_records(matter_id, include_execution=False):
             metadata = record["metadata"]
             if conversation_id is not None:
                 origin = metadata.get("origin") or {}
@@ -906,6 +917,87 @@ class DossierRequestService:
         self._launch_coordinator(matter_id, request_id)
         return self.get(matter_id, request_id)
 
+    async def start_issue(self, matter_id: str, request_id: str, issue_id: str, *, plan_revision: str) -> dict[str, Any]:
+        """Add one unselected issue using this request's saved research choices."""
+        from app.services.dossier_request_execution import DossierRequestExecutor
+
+        with WORKSPACE_LOCK:
+            record = self._load_record(matter_id, request_id)
+            metadata = record["metadata"]
+            if plan_revision != metadata.get("plan_revision"):
+                raise DossierRequestConflict("This dossier plan changed. Reload and try again.")
+            if metadata.get("execution_mode") != "research":
+                raise DossierRequestConflict("Choose sources and start dossier research before adding an issue.")
+            entry = (metadata.get("issues") or {}).get(issue_id)
+            if entry is None:
+                raise DossierRequestValidation("This issue does not belong to the saved dossier plan.")
+            # Progress updates need no sequence match: this only adds one issue.
+            # Repeated clicks return the existing work, even after it finishes.
+            if issue_id in (metadata.get("planned_issue_ids") or []):
+                return compact_status(metadata, record["content"])
+            if entry.get("state") != "not_selected":
+                raise DossierRequestConflict("This issue is not available to start.")
+            if metadata.get("state") == "running" and metadata.get("stop_requested"):
+                raise DossierRequestConflict("Research is stopping. Try again after it stops.")
+
+            active = self._active.get(request_id)
+            is_active = active is not None and not active.done()
+            ownership = self.app.research_runs.acquire_matter_ownership(matter_id, request_id)
+            if not ownership.get("acquired"):
+                raise DossierRequestConflict("Another dossier request is already researching this matter.",
+                                            current_request_id=ownership.get("owner"))
+
+            def queue_issue(md, content):
+                # Freeze the new child's inputs before another batch publishes.
+                child = DossierRequestExecutor(self, matter_id, request_id)._ensure_child(md, issue_id)
+                planned = list(md.get("planned_issue_ids") or [])
+                md["issues"][issue_id].update(state="queued", planned_order=len(planned), child_run_id=child["run_id"])
+                md["planned_issue_ids"] = [*planned, issue_id]
+                md.update(state="running", stop_requested=False, finished_at=None, last_error=None,
+                          phase="remaining_batch" if md.get("first_pass_ready_at") else "first_batch")
+                return md, content
+
+            try:
+                result = self._mutate(matter_id, request_id, queue_issue, expected_sequence=None)
+            except Exception as exc:
+                if not is_active:
+                    self.app.research_runs.release_matter_ownership(matter_id, request_id)
+                if isinstance(exc, (KeyError, ValueError)):
+                    raise DossierRequestValidation(f"This issue could not start: {exc}") from exc
+                raise
+            if not is_active:
+                self._launch_coordinator(matter_id, request_id)
+            return result
+
+    def add_web_research(self, matter_id: str, request_id: str, issue_id: str, *,
+                         plan_revision: str, source_choice: ResearchScope) -> dict[str, Any]:
+        """Link an explicitly requested web pass through the normal research queue."""
+        with WORKSPACE_LOCK:
+            metadata = self._load_record(matter_id, request_id)["metadata"]
+            if plan_revision != metadata.get("plan_revision"):
+                raise DossierRequestConflict("This dossier plan changed. Reload and try again.")
+            entry = (metadata.get("issues") or {}).get(issue_id)
+            if entry is None:
+                raise DossierRequestValidation("This issue does not belong to the saved dossier plan.")
+            if not source_choice.external:
+                raise DossierRequestValidation("Select external sources to add web research.")
+            if entry.get("web_run_id"):
+                return self.app.research_runs.get(matter_id, entry["web_run_id"])
+            origin = metadata.get("origin") or {}
+            run = self.app.research_runs.start(
+                matter_id, [self._issue_question(entry, issue_id, metadata.get("priorities"), metadata.get("date_candidates"))],
+                source_action_key=f"dossier-web:{request_id}:{issue_id}", issue_id=issue_id,
+                search_scope=source_choice, origin_conversation_id=origin.get("conversation_id"),
+                origin_message_id=origin.get("message_id"),
+            )
+
+            def link(md, content):
+                md["issues"][issue_id]["web_run_id"] = run["run_id"]
+                return md, content
+
+            self._mutate(matter_id, request_id, link, expected_sequence=None)
+            return run
+
     async def stop(self, matter_id: str, request_id: str, *, expected_sequence: int | None) -> dict[str, Any]:
         current = self._load_record(matter_id, request_id)
         if current["metadata"].get("state") not in {"running", "partial", "interrupted"}:
@@ -916,6 +1008,17 @@ class DossierRequestService:
             return md, content
 
         self._mutate(matter_id, request_id, request_stop, expected_sequence=expected_sequence)
+        # Persist the child stop before cancellation, including an automatic
+        # continuation waiting in backoff. A restart must not revive that work.
+        from app.services.research_checkpoints import ResearchCheckpoints
+        checks = ResearchCheckpoints(self.app.research_runs)
+        for entry in (current["metadata"].get("issues") or {}).values():
+            run_id = entry.get("child_run_id")
+            if run_id and entry.get("state") in {"queued", "running"}:
+                try:
+                    checks.update(matter_id, run_id, allow_unavailable_sources=True, stop_requested=True)
+                except (KeyError, ValueError, OSError):
+                    pass  # A damaged child must not prevent stopping its task.
 
         # Cancel this parent's coordinator and its active children.
         task = self._active.get(request_id)
@@ -950,34 +1053,44 @@ class DossierRequestService:
     async def resume(self, matter_id, request_id, *, expected_sequence, retry_unknown=False, retry_issue_ids=None) -> dict[str, Any]:
         record = self._load_record(matter_id, request_id)
         metadata = record["metadata"]
-        if metadata.get("state") in {"completed"}:
+        issue_states = metadata.get("issues") or {}
+        unfinished = {iid for iid, entry in issue_states.items() if entry.get("state") in {"partial", "failed", "interrupted"}}
+        active_task = self._active.get(request_id)
+        is_active = active_task is not None and not active_task.done()
+        active_retry = metadata.get("state") == "running" and is_active and bool(retry_issue_ids) and not metadata.get("stop_requested")
+        if metadata.get("state") == "completed" and not unfinished:
             return compact_status(metadata, record["content"])
-        if metadata.get("state") not in {"interrupted", "stopped", "failed", "partial"}:
+        if metadata.get("state") not in {"interrupted", "stopped", "failed", "partial", "completed"} and not active_retry:
             raise DossierRequestConflict("This dossier request is not ready to resume.")
         if expected_sequence is not None and expected_sequence != int(metadata.get("sequence") or 0):
             raise DossierRequestConflict("This dossier request changed. Reload and try again.",
                                          current_sequence=int(metadata.get("sequence") or 0))
 
-        issue_states = metadata.get("issues") or {}
         requested_retries = set(retry_issue_ids or [])
         if any(iid not in issue_states for iid in requested_retries):
             raise DossierRequestValidation("A retry issue does not belong to this dossier request.")
         if any((issue_states[iid] or {}).get("state") == "saved" for iid in requested_retries):
             raise DossierRequestValidation("Completed dossier issues cannot be retried.")
+        if requested_retries - unfinished:
+            raise DossierRequestValidation("Only unfinished dossier issues can be resumed.")
 
         def reopen(md, content):
             md["stop_requested"] = False
             md["state"] = "running"
             md["last_error"] = None
-            for call in (md.get("writer_calls") or {}).values():
+            md["finished_at"] = None
+            for call in ([] if active_retry or requested_retries else (md.get("writer_calls") or {}).values()):
                 if call.get("state") in {"in_flight", "outcome_unknown"}:
                     call["state"] = "retry_ready" if retry_unknown else "outcome_unknown"
             issues = md.get("issues") or {}
             allowed = set(retry_issue_ids or [])
             for iid, entry in issues.items():
                 state = (entry or {}).get("state")
-                if state in {"interrupted", "queued"} or (state in {"failed", "partial"} and (not allowed or iid in allowed)):
+                if state in {"interrupted", "queued", "failed", "partial"} and (not allowed or iid in allowed):
                     entry["state"] = "queued"
+                    entry["last_error"] = None
+                    entry["recovery_status"] = "Resuming from saved work."
+                    entry["publication_pending"] = True
             md["issues"] = issues
             return md, content
 
@@ -989,6 +1102,7 @@ class DossierRequestService:
             )
         try:
             from app.services.research_checkpoints import ResearchCheckpoints
+            from app.services.research_recovery import prepare_recovery
             checkpoint_service = ResearchCheckpoints(self.app.research_runs)
             retry_targets = requested_retries or {
                 iid
@@ -1000,9 +1114,18 @@ class DossierRequestService:
                 if run_id and self.app.vault.exists(
                     self.app.research_runs._path(matter_id, run_id)
                 ):
-                    checkpoint_service.recover(
-                        matter_id, run_id, explicit_retry=retry_unknown, allow_unavailable_sources=True
-                    )
+                    child = self.app.research_runs.get(matter_id, run_id)
+                    cp = child.get("checkpoint") or {}
+                    needs_allowance = (child.get("managed_state") in {"partial", "failed"}
+                                       or cp.get("final_attempt_started") or cp.get("analysis_failure")
+                                       or cp.get("budget_used", {}).get("active_seconds", 0) + cp.get("active_time_reservation", 0)
+                                       >= child.get("investigation_limits", {}).get("active_seconds", 600) - 90)
+                    renewed = needs_allowance and prepare_recovery(
+                        self.app.research_runs, matter_id, run_id, explicit_retry=retry_unknown)
+                    if not renewed:
+                        checkpoint_service.recover(
+                            matter_id, run_id, explicit_retry=retry_unknown, allow_unavailable_sources=True
+                        )
                     child = self.app.research_runs.get(matter_id, run_id)
                     cp = child.get("checkpoint") or {}
                     # Resume clears Stop but never clears unknown calls or
@@ -1014,9 +1137,11 @@ class DossierRequestService:
                         "failure_detail": "; ".join(cp["source_warnings"]) if source_blocked else None})
             self._mutate(matter_id, request_id, reopen, expected_sequence=None)
         except Exception:
-            self.app.research_runs.release_matter_ownership(matter_id, request_id)
+            if not is_active:
+                self.app.research_runs.release_matter_ownership(matter_id, request_id)
             raise
-        self._launch_coordinator(matter_id, request_id)
+        if not is_active:
+            self._launch_coordinator(matter_id, request_id)
         return self.get(matter_id, request_id)
 
     def _launch_coordinator(self, matter_id: str, request_id: str) -> Any:
@@ -1048,7 +1173,7 @@ class DossierRequestService:
             matter_id = str(matter.get("matter_id") or "")
             if not matter_id:
                 continue
-            for record in self._iter_records(matter_id):
+            for record in self._iter_records(matter_id, include_execution=False):
                 metadata = record["metadata"]
                 if metadata.get("state") == "running":
                     acquired = self.app.research_runs.acquire_matter_ownership(
@@ -1064,7 +1189,7 @@ class DossierRequestService:
             matter_id = str(matter.get("matter_id") or "")
             if not matter_id:
                 continue
-            for record in self._iter_records(matter_id):
+            for record in self._iter_records(matter_id, include_execution=False):
                 metadata = record["metadata"]
                 if metadata.get("state") != "running":
                     continue

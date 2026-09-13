@@ -1,0 +1,688 @@
+/* [project]/components/workspace/MatterContinuity.module.css [app-client] (css) */
+.MatterContinuity-module__FlmxXq__factRequest, .MatterContinuity-module__FlmxXq__handoffPanel, .MatterContinuity-module__FlmxXq__impactPanel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  gap: 16px;
+  min-width: 0;
+  padding: 18px;
+  display: grid;
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest header, .MatterContinuity-module__FlmxXq__handoffPanel header, .MatterContinuity-module__FlmxXq__impactPanel header, .MatterContinuity-module__FlmxXq__impactPanel .impact-reading__head, .MatterContinuity-module__FlmxXq__impactPanel .impact-finding__head, .MatterContinuity-module__FlmxXq__impactPanel .impact-passage__label, .MatterContinuity-module__FlmxXq__factRequest .fact-request__saved-head, .MatterContinuity-module__FlmxXq__handoffPanel .handoff-card__head) {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: start;
+  gap: 12px;
+  display: flex;
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest h2, .MatterContinuity-module__FlmxXq__factRequest h3, .MatterContinuity-module__FlmxXq__factRequest p, .MatterContinuity-module__FlmxXq__handoffPanel h2, .MatterContinuity-module__FlmxXq__handoffPanel h3, .MatterContinuity-module__FlmxXq__handoffPanel p, .MatterContinuity-module__FlmxXq__impactPanel h2, .MatterContinuity-module__FlmxXq__impactPanel h3, .MatterContinuity-module__FlmxXq__impactPanel h4, .MatterContinuity-module__FlmxXq__impactPanel p) {
+  margin: 0;
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest h2, .MatterContinuity-module__FlmxXq__handoffPanel h2) {
+  font: 400 28px/1.15 var(--serif);
+  letter-spacing: -.02em;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel h2 {
+  font: 600 22px/1.25 var(--serif);
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest h3, .MatterContinuity-module__FlmxXq__handoffPanel h3, .MatterContinuity-module__FlmxXq__impactPanel h4) {
+  font: 600 15px/1.45 var(--sans);
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel h3 {
+  font: 600 20px/1.3 var(--serif);
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest .fact-request__actor, .MatterContinuity-module__FlmxXq__handoffPanel .handoff-panel__actor, .MatterContinuity-module__FlmxXq__impactPanel .impact-panel__status) {
+  font: 500 12px var(--sans);
+  color: var(--ink-4);
+  align-items: center;
+  gap: 6px;
+  display: inline-flex;
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest .fact-request__intro, .MatterContinuity-module__FlmxXq__handoffPanel .handoff-panel__intro, .MatterContinuity-module__FlmxXq__impactPanel .impact-panel__intro) {
+  max-width: 76ch;
+  color: var(--ink-3);
+  font: 400 15px/1.5 var(--sans);
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest .label, .MatterContinuity-module__FlmxXq__handoffPanel .label) {
+  color: var(--ink-2);
+  font: 600 11px/1.35 var(--sans);
+  letter-spacing: .065em;
+  text-transform: uppercase;
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest .text-input, .MatterContinuity-module__FlmxXq__factRequest .select-input, .MatterContinuity-module__FlmxXq__handoffPanel .text-input, .MatterContinuity-module__FlmxXq__handoffPanel .select-input) {
+  min-height: 46px;
+  padding: 10px 12px;
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest textarea.text-input, .MatterContinuity-module__FlmxXq__handoffPanel textarea.text-input) {
+  min-height: 128px;
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest .fact-request__question, .MatterContinuity-module__FlmxXq__handoffPanel .handoff-panel__scope) {
+  border-left: 3px solid var(--ink);
+  background: var(--paper);
+  gap: 4px;
+  padding: 12px 14px;
+  display: grid;
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest .fact-request__question span, .MatterContinuity-module__FlmxXq__handoffPanel .handoff-panel__scope span, .MatterContinuity-module__FlmxXq__handoffPanel .handoff-panel__scope small) {
+  font: 500 12px var(--sans);
+  color: var(--ink-4);
+}
+
+.MatterContinuity-module__FlmxXq__factRequest .fact-request__question p {
+  font: 400 16px/1.65 var(--serif);
+}
+
+.MatterContinuity-module__FlmxXq__factRequest .fact-request__entering-lawyer {
+  gap: 5px;
+  display: grid;
+}
+
+.MatterContinuity-module__FlmxXq__factRequest .fact-request__entering-lawyer input {
+  width: 100%;
+  color: var(--ink-3);
+  background: var(--paper);
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest .fact-request__form, .MatterContinuity-module__FlmxXq__factRequest .fact-request__saved, .MatterContinuity-module__FlmxXq__factRequest .fact-request__reply, .MatterContinuity-module__FlmxXq__factRequest .fact-request__answer, .MatterContinuity-module__FlmxXq__handoffPanel .handoff-panel__form, .MatterContinuity-module__FlmxXq__handoffPanel .handoff-panel__list, .MatterContinuity-module__FlmxXq__handoffPanel .handoff-card, .MatterContinuity-module__FlmxXq__impactPanel .impact-reading, .MatterContinuity-module__FlmxXq__impactPanel .impact-passages, .MatterContinuity-module__FlmxXq__impactPanel .impact-findings, .MatterContinuity-module__FlmxXq__impactPanel .impact-offers, .MatterContinuity-module__FlmxXq__impactPanel .impact-draft-updates) {
+  gap: 12px;
+  display: grid;
+}
+
+.MatterContinuity-module__FlmxXq__factRequest .fact-request__grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  display: grid;
+}
+
+:is(.MatterContinuity-module__FlmxXq__handoffPanel .handoff-panel__grid, .MatterContinuity-module__FlmxXq__impactPanel .impact-prepare__grid, .MatterContinuity-module__FlmxXq__impactPanel .impact-passage__columns) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  display: grid;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-prepare__columns {
+  border: 1px solid var(--line-faint);
+  border-radius: 8px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  margin-top: 12px;
+  display: grid;
+  overflow: hidden;
+}
+
+:is(.MatterContinuity-module__FlmxXq__impactPanel .impact-versions, .MatterContinuity-module__FlmxXq__impactPanel .impact-targets) {
+  border: 0;
+  min-width: 0;
+  margin: 0;
+  padding: 14px;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-versions {
+  border-right: 1px solid var(--line-faint);
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-versions h3 {
+  color: var(--ink-2);
+  font: 600 15px/1.45 var(--sans);
+  margin: 0 0 12px;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-prepare__action {
+  border-top: 1px solid var(--line-faint);
+  color: var(--ink-2);
+  font: 600 15px/1.45 var(--sans);
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 12px 0 0;
+  display: flex;
+}
+
+.MatterContinuity-module__FlmxXq__factRequest .fact-request__saved {
+  border-top: 1px solid var(--line-faint);
+  padding-top: 14px;
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest .fact-state, .MatterContinuity-module__FlmxXq__handoffPanel .handoff-card__state, .MatterContinuity-module__FlmxXq__impactPanel .impact-state, .MatterContinuity-module__FlmxXq__impactPanel .impact-effect, .MatterContinuity-module__FlmxXq__impactPanel .impact-support) {
+  font: 600 12px var(--sans);
+  border-radius: 12px;
+  padding: 3px 8px;
+  display: inline-block;
+}
+
+.MatterContinuity-module__FlmxXq__factRequest .fact-request__remaining {
+  color: var(--attention-deepest);
+  background: var(--attention-wash);
+  border: 1px solid var(--attention-edge);
+  font: 400 15px/1.5 var(--sans);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.MatterContinuity-module__FlmxXq__factRequest .fact-request__reply {
+  border: 1px solid var(--line);
+  background: var(--raised);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.MatterContinuity-module__FlmxXq__factRequest .fact-request__answer {
+  border: 1px solid var(--line);
+  background: var(--raised);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.MatterContinuity-module__FlmxXq__handoffPanel .handoff-card {
+  border: 1px solid var(--line);
+  background: var(--raised);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-prepare {
+  border: 1px solid var(--line);
+  background: var(--raised);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-limits {
+  border: 1px solid var(--line);
+  background: var(--raised);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-passage {
+  border: 1px solid var(--line);
+  background: var(--raised);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-findings > article {
+  border: 1px solid var(--line);
+  background: var(--raised);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-offers > article {
+  border: 1px solid var(--line);
+  background: var(--raised);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-no-passages {
+  border: 1px solid var(--line);
+  background: var(--raised);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-empty {
+  border: 1px solid var(--line);
+  background: var(--raised);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest .fact-request__answer summary, .MatterContinuity-module__FlmxXq__impactPanel .impact-prepare > summary, .MatterContinuity-module__FlmxXq__impactPanel .impact-limits > summary) {
+  cursor: pointer;
+  font: 600 15px/1.4 var(--sans);
+}
+
+.MatterContinuity-module__FlmxXq__factRequest .fact-request__answer blockquote {
+  background: var(--paper);
+  white-space: pre-wrap;
+  color: var(--ink-2);
+  font: 400 16px/1.65 var(--serif);
+  margin: 0;
+  padding: 10px 12px;
+}
+
+.MatterContinuity-module__FlmxXq__factRequest .fact-request__answer fieldset {
+  border: 0;
+  gap: 15px;
+  padding: 0;
+  display: flex;
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest .fact-request__notice, .MatterContinuity-module__FlmxXq__handoffPanel .handoff-panel__notice, .MatterContinuity-module__FlmxXq__impactPanel .impact-notice) {
+  font: 400 15px/1.5 var(--sans);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest .fact-request__notice.healthy, .MatterContinuity-module__FlmxXq__handoffPanel .handoff-panel__notice.healthy, .MatterContinuity-module__FlmxXq__impactPanel .impact-notice.healthy) {
+  color: var(--healthy);
+  background: var(--healthy-wash);
+  border: 1px solid var(--healthy);
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest .fact-request__notice.agent, .MatterContinuity-module__FlmxXq__impactPanel .impact-notice.agent) {
+  color: var(--agent);
+  background: var(--agent-wash);
+  border: 1px dashed var(--agent-edge);
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest .fact-request__notice.attention, .MatterContinuity-module__FlmxXq__handoffPanel .handoff-panel__notice.attention, .MatterContinuity-module__FlmxXq__impactPanel .impact-notice.attention) {
+  color: var(--attention-deepest);
+  background: var(--attention-wash);
+  border: 1px solid var(--attention-edge);
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest .fact-request__notice.failure, .MatterContinuity-module__FlmxXq__handoffPanel .handoff-panel__notice.failure, .MatterContinuity-module__FlmxXq__impactPanel .impact-notice.failure) {
+  color: var(--failure);
+  background: var(--failure-wash);
+  border: 1px solid var(--failure-edge);
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest .fact-request__reassess, .MatterContinuity-module__FlmxXq__impactPanel .impact-analysis) {
+  border: 1px dashed var(--agent-edge);
+  background: var(--agent-wash);
+  border-radius: 8px;
+  gap: 12px;
+  padding: 14px;
+  display: grid;
+}
+
+.MatterContinuity-module__FlmxXq__factRequest .fact-request__information {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  display: grid;
+}
+
+.MatterContinuity-module__FlmxXq__factRequest .fact-request__information section {
+  border: 1px dashed var(--agent-edge);
+  background: var(--agent-wash);
+  border-radius: 8px;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 122px;
+  padding: 14px;
+  display: flex;
+}
+
+.MatterContinuity-module__FlmxXq__factRequest .fact-request__information section + section {
+  border-style: solid;
+  border-color: var(--line-faint);
+  background: var(--raised);
+}
+
+.MatterContinuity-module__FlmxXq__factRequest .fact-request__information svg {
+  color: var(--agent);
+  flex: none;
+}
+
+.MatterContinuity-module__FlmxXq__factRequest .fact-request__information section div {
+  gap: 4px;
+  display: grid;
+}
+
+.MatterContinuity-module__FlmxXq__factRequest .fact-request__information strong {
+  color: var(--ink-2);
+  font: 600 15px/1.4 var(--sans);
+}
+
+.MatterContinuity-module__FlmxXq__factRequest .fact-request__information p {
+  color: var(--ink-3);
+  font: 400 14px/1.45 var(--sans);
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest .fact-request__form > .btn-row, .MatterContinuity-module__FlmxXq__handoffPanel .handoff-panel__form > .btn-row) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  display: grid;
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest .fact-request__form > .btn-row .btn, .MatterContinuity-module__FlmxXq__handoffPanel .handoff-panel__form > .btn-row .btn) {
+  width: 100%;
+  min-height: 44px;
+}
+
+.MatterContinuity-module__FlmxXq__factRequest .fact-request__form > .btn-row .btn:nth-child(3) {
+  grid-column: span 2;
+}
+
+.MatterContinuity-module__FlmxXq__handoffPanel .handoff-card p {
+  font: 400 15px/1.5 var(--sans);
+}
+
+.MatterContinuity-module__FlmxXq__handoffPanel .handoff-card li {
+  font: 400 15px/1.5 var(--sans);
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-findings > article > p {
+  font: 400 15px/1.5 var(--sans);
+}
+
+.MatterContinuity-module__FlmxXq__handoffPanel .handoff-card ul {
+  margin: 5px 0 0;
+  padding-left: 20px;
+}
+
+:is(.MatterContinuity-module__FlmxXq__handoffPanel .handoff-card__state.healthy, .MatterContinuity-module__FlmxXq__impactPanel .impact-state.healthy, .MatterContinuity-module__FlmxXq__impactPanel .impact-effect.effect-remains_supported) {
+  color: var(--healthy);
+  background: var(--healthy-tint);
+}
+
+:is(.MatterContinuity-module__FlmxXq__handoffPanel .handoff-card__state.attention, .MatterContinuity-module__FlmxXq__impactPanel .impact-state.attention, .MatterContinuity-module__FlmxXq__impactPanel .impact-effect.effect-may_need_review, .MatterContinuity-module__FlmxXq__impactPanel .impact-effect.effect-changes, .MatterContinuity-module__FlmxXq__impactPanel .impact-support.support-inferred) {
+  color: var(--attention-deepest);
+  background: var(--attention-tint);
+}
+
+:is(.MatterContinuity-module__FlmxXq__handoffPanel .handoff-card__state.quiet, .MatterContinuity-module__FlmxXq__impactPanel .impact-state.quiet, .MatterContinuity-module__FlmxXq__impactPanel .impact-effect.effect-unknown, .MatterContinuity-module__FlmxXq__impactPanel .impact-support.support-unavailable) {
+  color: var(--ink-4);
+  background: var(--sunken);
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-state.failure {
+  color: var(--failure);
+  background: var(--failure-tint);
+}
+
+:is(.MatterContinuity-module__FlmxXq__impactPanel .impact-state.agent, .MatterContinuity-module__FlmxXq__impactPanel .impact-support.support-linked) {
+  color: var(--agent);
+  background: var(--agent-tint);
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-support {
+  margin-left: 6px;
+}
+
+:is(.MatterContinuity-module__FlmxXq__impactPanel .impact-prepare label, .MatterContinuity-module__FlmxXq__impactPanel .impact-analysis label) {
+  gap: 5px;
+  display: grid;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-targets {
+  gap: 8px;
+  display: grid;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-targets legend {
+  font: 600 15px var(--sans);
+  margin-bottom: 7px;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-targets label {
+  border: 1px solid var(--line-faint);
+  border-radius: 8px;
+  align-items: start;
+  gap: 9px;
+  padding: 10px;
+  display: flex;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-targets label span {
+  gap: 2px;
+  display: grid;
+}
+
+:is(.MatterContinuity-module__FlmxXq__impactPanel .impact-targets small, .MatterContinuity-module__FlmxXq__impactPanel .impact-history small) {
+  color: var(--ink-4);
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-history {
+  gap: 8px;
+  padding-bottom: 4px;
+  display: flex;
+  overflow-x: auto;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-history button {
+  text-align: left;
+  border: 1px solid var(--line);
+  background: var(--raised);
+  min-width: 190px;
+  color: var(--ink);
+  font: 500 15px/1.4 var(--sans);
+  border-radius: 8px;
+  gap: 3px;
+  padding: 10px 12px;
+  display: grid;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-history button.selected {
+  border-color: var(--ink);
+  background: var(--agent-wash);
+  box-shadow: inset 3px 0 var(--ink);
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-reading {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-passage__columns section {
+  border: 1px solid var(--line-faint);
+  background: var(--paper);
+  min-width: 0;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-passage__columns section > div {
+  border-bottom: 1px solid var(--line-faint);
+  color: var(--ink-4);
+  font: 600 12px var(--sans);
+  justify-content: space-between;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  display: flex;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-passage pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 320px;
+  color: var(--ink-2);
+  font: 400 16px/1.65 var(--serif);
+  margin: 0;
+  padding: 12px;
+  overflow: auto;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-analysis__markdown {
+  min-width: 0;
+  color: var(--ink-2);
+  font: 400 16px/1.65 var(--serif);
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-analysis__markdown > * {
+  margin: 0 0 10px;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-analysis__markdown > :last-child {
+  margin-bottom: 0;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-analysis__markdown table {
+  border-collapse: collapse;
+}
+
+:is(.MatterContinuity-module__FlmxXq__impactPanel .impact-analysis__markdown th, .MatterContinuity-module__FlmxXq__impactPanel .impact-analysis__markdown td) {
+  border: 1px solid var(--line-faint);
+  vertical-align: top;
+  padding: 7px 9px;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-evidence-links {
+  color: var(--ink-4);
+  font: 500 12px var(--sans);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  display: flex;
+}
+
+:is(.MatterContinuity-module__FlmxXq__impactPanel .impact-offers > article, .MatterContinuity-module__FlmxXq__impactPanel .impact-draft-updates > article) {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  display: grid;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-offers article p {
+  color: var(--ink-3);
+  font: 400 15px/1.5 var(--sans);
+  margin-top: 6px;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-draft-updates p {
+  color: var(--ink-3);
+  font: 400 15px/1.5 var(--sans);
+  margin-top: 6px;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-offer__retained {
+  color: var(--ink-4);
+  font: 600 12px var(--sans);
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-support-cards {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+  display: grid;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-support-cards section {
+  border: 1px solid var(--line-faint);
+  background: var(--raised);
+  border-radius: 8px;
+  align-content: space-between;
+  min-height: 190px;
+  padding: 16px;
+  display: grid;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-support-cards svg {
+  color: var(--agent);
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-support-cards h3 {
+  color: var(--ink-2);
+  font: 600 17px/1.35 var(--serif);
+  margin: 16px 0 0;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-support-cards p {
+  color: var(--ink-3);
+  font: 400 15px/1.5 var(--sans);
+  margin: 12px 0 0;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-limits ul {
+  margin: 9px 0 0;
+  padding-left: 20px;
+}
+
+.MatterContinuity-module__FlmxXq__impactPanel .impact-limits li {
+  color: var(--ink-3);
+  font: 400 15px/1.5 var(--sans);
+  margin-top: 5px;
+}
+
+:is(.MatterContinuity-module__FlmxXq__factRequest .btn, .MatterContinuity-module__FlmxXq__handoffPanel .btn, .MatterContinuity-module__FlmxXq__impactPanel .btn) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  min-height: 36px;
+}
+
+@media (max-width: 760px) {
+  .MatterContinuity-module__FlmxXq__factRequest, .MatterContinuity-module__FlmxXq__handoffPanel, .MatterContinuity-module__FlmxXq__impactPanel {
+    padding: 12px;
+  }
+
+  .MatterContinuity-module__FlmxXq__factRequest .fact-request__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .MatterContinuity-module__FlmxXq__factRequest .fact-request__information {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .MatterContinuity-module__FlmxXq__handoffPanel .handoff-panel__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .MatterContinuity-module__FlmxXq__impactPanel .impact-prepare__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .MatterContinuity-module__FlmxXq__impactPanel .impact-prepare__columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .MatterContinuity-module__FlmxXq__impactPanel .impact-passage__columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .MatterContinuity-module__FlmxXq__impactPanel .impact-support-cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .MatterContinuity-module__FlmxXq__impactPanel .impact-offers > article {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .MatterContinuity-module__FlmxXq__impactPanel .impact-draft-updates > article {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .MatterContinuity-module__FlmxXq__impactPanel .impact-versions {
+    border-right: 0;
+    border-bottom: 1px solid var(--line-faint);
+  }
+
+  .MatterContinuity-module__FlmxXq__impactPanel .impact-prepare__action {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  :is(.MatterContinuity-module__FlmxXq__factRequest h2, .MatterContinuity-module__FlmxXq__handoffPanel h2) {
+    font-size: 25px;
+  }
+
+  :is(.MatterContinuity-module__FlmxXq__factRequest .fact-request__form > .btn-row, .MatterContinuity-module__FlmxXq__handoffPanel .handoff-panel__form > .btn-row) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .MatterContinuity-module__FlmxXq__factRequest .fact-request__form > .btn-row .btn:nth-child(3) {
+    grid-column: auto;
+  }
+
+  :is(.MatterContinuity-module__FlmxXq__factRequest .btn, .MatterContinuity-module__FlmxXq__handoffPanel .btn, .MatterContinuity-module__FlmxXq__impactPanel .btn) {
+    min-height: 44px;
+  }
+
+  :is(.MatterContinuity-module__FlmxXq__factRequest .btn-row .btn, .MatterContinuity-module__FlmxXq__handoffPanel .btn-row .btn, .MatterContinuity-module__FlmxXq__impactPanel .impact-prepare > .btn, .MatterContinuity-module__FlmxXq__impactPanel .impact-analysis > .btn) {
+    width: 100%;
+  }
+
+  .MatterContinuity-module__FlmxXq__impactPanel .impact-history button {
+    min-width: 165px;
+  }
+
+  .MatterContinuity-module__FlmxXq__impactPanel .impact-passage pre {
+    max-height: 240px;
+  }
+}
+
+/*# sourceMappingURL=components_workspace_MatterContinuity_module_css_1igg3k2._.single.css.map*/

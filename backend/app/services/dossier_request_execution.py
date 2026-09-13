@@ -44,17 +44,16 @@ def _next_batch(metadata: dict[str, Any]) -> list[str]:
 
 
 def _next_unpublished_batch(metadata: dict[str, Any]) -> list[str]:
-    """Return a fully collected batch whose publication receipt is missing."""
+    """Return collected issues whose publication receipt is missing."""
     published = {
-        tuple(str(iid) for iid in (entry.get("issue_ids") or []))
+        str(iid)
         for entry in (metadata.get("publications") or []) if isinstance(entry, dict) and entry.get("state") in {"applied", "review_required"}
+        for iid in (entry.get("issue_ids") or [])
     }
-    order = _batch_order(metadata)
     issues = metadata.get("issues") or {}
+    order = [iid for iid in _batch_order(metadata) if iid not in published or (issues.get(iid) or {}).get("publication_pending")]
     for offset in range(0, len(order), BATCH_SIZE):
         batch = order[offset:offset + BATCH_SIZE]
-        if tuple(batch) in published:
-            continue
         states = [(issues.get(iid) or {}).get("state") for iid in batch]
         if batch and all(state in {"saved", "partial", "failed"} for state in states):
             return batch
@@ -92,9 +91,12 @@ def _record_publication(service, matter_id, request_id, entry, *, first_pass):
             publications = [p for p in publications if p.get("key") != entry.get("key")]
         publications.append(entry)
         metadata["publications"] = publications
+        if entry.get("state") in {"applied", "review_required"}:
+            for iid in entry.get("issue_ids") or []:
+                (metadata.get("issues", {}).get(iid) or {}).pop("publication_pending", None)
         if first_pass and entry.get("revision_path") and entry.get("state") in {"applied", "review_required"} and metadata.get("first_pass_ready_at") is None:
             metadata["first_pass_ready_at"] = iso_now()
-            metadata["phase"] = "remaining_batch" if metadata.get("scope") == "all" else "finished"
+            metadata["phase"] = "remaining_batch" if _next_batch(metadata) else "finished"
         elif not first_pass:
             metadata["phase"] = "update_compose"
         # Advance expected hashes only after an uncontested own publication.
@@ -156,6 +158,11 @@ async def publish_batch(service: Any, matter_id: str, request_id: str, issue_ids
         # Replay: this exact batch was already published; do not duplicate anything.
         for pub in metadata.get("publications") or []:
             if pub.get("key") == batch_key and pub.get("state") in {"applied", "review_required"}:
+                def already_published(md, body):
+                    for iid in issue_ids:
+                        (md.get("issues", {}).get(iid) or {}).pop("publication_pending", None)
+                    return md, body
+                service._mutate(matter_id, request_id, already_published, expected_sequence=None)
                 return service.get(matter_id, request_id)
 
         rec = RecommendationService(app.vault, app.matters)
@@ -420,10 +427,8 @@ class DossierRequestExecutor:
                 await self._compose_batch(batch)
                 if (self.service.get(self.matter_id, self.request_id).get("latest_publication") or {}).get("state") == "failed":
                     break
-                # After the first batch we deliver; the remainder continues only
-                # when the lawyer chose all identified issues.
-                if metadata.get("scope") != "all":
-                    break
+                # Re-read the saved plan: the lawyer may have added one issue
+                # during this batch. Only explicitly planned issues can run.
             self._finalize()
         except asyncio.CancelledError:
             self._mark_interrupted()
@@ -495,6 +500,7 @@ class DossierRequestExecutor:
                 managed_state = str(child.get("managed_state") or "")
                 entry["state"] = _CHILD_TO_ISSUE.get(managed_state, "failed")
                 entry["last_error"] = child.get("failure_detail")
+                entry["recovery_status"] = None
                 results = child.get("results") or []
                 packet_path = results[0]["path"] if results and isinstance(results[0], dict) and results[0].get("path") else None
                 entry["packet_path"] = packet_path
@@ -556,7 +562,7 @@ class DossierRequestExecutor:
             states = [(issues.get(iid) or {}).get("state") for iid in selected]
             if metadata.get("stop_requested"):
                 metadata["state"] = "stopped"
-            elif not metadata.get("first_pass_ready_at") or any(p.get("state") in {"failed", "not_written"} for p in metadata.get("publications", [])) or any(s in {"failed", "interrupted"} for s in states):
+            elif not metadata.get("first_pass_ready_at") or any(p.get("state") in {"failed", "not_written"} for p in metadata.get("publications", [])) or any(s in {"failed", "interrupted", "partial"} for s in states):
                 metadata["state"] = "partial"
             else:
                 metadata["state"] = "completed"

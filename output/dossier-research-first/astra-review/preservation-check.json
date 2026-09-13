@@ -1,0 +1,27 @@
+{
+  "time_utc": "2026-09-12T07:11:09.521855+00:00",
+  "baseline": "2026-09-12T06:43:56.627955+00:00",
+  "baseline_file_count": 11527,
+  "changed": [],
+  "missing": [],
+  "new_outside_review": [],
+  "git_diff_check_exit": 0,
+  "git_diff_check_output": "",
+  "note": "The initial inventory includes directory symlinks, which have no file hash. New-path comparison uses the full inventory rather than only its hashed files.",
+  "known_test_side_effect": {
+    "path": "output/matter-memory-paths/capacity.json",
+    "writer": "backend/tests/test_matter_memory_sources.py:25",
+    "finding": "Existing regression test writes performance results to the repository output path. It overwrote pre-existing dirty benchmark data. Application code, tests, tracker, original synthetic vault and protected live records are unchanged.",
+    "baseline_backup": "Recovered exact pre-review bytes from existing Git object eeac8cb97377a9576fafa1992864349a86fb18cf. SHA-256 matches the pre-review baseline. Restored only the test-written benchmark report after verifying its new hash still matched this test run.",
+    "restored": true
+  },
+  "protected_files": {
+    ".counsel-os/active-vault.json": "7116f19dcdb721ad716f5e95e46f144b5ad55f4973e3bb8787fe809d1feadcd2",
+    "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/dossier.md": "43e981a01383ccc2a4531516146ddbce7f0ec3a78f1b3d4c09f6c2de88e086b2",
+    "handoffs/dossier-research-first.handoff-progress.md": "9f54ad1c853b406a8d0ef76aba9dffb3c48ad7097ca50f82f477e43bedba244a"
+  },
+  "benchmark_recovery_hash": "1e2fd0c7078ea0a8c773b650ff9e87957f58623335f1c2091e36a8a2ff39cc3f",
+  "final_checked_at": "2026-09-12T07:16:58.620560+00:00",
+  "final_changed_files": [],
+  "final_missing_files": []
+}

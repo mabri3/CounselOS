@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="3" time="13.655" timestamp="2026-09-12T00:59:01.788614-07:00" hostname="Mac"><testcase classname="tests.test_research" name="test_research_refreshes_precomputed_dossier_orientation" time="0.761" /><testcase classname="tests.test_source_library_repairs" name="test_published_library_citations" time="12.457"><failure message="assert False&#10; +  where False = any(&lt;generator object test_published_library_citations.&lt;locals&gt;.&lt;genexpr&gt; at 0x109bb8040&gt;)">app_context = &lt;app.runtime.AppContext object at 0x109569190&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x109d6d8e0&gt;
+
+    @pytest.mark.asyncio
+    async def test_published_library_citations(app_context, monkeypatch):
+        from test_source_library_lifecycle import test_assembled_lifecycle_answers_from_a_late_page_and_survives_restart
+        await test_assembled_lifecycle_answers_from_a_late_page_and_survives_restart(app_context, monkeypatch)
+        paths = [app_context.vault.relative(p) for p in app_context.vault.iter_files(app_context.matters.matter_path(MATTER), {'.md'})]
+        packets = [app_context.vault.read_markdown(p) for p in paths if app_context.vault.read_markdown(p)['metadata'].get('source_records') is not None]
+        for p in packets:
+            meta = p['metadata']
+&gt;           assert any(('/source-library/' in str(s.get('path')) for s in meta['source_records']))
+E           assert False
+E            +  where False = any(&lt;generator object test_published_library_citations.&lt;locals&gt;.&lt;genexpr&gt; at 0x109bb8040&gt;)
+
+tests/test_source_library_repairs.py:143: AssertionError</failure></testcase><testcase classname="tests.test_research" name="test_external_provider_hang_uses_one_total_budget_and_saves_partial_packet" time="0.366" /></testsuite></testsuites>

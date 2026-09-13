@@ -1,0 +1,26 @@
+{
+  "marker": {
+    "fixture": "counsel-os-dossier-research-browser-v1",
+    "vault": "/Users/bharris/Programs/counsel-os-mvp/output/dossier-research-first/astra-review/browser-vault"
+  },
+  "state": {
+    "fixture": "counsel-os-dossier-research-browser-v1",
+    "matter_id": "MAT-DEMO-BEACON",
+    "active_workers": 0,
+    "active_worker_ids": [],
+    "research_workers_started": 3,
+    "counts": {
+      "model_calls": 27,
+      "planning_calls": 2,
+      "research_workers_started": 8,
+      "research_model_calls": 20,
+      "writer_calls": 2
+    },
+    "search_calls_this_process": 0,
+    "fetch_calls_this_process": 0,
+    "first_released": false,
+    "remaining_released": false
+  },
+  "pid": 90359,
+  "command": ".venv/bin/python -m tests.manual.serve_dossier_research --port 8207 --frontend-origin http://localhost:3207 --vault ../output/dossier-research-first/astra-review/browser-vault"
+}

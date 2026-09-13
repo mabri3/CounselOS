@@ -24,7 +24,7 @@ def rows(app_context, sql, params=None):
 async def test_manifests_and_units_are_projected_into_the_disposable_index(app_context):
     result = await upload(app_context, "handbook.txt", b"Termination notice must be given in writing.\n")
     app_context.index.rebuild()
-    assert SCHEMA_VERSION == 5
+    assert SCHEMA_VERSION == 6
     assert set(SOURCE_TABLES) <= {r["name"] for r in rows(app_context, "SELECT name FROM sqlite_master WHERE type='table'")}
     versions = rows(app_context, "SELECT * FROM source_versions WHERE matter_id = :m", {"m": MATTER})
     assert [v["source_id"] for v in versions] == [result["library_source_id"]]

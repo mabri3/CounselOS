@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="1.536" timestamp="2026-09-12T00:03:19.367916-07:00" hostname="Mac"><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR22_review_revision_includes_fresh_sibling_analysis" time="1.105"><failure message="AssertionError: Stale basis path composes from current advice instead of the saved combined child candidate&#10;assert not ['ISS-57a8e57e4c-002b6af9486a38f6', 'ISS-57a8e57e4c-23dbd80486b9a826']">app_context = &lt;app.runtime.AppContext object at 0x10b9e1040&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR22_review_revision_includes_fresh_sibling_analysis(app_context):
+        app=app_context; gate=asyncio.Event()
+        class DistinctProvider(ReviewProvider):
+            async def complete(self,messages,tools=None):
+                response=await super().complete(messages,tools)
+                rid=provider_session_id.get()
+                if rid and rid in self.workers:
+                    iid=self.app.research_runs.get(MATTER,rid)['issue_id']
+                    response=replace(response,content=response.content.replace(DETAIL,'UNIQUE_ANALYSIS_'+iid+' '+DETAIL))
+                return response
+        provider=DistinctProvider(app,gate=gate); status=await prepare(app,provider)
+        assert (await start(app,status)).status_code==202
+        await provider.entered.wait()
+        app.matter_records.apply_update(MATTER,facts=[{'text':'A new product fact was recorded while research was running.'}],actor='human',summary='Independent fact update')
+        gate.set(); result=await finished(app,status)
+        assert result['publications'][0]['state']=='review_required'
+        missing=[i for i in status['first_issue_ids'] if 'UNIQUE_ANALYSIS_'+i not in provider.writer_inputs[0]]
+        print('new issue answers missing from review writer input',missing)
+&gt;       assert not missing, 'Stale basis path composes from current advice instead of the saved combined child candidate'
+E       AssertionError: Stale basis path composes from current advice instead of the saved combined child candidate
+E       assert not ['ISS-57a8e57e4c-002b6af9486a38f6', 'ISS-57a8e57e4c-23dbd80486b9a826']
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:404: AssertionError</failure></testcase></testsuite></testsuites>

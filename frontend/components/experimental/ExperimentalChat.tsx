@@ -117,6 +117,13 @@ function MatterChat({ matterId, knownMatters, actor, storageKey, startIntake, on
     const [run, setRun] = useState<ChatRun | null>(null);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
+    const [loadAttempt, setLoadAttempt] = useState(0);
+    const [conversationError, setConversationError] = useState("");
+    const [runCheckPending, setRunCheckPending] = useState(false);
+    const [runLoadError, setRunLoadError] = useState("");
+    const [workspaceLoading, setWorkspaceLoading] = useState(false);
+    const [loadErrors, setLoadErrors] = useState<string[]>([]);
+    const workspaceGeneration = useRef(0);
     const [submitting, setSubmitting] = useState(false);
     const [attachments, setAttachments] = useState<AttachmentReference[]>([]);
     const [uploading, setUploading] = useState(false);
@@ -142,7 +149,8 @@ function MatterChat({ matterId, knownMatters, actor, storageKey, startIntake, on
         signature: string;
         key: string;
     } | null>(null);
-    const busy = submitting || (running(run) && !run?.background);
+    const conversationNavigationBusy = loading || submitting || runCheckPending || (running(run) && !run?.background);
+    const busy = conversationNavigationBusy || !!conversationError || !!runLoadError;
     const documents = workspace?.documents ?? [];
     const active = documents.find(doc => doc.path === activePath) ?? openDocs.find(doc => doc.path === activePath);
     const draftKey = `${storageKey}:draft:${conversationId ?? "new"}`;
@@ -150,23 +158,45 @@ function MatterChat({ matterId, knownMatters, actor, storageKey, startIntake, on
     const initialized = useRef(false);
     const sceneReady = useRef(false);
     const [draftReady, setDraftReady] = useState<string | null>(null);
-    const loadWorkspace = useCallback(async () => { const [matter, next, list] = await Promise.all([getMatter(matterId), getWorkspace(matterId), getConversations(matterId)]); if (!mounted.current)
-        return; setDetail(matter); setWorkspace(next); setConversations((list.conversations as Conversation[]).filter(c => c.conversation_kind === "experimental")); setRefresh(x => x + 1); if (!sceneReady.current) {
-        sceneReady.current = true;
-        try {
-            const scene = JSON.parse(localStorage.getItem(`${storageKey}:documents`) || "null");
-            if (scene) {
-                setOpenDocs((next.documents ?? []).filter(doc => scene.paths?.includes(doc.path)));
-                setActivePath((next.documents ?? []).some(doc => doc.path === scene.activePath) ? scene.activePath : null);
-                setOrigins(scene.origins ?? {});
-            }
+    const loadWorkspace = useCallback(async () => {
+        const generation = ++workspaceGeneration.current;
+        const current = () => mounted.current && generation === workspaceGeneration.current;
+        setWorkspaceLoading(true);
+        const results = await Promise.allSettled([
+            getMatter(matterId).then(matter => { if (current()) setDetail(matter); }),
+            getWorkspace(matterId).then(next => {
+                if (!current()) return next;
+                setWorkspace(next);
+                setRefresh(x => x + 1);
+                if (!sceneReady.current) {
+                    sceneReady.current = true;
+                    try {
+                        const scene = JSON.parse(localStorage.getItem(`${storageKey}:documents`) || "null");
+                        if (scene) {
+                            setOpenDocs((next.documents ?? []).filter(doc => scene.paths?.includes(doc.path)));
+                            setActivePath((next.documents ?? []).some(doc => doc.path === scene.activePath) ? scene.activePath : null);
+                            setOrigins(scene.origins ?? {});
+                        }
+                    } catch { setError("The previous document layout could not be restored."); }
+                }
+                return next;
+            }),
+            getConversations(matterId).then(list => {
+                if (current()) setConversations((list.conversations as Conversation[]).filter(c => c.conversation_kind === "experimental"));
+            }),
+        ]);
+        if (current()) {
+            setWorkspaceLoading(false);
+            const labels = ["Matter details", "Workspace files", "Conversation list"];
+            setLoadErrors(results.flatMap((result, index) => result.status === "rejected" ? [`${labels[index]} could not load. Retry to load them.`] : []));
         }
-        catch {
-            setError("The previous document layout could not be restored.");
-        }
-    } return next; }, [matterId, storageKey]);
-    useEffect(() => { let cancelled = false; mounted.current = true; void (async () => { try {
-        await loadWorkspace();
+        const result = results[1];
+        if (result.status === "rejected") throw result.reason;
+        return result.value;
+    }, [matterId, storageKey]);
+    useEffect(() => { let cancelled = false; mounted.current = true; setLoading(true); setConversationError(""); setRunLoadError(""); setRunCheckPending(false);
+        void loadWorkspace().catch(() => {});
+        void (async () => { try {
         if (cancelled) return;
         const savedId = localStorage.getItem(`${storageKey}:conversation`);
         if (savedId) {
@@ -175,6 +205,9 @@ function MatterChat({ matterId, knownMatters, actor, storageKey, startIntake, on
                 return;
             setConversationId(savedId);
             showConversation(saved);
+            setLoading(false);
+            setRunCheckPending(true);
+            try {
             const runs = await getChatRuns(matterId, savedId);
             if (!cancelled && mounted.current) {
                 const activeRun = runs.find(r => running(r)) ?? null;
@@ -184,16 +217,21 @@ function MatterChat({ matterId, knownMatters, actor, storageKey, startIntake, on
                 } catch { /* Saved work remains recoverable without a local return point. */ }
                 setRun(activeRun);
             }
+            } catch {
+                if (!cancelled && mounted.current) setRunLoadError("Work status could not load. Retry to check work in progress.");
+            } finally {
+                if (!cancelled && mounted.current) setRunCheckPending(false);
+            }
         }
     }
     catch (e) {
         if (!cancelled && mounted.current)
-            setError(e instanceof Error ? e.message : "Could not load matter.");
+            setConversationError(e instanceof Error ? e.message : "Could not load the saved conversation.");
     }
     finally {
         if (!cancelled && mounted.current)
             setLoading(false);
-    } })(); return () => { cancelled = true; mounted.current = false; operation.current++; }; }, [loadWorkspace, matterId, storageKey]);
+    } })(); return () => { cancelled = true; mounted.current = false; operation.current++; }; }, [loadWorkspace, matterId, storageKey, loadAttempt]);
     useEffect(() => { if (loading)
         return; try {
         const saved = JSON.parse(localStorage.getItem(draftKey) || "null");
@@ -263,13 +301,15 @@ function MatterChat({ matterId, knownMatters, actor, storageKey, startIntake, on
             timer = setTimeout(poll, 4000);
         }
     } } timer = setTimeout(poll, 600); return () => { cancelled = true; clearTimeout(timer); }; }, [run?.run_id, matterId, pollAttempt]);
-    async function changeConversation(id: string | null) { if (busy)
+    async function changeConversation(id: string | null) { if (conversationNavigationBusy)
         return; const token = ++operation.current; initialized.current = false; setLoading(true); setError(""); try {
         const saved = id ? await getConversation(matterId, id) : null;
         if (!mounted.current || token !== operation.current)
             return;
         setConversationId(id);
         showConversation(saved);
+        setConversationError("");
+        setRunLoadError("");
         setRun(null);
         if (id)
             localStorage.setItem(`${storageKey}:conversation`, id);
@@ -368,11 +408,13 @@ function MatterChat({ matterId, knownMatters, actor, storageKey, startIntake, on
         return <div className={styles.thread}>{messages.length === 0 && <div className={styles.welcome}><div className={styles.welcomeMark} aria-hidden="true">T.</div><span className={styles.eyebrow}>Your matter. A fresh perspective.</span><h2>Where shall we begin?</h2><p>Ask a question, test an argument, or work through the main issues. Themis can draw on this matter’s saved records.</p><button disabled={busy} onClick={beginIntake}>Start intake <span aria-hidden="true">→</span></button></div>}{messages.map((message, index) => <article className={message.role === "user" ? styles.user : styles.assistant} key={message.message_id}><small className={message.role === "assistant" ? styles.who : undefined}>{message.role === "assistant" ? "Themis.ai" : "You"}</small>{message.workspace_submission?.context_selections?.length ? <details><summary>Document context at submission</summary>{message.workspace_submission.context_selections.filter(item => item.path).map(item => <div key={item.path}><button onClick={() => openRef.current(item.path!)}>{item.path?.split("/").at(-1)}</button><small> · Submitted version {item.revision?.slice(0, 8) || "recorded in run"}</small></div>)}</details> : null}{messageProse[index]}{message.role === "assistant" && <><div className={styles.row}>{message.cards?.filter(card=>card.type==="work_product").map(card=><button key={card.vault_path} onClick={()=>openRef.current(card.vault_path)}>{card.title} · Open document</button>)}</div><ExperimentalIntake key={message.message_id} cards={message.cards?.filter(card=>card.type==="question") ?? []} disabled={busy||loading||uploading||index!==messages.length-1} storageKey={`${storageKey}:intake:${conversationId}:${message.message_id}`} explore={intakeState !== "complete"} onSubmit={(text, action) => sendRef.current(text, action, false, intakeState !== "complete")}/><ChatCards showResearchDocuments activeConversationId={conversationId} onConversationRefresh={refreshBackgroundDossier} cards={message.cards?.filter(card=>card.type!=="work_product"&&card.type!=="question")} matterId={matterId} disabled={busy} questionsDisabled={index !== messages.length - 1} onAction={async (action, text) => sendRef.current(text || "Use this answer.", action)} onOpenDocument={path => openRef.current(path)} operationResults={message.operation_results?.filter(result=>["confirmation_required","proposed"].includes(result.status) && !(result.operation === "run_research" && confirmedResearchActions.has(result.source_action_key ?? result.action)))} onRefresh={async () => { const selected = activeConversation.current; const currentOperation = operation.current; const [, saved] = await Promise.all([loadRef.current(), selected ? getConversation(matterId, selected) : Promise.resolve(null)]); if (mounted.current && saved && activeConversation.current === selected && currentOperation === operation.current && !busyRef.current) { preserveResearchScroll.current = true; showConversation(saved); } }}/></>}</article>)}{intakeState === "complete" && messages.length > 0 && <ExperimentalNextSteps matter={detail} workspace={workspace} disabled={busy || loading || uploading} onChoose={text => sendRef.current(text, undefined, false, false, true)}/>}</div>;
     }, [messages, messageProse, workspace, documents, busy, loading, uploading, storageKey, conversationId, intakeState, detail, matterId, beginIntake, showConversation, refreshBackgroundDossier]);
     const documentPanels = useMemo(() => openDocs.map(doc => <div key={doc.path} hidden={activePath !== doc.path}><ExperimentalDocument document={documents.find(item => item.path === doc.path) ?? doc} documents={documents} matterId={matterId} actor={actor} contextKey={storageKey} refresh={refresh} onSnapshot={onSnapshot} onAsk={askDocument} onOpen={(path,commentId) => openRef.current(path, documents, { path: doc.path, commentId, scroll: window.scrollY })} onSaved={() => void loadRef.current().catch(e => setError(e.message))}/></div>), [openDocs, activePath, documents, matterId, actor, storageKey, refresh, onSnapshot, askDocument]);
-    return <><header className={styles.header}><div className={styles.matterTitle}><span className={styles.eyebrow}>Matter conversation</span><h1>{detail?.title ?? "Loading matter…"}</h1></div><div className={styles.row}>{messages.length > 0 && intakeState !== "complete" && <button disabled={busy || loading} onClick={beginIntake}>Continue intake</button>}<button disabled={busy} onClick={() => void changeConversation(null)}><span aria-hidden="true">＋ </span>New conversation</button><button className={styles.refreshButton} title="Refresh matter" aria-label="Refresh matter" onClick={() => void loadWorkspace().catch(e => setError(e.message))}>↻</button><Link href={`/matters/${encodeURIComponent(matterId)}`}>Matter record</Link></div></header><div className={`${styles.work} ${active ? styles.withDocument : ""}`}><section className={styles.chat} aria-label="Experimental conversation"><div className={styles.chatTools} onKeyDown={event => { if(event.key === "Escape") { const menu = (event.target as HTMLElement).closest("details[open]"); menu?.removeAttribute("open"); menu?.querySelector("summary")?.focus(); } }}><details name="experimental-tools" className={styles.toolMenu}><summary>History <span>{conversations.length}</span></summary>{conversations.map(item => <button key={item.conversation_id} disabled={busy} onClick={event => { event.currentTarget.closest("details")?.removeAttribute("open"); void changeConversation(item.conversation_id); }}>{item.title}</button>)}{!conversations.length && <p>No saved conversations yet.</p>}</details><details name="experimental-tools" className={styles.toolMenu}><summary>Files <span>{documents.length}</span></summary>{documents.map(doc => <button key={doc.path} onClick={event => { event.currentTarget.closest("details")?.removeAttribute("open"); openDocument(doc.path); }}>{doc.title}</button>)}</details><ExperimentalSkills /><SolutionPaths disabled={busy || loading || uploading || draftReady !== draftKey} refresh={refresh} matterId={matterId} conversationId={conversationId} workingPathId={context.target?.scenario_id} onSelect={(id,isMainline) => setContext(current => ({...current,target:{matter_id:matterId,...(!isMainline ? {scenario_id:id} : {})},locked:true}))} onCompare={(ids,titles)=>void send(`Compare these approaches against our objective: ${titles.map(title=>`“${title}”`).join(" and ")}. Explain the benefits, trade-offs and added risks, and issues that remain. Distinguish problems each approach creates or worsens from existing problems it leaves unresolved.`,undefined,false,false,true,ids)} />{workspace && !loading && draftReady === draftKey && <ProblemBreakdown disclosureName="experimental-tools" status={workspace?.problem_analysis} onOpenIssue={issueId => { window.open(`/matters/${encodeURIComponent(matterId)}/decision-map?issue=${encodeURIComponent(issueId)}`, "_blank", "noopener,noreferrer"); }} onOpenSource={path => { if (documents.some(doc => doc.path === path)) openDocument(path); else if (isSafeVaultPath(path)) window.open(`/matters/${encodeURIComponent(matterId)}?view=draft&file=${encodeURIComponent(path)}`, "_blank", "noopener,noreferrer"); }} onDiscuss={text => { setInput(current => current.trim() ? `${current}\n\n${text}` : text); inputRef.current?.focus(); }} />}</div><div ref={conversationScroll} className={styles.conversationScroll}>{error && <p role="alert" className={styles.error}>{error}</p>}{loading ? <p>Loading saved conversation…</p> : conversationThread}
+    return <><header className={styles.header}><div className={styles.matterTitle}><span className={styles.eyebrow}>Matter conversation</span><h1>{detail?.title ?? knownMatters.find(matter => matter.matter_id === matterId)?.title ?? "Matter conversation"}</h1></div><div className={styles.row}>{messages.length > 0 && intakeState !== "complete" && <button disabled={busy || loading} onClick={beginIntake}>Continue intake</button>}<button disabled={conversationNavigationBusy} onClick={() => void changeConversation(null)}><span aria-hidden="true">＋ </span>New conversation</button><button className={styles.refreshButton} title="Refresh matter" aria-label="Refresh matter" onClick={() => void loadWorkspace().catch(e => setError(e.message))}>↻</button><Link href={`/matters/${encodeURIComponent(matterId)}`}>Matter record</Link></div></header><div className={`${styles.work} ${active ? styles.withDocument : ""}`}><section className={styles.chat} aria-label="Experimental conversation"><div className={styles.chatTools} onKeyDown={event => { if(event.key === "Escape") { const menu = (event.target as HTMLElement).closest("details[open]"); menu?.removeAttribute("open"); menu?.querySelector("summary")?.focus(); } }}><details name="experimental-tools" className={styles.toolMenu}><summary>History <span>{conversations.length}</span></summary>{conversations.map(item => <button key={item.conversation_id} disabled={conversationNavigationBusy} onClick={event => { event.currentTarget.closest("details")?.removeAttribute("open"); void changeConversation(item.conversation_id); }}>{item.title}</button>)}{!conversations.length && <p>No saved conversations yet.</p>}</details><details name="experimental-tools" className={styles.toolMenu}><summary>Files <span>{documents.length}</span></summary>{documents.map(doc => <button key={doc.path} onClick={event => { event.currentTarget.closest("details")?.removeAttribute("open"); openDocument(doc.path); }}>{doc.title}</button>)}</details><ExperimentalSkills /><SolutionPaths disabled={busy || loading || uploading || draftReady !== draftKey} refresh={refresh} matterId={matterId} conversationId={conversationId} workingPathId={context.target?.scenario_id} onSelect={(id,isMainline) => setContext(current => ({...current,target:{matter_id:matterId,...(!isMainline ? {scenario_id:id} : {})},locked:true}))} onCompare={(ids,titles)=>void send(`Compare these approaches against our objective: ${titles.map(title=>`“${title}”`).join(" and ")}. Explain the benefits, trade-offs and added risks, and issues that remain. Distinguish problems each approach creates or worsens from existing problems it leaves unresolved.`,undefined,false,false,true,ids)} />{workspace && !loading && draftReady === draftKey && <ProblemBreakdown disclosureName="experimental-tools" status={workspace?.problem_analysis} onOpenIssue={issueId => { window.open(`/matters/${encodeURIComponent(matterId)}/decision-map?issue=${encodeURIComponent(issueId)}`, "_blank", "noopener,noreferrer"); }} onOpenSource={path => { if (documents.some(doc => doc.path === path)) openDocument(path); else if (isSafeVaultPath(path)) window.open(`/matters/${encodeURIComponent(matterId)}?view=draft&file=${encodeURIComponent(path)}`, "_blank", "noopener,noreferrer"); }} onDiscuss={text => { setInput(current => current.trim() ? `${current}\n\n${text}` : text); inputRef.current?.focus(); }} />}</div><div ref={conversationScroll} className={styles.conversationScroll}>{error && <p role="alert" className={styles.error}>{error}</p>}{loadErrors.length > 0 && <div role="status" className={styles.error}>{loadErrors.map(message => <p key={message}>{message}</p>)}<button disabled={workspaceLoading} onClick={() => void loadWorkspace().catch(() => {})}>Retry workspace loading</button></div>}{workspaceLoading && !workspace && <p role="status">Loading workspace files…</p>}{loading ? <p role="status">Loading saved conversation…</p> : conversationError ? <div role="alert" className={styles.error}><p>{conversationError}</p><button onClick={() => setLoadAttempt(value => value + 1)}>Retry conversation loading</button></div> : conversationThread}
+      {runCheckPending && <p role="status">Checking work in progress…</p>}
+      {runLoadError && <div role="alert" className={styles.error}><p>{runLoadError}</p><button onClick={() => setLoadAttempt(value => value + 1)}>Retry work status</button></div>}
       {submitting && <p className={styles.notice} role="status">Sending your message…</p>}
       <BackgroundDossierRuns matterId={matterId} conversationId={conversationId} startedRun={run?.background ? run : null} onConversationRefresh={refreshBackgroundDossier} />
       {run && !run.background && run.state !== "completed" && <div className={running(run) ? styles.notice : styles.runStatus} role="status"><p>{run.state} · {run.status}</p>{run.failure_detail && <p>{run.failure_detail}</p>}{running(run) ? <button onClick={() => void cancelChatRun(matterId, run.run_id).then(setRun).catch(e => setError(e.message))}>Stop work</button> : ["failed", "interrupted"].includes(run.state) ? <button onClick={() => void retryChatRun(matterId, run.run_id).then(next => { setRun(next); setPollAttempt(x => x + 1); }).catch(e => setError(e.message))}>Retry</button> : null}</div>}
-      </div><div className={styles.composer}><div className={styles.contextBar}><small>Context</small><div className={styles.row}>{context.documents.length ? context.documents.map(doc => <button key={doc.path} aria-label={`Remove ${doc.title} from message`} onClick={() => setContext(current => ({ documents: current.documents.filter(item => item.path !== doc.path), target: current.target?.artifact_path === doc.path ? undefined : current.target, commentId: current.target?.artifact_path === doc.path ? undefined : current.commentId, locked: true }))}>{doc.title} <span aria-hidden="true">×</span></button>) : <span className={styles.contextDefault}>This matter</span>}</div></div>{context.target?.selected_range && <p className={styles.quote}>{context.target.selected_range.text}</p>}{context.documents.length > 0 && <small className={styles.contextHelp}>{context.locked ? "Context fixed. Switching tabs will not change this message." : "This document is included. Context stays fixed once you type."}</small>}<details className={styles.includeMenu}><summary>Include a document</summary>{documents.map(doc => <button key={doc.path} disabled={context.documents.some(item => item.path === doc.path)} onClick={event => { event.currentTarget.closest("details")?.removeAttribute("open"); setContext(current => freezeMessageContext({ ...current, documents: [...current.documents, { document_id: doc.document_id, path: doc.path, title: doc.title, revision: doc.revision }] })); }}>{doc.title}</button>)}</details><label className={styles.srOnly} htmlFor="experimental-message">Message Themis</label><textarea id="experimental-message" ref={inputRef} rows={3} disabled={submitting || loading || draftReady !== draftKey} value={input} onChange={e => { setInput(e.target.value); setContext(current => current.locked ? current : freezeMessageContext(active ? documentContext(matterId, active, snapshots.current[active.document_id]) : current)); }} placeholder="Ask Themis about this matter…" onKeyDown={event => { if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); void send(); } }}/>{attachments.map(ref => <small key={ref.path}>{ref.name} · Attached </small>)}<div className={styles.composerActions}><label className={styles.attach}><span aria-hidden="true">＋</span> Attach files<input type="file" multiple disabled={uploading || busy} onChange={async (e) => { const files = Array.from(e.target.files ?? []); if (!files.length)
+      </div><div className={styles.composer}><div className={styles.contextBar}><small>Context</small><div className={styles.row}>{context.documents.length ? context.documents.map(doc => <button key={doc.path} aria-label={`Remove ${doc.title} from message`} onClick={() => setContext(current => ({ documents: current.documents.filter(item => item.path !== doc.path), target: current.target?.artifact_path === doc.path ? undefined : current.target, commentId: current.target?.artifact_path === doc.path ? undefined : current.commentId, locked: true }))}>{doc.title} <span aria-hidden="true">×</span></button>) : <span className={styles.contextDefault}>This matter</span>}</div></div>{context.target?.selected_range && <p className={styles.quote}>{context.target.selected_range.text}</p>}{context.documents.length > 0 && <small className={styles.contextHelp}>{context.locked ? "Context fixed. Switching tabs will not change this message." : "This document is included. Context stays fixed once you type."}</small>}<details className={styles.includeMenu}><summary>Include a document</summary>{documents.map(doc => <button key={doc.path} disabled={context.documents.some(item => item.path === doc.path)} onClick={event => { event.currentTarget.closest("details")?.removeAttribute("open"); setContext(current => freezeMessageContext({ ...current, documents: [...current.documents, { document_id: doc.document_id, path: doc.path, title: doc.title, revision: doc.revision }] })); }}>{doc.title}</button>)}</details><label className={styles.srOnly} htmlFor="experimental-message">Message Themis</label><textarea id="experimental-message" ref={inputRef} rows={3} disabled={submitting || loading || !!conversationError || draftReady !== draftKey} value={input} onChange={e => { setInput(e.target.value); setContext(current => current.locked ? current : freezeMessageContext(active ? documentContext(matterId, active, snapshots.current[active.document_id]) : current)); }} placeholder="Ask Themis about this matter…" onKeyDown={event => { if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); void send(); } }}/>{attachments.map(ref => <small key={ref.path}>{ref.name} · Attached </small>)}<div className={styles.composerActions}><label className={styles.attach}><span aria-hidden="true">＋</span> Attach files<input type="file" multiple disabled={uploading || busy} onChange={async (e) => { const files = Array.from(e.target.files ?? []); if (!files.length)
         return; setUploading(true); try {
         const result = await uploadDocuments(matterId, files);
         const refs = (result.attachments ?? []) as AttachmentReference[];

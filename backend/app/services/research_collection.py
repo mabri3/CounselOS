@@ -35,7 +35,8 @@ class ResearchCollection:
 
     def remaining(self):
         used = self.checkpoints.load(self.matter_id, self.run_id)["budget_used"]
-        return {k: max(0, LIMITS[k] - used[k]) for k in LIMITS}
+        limits = self.app.research_runs.get(self.matter_id, self.run_id)["investigation_limits"]
+        return {k: max(0, limits[k] - used[k]) for k in LIMITS}
 
     async def collect(self, arguments):
         batch = ResearchEvidenceBatch.model_validate(arguments)
@@ -45,6 +46,9 @@ class ResearchCollection:
         if not self.scope.external:
             return {"status": "blocked", "error": "External sources were not authorized.", "remaining_budget": self.remaining()}
         key = "batch:" + digest(batch.model_dump_json())
+        retries = cp.get("request_retries") or {}
+        if any("request:" + digest(r.model_dump_json()) in retries for r in batch.requests):
+            key += f":recovery:{len(cp.get('recovery_attempts') or [])}"
         existing = next((c for c in cp["pending_calls"] if c["key"] == key and c["state"] == "completed"), None)
         if existing:
             return {**existing["result_ref"], "remaining_budget": self.remaining()}
@@ -52,6 +56,8 @@ class ResearchCollection:
             raise ValueError("Collection stopped to reserve synthesis time.")
         prior = cp["requests"]
         for request in batch.requests:
+            if "request:" + digest(request.model_dump_json()) in retries:
+                continue  # Retry the exact previously approved request, not a new query.
             if prior and not self.scope.allow_followup_queries:
                 raise ValueError("Focused follow-up searches were not authorized.")
             if prior and (not request.followup_of or request.followup_of not in prior):
@@ -92,9 +98,16 @@ class ResearchCollection:
     async def recover_before_synthesis(self):
         """If planning failed before retrieval, search the already approved topic."""
         cp = self.validate(self.matter_id)
-        if not self.scope.external or cp["requests"] or not self.scope.public_query:
+        if not self.scope.external or self.remaining()["active_seconds"] <= 90 or not self.scope.public_query:
             return None
         from app.models.research_investigation import ResearchEvidenceRequest
+        if cp["requests"]:
+            retries = cp.get("request_retries") or {}
+            for key, result in cp["requests"].items():
+                if key in retries and retries[key] not in cp["requests"]:
+                    fields = {k: v for k, v in result.items() if k in ResearchEvidenceRequest.model_fields}
+                    return await self._request(ResearchEvidenceRequest.model_validate(fields))
+            return None
         return await self._request(ResearchEvidenceRequest(
             proposition_id="planning-recovery", proposition=self.scope.public_query,
             public_query=self.scope.public_query, source_goal="operative_rule"))
@@ -147,6 +160,7 @@ class ResearchCollection:
     async def _request(self, request):
         request_key = "request:" + digest(request.model_dump_json())
         cp = self.validate(self.matter_id)
+        request_key = (cp.get("request_retries") or {}).get(request_key, request_key)
         if request_key in cp["requests"]:
             return cp["requests"][request_key]
         result = {"request_key": request_key, **request.model_dump(), "status": "no_results", "sources": [], "warnings": []}
@@ -216,8 +230,14 @@ class ResearchCollection:
         except asyncio.CancelledError:
             raise
         except Exception as exc:
+            from app.services.research_recovery import temporary_failure
             result["status"] = "partial" if result["sources"] else "failed"
             result["warnings"].append(f"Collection failed: {type(exc).__name__}.")
+            cp = self.checkpoints.load(self.matter_id, self.run_id)
+            call = next(c for c in cp["pending_calls"] if c["key"] == request_key)
+            if call["state"] != "completed":
+                call.update(state="outcome_unknown", error_class=type(exc).__name__, temporary_failure=temporary_failure(exc))
+                self.checkpoints.save(self.matter_id, self.run_id, cp, expected_sequence=cp["sequence"])
         finally:
             cp = self.checkpoints.load(self.matter_id, self.run_id)
             cp.pop("active_time_reservation", None)

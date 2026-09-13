@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    (async function () {
+      const faroWebSdkAppBasicConfig = {"url":"https://faro-collector-prod-us-east-0.grafana.net/collect/9eb1962ec60622b5f60d6170f88dd0f6","app":{"name":"BLAW-RAILS","version":"main","environment":"blaw-ui-prod-outside-blaw-rails"},"defaultAttributes":{"business_unit":"BLAW","confidentiality":"restricted"},"user":{"attributes":{"uuid":"3539131","firm_id":"135188","observability_gem_version":"0.5.7"}}};
+  
+      // load faro config from 
+      var webSdkScript = document.createElement("script");
+  
+      // fetch the latest version of the Web-SDK from the CDN
+      webSdkScript.src = "https://unpkg.com/@grafana/faro-web-sdk@^2.7.1/dist/bundle/faro-web-sdk.iife.js"; 
+  
+      webSdkScript.onload = async () => {
+        window.GrafanaFaroWebSdk.initializeFaro({
+          ...faroWebSdkAppBasicConfig,
+          instrumentations: [
+            ...window.GrafanaFaroWebSdk.getWebInstrumentations(),
+          ],
+          consoleInstrumentation: {
+            serializeErrors: true,
+            captureConsoleDisabledLevels: [
+              window.GrafanaFaroWebSdk.LogLevel.DEBUG,
+              window.GrafanaFaroWebSdk.LogLevel.TRACE,
+              window.GrafanaFaroWebSdk.LogLevel.INFO,
+              window.GrafanaFaroWebSdk.LogLevel.WARN,
+              window.GrafanaFaroWebSdk.LogLevel.LOG,
+            ],
+          },
+        });
+  
+        // Load instrumentations at the onLoad event of the web-SDK and after the above configuration.
+        // This is important because we need to ensure that the Web-SDK has been loaded and initialized before we add further instruments!
+        var webTracingScript = document.createElement("script");
+  
+        // fetch the latest version of the Web Tracing package from the CDN
+        webTracingScript.src = "https://unpkg.com/@grafana/faro-web-tracing@^2.7.1/dist/bundle/faro-web-tracing.iife.js";
+  
+        // Initialize, configure (if necessary) and add the the new instrumentation to the already loaded and configured Web-SDK.
+        webTracingScript.onload = () => {
+          window.GrafanaFaroWebSdk.faro.instrumentations.add(
+            new window.GrafanaFaroWebTracing.TracingInstrumentation({
+              resourceAttributes: {
+                  "deployment.environment": "{{ $environment }}",
+                  "deployment_environment": "{{ $environment }}",
+                  "deployment.environment.name": "{{ $environment }}",
+              }
+            })
+          );
+        };
+  
+        // Append the Web Tracing script script tag to the HTML page
+        await document.head.appendChild(webTracingScript);
+      };
+  
+      // Append the Web-SDK script script tag to the HTML page
+      await document.head.appendChild(webSdkScript);
+    })();
+  })
+</script>
+
+
+<title></title>
+<meta content='IE=11' http-equiv='X-UA-Compatible'>
+<meta content='nofollow' name='ROBOTS'>
+<meta content='telephone=no' name='format-detection'>
+<meta content='This annotated checklist guides CCPA covered entities on creating consumer notices for the collection of personal information.' name='description'>
+<meta content='BLAW' name='apple-mobile-web-app-title'>
+<link href='https://cdn.bloomberglaw.com/v0.2432.0/assets/favicon-ab438bb9d64f042c26cf28995e5197f2c8cdd7c5f78416f59fd256a56ea96b2d.ico' rel='shortcut icon'>
+<link href='https://www.bloomberglaw.com/external/document/X6D3N7G0000000/data-collection-management-checklist-ccpa-notice-at-collection-a' rel='canonical'>
+
+<meta content='width=device-width, initial-scale=1' name='viewport'>
+
+<meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="U3_LtqweJs9JKqWFOqiRJ_iVcX3T9q0JnXcdIcfgT1Wgxt2v-HaNXltx49wxbBO_ksADuwQSpBgTFef1cucmHg" />
+
+<style>body, html { font-size: 16px; margin: 0; }</style>
+<link rel="stylesheet" href="https://cdn.bloomberglaw.com/s3-js-module/blaw-ui-vite-core/0.1583.0/assets/index.css" media="all" />
+<link rel="stylesheet" href="https://cdn.bloomberglaw.com/v0.2432.0/assets/open_sans-339b9b55a925176dbdbe86d6620063435a8aa25a2a3490630e26151c205edb76.css" media="all" />
+<link rel="stylesheet" href="https://cdn.bloomberglaw.com/v0.2432.0/assets/avenir_next-3aff7412f4ecff394dc0a06e61f3a893bca8bb11c10409e9d7a39f520564156b.css" media="all" />
+<script src="https://cdn.bloomberglaw.com/s3-js-module/blaw-ui-vite-core/0.1583.0/assets/index.js" type="module"></script>
+</head>
+<body>
+
+<div id='app'></div>
+<script src="https://cdn.bloomberglaw.com/v0.2432.0/assets/bundles/exception_logger-afe416a350eac65163e49ff7f03e1fbe8165f32cf6e33e6ac859c3dfe1e37ef6.js"></script>
+<noscript>
+<strong>We're sorry but BLAW doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+</noscript>
+</body>
+</html>

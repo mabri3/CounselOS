@@ -1,0 +1,184 @@
+{
+  "version": 3,
+  "pages404": true,
+  "appType": "app",
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "onMatchHeaders": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/briefing/digests/[digestId]",
+      "regex": "^/briefing/digests/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPdigestId": "nxtPdigestId"
+      },
+      "namedRegex": "^/briefing/digests/(?<nxtPdigestId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/briefing/[itemId]",
+      "regex": "^/briefing/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPitemId": "nxtPitemId"
+      },
+      "namedRegex": "^/briefing/(?<nxtPitemId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/matters/[matterId]",
+      "regex": "^/matters/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPmatterId": "nxtPmatterId"
+      },
+      "namedRegex": "^/matters/(?<nxtPmatterId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/matters/[matterId]/decision-map",
+      "regex": "^/matters/([^/]+?)/decision\\-map(?:/)?$",
+      "routeKeys": {
+        "nxtPmatterId": "nxtPmatterId"
+      },
+      "namedRegex": "^/matters/(?<nxtPmatterId>[^/]+?)/decision\\-map(?:/)?$"
+    },
+    {
+      "page": "/matters/[matterId]/research",
+      "regex": "^/matters/([^/]+?)/research(?:/)?$",
+      "routeKeys": {
+        "nxtPmatterId": "nxtPmatterId"
+      },
+      "namedRegex": "^/matters/(?<nxtPmatterId>[^/]+?)/research(?:/)?$"
+    },
+    {
+      "page": "/watches/[watchId]",
+      "regex": "^/watches/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPwatchId": "nxtPwatchId"
+      },
+      "namedRegex": "^/watches/(?<nxtPwatchId>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/agents",
+      "regex": "^/agents(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/agents(?:/)?$"
+    },
+    {
+      "page": "/automations",
+      "regex": "^/automations(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/automations(?:/)?$"
+    },
+    {
+      "page": "/briefing",
+      "regex": "^/briefing(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/briefing(?:/)?$"
+    },
+    {
+      "page": "/decisions",
+      "regex": "^/decisions(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/decisions(?:/)?$"
+    },
+    {
+      "page": "/experimental/chat",
+      "regex": "^/experimental/chat(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/experimental/chat(?:/)?$"
+    },
+    {
+      "page": "/matters",
+      "regex": "^/matters(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/matters(?:/)?$"
+    },
+    {
+      "page": "/matters/storage",
+      "regex": "^/matters/storage(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/matters/storage(?:/)?$"
+    },
+    {
+      "page": "/settings",
+      "regex": "^/settings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/settings(?:/)?$"
+    },
+    {
+      "page": "/skills",
+      "regex": "^/skills(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/skills(?:/)?$"
+    },
+    {
+      "page": "/watches",
+      "regex": "^/watches(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/watches(?:/)?$"
+    },
+    {
+      "page": "/watches/new",
+      "regex": "^/watches/new(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/watches/new(?:/)?$"
+    },
+    {
+      "page": "/workspace",
+      "regex": "^/workspace(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/workspace(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

@@ -1,0 +1,187 @@
+{
+  "count": 36,
+  "passed": 8,
+  "failed": 28,
+  "tests": {
+    "test_AR01_crlf_source_is_readable_without_false_corruption": {
+      "result": "failed",
+      "evidence": "diagnostics.xml",
+      "message": "ValueError: Saved source snapshot hash changed."
+    },
+    "test_AR02_failed_writer_still_publishes_saved_answers": {
+      "result": "failed",
+      "evidence": "diagnostics.xml",
+      "message": "AssertionError: No fallback dossier was published from saved answers\nassert (None)"
+    },
+    "test_AR03_writer_headings_cannot_erase_full_analysis": {
+      "result": "failed",
+      "evidence": "diagnostics.xml",
+      "message": "AssertionError: Issue heading suppresses full-analysis retention\nassert 'Keep access conditional on written consent, an executed transfer schedule, and a successful export test. Emergency access excludes marketing use.' in '# Review dossier\\n\\n## Current position\\n\\nConditional overview.\\n\\n<!-- issue:ISS-57a8e57e4c-002b6af9486a38f6 -->\\n#...deletion period after disconnection. Legal guidance is needed before the aggregator contract renews on September 15.\\n'"
+    },
+    "test_AR04_edit_before_writer_is_preserved": {
+      "result": "failed",
+      "evidence": "diagnostics.xml",
+      "message": "AssertionError: Concurrent saved lawyer edit was overwritten\nassert '# Review dos...ptember 15.\\n' == '# Matter dos... migration.\\n'\n  \n  - # Matter dossier\n  + # Review dossier\n    \n  - ## Summary\n  + ## Current position\n    ...\n  \n  ...Full output truncated (66 lines hidden), use '-vv' to show"
+    },
+    "test_AR05_actual_saved_only_chat_binds_distinct_facts": {
+      "result": "failed",
+      "evidence": "diagnostic-fact-route.xml",
+      "message": "AssertionError: Production chat never supplies the reference catalog\nassert False\n +  where False = all(<generator object test_AR05_actual_saved_only_chat_binds_distinct_facts.<locals>.<genexpr> at 0x10be4cac0>)"
+    },
+    "test_AR06_all_includes_accepted_candidate_outside_first_three": {
+      "result": "failed",
+      "evidence": "diagnostics.xml",
+      "message": "AssertionError: All silently omits a displayed accepted candidate\nassert False\n +  where False = any(<generator object test_AR06_all_includes_accepted_candidate_outside_first_three.<locals>.<genexpr> at 0x10a42a670>)"
+    },
+    "test_AR07_public_source_choice_is_the_one_children_receive": {
+      "result": "failed",
+      "evidence": "diagnostics.xml",
+      "message": "AssertionError: Confirmed choices were dropped or substituted\nassert False\n +  where False = all(<generator object test_AR07_public_source_choice_is_the_one_children_receive.<locals>.<genexpr> at 0x10a24d460>)"
+    },
+    "test_AR08_retry_failed_child_uses_remaining_budget": {
+      "result": "failed",
+      "evidence": "diagnostics.xml",
+      "message": "AssertionError: Retry queued the parent row but skipped the failed child as terminal\nassert []\n +  where [] = <test_review_diagnostics.ReviewProvider object at 0x10a603e60>.workers"
+    },
+    "test_AR09_malformed_optional_plan_keeps_useful_chat[issue_map-None]": {
+      "result": "failed",
+      "evidence": "diagnostics.xml",
+      "message": "TypeError: 'NoneType' object is not iterable"
+    },
+    "test_AR09_malformed_optional_plan_keeps_useful_chat[first_issue_ids-7]": {
+      "result": "failed",
+      "evidence": "diagnostics.xml",
+      "message": "TypeError: 'int' object is not iterable"
+    },
+    "test_AR09_malformed_optional_plan_keeps_useful_chat[date_candidates-False]": {
+      "result": "failed",
+      "evidence": "diagnostics.xml",
+      "message": "TypeError: 'bool' object is not iterable"
+    },
+    "test_AR09_one_bad_optional_field_preserves_valid_issue_update": {
+      "result": "failed",
+      "evidence": "diagnostics.xml",
+      "message": "AssertionError: One optional field discarded the valid issue answer\nassert ([])"
+    },
+    "test_AR10_date_requires_real_anchor_and_correct_arithmetic": {
+      "result": "failed",
+      "evidence": "diagnostics.xml",
+      "message": "AssertionError: Unresolved anchor and inconsistent supplied date were accepted\nassert '2026-10-01' is None"
+    },
+    "test_AR11_repeated_generate_shows_active_parent_without_new_call": {
+      "result": "failed",
+      "evidence": "diagnostics.xml",
+      "message": "AssertionError: New Generate created a second setup and spent a planning call\nassert ('DOR-20260912-ce9ecf' == 'DOR-20260912-cecf9e'\n  \n  - DOR-20260912-cecf9e\n  ?                  --\n  + DOR-20260912-ce9ecf\n  ?                ++)"
+    },
+    "test_AR12_unknown_writer_outcome_does_not_retry_without_choice": {
+      "result": "failed",
+      "evidence": "diagnostics.xml",
+      "message": "AssertionError: Writer outcome had no reservation and was silently repeated without retry_unknown\nassert 1 == 0\n +  where 1 = <test_review_diagnostics.ReviewProvider object at 0x10a1ae4b0>.writers"
+    },
+    "test_AR13_parent_saved_only_start_returns_before_model_finishes": {
+      "result": "failed",
+      "evidence": "diagnostics.xml",
+      "message": "AssertionError: Saved-only Start holds the HTTP request until the model completes\nassert False"
+    },
+    "test_AR14_unresearched_initial_answers_reach_writer": {
+      "result": "failed",
+      "evidence": "diagnostics.xml",
+      "message": "AssertionError: Prepared initial answers never reach dossier capture\nassert ('INITIAL_' + 'ISS-57a8e57e4c-23dbd80486b9a826') in 'Dossier-generation action. Produce only the requested Markdown dossier from saved inputs. No tools, new research, fac... issues, and the full researched analysis for each researched issue. Preserve all workstreams and material conditions.'"
+    },
+    "test_AR15_two_short_updates_retain_original_detail_and_fields": {
+      "result": "failed",
+      "evidence": "diagnostics.xml",
+      "message": "AssertionError: Second partial update discarded prior full detail\nassert 'Keep access conditional on written consent, an executed transfer schedule, and a successful export test. Emergency access excludes marketing use.' in ('Short answer 2' + 'Short answer 1')\n +  where 'Short answer 2' = <built-in method get of dict object at 0x10a2a21c0>('analysis_markdown', '')\n +    where <built-in method get of dict object at 0x10a2a21c0> = {'analysis_markdown': 'Short answer 2', 'application': None, 'basis': {}, 'issue_revision': {'action_owner': '', 'assumption_ids': [], 'claim_ids': [], 'claim_output_revisions': {}, ...}, ...}.get\n +  and   'Short answer 1' = <built-in method get of dict object at 0x10a2a21c0>('prior_analysis_markdown', '')\n +    where <built-in method get of dict object at 0x10a2a21c0> = {'analysis_markdown': 'Short answer 2', 'application': None, 'basis': {}, 'issue_revision': {'action_owner': '', 'assumption_ids': [], 'claim_ids': [], 'claim_output_revisions': {}, ...}, ...}.get"
+    },
+    "test_AR16_restart_partial_batch_publishes_all_completed_siblings": {
+      "result": "passed",
+      "evidence": "diagnostics-boundaries.xml",
+      "message": null
+    },
+    "test_AR17_no_fourth_worker_after_thirty_seconds": {
+      "result": "failed",
+      "evidence": "diagnostics-boundaries.xml",
+      "message": "AssertionError: Coordinator starts its three workers after an arbitrary wait while ordinary research is still active\nassert 4 == 1"
+    },
+    "test_AR18_priority_edit_is_sent_to_workers": {
+      "result": "failed",
+      "evidence": "diagnostics-boundaries.xml",
+      "message": "AssertionError: Edited priority text is saved but never used in a worker brief\nassert 'LAWYER_PRIORITY_SENTINEL' in '# Operating standards\\n\\n---\\n\\n---\\nrecord_type: agent_standards\\nversion: 0.1.0\\n---\\n# Agent Standards\\n\\n## Share...le. Always retain useful Markdown, and end it with a concrete Next action even if optional structure is unavailable.\\n'\n +  where '# Operating standards\\n\\n---\\n\\n---\\nrecord_type: agent_standards\\nversion: 0.1.0\\n---\\n# Agent Standards\\n\\n## Share...le. Always retain useful Markdown, and end it with a concrete Next action even if optional structure is unavailable.\\n' = <built-in method join of str object at 0x1012fe6d0>(['# Operating standards\\n\\n---\\n\\n---\\nrecord_type: agent_standards\\nversion: 0.1.0\\n---\\n# Agent Standards\\n\\n## Shar...e. Always retain useful Markdown, and end it with a concrete Next action even if optional structure is unavailable.\\n'])\n +    where <built-in method join of str object at 0x1012fe6d0> = '\\n'.join\n +    and   ['# Operating standards\\n\\n---\\n\\n---\\nrecord_type: agent_standards\\nversion: 0.1.0\\n---\\n# Agent Standards\\n\\n## Shar...e. Always retain useful Markdown, and end it with a concrete Next action even if optional structure is unavailable.\\n'] = <test_review_diagnostics.ReviewProvider object at 0x106e2a5d0>.worker_inputs"
+    },
+    "test_AR19_action_reuse_conflicts_on_changed_priority_text": {
+      "result": "failed",
+      "evidence": "diagnostics-boundaries.xml",
+      "message": "AssertionError: Same action key with different priority text is silently accepted as identical\nassert 202 == 409\n +  where 202 = <Response [202 Accepted]>.status_code"
+    },
+    "test_AR20_internal_passage_and_duplicate_records_are_not_external_reads": {
+      "result": "failed",
+      "evidence": "diagnostic-valid-source-counts.xml",
+      "message": "assert (3 == 1)"
+    },
+    "test_AR21_distinct_source_versions_survive_combined_catalog": {
+      "result": "failed",
+      "evidence": "diagnostics-boundaries.xml",
+      "message": "AssertionError: Source-id-only deduplication discards one captured version\nassert 1 == 2\n +  where 1 = len([{'selected_passages': [{'quote': 'Original clause.'}], 'source_hash': 'version-a', 'source_id': 'SRC-review', 'source_version': 'a'}])"
+    },
+    "test_AR22_review_revision_includes_fresh_sibling_analysis": {
+      "result": "failed",
+      "evidence": "diagnostic-review-input.xml",
+      "message": "AssertionError: Stale basis path composes from current advice instead of the saved combined child candidate\nassert not ['ISS-57a8e57e4c-002b6af9486a38f6', 'ISS-57a8e57e4c-23dbd80486b9a826']"
+    },
+    "test_AR23_zero_issues_still_produces_a_useful_saved_dossier": {
+      "result": "failed",
+      "evidence": "diagnostics-final-boundaries.xml",
+      "message": "AssertionError: Zero-issue request completes without a dossier or next action\nassert ([])"
+    },
+    "test_control_one_two_three_distinct_children_publish[1]": {
+      "result": "passed",
+      "evidence": "diagnostics-final-boundaries.xml",
+      "message": null
+    },
+    "test_control_one_two_three_distinct_children_publish[2]": {
+      "result": "passed",
+      "evidence": "diagnostics-final-boundaries.xml",
+      "message": null
+    },
+    "test_control_one_two_three_distinct_children_publish[3]": {
+      "result": "passed",
+      "evidence": "diagnostics-final-boundaries.xml",
+      "message": null
+    },
+    "test_control_actual_writer_receipt_recovery[writer_response]": {
+      "result": "passed",
+      "evidence": "diagnostics-final-boundaries.xml",
+      "message": null
+    },
+    "test_control_actual_writer_receipt_recovery[recommendation]": {
+      "result": "passed",
+      "evidence": "diagnostics-final-boundaries.xml",
+      "message": null
+    },
+    "test_control_actual_writer_receipt_recovery[dossier]": {
+      "result": "passed",
+      "evidence": "diagnostics-final-boundaries.xml",
+      "message": null
+    },
+    "test_control_actual_writer_receipt_recovery[conversation]": {
+      "result": "passed",
+      "evidence": "diagnostics-final-boundaries.xml",
+      "message": null
+    },
+    "test_AR24_generated_candidate_keys_are_local_to_the_request": {
+      "result": "failed",
+      "evidence": "diagnostics-final-boundaries.xml",
+      "message": "AssertionError: A later unrelated issue silently reuses the old issue merely because the model used the same local key\nassert 'ISS-57a8e57e4c-d5faec6a2f476f3a' != 'ISS-57a8e57e4c-d5faec6a2f476f3a'"
+    },
+    "test_AR25_invalid_start_does_not_mutate_issues": {
+      "result": "failed",
+      "evidence": "diagnostics-final-boundaries.xml",
+      "message": "AssertionError: Rejected Start still appended a canonical issue\nassert 'e14c080a6bf3...a5a4f0ecd1c76' == '0fc6f0bd2905...7f2d7e065336e'\n  \n  - 0fc6f0bd2905a3d7f14a5ef2a76ad49fffa65d663173badd0b67f2d7e065336e\n  + e14c080a6bf361e717ce1c7ca60c104b2795d8c51a84eac848da5a4f0ecd1c76"
+    },
+    "test_AR26_local_source_records_do_not_break_the_sources_footer": {
+      "result": "failed",
+      "evidence": "diagnostic-source-footer.xml",
+      "message": "KeyError: 'source_label'"
+    }
+  }
+}

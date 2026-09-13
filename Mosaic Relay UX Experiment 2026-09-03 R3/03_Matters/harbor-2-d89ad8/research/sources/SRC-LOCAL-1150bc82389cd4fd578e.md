@@ -1,0 +1,316 @@
+---
+record_type: supplied_source_snapshot
+source_id: SRC-LOCAL-1150bc82389cd4fd578e
+immutable: true
+editable: false
+original_path: 03_Matters/harbor-2-d89ad8/dossier.md
+---
+# Harbor 2 — Harbor Pay acquisition migration (matter dossier)
+
+Matter MAT-20260909-d89ad8 · prepared from captured records dated Sep 9–10, 2026. Business question supplied by the matter record; direction unchanged.
+
+## Current position
+
+Yes — material parts of the Harbor Pay migration need legal review before the Nov 15 close, and one item should be reviewed before the deal terms are settled, not merely before launch. This is not "just a data migration": the day-1 plan depends on results the records show are unconfirmed — license coverage in the added markets, the ability to rely on Harbor's KYC without the underlying records, and a monitoring cutover with no gap.
+
+Three conditions decide how much of the full day-1 migration survives:
+
+- **Whether Mosaic can lawfully serve each added market on day 1.** The plan "use/assume Harbor's licenses" is not established for an asset purchase. If approvals are missing, those markets are a post-close target, not day-1 access. (The number of added states is itself unresolved — see Record conflicts.)
+
+- **Whether Mosaic's AML/CIP program and applicable rule permit reliance on Harbor's prior KYC**, and whether the pre-2023 cohort with missing documents can keep full access without re-verification or limits.
+
+- **What the ~40 open alerts and the SAR history show**, and whether monitoring transfers without a gap. The alert/SAR review is the most decision-changing item because it can affect deal protections and how affected customers are handled at migration.
+
+The $50 bonus (launching close+1) and the customer-records/terms side of the data move do not block close on today's record, but each must be reviewed before its own go-live point and each needs documents not in the readable record.
+
+What can proceed now: migration engineering, diligence, the compliance data pull, the licensing map, and standing up a controlled review protocol for the alerts/SARs. What should wait or change: launching the added markets on Harbor's licenses; full-access onboarding of users whose verification cannot be evidenced; the monitoring cutover unless a tested no-gap design or a bridge exists; the bonus until its terms are reviewed.
+
+This draft recommends treating those items as pre-close gates and preparing a staged launch as the fallback. That is this draft's recommendation, not a recorded decision. The recorded plan is unchanged: day-1 full migration, no re-verification, use/assume Harbor's licenses, bonus at close+1. The only recorded lawyer decisions are the Sep 9 intake answers (asset purchase; compliance to confirm KYC reliance; alerts/SARs unreviewed; use/assume Harbor's licenses). A complete dossier rewrite was submitted as a tracked revision on Sep 10 and, per the record, left the current dossier unchanged pending acceptance; generating this draft records no new decision.
+
+## Decision question
+
+Does any part of the Harbor Pay acquisition migration need legal review before the Nov 15 close?
+
+## Issues
+
+The four workstreams below are the recorded issue set from the Sep 9 initial issue map ([source:MSG-20260909-efcbdd]) and the lawyer's "four issues" framing ([source:MSG-20260909-539d02]): licensing, KYC/AML, alerts and monitoring, and marketing. The saved issue list and its ISS identifiers were not inside this run's readable material, so no issue IDs or markers are asserted here. A fifth issue, newly identified in this draft from the recorded migration plan, is included and labeled.
+
+Support status: no retrieved external authority appears in the readable records. The record shows the lawyer asked for research with sources ([source:MSG-20260909-660683], [source:MSG-20260909-406e0e]), an initial "research is in progress" statement ([source:MSG-20260909-168b9d]) later corrected ([source:MSG-20260909-91b5ec], [source:MSG-20260909-b4cc1f]), and a run described as "queued or running" with saved source choices ([source:MSG-20260910-c27e90]); no run output was readable here. Every legal proposition below is therefore a framework or lead, not verified support; named authorities carry **Needs checking**. Each issue gets an initial answer; any prior researched issue answers in the nine captured documents were not readable in this run and should be merged when available.
+
+### 1. State money transmitter licensing for the added markets
+
+**Current answer**
+
+Not established for day 1. An asset purchase does not automatically carry Harbor's money transmitter licenses to Mosaic, and a separate legal entity cannot simply "use" another company's licenses. Until a state-by-state path exists — new license, transfer or change-of-control approval in the transaction, or an arrangement where the licensed entity performs the transmission — the added markets should be treated as post-close, not part of day-1 full access. Even where Mosaic holds its own license, the account migration may trigger state notices or filings (unverified).
+
+**Rule and support**
+
+State money transmitter statutes generally require a license, or status as an authorized delegate of a licensee, to transmit money for others; licenses are issued to a specific entity, and state approval is commonly required for a change of control or transfer of a licensed business [**Needs checking** — the MTL statutes of the specific states; the CSBS Money Transmission Modernization Act where adopted]. Federal MSB registration (31 C.F.R. § 1022.380) is a separate requirement and does not substitute for state licensure [**Needs checking**]. The precise research question: for each state where Mosaic lacks a license and Harbor holds one, what route lets Mosaic lawfully serve migrated customers — new license, license transfer, change-of-control approval, or authorized-delegate arrangement — on what timeline, and what customer or regulator notices accompany the change?
+
+**Application**
+
+Recorded: asset purchase (intake answer, [source:MSG-20260909-2e549e]); Mosaic 41 licenses; Harbor 38; combined 44; plan "use/assume Harbor's licenses"; full access on day 1. Two gaps drive the answer. First, who will contract with the migrated customer and transmit funds after close — if it is a Mosaic entity, it needs a licensing footing in each required state; nothing in the record shows a license transfer or approval was requested or analyzed. Second, the states are unidentified and the counts do not reconcile (see Record conflicts), so the size of the problem is unknown. Because state approvals generally run longer than the time remaining (unverified, state-specific), the realistic interim course is to proceed with the closing while staging the customer onboarding by state, activating the added markets as approvals are obtained. Treat the "four new markets" win as a post-close target, not a day-1 entitlement, until the map shows otherwise. The recorded intake assumption that Harbor's and Mosaic's licenses are "transferable or can be maintained" remains an assumption, not a fact.
+
+**Next step**
+
+Commission the state-by-state matrix (state; Mosaic status; Harbor status; route; timeline; notices) and identify the entity that will serve migrated customers. Until it exists, keep the added markets out of the day-1 launch plan and out of launch commitments.
+
+### 2. KYC: no re-verification, reliance on Harbor's checks, and the pre-2023 record gap
+
+**Current answer**
+
+Cannot be confirmed as planned. The plan — no re-verification, pass/fail flags only, missing underlying documents for pre-2023 users — depends on a compliance answer the record says is still open, and even a favorable answer may not cover the cohort with missing records. Working position: full day-1 access for users whose verification cannot be evidenced is not supported on the current record. Identify the cohort, then either re-verify it, document a permitted reliance with limits, or restrict functionality until resolved.
+
+**Rule and support**
+
+As a money services business, Mosaic must maintain an AML program (31 U.S.C. § 5318(h); 31 C.F.R. § 1022.210) including customer identification (31 C.F.R. § 1022.220), recordkeeping (31 C.F.R. §§ 1010.410, 1022.410), and — for the 12,000 business accounts — customer due diligence and beneficial ownership (31 C.F.R. § 1010.230) [all **Needs checking**]. The banking CIP rule contains an express reliance-on-another-institution provision (31 C.F.R. § 1020.220(a)(6)); the MSB CIP rule is commonly read as not containing the same express provision, which is exactly why the compliance confirmation matters [**Needs checking** — the MSB CIP rule text and any FinCEN guidance on third-party or reliance arrangements].
+
+**Application**
+
+Recorded: compliance has not confirmed whether Mosaic's program permits reliance; Harbor's KYC vendor closed in 2024; pass/fail results exist for everyone; underlying documents are missing for pre-2023 users (count not recorded — material). Two outcomes follow. If reliance is permitted and the flags plus Harbor's records suffice, the pre-2023 document gap may still be a deficiency depending on what must be retained — confirm what evidence is required and whether flags can substitute. If reliance is not permitted, or not available for the gap cohort, the plan fails as written for those users and the cure is re-verification or limited access. Either way, cohort size drives feasibility before close, and the vendor shutdown means Harbor cannot cure the document gap itself. Also unaddressed in the record: what Harbor collected for the business accounts, which the same diligence should cover. The recorded assumption that pass/fail results "are sufficient" remains unconfirmed.
+
+**Next step**
+
+Obtain a written compliance answer on reliance, plus counts and identifiers for the pre-2023 cohort and the business-account CDD records; then choose re-verification, documented reliance, or temporary access limits and build it into the launch. Fallback that preserves the close date: migrate all users, but hold full transacting for the unverified cohort until cured.
+
+### 3. Unread alerts and SARs, and the monitoring cutover
+
+**Current answer**
+
+The highest-value pre-close review. Roughly 40 open alerts and "a handful" of recent SARs are unread; what they show could range from a routine backlog to unresolved suspicious activity that affects deal protections and how affected customers are handled at migration. Separately, the monitoring cutover (Harbor's SaaS contract ends at close; the feed repoints to Mosaic's engine on day 1) needs a tested no-gap plan or a bridge. Review access itself needs care: SAR information is confidential, so who reads what, and how, should be structured deliberately rather than by circulating files [unverified premise].
+
+**Rule and support**
+
+MSBs must report suspicious transactions and protect SAR confidentiality (31 C.F.R. § 1022.320), and effective monitoring is part of the AML program (§ 1022.210) [**Needs checking**]. Two research points sit underneath this issue: what Harbor may lawfully share with a prospective acquirer about SARs and alerts, and on what conditions; and how open alerts, investigations, and SAR-related records are handled at closing — who continues them and what transfers.
+
+**Application**
+
+Recorded: alerts and SARs unreviewed, "still in diligence" ([source:MSG-20260909-2e549e]); nobody has read them. The deal is therefore being priced without knowing whether Harbor missed filings or whether any customer being migrated is under active suspicion. Practical design: (a) run the review under privilege with controlled access, counsel-led, so SAR confidentiality and the deal record are both managed; (b) triage the open alerts for anything requiring action before close or account-level handling at migration; (c) use the findings for deal protections if needed. On monitoring, the record shows no test plan, and the cutover coincides with the day-1 migration — the moment of peak new activity. The decisive contract term is the SaaS contract's termination and extension mechanics: confirm whether a short bridge or renewal is available; if not, plan parallel monitoring or a later repoint. Also decide who reviews alerts during the transition and how Harbor's alert history carries into Mosaic's engine. The recorded assumption that the repoint can be "completed and validated before close without a monitoring gap" is untested.
+
+**Next step**
+
+Approve a controlled review protocol and assign the review immediately (outside counsel leading, Mosaic compliance supporting — **Proposed**), then set a monitoring cutover test with a named go/no-go before migration. If the alerts review cannot finish before deal terms are set, convert it into a specific deal-protection item rather than letting it run over the close.
+
+### 4. The $50 welcome bonus (launching close+1)
+
+**Current answer**
+
+Not a close blocker on the current record, but it needs review before it launches at close+1, and the review cannot start until the terms exist. The terms that decide the answer: eligibility (who gets it and who is excluded), credit mechanics (when and how the bonus is paid, conditions, clawbacks, expiration), the campaign disclosures and claims, and whether it targets any cohort whose access is limited by the KYC issue. If users under access limits cannot perform the qualifying transfer, promising them the bonus is a misleading-claim risk; if the design is clean, this is a contained terms-and-disclosure review.
+
+**Rule and support**
+
+Consumer-protection law on unfair or deceptive acts or practices (12 U.S.C. §§ 5531, 5536) [**Needs checking**], plus state advertising and money-transmission conduct rules and the campaign's own terms [**Needs checking**].
+
+**Application**
+
+Recorded: marketing wants a $50 bonus on first transfer, launching close+1; no terms are in the record. The bonus interacts with three known conditions: the migration date itself (if day-1 access is staged by state or by verification cohort, the trigger may not be available to everyone), any account limits imposed for unverified users, and cross-marketing to customers whose data just moved (see Issue 5 — the customer terms and privacy commitments govern what marketing promises can be made). The review should confirm the campaign language matches what users can actually do at launch, and that conditions are disclosed where misunderstanding risk is highest — an incentive tied to completing a money transfer.
+
+**Next step**
+
+Obtain the marketing brief and draft terms; review and either clear or adjust before close+1. If the terms are not ready in time, delay the campaign — a later launch is cheaper than a walk-back.
+
+### 5. Customer records, terms, and consent on the day-1 move (newly identified in this draft)
+
+**Current answer**
+
+Preliminary: the part of the plan described as "just a data migration" has legal dependencies of its own. The day-1 move transfers account relationships, balances, and personal data from Harbor's entity to Mosaic. Whether that is permitted depends on clauses not in the readable record: the assignment or transfer terms in Harbor's customer agreement, the data-sharing provisions in its privacy policy, and any notice obligations to customers or states. If notice or consent is required, that work runs before close, not after.
+
+**Rule and support**
+
+Customer contract rights transfer according to their terms and applicable assignment principles; privacy commitments run through the companies' policies and privacy law (leads: GLBA, 15 U.S.C. § 6801 et seq.; FTC Safeguards Rule, 16 C.F.R. part 314 [**Needs checking**]; state privacy statutes) and through what Harbor told customers about data sharing. This issue was not among the four recorded workstreams (licensing, KYC/AML, alerts and monitoring, marketing); it is identified here from the recorded migration plan itself, and flagged as such rather than as a saved issue.
+
+**Application**
+
+Recorded: 240,000 consumer users and 12,000 business accounts move into Mosaic's app with one unified account and balance and full access — an asset purchase with no recorded consent or notice step. The decisive documents are Harbor's customer agreement (assignment and change-of-terms clauses), its privacy policy (transfers to affiliates or successors; material-change notices), and any state-specific notice requirements for account or servicer changes [unverified]. Because the migration is day-1, a missing notice step is a schedule risk, not just paperwork: it could require sequencing the migration or a notice campaign between signing and close. Nothing in the readable record shows this workstream was reviewed.
+
+**Next step**
+
+Pull the customer agreement, privacy policy, and business-account terms; confirm transfer permissions and any notice periods; if notices are needed, start them before close to protect the day-1 plan.
+
+**Record conflicts**
+
+- **State counts do not reconcile.** Harbor 38 + Mosaic 41 gives an overlap of 35 and a union of 44, so only 3 states would be new to Mosaic (and 6 new to Harbor). The request's "four new markets" matches neither figure. One or more reported numbers is inaccurate, or "four" means something not stated. Practical effect: the number and identity of states needing a licensing path, and the launch scope, cannot be sized until a state-by-state schedule is produced. Reported values are preserved; none is silently corrected.
+
+- **Research status sequence conflicts.** Sep 9, 21:11: "Research is in progress" ([source:MSG-20260909-168b9d]). Sep 9, 23:14: "No research is in progress" and the tool was unavailable ([source:MSG-20260909-91b5ec]). Sep 9, 23:47: "No durable research run was started" ([source:MSG-20260909-b4cc1f]). Sep 10, 00:47: research "queued or running with its saved source choices" ([source:MSG-20260910-c27e90]). Practical effect: the support posture of any earlier memo is unclear, and this dossier cannot rely on retrieved authority. Resolve by locating the run's outputs and source list.
+
+- **Metadata date unexplained.** The matter record carries a target date of 2026-09-11, which matches no milestone in the readable records (close is reported as Nov 15, about ten weeks from Sep 9). Practical effect: unclear; if Sep 11 is a working deadline for any deliverable it changes sequencing, not the analysis. Confirm what the date represents.
+
+**Assumptions used in this draft**
+
+- The added markets are states where Mosaic lacks its own license and would rely on Harbor's; the exact state list is unknown and the reported counts disagree. Issue 1's scope and the licensing action depend on this.
+
+- The SARs remain Harbor's filed reports and have not been transferred to Mosaic; only their unreviewed existence has surfaced in diligence. Issue 3's access protocol assumes this; if SAR content has already moved without controls, that becomes an immediate question.
+
+- The $50 bonus terms are not yet fixed (marketing "wants" the campaign). Issue 4's analysis is conditional on those terms.
+
+- Harbor's customer agreements and privacy commitments are not in the readable record. Issue 5 is framed around the clauses that will decide it (assignment; data sharing or transfer; notice).
+
+Nothing else is assumed. Recorded assumptions in the facts file (license transferability; sufficiency of pass/fail KYC results; a validated no-gap monitoring repoint) are tested in the issues above and remain unconfirmed.
+
+**Alternatives considered**
+
+<!-- alternative:SCN-490c71c86d9c658974321c1e -->
+### Bank holds the funds (partner-bank model) — **Hypothetical — not adopted**
+
+Recorded on scenario SCN-490c71c86d9c658974321c1e. The lawyer asked on Sep 10 to consider "an alternative where the bank holds the funds" and expressly to keep it hypothetical ([source:MSG-20260910-c95c1b], repeated [source:MSG-20260910-900f63]); the recorded response ([source:MSG-20260910-02f34c]) describes a partner bank holding customer funds while Mosaic supplies technology and operations. Nothing here adopts it, and the matter direction stays unchanged.
+
+**Assumptions (from the recorded exchange).** A partner bank owns or holds customer funds and balances; Mosaic provides technology and operations. The record does not specify the bank, the funds flow, or whether Mosaic controls transfers — the decisive missing piece.
+
+**How it could help.** If the bank is the entity that holds funds and controls transfers, and Mosaic is genuinely a technology and operations provider, the state money-transmission question may relax because the transmitting party is the bank rather than Mosaic [unverified premise]. Whether it actually helps depends on the roles: who contracts with the customer, who owes the balance, who initiates transfers, and whose name is on the account. A change in structure does not by itself remove a permission requirement; the bank's own ability to serve these customers in the added markets must also be checked.
+
+**Added risks and what it does not solve.** KYC: someone — Mosaic or the bank — still needs a compliant identification and due-diligence position on the same record gaps, and moving funds to a bank may change customer agreements and disclosures. Alerts and SARs: Harbor's history and the review need are unchanged, and the entity change shifts who keeps which records. Monitoring: the contract-termination and cutover problem persists unless the bank brings its own monitoring. Marketing: the bonus review is unchanged. New dependency: bank onboarding, allocation of the BSA/AML program, and customer re-papering, with an implementation timeline not shown to fit the ~10-week window.
+
+**Issues left unresolved.** The four matter workstreams remain live to the extent the role mapping does not move the duty: licensing (reduced only if Mosaic is not transmitting and does not owe balances — conditional), KYC records, alert/SAR review and monitoring continuity, and the bonus. The customer-terms/data issue follows the same mapping.
+
+**Next action.** Produce the funds-flow and roles map (customer contract; account holder; funds holder; who initiates transfers; complaint and error handling) before assessing this option; no external authority was retrieved for it in the record, and the licensing premises above are unverified. Use it only if the map shows the bank — not Mosaic — carrying the transmission and able to serve these customers; otherwise it does not change the current analysis. Compared with the current direction on the factors that actually differ: licensing route, time to implement (unknown, plausibly longer than the window — verify), added partner dependencies, and the unchanged KYC, alert, monitoring, and marketing work.
+
+## Next actions
+
+No owners or deadlines for these work items are recorded; every owner and timing below is **Proposed**, and the only source-based date is the reported Nov 15 close target. Ordered by decision impact and dependency.
+
+1. **Alerts and SARs review — start immediately, before deal terms are set.** Deliverable: controlled-review protocol and a written report of what the open alerts and SAR history show. Needed result: whether unresolved suspicious activity or a missed filing changes deal protections or customer handling. Dependent decision: deal protections; account-level handling at migration. Fallback if unfinished: obtain specific deal protections and keep affected-customer handling under post-close review; do not broaden file circulation to close the gap. Owner (Proposed): outside counsel leading, Mosaic compliance supporting.
+
+2. **State-by-state licensing map and route — start immediately.** Deliverable: matrix (state; Mosaic status; Harbor status; route — new license, transfer, change-of-control, or delegate; timeline; notices) plus the asset-purchase transfer analysis. Needed result: the lawful day-1 market list. Dependent decision: launch scope and staged rollout; customer communications. Fallback: stage the launch to Mosaic-licensed states; treat added markets as post-close. Owner (Proposed): regulatory counsel, with product/ops confirming the serving entity.
+
+3. **KYC reliance confirmation, cohort data, and cure plan — scope immediately, complete before close.** Deliverable: compliance memo plus cohort counts (pre-2023 users; business accounts) and a remediation plan. Needed result: whether the no-re-verification plan stands and what happens to the gap cohort. Dependent decision: day-1 access levels. Fallback: limited access or re-verification for the cohort. Owner (Proposed): compliance lead with the data team.
+
+4. **Monitoring cutover test and bridge decision — before close, with buffer.** Deliverable: cutover design, test results, and migration-window coverage plan (who reviews alerts; how history carries). Needed result: alerts continue without a gap. Dependent decision: day-1 feed repoint versus a bridge or parallel running. Fallback: extend Harbor's vendor if the contract permits, or run parallel monitoring. Owner (Proposed): engineering and compliance, with legal checking the SaaS termination and extension terms.
+
+5. **Customer terms, privacy, and notices — before close, because day 1 depends on it.** Deliverable: assignment and data-transfer analysis plus a notice/consent plan with dates. Needed result: what must be sent, to whom, and when. Dependent decision: day-1 migration mechanics. Fallback: sequence migration behind notice delivery for affected records. Owner (Proposed): commercial and privacy counsel with servicing/marketing.
+
+6. **Bonus terms review — start pre-close, clear before close+1.** Deliverable: reviewed terms and disclosures. Needed result: campaign-ready language consistent with launch reality (staged markets; limited-access cohort). Dependent decision: launch or delay the campaign. Fallback: delay launch. Owner (Proposed): marketing with legal review.
+
+**Work product and records**
+
+- Original request: REQ-20260909-283892 — [request.md: # Original Request
+
+From: Dana, PM — Growth & Integration
+Subject: Harbor migrat…](03_Matters/harbor-2-d89ad8/request.md) (Dana, PM Growth & Integration, Sep 9, 20:52; [source:MSG-20260909-982278]).
+- Known facts and recorded assumptions: 03_Matters/harbor-2-d89ad8/facts.md (including the Sep 9 intake answers, [source:MSG-20260909-2e549e], and later reported answers).
+- Conversations: CONV-20260909-a8160f (request thread); CONV-20260909-5299cf (intake, initial issue map [source:MSG-20260909-efcbdd], research requests, dossier-rewrite request [source:MSG-20260910-3ace1b] / [source:MSG-20260910-f8e728], working summary [source:MSG-20260910-2f255e], scenario messages).
+- Scenario/alternative: SCN-490c71c86d9c658974321c1e.
+- Prior revision: a complete dossier rewrite was submitted as a tracked revision on Sep 10, 04:36, leaving the current dossier unchanged pending acceptance. No current work-product draft or final path is recorded in the matter metadata.
+
+Coverage: the captured inventory holds 3 conversations / 114 messages and 9 documents. This draft was written from the current-records bundle (facts, intake answers, assumptions, actions, sources) and the captured messages shown above. The remaining messages, the saved issue list with its ISS identifiers, and the nine documents — including any saved research outputs or researched issue answers — were outside this run's reading allowance and are not relied on. If those documents contain retrieved authority, the support labels here should be updated to match; none of the four recorded workstreams is contradicted by the material read.
+
+<!-- saved-issue-analysis:start -->
+## Saved issue answers
+
+<!-- issue:ISS-c9d7c39f63-94e42e2b38090045 -->
+### Money transmission licensing: whether Mosaic Relay can operate under the combined 44-state footprint and whether Harbor's MTLs transfer/survive the acquisition
+
+**Generated analysis warning.** Main-agent analysis failed. Useful available work was preserved.
+
+**No external authority retrieved**
+
+Now reading the OCC source body and the Fenergo licensing-requirements passage for their literal text.
+
+Research saved. 4 sources retrieved; 4 with passages read.
+
+Next step: Identify the four Harbor-only states and complete one matrix covering license authority, transaction filings, interim operation, bank custody, outstanding obligations, and license surrender.
+
+Research history: [Saved research 1](03_Matters/harbor-2-d89ad8/research/RES-20260912-6f559c.md)
+
+<!-- issue:ISS-c9d7c39f63-ca95e529feeb1045 -->
+### BSA/AML and KYC: whether relying on Harbor's prior KYC (with missing underlying documents for pre-2023 users) satisfies Mosaic Relay's independent CIP/AML obligations
+
+The record does not support blanket reliance on Harbor's prior KYC. Harbor's vendor closed in 2024, pass or fail results remain, and underlying documents for some pre-2023 users are missing. The answer depends on Mosaic's written AML and customer identification program, Harbor's available evidence, the parties' legal roles, and the requirements that apply to the migrated accounts.
+
+Initial answer — research not complete.
+
+Next step: Review Mosaic's program and Harbor's records. Define which customers can migrate without new checks, which require more review, and which must be restricted until the record gap is fixed.
+
+<!-- issue:ISS-c9d7c39f63-69af3f282d21ef38 -->
+### SAR and alert handling: obligations to review, file, and manage Harbor's ~40 open alerts and SARs, and successor liability
+
+**No external authority retrieved**
+
+External collection is not authorized for this run — noted. I'll deliver from the saved library and matter records, with the federal framework clearly flagged as unverified. Let me confirm the exact saved fact and issue identifiers before composing the answer.
+
+No oversized model request was sent.
+
+Research saved. 1 sources retrieved; 1 with passages read.
+
+Research history: [Saved research 1](03_Matters/harbor-2-d89ad8/research/RES-20260912-22d810.md)
+
+<!-- issue:ISS-c9d7c39f63-4825f0af7ec75542 -->
+### Monitoring vendor transition: continuity of transaction monitoring when the SaaS contract terminates at close
+
+**No external authority retrieved**
+
+I have the framework-level support from the saved model act. Before composing, let me confirm real record IDs for the synthesis (assumption and issue identifiers) from the matter's saved records.
+
+No oversized model request was sent.
+
+Research saved. 1 sources retrieved; 1 with passages read.
+
+Research history: [Saved research 1](03_Matters/harbor-2-d89ad8/research/RES-20260912-182455.md)
+
+<!-- issue:ISS-c9d7c39f63-72810d0a43d3ce66 -->
+### Marketing compliance: the $50 welcome bonus offer and any state money transmission or consumer protection implications
+
+Legal review is required before publication, but this issue should not control the close. The record gives only a $50 first-transfer bonus. The answer depends on eligibility, funding, transfer conditions, expiration and reversal rules, target states, advertising channels, and customer disclosures.
+
+Initial answer — research not complete.
+
+Next step: Obtain the final offer terms and customer journey. Limit eligibility to the approved launch area. Complete advertising and disclosure review before release.
+
+<!-- issue:ISS-c9d7c39f63-af341445a7af4c06 -->
+### Customer account, contract, and data-transfer rights
+
+The facts establish an asset purchase and a planned day-one migration. They do not establish assignment rights, required customer consent or notice, privacy authority, data-transfer limits, or responsibility for customer funds and obligations. The answer depends on the purchase agreement, customer terms, privacy notices, asset schedules, data flows, and the identity of each contracting entity.
+
+Initial answer — research not complete.
+
+Next step: Review the purchase agreement, customer agreements, privacy notices, data map, and planned customer notices. Identify required consents, notices, exclusions, and closing conditions.
+<!-- saved-issue-analysis:end -->
+
+## Alternatives considered
+
+<!-- alternative:SCN-0f23edfc89ec6ecaf60a13e4 -->
+### Bank-held funds timing test
+
+Hypothetical — not adopted
+
+Compare the current Harbor migration approach with a bank-held funds option using only the attachment's hypothetical facts and proposals, without changing actual facts or the current direction.
+
+Hypothetical assumptions:
+
+- For this hypothetical, a bank would hold the relevant funds during the Harbor 2 transition, while Mosaic would control transfer instructions subject to contract completion and bank operating setup.
+- For this hypothetical, migration is planned for November 15, 2026, and bank integration readiness is December 3, 2026.
+- For this hypothetical, pre-2023 identity documents are missing, 40 alert cases remain pending, and the monitoring service ends at close.
+
+Saved working analysis:
+
+- Qualified: the option makes the November 15 migration harder on the supplied test dates because bank integration is not ready until December 3, 18 days later.
+- Supported by the fictional attachment: the bank would hold relevant funds, but Mosaic would control transfer instructions, subject to contract completion and bank operating setup.
+- Unresolved: bank-held funds do not, on the supplied test facts, resolve missing pre-2023 identity documents, 40 pending alert cases, or monitoring ending at close.
+
+Still to resolve:
+
+- Whether the bank contract and operating setup can be completed before November 15, 2026.
+- Whether missing identity records, pending alerts, or monitoring transition requirements delay either option.
+
+[Saved alternative](03_Matters/harbor-2-d89ad8/scenarios/SCN-0f23edfc89ec6ecaf60a13e4.md)
+
+<!-- alternative:SCN-406906c91ab0aba4313b54a6 -->
+### Bank-held funds structure
+
+Hypothetical — not adopted
+
+Test whether a partner-bank custody model could reduce Mosaic Relay's money-transmission exposure while preserving the current Harbor migration direction.
+
+Hypothetical assumptions:
+
+- For this hypothetical only, a partner bank holds customer funds.
+
+You reported an **asset purchase**. Mosaic Relay will buy Harbor Pay’s assets.
+
+Still to resolve:
+
+- Who contracts directly with users.
+- Who controls transfer instructions and settlement.
+- Who records balances and owes repayment to users.
+- How KYC, transaction monitoring, alerts, SARs, privacy, and marketing duties are allocated.
+
+[Saved alternative](03_Matters/harbor-2-d89ad8/scenarios/SCN-406906c91ab0aba4313b54a6.md)

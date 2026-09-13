@@ -1,0 +1,23 @@
+{
+  "pid": 88814,
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_dossier_requests.py",
+    "tests/test_dossier_planning.py",
+    "tests/test_dossier_content_depth.py",
+    "tests/test_dossier_managed_research.py",
+    "tests/test_dossier_batch_publication.py",
+    "tests/test_dossier_references.py",
+    "tests/test_dossier_request_api.py",
+    "tests/test_dossier_request_lifecycle.py",
+    "tests/test_research_checkpoints.py",
+    "tests/test_research_publication.py",
+    "tests/test_dossier_generation_integrity.py",
+    "--junitxml=../output/dossier-research-first/astra-review/focused-backend.xml"
+  ],
+  "cwd": "/Users/bharris/Programs/counsel-os-mvp/backend",
+  "started_at": "2026-09-12T06:45:06.288377+00:00"
+}

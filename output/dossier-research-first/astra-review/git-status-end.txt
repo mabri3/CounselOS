@@ -1,0 +1,254 @@
+ M CODEX_HANDOFF.md
+ M "Mosaic Relay UX Experiment 2026-09-03 R3/.counsel_os_cache.db"
+ M "Mosaic Relay UX Experiment 2026-09-03 R3/00_System/settings.md"
+ M "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/CONV-20260909-5299cf.md"
+ M "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/dossier.md"
+ M "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/matter.md"
+ M "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/recommendations.md"
+ M "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/workspace.md"
+ M backend/app/active_context.py
+ M backend/app/agents/dispatch_budget.py
+ M backend/app/agents/output.py
+ M backend/app/agents/runner.py
+ M backend/app/blank_vault_template/00_System/skills/matter-paths.md
+ M backend/app/blank_vault_template/00_System/tools/select_conversation_scope.md
+ M backend/app/blank_vault_template/00_System/tools/workspace_action.md
+ M backend/app/config.py
+ M backend/app/experimental_skills/answer.md
+ M backend/app/experimental_skills/dialogue.md
+ M backend/app/experimental_skills/draft.md
+ M backend/app/main.py
+ M backend/app/models/api.py
+ M backend/app/models/research_investigation.py
+ M backend/app/models/research_scope.py
+ M backend/app/providers/base.py
+ M backend/app/providers/codex_cli.py
+ M backend/app/providers/mock.py
+ M backend/app/providers/opencode_go.py
+ M backend/app/routers/chat.py
+ M backend/app/routers/dependencies.py
+ M backend/app/routers/experimental_chat.py
+ M backend/app/routers/files.py
+ M backend/app/routers/matters.py
+ M backend/app/routers/settings.py
+ M backend/app/routers/workspace.py
+ M backend/app/runtime.py
+ M backend/app/services/chat_history.py
+ M backend/app/services/chat_runs.py
+ M backend/app/services/dossier.py
+ M backend/app/services/experimental_chat.py
+ M backend/app/services/main_agent_research.py
+ M backend/app/services/matter_paths_state.py
+ M backend/app/services/provider_settings_policy.py
+ M backend/app/services/research.py
+ M backend/app/services/research_collection.py
+ M backend/app/services/research_execution.py
+ M backend/app/services/research_publication.py
+ M backend/app/services/research_runs.py
+ M backend/app/services/vault.py
+ M backend/app/services/workspace.py
+ M backend/app/services/workspace_scenarios.py
+ M backend/app/skills/registry.py
+ M backend/app/tools/handlers.py
+ M backend/app/tools/matter_paths.py
+ M backend/app/tools/registry.py
+ M backend/tests/manual/serve_research_investigation.py
+ M backend/tests/test_chat_runs.py
+ M backend/tests/test_codex_cli_provider.py
+ M backend/tests/test_continuity_recovery.py
+ M backend/tests/test_experimental_chat.py
+ M backend/tests/test_main_agent_research.py
+ M backend/tests/test_matter_action_api.py
+ M backend/tests/test_matter_memory.py
+ M backend/tests/test_matter_paths_lifecycle.py
+ M backend/tests/test_matter_paths_state.py
+ M backend/tests/test_opencode_go_provider.py
+ M backend/tests/test_research.py
+ M backend/tests/test_research_publication.py
+ M backend/tests/test_research_scope.py
+ M backend/tests/test_source_library_lifecycle.py
+ M backend/tests/test_vault.py
+ M backend/tests/test_workspace_interactions.py
+ M docs/ACCEPTANCE_TESTS.md
+ M docs/living-dossier.md
+ M docs/matter-memory-paths.user-guide.md
+ M frontend/app/settings/page.tsx
+ M frontend/components/ChatCards.tsx
+ M frontend/components/ChatPanel.tsx
+ M frontend/components/ResearchScopeChoice.module.css
+ M frontend/components/ResearchScopeChoice.tsx
+ M frontend/components/experimental/ExperimentalChat.module.css
+ M frontend/components/experimental/ExperimentalChat.tsx
+ M frontend/components/experimental/ExperimentalNextSteps.tsx
+ M frontend/components/experimental/ExperimentalSkills.tsx
+ M frontend/components/workspace/ClaimMarkdown.tsx
+ M frontend/components/workspace/MatterDocuments.module.css
+ M frontend/components/workspace/SavedSourcePassage.tsx
+ M frontend/components/workspace/SolutionPaths.tsx
+ M frontend/lib/api.ts
+ M frontend/lib/stubs.ts
+ M frontend/lib/types.ts
+ M frontend/next-env.d.ts
+ M frontend/package.json
+ M frontend/scripts/check-citation-reading.ts
+ M frontend/scripts/check-matter-memory-paths.ts
+ M frontend/tsconfig.json
+ M output/matter-memory-paths/baseline-request-sizes.json
+ M output/matter-memory-paths/capacity.json
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/..counsel_os_cache.db.ctrn13dm.tmp"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/..counsel_os_cache.db.ctrn13dm.tmp-journal"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/00_System/skills/dossier-generation.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/CONV-20260911-20d4ea.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260910-0e8ee2.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260910-87d760.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260910-ab563a.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260910-b4bb9a.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-1a8d0b.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-212d01.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-258d5b.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-2b3c43.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-30a30c.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-3306dc.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-39525a.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-3a7415.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-3d8986.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-4fc268.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-559aa3.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-57d754.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-5deaf9.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-5f13da.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-68adf4.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-7a3eb3.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-82db42.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-874994.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-878db9.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-88942f.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-8c72e8.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-a1b2be.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-b720a6.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-c6a792.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-d414b0.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-d66c7b.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-dbde8e.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260912-13f42a.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/inquiries/RUN-20260910-0e8ee2.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260910-0e8ee2.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260910-87d760.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260910-ab563a.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260910-b4bb9a.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-1a8d0b.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-212d01.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-258d5b.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-2b3c43.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-30a30c.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-3306dc.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-39525a.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-3a7415.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-3d8986.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-4fc268.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-559aa3.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-57d754.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-5deaf9.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-5f13da.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-68adf4.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-7a3eb3.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-82db42.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-874994.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-878db9.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-88942f.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-8c72e8.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-a1b2be.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-b720a6.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-c6a792.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-d414b0.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-d66c7b.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-dbde8e.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260912-13f42a.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/documents/"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/dossier-revisions/DOS-00c2bb5ace2aa359873b.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/dossier-revisions/DOS-30d4520319524d41ea5b.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/dossier-revisions/DOS-4cc39b05492c9b214333.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/dossier-revisions/DOS-5571e34d40d414ae03f8.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/dossier-revisions/DOS-770eaa20fbdec474d387.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/dossier-revisions/DOS-98399988e9eace00f511.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/dossier-revisions/DOS-c993ab2326efd727cc3d.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-00ad8f.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-15d3d2.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-6b7958.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-70ad17.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-749092.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-762aad.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-8278f2.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-8fd706.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-b0415f.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-b845da.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-c2a822.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-cd15cb.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-cf4456.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-f1640c.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/memory/"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/paths/"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/RES-20260911-0a5f07.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/RES-20260911-bf2e7d.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/runs/RUN-20260911-d08e84.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/runs/RUN-20260911-f6cb09.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/8c13e0a468bd4a9bb31fc9b85afd9ba1e233a90d7aa515f1615d37865e9e007d/"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/RUN-20260911-d08e84-37ee676da5b354ba8538-fetch.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/RUN-20260911-d08e84-37ee676da5b354ba8538-fetch.md.bin"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/RUN-20260911-d08e84-71b20ecf65825d6522c4-fetch.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/RUN-20260911-d08e84-71b20ecf65825d6522c4-fetch.md.bin"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/RUN-20260911-d08e84-b48d8d40f5a0cfe9a200-fetch.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/RUN-20260911-d08e84-b48d8d40f5a0cfe9a200-fetch.md.bin"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/RUN-20260911-d08e84-e6c1e4e85e004ccbe413-fetch.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/RUN-20260911-d08e84-e6c1e4e85e004ccbe413-fetch.md.bin"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/SRC-37ee676da5b354ba8538-157583424427.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/SRC-71b20ecf65825d6522c4-fa80c95c5393.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/SRC-b48d8d40f5a0cfe9a200-fcb5e16956fb.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/SRC-e6c1e4e85e004ccbe413-e75b998a6dec.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/"
+?? backend/app/blank_vault_template/00_System/skills/dossier-generation.md
+?? backend/app/models/dossier_request.py
+?? backend/app/routers/dossier_requests.py
+?? backend/app/services/dossier_generation.py
+?? backend/app/services/dossier_generation_chat.py
+?? backend/app/services/dossier_generation_context.py
+?? backend/app/services/dossier_references.py
+?? backend/app/services/dossier_request_execution.py
+?? backend/app/services/dossier_requests.py
+?? backend/app/services/dossier_research.py
+?? backend/app/skills/dossier.py
+?? backend/scripts/refresh_dossier_research.py
+?? backend/tests/manual/serve_dossier_continuity.py
+?? backend/tests/manual/serve_dossier_generation.py
+?? backend/tests/manual/serve_dossier_research.py
+?? backend/tests/test_comparison_submission.py
+?? backend/tests/test_dossier_batch_publication.py
+?? backend/tests/test_dossier_content_depth.py
+?? backend/tests/test_dossier_generation.py
+?? backend/tests/test_dossier_generation_chat.py
+?? backend/tests/test_dossier_generation_integrity.py
+?? backend/tests/test_dossier_managed_research.py
+?? backend/tests/test_dossier_planning.py
+?? backend/tests/test_dossier_references.py
+?? backend/tests/test_dossier_request_api.py
+?? backend/tests/test_dossier_request_lifecycle.py
+?? backend/tests/test_dossier_requests.py
+?? backend/tests/test_dossier_research_continuity.py
+?? frontend/components/DossierResearchCard.module.css
+?? frontend/components/DossierResearchCard.tsx
+?? frontend/components/workspace/SolutionPaths.module.css
+?? frontend/lib/chatMarkdown.ts
+?? frontend/lib/dossierRequests.ts
+?? frontend/lib/markdownDisclosures.ts
+?? frontend/lib/modelSettingsRows.ts
+?? frontend/scripts/check-chat-sections.ts
+?? frontend/scripts/check-dossier-research.ts
+?? frontend/scripts/check-markdown-disclosures.ts
+?? handoffs/
+?? output/approaches-ui-fix/
+?? output/attachment-test/
+?? output/chat-load-fix/
+?? output/dossier-research-first/
+?? output/dossier-research-fix/
+?? output/hypothetical-path-fix/

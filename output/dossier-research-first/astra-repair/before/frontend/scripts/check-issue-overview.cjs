@@ -1,0 +1,18 @@
+const ts = require('typescript');
+const fs = require('fs');
+const vm = require('vm');
+const assert = require('node:assert/strict');
+const exportsObject = {};
+vm.runInNewContext(ts.transpileModule(fs.readFileSync('lib/issueOverview.ts', 'utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText, {exports:exportsObject});
+const node = (id, type, extra={}) => ({node_id:`${type}:${id}`,record_id:id,record_type:type,label:id,state:'open',...extra});
+const snapshot = {nodes:[node('a','issue'),node('b','issue'),node('c','issue'),node('f','fact',{issue_ids:['a','b']})],edges:[]};
+let result=exportsObject.issueOverview(snapshot);
+assert.equal(result.groups.length,2);
+assert.equal(result.connections[0].label,'Shared fact');
+snapshot.nodes[3].group='historical';
+assert.equal(exportsObject.issueOverview(snapshot).groups.length,3);
+snapshot.edges=[{from_node_id:'issue:a',to_node_id:'issue:b',label:'Depends on',state:'active'}];
+assert.equal(exportsObject.issueOverview(snapshot).groups.length,2);
+snapshot.edges[0].state='inactive';
+assert.equal(exportsObject.issueOverview(snapshot).groups.length,3);
+console.log('Issue overview checks passed');

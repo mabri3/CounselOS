@@ -1,0 +1,26 @@
+{
+  "terminated": [
+    {
+      "pid": 90358,
+      "ppid": 90354,
+      "command": "npm run dev --port 3207"
+    },
+    {
+      "pid": 90373,
+      "ppid": 90358,
+      "command": "node /Users/bharris/Programs/counsel-os-mvp/output/dossier-research-first/astra-review/frontend-copy/node_modules/.bin/next dev --port 3207"
+    },
+    {
+      "pid": 90375,
+      "ppid": 90373,
+      "command": "next-server (v16.3.3)"
+    },
+    {
+      "pid": 92428,
+      "ppid": 92424,
+      "command": ".venv/bin/python -m tests.manual.serve_dossier_research --port 8207 --frontend-origin http://localhost:3207 --vault ../output/dossier-research-first/astra-review/browser-vault"
+    }
+  ],
+  "ports_clear": true,
+  "port_check_output": ""
+}

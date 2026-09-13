@@ -1,0 +1,126 @@
+Browser tab: 3, Title: "Themis.ai", URL: "http://localhost:3207/experimental/chat?matter=MAT-DEMO-BEACON".
+0 AXWebArea Themis.ai, URL: localhost:3207/experimental/chat?matter=MAT-DEMO-BEACON
+	1 container
+		2 button (expanded) Description: Toggle matter navigation, Secondary Actions: Collapse
+		3 button (collapsed) themis.ai, Secondary Actions: Expand
+			4 text themis.ai
+		5 text Experimental chat
+		6 link Description: Back to workspace , Value: localhost:3207/matters
+	7 container
+		8 text Your matters 10
+		9 search text field (settable) Find a matter
+		10 container Matters
+			11 checkbox Orbit: Bank-Transaction Data Expansion, Value: 0
+			12 checkbox Pulse: Earned Wage Access Expansion, Value: 0
+			13 checkbox Northstar: AI Credit-Line Increase Model, Value: 0
+			14 checkbox Relay: Open-Banking Reauthentication and Data Use, Value: 0
+			15 checkbox Beacon: Instant Business Onboarding, Value: 1
+			16 checkbox Cedar: Cash Sweep and Deposit Insurance Disclosures, Value: 0
+			17 checkbox Harbor: Account Hold Support Response, Value: 0
+			18 checkbox Project Apex: AI Voice Telemetry, Value: 0
+			19 checkbox Delta: Same-Day Payout Pricing, Value: 0
+			20 checkbox Mason: Analytics SDK Review, Value: 0
+		21 link Description: Archive & trash, Value: localhost:3207/matters/storage
+		22 button  New matter
+	23 container
+		24 text MATTER CONVERSATION
+		25 heading Beacon: Instant Business Onboarding, Value: 1
+			26 text Beacon: Instant Business Onboarding
+		123 button Continue intake
+		27 button New conversation
+		28 button Refresh matter
+		29 link Description: Matter record, Value: localhost:3207/matters/MAT-DEMO-BEACON
+		30 container Experimental conversation
+			31 container
+				32 button (collapsed) History 1⌄, Secondary Actions: Expand
+					33 text History 
+					34 text 1
+					124 text ⌄
+				36 button (collapsed) Files 41⌄, Secondary Actions: Expand
+					37 text Files 
+					38 text 41
+					143 text ⌄
+				40 button (collapsed) Skills⌄, Secondary Actions: Expand
+					41 text Skills
+					122 text ⌄
+				43 button (collapsed) Approaches⌄, Secondary Actions: Expand
+					44 text Approaches
+					45 text ⌄
+				126 container Problem breakdown
+					127 button (collapsed) Problem breakdown · Not yet analyzed⌄, Secondary Actions: Expand
+						128 text Problem breakdown
+						129 text  · 
+						130 text Not yet analyzed
+						131 text ⌄
+			48 container
+				132 text You
+				144 text Generate a dossier for this matter.
+				134 text Themis.ai
+				135 heading Suggested priorities, Value: 2
+					136 text Suggested priorities
+				145 text Review the five saved issues across employment, privacy, supplier, intellectual-property, and marketing workstreams. The first three suggested priorities focus on launch blockers, vendor dependencies, and supported claims.
+				146 text Dossier research is ready for your choices. No research has started.
+				139 container
+					147 text DOSSIER RESEARCH ·  RUNNING
+					141 heading Researching 5 of 5 issues, Value: 3
+						142 text Researching 5 of 5 issues
+					148 button First dossier ready · Open exact revision
+					149 content list
+						150 container
+							151 text Employment terms: Confirm worker terms and launch staffing conditions. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							152 button Open saved answer
+						153 container
+							154 text Customer privacy: Confirm notice, purpose, and access controls. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							155 button Open saved answer
+						156 container
+							157 text Supplier contract: Confirm service levels, termination, and transfer terms. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							158 button Open saved answer
+						159 container
+							160 text Intellectual property: Confirm ownership and trademark permission. Running 0  sources read ·  0  sources retrieved
+						161 container
+							162 text Marketing claims: Confirm evidence for public launch claims. Running 0  sources read ·  0  sources retrieved
+					163 text Research started. You can continue this conversation.
+					164 button Stop
+					165 button (collapsed) Diagnostic details⌄, Secondary Actions: Expand
+						166 text Diagnostic details
+						167 text ⌄
+				168 text Themis.ai
+				169 text First dossier ready. Researched: Employment terms: Confirm worker terms and launch staffing c; Customer privacy: Confirm notice, purpose, and access contro; Supplier contract: Confirm service levels, termination, and .
+				170 link Description: Open dossier revision, Value: localhost:3207/experimental/03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-5c1119c85c0efd71a338.md
+				171 container
+					172 text DOSSIER RESEARCH ·  RUNNING
+					173 heading Researching 5 of 5 issues, Value: 3
+						174 text Researching 5 of 5 issues
+					175 button First dossier ready · Open exact revision
+					176 content list
+						177 container
+							178 text Employment terms: Confirm worker terms and launch staffing conditions. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							179 button Open saved answer
+						180 container
+							181 text Customer privacy: Confirm notice, purpose, and access controls. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							182 button Open saved answer
+						183 container
+							184 text Supplier contract: Confirm service levels, termination, and transfer terms. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							185 button Open saved answer
+						186 container
+							187 text Intellectual property: Confirm ownership and trademark permission. Running 0  sources read ·  0  sources retrieved
+						188 container
+							189 text Marketing claims: Confirm evidence for public launch claims. Running 0  sources read ·  0  sources retrieved
+					190 button Stop
+					191 button (collapsed) Diagnostic details⌄, Secondary Actions: Expand
+						192 text Diagnostic details
+						193 text ⌄
+			52 container
+				53 text Context This matter
+				54 button (collapsed) Include a document⌄, Secondary Actions: Expand
+					55 text Include a document
+					194 text ⌄
+				57 text Message Themis
+				58 text entry area (settable) Message Themis, ID: experimental-message
+				59 text Attach files
+				60 button Attach files
+				61 button (collapsed) Description: Choose chat model, Help: Workspace default, Secondary Actions: Expand
+					62 text Workspace default
+				63 button (disabled) Send 
+
+The focused UI element is 0 AXWebArea Themis.ai, URL: localhost:3207/experimental/chat?matter=MAT-DEMO-BEACON

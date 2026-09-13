@@ -1,0 +1,211 @@
+---
+record_type: supplied_source_text
+matter_id: MAT-20260912-f7ed8b
+source_id: SRC-e9e3ccfe1072d6768dd4
+immutable: true
+editable: false
+original_path: 03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-e9e3ccfe1072d6768dd4-fetch.md.bin
+---
+Cal. Code Regs. Tit. 11, § 7012 - Notice at Collection of Personal Information | State Regulations | US Law | LII / Legal Information Institute
+
+Please help us improve our site!
+
+×
+
+No thank you
+
+Skip to main content
+
+Cornell Law School  Search Cornell
+
+Toggle navigation
+
+Please help us improve our site!
+
+Support Us!
+
+Search
+
+About LII
+
+Who We Are
+
+What We Do
+
+Who Pays For This
+
+Contact Us
+
+Get the law
+
+Constitution
+
+Supreme Court
+
+U.S. Code
+
+CFR
+
+Federal Rules
+
+Federal Rules of Appellate Procedure
+
+Federal Rules of Civil Procedure
+
+Federal Rules of Criminal Procedure
+
+Federal Rules of Evidence
+
+Federal Rules of Bankruptcy Procedure
+
+U.C.C.
+
+Law by jurisdiction
+
+State law
+
+Uniform laws
+
+Federal law
+
+World law
+
+Lawyer directory
+
+Legal encyclopedia
+
+Business law
+
+Constitutional law
+
+Criminal law
+
+Family law
+
+Employment law
+
+Money and Finances
+
+More...
+
+Help out
+
+Give
+
+Sponsor
+
+Advertise
+
+Create
+
+Promote
+
+Join Lawyer Directory
+
+LII
+
+State Regulations
+
+California Code of Regulations
+
+Title 11 - Law
+
+Division 6 - California Privacy Protection Agency
+
+Chapter 1 - California Consumer Privacy Act Regulations
+
+Article 2 - Required Disclosures to Consumers
+
+Cal. Code Regs. Tit. 11, § 7012 - Notice at Collection of Personal Information
+
+Cal. Code Regs. Tit. 11, § 7012 - Notice at Collection of Personal Information
+
+State Regulations
+
+Compare
+
+(a) The purpose of the Notice at Collection is to provide consumers with timely notice, at or before the point of collection, about the categories of personal information to be collected from them, the purposes for which the personal information is collected or used, and whether that information is sold or shared, so that consumers have a tool to exercise meaningful control over the business's use of their personal information. For example, upon receiving the Notice at Collection, the consumer can use the information in the notice as a tool to choose whether to engage with the business, or to direct the business not to sell or share their personal information and to limit the use and disclosure of their sensitive personal information.
+
+(b) The Notice at Collection shall comply with section 7003 , subsections (a) and (b).
+
+(c) The Notice at Collection shall be made readily available where consumers will encounter it at or before the point of collection of any personal information. Illustrative examples follow.
+
+(1) When a business collects consumers' personal information online, it may post a conspicuous link to the notice on the introductory page of the business's website and on all webpages where personal information is collected.
+
+(2) When a business collects consumers' personal information through a webform, it may post a conspicuous link to the notice in close proximity to the fields in which the consumer inputs their personal information, or in close proximity to the button by which the consumer submits their personal information to the business.
+
+(3) When a business collects personal information through a mobile application, it may provide a link to the notice on the mobile application's download page and within the application, such as through the application's settings menu.
+
+(4) When a business collects consumers' personal information offline, it may include the notice on printed forms that collect personal information, provide the consumer with a paper version of the notice, or post prominent signage directing consumers to where the notice can be found online.
+
+(5) When a business collects personal information over the telephone or in person, it may provide the notice orally.
+
+(d) If a business does not give the Notice at Collection to the consumer at or before the point of collection of their personal information, the business shall not collect personal information from the consumer.
+
+(e) A business shall include the following in its Notice at Collection:
+
+(1) A list of the categories of personal information about consumers, including categories of sensitive personal information, to be collected. Each category of personal information shall be written in a manner that provides consumers a meaningful understanding of the information being collected.
+
+(2) The purpose(s) for which the categories of personal information, including categories of sensitive personal information, are collected and used.
+
+(3) Whether each category of personal information identified in subsection (e)(1) is sold or shared.
+
+(4) The length of time the business intends to retain each category of personal information identified in subsection (e)(1), or if that is not possible, the criteria used to determine the period of time it will be retained.
+
+(5) If the business sells or shares personal information, the link to the Notice of Right to Opt-out of Sale/Sharing, or in the case of offline notices, where the webpage can be found online.
+
+(6) A link to the business's privacy policy, or in the case of offline notices, where the privacy policy can be found online.
+
+(f) If a business collects personal information from a consumer online, the Notice at Collection may be given to the consumer by providing a link that takes the consumer directly to the specific section of the business's privacy policy that contains the information required in subsection (e)(1) through (6). Directing the consumer to the beginning of the privacy policy, or to another section of the privacy policy that does not contain the required information, so that the consumer is required to scroll through other information in order to determine the categories of personal information to be collected and/or whether the business sells or shares the personal information collected, does not satisfy this standard.
+
+(g) Third Parties that Control the Collection of Personal Information. This subsection shall not affect the first party's obligations under the CCPA to comply with a consumer's request to opt-out of sale/sharing.
+
+(1) For purposes of giving Notice at Collection, more than one business may control the collection of a consumer's personal information, and thus, have an obligation to provide a Notice at Collection in accordance with the CCPA and these regulations. For example, a first party may allow another business, acting as a third party, to control the collection of personal information from consumers browsing the first party's website. Both the first party that allows the third parties to collect personal information via its website, as well as the third party controlling the collection of personal information, shall provide a Notice at Collection. The first party and third parties may provide a single Notice at Collection that includes the required information about their collective information practices.
+
+(2) A business that, acting as a third party, controls the collection of personal information on another business's physical premises, such as in a retail store or in a vehicle, shall provide a Notice at Collection in a conspicuous manner at the physical location(s) where it is collecting the personal information.
+
+(3) Illustrative examples follow.
+
+(A) Business F allows Business G, a third party ad network, to collect consumers' personal information through Business F's website. Business F may post a conspicuous link to its Notice at Collection on its homepage(s). Business G shall provide a Notice at Collection on its homepage(s) or include the required information about its information practices in Business F's Notice at Collection.
+
+(B) Business H, a coffee shop, allows Business I, a business providing Wi-Fi services, to collect personal information from consumers using Business I's services on Business H's premises. Business H may post conspicuous signage at the entrance of the store or at the point-of-sale directing consumers to where the Notice at Collection for Business H can be found online. In addition, Business I shall post its own Notice at Collection on the first webpage or other interface consumers see before connecting to the Wi-Fi services offered.
+
+(C) Business J, a car rental business, allows Business K to collect personal information from consumers within the vehicles Business J rents to consumers. Business J may give its Notice at Collection to the consumer at the point of sale ( i.e. , at the rental counter) either in writing or orally. Business K may provide its own Notice at Collection within the vehicle, such as through signage on the vehicle's dashboard directing consumers to where the notice can be found online.
+
+(h) A business that neither collects nor controls the collection of personal information directly from the consumer does not need to provide a Notice at Collection to the consumer if it neither sells nor shares the consumer's personal information.
+
+(i) A data broker registered with the Attorney General pursuant to Civil Code section 1798.99.80  et seq. that collects personal information from a source other than directly from the consumer does not need to provide a Notice at Collection to the consumer if it has included in its registration submission a link to its online privacy policy that includes instructions on how a consumer can submit a request to opt-out of sale/sharing.
+
+Notes
+
+Cal. Code Regs. Tit. 11 , § 7012
+
+1. Change without regulatory effect renumbering section 999.305 to new section 7012, including amendments, filed 5-5-2022 pursuant to section 100 , title 1, California Code of Regulations (Register 2022, No. 18).
+
+2. Amendment of section and NOTE filed 3-29-2023; operative 3-29-2023 pursuant to Government Code section 11343.4(b)(3) (Register 2023, No. 13).
+
+Note: Authority cited: Section 1798.185 , Civil Code. Reference: Sections 1798.99.82 , 1798.100 , 1798.115 , 1798.120 , 1798.121 , 1798.145 and 1798.185 , Civil Code.
+
+1. Change without regulatory effect renumbering section 999.305 to new section 7012, including amendments, filed 5-5-2022 pursuant to section 100 , title 1, California Code of Regulations ( Register 2022, No. 18 ).
+
+2. Amendment of section and NOTE filed 3-29-2023; operative 3/29/2023 pursuant to Government Code section 11343.4(b)(3) ( Register 2023, No. 13 ).
+
+State regulations are updated quarterly; we currently have two versions available. Below is a comparison between our most recent version and the prior quarterly release. More comparison features will be added as we have more versions to compare.
+
+No prior version found.
+
+State Regulations Toolbox
+
+Accessibility
+
+About LII
+
+Contact us
+
+Advertise here
+
+Help
+
+Terms of use
+
+Privacy

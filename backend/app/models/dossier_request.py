@@ -251,7 +251,9 @@ def compact_status(metadata: dict[str, Any], body: str = "") -> dict[str, Any]:
                 "packet_path": entry.get("packet_path"),
                 "answer_path": entry.get("packet_path"),
                 "last_error": entry.get("last_error"),
+                "recovery_status": entry.get("recovery_status"),
                 "run_id": entry.get("child_run_id"),
+                "web_run_id": entry.get("web_run_id"),
             }
         )
     issue_rows.sort(

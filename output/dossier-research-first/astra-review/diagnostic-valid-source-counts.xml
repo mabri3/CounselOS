@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="1.481" timestamp="2026-09-12T00:13:59.597092-07:00" hostname="Mac"><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR20_internal_passage_and_duplicate_records_are_not_external_reads" time="0.485"><failure message="assert (3 == 1)">app_context = &lt;app.runtime.AppContext object at 0x10b687ec0&gt;
+
+    def test_AR20_internal_passage_and_duplicate_records_are_not_external_reads(app_context):
+        from app.services.dossier_request_execution import DossierRequestExecutor
+        app=app_context; executor=DossierRequestExecutor(app.dossier_requests,MATTER,'DOR-counts')
+        path=app.matters.matter_path(MATTER)+'/research/review-counts.md'
+        external={'source_id':'SRC-review','source_hash':'v1','source_kind':'external','support_state':'retrieved','selected_passages':[{'quote':'A saved rule.'}]}
+        internal={'source_id':'FACT-review','source_kind':'internal','source_class':'reported_fact','support_state':'supplied','selected_passages':[{'quote':'A supplied business fact.'}]}
+        app.vault.write_markdown(path,'Synthetic count fixture.',{'source_records':[internal,external,dict(external)]})
+        counts=executor._packet_counts(path); print('source counts',counts)
+&gt;       assert counts['sources_read']==1 and counts['sources_retrieved']==1
+E       assert (3 == 1)
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:375: AssertionError</failure></testcase></testsuite></testsuites>

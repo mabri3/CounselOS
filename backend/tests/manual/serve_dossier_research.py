@@ -110,6 +110,8 @@ class BoundaryState:
         self.started: dict[str, int] = {}
         self.discoveries: list[dict[str, Any]] = []
         self.fetches: list[str] = []
+        self.failures_remaining = 0
+        self.failure_session: str | None = None
         self._lock = RLock()
         saved: dict[str, Any] = {}
         if context.vault.exists(STATS):
@@ -137,6 +139,7 @@ class BoundaryState:
             "fetch_calls_this_process": len(self.fetches),
             "first_released": self.first_release.is_set(),
             "remaining_released": self.remaining_release.is_set(),
+            "scripted_failures_left": self.failures_remaining,
         }
 
 
@@ -213,7 +216,7 @@ class DossierBrowserProvider:
             return ProviderReply(content="\n\n".join(content))
 
         names = {tool.get("function", {}).get("name") for tool in tools or []}
-        if "collect_research_evidence" in names and "Research this issue for the dossier" in raw:
+        if "Research this issue for the dossier" in raw:
             session = provider_session_id.get() or re.search(r"Research this issue for the dossier: ([^.]+)", raw).group(1)
             if session not in self.boundary.started:
                 position = len(self.boundary.started)
@@ -225,6 +228,10 @@ class DossierBrowserProvider:
                 finally:
                     self.boundary.active.discard(session)
             self.boundary.record("research_model_calls")
+            if self.boundary.failures_remaining and self.boundary.failure_session in {None, session}:
+                self.boundary.failure_session = session
+                self.boundary.failures_remaining -= 1
+                raise TimeoutError("Synthetic research timeout for recovery acceptance.")
         return await self.base.complete(messages, tools)
 
     @staticmethod
@@ -232,8 +239,8 @@ class DossierBrowserProvider:
         return f"03_Matters/beacon-instant-onboarding"
 
 
-def install_fixture_boundaries(context: Any, issue_ids: list[str]) -> BoundaryState:
-    base, discoveries, fetches = install_boundaries(context)
+def install_fixture_boundaries(context: Any, issue_ids: list[str], monkeypatch=None) -> BoundaryState:
+    base, discoveries, fetches = install_boundaries(context, monkeypatch)
     boundary = BoundaryState(context)
     boundary.discoveries = discoveries
     boundary.fetches = fetches
@@ -283,6 +290,12 @@ def control_router(boundary: BoundaryState) -> APIRouter:
         boundary.started.clear()
         boundary.discoveries.clear()
         boundary.fetches.clear()
+        return boundary.view()
+
+    @router.post("/fail-research")
+    def fail_research(calls: int = 9):
+        boundary.failures_remaining = max(0, min(calls, 100))
+        boundary.failure_session = None
         return boundary.view()
 
     return router

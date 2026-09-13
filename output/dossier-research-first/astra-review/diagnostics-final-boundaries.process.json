@@ -1,0 +1,16 @@
+{
+  "pid": 91954,
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-s",
+    "../output/dossier-research-first/astra-review/test_review_diagnostics.py",
+    "-k",
+    "AR22 or AR23 or AR24 or AR25 or test_control",
+    "--junitxml=../output/dossier-research-first/astra-review/diagnostics-final-boundaries.xml"
+  ],
+  "cwd": "/Users/bharris/Programs/counsel-os-mvp/backend",
+  "started_at": "2026-09-12T07:01:46.359130+00:00"
+}

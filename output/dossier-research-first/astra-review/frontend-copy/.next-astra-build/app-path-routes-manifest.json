@@ -1,0 +1,23 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/agents/page": "/agents",
+  "/automations/page": "/automations",
+  "/briefing/[itemId]/page": "/briefing/[itemId]",
+  "/briefing/digests/[digestId]/page": "/briefing/digests/[digestId]",
+  "/briefing/page": "/briefing",
+  "/decisions/page": "/decisions",
+  "/experimental/chat/page": "/experimental/chat",
+  "/matters/[matterId]/decision-map/page": "/matters/[matterId]/decision-map",
+  "/matters/[matterId]/page": "/matters/[matterId]",
+  "/matters/[matterId]/research/page": "/matters/[matterId]/research",
+  "/matters/page": "/matters",
+  "/matters/storage/page": "/matters/storage",
+  "/page": "/",
+  "/settings/page": "/settings",
+  "/skills/page": "/skills",
+  "/watches/[watchId]/page": "/watches/[watchId]",
+  "/watches/new/page": "/watches/new",
+  "/watches/page": "/watches",
+  "/workspace/page": "/workspace"
+}

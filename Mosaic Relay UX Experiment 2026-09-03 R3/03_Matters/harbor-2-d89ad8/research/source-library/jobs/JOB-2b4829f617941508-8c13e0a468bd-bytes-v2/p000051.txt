@@ -1,0 +1,49 @@
+ 
+51 
+ 
+persons are entitled, without regard to the time the persons became entitled to the virtual currency 
+or the licensee obtained control of the virtual currency. 
+(c) 
+The virtual currency referred to in this section is: 
+(1) 
+held for the persons entitled to the virtual currency; 
+(2) 
+not property of the licensee; 
+(3) 
+not subject to the claims of creditors of the licensee; and 
+(4) 
+deemed a permissible investment under this Act. 
+Section 13.06 Additional Requirements and Clarifications for Virtual Currency Business 
+Activities. 
+(a) 
+A licensee engaged in virtual currency business activities must comply with 
+all provisions of this [Act] to the extent applicable to the licensee's activities. 
+(b) 
+A licensee engaged in virtual currency business activities may include in its 
+calculation of tangible net worth virtual currency, measured by the average value of the virtual 
+currency in U.S. Dollar equivalent over the prior six months, excluding control of virtual currency 
+for a person entitled to the protections pursuant to [Section 13.05]. 
+(c) 
+A licensee shall maintain, for all virtual-currency business activity with or 
+on behalf of a person five years after the date of the activity, a record of: 
+(1) 
+each transaction of the licensee with or on behalf of the person or 
+for the licensee's account in this state, including: 
+(A) 
+the identity of the person; 
+(B) 
+the form of the transaction; 
+(C) 
+the amount, date, and payment instructions given by the 
+person; and 
+(D) 
+the account number, name, and United States Postal Service 
+address of the person, and, to the extent feasible, other parties to the transaction; 
+(2) 
+the aggregate number of transactions and aggregate value of 
+transactions by the licensee with or on behalf of the person and for the licensee's account 
+in this state, expressed in U.S. Dollar equivalent of virtual currency for the previous 12 
+calendar months; 
+(3) 
+each transaction in which the licensee exchanges one form of virtual 
+currency for money or another form of virtual currency with or on behalf of the person; 

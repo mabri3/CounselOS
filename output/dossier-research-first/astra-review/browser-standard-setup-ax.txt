@@ -1,0 +1,194 @@
+Browser tab: 2, Title: "Themis.ai", URL: "http://localhost:3207/matters/MAT-DEMO-BEACON".
+0 AXWebArea Themis.ai, URL: localhost:3207/matters/MAT-DEMO-BEACON
+	1 container
+		2 button (collapsed) themis.ai, Secondary Actions: Expand
+			3 text themis.ai
+		4 container matter-MAT-DEMO-BEACON
+			5 container
+				6 text Waiting on Brian Harris
+				7 link Description: Matters, Value: localhost:3207/matters
+				8 heading Beacon: Instant Business Onboarding, Value: 1
+					9 text Beacon: Instant Business Onboarding
+				10 button (collapsed) Matter details, Secondary Actions: Expand
+					11 text Matter details
+				12 button (collapsed) Tools and history, Secondary Actions: Expand
+			36 text MATTER
+			37 heading Beacon: Instant Business Onboarding, Value: 1
+				38 text Beacon: Instant Business Onboarding
+			13 container Matter workspace
+				14 container
+					15 container Matter workspace view
+						16 text Matter workspace view
+						17 radio button (settable, integer) Description: Understand, Value: 0, ID: workspace-view-MAT-DEMO-BEACON-understand
+						18 container Read the current matter
+							19 text Understand
+						20 radio button (settable, integer) Description: Discuss, Value: 1, ID: workspace-view-MAT-DEMO-BEACON-discuss
+						21 container Continue one matter conversation
+							22 text Discuss
+						23 radio button (settable, integer) Description: Draft, Value: 0, ID: workspace-view-MAT-DEMO-BEACON-draft
+						24 container Review and prepare work product
+							25 text Draft
+					26 button Decision map
+				39 container Matter conversation
+					40 container
+						41 text INQUIRY SCOPE Matter context Business question
+						42 button Clear scope
+					43 button (collapsed) Approaches, Secondary Actions: Expand
+						44 text Approaches
+					45 text Inquiry target:
+					46 text Business question
+					47 button Clear target
+					48 button Jump to latest answer
+					49 container
+						50 text THEMIS.AI ·  COMPLETED Chat is complete.  Review the saved result below.
+					51 container
+						52 text LATEST ANSWER Applied skill:  Dossier generation
+						135 text ✧
+						136 text Themis.ai
+						137 container answer-reading-MSG-20260912-662445
+							138 heading Suggested priorities, Value: 2
+								139 text Suggested priorities
+							140 text Review the five saved issues across employment, privacy, supplier, intellectual-property, and marketing workstreams. The first three suggested priorities focus on launch blockers, vendor dependencies, and supported claims.
+							141 text Dossier research is ready for your choices. No research has started.
+						142 container
+							143 text WORKSPACE ACTION ·  RECORDED
+						144 text Dossier research is ready for your choices. No research has started.
+						145 container
+							146 text Updated records:  DOR 20260912 070c14
+						147 text Review the priorities and source choices.
+						148 button Open DOR 20260912 070c14
+							149 text Open 
+							150 text DOR 20260912 070c14
+						151 text DOSSIER RESEARCH · NEEDS YOUR CHOICES
+						152 heading Prepare your dossier, Value: 3
+							153 text Prepare your dossier
+						154 container Priority 1
+							155 container
+								156 text Priority  1
+							157 container
+								158 text Priority
+								159 text field (settable) Priority, Value: Confirm launch blockers
+							160 container
+								161 text Why it matters
+								162 text entry area (settable) Why it matters, Value: These terms can stop the launch.
+						163 container Priority 2
+							164 container
+								165 text Priority  2
+							166 container
+								167 text Priority
+								168 text field (settable) Priority, Value: Resolve vendor dependencies
+							169 container
+								170 text Why it matters
+								171 text entry area (settable) Why it matters, Value: Supplier and IP terms control access and ownership.
+						172 container Priority 3
+							173 container
+								174 text Priority  3
+							175 container
+								176 text Priority
+								177 text field (settable) Priority, Value: Support customer claims
+							178 container
+								179 text Why it matters
+								180 text entry area (settable) Why it matters, Value: Marketing statements need saved evidence.
+						181 container First issues to research
+							182 text First issues to research
+							183 container
+								184 text Issue  1
+								185 pop up button (collapsed, settable) Issue 1, Value: Employment terms: Confirm worker terms and launch staffing conditions., Secondary Actions: Expand
+									186 menu
+										187 (disabled) Employment terms: Confirm worker terms and launch staffing conditions.
+										188 (disabled) Customer privacy: Confirm notice, purpose, and access controls.
+										189 (disabled) Supplier contract: Confirm service levels, termination, and transfer terms.
+										190 (disabled) Intellectual property: Confirm ownership and trademark permission.
+										191 (disabled) Marketing claims: Confirm evidence for public launch claims.
+							192 container
+								193 text Issue  2
+								194 pop up button (collapsed, settable) Issue 2, Value: Customer privacy: Confirm notice, purpose, and access controls., Secondary Actions: Expand
+									195 menu
+										196 (disabled) Employment terms: Confirm worker terms and launch staffing conditions.
+										197 (disabled) Customer privacy: Confirm notice, purpose, and access controls.
+										198 (disabled) Supplier contract: Confirm service levels, termination, and transfer terms.
+										199 (disabled) Intellectual property: Confirm ownership and trademark permission.
+										200 (disabled) Marketing claims: Confirm evidence for public launch claims.
+							201 container
+								202 text Issue  3
+								203 pop up button (collapsed, settable) Issue 3, Value: Supplier contract: Confirm service levels, termination, and transfer terms., Secondary Actions: Expand
+									204 menu
+										205 (disabled) Employment terms: Confirm worker terms and launch staffing conditions.
+										206 (disabled) Customer privacy: Confirm notice, purpose, and access controls.
+										207 (disabled) Supplier contract: Confirm service levels, termination, and transfer terms.
+										208 (disabled) Intellectual property: Confirm ownership and trademark permission.
+										209 (disabled) Marketing claims: Confirm evidence for public launch claims.
+						210 container Research scope
+							211 text Research scope
+							212 radio button (settable, integer) Description: Research the top three, Value: 1
+							213 radio button (settable, integer) Description: Research all 5 identified issues, Value: 0
+						214 container Where should I look?
+							215 text Where should I look?
+							216 text This matter is always included. Choose extra sources for this request only.
+							217 checkbox (settable, integer) Description: External sources, Value: 0
+							218 checkbox (settable, integer) Description: Search other active matters, Value: 0
+							219 button (collapsed) Research options, Secondary Actions: Expand
+								220 text Research options
+							221 text Neither selected means this matter only. Normal model usage can still have costs.
+						222 button Start dossier research
+						223 button Use saved material now
+						224 button Skip priority changes
+						225 button Cancel
+					83 container
+						84 text YOUR QUESTION Generate a dossier.
+					85 button (collapsed) Earlier conversation (4 messages), Secondary Actions: Expand
+						86 text Earlier conversation (
+						87 text 4
+						88 text  messages)
+					89 container Run an inquiry
+						90 container Ask about This matter
+							91 text RUN AN INQUIRY
+							92 heading Ask about This matter, Value: 2
+								93 text Ask about  This matter
+							94 container Inquiry type
+								95 text Inquiry type
+								96 container
+									97 radio button (settable, integer) Description: Explain, Value: 1
+									98 text Explain
+								99 container
+									100 radio button (settable, integer) Description: Stress-test, Value: 0
+									101 text Stress-test
+								102 container
+									103 radio button (settable, integer) Description: Ask the business, Value: 0
+									104 text Ask the business
+								105 container
+									106 radio button (settable, integer) Description: Explore question, Value: 0
+									107 text Explore question
+							108 text Question or instruction
+							109 text entry area (settable) Question or instruction
+							110 container Inquiry actions
+								111 button Start inquiry, Help: Explain the selected issue or source in the current matter.
+								112 button Copy question
+							113 container
+								114 text Selected action:  Explain .  Explain the selected issue or source in the current matter.
+						115 container
+							116 text TOOLS & HISTORY
+							117 button Business replies
+							118 button Hand off work
+							119 button Compare supplied versions
+					120 container Shared matter actions
+						121 button (collapsed) Questions and actions · Same saved matter, Secondary Actions: Expand
+							122 text Questions and actions · Same saved matter
+					123 button Run inquiry: Which other matters does this touch?
+						124 text Run inquiry: 
+						226 text Which other matters does this touch?
+					126 button Run inquiry: What would change your view?
+						127 text Run inquiry: 
+						227 text What would change your view?
+					129 button Add files
+					130 text entry area (settable)
+					131 button (disabled) Send
+					132 container
+						133 text Themis.ai can research, draft and move this matter. It records a decision only when you explicitly ask it to. 
+						134 link Description: Build a skill, Value: localhost:3207/skills
+				31 button (collapsed) Discussion help, Secondary Actions: Expand
+					32 text Discussion help
+	34 pop up button (collapsed) Description: Open Next.js Dev Tools, ID: next-logo, Secondary Actions: Expand
+		35 image
+
+The focused UI element is 0 AXWebArea Themis.ai, URL: localhost:3207/matters/MAT-DEMO-BEACON

@@ -1,0 +1,11 @@
+{
+  "pid": 88993,
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "--junitxml=../output/dossier-research-first/astra-review/full-backend.xml"
+  ],
+  "cwd": "/Users/bharris/Programs/counsel-os-mvp/backend",
+  "started_at": "2026-09-12T06:46:15.206523+00:00"
+}

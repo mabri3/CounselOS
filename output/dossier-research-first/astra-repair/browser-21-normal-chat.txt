@@ -1,0 +1,104 @@
+- banner:
+  - generic "themis.ai":
+    - text: themis.ai
+    - generic: ⌄
+- banner:
+  - generic: Waiting on Brian Harris
+  - link "Matters":
+    - /url: /matters
+  - 'heading "Beacon: Instant Business Onboarding" [level=1]'
+  - generic "Matter details"
+  - option "Set risk" [selected]
+  - option "Low"
+  - option "Moderate"
+  - option "High"
+  - button "Tools and history":
+    - text: Tools and history
+- generic: Matter
+- 'heading "Beacon: Instant Business Onboarding" [level=1]'
+- region "Matter workspace":
+  - group "Matter workspace view":
+    - generic: Matter workspace view
+    - radio "Understand"
+    - generic "Read the current matter":
+      - text: Understand
+    - radio "Discuss" [checked]
+    - generic "Continue one matter conversation":
+      - text: Discuss
+    - radio "Draft"
+    - generic "Review and prepare work product":
+      - text: Draft
+  - button "Decision map":
+    - text: Decision map
+  - text: NEXT ACTION
+  - region "Matter conversation":
+    - status:
+      - text: Inquiry scope
+      - strong: Matter context
+      - strong: Business question
+      - button "Clear scope"
+    - generic "Approaches"
+    - strong: "Inquiry target:"
+    - text: Business question
+    - button "Clear target"
+    - button "Jump to latest answer"
+    - status:
+      - generic: Themis.ai · Completed
+      - generic: Chat is complete. Review the saved result below.
+    - paragraph: Latest answer
+    - generic: "Applied skill: Matter paths"
+    - generic: ✧ Themis.ai
+    - paragraph: Choose the sources below, then select Continue.
+    - paragraph: Research is waiting for your source choice.
+    - group "What sources should I use?":
+      - generic: What sources should I use?
+      - checkbox "External sources"
+      - text: External sources
+      - checkbox "Other matters"
+      - text: Other matters
+      - paragraph: Leave both unchecked to review only this matter.
+    - button "Continue"
+    - paragraph: Your question
+    - generic: What work remains for this matter?
+    - generic "Earlier conversation (11 messages)"
+    - complementary "Run an inquiry":
+      - region "Ask about This matter":
+        - paragraph: Run an inquiry
+        - heading "Ask about This matter" [level=2]
+        - group "Inquiry type":
+          - generic: Inquiry type
+          - radio "Explain" [checked]
+          - generic: Explain
+          - radio "Stress-test"
+          - generic: Stress-test
+          - radio "Ask the business"
+          - generic: Ask the business
+          - radio "Explore question"
+          - generic: Explore question
+        - generic: Question or instruction
+        - textbox "Question or instruction":
+          - /placeholder: What would change if the funds remained in the account for two days?
+        - generic "Inquiry actions":
+          - button "Start inquiry"
+          - button "Copy question"
+        - paragraph: "Selected action: Explain. Explain the selected issue or source in the current matter."
+      - generic: Tools & history
+      - button "Business replies":
+        - text: Business replies
+      - button "Hand off work":
+        - text: Hand off work
+      - button "Compare supplied versions":
+        - text: Compare supplied versions
+    - group "Shared matter actions":
+      - generic "Questions and actions · Same saved matter"
+      - option "Choose a saved question" [selected]
+    - 'button "Run inquiry: Which other matters does this touch?"'
+    - 'button "Run inquiry: What would change your view?"'
+    - button "Add files": +
+    - 'textbox "Ask Themis.ai about Beacon: Instant Business Onboarding…"'
+    - button "Send" [disabled]
+    - text: Themis.ai can research, draft and move this matter. It records a decision only when you explicitly ask it to.
+    - link "Build a skill":
+      - /url: /skills
+  - generic "Discussion help"
+- alert

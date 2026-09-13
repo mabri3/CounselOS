@@ -1,0 +1,60 @@
+{
+  "request_id": "DOR-20260912-97a5e0",
+  "state": "completed",
+  "phase": "finished",
+  "last_error": null,
+  "latest_publication": {
+    "key": "dossier-batch:a6f396df79227398b8a2247b4224965299e05c557536fd3aee1380c3e07e8cdc",
+    "issue_ids": [],
+    "state": "applied",
+    "revision_path": "03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-4d270fd761fc87c1f021.md",
+    "receipts": {
+      "recommendation": {
+        "state": "not_required"
+      },
+      "dossier": {
+        "state": "applied",
+        "revision_path": "03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-4d270fd761fc87c1f021.md"
+      },
+      "conversation": {
+        "state": "saved",
+        "message_id": "MSG-20260912-93819b"
+      }
+    },
+    "composed_at": "2026-09-12T21:45:40+00:00",
+    "warning": "",
+    "dossier_hash": "dd51ff6941b198d3f02cd6d6332cc8f829625df20dd3b1fd54371a0ef9862564",
+    "recommendations_hash": "a20d0b2336e6b268564a94d83cc8e22304446389974466a0477592637905c75e",
+    "business_question_revision": "legacy:47215e8dcc79123d73819682732971076bc24bc2828f291c8e1bff9fe143de4e",
+    "writer_warnings": [],
+    "batch_index": 0
+  },
+  "publications": [
+    {
+      "key": "dossier-batch:a6f396df79227398b8a2247b4224965299e05c557536fd3aee1380c3e07e8cdc",
+      "issue_ids": [],
+      "state": "applied",
+      "revision_path": "03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-4d270fd761fc87c1f021.md",
+      "receipts": {
+        "recommendation": {
+          "state": "not_required"
+        },
+        "dossier": {
+          "state": "applied",
+          "revision_path": "03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-4d270fd761fc87c1f021.md"
+        },
+        "conversation": {
+          "state": "saved",
+          "message_id": "MSG-20260912-93819b"
+        }
+      },
+      "composed_at": "2026-09-12T21:45:40+00:00",
+      "warning": "",
+      "dossier_hash": "dd51ff6941b198d3f02cd6d6332cc8f829625df20dd3b1fd54371a0ef9862564",
+      "recommendations_hash": "a20d0b2336e6b268564a94d83cc8e22304446389974466a0477592637905c75e",
+      "business_question_revision": "legacy:47215e8dcc79123d73819682732971076bc24bc2828f291c8e1bff9fe143de4e",
+      "writer_warnings": [],
+      "batch_index": 0
+    }
+  ]
+}

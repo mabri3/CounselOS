@@ -248,7 +248,7 @@ class MatterStateService:
         unreadable = False
         for path in sorted(runs_path.glob("*.md")):
             try:
-                metadata = self.vault.read_markdown(self.vault.relative(path))["metadata"]
+                metadata = self.vault.read_markdown(self.vault.relative(path), include_execution=False)["metadata"]
             except (OSError, UnicodeError, TypeError, ValueError, yaml.YAMLError):
                 # A single unreadable or invalid durable record must not fail the matters API.
                 unreadable = True

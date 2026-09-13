@@ -64,7 +64,9 @@ class ResearchRunService:
         if any(run_id in matter_run_ids and not task.done() for run_id, task in self._tasks.items()):
             return True
         return any(
-            not item.get("managed") and item.get("state") in {"queued", "running"}
+            # Pending work waits behind the owning dossier request. Counting it
+            # as active would make the parent and its queued web pass deadlock.
+            not item.get("managed") and item.get("state") == "running"
             for item in self.list(matter_id)
         )
 
@@ -368,6 +370,47 @@ class ResearchRunService:
         return task
 
     async def _execute_managed(self, matter_id: str, run_id: str) -> None:
+        from app.services.research_recovery import (
+            AUTO_RECOVERY_DELAY_SECONDS, AUTO_RECOVERY_LIMIT, prepare_recovery, research_failure,
+        )
+        try:
+            while True:
+                await self._execute_managed_attempt(matter_id, run_id)
+                child = self.get(matter_id, run_id)
+                if child.get("managed_state") not in {"partial", "failed"}:
+                    break
+                reason, _ = research_failure(child)
+                attempts = (child.get("checkpoint") or {}).get("recovery_attempts") or []
+                if sum(a.get("mode") == "automatic" for a in attempts) >= AUTO_RECOVERY_LIMIT:
+                    reason += " Automatic recovery stopped after two attempts. Use Resume to try again."
+                self._write(matter_id, run_id, failure_detail=reason, status=reason)
+                parent_id = child.get("parent_request_id")
+                parent_service = self.research.app.dossier_requests
+                if parent_service.get(matter_id, parent_id).get("stop_requested"):
+                    break
+                if not prepare_recovery(self, matter_id, run_id, automatic=True):
+                    break
+                cp = self.get(matter_id, run_id)["checkpoint"]
+                attempt = sum(a["mode"] == "automatic" for a in cp["recovery_attempts"])
+                note = f"{reason} Auto-resuming ({attempt} of {AUTO_RECOVERY_LIMIT})."
+                self._write(matter_id, run_id, status=note)
+
+                def retry_status(md, body):
+                    entry = (md.get("issues") or {}).get(child.get("issue_id"))
+                    if entry is not None:
+                        entry.update(recovery_status=note, last_error=None)
+                    return md, body
+
+                parent_service._mutate(matter_id, parent_id, retry_status, expected_sequence=None)
+                await asyncio.sleep(AUTO_RECOVERY_DELAY_SECONDS * attempt)
+        except asyncio.CancelledError:
+            self._write(matter_id, run_id, state="interrupted", managed_state="interrupted",
+                        status="Dossier research was interrupted.", finished_at=iso_now())
+            raise
+        finally:
+            self._tasks.pop(run_id, None)
+
+    async def _execute_managed_attempt(self, matter_id: str, run_id: str) -> None:
         """Run one managed child: save packet/sources only. No shared publication."""
         current = self.get(matter_id, run_id)
         question = str(current.get("question") or "").strip()
@@ -407,6 +450,7 @@ class ResearchRunService:
                 state="completed",
                 managed_state="ready_for_composition" if has_analysis else "partial",
                 completed=len(results), status="Dossier research result ready for composition.",
+                failure_detail=None, failure_class=None, temporary_failure=False,
                 results=results, finished_at=iso_now(),
                 useful_support=sum(int(item.get("internal_sources", 0)) + int(item.get("external_sources", 0)) for item in results if isinstance(item, dict)),
             )
@@ -415,12 +459,12 @@ class ResearchRunService:
                         status="Dossier research was interrupted.", results=results, finished_at=iso_now())
             raise
         except Exception as exc:
+            from app.services.research_recovery import temporary_failure
             self._write(matter_id, run_id, state="failed", managed_state="failed",
+                        failure_class=type(exc).__name__, temporary_failure=temporary_failure(exc),
                         failure_detail=f"{type(exc).__name__}: {exc}",
                         status="Dossier research stopped; saved evidence retained.",
                         results=results, finished_at=iso_now())
-        finally:
-            self._tasks.pop(run_id, None)
 
     def schedule_next_pending(self, matter_id: str) -> None:
         """After a parent releases the matter, resume the ordinary research queue."""
@@ -659,11 +703,11 @@ class ResearchRunService:
             )
         return retried
 
-    def get(self, matter_id: str, run_id: str) -> dict[str, Any]:
+    def get(self, matter_id: str, run_id: str, *, include_execution: bool = True) -> dict[str, Any]:
         path = self._path(matter_id, run_id)
         if not self.vault.exists(path):
             raise KeyError(f"Research run not found: {run_id}")
-        document = self.vault.read_markdown(path)
+        document = self.vault.read_markdown(path, include_execution=include_execution)
         return {**document["metadata"], "path": path}
 
     def record_completed(self, matter_id: str, question: str, result_path: str, *, source_action_key: str) -> dict[str, Any]:
@@ -680,11 +724,11 @@ class ResearchRunService:
             selection=self._selection_values(resolved) if resolved is not None else None,
         )
 
-    def list(self, matter_id: str) -> list[dict[str, Any]]:
+    def list(self, matter_id: str, *, include_execution: bool = True) -> list[dict[str, Any]]:
         directory = self.vault.resolve(f"{self._matter_path(matter_id)}/research/runs")
         if not directory.exists():
             return []
-        records = [self.get(matter_id, path.stem) for path in directory.glob("*.md")]
+        records = [self.get(matter_id, path.stem, include_execution=include_execution) for path in directory.glob("*.md")]
         return sorted(records, key=lambda item: (
             0 if item.get("state") == "running" else 1 if item.get("state") == "queued" else 2,
             int(item.get("queue_order") or 0), str(item.get("created_at") or ""),
@@ -697,7 +741,7 @@ class ResearchRunService:
             if path.parent.name != "runs":
                 continue
             relative = self.vault.relative(path)
-            document = self.vault.read_markdown(relative)
+            document = self.vault.read_markdown(relative, include_execution=False)
             metadata = document["metadata"]
             if (
                 metadata.get("record_type") == "research_run"
@@ -734,7 +778,7 @@ class ResearchRunService:
             return
         from app.services.research_publication import publish_research_result
         for matter in self.research.index.list_matters():
-            for run in self.list(matter["matter_id"]):
+            for run in self.list(matter["matter_id"], include_execution=False):
                 # Managed dossier children publish only through the parent's checked
                 # group publication; the ordinary single-run publisher skips them.
                 if run.get("managed"):

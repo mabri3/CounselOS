@@ -1,0 +1,19 @@
+{
+  "name": "diagnostic-source-footer",
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-s",
+    "../output/dossier-research-first/astra-review/test_review_diagnostics.py",
+    "-k",
+    "AR26",
+    "--junitxml=../output/dossier-research-first/astra-review/diagnostic-source-footer.xml"
+  ],
+  "cwd": "/Users/bharris/Programs/counsel-os-mvp/backend",
+  "started_at": "2026-09-12T07:07:26.318022+00:00",
+  "exit_code": 1,
+  "duration_seconds": 0.968,
+  "baseline": "baseline.json"
+}

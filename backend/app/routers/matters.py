@@ -185,7 +185,7 @@ def get_conversation(
 ):
     try:
         conversation = clean_conversation_for_display(
-            context.chat_history.get(matter_id, conversation_id)
+            context.chat_history.get(matter_id, conversation_id, include_execution=False)
         )
         from app.services.dossier_generation_chat import restore_dossier_cards
         restore_dossier_cards(context, matter_id, conversation)
@@ -489,7 +489,7 @@ def repair_matter_consistency(
 @router.get("/{matter_id}/research-options")
 def research_options(matter_id: str, context: AppContext = Depends(get_context, scope="function")):
     try:
-        context.matters.get(matter_id)
+        context.matters.matter_path(matter_id)
         from app.services.native_research import native_options
         resolved = context.research_runs.resolve_agent()
         selection = context.research_runs._selection_values(resolved)

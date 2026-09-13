@@ -1,0 +1,20 @@
+{
+  "fixture": "counsel-os-dossier-research-browser-v1",
+  "matter_id": "MAT-DEMO-BEACON",
+  "active_workers": 3,
+  "active_worker_ids": [
+    "RUN-700e7aab21686803",
+    "RUN-877abfadfa6703fc",
+    "RUN-c5893c269ad77618"
+  ],
+  "research_workers_started": 3,
+  "counts": {
+    "model_calls": 4,
+    "planning_calls": 1,
+    "research_workers_started": 3
+  },
+  "search_calls_this_process": 0,
+  "fetch_calls_this_process": 0,
+  "first_released": false,
+  "remaining_released": false
+}

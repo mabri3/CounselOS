@@ -1,0 +1,132 @@
+{
+  "findings_repaired": [
+    "AR01",
+    "AR02",
+    "AR03",
+    "AR04",
+    "AR05",
+    "AR06",
+    "AR07",
+    "AR08",
+    "AR09",
+    "AR10",
+    "AR11",
+    "AR12",
+    "AR13",
+    "AR14",
+    "AR15",
+    "AR17",
+    "AR18",
+    "AR19",
+    "AR20",
+    "AR21",
+    "AR22",
+    "AR23",
+    "AR24",
+    "AR25",
+    "AR26"
+  ],
+  "backend": {
+    "exit_code": 0,
+    "passed": 1686,
+    "failed": 0,
+    "skipped": 0,
+    "duration_seconds": 830.63,
+    "repair_test_count": 47
+  },
+  "frontend": {
+    "typecheck": 0,
+    "dossier_controls": 0,
+    "research_queue": 0,
+    "document_references": 0,
+    "citation_reading": 0,
+    "production_build": 0
+  },
+  "graph_update_exit_code": 0,
+  "browser_scope_assertions": {
+    "saved-only": {
+      "count_delta": {
+        "writer_calls": 1,
+        "planning_calls": 0,
+        "model_calls": 1,
+        "research_model_calls": 0,
+        "research_workers_started": 0
+      },
+      "changed": [
+        "conversations/CONV-20260912-f47424.md"
+      ],
+      "added": [
+        "conversations/context/RUN-20260912-1662c5.md",
+        "conversations/runs/RUN-20260912-1662c5.md",
+        "dossier-revisions/DOS-4af83c4717bbf5ab8864.md"
+      ],
+      "record_changes": [
+        "dossier-revisions/DOS-4af83c4717bbf5ab8864.md"
+      ],
+      "verified": true
+    },
+    "preview": {
+      "count_delta": {
+        "writer_calls": 1,
+        "planning_calls": 0,
+        "model_calls": 1,
+        "research_model_calls": 0,
+        "research_workers_started": 0
+      },
+      "changed": [
+        "conversations/CONV-20260912-f47424.md"
+      ],
+      "added": [
+        "conversations/context/RUN-20260912-269b2a.md",
+        "conversations/runs/RUN-20260912-269b2a.md"
+      ],
+      "record_changes": [],
+      "verified": true
+    },
+    "normal-chat": {
+      "count_delta": {
+        "research_model_calls": 0,
+        "planning_calls": 0,
+        "model_calls": 1,
+        "writer_calls": 0,
+        "research_workers_started": 0
+      },
+      "changed": [
+        "conversations/CONV-20260912-f47424.md"
+      ],
+      "added": [
+        "conversations/context/RUN-20260912-563cb0.md",
+        "conversations/runs/RUN-20260912-563cb0.md"
+      ],
+      "record_changes": [],
+      "verified": true,
+      "note": "The synthetic ordinary-chat boundary returned its fixed answer. This verifies routing and lack of unintended research or record writes, not answer quality."
+    }
+  },
+  "source_manifest_matches": true,
+  "protected_file_hashes_match": true,
+  "report_links_valid": true,
+  "cleanup": {
+    "checked_at": "2026-09-12T08:19:12.932706+00:00",
+    "ports": {
+      "8207": {
+        "exit_code": 1,
+        "output": "",
+        "free": true
+      },
+      "3207": {
+        "exit_code": 1,
+        "output": "",
+        "free": true
+      }
+    },
+    "owned_browser_tabs_closed": [
+      "3",
+      "4"
+    ],
+    "backend_session_21840_exit": 143,
+    "frontend_session_64444_exit": 143,
+    "full_backend_session_81924_exit": 0
+  },
+  "paid_model_run_performed": false
+}

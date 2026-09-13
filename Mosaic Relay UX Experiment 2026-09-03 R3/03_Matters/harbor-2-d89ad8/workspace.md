@@ -308,5 +308,12 @@ issue_analyses:
     output_revision: 77e9820caed5326f40c60645d194ae115e81e2d93e0e2027ecf359b565238016
     run_id: RUN-20260910-ad73ff
     captured_at: '2026-09-10T00:47:43.220179+00:00'
+problem_analysis_reference:
+  analysis_id: PA-ae6c336e881248d925512cee
+  analysis_revision: e427d255de93cd84a8dd0a3579ce26fd892f767d4f0684d9bf79565eb5b874c4
+  source_path: 03_Matters/harbor-2-d89ad8/research/RES-20260911-0a5f07.md
+  output_revision: 55935ebb618a3419f18a3f43027cdc18aa00aae9c94768d9e36c451f2698083c
+  run_id: RUN-20260911-d08e84
+  captured_at: '2026-09-11T16:46:35.419344+00:00'
 ---
 # Workspace

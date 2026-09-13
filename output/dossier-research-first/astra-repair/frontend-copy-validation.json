@@ -1,0 +1,9 @@
+{
+  "checked": 233,
+  "application_source_mismatches": [],
+  "build_generated_path_adjustments": [
+    "frontend/tsconfig.json",
+    "frontend/next-env.d.ts"
+  ],
+  "verified_adjustments": "Only the owned Next output directory is added to generated type includes/imports. No compiler options or application source differ."
+}

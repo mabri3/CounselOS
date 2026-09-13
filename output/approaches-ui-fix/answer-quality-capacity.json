@@ -1,0 +1,112 @@
+[
+  {
+    "identity": "ORCHID",
+    "bytes": 858653,
+    "pages": 1000,
+    "chars": 4060224,
+    "state": "complete",
+    "seconds": 23.22537333299988,
+    "source_id": "SRC-CBE21B37A6A776AA",
+    "version": "e6d87aa8215915ebdf183341a20cf7b9"
+  },
+  {
+    "identity": "COLLECTION0",
+    "bytes": 172310,
+    "pages": 200,
+    "chars": 856238,
+    "state": "complete",
+    "seconds": 8.431062999996357,
+    "source_id": "SRC-EEEFFEBECC27D06A",
+    "version": "54d4e15d64f73ea2d0cbbd42bf38fe92"
+  },
+  {
+    "identity": "COLLECTION1",
+    "bytes": 172276,
+    "pages": 200,
+    "chars": 856238,
+    "state": "complete",
+    "seconds": 9.123981665994506,
+    "source_id": "SRC-F803E2105E5FD56B",
+    "version": "41f00f49bc6450fcc35e5aee2be7959b"
+  },
+  {
+    "identity": "COLLECTION2",
+    "bytes": 172262,
+    "pages": 200,
+    "chars": 856238,
+    "state": "complete",
+    "seconds": 10.453328582982067,
+    "source_id": "SRC-6A38969115A29E95",
+    "version": "8648ceb9ec4bca7449e7d1ee32b0e496"
+  },
+  {
+    "identity": "COLLECTION3",
+    "bytes": 172253,
+    "pages": 200,
+    "chars": 856238,
+    "state": "complete",
+    "seconds": 12.088219083001604,
+    "source_id": "SRC-C48DA0665A43BC13",
+    "version": "9f6f9a7ad46e6782482eccffbd67e6e7"
+  },
+  {
+    "identity": "COLLECTION4",
+    "bytes": 172277,
+    "pages": 200,
+    "chars": 856238,
+    "state": "complete",
+    "seconds": 12.713687457988271,
+    "source_id": "SRC-108C6C58F687FC06",
+    "version": "d83313bdc9e10a508993e4f8d88def56"
+  },
+  {
+    "identity": "COLLECTION5",
+    "bytes": 172310,
+    "pages": 200,
+    "chars": 856238,
+    "state": "complete",
+    "seconds": 12.602995666995412,
+    "source_id": "SRC-3C00DC1BCD8D0C00",
+    "version": "333aa71ac9b6b2884b7f4bdee8647bb1"
+  },
+  {
+    "identity": "COLLECTION6",
+    "bytes": 172277,
+    "pages": 200,
+    "chars": 856238,
+    "state": "complete",
+    "seconds": 13.277255249995505,
+    "source_id": "SRC-BCD9E86698DEF34C",
+    "version": "f71438aa2461ab14c39314e24f2fc4d3"
+  },
+  {
+    "identity": "COLLECTION7",
+    "bytes": 172276,
+    "pages": 200,
+    "chars": 856238,
+    "state": "complete",
+    "seconds": 14.232481166021898,
+    "source_id": "SRC-EA20B3992858F393",
+    "version": "2dfc119c506305576a145d5a307c1858"
+  },
+  {
+    "identity": "COLLECTION8",
+    "bytes": 172298,
+    "pages": 200,
+    "chars": 856238,
+    "state": "complete",
+    "seconds": 14.98632120800903,
+    "source_id": "SRC-28CFF3E80306F56B",
+    "version": "add500d5013b0e88369f466420764c6e"
+  },
+  {
+    "identity": "COLLECTION9",
+    "bytes": 172320,
+    "pages": 200,
+    "chars": 856238,
+    "state": "complete",
+    "seconds": 15.959530124993762,
+    "source_id": "SRC-5D29B8D684184362",
+    "version": "25a49b109361b9e2a310e4e5f66e5c97"
+  }
+]

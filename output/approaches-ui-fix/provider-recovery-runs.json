@@ -1,0 +1,72 @@
+[
+  {
+    "run_id": "RUN-20260911-3a7415",
+    "state": "failed",
+    "started_at": "2026-09-11T02:13:49+00:00",
+    "finished_at": "2026-09-11T02:13:51+00:00",
+    "failure_detail": "Codex CLI provider is closed.",
+    "selection": {
+      "agent_id": "counsel-copilot",
+      "provider": "codex",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "medium"
+    },
+    "completed_mutations": {}
+  },
+  {
+    "run_id": "RUN-20260911-3d8986",
+    "state": "failed",
+    "started_at": "2026-09-11T02:14:16+00:00",
+    "finished_at": "2026-09-11T02:14:18+00:00",
+    "failure_detail": "Codex CLI provider is closed.",
+    "selection": {
+      "agent_id": "counsel-copilot",
+      "provider": "codex",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "medium"
+    },
+    "completed_mutations": {}
+  },
+  {
+    "run_id": "RUN-20260911-8c72e8",
+    "state": "failed",
+    "started_at": "2026-09-11T02:15:55+00:00",
+    "finished_at": "2026-09-11T02:15:57+00:00",
+    "failure_detail": "Codex CLI provider is closed.",
+    "selection": {
+      "agent_id": "counsel-copilot",
+      "provider": "codex",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "medium"
+    },
+    "completed_mutations": {}
+  },
+  {
+    "run_id": "RUN-20260911-7a3eb3",
+    "state": "completed",
+    "started_at": "2026-09-11T02:24:46+00:00",
+    "finished_at": "2026-09-11T02:25:43+00:00",
+    "failure_detail": null,
+    "selection": {
+      "agent_id": "counsel-copilot",
+      "provider": "codex",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "medium"
+    },
+    "completed_mutations": {}
+  },
+  {
+    "run_id": "RUN-20260911-3306dc",
+    "state": "completed",
+    "started_at": "2026-09-11T02:27:40+00:00",
+    "finished_at": "2026-09-11T02:28:51+00:00",
+    "failure_detail": null,
+    "selection": {
+      "agent_id": "counsel-copilot",
+      "provider": "codex",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "medium"
+    },
+    "completed_mutations": {}
+  }
+]

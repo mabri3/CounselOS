@@ -411,7 +411,7 @@ class MatterService:
         if not directory.exists():
             return empty
         for path in sorted(directory.glob("CONV-*.md")):
-            metadata = self.vault.read_markdown(self.vault.relative(path))["metadata"]
+            metadata = self.vault.read_markdown(self.vault.relative(path), include_execution=False)["metadata"]
             if metadata.get("conversation_kind") != "intake":
                 continue
             run_id = next(
@@ -541,7 +541,7 @@ class MatterService:
         for node in (folder or {}).get("children", []):
             if node["type"] != "file" or node.get("extension") != ".md":
                 continue
-            document = self.vault.read_markdown(node["path"])
+            document = self.vault.read_markdown(node["path"], include_execution=False)
             if document["metadata"].get("record_type") == "chat_transcript":
                 node["label"] = document["metadata"].get("title") or "Matter chat"
                 node["record_type"] = "chat_transcript"
@@ -561,7 +561,7 @@ class MatterService:
                 continue
             if node.get("extension") != ".md":
                 continue
-            document = self.vault.read_markdown(node["path"])
+            document = self.vault.read_markdown(node["path"], include_execution=False)
             metadata = document["metadata"]
             if node["path"].casefold() == legacy_root_path.casefold():
                 node["record_type"] = "work_product"
@@ -599,12 +599,14 @@ class MatterService:
         kept: list[dict[str, Any]] = []
         for node in tree:
             if node["type"] == "folder":
+                if node["path"].endswith(("/research/runs", "/research/dossier-requests")):
+                    continue
                 if node["name"] != "conversations":
                     self._exclude_research_run_records(node.get("children", []))
                 kept.append(node)
                 continue
             if node.get("extension") == ".md":
-                metadata = self.vault.read_markdown(node["path"])["metadata"]
+                metadata = self.vault.read_markdown(node["path"], include_execution=False)["metadata"]
                 if metadata.get("record_type") == "research_run":
                     continue
             kept.append(node)
@@ -634,12 +636,14 @@ class MatterService:
     def _latest_research_path(self, base: str, matter_metadata: dict[str, Any]) -> str | None:
         saved_path = str(matter_metadata.get("latest_research_path") or "")
         if saved_path and self.vault.exists(saved_path):
-            saved = self.vault.read_markdown(saved_path)
+            saved = self.vault.read_markdown(saved_path, include_execution=False)
             if saved["metadata"].get("research_id") and "/research/runs/" not in saved_path:
                 return saved_path
         candidates: list[tuple[tuple[int, str], float, str]] = []
         for path in self.vault.iter_files(f"{base}/research", {".md"}):
-            document = self.vault.read_markdown(self.vault.relative(path))
+            if path.relative_to(self.vault.resolve(f"{base}/research")).parts[0] in {"runs", "dossier-requests"}:
+                continue
+            document = self.vault.read_markdown(self.vault.relative(path), include_execution=False)
             metadata = document["metadata"]
             if metadata.get("research_id") and metadata.get("record_type") != "research_run":
                 candidates.append((

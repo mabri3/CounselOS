@@ -1,0 +1,115 @@
+Browser tab: 2, Title: "Themis.ai", URL: "http://localhost:3207/matters/MAT-DEMO-BEACON".
+1 AXWebArea Themis.ai, URL: localhost:3207/matters/MAT-DEMO-BEACON
+	2 container
+		3 button (collapsed) themis.ai, Secondary Actions: Expand
+			4 text themis.ai
+		5 container matter-MAT-DEMO-BEACON
+			6 container
+				7 text Waiting on Brian Harris
+				8 link Description: Matters, Value: localhost:3207/matters
+				9 heading Beacon: Instant Business Onboarding, Value: 1
+					10 text Beacon: Instant Business Onboarding
+				11 button (collapsed) Matter details, Secondary Actions: Expand
+					12 text Matter details
+				13 button (collapsed) Tools and history, Secondary Actions: Expand
+			135 text Research queue updated.
+			136 text MATTER
+			137 heading Beacon: Instant Business Onboarding, Value: 1
+				138 text Beacon: Instant Business Onboarding
+			17 container Matter workspace
+				18 container
+					19 container Matter workspace view
+						20 text Matter workspace view
+						21 radio button (settable, integer) Description: Understand, Value: 0, ID: workspace-view-MAT-DEMO-BEACON-understand
+						22 container Read the current matter
+							23 text Understand
+						24 radio button (settable, integer) Description: Discuss, Value: 1, ID: workspace-view-MAT-DEMO-BEACON-discuss
+						25 container Continue one matter conversation
+							26 text Discuss
+						27 radio button (settable, integer) Description: Draft, Value: 0, ID: workspace-view-MAT-DEMO-BEACON-draft
+						28 container Review and prepare work product
+							29 text Draft
+					30 button Decision map
+				139 container Matter conversation
+					140 container
+						141 text INQUIRY SCOPE Matter context Business question
+						142 button Clear scope
+					143 button (collapsed) Approaches, Secondary Actions: Expand
+						144 text Approaches
+					145 text Inquiry target:
+					146 text Business question
+					147 button Clear target
+					148 button Jump to latest answer
+					149 container
+						150 text THEMIS.AI ·  COMPLETED Chat is complete.  Review the saved result below.
+					151 container
+						152 text LATEST ANSWER Applied skill:  Matter paths
+						232 text ✧
+						233 text Themis.ai
+						234 container answer-reading-MSG-20260912-ea187a
+							235 text Choose the sources below, then select Continue.
+							236 text Research is waiting for your source choice.
+						237 container What sources should I use?
+							238 text What sources should I use?
+							239 checkbox (settable, integer) Description: External sources, Value: 0
+							240 checkbox (settable, integer) Description: Other matters, Value: 0
+							241 text Leave both unchecked to review only this matter.
+						242 button Continue
+					180 container
+						181 text YOUR QUESTION Summarize the saved matter in one short paragraph. Do not change records.
+					182 button (collapsed) Earlier conversation (11 messages), Secondary Actions: Expand
+						183 text Earlier conversation (
+						184 text 11
+						185 text  messages)
+					186 container Run an inquiry
+						187 container Ask about This matter
+							188 text RUN AN INQUIRY
+							189 heading Ask about This matter, Value: 2
+								190 text Ask about  This matter
+							191 container Inquiry type
+								192 text Inquiry type
+								193 container
+									194 radio button (settable, integer) Description: Explain, Value: 1
+									195 text Explain
+								196 container
+									197 radio button (settable, integer) Description: Stress-test, Value: 0
+									198 text Stress-test
+								199 container
+									200 radio button (settable, integer) Description: Ask the business, Value: 0
+									201 text Ask the business
+								202 container
+									203 radio button (settable, integer) Description: Explore question, Value: 0
+									204 text Explore question
+							205 text Question or instruction
+							206 text entry area (settable) Question or instruction
+							207 container Inquiry actions
+								208 button Start inquiry, Help: Explain the selected issue or source in the current matter.
+								209 button Copy question
+							210 container
+								211 text Selected action:  Explain .  Explain the selected issue or source in the current matter.
+						212 container
+							213 text TOOLS & HISTORY
+							214 button Business replies
+							215 button Hand off work
+							216 button Compare supplied versions
+					217 container Shared matter actions
+						218 button (collapsed) Questions and actions · Same saved matter, Secondary Actions: Expand
+							219 text Questions and actions · Same saved matter
+					220 button Run inquiry: Which other matters does this touch?
+						221 text Run inquiry: 
+						243 text Which other matters does this touch?
+					223 button Run inquiry: What would change your view?
+						224 text Run inquiry: 
+						244 text What would change your view?
+					226 button Add files
+					227 text entry area (settable)
+					228 button (disabled) Send
+					229 container
+						230 text Themis.ai can research, draft and move this matter. It records a decision only when you explicitly ask it to. 
+						231 link Description: Build a skill, Value: localhost:3207/skills
+				84 button (collapsed) Discussion help, Secondary Actions: Expand
+					85 text Discussion help
+	86 pop up button (collapsed) Description: Open Next.js Dev Tools, ID: next-logo, Secondary Actions: Expand
+		87 image
+
+The focused UI element is 1 AXWebArea Themis.ai, URL: localhost:3207/matters/MAT-DEMO-BEACON

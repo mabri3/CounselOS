@@ -1,0 +1,352 @@
+/* [project]/components/workspace/MatterWork.module.css [app-client] (css) */
+.MatterWork-module__B32rpG__researchQueue, .MatterWork-module__B32rpG__reviewPacket, .MatterWork-module__B32rpG__recommendation {
+  min-width: 0;
+  color: var(--ink-2);
+  font: 400 15px/1.5 var(--sans);
+}
+
+.MatterWork-module__B32rpG__researchQueue {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.MatterWork-module__B32rpG__reviewPacket, .MatterWork-module__B32rpG__recommendation {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  margin: 16px 0;
+  padding: 16px;
+}
+
+.MatterWork-module__B32rpG__panelLabel, .MatterWork-module__B32rpG__recommendationLabel, .MatterWork-module__B32rpG__packetAgentLabel {
+  color: var(--ink-3);
+  font: 600 12px/1.5 var(--sans);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.MatterWork-module__B32rpG__queueSummary, .MatterWork-module__B32rpG__recordNote, .MatterWork-module__B32rpG__packetMeta, .MatterWork-module__B32rpG__queueSupport, .MatterWork-module__B32rpG__queueNotice, .MatterWork-module__B32rpG__packetEmpty {
+  color: var(--ink-3);
+  font: 400 15px/1.5 var(--sans);
+  margin: 6px 0 0;
+}
+
+.MatterWork-module__B32rpG__queueHeader, .MatterWork-module__B32rpG__recommendationHeader, .MatterWork-module__B32rpG__packetHeader {
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  display: flex;
+}
+
+.MatterWork-module__B32rpG__researchQueue .MatterWork-module__B32rpG__queueHeader {
+  border-bottom: 1px solid var(--line-faint);
+  padding: 0 0 12px;
+}
+
+.MatterWork-module__B32rpG__queueSupportCount, .MatterWork-module__B32rpG__recommendationVersion {
+  color: var(--ink-3);
+  font: 400 12px/1.45 var(--sans);
+}
+
+.MatterWork-module__B32rpG__queueSupportCount {
+  background: var(--agent-tint);
+  color: var(--agent);
+  border-radius: 10px;
+  flex: none;
+  padding: 4px 7px;
+  font-weight: 600;
+}
+
+.MatterWork-module__B32rpG__recommendationHeader > svg, .MatterWork-module__B32rpG__packetHeader > svg {
+  color: var(--agent);
+}
+
+.MatterWork-module__B32rpG__queueControls, .MatterWork-module__B32rpG__packetActions, .MatterWork-module__B32rpG__formActions {
+  margin-top: 12px;
+}
+
+:is(.MatterWork-module__B32rpG__queueControls .select-input, .MatterWork-module__B32rpG__queueControls .text-input) {
+  min-width: min(100%, 220px);
+  min-height: 36px;
+}
+
+:is(.MatterWork-module__B32rpG__researchQueue .btn, .MatterWork-module__B32rpG__recommendation .btn, .MatterWork-module__B32rpG__reviewPacket .btn) {
+  min-height: 36px;
+}
+
+.MatterWork-module__B32rpG__snapshotNotice, .MatterWork-module__B32rpG__proposal {
+  border: 1px solid var(--line-soft);
+  background: var(--rail);
+  border-radius: 8px;
+  margin-top: 12px;
+  padding: 12px;
+}
+
+.MatterWork-module__B32rpG__queueItems {
+  border-top: 1px solid var(--line-faint);
+  gap: 0;
+  min-width: 0;
+  margin-top: 0;
+  display: grid;
+}
+
+.MatterWork-module__B32rpG__queueItem {
+  border-bottom: 1px solid var(--line-faint);
+  flex-wrap: wrap;
+  grid-template-columns: auto minmax(220px, 1fr) auto auto;
+  align-items: center;
+  gap: 8px 12px;
+  min-width: 0;
+  padding: 11px 0;
+  display: grid;
+}
+
+.MatterWork-module__B32rpG__queueIcon {
+  border: 1px solid var(--agent-edge);
+  background: var(--agent-wash);
+  width: 34px;
+  height: 34px;
+  color: var(--agent);
+  border-radius: 50%;
+  place-items: center;
+  display: grid;
+}
+
+.MatterWork-module__B32rpG__queueItemTitle {
+  overflow-wrap: anywhere;
+  gap: 3px;
+  min-width: 0;
+  display: grid;
+}
+
+.MatterWork-module__B32rpG__queueItemTitle > span:first-child {
+  color: var(--ink-2);
+  font: 400 15px/1.45 var(--sans);
+}
+
+.MatterWork-module__B32rpG__queueState {
+  min-height: 26px;
+  color: var(--ink);
+  border: 1px solid;
+  border-radius: 11px;
+  align-items: center;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+}
+
+.MatterWork-module__B32rpG__queueItemActions {
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  min-width: max-content;
+  display: flex;
+}
+
+.MatterWork-module__B32rpG__queueItemActions a {
+  color: var(--agent);
+  font: 500 14px/1.4 var(--sans);
+  text-decoration: none;
+}
+
+.MatterWork-module__B32rpG__queueItemActions .btn {
+  min-height: 34px;
+}
+
+.MatterWork-module__B32rpG__queueState[data-state="completed"] {
+  color: var(--healthy);
+}
+
+.MatterWork-module__B32rpG__queueState[data-state="partial"] {
+  color: var(--attention-deep);
+}
+
+.MatterWork-module__B32rpG__queueState[data-state="failed"] {
+  color: var(--failure);
+}
+
+.MatterWork-module__B32rpG__queueState[data-state="queued"], .MatterWork-module__B32rpG__queueState[data-state="running"] {
+  color: var(--agent);
+}
+
+.MatterWork-module__B32rpG__queueMetadata {
+  color: var(--ink-3);
+  font-size: 12px;
+}
+
+.MatterWork-module__B32rpG__queueSupport, .MatterWork-module__B32rpG__queueNotice {
+  flex: 0 auto;
+  margin: 0;
+}
+
+.MatterWork-module__B32rpG__recommendation {
+  gap: 12px;
+  display: grid;
+}
+
+.MatterWork-module__B32rpG__recommendationLabel, .MatterWork-module__B32rpG__recordNote, .MatterWork-module__B32rpG__recommendationEditor, .MatterWork-module__B32rpG__recommendationAction, .MatterWork-module__B32rpG__proposal, .MatterWork-module__B32rpG__errorMessage {
+  margin: 0;
+}
+
+.MatterWork-module__B32rpG__recommendationEditor {
+  width: 100%;
+  min-height: 180px;
+  color: var(--ink);
+  font: 400 16px/1.65 var(--serif);
+}
+
+.MatterWork-module__B32rpG__proposal p, .MatterWork-module__B32rpG__packetReading {
+  color: var(--ink-2);
+  font: 400 16px/1.65 var(--serif);
+}
+
+.MatterWork-module__B32rpG__proposal p {
+  margin: 8px 0 12px;
+}
+
+.MatterWork-module__B32rpG__packetTitle {
+  color: var(--ink);
+  font: 600 21px/1.3 var(--serif);
+  margin: 8px 0 4px;
+}
+
+.MatterWork-module__B32rpG__packetMeta {
+  margin-top: 0;
+}
+
+.MatterWork-module__B32rpG__packetReading {
+  overflow-wrap: anywhere;
+  margin: 10px 0 0;
+}
+
+.MatterWork-module__B32rpG__packetSection, .MatterWork-module__B32rpG__packetSectionLabel {
+  margin-top: 12px;
+}
+
+.MatterWork-module__B32rpG__packetSection > strong, .MatterWork-module__B32rpG__packetSectionLabel > strong {
+  color: var(--ink);
+  font: 600 15px/1.5 var(--sans);
+}
+
+.MatterWork-module__B32rpG__packetList {
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+  gap: 6px;
+  margin: 7px 0 0;
+  padding-left: 20px;
+  display: grid;
+}
+
+.MatterWork-module__B32rpG__packetList li {
+  padding-left: 2px;
+}
+
+.MatterWork-module__B32rpG__successMessage {
+  color: var(--healthy);
+  font: 400 15px/1.5 var(--sans);
+  margin: 12px 0 0;
+}
+
+.MatterWork-module__B32rpG__packetForm {
+  border-color: var(--line-soft);
+  background: var(--rail);
+  gap: 10px;
+  margin-top: 12px;
+  padding: 14px;
+  display: grid;
+}
+
+.MatterWork-module__B32rpG__packetForm label {
+  color: var(--ink-2);
+  font: 500 15px/1.5 var(--sans);
+  gap: 5px;
+  display: grid;
+}
+
+.MatterWork-module__B32rpG__packetForm input, .MatterWork-module__B32rpG__packetForm textarea {
+  border: 1px solid var(--line);
+  background: var(--raised);
+  width: 100%;
+  min-height: 36px;
+  color: var(--ink);
+  font: 400 15px/1.5 var(--sans);
+  border-radius: 6px;
+}
+
+.MatterWork-module__B32rpG__packetForm textarea {
+  min-height: 96px;
+  font: 400 16px/1.65 var(--serif);
+  padding: 8px 10px;
+}
+
+@media (max-width: 760px) {
+  .MatterWork-module__B32rpG__researchQueue {
+    margin: 0;
+    padding: 0;
+  }
+
+  .MatterWork-module__B32rpG__reviewPacket, .MatterWork-module__B32rpG__recommendation {
+    margin: 12px 0;
+    padding: 12px;
+  }
+
+  .MatterWork-module__B32rpG__packetForm input, .MatterWork-module__B32rpG__packetForm textarea {
+    min-height: 44px;
+  }
+
+  .MatterWork-module__B32rpG__researchQueue .btn {
+    min-height: 44px;
+  }
+
+  .MatterWork-module__B32rpG__recommendation .btn {
+    min-height: 44px;
+  }
+
+  .MatterWork-module__B32rpG__reviewPacket .btn {
+    min-height: 44px;
+  }
+
+  .MatterWork-module__B32rpG__queueControls .select-input {
+    min-height: 44px;
+  }
+
+  .MatterWork-module__B32rpG__queueControls .text-input {
+    min-height: 44px;
+  }
+
+  :is(.MatterWork-module__B32rpG__queueControls .select-input, .MatterWork-module__B32rpG__queueControls .text-input) {
+    width: 100%;
+  }
+
+  .MatterWork-module__B32rpG__packetForm textarea {
+    min-height: 120px;
+  }
+
+  .MatterWork-module__B32rpG__queueHeader, .MatterWork-module__B32rpG__recommendationHeader, .MatterWork-module__B32rpG__packetHeader {
+    gap: 8px;
+  }
+
+  .MatterWork-module__B32rpG__queueItem {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .MatterWork-module__B32rpG__queueState {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: 3px;
+  }
+
+  .MatterWork-module__B32rpG__queueItemActions {
+    flex-wrap: wrap;
+    grid-column: 2;
+    justify-content: flex-start;
+    min-width: 0;
+  }
+}
+
+/*# sourceMappingURL=components_workspace_MatterWork_module_css_1igg3k2._.single.css.map*/

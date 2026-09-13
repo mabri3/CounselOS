@@ -1,0 +1,25 @@
+1:"$Sreact.fragment"
+2:I[59665,["/_next/static/chunks/0ehjiuuxbbhq9.js","/_next/static/chunks/0lvq22hx7xx_c.js","/_next/static/chunks/398pt-q438q1h.js"],"default"]
+3:I[47961,["/_next/static/chunks/0ehjiuuxbbhq9.js","/_next/static/chunks/0lvq22hx7xx_c.js","/_next/static/chunks/398pt-q438q1h.js"],"default"]
+4:I[97367,["/_next/static/chunks/0ehjiuuxbbhq9.js"],"OutletBoundary"]
+5:"$Sreact.suspense"
+9:I[97367,["/_next/static/chunks/0ehjiuuxbbhq9.js"],"ViewportBoundary"]
+a:I[97367,["/_next/static/chunks/0ehjiuuxbbhq9.js"],"MetadataBoundary"]
+c:I[39756,["/_next/static/chunks/0ehjiuuxbbhq9.js"],"default"]
+d:I[37457,["/_next/static/chunks/0ehjiuuxbbhq9.js"],"default"]
+:HL["/_next/static/chunks/2yn39f68rdqlz.css","style"]
+:HL["/_next/static/chunks/2n8u9x8am01of.css","style"]
+8:X
+f:X
+f:C
+0:{"buildId":"pdsej-yqk8yeuPCzMfBY_","data":[{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"children":["$","main",null,{"className":"WatchesPhase2-module___XJKtG__page","children":["$","$L3",null,{"presentation":"phase2"}]}]}],[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/2yn39f68rdqlz.css","precedence":"next"}],["$","script","script-0",{"src":"/_next/static/chunks/0lvq22hx7xx_c.js","async":true}],["$","script","script-1",{"src":"/_next/static/chunks/398pt-q438q1h.js","async":true}]],["$","$L4",null,{"children":["$","$5",null,{"name":"Next.MetadataOutlet","children":"$@6"}]}]]}],"isPartial":"$@7","staleTime":"$8","varyParams":null},{"rsc":["$","$1","h",{"children":[null,["$","$L9",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","div",null,{"hidden":true,"children":["$","$La",null,{"children":["$","$5",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"Themis.ai"}],["$","meta","1",{"name":"description","content":"An agentic product-counsel workspace"}]]}]}]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"isPartial":"$@b","staleTime":"$8","varyParams":null},{"rsc":["$","$1","c",{"children":[null,["$","$Lc",null,{"parallelRouterKey":"children","template":["$","$Ld",null,{}]}]]}],"isPartial":"$@e","staleTime":"$8","varyParams":"$f"},{"rsc":["$","$1","c",{"children":[null,["$","$Lc",null,{"parallelRouterKey":"children","template":["$","$Ld",null,{}]}]]}],"isPartial":"$@10","staleTime":"$8","varyParams":"$f"},{"rsc":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/2n8u9x8am01of.css","precedence":"next"}],["$","script","script-0",{"src":"/_next/static/chunks/0ehjiuuxbbhq9.js","async":true}]],["$","html",null,{"lang":"en","className":"source_serif_4_f6a3a72e-module__lhDfEW__variable ibm_plex_sans_a5fa2b34-module__HXcp5W__variable ibm_plex_mono_30c7ab4c-module__VCrZzq__variable","children":["$","body",null,{"children":["$","$Lc",null,{"parallelRouterKey":"children","template":["$","$Ld",null,{}],"notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]]}]}]}]]}],"isPartial":"$@11","staleTime":"$8","varyParams":null}],"isUpgradeableISRFallback":false,"a":"$@12","rootVaryParams":null,"needsRuntimeRequest":"$@13"}
+6:null
+8:300
+13:true
+8:C
+12:0
+b:"$undefined"
+e:"$undefined"
+10:"$undefined"
+11:"$undefined"
+7:"$undefined"

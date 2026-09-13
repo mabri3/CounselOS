@@ -1,0 +1,83 @@
+---
+record_type: source_manifest
+immutable: true
+editable: false
+schema_version: 1
+matter_id: MAT-20260912-f7ed8b
+source_id: SRC-382d8980458516a89076
+source_version: 404a7b333d092f38dbe80333cd2ded9e
+title: Eu Data Act Termination For Convenience | Global Law Experts
+source_kind: retrieved
+original_path: 03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-382d8980458516a89076-fetch.md.bin
+original_sha256: 809abc513c30dbc557fdd90e74d231ded69e46d9c77bf0c277074df02ad3ac15
+requested_url: https://globallawexperts.com/eu-data-act-termination-for-convenience/
+final_url: null
+retrieved_at: '2026-09-12T06:29:16.623766+00:00'
+published_at: null
+effective_at: null
+jurisdiction: null
+extraction_format_version: 2
+extraction_state: complete
+page_count: null
+extracted_unit_count: 4
+total_chars: 42482
+unread_page_count: 0
+next_page: null
+units:
+- unit_id: s000001
+  path: 03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-382d8980458516a89076/404a7b333d092f38dbe80333cd2ded9e/sections/s000001.md
+  body_sha256: c31e38e0ce2f4078c6dbe9a7c53a3b4a5e22f0285c21c73728eb4b0d68761dca
+  char_count: 11978
+  page_number: null
+  section_label: Section 1
+  extraction_method: text
+  warning: ''
+  image_path: null
+  continues_previous: false
+  continues_next: false
+- unit_id: s000002
+  path: 03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-382d8980458516a89076/404a7b333d092f38dbe80333cd2ded9e/sections/s000002.md
+  body_sha256: 3ee04d007f7e95cbf713d59f37fb09e748b79eb8201acf9f11052b0084df0d26
+  char_count: 11672
+  page_number: null
+  section_label: Section 2
+  extraction_method: text
+  warning: ''
+  image_path: null
+  continues_previous: false
+  continues_next: false
+- unit_id: s000003
+  path: 03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-382d8980458516a89076/404a7b333d092f38dbe80333cd2ded9e/sections/s000003.md
+  body_sha256: 15f3db2638db0f7cf2d516096588bdbda9b4b936b6301d68bab286dff9c3e957
+  char_count: 10213
+  page_number: null
+  section_label: Section 3
+  extraction_method: text
+  warning: ''
+  image_path: null
+  continues_previous: false
+  continues_next: false
+- unit_id: s000004
+  path: 03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-382d8980458516a89076/404a7b333d092f38dbe80333cd2ded9e/sections/s000004.md
+  body_sha256: 6fd89b18a552c2286223d1ff4d9e7cfd244cdd7cacd765408395fbfe9240e02e
+  char_count: 8619
+  page_number: null
+  section_label: Section 4
+  extraction_method: text
+  warning: ''
+  image_path: null
+  continues_previous: false
+  continues_next: false
+warnings: []
+predecessor_version: null
+created_at: '2026-09-12T06:29:16+00:00'
+---
+# Eu Data Act Termination For Convenience | Global Law Experts
+
+Source `SRC-382d8980458516a89076` version `404a7b333d092f38dbe80333cd2ded9e` (retrieved, extraction complete).
+
+- Original: `03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-382d8980458516a89076-fetch.md.bin` (sha256 `809abc513c30dbc557fdd90e74d231ded69e46d9c77bf0c277074df02ad3ac15`)
+- Extracted units: 4; characters: 42482
+- Requested URL: https://globallawexperts.com/eu-data-act-termination-for-convenience/
+
+The full unit list is in this record's metadata and on disk; it is never loaded into a model request automatically.

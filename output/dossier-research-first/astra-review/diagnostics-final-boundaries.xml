@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="11" time="9.480" timestamp="2026-09-12T00:01:46.508862-07:00" hostname="Mac"><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR22_review_revision_includes_fresh_sibling_analysis" time="1.118"><failure message="AssertionError: Stale basis path composes from current advice instead of the saved combined child candidate&#10;assert not ['ISS-57a8e57e4c-002b6af9486a38f6', 'ISS-57a8e57e4c-23dbd80486b9a826', 'ISS-57a8e57e4c-7e94a92c0c883779', 'ISS-57a8e57e4c-73bc25a0ac111333', 'ISS-57a8e57e4c-dc9980278ad9293a', 'ISS-57a8e57e4c-66dcf52d847ef497', ...]">app_context = &lt;app.runtime.AppContext object at 0x10c0ed040&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR22_review_revision_includes_fresh_sibling_analysis(app_context):
+        app=app_context; gate=asyncio.Event()
+        class DistinctProvider(ReviewProvider):
+            async def complete(self,messages,tools=None):
+                response=await super().complete(messages,tools)
+                rid=provider_session_id.get()
+                if rid and rid in self.workers:
+                    iid=self.app.research_runs.get(MATTER,rid)['issue_id']
+                    response=replace(response,content=response.content.replace(DETAIL,'UNIQUE_ANALYSIS_'+iid+' '+DETAIL))
+                return response
+        provider=DistinctProvider(app,gate=gate); status=await prepare(app,provider)
+        assert (await start(app,status)).status_code==202
+        await provider.entered.wait()
+        app.matter_records.apply_update(MATTER,facts=[{'text':'A new product fact was recorded while research was running.'}],actor='human',summary='Independent fact update')
+        gate.set(); result=await finished(app,status)
+        assert result['publications'][0]['state']=='review_required'
+        missing=[i for i in provider.ids if 'UNIQUE_ANALYSIS_'+i not in provider.writer_inputs[0]]
+        print('new issue answers missing from review writer input',missing)
+&gt;       assert not missing, 'Stale basis path composes from current advice instead of the saved combined child candidate'
+E       AssertionError: Stale basis path composes from current advice instead of the saved combined child candidate
+E       assert not ['ISS-57a8e57e4c-002b6af9486a38f6', 'ISS-57a8e57e4c-23dbd80486b9a826', 'ISS-57a8e57e4c-7e94a92c0c883779', 'ISS-57a8e57e4c-73bc25a0ac111333', 'ISS-57a8e57e4c-dc9980278ad9293a', 'ISS-57a8e57e4c-66dcf52d847ef497', ...]
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:404: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR23_zero_issues_still_produces_a_useful_saved_dossier" time="0.470"><failure message="AssertionError: Zero-issue request completes without a dossier or next action&#10;assert ([])">app_context = &lt;app.runtime.AppContext object at 0x10c619f70&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR23_zero_issues_still_produces_a_useful_saved_dossier(app_context):
+        app=app_context; root=app.matters.matter_path(MATTER)
+        app.vault.write_markdown(root+'/issues.md','# Issues\n',{'matter_id':MATTER,'record_type':'issues'})
+        assert app.workspace.issues(MATTER)==[]
+        provider=ReviewProvider(app); status=await prepare(app,provider)
+        assert (await start(app,status)).status_code==202
+        result=await finished(app,status)
+&gt;       assert result['publications'] and result['publications'][0].get('revision_path'), 'Zero-issue request completes without a dossier or next action'
+E       AssertionError: Zero-issue request completes without a dossier or next action
+E       assert ([])
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:414: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_control_one_two_three_distinct_children_publish[1]" time="0.724" /><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_control_one_two_three_distinct_children_publish[2]" time="0.878" /><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_control_one_two_three_distinct_children_publish[3]" time="1.037" /><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_control_actual_writer_receipt_recovery[writer_response]" time="1.031" /><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_control_actual_writer_receipt_recovery[recommendation]" time="1.033" /><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_control_actual_writer_receipt_recovery[dossier]" time="1.041" /><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_control_actual_writer_receipt_recovery[conversation]" time="1.068" /><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR24_generated_candidate_keys_are_local_to_the_request" time="0.149"><failure message="AssertionError: A later unrelated issue silently reuses the old issue merely because the model used the same local key&#10;assert 'ISS-57a8e57e4c-d5faec6a2f476f3a' != 'ISS-57a8e57e4c-d5faec6a2f476f3a'">app_context = &lt;app.runtime.AppContext object at 0x10c4cf6b0&gt;
+
+    def test_AR24_generated_candidate_keys_are_local_to_the_request(app_context):
+        app=app_context
+        def add(request,title):
+            return app.workspace.append_generated_issues(MATTER,[{'candidate_key':'candidate-1','title':title,'why_it_matters':'A separate legal workstream.','fact_ids':[]}],expected_revision=app.workspace.issues_revision(MATTER),request_id=request)
+        first=add('DOR-first','Tax withholding'); second=add('DOR-second','Export classification')
+&gt;       assert first['mapping']['candidate-1']!=second['mapping']['candidate-1'], 'A later unrelated issue silently reuses the old issue merely because the model used the same local key'
+E       AssertionError: A later unrelated issue silently reuses the old issue merely because the model used the same local key
+E       assert 'ISS-57a8e57e4c-d5faec6a2f476f3a' != 'ISS-57a8e57e4c-d5faec6a2f476f3a'
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:448: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR25_invalid_start_does_not_mutate_issues" time="0.465"><failure message="AssertionError: Rejected Start still appended a canonical issue&#10;assert 'e14c080a6bf3...a5a4f0ecd1c76' == '0fc6f0bd2905...7f2d7e065336e'&#10;  &#10;  - 0fc6f0bd2905a3d7f14a5ef2a76ad49fffa65d663173badd0b67f2d7e065336e&#10;  + e14c080a6bf361e717ce1c7ca60c104b2795d8c51a84eac848da5a4f0ecd1c76">app_context = &lt;app.runtime.AppContext object at 0x10c34fb60&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR25_invalid_start_does_not_mutate_issues(app_context):
+        app=app_context; provider=ReviewProvider(app); status=await prepare(app,provider)
+        def candidate(md,body):
+            md['new_issue_candidates']=[{'candidate_key':'new-candidate','title':'Employment approval','why_it_matters':'A material condition.','initial_answer':'Confirm permission.','fact_ids':[]}]; return md,body
+        status=app.dossier_requests._mutate(MATTER,status['request_id'],candidate,expected_sequence=None)
+        before=app.workspace.issues_revision(MATTER)
+        response=await start(app,status,choices(status,first_issue_ids=['new-candidate'],source_choice={'external':True,'native':True,'public_query':''}))
+        assert response.status_code in {400,409,422}
+&gt;       assert app.workspace.issues_revision(MATTER)==before, 'Rejected Start still appended a canonical issue'
+E       AssertionError: Rejected Start still appended a canonical issue
+E       assert 'e14c080a6bf3...a5a4f0ecd1c76' == '0fc6f0bd2905...7f2d7e065336e'
+E         
+E         - 0fc6f0bd2905a3d7f14a5ef2a76ad49fffa65d663173badd0b67f2d7e065336e
+E         + e14c080a6bf361e717ce1c7ca60c104b2795d8c51a84eac848da5a4f0ecd1c76
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:459: AssertionError</failure></testcase></testsuite></testsuites>

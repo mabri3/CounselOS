@@ -1,0 +1,17 @@
+{
+  "name": "diagnostics",
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-s",
+    "../output/dossier-research-first/astra-review/test_review_diagnostics.py",
+    "--junitxml=../output/dossier-research-first/astra-review/diagnostics.xml"
+  ],
+  "cwd": "/Users/bharris/Programs/counsel-os-mvp/backend",
+  "started_at": "2026-09-12T06:50:01.923710+00:00",
+  "exit_code": 1,
+  "duration_seconds": 30.024,
+  "baseline": "baseline.json"
+}

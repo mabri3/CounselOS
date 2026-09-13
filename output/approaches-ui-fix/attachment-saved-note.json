@@ -1,0 +1,50 @@
+{
+  "state": "available",
+  "path_id": "SCN-0f23edfc89ec6ecaf60a13e4",
+  "sequence": 1,
+  "revision": "7c6ce22af4320e91ab0f01ea808bb8121e297531b0679bee0109eb6e5f70f56f",
+  "payload": {
+    "current_task": "Assess whether the hypothetical bank-held funds option helps the November 15, 2026 Harbor migration.",
+    "objective_ref": null,
+    "findings": [
+      {
+        "text": "Qualified: the option makes the November 15 migration harder on the supplied test dates because bank integration is not ready until December 3, 18 days later.",
+        "status": "qualified",
+        "references": [],
+        "depends_on": []
+      },
+      {
+        "text": "Supported by the fictional attachment: the bank would hold relevant funds, but Mosaic would control transfer instructions, subject to contract completion and bank operating setup.",
+        "status": "supported",
+        "references": [],
+        "depends_on": []
+      },
+      {
+        "text": "Unresolved: bank-held funds do not, on the supplied test facts, resolve missing pre-2023 identity documents, 40 pending alert cases, or monitoring ending at close.",
+        "status": "unresolved",
+        "references": [],
+        "depends_on": []
+      }
+    ],
+    "open_items": [
+      {
+        "text": "Can the bank contract and operating setup be completed by November 15, 2026?",
+        "references": []
+      },
+      {
+        "text": "What plan resolves the missing identity documents, pending alerts, and monitoring replacement, and do any of these items delay migration?",
+        "references": []
+      }
+    ],
+    "next_action": "Mara Chen should obtain a dated bank readiness plan and confirm whether the bank can support November 15; the plan should also assign resolution of missing identity documents, 40 pending alerts, and replacement monitoring.",
+    "pending_effects": [
+      {
+        "text": "Actual matter facts and the current direction remain unchanged. This note applies only to the bank-held funds timing test.",
+        "references": []
+      }
+    ]
+  },
+  "stale_dependencies": [],
+  "warning": null,
+  "generated_guidance_not_facts": true
+}

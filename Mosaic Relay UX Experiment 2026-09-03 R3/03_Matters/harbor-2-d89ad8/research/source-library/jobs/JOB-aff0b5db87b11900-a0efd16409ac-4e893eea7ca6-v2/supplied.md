@@ -1,0 +1,75 @@
+---
+record_type: supplied_source_text
+matter_id: MAT-20260909-d89ad8
+source_id: SRC-a5c438472fed35065a47
+immutable: true
+editable: false
+original_path: 03_Matters/harbor-2-d89ad8/research/sources/RUN-3f8f466351cb4a3c-a5c438472fed35065a47-fetch.md.bin
+---
+payment platform asset acquisition migration legal compliance due diligence at DuckDuckGo
+
+All Regions  Argentina  Australia  Austria  Belgium (fr)  Belgium (nl)  Brazil  Bulgaria  Canada (en)  Canada (fr)  Catalonia  Chile  China  Colombia  Croatia  Czech Republic  Denmark  Estonia  Finland  France  Germany  Greece  Hong Kong  Hungary  Iceland  India (en)  Indonesia (en)  Ireland  Israel (en)  Italy  Japan  Korea  Latvia  Lithuania  Malaysia (en)  Mexico  Netherlands  New Zealand  Norway  Pakistan (en)  Peru  Philippines (en)  Poland  Portugal  Romania  Russia  Saudi Arabia  Singapore  Slovakia  Slovenia  South Africa  Spain (ca)  Spain (es)  Sweden  Switzerland (de)  Switzerland (fr)  Taiwan  Thailand (en)  Turkey  US (English)  US (Spanish)  Ukraine  United Kingdom  Vietnam (en)
+
+Any Time  Past Day  Past Week  Past Month  Past Year
+
+Legal due diligence guide for public and private deals
+
+legal.thomsonreuters.com/blog/mergers-and-acquisitions-due-diligence-guide/
+
+Legal  due  diligence uncovers risks and liabilities before a merger or acquisition closes, protecting deal value. Public and private M&A deals call for different diligence approaches, from SEC filings to privately held financials. A clear diligence checklist and the right technology keep complex, time-sensitive transactions organized and on track.
+
+Due Diligence Checklist for an Asset Purchase (2026) | CT Acquisitions
+
+ctacquisitions.com/due-diligence-checklist-asset-purchase/
+
+Due  diligence checklist for asset purchase (2026): legal , financial, tax, operational, IP, regulatory, environmental.
+
+How Platform Finance Leaders Decide M&A Payment Ops...
+
+gruv.ai/blog/platform-finance-leaders-mergers-acquisitions-payment-ops-due-diligence
+
+For a step-by-step walkthrough, see Understanding Payment  Platform Float Between Collection and Payout. Define payment ops due  diligence in practical terms Payment ops due  diligence answers one practical question: can the target move money accurately and prove it across payment , clearing, settlement, recording, and reconciliation flows?
+
+Acquisitions and Integrations - PwC
+
+www.pwc.com/us/en/services/consulting/deals/acquisitions-integrations.html
+
+The acquisitions market is high-stakes, fast-moving and complex. Successful deals demand a clear "where to play" and "how to win" strategy grounded in actionable insight. PwC's Deals professionals bring industry depth, data-driven perspectives and advanced technology to guide clients from diligence through post-close. We help execute seamless integrations, manage risk, unlock ...
+
+Due Diligence Checklist for Acquisitions: A Complete Guide
+
+esplawyers.com/business-law/due-diligence-checklist-for-acquisitions-a-complete-guide
+
+Explore the essential due  diligence checklist for acquisitions . Learn the key steps, legal considerations, and real-world examples that help ensure a successful business acquisition .
+
+Legal Due Diligence Software for Mergers and Acquisitions
+
+legal.thomsonreuters.com/en/legal/legal-research-guidance/due-diligence
+
+Conduct all your legal  due  diligence with the right tools and expertise so you can confidently navigate decisions in corporate or client mergers and acquisitions .
+
+Immigration Due Diligence: A Core Requirement in Corporate Transactions
+
+www.americanbar.org/groups/business_law/resources/business-law-today/2026-february/immigration-due-diligence-core-requirement-corporate-transactions/
+
+Summary Integrating immigration due  diligence early in the deal process enables buyers to quantify exposure, negotiate targeted protections, preserve workforce continuity, and protect EBITDA and long-term investment value. Immigration compliance has shifted from a post-closing HR task to a central element of transaction strategy, as intensified enforcement and expanded liability doctrines ...
+
+Due Diligence in M&A Transactions [Process + Checklist]
+
+mnacommunity.com/insights/due-diligence-in-mergers-and-acquisitions/
+
+What is due  diligence in M&A? Mergers and acquisitions  due  diligence is the comprehensive assessment process of a target company's financial, legal , operational, and other aspects. Its purpose is to evaluate the risks, opportunities, and synergies of the potential deal.
+
+M&A Due Diligence Checklist: 150+ Items by Category [2026]
+
+acquisitionstars.com/due-diligence-checklist
+
+Detailed due  diligence checklist for M&A transactions. 150+ items organized by category, with reviewer assignments and guidance for resolving red flags before closing.
+
+M&A Due Diligence Checklist 2026 | Financial, Legal and Commercial ...
+
+www.aranca.com/knowledge-library/articles/business-research/m-and-a-due-diligence-checklist
+
+Comprehensive M&A due  diligence checklist covering financial, legal , operational and commercial risk assessment for acquisition success.
+
+Feedback

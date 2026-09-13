@@ -1,0 +1,60 @@
+{
+  "saved-only": {
+    "count_delta": {
+      "writer_calls": 1,
+      "planning_calls": 0,
+      "model_calls": 1,
+      "research_model_calls": 0,
+      "research_workers_started": 0
+    },
+    "changed": [
+      "conversations/CONV-20260912-f47424.md"
+    ],
+    "added": [
+      "conversations/context/RUN-20260912-1662c5.md",
+      "conversations/runs/RUN-20260912-1662c5.md",
+      "dossier-revisions/DOS-4af83c4717bbf5ab8864.md"
+    ],
+    "record_changes": [
+      "dossier-revisions/DOS-4af83c4717bbf5ab8864.md"
+    ],
+    "verified": true
+  },
+  "preview": {
+    "count_delta": {
+      "writer_calls": 1,
+      "planning_calls": 0,
+      "model_calls": 1,
+      "research_model_calls": 0,
+      "research_workers_started": 0
+    },
+    "changed": [
+      "conversations/CONV-20260912-f47424.md"
+    ],
+    "added": [
+      "conversations/context/RUN-20260912-269b2a.md",
+      "conversations/runs/RUN-20260912-269b2a.md"
+    ],
+    "record_changes": [],
+    "verified": true
+  },
+  "normal-chat": {
+    "count_delta": {
+      "research_model_calls": 0,
+      "planning_calls": 0,
+      "model_calls": 1,
+      "writer_calls": 0,
+      "research_workers_started": 0
+    },
+    "changed": [
+      "conversations/CONV-20260912-f47424.md"
+    ],
+    "added": [
+      "conversations/context/RUN-20260912-563cb0.md",
+      "conversations/runs/RUN-20260912-563cb0.md"
+    ],
+    "record_changes": [],
+    "verified": true,
+    "note": "The synthetic ordinary-chat boundary returned its fixed answer. This verifies routing and lack of unintended research or record writes, not answer quality."
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "checked_at": "2026-09-12T08:19:12.932706+00:00",
+  "ports": {
+    "8207": {
+      "exit_code": 1,
+      "output": "",
+      "free": true
+    },
+    "3207": {
+      "exit_code": 1,
+      "output": "",
+      "free": true
+    }
+  },
+  "owned_browser_tabs_closed": [
+    "3",
+    "4"
+  ],
+  "backend_session_21840_exit": 143,
+  "frontend_session_64444_exit": 143,
+  "full_backend_session_81924_exit": 0
+}

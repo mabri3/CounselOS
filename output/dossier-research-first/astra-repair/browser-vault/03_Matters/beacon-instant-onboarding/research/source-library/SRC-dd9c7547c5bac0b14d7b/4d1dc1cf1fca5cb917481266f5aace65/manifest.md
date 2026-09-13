@@ -1,0 +1,50 @@
+---
+record_type: source_manifest
+immutable: true
+editable: false
+schema_version: 1
+matter_id: MAT-DEMO-BEACON
+source_id: SRC-dd9c7547c5bac0b14d7b
+source_version: 4d1dc1cf1fca5cb917481266f5aace65
+title: https://example.com/fixture-overview
+source_kind: retrieved
+original_path: 03_Matters/beacon-instant-onboarding/research/sources/RUN-3ccd55867fffb663-dd9c7547c5bac0b14d7b-fetch.md.bin
+original_sha256: 68e74312a9c8a98538de0f038d4f7b86121942f6040939eea8b93843da6f0a16
+requested_url: https://example.com/fixture-overview
+final_url: null
+retrieved_at: '2026-09-12T07:44:27.731347+00:00'
+published_at: null
+effective_at: null
+jurisdiction: null
+extraction_format_version: 2
+extraction_state: complete
+page_count: null
+extracted_unit_count: 1
+total_chars: 626
+unread_page_count: 0
+next_page: null
+units:
+- unit_id: s000001
+  path: 03_Matters/beacon-instant-onboarding/research/source-library/SRC-dd9c7547c5bac0b14d7b/4d1dc1cf1fca5cb917481266f5aace65/sections/s000001.md
+  body_sha256: 1ee03d39dbc541df2f201872e0a4c994f1611c7f55d7836f6f56a5c6689e0720
+  char_count: 626
+  page_number: null
+  section_label: Section 1
+  extraction_method: text
+  warning: ''
+  image_path: null
+  continues_previous: false
+  continues_next: false
+warnings: []
+predecessor_version: null
+created_at: '2026-09-12T07:44:27+00:00'
+---
+# https://example.com/fixture-overview
+
+Source `SRC-dd9c7547c5bac0b14d7b` version `4d1dc1cf1fca5cb917481266f5aace65` (retrieved, extraction complete).
+
+- Original: `03_Matters/beacon-instant-onboarding/research/sources/RUN-3ccd55867fffb663-dd9c7547c5bac0b14d7b-fetch.md.bin` (sha256 `68e74312a9c8a98538de0f038d4f7b86121942f6040939eea8b93843da6f0a16`)
+- Extracted units: 1; characters: 626
+- Requested URL: https://example.com/fixture-overview
+
+The full unit list is in this record's metadata and on disk; it is never loaded into a model request automatically.

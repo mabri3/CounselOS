@@ -1,0 +1,185 @@
+---
+record_type: supplied_source_text
+matter_id: MAT-20260912-f7ed8b
+source_id: SRC-077d06a37a985f6e8b8f
+immutable: true
+editable: false
+original_path: 03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-077d06a37a985f6e8b8f-fetch.md.bin
+---
+Medium The (No) Termination for Convenience Playbook | by Kevin Cohn | Medium
+
+Sitemap
+
+Open in app
+
+Sign up
+
+Sign in
+
+Medium Logo
+
+Get app
+
+Write
+
+Search
+
+Sign up
+
+Sign in
+
+Part 1: The Justification
+
+Part 2: The Bargaining
+
+Kevin Cohn
+
+General Manager at Brightflag. I write about issues relevant to SaaS companies as they scale.
+
+SaaS
+
+Sales
+
+Contracts
+
+Negotiation
+
+Software
+
+The (No) Termination for Convenience Playbook
+
+Kevin Cohn
+
+7 min read
+
+·
+
+Mar 31, 2021
+
+--
+
+Listen
+
+Share
+
+Press enter or click to view image in full size
+
+Acadia National Park, Maine; photo by the author
+
+Everyone in SaaS sales has seen it: the dreaded termination for convenience clause (often abbreviated TFC), typically inserted by a buyer during redlines without fanfare and almost always without comment. The clause is short, but packs a wallop. It looks something like this:
+
+Customer may terminate this agreement for any or no reason upon thirty (30) days written notice to Vendor.
+
+Unlike many contract clauses, this one has no hidden meaning: the customer can walk away from the contract whenever it wants, and for whatever reason, and the vendor gets nothing.
+
+There are many reasons that SaaS companies dislike termination for convenience clauses. For example, they increase the risk of not recovering the full acquisition cost, which typically is greater than 12 months. They complicate revenue recognition if there are changes in fees during the anticipated term. And a potential acquirer might discount the value of contracts that include such a clause.
+
+In my opinion, these are bad reasons to dislike termination for convenience clauses because they’re selfish: they concern the impact on the vendor rather than on the customer relationship. You shouldn’t expect positive results if your decision-making is focused inward.
+
+In the enterprise, customer success doesn’t come solely from the software doing what it’s supposed to do; it also requires mutual organizational commitment. Termination for convenience eliminates this commitment in a literal sense, which has the effect of weakening it in practice, too. This is the reason why I never agree to termination for convenience clauses: they create unbalanced relationships in which the vendor is obligated to invest in making the customer successful, but the customer is not obligated to support this investment through continued payments.
+
+There are smart people that disagree with me, in particular Jason M. Lemkin (see here and here ). They argue that the vendor should have to earn the customer’s business, month in and month out. I agree with the principle but not its association with termination for convenience as a forcing function. In the enterprise, the vendor’s effort alone is not sufficient to make customers successful, and because I believe contracts should mirror reality , termination for convenience has no place in SaaS.
+
+Or as HubSpot puts it in their pricing FAQ :
+
+Marketing Hub Professional and Enterprise contracts are billed annually by default. We’ve found that customers who can commit to a full year of using HubSpot will be more successful inbound marketers in the long run. And since your long-term success is our goal, we want to encourage those practices that support that goal.
+
+Well put.
+
+So how can you avoid termination for convenience clauses making their way into your signed SaaS contracts, particularly with larger customers that are more likely to insist on their inclusion (and, perversely, have the most to lose from a weakened relationship)? What follows is the playbook I’ve used to great effect in negotiating nearly $300 million in total contract value throughout my 15-year career. Although I don’t have exact numbers to hand, I estimate fewer than 2% of that total contract value was subject to a true termination for convenience clause.
+
+The playbook is simple:
+
+Be direct about your unwillingness to include a termination for convenience clause. This is one situation in which reversing and pain funneling are not your friends.
+
+Don’t set false expectations that you may end up agreeing to include one, e.g., “Let me think about it and get back to you.”
+
+Be honest about why you’re unwilling to include one. Make sure you don’t give a selfish or otherwise bad reason, because as you’ll see shortly, doing so ends up working against you.
+
+Even after you deliver the message, the customer (usually procurement, but sometimes legal and less frequently the business buyer) often will engage in a two-part attempt to get you to agree to include one anyway.
+
+Part 1: The Justification
+
+The first part is for the customer to explain why they “need” a right to terminate the contract for convenience. There’s always an initial justification, and it’s usually followed by one or more additional justifications that are only introduced after you dismiss the initial justification.
+
+Here are the justifications I’ve heard and how I handle them:
+
+It’s very unlikely we’d ever use it / we’ve never used it before: Contracts are legally binding. If it’s very unlikely you’d ever use it, or you’ve never used it before, then it’s unnecessary and punitive against the vendor and shouldn’t be included in the contract.
+
+We may not be able to get it to work for us: If you’re selling enterprise SaaS, you’ve probably gone through an RFP process, given countless demos, done a proof of concept, and offered references. In short, you’ve been carefully vetted and both parties should have a high degree of confidence that the software will work for the customer.
+
+You may do a bad job / we may have the same problem with you that we have with our incumbent: This isn’t a question of termination for convenience, but rather termination for nonperformance, i.e., cause. Ask questions to understand the potential nonperformance that’s concerning and address it. For example, you can modify your SLA to define what amount or frequency of unavailability would constitute a material breach and allow the customer to terminate the contract.
+
+You may be acquired and the buyer may do a bad job / we may not want or be able to do business with the buyer: Any buyer will be legally bound to the same service standards as you are, making the issue of nonperformance identical to the previous justification. The nuance here is that there are bona fide circumstances under which a customer would not want to do business with an acquirer (e.g., if the acquirer is a direct competitor of the customer) or be able to do business with an acquirer (e.g., if it would create a regulatory conflict). These types of concerns should be addressed through carefully-written changes to the assignment language, e.g., allowing the customer to terminate the contract only if you’re acquired by direct competitor A, B, or C.
+
+We’re able to buy from you now because our incumbent gave it to us; otherwise, we wouldn’t be buying now/ever: The customer’s ability to terminate for convenience isn’t the reason they’re switching. Companies don’t switch vendors because they can; they switch vendors out of need. I gently remind customers of this fact, and at Brightflag I remind them that our first company value is Think Long Term , too, and refocus the discussion on what’s driving their need to switch.
+
+A better option may come along: Recall my belief that contracts should mirror reality. Let’s imagine a better option exists. Typically, enterprise procurement processes take 4–6 months, followed by 2–4 months of implementation. The reality is that buying and migrating to a better option will take most of a year, so termination for convenience isn’t required for an annual contract. For multiyear contracts, customers receive preferential pricing specifically in exchange for their longer commitments, which termination for convenience clauses nullify.
+
+Our needs may change/disappear: I interpret this to mean a hypothetical change in business strategy that would render the software unnecessary. This is uncommon in the enterprise, where strategy changes slowly, and is exceptionally unlikely if your software is mission-critical. For example, publishers aren’t going to stop publishing ( Atypon ) and companies aren’t going to stop using law firms ( Brightflag ).
+
+We may be acquired: This is different from the previous justification because the customer would transition to using the acquirer’s software, rather than stop using the category altogether. It will take time for an announced acquisition to close and more time still to complete integration activities. In practice, your contract is likely to come up for renewal before a migration to the acquirer’s software completed, rendering the potential need to terminate for convenience moot.
+
+It’s our policy: This is the hardest justification to dismiss because it’s irrational, and the customer knows it. This customer probably is also saying they can’t pay you annually, have a policy against agreeing to late fees (“but don’t worry, we always pay on time!”), and a requirement for net 60 or worse. My suggestion is to reiterate your unwillingness to include a termination for convenience clause, but compromise on other less critical (and unrelated) areas of negotiation.
+
+Part 2: The Bargaining
+
+After justification comes bargaining: the customer’s attempt to save the clause by watering it down in one or more insignificant ways.
+
+Here’s the bargaining I’ve heard and how I handle it. Read these as what about keeping the termination for convenience clause, but…:
+
+With more than 30 days notice: Don’t bite; just say no (although I suppose at some point I would say yes, e.g., 180 or more days for a 12-month agreement, because the financial pain of exercising the option would render it unpalatable).
+
+Only after year 1 [in the context of a multiyear contract]: The customer can choose between receiving preferential pricing for their longer commitment, or higher pricing for a shorter commitment, in either case without a termination for convenience clause. (This is where you’ll get tripped up if you use the “we lose money in the first X months” reason for not agreeing to it in the first place: the customer will smartly suggest it be allowed only after X months have passed.)
+
+Only after the initial term: You can’t get rid of a termination for convenience clause once you agree to it, so while you may view this as a future problem, it’s actually a now problem. Don’t agree to it. Renewals can always be done in 12-month increments.
+
+Only if we’re/you’re sold: These are the same justifications noted above, repeated here because often they’re presented not as justifications but as proposed limitations on the scope of a termination for convenience clause (i.e., bargains). Handle them as described above.
+
+With an early termination fee: Don’t get too excited: the proposed amount is likely to be immaterial. On the other hand, in the rare instances where I’ve agreed to a termination for convenience clause, it’s almost always included an early termination fee equal to 50%–100% of the remaining fees due under the agreement.
+
+I hope this post helps you to successfully avoid termination for convenience clauses in your SaaS contracts. If there’s a point to this post, beyond my opposition to termination for convenience clauses in general, it’s this: it’s rarely enough to tell a customer no; you almost always need to walk them through why a right to terminate for convenience doesn’t mirror reality, and is in fact detrimental to their own future success.
+
+SaaS
+
+Sales
+
+Contracts
+
+Negotiation
+
+Software
+
+--
+
+--
+
+Written by Kevin Cohn
+
+225 followers
+
+· 9 following
+
+General Manager at Brightflag. I write about issues relevant to SaaS companies as they scale.
+
+Help
+
+Status
+
+About
+
+Careers
+
+Press
+
+Blog
+
+Store
+
+Privacy
+
+Rules
+
+Terms
+
+Text to speech

@@ -1,0 +1,32 @@
+{
+  "name": "browser-after-normal-chat",
+  "fixture": {
+    "fixture": "counsel-os-dossier-research-browser-v1",
+    "matter_id": "MAT-DEMO-BEACON",
+    "active_workers": 0,
+    "active_worker_ids": [],
+    "research_workers_started": 3,
+    "counts": {
+      "model_calls": 40,
+      "planning_calls": 2,
+      "research_workers_started": 11,
+      "research_model_calls": 29,
+      "writer_calls": 5
+    },
+    "search_calls_this_process": 0,
+    "fetch_calls_this_process": 0,
+    "first_released": true,
+    "remaining_released": true
+  },
+  "parents": [
+    "DOR-20260912-070c14.md",
+    "DOR-20260912-1f3785.md"
+  ],
+  "revisions": [
+    "DOS-6dec748c9cbb7ec05b1a.md",
+    "DOS-8c7a75cb7da9ea37cc1f.md",
+    "DOS-9d0a23d05f9939f0a443.md",
+    "DOS-c65e88f4c9c2809bc4ec.md"
+  ],
+  "canonical_sha256": "b4a09b656b1cb1fcab8ea95ba4d7419d872c0478294ad229933ee3fe1c977a05"
+}

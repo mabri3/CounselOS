@@ -1,0 +1,110 @@
+/* [project]/components/ResearchScopeChoice.module.css [app-client] (css) */
+.ResearchScopeChoice-module__PNZS0a__dialog {
+  border: 1px solid var(--line);
+  width: min(620px, 90vw);
+  max-height: 90vh;
+  color: var(--ink);
+  background: var(--paper);
+  box-shadow: var(--shadow-modal);
+  border-radius: 12px;
+  padding: 24px;
+  overflow: auto;
+}
+
+.ResearchScopeChoice-module__PNZS0a__dialog::backdrop {
+  background: #00000040;
+}
+
+.ResearchScopeChoice-module__PNZS0a__dialog form {
+  gap: 18px;
+  display: grid;
+}
+
+.ResearchScopeChoice-module__PNZS0a__dialog h2, .ResearchScopeChoice-module__PNZS0a__dialog p {
+  margin: 0;
+}
+
+.ResearchScopeChoice-module__PNZS0a__fields {
+  border: 1px solid var(--line);
+  text-align: left;
+  border-radius: 8px;
+  gap: 12px;
+  min-width: 0;
+  margin: 12px 0;
+  padding: 16px;
+  display: grid;
+}
+
+.ResearchScopeChoice-module__PNZS0a__fields legend {
+  padding: 0 6px;
+  font-weight: 600;
+}
+
+.ResearchScopeChoice-module__PNZS0a__fields p, .ResearchScopeChoice-module__PNZS0a__fields span {
+  overflow-wrap: anywhere;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.ResearchScopeChoice-module__PNZS0a__check {
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  display: flex;
+}
+
+.ResearchScopeChoice-module__PNZS0a__check input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--ink);
+  flex: none;
+}
+
+.ResearchScopeChoice-module__PNZS0a__query {
+  gap: 8px;
+  display: grid;
+}
+
+.ResearchScopeChoice-module__PNZS0a__query textarea {
+  resize: vertical;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 90px;
+  font: inherit;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--control);
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.ResearchScopeChoice-module__PNZS0a__actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  display: flex;
+}
+
+.ResearchScopeChoice-module__PNZS0a__compact {
+  text-align: left;
+  border: 0;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+
+.ResearchScopeChoice-module__PNZS0a__compact legend {
+  padding: 0 0 16px;
+  font-weight: 600;
+}
+
+.ResearchScopeChoice-module__PNZS0a__compact p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/*# sourceMappingURL=components_ResearchScopeChoice_module_css_1igg3k2._.single.css.map*/

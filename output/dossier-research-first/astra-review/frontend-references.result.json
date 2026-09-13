@@ -1,0 +1,13 @@
+{
+  "name": "frontend-references",
+  "command": [
+    "npm",
+    "run",
+    "check:document-reference-behavior"
+  ],
+  "cwd": "/Users/bharris/Programs/counsel-os-mvp/frontend",
+  "started_at": "2026-09-12T06:46:18.035775+00:00",
+  "exit_code": 0,
+  "duration_seconds": 0.254,
+  "baseline": "baseline.json"
+}

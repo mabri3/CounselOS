@@ -1,0 +1,85 @@
+.page { max-width: 1440px; padding: 38px 40px 64px; margin: 0 auto; color: var(--ink); font-size: 16px; }
+.heading, .agents h1 { font: 400 48px/1.12 var(--serif); letter-spacing: -1.3px; margin: 0 0 16px; }
+.lede { font-size: 18px; line-height: 1.7; max-width: 650px; color: var(--ink-2); margin: 0; }
+.agents { display: grid; grid-template-columns: 250px minmax(0, 1fr); min-height: calc(100vh - 84px); color: var(--ink); font-size: 16px; }
+.rail { padding: 30px 14px; border-right: 1px solid var(--line); }
+.railTitle { display: flex; justify-content: space-between; padding: 0 14px 18px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
+.railItem { display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 14px; align-items: start; width: 100%; padding: 18px 12px; background: transparent; color: var(--ink); border: 1px solid transparent; border-bottom-color: var(--line); text-align: left; cursor: pointer; font: inherit; }
+.railItem[aria-current=true] { background: var(--sunken); border-color: var(--line); border-radius: 6px; }
+.railItem:hover { background: var(--rail); }
+.railIcon { width: 42px; height: 42px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; }
+.railName { display: block; font-weight: 500; font-size: 16px; margin-bottom: 5px; }
+.railRole { display: block; color: var(--ink-3); font-size: 14px; line-height: 1.5; }
+.main { min-width: 0; padding: 30px 28px 40px; }
+.body { max-width: 1000px; }
+.agents :global(.field-block) { margin-top: 28px; }
+.agents :global(.field-block) > p { font-size: 16px; line-height: 1.6; color: var(--ink-3); }
+.agents :global(.section-heading) { font: 500 19px/1.4 var(--sans); }
+.agents :global(.field-label), .page :global(.field-label) { font: 500 16px/1.5 var(--sans); margin-bottom: 8px; }
+.agents :global(.text-input), .agents :global(.select-input), .page :global(.text-input), .page :global(.select-input) { min-height: 46px; padding: 12px 14px; font-size: 16px; border: 1px solid var(--line); border-radius: 5px; background: white; }
+.agents textarea { line-height: 1.7; }
+.agents :global(.btn), .page :global(.btn) { font-size: 16px; padding: 10px 18px; min-height: 43px; border-radius: 5px; }
+.agents :global(.btn.primary), .page :global(.btn.primary) { background: var(--ink); color: white; border: 1px solid var(--ink); }
+.fixed { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-top: 28px; padding: 26px 0 8px; }
+.fixed h2 { font-size: 20px; font-weight: 500; margin: 0 0 14px; }
+.fixed ul { list-style: none; padding: 0; margin: 0; }
+.fixed li { display: flex; align-items: flex-start; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--line); font-size: 16px; line-height: 1.6; }
+.fixed li:last-child { border: 0; }
+.fixed svg { flex: none; margin-top: 4px; }
+.modelSummary { padding: 26px 0; border-bottom: 1px solid var(--line); }
+.modelSummary h2 { margin: 0 0 20px; font-size: 20px; font-weight: 500; }
+.modelSummary p { color: var(--ink-3); font-size: 16px; line-height: 1.6; margin: 10px 0 0; }
+.advanced > summary { border: 1px solid var(--line); border-radius: 5px; padding: 15px 18px; font-size: 16px !important; }
+.modelFields { display: grid; gap: 8px; margin-top: 12px; }
+.modelFields > label { display: grid; grid-template-columns: minmax(120px, 1fr) minmax(180px, 42%); align-items: center; gap: 16px; }
+.tools { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.tools :global(.checkbox-row) { align-items: flex-start; padding: 16px 0; border-bottom: 1px solid var(--line); font-size: 15px; line-height: 1.5; }
+.tools :global(.record-meta) { min-width: 85px; font-size: 13px; }
+.agents input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--ink); flex: none; }
+.start { border: 1px solid var(--line); border-radius: 5px; padding: 18px; margin-top: 10px; }
+.foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--line); }
+.agentMeta { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin: 12px 0; }
+.agentMeta h1 { margin: 0; }
+.agentBadge { border: 1px solid var(--line); padding: 7px 12px; border-radius: 4px; font-size: 14px; }
+.panel { display: flex; flex-direction: column; gap: 26px; }
+.panel :global(.automation-section) { margin-top: 0; }
+.panel :global(.automation-section-head) h2 { font: 500 18px var(--sans); }
+.panel :global(.automation-section-head) p { font-size: 15px; line-height: 1.6; color: var(--ink-3); }
+.panel :global(.automation-list) { border: 1px solid var(--line); border-radius: 6px; gap: 0; overflow: hidden; }
+.panel :global(.automation-card) { background: white; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; padding: 20px; }
+.panel :global(.automation-card):last-child { border-bottom: 0; }
+.panel :global(.automation-card-head) { align-items: center; }
+.panel :global(.automation-title) { font: 500 18px/1.4 var(--sans); }
+.panel :global(.automation-effect) { font: 400 16px/1.6 var(--sans); }
+.panel :global(.automation-kicker) { font-size: 12px; }
+.panel :global(.automation-facts) { border: 0; margin-top: 12px; padding-top: 0; gap: 20px; }
+.panel :global(.automation-fact) dt { font-size: 13px; }
+.panel :global(.automation-fact) dd { font-size: 15px; }
+.scheduleRow { display: grid; grid-template-columns: minmax(190px, 1.3fr) minmax(110px, 1fr) minmax(110px, 1fr) auto; align-items: center; gap: 24px; }
+.scheduleRow :global(.automation-card-head) { align-items: flex-start; flex-direction: column-reverse; gap: 6px; }
+.scheduleRow :global(.automation-actions) { margin: 0; flex-direction: column; align-items: stretch; }
+.runDate { color: var(--ink-3); font-size: 15px; line-height: 1.6; }
+.runDate small { display: block; font-size: 13px; margin-bottom: 4px; }
+.runDetails { margin-top: 15px; }
+.runDetails summary { color: var(--ink-3); font-size: 14px; cursor: pointer; }
+.panel :global(.automation-compose) { margin: 0; }
+.panel :global(.card) { border: 1px solid var(--line); box-shadow: none; border-radius: 6px; padding: 24px; }
+.panel :global(.form-heading) { font: 500 15px var(--sans); letter-spacing: 1px; text-transform: uppercase; }
+.panel :global(.form-heading-help) { font-size: 16px; line-height: 1.6; }
+.panel :global(.form-help) { font-size: 14px; color: var(--ink-3); line-height: 1.5; }
+.panel textarea { min-height: 120px; line-height: 1.6; }
+.composeFields { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 22px; }
+.composeFields > div { grid-column: span 2; }
+.composeFields > div:nth-child(-n+2) { grid-column: span 3; }
+.empty { display: grid; grid-template-columns: 1fr 1fr; padding: 44px 0; border-top: 1px solid var(--line); text-align: center; }
+.empty > div { padding: 0 28px; }
+.empty > div + div { border-left: 1px solid var(--line); }
+.empty h2 { font-size: 20px; font-weight: 500; margin: 20px 0 12px; }
+.empty p { color: var(--ink-3); line-height: 1.6; margin: 0; }
+.emptyIcon { display: inline-grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; width: 60px; height: 60px; }
+@media (max-width: 767px) { .page { padding: 28px 20px 48px; } .agents { grid-template-columns: 1fr; } .rail { border-right: 0; border-bottom: 1px solid var(--line); } .railList { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); } .main { padding: 26px 20px; } .heading, .agents h1 { font-size: 38px; } .scheduleRow { grid-template-columns: 1fr 1fr; gap: 18px; } .scheduleRow > :first-child { grid-column: 1 / -1; } .scheduleRow :global(.automation-actions) { grid-column: 1 / -1; flex-direction: row; } .tools { grid-template-columns: 1fr; } .composeFields { grid-template-columns: repeat(2, minmax(0, 1fr)); } .composeFields > div:nth-child(n) { grid-column: span 1; } }
+@media (max-width: 480px) { .empty, .railList, .composeFields { grid-template-columns: 1fr; } .empty > div { padding: 20px 0; } .empty > div + div { border-left: 0; border-top: 1px solid var(--line); } .modelFields > label { grid-template-columns: 1fr; gap: 0; } .foot :global(.btn-row) { flex-wrap: wrap; } }
+
+.nameFields { margin-top: 24px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.agents :global(.mono) { overflow-wrap: anywhere; }
+@media (max-width: 480px) { .nameFields { grid-template-columns: 1fr; } }

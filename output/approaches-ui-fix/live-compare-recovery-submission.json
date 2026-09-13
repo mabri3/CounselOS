@@ -1,0 +1,28 @@
+{
+  "action_actor": {
+    "person_id": "local-lawyer",
+    "display_name": "Unattributed lawyer",
+    "mode": "single"
+  },
+  "run_id": "RUN-20260911-3306dc",
+  "matter_id": "MAT-20260909-d89ad8",
+  "conversation_id": "CONV-20260909-5299cf",
+  "state": "queued",
+  "status": "Chat is queued.",
+  "created_at": "2026-09-11T02:27:40+00:00",
+  "started_at": null,
+  "finished_at": null,
+  "failure_detail": null,
+  "failure_class": null,
+  "correlation_id": "COR-20260911-6b50a5",
+  "milestone": "Queued.",
+  "response": null,
+  "operation_results": [],
+  "path": "03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-3306dc.md",
+  "selection": {
+    "agent_id": "counsel-copilot",
+    "provider": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "medium"
+  }
+}

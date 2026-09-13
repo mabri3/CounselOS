@@ -1,0 +1,274 @@
+- banner:
+  - generic "themis.ai":
+    - text: themis.ai
+    - generic: ⌄
+- banner:
+  - generic: Waiting on Brian Harris
+  - link "Matters":
+    - /url: /matters
+  - 'heading "Beacon: Instant Business Onboarding" [level=1]'
+  - generic "Matter details"
+  - option "Set risk" [selected]
+  - option "Low"
+  - option "Moderate"
+  - option "High"
+  - button "Tools and history":
+    - text: Tools and history
+- generic: Matter
+- 'heading "Beacon: Instant Business Onboarding" [level=1]'
+- region "Matter workspace":
+  - group "Matter workspace view":
+    - generic: Matter workspace view
+    - radio "Understand"
+    - generic "Read the current matter":
+      - text: Understand
+    - radio "Discuss" [checked]
+    - generic "Continue one matter conversation":
+      - text: Discuss
+    - radio "Draft"
+    - generic "Review and prepare work product":
+      - text: Draft
+  - button "Decision map":
+    - text: Decision map
+  - text: NEXT ACTION
+  - region "Matter conversation":
+    - status:
+      - text: Inquiry scope
+      - strong: Matter context
+      - strong: Business question
+      - button "Clear scope"
+    - generic "Approaches"
+    - strong: "Inquiry target:"
+    - text: Business question
+    - button "Clear target"
+    - button "Jump to latest answer"
+    - status:
+      - generic: Themis.ai · Completed
+      - generic: Chat is complete. Review the saved result below.
+    - paragraph: Latest answer
+    - generic: "Applied skill: Dossier generation"
+    - generic: ✧ Themis.ai
+    - heading "Beacon launch dossier" [level=1]
+    - heading "Current position" [level=2]
+    - paragraph: Proceed only after the saved employment, privacy, supplier, IP, and marketing conditions are reviewed. This is deterministic fixture analysis.
+    - heading "Decision question" [level=2]
+    - paragraph: Can the launch proceed with conditions?
+    - heading "Material facts" [level=2]
+    - list:
+      - paragraph:
+        - text: "Reported fact: Product proposed October 15, 2026 as the launch date."
+        - link "Read the saved launch brief":
+          - /url: 03_Matters/beacon-instant-onboarding/source-documents/launch-brief.md
+      - paragraph:
+        - text: "Reported fact: all five workstreams remain open."
+        - link "Read the saved issue list":
+          - /url: 03_Matters/beacon-instant-onboarding/issues.md
+    - heading "Proposed date" [level=2]
+    - list:
+      - listitem: "October 15, 2026 — basis: Product's saved launch brief. This is a proposed operating date, not a verified legal deadline."
+    - heading "Launch conditions checklist" [level=2]
+    - list:
+      - paragraph:
+        - checkbox [disabled]
+        - text: Confirm employment terms and staffing controls.
+      - paragraph:
+        - checkbox [disabled]
+        - text: Confirm privacy notice, purpose, and access limits.
+      - paragraph:
+        - checkbox [disabled]
+        - text: Confirm supplier transfer, exit, and service terms.
+      - paragraph:
+        - checkbox [disabled]
+        - text: Confirm ownership and trademark permission.
+      - paragraph:
+        - checkbox [disabled]
+        - text: Confirm evidence for public marketing claims.
+    - heading "Issues" [level=2]
+    - paragraph:
+      - text: "Captured reported fact:"
+      - 'button "Reported fact: The change applies only to the low-risk segment."'
+    - paragraph:
+      - text: "Captured reported fact:"
+      - 'button "Reported fact: The flow uses identity and fraud signals."'
+    - paragraph:
+      - text: "Captured reported fact:"
+      - 'button "Reported fact: Product proposed the launch for 2026-10-15."'
+    - paragraph:
+      - text: "Captured reported fact:"
+      - 'button "Reported fact: All five workstreams remain open before launch."'
+    - 'heading "Employment terms: Confirm worker terms and launch staffing conditions." [level=3]'
+    - paragraph:
+      - strong: "Current answer:"
+      - text: Conditional. Do not treat the issue as closed.
+    - paragraph:
+      - strong: "Rule and support:"
+      - text: Review the saved analysis and its conditions.
+    - paragraph:
+      - strong: "Application:"
+      - text: Apply the saved conditions to the planned launch; do not infer missing facts.
+    - paragraph:
+      - strong: "Next step:"
+      - text: Complete the checklist item and record the controlling source version.
+    - 'heading "Customer privacy: Confirm notice, purpose, and access controls." [level=3]'
+    - paragraph:
+      - strong: "Current answer:"
+      - text: Conditional. Do not treat the issue as closed.
+    - paragraph:
+      - strong: "Rule and support:"
+      - text: Review the saved analysis and its conditions.
+    - paragraph:
+      - strong: "Application:"
+      - text: Apply the saved conditions to the planned launch; do not infer missing facts.
+    - paragraph:
+      - strong: "Next step:"
+      - text: Complete the checklist item and record the controlling source version.
+    - 'heading "Supplier contract: Confirm service levels, termination, and transfer terms." [level=3]'
+    - paragraph:
+      - strong: "Current answer:"
+      - text: Conditional. Do not treat the issue as closed.
+    - paragraph:
+      - strong: "Rule and support:"
+      - text: Review the saved analysis and its conditions.
+    - paragraph:
+      - strong: "Application:"
+      - text: Apply the saved conditions to the planned launch; do not infer missing facts.
+    - paragraph:
+      - strong: "Next step:"
+      - text: Complete the checklist item and record the controlling source version.
+    - 'heading "Intellectual property: Confirm ownership and trademark permission." [level=3]'
+    - paragraph:
+      - strong: "Current answer:"
+      - text: Conditional. Do not treat the issue as closed.
+    - paragraph:
+      - strong: "Rule and support:"
+      - text: Review the saved analysis and its conditions.
+    - paragraph:
+      - strong: "Application:"
+      - text: Apply the saved conditions to the planned launch; do not infer missing facts.
+    - paragraph:
+      - strong: "Next step:"
+      - text: Complete the checklist item and record the controlling source version.
+    - 'heading "Marketing claims: Confirm evidence for public launch claims." [level=3]'
+    - paragraph:
+      - strong: "Current answer:"
+      - text: Conditional. Do not treat the issue as closed.
+    - paragraph:
+      - strong: "Rule and support:"
+      - text: Review the saved analysis and its conditions.
+    - paragraph:
+      - strong: "Application:"
+      - text: Apply the saved conditions to the planned launch; do not infer missing facts.
+    - paragraph:
+      - strong: "Next step:"
+      - text: Complete the checklist item and record the controlling source version.
+    - heading "Next actions" [level=2]
+    - list:
+      - paragraph: Legal reviews the three initial launch blockers.
+      - paragraph: Product keeps the proposed date conditional.
+      - paragraph: Procurement and Marketing complete the remaining two workstreams.
+    - heading "Saved issue answers" [level=2]
+    - 'heading "Employment terms: Confirm worker terms and launch staffing conditions." [level=3]'
+    - paragraph:
+      - strong: No external authority retrieved
+    - paragraph: The two supplied notice clauses could not both be read. Obtain both versions before choosing a notice date.
+    - paragraph: Research saved. No external sources retrieved.
+    - paragraph:
+      - text: "Research history:"
+      - link "Saved research 1":
+        - /url: 03_Matters/beacon-instant-onboarding/research/RES-20260912-3d6831.md
+      - text: ;
+      - link "Saved research 2":
+        - /url: 03_Matters/beacon-instant-onboarding/research/RES-20260912-4f16c4.md
+    - 'heading "Customer privacy: Confirm notice, purpose, and access controls." [level=3]'
+    - paragraph:
+      - strong: No external authority retrieved
+    - paragraph: The two supplied notice clauses could not both be read. Obtain both versions before choosing a notice date.
+    - paragraph: Research saved. No external sources retrieved.
+    - paragraph:
+      - text: "Research history:"
+      - link "Saved research 1":
+        - /url: 03_Matters/beacon-instant-onboarding/research/RES-20260912-71dd33.md
+      - text: ;
+      - link "Saved research 2":
+        - /url: 03_Matters/beacon-instant-onboarding/research/RES-20260912-090edd.md
+    - 'heading "Supplier contract: Confirm service levels, termination, and transfer terms." [level=3]'
+    - paragraph:
+      - strong: No external authority retrieved
+    - paragraph: The two supplied notice clauses could not both be read. Obtain both versions before choosing a notice date.
+    - paragraph: Research saved. No external sources retrieved.
+    - paragraph:
+      - text: "Research history:"
+      - link "Saved research 1":
+        - /url: 03_Matters/beacon-instant-onboarding/research/RES-20260912-6bb4f7.md
+      - text: ;
+      - link "Saved research 2":
+        - /url: 03_Matters/beacon-instant-onboarding/research/RES-20260912-f31ea9.md
+    - 'heading "Intellectual property: Confirm ownership and trademark permission." [level=3]'
+    - paragraph: No separate current answer is saved for this issue.
+    - paragraph: Initial answer — research not complete.
+    - 'heading "Marketing claims: Confirm evidence for public launch claims." [level=3]'
+    - paragraph: No separate current answer is saved for this issue.
+    - paragraph: Initial answer — research not complete.
+    - paragraph:
+      - link "Open saved dossier revision":
+        - /url: 03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-4af83c4717bbf5ab8864.md
+    - paragraph: Dossier generated as a revision for review; the current dossier was not replaced.
+    - paragraph: Included full saved answers for 5 issue(s).
+    - complementary "Captured source details" [active]:
+      - strong: "Reported fact: Product proposed the launch for 2026-10-15."
+      - paragraph: reported fact · FACT-20260912-f3f181
+      - paragraph: Saved version 7b09754d53b5
+      - blockquote:
+        - generic: Product proposed the launch for 2026-10-15.
+      - button "Open current saved file"
+      - button "Open source record"
+      - button "Close source details"
+    - button "Read full answer"
+    - generic: Workspace action · Confirmation required
+    - generic: Dossier generated as a revision for review; the current dossier was not replaced.
+    - button "Confirm action"
+    - button "Save current work product"
+    - paragraph: Your question
+    - generic: Generate a dossier using saved material only.
+    - generic "Earlier conversation (7 messages)"
+    - complementary "Run an inquiry":
+      - region "Ask about This matter":
+        - paragraph: Run an inquiry
+        - heading "Ask about This matter" [level=2]
+        - group "Inquiry type":
+          - generic: Inquiry type
+          - radio "Explain" [checked]
+          - generic: Explain
+          - radio "Stress-test"
+          - generic: Stress-test
+          - radio "Ask the business"
+          - generic: Ask the business
+          - radio "Explore question"
+          - generic: Explore question
+        - generic: Question or instruction
+        - textbox "Question or instruction":
+          - /placeholder: What would change if the funds remained in the account for two days?
+        - generic "Inquiry actions":
+          - button "Start inquiry"
+          - button "Copy question"
+        - paragraph: "Selected action: Explain. Explain the selected issue or source in the current matter."
+      - generic: Tools & history
+      - button "Business replies":
+        - text: Business replies
+      - button "Hand off work":
+        - text: Hand off work
+      - button "Compare supplied versions":
+        - text: Compare supplied versions
+    - group "Shared matter actions":
+      - generic "Questions and actions · Same saved matter"
+      - option "Choose a saved question" [selected]
+    - 'button "Run inquiry: Which other matters does this touch?"'
+    - 'button "Run inquiry: What would change your view?"'
+    - button "Add files": +
+    - 'textbox "Ask Themis.ai about Beacon: Instant Business Onboarding…"'
+    - button "Send" [disabled]
+    - text: Themis.ai can research, draft and move this matter. It records a decision only when you explicitly ask it to.
+    - link "Build a skill":
+      - /url: /skills
+  - generic "Discussion help"
+- alert

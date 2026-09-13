@@ -1,0 +1,1 @@
+{"fixture":"counsel-os-dossier-research-browser-v1","matter_id":"MAT-DEMO-BEACON","active_workers":0,"active_worker_ids":[],"research_workers_started":5,"counts":{"model_calls":23,"planning_calls":1,"research_workers_started":5,"research_model_calls":20,"writer_calls":2},"search_calls_this_process":5,"fetch_calls_this_process":10,"first_released":true,"remaining_released":true}

@@ -221,20 +221,20 @@ class ChatRunService:
                 return {**item, "path": relative}
         return None
 
-    def list(self, matter_id: str, conversation_id: str | None = None) -> list[dict[str, Any]]:
+    def list(self, matter_id: str, conversation_id: str | None = None, *, include_execution: bool = True) -> list[dict[str, Any]]:
         directory = self.vault.resolve(f"{self.context.matters.matter_path(matter_id)}/conversations/runs")
         runs = []
         for path in directory.glob("RUN-*.md"):
-            item = self.vault.read_markdown(self.vault.relative(path))["metadata"]
+            item = self.vault.read_markdown(self.vault.relative(path), include_execution=include_execution)["metadata"]
             if item.get("record_type") == "chat_run" and item.get("matter_id") == matter_id and (not conversation_id or item.get("conversation_id") == conversation_id):
                 runs.append({**item, "path": self.vault.relative(path)})
         return sorted(runs, key=lambda item: (item.get("created_at") or "", item["run_id"]), reverse=True)
 
-    def get(self, matter_id: str, run_id: str) -> dict[str, Any]:
+    def get(self, matter_id: str, run_id: str, *, include_execution: bool = True) -> dict[str, Any]:
         path = self._path(matter_id, run_id)
         if not self.vault.exists(path):
             raise KeyError(f"Chat run not found: {run_id}")
-        metadata = self.vault.read_markdown(path)["metadata"]
+        metadata = self.vault.read_markdown(path, include_execution=include_execution)["metadata"]
         if metadata.get("matter_id") != matter_id or metadata.get("record_type") != "chat_run":
             raise KeyError(f"Chat run not found: {run_id}")
         return {**metadata, "path": path}
@@ -242,12 +242,15 @@ class ChatRunService:
     def mark_running_interrupted(self) -> int:
         count = 0
         for path in self.vault.iter_files("03_Matters", {".md"}):
+            if path.parent.name != "runs":
+                continue
             try:
-                document = self.vault.read_markdown(self.vault.relative(path))
+                document = self.vault.read_markdown(self.vault.relative(path), include_execution=False)
             except (OSError, ValueError):
                 continue
             metadata = document["metadata"]
             if metadata.get("record_type") == "chat_run" and metadata.get("state") in {"queued", "running"}:
+                metadata = self.vault.read_markdown(self.vault.relative(path))["metadata"]
                 if metadata.get("checkpoint_version") == 1:
                     from app.services.research_checkpoints import ResearchCheckpoints
                     try:

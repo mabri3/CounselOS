@@ -1,0 +1,228 @@
+Browser tab: 4, Title: "Themis.ai", URL: "http://localhost:3207/matters/MAT-DEMO-BEACON".
+1 AXWebArea Themis.ai, URL: localhost:3207/matters/MAT-DEMO-BEACON
+	2 container
+		3 button (collapsed) themis.ai, Secondary Actions: Expand
+			4 text themis.ai
+		5 container matter-MAT-DEMO-BEACON
+			6 container
+				7 text Waiting on Brian Harris
+				8 link Description: Matters, Value: localhost:3207/matters
+				9 heading Beacon: Instant Business Onboarding, Value: 1
+					10 text Beacon: Instant Business Onboarding
+				11 button (collapsed) Matter details, Secondary Actions: Expand
+					12 text Matter details
+				13 button (collapsed) Tools and history, Secondary Actions: Expand
+			14 container Matter workspace
+				15 container
+					16 container Matter workspace view
+						17 text Matter workspace view
+						18 radio button (settable, integer) Description: Understand, Value: 0, ID: workspace-view-MAT-DEMO-BEACON-understand
+						19 container Read the current matter
+							20 text Understand
+						21 radio button (settable, integer) Description: Discuss, Value: 0, ID: workspace-view-MAT-DEMO-BEACON-discuss
+						22 container Continue one matter conversation
+							23 text Discuss
+						24 radio button (settable, integer) Description: Draft, Value: 1, ID: workspace-view-MAT-DEMO-BEACON-draft
+						25 container Review and prepare work product
+							26 text Draft
+					27 button Decision map
+				66 container Source reading
+					67 container
+						68 button ← Back to where you were
+							69 text ← Back to 
+							70 text where you were
+						71 text READING SOURCE
+						72 heading Source reading, Value: 2
+							73 text Source reading
+						74 text Saved
+					75 container
+						76 heading Generated dossier revision, Value: 3
+							77 text Generated dossier revision
+						78 text 03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-bffbfb8aea32ac006653.md Saved revision e6efc42d90fc85940a790a8914e7a7f8db34fbea3dbfcdd117c6fed91a3b67fa Reading source
+					79 container Referenced excerpt
+						80 text REFERENCED EXCERPT
+						81 container
+							82 text Exact passage unavailable . No excerpt was saved with this reference.
+						83 text Reading this source does not add it to the agent request.
+					84 container Source actions
+						85 button Create working copy
+						86 button Use in this request
+					87 container Claim support
+						88 heading Claim support, Value: 3, ID: claim-support-heading
+							89 text Claim support
+						90 text Claim
+						91 text No linked claim
+						92 text Source
+						93 container
+							94 text Saved source  · Generated dossier revision
+						95 text Passage
+						96 text Exact passage unavailable
+						97 text Applicability
+						98 text No applicability explanation saved
+					99 text Exact passage unavailable
+					100 container
+						101 heading Full saved source, Value: 3
+							102 text Full saved source
+						103 heading Beacon launch dossier, Value: 1
+							104 text Beacon launch dossier
+						105 heading Current position, Value: 2
+							106 text Current position
+						253 text Proceed only after the saved employment, privacy, supplier, IP, and marketing conditions are reviewed. This is deterministic fixture analysis.
+						108 heading Decision question, Value: 2
+							109 text Decision question
+						254 text Can the launch proceed with conditions?
+						111 heading Material facts, Value: 2
+							112 text Material facts
+						113 content list
+							114 container
+								115 AXListMarker • 
+								255 text Reported fact: Product proposed October 15, 2026 as the launch date. 
+								256 link Description: Read the saved launch brief, Value: localhost:3207/matters/03_Matters/beacon-instant-onboarding/source-documents/launch-brief.md
+							118 container
+								119 AXListMarker • 
+								257 text Reported fact: all five workstreams remain open. 
+								258 link Description: Read the saved issue list, Value: localhost:3207/matters/03_Matters/beacon-instant-onboarding/issues.md
+						122 heading Proposed date, Value: 2
+							123 text Proposed date
+						124 content list
+							125 container
+								126 AXListMarker • 
+								127 text October 15, 2026 — basis: Product's saved launch brief. This is a proposed operating date, not a verified legal deadline.
+						128 heading Launch conditions checklist, Value: 2
+							129 text Launch conditions checklist
+						130 content list
+							131 container
+								132 AXListMarker • 
+								259 checkbox (disabled, settable, integer) 0
+								260 text Confirm employment terms and staffing controls.
+							135 container
+								136 AXListMarker • 
+								261 checkbox (disabled, settable, integer) 0
+								262 text Confirm privacy notice, purpose, and access limits.
+							139 container
+								140 AXListMarker • 
+								263 checkbox (disabled, settable, integer) 0
+								264 text Confirm supplier transfer, exit, and service terms.
+							143 container
+								144 AXListMarker • 
+								265 checkbox (disabled, settable, integer) 0
+								266 text Confirm ownership and trademark permission.
+							147 container
+								148 AXListMarker • 
+								267 checkbox (disabled, settable, integer) 0
+								268 text Confirm evidence for public marketing claims.
+						151 heading Issues, Value: 2
+							152 text Issues
+						269 text Captured reported fact: 
+						270 button Reported fact: The change applies only to the low-risk segment., Help: Open captured record
+						271 text Captured reported fact: 
+						272 button Reported fact: The flow uses identity and fraud signals., Help: Open captured record
+						273 text Captured reported fact: 
+						274 button Reported fact: Product proposed the launch for 2026-10-15., Help: Open captured record
+						275 text Captured reported fact: 
+						276 button Reported fact: All five workstreams remain open before launch., Help: Open captured record
+						161 heading Employment terms: Confirm worker terms and launch staffing conditions., Value: 3
+							162 text Employment terms: Confirm worker terms and launch staffing conditions.
+						277 text Current answer:
+						278 text  Conditional. Do not treat the issue as closed.
+						279 text Rule and support:
+						280 text  Review the saved analysis and its conditions.
+						281 text Application:
+						282 text  Apply the saved conditions to the planned launch; do not infer missing facts.
+						283 text Next step:
+						284 text  Complete the checklist item and record the controlling source version.
+						171 heading Customer privacy: Confirm notice, purpose, and access controls., Value: 3
+							172 text Customer privacy: Confirm notice, purpose, and access controls.
+						285 text Current answer:
+						286 text  Conditional. Do not treat the issue as closed.
+						287 text Rule and support:
+						288 text  Review the saved analysis and its conditions.
+						289 text Application:
+						290 text  Apply the saved conditions to the planned launch; do not infer missing facts.
+						291 text Next step:
+						292 text  Complete the checklist item and record the controlling source version.
+						181 heading Supplier contract: Confirm service levels, termination, and transfer terms., Value: 3
+							182 text Supplier contract: Confirm service levels, termination, and transfer terms.
+						293 text Current answer:
+						294 text  Conditional. Do not treat the issue as closed.
+						295 text Rule and support:
+						296 text  Review the saved analysis and its conditions.
+						297 text Application:
+						298 text  Apply the saved conditions to the planned launch; do not infer missing facts.
+						299 text Next step:
+						300 text  Complete the checklist item and record the controlling source version.
+						191 heading Intellectual property: Confirm ownership and trademark permission., Value: 3
+							192 text Intellectual property: Confirm ownership and trademark permission.
+						301 text Current answer:
+						302 text  Conditional. Do not treat the issue as closed.
+						303 text Rule and support:
+						304 text  Review the saved analysis and its conditions.
+						305 text Application:
+						306 text  Apply the saved conditions to the planned launch; do not infer missing facts.
+						307 text Next step:
+						308 text  Complete the checklist item and record the controlling source version.
+						201 heading Marketing claims: Confirm evidence for public launch claims., Value: 3
+							202 text Marketing claims: Confirm evidence for public launch claims.
+						309 text Current answer:
+						310 text  Conditional. Do not treat the issue as closed.
+						311 text Rule and support:
+						312 text  Review the saved analysis and its conditions.
+						313 text Application:
+						314 text  Apply the saved conditions to the planned launch; do not infer missing facts.
+						315 text Next step:
+						316 text  Complete the checklist item and record the controlling source version.
+						211 heading Next actions, Value: 2
+							212 text Next actions
+						213 content list
+							214 container
+								215 AXListMarker 1. 
+								317 text Legal reviews the three initial launch blockers.
+							217 container
+								218 AXListMarker 2. 
+								318 text Product keeps the proposed date conditional.
+							220 container
+								221 AXListMarker 3. 
+								319 text Procurement and Marketing complete the remaining two workstreams.
+						223 heading Saved issue answers, Value: 2
+							224 text Saved issue answers
+						225 heading Employment terms: Confirm worker terms and launch staffing conditions., Value: 3
+							226 text Employment terms: Confirm worker terms and launch staffing conditions.
+						320 text No external authority retrieved
+						321 text The two supplied notice clauses could not both be read. Obtain both versions before choosing a notice date. Research saved. No external sources retrieved. Research history: 
+						322 link Description: Saved research 1, Value: localhost:3207/matters/03_Matters/beacon-instant-onboarding/research/RES-20260912-3d6831.md
+						323 text ; 
+						324 link Description: Saved research 2, Value: localhost:3207/matters/03_Matters/beacon-instant-onboarding/research/RES-20260912-4f16c4.md
+						232 heading Customer privacy: Confirm notice, purpose, and access controls., Value: 3
+							233 text Customer privacy: Confirm notice, purpose, and access controls.
+						325 text No external authority retrieved
+						326 text The two supplied notice clauses could not both be read. Obtain both versions before choosing a notice date. Research saved. No external sources retrieved. Research history: 
+						327 link Description: Saved research 1, Value: localhost:3207/matters/03_Matters/beacon-instant-onboarding/research/RES-20260912-71dd33.md
+						328 text ; 
+						329 link Description: Saved research 2, Value: localhost:3207/matters/03_Matters/beacon-instant-onboarding/research/RES-20260912-090edd.md
+						239 heading Supplier contract: Confirm service levels, termination, and transfer terms., Value: 3
+							240 text Supplier contract: Confirm service levels, termination, and transfer terms.
+						330 text No external authority retrieved
+						331 text The two supplied notice clauses could not both be read. Obtain both versions before choosing a notice date. Research saved. No external sources retrieved. Research history: 
+						332 link Description: Saved research 1, Value: localhost:3207/matters/03_Matters/beacon-instant-onboarding/research/RES-20260912-6bb4f7.md
+						333 text ; 
+						334 link Description: Saved research 2, Value: localhost:3207/matters/03_Matters/beacon-instant-onboarding/research/RES-20260912-f31ea9.md
+						246 heading Intellectual property: Confirm ownership and trademark permission., Value: 3
+							247 text Intellectual property: Confirm ownership and trademark permission.
+						335 text The saved facts show that intellectual property remains open; the controlling conditions require research. Initial answer — research not complete. Next step: Confirm the operative intellectual property conditions before launch.
+						249 heading Marketing claims: Confirm evidence for public launch claims., Value: 3
+							250 text Marketing claims: Confirm evidence for public launch claims.
+						336 text The saved facts show that marketing claims remains open; the controlling conditions require research. Initial answer — research not complete. Next step: Confirm the operative marketing claims conditions before launch.
+						337 container Captured source details
+							338 text Reported fact: Product proposed the launch for 2026-10-15.
+							339 container
+								340 text reported fact  ·  FACT-20260912-f3f181
+							341 container
+								342 text Saved version  7b09754d53b5
+							343 text Product proposed the launch for 2026-10-15.
+							344 button Open current saved file
+							345 button Close source details
+				64 button (collapsed) Discussion help, Secondary Actions: Expand
+					65 text Discussion help
+				252 button (collapsed) Show discussion, Secondary Actions: Expand
+
+The focused UI element is 1 AXWebArea Themis.ai, URL: localhost:3207/matters/MAT-DEMO-BEACON

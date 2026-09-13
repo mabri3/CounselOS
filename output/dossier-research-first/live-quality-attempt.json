@@ -1,0 +1,83 @@
+{
+  "children_recorded_at": "2026-09-12T06:28:06.835325+00:00",
+  "completed_at": "2026-09-12T06:34:35.721354+00:00",
+  "cost": null,
+  "cost_note": "Provider cost is not exposed; no dollar estimate will be guessed.",
+  "external_attempt_count": 1,
+  "external_started_at": "2026-09-12T06:26:43.527425+00:00",
+  "fixture_id": "dossier-live-quality-20260912-01",
+  "fixture_vault": "/Users/bharris/Programs/counsel-os-mvp/output/dossier-research-first/live-quality-vault",
+  "matter_id": "MAT-20260912-f7ed8b",
+  "matter_source_action_key": "step13:live-quality:matter:20260912-01",
+  "parent_request_id": "DOR-20260912-f382af",
+  "phase": "configured_model_attempt_completed",
+  "planned_issue_workers": [
+    {
+      "issue_id": "ISS-51e775d196-fdf737a8425d6892",
+      "planned_identity": "dossier-live-quality-20260912-01:ISS-51e775d196-fdf737a8425d6892",
+      "run_id": "RUN-7cc4ffbe990727e9"
+    },
+    {
+      "issue_id": "ISS-51e775d196-71cec1796ad7aeaa",
+      "planned_identity": "dossier-live-quality-20260912-01:ISS-51e775d196-71cec1796ad7aeaa",
+      "run_id": "RUN-72ac3d54d92d026d"
+    },
+    {
+      "issue_id": "ISS-51e775d196-f6e701a9fb1cc4c7",
+      "planned_identity": "dossier-live-quality-20260912-01:ISS-51e775d196-f6e701a9fb1cc4c7",
+      "run_id": "RUN-959dbc35258d60cb"
+    }
+  ],
+  "preparation_completed_at": "2026-09-12T06:28:06.682375+00:00",
+  "preparation_run_id": "DORPREP-STEP13-20260912-01",
+  "preparation_seconds": 83.15455625002505,
+  "preparation_source_action_key": "step13:live-quality:prepare:20260912-01",
+  "prepared_at": "2026-09-12T06:26:33.337298+00:00",
+  "retained_other_issue_ids": [
+    "ISS-51e775d196-d3b1acb2ef2a3a22",
+    "ISS-51e775d196-6e20febaeb754a1c"
+  ],
+  "saved_model_selections": {
+    "collector": {
+      "agent_id": "research-agent",
+      "model": "deepseek-v4.1-flash",
+      "provider": "opencode_go",
+      "reasoning_effort": "default"
+    },
+    "main": {
+      "agent_id": "counsel-copilot",
+      "model": "deepseek-v4.1-flash",
+      "provider": "opencode_go",
+      "reasoning_effort": "max"
+    }
+  },
+  "selected_collector": {
+    "model": "deepseek-v4.1-flash",
+    "provider": "opencode_go",
+    "reasoning_effort": "default"
+  },
+  "selected_main": {
+    "agent_id": "counsel-copilot",
+    "model": "deepseek-v4.1-flash",
+    "provider": "opencode_go",
+    "reasoning_effort": "max"
+  },
+  "source_choice": {
+    "allow_firecrawl": true,
+    "allow_followup_queries": true,
+    "collection_enabled": true,
+    "external": true,
+    "native": false,
+    "other_matters": false,
+    "provider_ids": [
+      "firecrawl",
+      "polaris"
+    ],
+    "public_query": "United States federal and California primary sources for consumer subscription cancellation, privacy notice and service-provider contract requirements"
+  },
+  "start_source_action_key": "step13:live-quality:start:20260912-01",
+  "synthetic_sources": [
+    "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/documents/synthetic-product-brief.md",
+    "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/documents/synthetic-vendor-contract.md"
+  ]
+}

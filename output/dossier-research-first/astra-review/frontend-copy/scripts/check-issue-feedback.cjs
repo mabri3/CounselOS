@@ -1,0 +1,13 @@
+const ts=require('typescript'),fs=require('fs'),vm=require('vm'),assert=require('node:assert/strict');
+const compile=(file,modules={})=>{const exports={};vm.runInNewContext(ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020,jsx:ts.JsxEmit.ReactJSX}}).outputText,{exports,require:id=>modules[id]});return exports;};
+const overview=compile('lib/issueOverview.ts');
+const jsx=(type,props)=>({type,props});
+const component=compile('components/workspace/IssueOverview.tsx',{'@/lib/issueOverview':overview,'react/jsx-runtime':{jsx,jsxs:jsx},'./MatterMap.module.css':{default:{}}}).default;
+const snapshot={nodes:['a','b'].map(id=>({node_id:`issue:${id}`,record_id:id,record_type:'issue',label:id,state:'open'})),edges:[]};
+const flatten=n=>!n||typeof n!=='object'?[]:[n,...[n.props?.children].flat(Infinity).flatMap(flatten)];
+let nodes=flatten(component({snapshot,busy:true,analyzingIssueId:'a',onAnalyze:()=>{},onOpen:()=>{}}));
+assert.equal(nodes.filter(n=>n.type==='button'&&n.props.children==='Analyzing this issue…').length,1);
+assert.equal(nodes.filter(n=>n.type==='article').length,2);
+nodes=flatten(component({snapshot,analysisResult:{issueId:'a',saved:true,message:'Analysis updated.'},onAnalyze:()=>{},onOpen:()=>{}}));
+assert.equal(nodes.filter(n=>n.type==='button'&&n.props.children==='View updated map →').length,1);
+console.log('Per-issue progress and result checks passed');

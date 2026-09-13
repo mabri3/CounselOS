@@ -1,0 +1,21 @@
+Browser tab: 3, Title: "Themis.ai", URL: "http://localhost:3207/experimental/chat?matter=MAT-DEMO-BEACON".
+1 AXWebArea Themis.ai, URL: localhost:3207/experimental/chat?matter=MAT-DEMO-BEACON
+	2 container
+		3 button (expanded) Description: Toggle matter navigation, Secondary Actions: Collapse
+		4 button (collapsed) themis.ai, Secondary Actions: Expand
+			5 text themis.ai
+		6 text Experimental chat
+		7 link Description: Back to workspace , Value: localhost:3207/matters
+	8 container
+		9 text Your matters 0
+		10 search text field (settable) Find a matter
+		11 container Matters
+		12 link Description: Archive & trash, Value: localhost:3207/matters/storage
+		13 button  New matter
+	14 container
+		15 text A CLEARER WAY THROUGH THE WORK
+		16 heading Let’s work through it., Value: 1
+			17 text Let’s work through it.
+		18 text Choose a matter to ask a question, explore an issue, or shape a draft.
+
+The focused UI element is 1 AXWebArea Themis.ai, URL: localhost:3207/experimental/chat?matter=MAT-DEMO-BEACON

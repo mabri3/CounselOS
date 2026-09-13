@@ -360,10 +360,10 @@ def test_optional_output_read_failure_keeps_saved_workspace_answer(service, monk
         service.vault.write_bytes(bad_path, malformed)
     else:
         read = service.vault.read_markdown
-        def fail_optional(path):
+        def fail_optional(path, **kwargs):
             if str(path) == bad_path:
                 raise (FileNotFoundError("disappeared") if failure == "disappeared" else PermissionError("unreadable"))
-            return read(path)
+            return read(path, **kwargs)
         monkeypatch.setattr(service.vault, "read_markdown", fail_optional)
     before = {p: p.read_bytes() for p in service.vault.iter_files(service.matters.matter_path(MATTER))}
     snapshot = service.get(MATTER)
@@ -403,10 +403,10 @@ def test_output_discovery_skips_review_archives_before_parsing(service, monkeypa
     before = {path: service.vault.resolve(path).read_bytes() for path in [current, hidden, *archives]}
     read = service.vault.read_markdown
     parsed = []
-    def counted(path):
+    def counted(path, **kwargs):
         parsed.append(str(path))
         assert str(path) not in archives, "default output discovery must skip archive bytes before parsing"
-        return read(path)
+        return read(path, **kwargs)
     monkeypatch.setattr(service.vault, "read_markdown", counted)
     failures = []
     outputs = service._output_revisions(MATTER, failures=failures)

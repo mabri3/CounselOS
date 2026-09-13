@@ -1,0 +1,263 @@
+{
+  "request_id": "DOR-20260912-1f3785",
+  "matter_id": "MAT-DEMO-BEACON",
+  "state": "completed",
+  "phase": "finished",
+  "sequence": 11,
+  "plan_revision": "53e2cb3928a3f157e7485332a4f98e8a211d9120af8ad55f5745e981aabf4fca",
+  "execution_mode": "research",
+  "scope": "all",
+  "stop_requested": false,
+  "origin": {
+    "conversation_id": "CONV-20260912-b04ce0",
+    "message_id": "MSG-20260912-dd9a16"
+  },
+  "priorities": [
+    {
+      "key": "launch",
+      "text": "Confirm access and exit conditions",
+      "why": "These terms can stop the launch.",
+      "issue_ids": [
+        "ISS-096297ff82-93f86037a1dc276c",
+        "ISS-096297ff82-94f4f4428b1d74dd"
+      ],
+      "changed": true
+    },
+    {
+      "key": "dependencies",
+      "text": "Resolve vendor dependencies",
+      "why": "Supplier and IP terms control access and ownership.",
+      "issue_ids": [
+        "ISS-096297ff82-2809ad77797154fd",
+        "ISS-096297ff82-658fe450083ec3ab"
+      ],
+      "changed": false
+    },
+    {
+      "key": "claims",
+      "text": "Support customer claims",
+      "why": "Marketing statements need saved evidence.",
+      "issue_ids": [
+        "ISS-096297ff82-824b92d87b0cf804"
+      ],
+      "changed": false
+    }
+  ],
+  "first_issue_ids": [
+    "ISS-096297ff82-93f86037a1dc276c",
+    "ISS-096297ff82-94f4f4428b1d74dd",
+    "ISS-096297ff82-2809ad77797154fd"
+  ],
+  "planned_issue_ids": [
+    "ISS-096297ff82-93f86037a1dc276c",
+    "ISS-096297ff82-94f4f4428b1d74dd",
+    "ISS-096297ff82-2809ad77797154fd",
+    "ISS-096297ff82-658fe450083ec3ab",
+    "ISS-096297ff82-824b92d87b0cf804"
+  ],
+  "new_issue_candidates": [],
+  "counts": {
+    "total": 5,
+    "queued": 0,
+    "running": 0,
+    "saved": 5,
+    "partial": 0,
+    "failed": 0,
+    "interrupted": 0,
+    "newly_identified": 0,
+    "not_selected": 0,
+    "researched": 5
+  },
+  "issues": [
+    {
+      "issue_id": "ISS-096297ff82-93f86037a1dc276c",
+      "title": "Employment terms: Confirm worker terms and launch staffing conditions.",
+      "state": "saved",
+      "planned_order": 0,
+      "selected_first": true,
+      "sources_read": 1,
+      "sources_retrieved": 1,
+      "support": "1 sources retrieved; 1 with passages read",
+      "packet_path": "03_Matters/beacon-instant-onboarding/research/RES-20260912-83f94f.md",
+      "answer_path": "03_Matters/beacon-instant-onboarding/research/RES-20260912-83f94f.md",
+      "last_error": null,
+      "run_id": "RUN-877abfadfa6703fc"
+    },
+    {
+      "issue_id": "ISS-096297ff82-94f4f4428b1d74dd",
+      "title": "Customer privacy: Confirm notice, purpose, and access controls.",
+      "state": "saved",
+      "planned_order": 1,
+      "selected_first": true,
+      "sources_read": 1,
+      "sources_retrieved": 1,
+      "support": "1 sources retrieved; 1 with passages read",
+      "packet_path": "03_Matters/beacon-instant-onboarding/research/RES-20260912-47d3bd.md",
+      "answer_path": "03_Matters/beacon-instant-onboarding/research/RES-20260912-47d3bd.md",
+      "last_error": null,
+      "run_id": "RUN-700e7aab21686803"
+    },
+    {
+      "issue_id": "ISS-096297ff82-2809ad77797154fd",
+      "title": "Supplier contract: Confirm service levels, termination, and transfer terms.",
+      "state": "saved",
+      "planned_order": 2,
+      "selected_first": true,
+      "sources_read": 1,
+      "sources_retrieved": 1,
+      "support": "1 sources retrieved; 1 with passages read",
+      "packet_path": "03_Matters/beacon-instant-onboarding/research/RES-20260912-902714.md",
+      "answer_path": "03_Matters/beacon-instant-onboarding/research/RES-20260912-902714.md",
+      "last_error": null,
+      "run_id": "RUN-c5893c269ad77618"
+    },
+    {
+      "issue_id": "ISS-096297ff82-658fe450083ec3ab",
+      "title": "Intellectual property: Confirm ownership and trademark permission.",
+      "state": "saved",
+      "planned_order": 3,
+      "selected_first": false,
+      "sources_read": 1,
+      "sources_retrieved": 1,
+      "support": "1 sources retrieved; 1 with passages read",
+      "packet_path": "03_Matters/beacon-instant-onboarding/research/RES-20260912-235721.md",
+      "answer_path": "03_Matters/beacon-instant-onboarding/research/RES-20260912-235721.md",
+      "last_error": null,
+      "run_id": "RUN-33106d10ab192a66"
+    },
+    {
+      "issue_id": "ISS-096297ff82-824b92d87b0cf804",
+      "title": "Marketing claims: Confirm evidence for public launch claims.",
+      "state": "saved",
+      "planned_order": 4,
+      "selected_first": false,
+      "sources_read": 1,
+      "sources_retrieved": 1,
+      "support": "1 sources retrieved; 1 with passages read",
+      "packet_path": "03_Matters/beacon-instant-onboarding/research/RES-20260912-02ab86.md",
+      "answer_path": "03_Matters/beacon-instant-onboarding/research/RES-20260912-02ab86.md",
+      "last_error": null,
+      "run_id": "RUN-4405ad166956befe"
+    }
+  ],
+  "publications": [
+    {
+      "key": "dossier-batch:94fb4ed430c26b314e7ad9f8a4b56cc9e0373393696e2932143a479b37d2d66a",
+      "issue_ids": [
+        "ISS-096297ff82-93f86037a1dc276c",
+        "ISS-096297ff82-94f4f4428b1d74dd",
+        "ISS-096297ff82-2809ad77797154fd"
+      ],
+      "state": "applied",
+      "revision_path": "03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-9d0a23d05f9939f0a443.md",
+      "receipts": {
+        "recommendation": {
+          "state": "proposed",
+          "version_id": "REC-20260912-692240"
+        },
+        "dossier": {
+          "state": "applied",
+          "revision_path": "03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-9d0a23d05f9939f0a443.md"
+        },
+        "conversation": {
+          "state": "saved",
+          "message_id": "MSG-20260912-6b8d80"
+        }
+      },
+      "composed_at": "2026-09-12T06:55:02+00:00",
+      "warning": "",
+      "dossier_hash": "5437a561b10d2ce0cb9ce83aee3b9b26ba6a415437da89a9b8c9080912c2bade",
+      "recommendations_hash": "c871b865f99e472c5006dc39768414b91773ea09484d5faf56b51a7e21d4d1cd",
+      "batch_index": 0
+    },
+    {
+      "key": "dossier-batch:baecfc034a92eaec1b35e3f776a4a1b0f1b9a61651f30b17bd789d6678c2151b",
+      "issue_ids": [
+        "ISS-096297ff82-658fe450083ec3ab",
+        "ISS-096297ff82-824b92d87b0cf804"
+      ],
+      "state": "review_required",
+      "revision_path": "03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-8c7a75cb7da9ea37cc1f.md",
+      "receipts": {
+        "dossier": {
+          "state": "review_required",
+          "revision_path": "03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-8c7a75cb7da9ea37cc1f.md"
+        },
+        "conversation": {
+          "state": "saved",
+          "message_id": "MSG-20260912-a7ad7c"
+        }
+      },
+      "composed_at": "2026-09-12T06:57:31+00:00",
+      "warning": "This dossier uses earlier facts or an earlier question; current advice was not replaced.",
+      "dossier_hash": null,
+      "recommendations_hash": "c871b865f99e472c5006dc39768414b91773ea09484d5faf56b51a7e21d4d1cd",
+      "batch_index": 1
+    }
+  ],
+  "latest_publication": {
+    "key": "dossier-batch:baecfc034a92eaec1b35e3f776a4a1b0f1b9a61651f30b17bd789d6678c2151b",
+    "issue_ids": [
+      "ISS-096297ff82-658fe450083ec3ab",
+      "ISS-096297ff82-824b92d87b0cf804"
+    ],
+    "state": "review_required",
+    "revision_path": "03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-8c7a75cb7da9ea37cc1f.md",
+    "receipts": {
+      "dossier": {
+        "state": "review_required",
+        "revision_path": "03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-8c7a75cb7da9ea37cc1f.md"
+      },
+      "conversation": {
+        "state": "saved",
+        "message_id": "MSG-20260912-a7ad7c"
+      }
+    },
+    "composed_at": "2026-09-12T06:57:31+00:00",
+    "warning": "This dossier uses earlier facts or an earlier question; current advice was not replaced.",
+    "dossier_hash": null,
+    "recommendations_hash": "c871b865f99e472c5006dc39768414b91773ea09484d5faf56b51a7e21d4d1cd",
+    "batch_index": 1
+  },
+  "first_pass_ready_at": "2026-09-12T06:55:02+00:00",
+  "finished_at": "2026-09-12T06:57:31+00:00",
+  "last_error": null,
+  "created_at": "2026-09-12T06:53:45+00:00",
+  "updated_at": "2026-09-12T06:57:31+00:00",
+  "source_scope": {
+    "external": true,
+    "other_matters": false,
+    "allow_followup_queries": true,
+    "collection_enabled": true,
+    "provider_ids": [
+      "polaris",
+      "tavily"
+    ],
+    "overall_topic": "United States product launch legal conditions",
+    "focused_topics": {
+      "ISS-096297ff82-93f86037a1dc276c": "United States employment terms launch requirements",
+      "ISS-096297ff82-94f4f4428b1d74dd": "United States customer privacy launch requirements",
+      "ISS-096297ff82-2809ad77797154fd": "United States supplier contract launch requirements",
+      "ISS-096297ff82-658fe450083ec3ab": "United States intellectual property launch requirements",
+      "ISS-096297ff82-824b92d87b0cf804": "United States marketing claims launch requirements"
+    },
+    "public_query": "Approved launch access and exit rules for the five selected workstreams",
+    "native": true,
+    "allow_firecrawl": false
+  },
+  "model_selections": {
+    "main": {
+      "agent_id": "counsel-copilot",
+      "provider": "codex",
+      "model": "fixture-dossier",
+      "reasoning_effort": "medium"
+    },
+    "collector": {
+      "agent_id": "research-agent",
+      "provider": "codex",
+      "model": "fixture-dossier",
+      "reasoning_effort": "medium"
+    }
+  },
+  "preparation": "## Suggested priorities\n\nReview the five saved issues across employment, privacy, supplier, intellectual-property, and marketing workstreams. The first three suggested priorities focus on launch blockers, vendor dependencies, and supported claims.\n"
+}

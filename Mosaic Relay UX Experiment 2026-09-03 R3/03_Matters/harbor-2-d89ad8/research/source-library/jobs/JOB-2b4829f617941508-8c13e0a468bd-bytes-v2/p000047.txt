@@ -1,0 +1,51 @@
+ 
+47 
+ 
+Securities Exchange Act of 1934, 15 U.S.C. Sections 78a through 78oo, as amended or recodified 
+from time to time, the Commodities Exchange Act of 1936, 7 U .S.C. Sections 1 through 27f, as 
+amended or recodified from time to time, or [insert citation to "blue sky" laws of this state]  govern 
+the activity. 
+(b) 
+This [Article XIII] does not apply to activity by: 
+(1) 
+a person that: 
+(A) 
+contributes only connectivity software or computing power 
+to a decentralized virtual currency, or to a protocol governing transfer of the digital 
+representation of value; 
+(B) 
+provides only data storage or security services for a business 
+engaged in virtual-currency business activity and does not otherwise engage in 
+virtual-currency business activity on behalf of another person; or 
+(C) 
+provides only to a person otherwise exempt from this [Act] 
+virtual currency as one or more enterprise solutions used solely among each other 
+and has no agreement or relationship with a person that is an end-user of virtual 
+currency; 
+(2) 
+a person using virtual currency, including creating, investing, 
+buying or selling, or obtaining virtual currency as payment for the purchase or sale of goods 
+or services, solely: 
+(A) 
+on its own behalf; 
+(B) 
+for personal, family, or household purposes; or 
+(C) 
+for academic purposes; 
+(3) 
+a person whose virtual-currency business activity with or on behalf 
+of persons is reasonably expected to be valued, in the aggregate, on an annual basis at 
+$5,000 or less, measured by the U.S. Dollar equivalent of virtual currency; 
+(4) 
+an attorney to the extent of providing escrow services to a person; 
+(5) 
+a title insurance company to the extent of providing escrow services 
+to a person; 
+(6) 
+a securities intermediary, as defined in [insert citation to U.C.C. 
+Section 8-102 of this state], or a commodity intermediary, as defined in [insert citation to 
+U.C.C. 9-102 of this state], that: 
+(A) 
+does not engage in the ordinary course of business in virtual-
+currency business activity with or on behalf of a person in addition to 
+maintaining securities accounts or commodities accounts and is regulated 

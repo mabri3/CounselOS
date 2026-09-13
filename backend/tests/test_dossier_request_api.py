@@ -202,6 +202,139 @@ async def test_start_returns_202_before_research_finishes_and_reload_restores_pr
 
 
 @pytest.mark.asyncio
+async def test_start_one_unselected_issue_during_research_and_after_completion(app_context):
+    from tests.manual.serve_dossier_research import seed_matter
+
+    ids = seed_matter(app_context)
+    provider = ScriptedDossierProvider(ids)
+    _install_provider(app_context, provider)
+    service = app_context.dossier_requests
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=_api(app_context)), base_url="http://test") as client:
+        _, status = await _prepare(client, app_context)
+        path = f"/api/matters/{MATTER}/dossier-requests/{status['request_id']}"
+        assert (await client.post(path + "/start", json=_start_payload(status))).status_code == 202
+        await asyncio.wait_for(provider.research_started.wait(), timeout=2)
+        original_task = service._active[status["request_id"]]
+        original_children = app_context.research_runs.managed_children(MATTER, status["request_id"])
+        choice = {"plan_revision": status["plan_revision"]}
+        try:
+            assert (await client.post(path + f"/issues/{ids[3]}/start", json={"plan_revision": "old"})).status_code == 409
+            assert (await client.post(path + "/issues/not-in-plan/start", json=choice)).status_code == 400
+            added = await client.post(path + f"/issues/{ids[3]}/start", json=choice)
+            assert added.status_code == 202, added.text
+            progress = added.json()
+            assert progress["planned_issue_ids"] == ids[:4]
+            assert next(row for row in progress["issues"] if row["issue_id"] == ids[3])["state"] == "queued"
+            assert next(row for row in progress["issues"] if row["issue_id"] == ids[4])["state"] == "not_selected"
+            assert service._active[status["request_id"]] is original_task, "adding an issue keeps the existing coordinator"
+            replay = await client.post(path + f"/issues/{ids[3]}/start", json=choice)
+            assert replay.status_code == 202
+            assert replay.json()["sequence"] == progress["sequence"], "repeat clicks do not queue duplicate work"
+            assert DossierRequestService(app_context).get(MATTER, status["request_id"])["planned_issue_ids"] == ids[:4]
+            children = app_context.research_runs.managed_children(MATTER, status["request_id"])
+            assert len(children) == 4
+            new_child = next(child for child in children if child["issue_id"] == ids[3])
+            for field in ("main_selection", "collector_selection", "search_scope"):
+                assert new_child[field] == original_children[0][field], "the saved model and source choices carry over"
+        finally:
+            provider.release_research.set()
+            await service.wait_for_active_work()
+            await app_context.research_runs.wait_for_active_work()
+
+        first = service.get(MATTER, status["request_id"])
+        assert first["state"] == "completed", first["last_error"]
+        assert [pub["issue_ids"] for pub in first["publications"]] == [ids[:3], [ids[3]]]
+        assert first["counts"]["not_selected"] == 1
+        original_packets = {row["issue_id"]: row["packet_path"] for row in first["issues"] if row["packet_path"]}
+
+        # A later click extends the same saved request, without republishing
+        # earlier one-issue batches or rerunning their completed children.
+        later = await client.post(path + f"/issues/{ids[4]}/start", json=choice)
+        assert later.status_code == 202, later.text
+        await service.wait_for_active_work()
+        final = service.get(MATTER, status["request_id"])
+        assert final["state"] == "completed", final["last_error"]
+        assert [pub["issue_ids"] for pub in final["publications"]] == [ids[:3], [ids[3]], [ids[4]]]
+        assert all(row["packet_path"] == original_packets[row["issue_id"]] for row in final["issues"] if row["issue_id"] in original_packets)
+        assert len(app_context.research_runs.managed_children(MATTER, status["request_id"])) == 5
+        calls = len(provider.calls)
+        assert (await client.post(path + f"/issues/{ids[4]}/start", json=choice)).status_code == 202
+        assert len(provider.calls) == calls and not service.has_active_work
+
+
+@pytest.mark.asyncio
+async def test_start_issue_requires_saved_research_choices_and_respects_other_owner(app_context):
+    from tests.manual.serve_dossier_research import seed_matter
+
+    ids = seed_matter(app_context)
+    provider = ScriptedDossierProvider(ids)
+    _install_provider(app_context, provider)
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=_api(app_context)), base_url="http://test") as client:
+        _, status = await _prepare(client, app_context)
+        path = f"/api/matters/{MATTER}/dossier-requests/{status['request_id']}"
+        choice = {"plan_revision": status["plan_revision"]}
+        assert (await client.post(path + f"/issues/{ids[3]}/start", json=choice)).status_code == 409
+        provider.release_research.set()
+        assert (await client.post(path + "/start", json=_start_payload(status))).status_code == 202
+        await app_context.dossier_requests.wait_for_active_work()
+        before = app_context.dossier_requests.get(MATTER, status["request_id"])
+        app_context.research_runs.acquire_matter_ownership(MATTER, "DOR-other")
+        try:
+            assert (await client.post(path + f"/issues/{ids[3]}/start", json=choice)).status_code == 409
+            assert app_context.dossier_requests.get(MATTER, status["request_id"]) == before
+            assert len(app_context.research_runs.managed_children(MATTER, status["request_id"])) == 3
+        finally:
+            app_context.research_runs.release_matter_ownership(MATTER, "DOR-other")
+
+
+@pytest.mark.asyncio
+async def test_add_web_research_preserves_internal_work_and_survives_reload(app_context, monkeypatch):
+    from tests.manual.serve_dossier_research import install_fixture_boundaries, seed_matter
+
+    ids = seed_matter(app_context)
+    boundary = install_fixture_boundaries(app_context, ids, monkeypatch)
+    service = app_context.dossier_requests
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=_api(app_context)), base_url="http://test") as client:
+        _, status = await _prepare(client, app_context)
+        path = f"/api/matters/{MATTER}/dossier-requests/{status['request_id']}"
+        assert (await client.post(path + "/start", json=_start_payload(status))).status_code == 202
+        original_children = app_context.research_runs.managed_children(MATTER, status["request_id"])
+        web_path = path + f"/issues/{ids[0]}/web-research"
+        payload = {"plan_revision": status["plan_revision"], "source_choice": {"external": True, "native": True, "public_query": "public employment launch rules"}}
+        try:
+            assert not boundary.discoveries
+            invalid = {**payload, "source_choice": {"external": False}}
+            assert (await client.post(web_path, json=invalid)).status_code == 400
+            blank = {**payload, "source_choice": {"external": True, "native": True}}
+            assert (await client.post(web_path, json=blank)).status_code == 400
+            response = await client.post(web_path, json=payload)
+            assert response.status_code == 202, response.text
+            web = response.json()
+            assert web["state"] == "queued", "web research waits for the existing parent work"
+            assert web["issue_id"] == ids[0] and web["search_scope"]["external"] is True
+            assert web["search_scope"]["public_query"] == "public employment launch rules"
+            assert web["search_scope"]["other_matters"] is False
+            assert web["run_id"] not in {child["run_id"] for child in original_children}
+            replay = await client.post(web_path, json=payload)
+            assert replay.status_code == 202 and replay.json()["run_id"] == web["run_id"]
+            reloaded = DossierRequestService(app_context).get(MATTER, status["request_id"])
+            assert next(row for row in reloaded["issues"] if row["issue_id"] == ids[0])["web_run_id"] == web["run_id"]
+            assert reloaded["source_scope"]["external"] is False
+            assert reloaded["planned_issue_ids"] == ids[:3]
+            assert len(app_context.research_runs.managed_children(MATTER, status["request_id"])) == 3
+        finally:
+            boundary.first_release.set()
+            boundary.remaining_release.set()
+            await asyncio.wait_for(service.wait_for_active_work(), timeout=15)
+            await asyncio.wait_for(app_context.research_runs.wait_for_active_work(), timeout=15)
+        result = app_context.research_runs.get(MATTER, web["run_id"])
+        assert result["state"] == "completed", result.get("failure_detail")
+        assert result["results"] and result["results"][0]["path"]
+        assert boundary.discoveries and boundary.fetches, "the added run uses the public-search and fetch boundaries"
+        assert all(app_context.research_runs.get(MATTER, child["run_id"])["results"] for child in original_children)
+
+
+@pytest.mark.asyncio
 async def test_start_validates_stale_invalid_conflicting_and_wrong_matter_requests(app_context):
     issue_ids = [item["issue_id"] for item in app_context.workspace.issues(MATTER)]
     provider = ScriptedDossierProvider(issue_ids)

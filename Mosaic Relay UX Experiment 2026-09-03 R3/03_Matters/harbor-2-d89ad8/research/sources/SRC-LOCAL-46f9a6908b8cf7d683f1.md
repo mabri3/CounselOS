@@ -1,0 +1,54 @@
+---
+record_type: supplied_source_snapshot
+source_id: SRC-LOCAL-46f9a6908b8cf7d683f1
+immutable: true
+editable: false
+original_path: 03_Matters/harbor-2-d89ad8/research/RES-20260913-0d7de8.md
+---
+# Research this issue for the dossier: BSA/AML and KYC: whether
+
+## Question
+
+Research this issue for the dossier: BSA/AML and KYC: whether relying on Harbor's prior KYC (with missing underlying documents for pre-2023 users) satisfies Mosaic Relay's independent CIP/AML obligations.
+Proposed date leads; resolve each reference in saved records before using it: [{"role": "target acquisition close", "value": "Nov 15", "source_reference_id": "MSG-20260909-982278", "note": "The source describes this date as about ten weeks away. It does not expressly state the year or timezone."}, {"role": "identity-verification vendor closure", "value": "2024", "source_reference_id": "MSG-20260909-982278", "note": "The record reports that Harbor\u2019s identity-verification vendor closed in 2024."}]
+
+## Working Analysis
+
+**No external authority retrieved**
+
+I've resolved the issue and fact IDs. Now let me check what BSA/AML-relevant evidence already exists in the saved source library and earlier research.
+
+No oversized model request was sent.
+
+## Sources surfaced
+
+- Supplied source: [issues.md](03_Matters/harbor-2-d89ad8/research/sources/SRC-LOCAL-db6468aeb552bb44aa7b.md) [source:SRC-LOCAL-db6468aeb552bb44aa7b]
+  Available excerpt:
+  > # Issues and workstreams
+  > 
+  > - Money transmission licensing: whether Mosaic Relay can operate under the combined 44-state footprint and whether Harbor's MTLs transfer/survive the acquisition
+  > - BSA/AML an
+- Supplied source: [facts.md](03_Matters/harbor-2-d89ad8/research/sources/SRC-LOCAL-5b01121f7bfd7357746c.md) [source:SRC-LOCAL-5b01121f7bfd7357746c]
+  Available excerpt:
+  > # Known Facts
+  > 
+  > - Mosaic Relay is acquiring Harbor Pay; close targeted Nov 15 (~10 weeks out).
+  > - Migration moves 240k consumer users and 12k business accounts into Mosaic Relay's app on day 1 post-clos
+- Supplied source: [Harbor 2](03_Matters/harbor-2-d89ad8/research/sources/SRC-LOCAL-34797335b5e9ada6bdca.md) [source:SRC-LOCAL-34797335b5e9ada6bdca]
+  Available excerpt:
+  > # Matter
+
+## Last-mile work for counsel
+
+- Confirm the facts that could change the recommendation.
+- Verify any authority that will carry the final answer.
+- Decide the acceptable risk and the business path.
+
+## Research status
+
+- Question answered: Yes
+- External authority retrieved: No
+- Internal support used: Yes
+- Model-only: Yes
+- Assumptions: See the Working Analysis.
+- Remaining gaps: Verify material facts and any authority used for the final answer.

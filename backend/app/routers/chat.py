@@ -160,7 +160,7 @@ async def recover_intake_question(
 @router.get("/matters/{matter_id}/chat-runs", response_model=list[ChatRun])
 def list_chat_runs(matter_id: str, conversation_id: str | None = None, context: AppContext = Depends(get_context)):
     try:
-        return context.chat_runs.list(matter_id, conversation_id)
+        return context.chat_runs.list(matter_id, conversation_id, include_execution=False)
     except (KeyError, FileNotFoundError) as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
@@ -168,7 +168,7 @@ def list_chat_runs(matter_id: str, conversation_id: str | None = None, context: 
 @router.get("/matters/{matter_id}/chat-runs/{run_id}", response_model=ChatRun)
 def get_chat_run(matter_id: str, run_id: str, context: AppContext = Depends(get_context)):
     try:
-        return context.chat_runs.get(matter_id, run_id)
+        return context.chat_runs.get(matter_id, run_id, include_execution=False)
     except WorkspaceConflict as exc:
         raise HTTPException(status_code=409, detail=exc.detail) from exc
     except (KeyError, FileNotFoundError) as exc:

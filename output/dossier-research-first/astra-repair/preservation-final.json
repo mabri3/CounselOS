@@ -1,0 +1,62 @@
+{
+  "checked_at": "2026-09-12T08:19:51.665668+00:00",
+  "head": "cbac9f39dffd2ffa24f5ae123e332e929a8df770",
+  "baseline_files_checked": 11527,
+  "unchanged": 11493,
+  "changed": [
+    "backend/app/agents/output.py",
+    "backend/app/models/dossier_request.py",
+    "backend/app/models/research_investigation.py",
+    "backend/app/services/dossier_generation.py",
+    "backend/app/services/dossier_generation_chat.py",
+    "backend/app/services/dossier_generation_context.py",
+    "backend/app/services/dossier_references.py",
+    "backend/app/services/dossier_request_execution.py",
+    "backend/app/services/dossier_requests.py",
+    "backend/app/services/dossier_research.py",
+    "backend/app/services/main_agent_research.py",
+    "backend/app/services/research.py",
+    "backend/app/services/research_checkpoints.py",
+    "backend/app/services/research_collection.py",
+    "backend/app/services/research_runs.py",
+    "backend/app/services/workspace.py",
+    "backend/tests/manual/serve_dossier_research.py",
+    "backend/tests/test_dossier_batch_publication.py",
+    "backend/tests/test_dossier_generation_chat.py",
+    "backend/tests/test_dossier_request_api.py",
+    "backend/tests/test_research.py",
+    "backend/tests/test_source_library_repairs.py",
+    "frontend/components/ChatPanel.tsx",
+    "frontend/components/DocumentPanel.tsx",
+    "frontend/components/DossierResearchCard.tsx",
+    "frontend/components/MatterWorkspace.tsx",
+    "frontend/components/experimental/ExperimentalChat.tsx",
+    "frontend/components/workspace/ClaimMarkdown.tsx",
+    "frontend/components/workspace/ReferencePreview.tsx",
+    "frontend/lib/api.ts",
+    "frontend/lib/dossierRequests.ts",
+    "frontend/lib/types.ts",
+    "frontend/lib/workspaceTypes.ts",
+    "frontend/scripts/check-citation-reading.ts"
+  ],
+  "missing": [],
+  "unexpected_changes": [],
+  "new_source_files": [
+    "backend/tests/test_dossier_research_repairs.py"
+  ],
+  "protected_hashes": {
+    ".counsel-os/active-vault.json": "7116f19dcdb721ad716f5e95e46f144b5ad55f4973e3bb8787fe809d1feadcd2",
+    "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/dossier.md": "43e981a01383ccc2a4531516146ddbce7f0ec3a78f1b3d4c09f6c2de88e086b2",
+    "handoffs/dossier-research-first.handoff-progress.md": "9f54ad1c853b406a8d0ef76aba9dffb3c48ad7097ca50f82f477e43bedba244a",
+    "output/matter-memory-paths/capacity.json": "1e2fd0c7078ea0a8c773b650ff9e87957f58623335f1c2091e36a8a2ff39cc3f"
+  },
+  "changed_since_full_suite_started": [
+    "frontend/components/workspace/ClaimMarkdown.tsx"
+  ],
+  "backend_source_unchanged_during_final_suite": true,
+  "notes": [
+    "Known capacity test output restored to exact original bytes.",
+    "Graph files were already dirty and are intentionally updated with graphify. The original review baseline excluded the graph and generated caches.",
+    "Original review evidence is retained. It was not edited during repair; it is not part of the pre-review baseline hash audit."
+  ]
+}

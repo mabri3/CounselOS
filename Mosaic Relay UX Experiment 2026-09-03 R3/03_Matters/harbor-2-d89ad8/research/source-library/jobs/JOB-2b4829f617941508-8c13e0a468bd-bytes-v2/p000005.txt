@@ -1,0 +1,49 @@
+ 
+5 
+ 
+category modifiers such as "plus" or "minus" for S&P, or the equivalent for any other eligible 
+rating service. Long-term credit ratings are deemed eligible if the rating is equal to A- or higher 
+by S&P, or the equivalent from any other eligible rating service. Short-term credit ratings are 
+deemed eligible if the rating is equal to or higher than A-2 or SP-2 by S&P, or the equivalent from 
+any other eligible rating service. In the event that ratings differ among eligible rating services, the 
+highest rating shall apply when determining whether a security bears an eligible rating. 
+(h) 
+"Eligible rating service" shall mean any Nationally Recognized Statistical 
+Rating Organization (NRSRO) as defined by the U.S. Securities and Exchange Commission, and 
+any other organization designated by the [Commissioner] by rule or order. 
+(i) 
+"Federally insured depository financial institution" means a bank, credit 
+union, savings and loan association, trust company, savings association, savings bank, industrial 
+bank, or industrial loan company organized under the laws of the United States or any state of the 
+United States, when such bank, credit union, savings and loan association, trust company, savings 
+association, savings bank, industrial bank, or industrial loan company has federally insured 
+deposits. 
+(j) 
+"In this state" means at a physical location within this state for a transaction 
+requested in person.  For a transaction requested electronically or by phone, the provider of money 
+transmission may determine if the person requesting the transaction is "in this state" by relying on 
+other information provided by the person regarding the location of the individual's residential 
+address or a business entity's principal place of business or other physical address location, and 
+any records associated with the person that the provider of money transmission may have that 
+indicate such location, including but not limited to an address associated with an account. 
+(k) 
+"Individual" means a natural person.3 
+(l) 
+"Key individual" means any individual ultimately responsible for 
+establishing or directing policies and procedures of the licensee, such as an executive officer, 
+manager, director, or trustee.4 
+(m) 
+"Licensee" means a person licensed under this [Act]. 
+(n) 
+"Material litigation" means litigation, that according to United States 
+generally accepted accounting principles, is significant to a person's financial health and would be 
+required to be disclosed in the person's annual audited financial statements, report to shareholders, 
+or similar records. 
+ 
+3 Commentary: This Act differentiates between persons and individuals. A person can include both a natural person 
+and a corporate entity, whereas an individual can only be a natural person. 
+4 Commentary: Key individuals are limited to the natural persons responsible for establishing or approving policies 
+and procedures relating to material functional areas of the licensee or applicant. Such areas generally include 
+compliance, finance, information security, and operations. States are strongly encouraged to utilize the NMLS Key 
+Individual Wizard to ensure consistency, including that only the minimum number of key individuals with ultimate 
+responsibility for policies and procedures are identified. 

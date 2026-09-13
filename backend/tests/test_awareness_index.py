@@ -312,6 +312,16 @@ def test_indexed_search_keeps_legacy_substring_matching(awareness_index):
     )
 
 
+def test_search_stores_content_once_and_preserves_unicode_matching(awareness_index):
+    index, vault, _ = awareness_index
+    vault.write_markdown("notes/unicode.md", "# Place\n\nİstanbul", {})
+    index.rebuild()
+    assert index.lexical_search("İst", relative_path="notes") == vault.lexical_search("İst", relative_path="notes")
+    with index._connect() as connection:
+        assert connection.execute("SELECT name FROM sqlite_master WHERE name = 'vault_search_content'").fetchone() is None
+        assert connection.execute("SELECT content FROM vault_search_documents WHERE path = 'notes/unicode.md'").fetchone()[0] == vault.read_text("notes/unicode.md")
+
+
 def test_indexed_search_prunes_candidates_without_a_full_content_scan(
     awareness_index, monkeypatch,
 ):

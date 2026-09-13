@@ -1,0 +1,181 @@
+Browser tab: 2, Title: "Themis.ai", URL: "http://localhost:3207/matters/MAT-DEMO-BEACON".
+1 AXWebArea Themis.ai, URL: localhost:3207/matters/MAT-DEMO-BEACON
+	2 container
+		3 button (collapsed) themis.ai, Secondary Actions: Expand
+			4 text themis.ai
+		5 container matter-MAT-DEMO-BEACON
+			6 container
+				7 text Waiting on Brian Harris
+				8 link Description: Matters, Value: localhost:3207/matters
+				9 heading Beacon: Instant Business Onboarding, Value: 1
+					10 text Beacon: Instant Business Onboarding
+				11 button (collapsed) Matter details, Secondary Actions: Expand
+					12 text Matter details
+				13 button (collapsed) Tools and history, Secondary Actions: Expand
+			135 text Research queue updated.
+			17 container Matter workspace
+				18 container
+					19 container Matter workspace view
+						20 text Matter workspace view
+						21 radio button (settable, integer) Description: Understand, Value: 0, ID: workspace-view-MAT-DEMO-BEACON-understand
+						22 container Read the current matter
+							23 text Understand
+						24 radio button (settable, integer) Description: Discuss, Value: 0, ID: workspace-view-MAT-DEMO-BEACON-discuss
+						25 container Continue one matter conversation
+							26 text Discuss
+						27 radio button (settable, integer) Description: Draft, Value: 1, ID: workspace-view-MAT-DEMO-BEACON-draft
+						28 container Review and prepare work product
+							29 text Draft
+					30 button Decision map
+				136 container Source reading
+					137 container
+						138 button ← Back to where you were
+							139 text ← Back to 
+							140 text where you were
+						141 text READING SOURCE
+						142 heading Source reading, Value: 2
+							143 text Source reading
+						144 text Saved
+					145 container
+						146 heading Generated dossier revision, Value: 3
+							147 text Generated dossier revision
+						148 text 03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-6dec748c9cbb7ec05b1a.md Saved revision 061510b6d7d288bf5ff5b3951bd8042d2de615ff3658abfaaaf847b4b3442beb Reading source
+					149 container Referenced excerpt
+						150 text REFERENCED EXCERPT
+						151 container
+							152 text Exact passage unavailable . No excerpt was saved with this reference.
+						153 text Reading this source does not add it to the agent request.
+					154 container Source actions
+						155 button Create working copy
+						156 button Use in this request
+					157 container Claim support
+						158 heading Claim support, Value: 3, ID: claim-support-heading
+							159 text Claim support
+						160 text Claim
+						161 text No linked claim
+						162 text Source
+						163 container
+							164 text Saved source  · Generated dossier revision
+						165 text Passage
+						166 text Exact passage unavailable
+						167 text Applicability
+						168 text No applicability explanation saved
+					169 text Exact passage unavailable
+					170 container
+						171 heading Full saved source, Value: 3
+							172 text Full saved source
+						173 text # Beacon launch dossier
+
+## Current position
+
+Proceed only after the saved employment, privacy, supplier, IP, and marketing conditions are reviewed. This is deterministic fixture analysis.
+
+## Decision question
+
+Can the launch proceed with conditions?
+
+## Material facts
+
+- Reported fact: Product proposed October 15, 2026 as the launch date. [Read the saved launch brief](03_Matters/beacon-instant-onboarding/source-documents/launch-brief.md)
+
+- Reported fact: all five workstreams remain open. [Read the saved issue list](03_Matters/beacon-instant-onboarding/issues.md)
+
+## Proposed date
+
+- October 15, 2026 — basis: Product's saved launch brief. This is a proposed operating date, not a verified legal deadline.
+
+## Launch conditions checklist
+
+- [ ] Confirm employment terms and staffing controls.
+
+- [ ] Confirm privacy notice, purpose, and access limits.
+
+- [ ] Confirm supplier transfer, exit, and service terms.
+
+- [ ] Confirm ownership and trademark permission.
+
+- [ ] Confirm evidence for public marketing claims.
+
+## Issues
+
+<!-- issue:ISS-096297ff82-93f86037a1dc276c -->
+
+### Employment terms: Confirm worker terms and launch staffing conditions.
+
+**Current answer:** Conditional. Do not treat the issue as closed.
+
+**Rule and support:** **No external authority retrieved**
+
+The two supplied notice clauses could not both be read. Obtain both versions before choosing a notice date.
+
+**Application:** Apply the saved conditions to the planned launch; do not infer missing facts.
+
+**Next step:** Complete the checklist item and record the controlling source version.
+
+<!-- issue:ISS-096297ff82-94f4f4428b1d74dd -->
+
+### Customer privacy: Confirm notice, purpose, and access controls.
+
+**Current answer:** Conditional. Do not treat the issue as closed.
+
+**Rule and support:** **No external authority retrieved**
+
+The two supplied notice clauses could not both be read. Obtain both versions before choosing a notice date.
+
+**Application:** Apply the saved conditions to the planned launch; do not infer missing facts.
+
+**Next step:** Complete the checklist item and record the controlling source version.
+
+<!-- issue:ISS-096297ff82-2809ad77797154fd -->
+
+### Supplier contract: Confirm service levels, termination, and transfer terms.
+
+**Current answer:** Conditional. Do not treat the issue as closed.
+
+**Rule and support:** **No external authority retrieved**
+
+The two supplied notice clauses could not both be read. Obtain both versions before choosing a notice date.
+
+**Application:** Apply the saved conditions to the planned launch; do not infer missing facts.
+
+**Next step:** Complete the checklist item and record the controlling source version.
+
+<!-- issue:ISS-096297ff82-658fe450083ec3ab -->
+
+### Intellectual property: Confirm ownership and trademark permission.
+
+**Current answer:** Conditional. Do not treat the issue as closed.
+
+**Rule and support:** Research is not complete. Keep this workstream open.
+
+**Application:** Apply the saved conditions to the planned launch; do not infer missing facts.
+
+**Next step:** Complete the checklist item and record the controlling source version.
+
+<!-- issue:ISS-096297ff82-824b92d87b0cf804 -->
+
+### Marketing claims: Confirm evidence for public launch claims.
+
+**Current answer:** Conditional. Do not treat the issue as closed.
+
+**Rule and support:** Research is not complete. Keep this workstream open.
+
+**Application:** Apply the saved conditions to the planned launch; do not infer missing facts.
+
+**Next step:** Complete the checklist item and record the controlling source version.
+
+## Next actions
+
+1. Legal reviews the three initial launch blockers.
+
+2. Product keeps the proposed date conditional.
+
+3. Procurement and Marketing complete the remaining two workstreams.
+
+				84 button (collapsed) Discussion help, Secondary Actions: Expand
+					85 text Discussion help
+				174 button (collapsed) Show discussion, Secondary Actions: Expand
+	86 pop up button (collapsed) Description: Open Next.js Dev Tools, ID: next-logo, Secondary Actions: Expand
+		87 image
+
+The focused UI element is 138 button ← Back to where you were

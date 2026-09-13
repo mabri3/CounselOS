@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="6" time="41.655" timestamp="2026-09-11T23:57:29.835648-07:00" hostname="Mac"><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR16_restart_partial_batch_publishes_all_completed_siblings" time="2.172" /><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR17_no_fourth_worker_after_thirty_seconds" time="35.650"><failure message="AssertionError: Coordinator starts its three workers after an arbitrary wait while ordinary research is still active&#10;assert 4 == 1">app_context = &lt;app.runtime.AppContext object at 0x106e04da0&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR17_no_fourth_worker_after_thirty_seconds(app_context):
+        app=app_context; gate=asyncio.Event(); provider=ReviewProvider(app,gate=gate); install(app,provider)
+        iid=provider.ids[0]
+        ordinary=app.research_runs.start(MATTER,['Ordinary research remains active.'],issue_id=iid)
+        await asyncio.wait_for(provider.entered.wait(),3)
+        status=await prepare(app,provider,action='review-fourth-worker')
+        assert (await start(app,status)).status_code==202
+        try:
+            async with asyncio.timeout(34):
+                while len(provider.workers)&lt;4:
+                    await asyncio.sleep(.05)
+        except TimeoutError:
+            pass
+        count=len(provider.workers); gate.set(); await finished(app,status)
+        print('concurrent provider entries before releasing ordinary run',count)
+&gt;       assert count==1, 'Coordinator starts its three workers after an arbitrary wait while ordinary research is still active'
+E       AssertionError: Coordinator starts its three workers after an arbitrary wait while ordinary research is still active
+E       assert 4 == 1
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:345: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR18_priority_edit_is_sent_to_workers" time="1.430"><failure message="AssertionError: Edited priority text is saved but never used in a worker brief&#10;assert 'LAWYER_PRIORITY_SENTINEL' in '# Operating standards\n\n---\n\n---\nrecord_type: agent_standards\nversion: 0.1.0\n---\n# Agent Standards\n\n## Share...le. Always retain useful Markdown, and end it with a concrete Next action even if optional structure is unavailable.\n'&#10; +  where '# Operating standards\n\n---\n\n---\nrecord_type: agent_standards\nversion: 0.1.0\n---\n# Agent Standards\n\n## Share...le. Always retain useful Markdown, and end it with a concrete Next action even if optional structure is unavailable.\n' = &lt;built-in method join of str object at 0x1012fe6d0&gt;(['# Operating standards\n\n---\n\n---\nrecord_type: agent_standards\nversion: 0.1.0\n---\n# Agent Standards\n\n## Shar...e. Always retain useful Markdown, and end it with a concrete Next action even if optional structure is unavailable.\n'])&#10; +    where &lt;built-in method join of str object at 0x1012fe6d0&gt; = '\n'.join&#10; +    and   ['# Operating standards\n\n---\n\n---\nrecord_type: agent_standards\nversion: 0.1.0\n---\n# Agent Standards\n\n## Shar...e. Always retain useful Markdown, and end it with a concrete Next action even if optional structure is unavailable.\n'] = &lt;test_review_diagnostics.ReviewProvider object at 0x106e2a5d0&gt;.worker_inputs">app_context = &lt;app.runtime.AppContext object at 0x106e05fa0&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR18_priority_edit_is_sent_to_workers(app_context):
+        app=app_context; provider=ReviewProvider(app); status=await prepare(app,provider)
+        priorities=[dict(p) for p in status['priorities']]
+        priorities[0]['text']='LAWYER_PRIORITY_SENTINEL: assess export escrow before any transfer'
+        priorities[0]['why']='User changed the operational focus.'; priorities[0]['changed']=True
+        assert (await start(app,status,choices(status,priorities=priorities))).status_code==202
+        await finished(app,status)
+&gt;       assert 'LAWYER_PRIORITY_SENTINEL' in '\n'.join(provider.worker_inputs), 'Edited priority text is saved but never used in a worker brief'
+E       AssertionError: Edited priority text is saved but never used in a worker brief
+E       assert 'LAWYER_PRIORITY_SENTINEL' in '# Operating standards\n\n---\n\n---\nrecord_type: agent_standards\nversion: 0.1.0\n---\n# Agent Standards\n\n## Share...le. Always retain useful Markdown, and end it with a concrete Next action even if optional structure is unavailable.\n'
+E        +  where '# Operating standards\n\n---\n\n---\nrecord_type: agent_standards\nversion: 0.1.0\n---\n# Agent Standards\n\n## Share...le. Always retain useful Markdown, and end it with a concrete Next action even if optional structure is unavailable.\n' = &lt;built-in method join of str object at 0x1012fe6d0&gt;(['# Operating standards\n\n---\n\n---\nrecord_type: agent_standards\nversion: 0.1.0\n---\n# Agent Standards\n\n## Shar...e. Always retain useful Markdown, and end it with a concrete Next action even if optional structure is unavailable.\n'])
+E        +    where &lt;built-in method join of str object at 0x1012fe6d0&gt; = '\n'.join
+E        +    and   ['# Operating standards\n\n---\n\n---\nrecord_type: agent_standards\nversion: 0.1.0\n---\n# Agent Standards\n\n## Shar...e. Always retain useful Markdown, and end it with a concrete Next action even if optional structure is unavailable.\n'] = &lt;test_review_diagnostics.ReviewProvider object at 0x106e2a5d0&gt;.worker_inputs
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:355: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR19_action_reuse_conflicts_on_changed_priority_text" time="1.336"><failure message="AssertionError: Same action key with different priority text is silently accepted as identical&#10;assert 202 == 409&#10; +  where 202 = &lt;Response [202 Accepted]&gt;.status_code">app_context = &lt;app.runtime.AppContext object at 0x109b6ec90&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR19_action_reuse_conflicts_on_changed_priority_text(app_context):
+        app=app_context; gate=asyncio.Event(); provider=ReviewProvider(app,gate=gate); status=await prepare(app,provider)
+        payload=choices(status); assert (await start(app,status,payload)).status_code==202
+        altered=json.loads(json.dumps(payload)); altered['priorities'][0]['text']='Different user choice'
+        response=await start(app,status,altered)
+        gate.set(); await finished(app,status)
+&gt;       assert response.status_code==409, 'Same action key with different priority text is silently accepted as identical'
+E       AssertionError: Same action key with different priority text is silently accepted as identical
+E       assert 202 == 409
+E        +  where 202 = &lt;Response [202 Accepted]&gt;.status_code
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:364: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR20_internal_passage_and_duplicate_records_are_not_external_reads" time="0.188"><failure message="assert (3 == 1)">app_context = &lt;app.runtime.AppContext object at 0x10986d0a0&gt;
+
+    def test_AR20_internal_passage_and_duplicate_records_are_not_external_reads(app_context):
+        from app.services.dossier_request_execution import DossierRequestExecutor
+        app=app_context; executor=DossierRequestExecutor(app.dossier_requests,MATTER,'DOR-counts')
+        path=app.matters.matter_path(MATTER)+'/research/review-counts.md'
+        external={'source_id':'SRC-review','source_hash':'v1','source_kind':'external','support_state':'retrieved','selected_passages':[{'quote':'A saved rule.'}]}
+        internal={'source_id':'FACT-review','source_kind':'internal','source_class':'reported_fact','support_state':'retrieved','selected_passages':[{'quote':'A supplied business fact.'}]}
+        app.vault.write_markdown(path,'Synthetic count fixture.',{'source_records':[internal,external,dict(external)]})
+        counts=executor._packet_counts(path); print('source counts',counts)
+&gt;       assert counts['sources_read']==1 and counts['sources_retrieved']==1
+E       assert (3 == 1)
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:375: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR21_distinct_source_versions_survive_combined_catalog" time="0.000"><failure message="AssertionError: Source-id-only deduplication discards one captured version&#10;assert 1 == 2&#10; +  where 1 = len([{'selected_passages': [{'quote': 'Original clause.'}], 'source_hash': 'version-a', 'source_id': 'SRC-review', 'source_version': 'a'}])">def test_AR21_distinct_source_versions_survive_combined_catalog():
+        from app.services.dossier_request_execution import _combined_source_records
+        records=[{'source_id':'SRC-review','source_hash':'version-a','source_version':'a','selected_passages':[{'quote':'Original clause.'} ]},
+                 {'source_id':'SRC-review','source_hash':'version-b','source_version':'b','selected_passages':[{'quote':'Changed clause.'}]}]
+        result=_combined_source_records({'issue_positions':{'a':{'source_records':[records[0]]},'b':{'source_records':[records[1]]}}},[])
+&gt;       assert len(result)==2, 'Source-id-only deduplication discards one captured version'
+E       AssertionError: Source-id-only deduplication discards one captured version
+E       assert 1 == 2
+E        +  where 1 = len([{'selected_passages': [{'quote': 'Original clause.'}], 'source_hash': 'version-a', 'source_id': 'SRC-review', 'source_version': 'a'}])
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:383: AssertionError</failure></testcase></testsuite></testsuites>

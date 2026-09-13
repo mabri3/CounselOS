@@ -1,0 +1,200 @@
+{
+  "action_actor": {
+    "person_id": "local-lawyer",
+    "display_name": "Unattributed lawyer",
+    "mode": "single"
+  },
+  "run_id": "RUN-20260911-d66c7b",
+  "matter_id": "MAT-20260909-d89ad8",
+  "conversation_id": "CONV-20260909-5299cf",
+  "state": "completed",
+  "status": "Chat is complete.",
+  "created_at": "2026-09-11T06:37:45+00:00",
+  "started_at": "2026-09-11T06:37:45+00:00",
+  "finished_at": "2026-09-11T06:38:09+00:00",
+  "failure_detail": null,
+  "failure_class": null,
+  "correlation_id": "COR-20260911-54d033",
+  "milestone": "Completed.",
+  "response": {
+    "reply": "Choose the sources below, then select Start research.\n\nNo durable research run was started.",
+    "conversation_id": "CONV-20260909-5299cf",
+    "trace": [
+      {
+        "tool": "run_research",
+        "status": "success",
+        "summary": "Where should I look for this research?",
+        "mutation_status": "no_change"
+      }
+    ],
+    "changed_paths": [
+      "03_Matters/harbor-2-d89ad8/conversations/CONV-20260909-5299cf.md"
+    ],
+    "refresh": [],
+    "cards": [],
+    "applied_skills": [
+      {
+        "skill_id": "matter-paths",
+        "name": "Matter paths"
+      }
+    ],
+    "review_author": "Themis.ai",
+    "operation_results": [
+      {
+        "action": "research-access-repair:62688a5c-ca98-49d4-97ca-0a64d7268b71:tool:52a2d8a9e25fabf277718ab9",
+        "source_action_key": "research-access-repair:62688a5c-ca98-49d4-97ca-0a64d7268b71:tool:52a2d8a9e25fabf277718ab9",
+        "operation": "run_research",
+        "status": "confirmation_required",
+        "summary": "Where should I look for this research?",
+        "matter_id": "MAT-20260909-d89ad8",
+        "entity_refs": [],
+        "changed_paths": [],
+        "resulting_matter_state": {
+          "stage": "explore",
+          "next_action": "Before close planning proceeds, obtain a state-by-state licensing determination for the four new markets and review the open alerts and SAR history.",
+          "work_state": {
+            "next_action": "Before close planning proceeds, obtain a state-by-state licensing determination for the four new markets and review the open alerts and SAR history.",
+            "next_work_item_id": null,
+            "next_owner": null,
+            "next_actor": "you",
+            "due_at": "2026-09-11",
+            "execution_state": "not_running",
+            "active_run_id": null,
+            "execution_note": "",
+            "signal": {
+              "kind": "waiting_on_you",
+              "label": "Waiting on you"
+            }
+          },
+          "consistency_issues": []
+        },
+        "available_next_actions": [],
+        "required_user_action": "Choose sources for this request. No research has started yet.",
+        "error": null,
+        "recovery": null,
+        "proposal": {
+          "matter_id": "MAT-20260909-d89ad8",
+          "question": "Determine whether money transmitter licenses can transfer or remain effective in an asset acquisition, what notice or approval is required, whether the buyer may operate while approval is pending, and how the post-closing funds flow and control of transfer instructions affect licensing. Focus on the four relevant states if their identities are available in the selected sources.",
+          "public_query": "money transmitter license asset purchase transfer change of control state approval pending operation",
+          "external": true,
+          "other_matters": false,
+          "expected_question_revision": "legacy:6abf4a45ae87313af8db04b89d546e0e1a1c6137341b3d3c0d159c66cf64d54c",
+          "provider_ids": [
+            "firecrawl",
+            "polaris"
+          ],
+          "cost_notice": "External search may incur provider charges, including fallback searches and retries. No price estimate is available. This does not authorize future databases.",
+          "sensitivity_notice": "Other matters may contain sensitive information. Relevant saved records from active matters will be included in this matter's analysis. This is not an access-control system.",
+          "native_available": false,
+          "native": false,
+          "model_selection": {
+            "provider": "openai_compatible",
+            "model": "kimi-k3-fast",
+            "reasoning_effort": "default"
+          },
+          "firecrawl_available": true,
+          "main_model_selection": {
+            "provider": "codex",
+            "model": "gpt-5.6-sol",
+            "reasoning_effort": "medium"
+          },
+          "collector_model_selection": {
+            "provider": "openai_compatible",
+            "model": "kimi-k3-fast",
+            "reasoning_effort": "default"
+          },
+          "allow_followup_queries": true
+        }
+      },
+      {
+        "action": "save_scenario_analysis",
+        "operation": "save_scenario_analysis",
+        "status": "changed",
+        "summary": "Saved historical scenario analysis.",
+        "changed_paths": []
+      }
+    ]
+  },
+  "operation_results": [
+    {
+      "action": "research-access-repair:62688a5c-ca98-49d4-97ca-0a64d7268b71:tool:52a2d8a9e25fabf277718ab9",
+      "source_action_key": "research-access-repair:62688a5c-ca98-49d4-97ca-0a64d7268b71:tool:52a2d8a9e25fabf277718ab9",
+      "operation": "run_research",
+      "status": "confirmation_required",
+      "summary": "Where should I look for this research?",
+      "matter_id": "MAT-20260909-d89ad8",
+      "entity_refs": [],
+      "changed_paths": [],
+      "resulting_matter_state": {
+        "stage": "explore",
+        "next_action": "Before close planning proceeds, obtain a state-by-state licensing determination for the four new markets and review the open alerts and SAR history.",
+        "work_state": {
+          "next_action": "Before close planning proceeds, obtain a state-by-state licensing determination for the four new markets and review the open alerts and SAR history.",
+          "next_work_item_id": null,
+          "next_owner": null,
+          "next_actor": "you",
+          "due_at": "2026-09-11",
+          "execution_state": "not_running",
+          "active_run_id": null,
+          "execution_note": "",
+          "signal": {
+            "kind": "waiting_on_you",
+            "label": "Waiting on you"
+          }
+        },
+        "consistency_issues": []
+      },
+      "available_next_actions": [],
+      "required_user_action": "Choose sources for this request. No research has started yet.",
+      "error": null,
+      "recovery": null,
+      "proposal": {
+        "matter_id": "MAT-20260909-d89ad8",
+        "question": "Determine whether money transmitter licenses can transfer or remain effective in an asset acquisition, what notice or approval is required, whether the buyer may operate while approval is pending, and how the post-closing funds flow and control of transfer instructions affect licensing. Focus on the four relevant states if their identities are available in the selected sources.",
+        "public_query": "money transmitter license asset purchase transfer change of control state approval pending operation",
+        "external": true,
+        "other_matters": false,
+        "expected_question_revision": "legacy:6abf4a45ae87313af8db04b89d546e0e1a1c6137341b3d3c0d159c66cf64d54c",
+        "provider_ids": [
+          "firecrawl",
+          "polaris"
+        ],
+        "cost_notice": "External search may incur provider charges, including fallback searches and retries. No price estimate is available. This does not authorize future databases.",
+        "sensitivity_notice": "Other matters may contain sensitive information. Relevant saved records from active matters will be included in this matter's analysis. This is not an access-control system.",
+        "native_available": false,
+        "native": false,
+        "model_selection": {
+          "provider": "openai_compatible",
+          "model": "kimi-k3-fast",
+          "reasoning_effort": "default"
+        },
+        "firecrawl_available": true,
+        "main_model_selection": {
+          "provider": "codex",
+          "model": "gpt-5.6-sol",
+          "reasoning_effort": "medium"
+        },
+        "collector_model_selection": {
+          "provider": "openai_compatible",
+          "model": "kimi-k3-fast",
+          "reasoning_effort": "default"
+        },
+        "allow_followup_queries": true
+      }
+    },
+    {
+      "action": "save_scenario_analysis",
+      "operation": "save_scenario_analysis",
+      "status": "changed",
+      "summary": "Saved historical scenario analysis.",
+      "changed_paths": []
+    }
+  ],
+  "path": "03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-d66c7b.md",
+  "selection": {
+    "agent_id": "counsel-copilot",
+    "provider": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "medium"
+  }
+}

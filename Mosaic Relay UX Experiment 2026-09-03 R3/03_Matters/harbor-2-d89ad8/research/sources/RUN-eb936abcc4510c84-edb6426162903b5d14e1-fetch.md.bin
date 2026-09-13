@@ -1,0 +1,626 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!--[if IE 6]><html class="ie6" xmlns="http://www.w3.org/1999/xhtml"><![endif]-->
+<!--[if IE 7]><html class="lt-ie8 lt-ie9" xmlns="http://www.w3.org/1999/xhtml"><![endif]-->
+<!--[if IE 8]><html class="lt-ie9" xmlns="http://www.w3.org/1999/xhtml"><![endif]-->
+<!--[if gt IE 8]><!--><html xmlns="http://www.w3.org/1999/xhtml"><!--<![endif]-->
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=1" />
+  <meta name="referrer" content="origin" />
+  <meta name="HandheldFriendly" content="true" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>FinCEN MSB registration acquisition change of control notification requirements at DuckDuckGo</title>
+  <link title="DuckDuckGo (HTML)" type="application/opensearchdescription+xml" rel="search" href="//duckduckgo.com/opensearch_html_v2.xml" />
+  <link href="//duckduckgo.com/favicon.ico" rel="shortcut icon" />
+  <link rel="icon" href="//duckduckgo.com/favicon.ico" type="image/x-icon" />
+  <link id="icon60" rel="apple-touch-icon" href="//duckduckgo.com/assets/icons/meta/DDG-iOS-icon_60x60.png?v=2"/>
+  <link id="icon76" rel="apple-touch-icon" sizes="76x76" href="//duckduckgo.com/assets/icons/meta/DDG-iOS-icon_76x76.png?v=2"/>
+  <link id="icon120" rel="apple-touch-icon" sizes="120x120" href="//duckduckgo.com/assets/icons/meta/DDG-iOS-icon_120x120.png?v=2"/>
+  <link id="icon152" rel="apple-touch-icon" sizes="152x152" href="//duckduckgo.com/assets/icons/meta/DDG-iOS-icon_152x152.png?v=2"/>
+  <link rel="image_src" href="//duckduckgo.com/assets/icons/meta/DDG-icon_256x256.png">
+  <link rel="stylesheet" media="handheld, all" href="//duckduckgo.com/dist/h.7bcf94631b5964fa5ad7.css" type="text/css"/>
+</head>
+
+<body class="body--html">
+  <a name="top" id="top"></a>
+
+  <form action="/html/" method="post">
+    <input type="text" name="state_hidden" id="state_hidden" />
+  </form>
+
+  <div>
+    <div class="site-wrapper-border"></div>
+
+    <div id="header" class="header cw header--html">
+      <a title="DuckDuckGo" href="/html/" class="header__logo-wrap"></a>
+
+      <form name="x" class="header__form" action="/html/" method="post">
+        <div class="search search--header">
+          <input name="q" autocomplete="off" class="search__input" id="search_form_input_homepage" type="text" value="FinCEN MSB registration acquisition change of control notification requirements" />
+          <input name="b" id="search_button_homepage" class="search__button search__button--html" value="" title="Search" alt="Search" type="submit" />
+        </div>
+
+        
+        
+        
+        
+
+        <div class="frm__select">
+          <select name="kl">
+            
+              <option value="" >All Regions</option>
+            
+              <option value="ar-es" >Argentina</option>
+            
+              <option value="au-en" >Australia</option>
+            
+              <option value="at-de" >Austria</option>
+            
+              <option value="be-fr" >Belgium (fr)</option>
+            
+              <option value="be-nl" >Belgium (nl)</option>
+            
+              <option value="br-pt" >Brazil</option>
+            
+              <option value="bg-bg" >Bulgaria</option>
+            
+              <option value="ca-en" >Canada (en)</option>
+            
+              <option value="ca-fr" >Canada (fr)</option>
+            
+              <option value="ct-ca" >Catalonia</option>
+            
+              <option value="cl-es" >Chile</option>
+            
+              <option value="cn-zh" >China</option>
+            
+              <option value="co-es" >Colombia</option>
+            
+              <option value="hr-hr" >Croatia</option>
+            
+              <option value="cz-cs" >Czech Republic</option>
+            
+              <option value="dk-da" >Denmark</option>
+            
+              <option value="ee-et" >Estonia</option>
+            
+              <option value="fi-fi" >Finland</option>
+            
+              <option value="fr-fr" >France</option>
+            
+              <option value="de-de" >Germany</option>
+            
+              <option value="gr-el" >Greece</option>
+            
+              <option value="hk-tzh" >Hong Kong</option>
+            
+              <option value="hu-hu" >Hungary</option>
+            
+              <option value="is-is" >Iceland</option>
+            
+              <option value="in-en" >India (en)</option>
+            
+              <option value="id-en" >Indonesia (en)</option>
+            
+              <option value="ie-en" >Ireland</option>
+            
+              <option value="il-en" >Israel (en)</option>
+            
+              <option value="it-it" >Italy</option>
+            
+              <option value="jp-jp" >Japan</option>
+            
+              <option value="kr-kr" >Korea</option>
+            
+              <option value="lv-lv" >Latvia</option>
+            
+              <option value="lt-lt" >Lithuania</option>
+            
+              <option value="my-en" >Malaysia (en)</option>
+            
+              <option value="mx-es" >Mexico</option>
+            
+              <option value="nl-nl" >Netherlands</option>
+            
+              <option value="nz-en" >New Zealand</option>
+            
+              <option value="no-no" >Norway</option>
+            
+              <option value="pk-en" >Pakistan (en)</option>
+            
+              <option value="pe-es" >Peru</option>
+            
+              <option value="ph-en" >Philippines (en)</option>
+            
+              <option value="pl-pl" >Poland</option>
+            
+              <option value="pt-pt" >Portugal</option>
+            
+              <option value="ro-ro" >Romania</option>
+            
+              <option value="ru-ru" >Russia</option>
+            
+              <option value="xa-ar" >Saudi Arabia</option>
+            
+              <option value="sg-en" >Singapore</option>
+            
+              <option value="sk-sk" >Slovakia</option>
+            
+              <option value="sl-sl" >Slovenia</option>
+            
+              <option value="za-en" >South Africa</option>
+            
+              <option value="es-ca" >Spain (ca)</option>
+            
+              <option value="es-es" >Spain (es)</option>
+            
+              <option value="se-sv" >Sweden</option>
+            
+              <option value="ch-de" >Switzerland (de)</option>
+            
+              <option value="ch-fr" >Switzerland (fr)</option>
+            
+              <option value="tw-tzh" >Taiwan</option>
+            
+              <option value="th-en" >Thailand (en)</option>
+            
+              <option value="tr-tr" >Turkey</option>
+            
+              <option value="us-en" >US (English)</option>
+            
+              <option value="us-es" >US (Spanish)</option>
+            
+              <option value="ua-uk" >Ukraine</option>
+            
+              <option value="uk-en" >United Kingdom</option>
+            
+              <option value="vn-en" >Vietnam (en)</option>
+            
+          </select>
+        </div>
+
+        <div class="frm__select frm__select--last">
+          <select class="" name="df">
+            
+              <option value="" selected>Any Time</option>
+            
+              <option value="d" >Past Day</option>
+            
+              <option value="w" >Past Week</option>
+            
+              <option value="m" >Past Month</option>
+            
+              <option value="y" >Past Year</option>
+            
+          </select>
+        </div>
+      </form>
+    </div>
+
+    
+
+    
+      <!-- Web results are present -->
+      <div>
+        <div class="serp__results">
+          <div id="links" class="results">
+            
+
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.fincen.gov%2Fresources%2Fmoney%2Dservices%2Dbusiness%2Dmsb%2Dregistration&amp;rut=3a131657ccc17607fc6bd00a3a98c75160143ec2dc0eb9d0335fe08fcbdc925d">Money Services Business (MSB) Registration - FinCEN.gov</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.fincen.gov%2Fresources%2Fmoney%2Dservices%2Dbusiness%2Dmsb%2Dregistration&amp;rut=3a131657ccc17607fc6bd00a3a98c75160143ec2dc0eb9d0335fe08fcbdc925d">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/www.fincen.gov.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.fincen.gov%2Fresources%2Fmoney%2Dservices%2Dbusiness%2Dmsb%2Dregistration&amp;rut=3a131657ccc17607fc6bd00a3a98c75160143ec2dc0eb9d0335fe08fcbdc925d">
+                            www.fincen.gov/resources/money-services-business-msb-registration
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.fincen.gov%2Fresources%2Fmoney%2Dservices%2Dbusiness%2Dmsb%2Dregistration&amp;rut=3a131657ccc17607fc6bd00a3a98c75160143ec2dc0eb9d0335fe08fcbdc925d">Money Services Business (<b>MSB</b>) <b>Registration</b> NOTICE: On February 24, 2012, the Financial Crimes Enforcement Network (<b>FinCEN</b>) issued a final notice requiring the electronic filing of most <b>FinCEN</b> reports by July 1, 2012. Institutions are strongly encouraged to begin using the BSA E-Filing System as soon as possible.</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.fincen.gov%2Fbsa%2Drequirements%2Dmsbs&amp;rut=58ba251d69740d0db21f68210767d1dcf5176f76423ed5d7fca606b6edbe062a">BSA Requirements for MSBs - FinCEN.gov</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.fincen.gov%2Fbsa%2Drequirements%2Dmsbs&amp;rut=58ba251d69740d0db21f68210767d1dcf5176f76423ed5d7fca606b6edbe062a">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/www.fincen.gov.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.fincen.gov%2Fbsa%2Drequirements%2Dmsbs&amp;rut=58ba251d69740d0db21f68210767d1dcf5176f76423ed5d7fca606b6edbe062a">
+                            www.fincen.gov/bsa-requirements-msbs
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.fincen.gov%2Fbsa%2Drequirements%2Dmsbs&amp;rut=58ba251d69740d0db21f68210767d1dcf5176f76423ed5d7fca606b6edbe062a">BSA <b>Requirements</b> for <b>MSBs</b> Unauthorized Disclosure of SuspiciousActivity Reports (8/18/04) <b>MSB</b> Independent Reviews <b>MSB</b> <b>Registration</b> <b>MSB</b> <b>Registration</b> Renewal Calculator <b>MSB</b> Agent List <b>MSB</b> Suspicious Activity Reporting Establish a written Anti-Money Laundering program (31 CFR § 1022.210) Currency Transaction Report (31 CFR § 1010.311)</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.irs.gov%2Fbusinesses%2Fsmall%2Dbusinesses%2Dself%2Demployed%2Fmoney%2Dservices%2Dbusiness%2Dmsb%2Dinformation%2Dcenter&amp;rut=52c7a2db2d98e905373b8bdaa082060f6f091c95a96f3ea9144faee48eb447d7">Money services business (MSB) information center</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.irs.gov%2Fbusinesses%2Fsmall%2Dbusinesses%2Dself%2Demployed%2Fmoney%2Dservices%2Dbusiness%2Dmsb%2Dinformation%2Dcenter&amp;rut=52c7a2db2d98e905373b8bdaa082060f6f091c95a96f3ea9144faee48eb447d7">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/www.irs.gov.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.irs.gov%2Fbusinesses%2Fsmall%2Dbusinesses%2Dself%2Demployed%2Fmoney%2Dservices%2Dbusiness%2Dmsb%2Dinformation%2Dcenter&amp;rut=52c7a2db2d98e905373b8bdaa082060f6f091c95a96f3ea9144faee48eb447d7">
+                            www.irs.gov/businesses/small-businesses-self-employed/money-services-business-msb-information-center
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.irs.gov%2Fbusinesses%2Fsmall%2Dbusinesses%2Dself%2Demployed%2Fmoney%2Dservices%2Dbusiness%2Dmsb%2Dinformation%2Dcenter&amp;rut=52c7a2db2d98e905373b8bdaa082060f6f091c95a96f3ea9144faee48eb447d7">Registering with the federal government Every <b>MSB</b> must register with <b>FinCEN</b> by electronically filing <b>FinCEN</b> Form 107, <b>Registration</b> <b>of</b> Money Services Business, unless a person or business is only an <b>MSB</b> because they serve as an agent of another <b>MSB</b>.</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.ecfr.gov%2Fcurrent%2Ftitle%2D31%2Fsubtitle%2DB%2Fchapter%2DX%2Fpart%2D1022&amp;rut=48646369563c576dee5c3db31cac9a78f57b073166fa3bb71701bdf0e921d24f">31 CFR Part 1022 -- Rules for Money Services Businesses</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.ecfr.gov%2Fcurrent%2Ftitle%2D31%2Fsubtitle%2DB%2Fchapter%2DX%2Fpart%2D1022&amp;rut=48646369563c576dee5c3db31cac9a78f57b073166fa3bb71701bdf0e921d24f">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/www.ecfr.gov.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.ecfr.gov%2Fcurrent%2Ftitle%2D31%2Fsubtitle%2DB%2Fchapter%2DX%2Fpart%2D1022&amp;rut=48646369563c576dee5c3db31cac9a78f57b073166fa3bb71701bdf0e921d24f">
+                            www.ecfr.gov/current/title-31/subtitle-B/chapter-X/part-1022
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.ecfr.gov%2Fcurrent%2Ftitle%2D31%2Fsubtitle%2DB%2Fchapter%2DX%2Fpart%2D1022&amp;rut=48646369563c576dee5c3db31cac9a78f57b073166fa3bb71701bdf0e921d24f">§ 1022.300 General. Money services businesses are subject to the reporting <b>requirements</b> set forth and cross referenced in this subpart. Money services businesses should also refer to subpart C of part 1010 of this chapter for reporting <b>requirements</b> contained in that subpart which apply to money services businesses.</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.ecfr.gov%2Fcurrent%2Ftitle%2D31%2Fsubtitle%2DB%2Fchapter%2DX%2Fpart%2D1022%2Fsubpart%2DC%2Fsection%2D1022.380&amp;rut=6521dee92d9082e8bd688e330cd3de195d5ad14d572968e03431117ef1f0c534">31 CFR 1022.380 -- Registration of money services businesses.</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.ecfr.gov%2Fcurrent%2Ftitle%2D31%2Fsubtitle%2DB%2Fchapter%2DX%2Fpart%2D1022%2Fsubpart%2DC%2Fsection%2D1022.380&amp;rut=6521dee92d9082e8bd688e330cd3de195d5ad14d572968e03431117ef1f0c534">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/www.ecfr.gov.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.ecfr.gov%2Fcurrent%2Ftitle%2D31%2Fsubtitle%2DB%2Fchapter%2DX%2Fpart%2D1022%2Fsubpart%2DC%2Fsection%2D1022.380&amp;rut=6521dee92d9082e8bd688e330cd3de195d5ad14d572968e03431117ef1f0c534">
+                            www.ecfr.gov/current/title-31/subtitle-B/chapter-X/part-1022/subpart-C/section-1022.380
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.ecfr.gov%2Fcurrent%2Ftitle%2D31%2Fsubtitle%2DB%2Fchapter%2DX%2Fpart%2D1022%2Fsubpart%2DC%2Fsection%2D1022.380&amp;rut=6521dee92d9082e8bd688e330cd3de195d5ad14d572968e03431117ef1f0c534">A failure to comply with the <b>requirements</b> <b>of</b> 31 U.S.C. 5330 or this section includes the filing of false or materially incomplete information in connection with the <b>registration</b> <b>of</b> a money services business.</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.irs.gov%2Fpub%2Firs%2Dtege%2Ffin107_msbreg.pdf&amp;rut=679a76f4c4f680245f1131df01aca8b7ebe99a3f2e77564acca73d5e4e990cea"><span class="result__type">PDF</span> FinCEN FORM 107 (Rev. 8-2008) - Internal Revenue Service</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.irs.gov%2Fpub%2Firs%2Dtege%2Ffin107_msbreg.pdf&amp;rut=679a76f4c4f680245f1131df01aca8b7ebe99a3f2e77564acca73d5e4e990cea">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/www.irs.gov.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.irs.gov%2Fpub%2Firs%2Dtege%2Ffin107_msbreg.pdf&amp;rut=679a76f4c4f680245f1131df01aca8b7ebe99a3f2e77564acca73d5e4e990cea">
+                            www.irs.gov/pub/irs-tege/fin107_msbreg.pdf
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.irs.gov%2Fpub%2Firs%2Dtege%2Ffin107_msbreg.pdf&amp;rut=679a76f4c4f680245f1131df01aca8b7ebe99a3f2e77564acca73d5e4e990cea">Who Must Register Generally each money services business must register with the Department of the Treasury. This form must be used by a money services business (also referred to as an <b>MSB</b>) to register. However, not all <b>MSBs</b> are required to register . For example, if you are an <b>MSB</b> solely because you are an agent of another <b>MSB</b>, you are not required to register. The discussion below will help ...</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fterms.law%2FTrading%2DLegal%2Fguides%2Fmsb%2Dregistration.html&amp;rut=eb2f31dacd5f5f2f87181ec515c96e04487c17ed164ece23f743c3b1af81651a">MSB Registration: Step-by-Step FinCEN Form 107 Guide (2026) | Avoid $1M ...</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fterms.law%2FTrading%2DLegal%2Fguides%2Fmsb%2Dregistration.html&amp;rut=eb2f31dacd5f5f2f87181ec515c96e04487c17ed164ece23f743c3b1af81651a">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/terms.law.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fterms.law%2FTrading%2DLegal%2Fguides%2Fmsb%2Dregistration.html&amp;rut=eb2f31dacd5f5f2f87181ec515c96e04487c17ed164ece23f743c3b1af81651a">
+                            terms.law/Trading-Legal/guides/msb-registration.html
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fterms.law%2FTrading%2DLegal%2Fguides%2Fmsb%2Dregistration.html&amp;rut=eb2f31dacd5f5f2f87181ec515c96e04487c17ed164ece23f743c3b1af81651a"><b>MSB</b> <b>registration</b> is both a federal <b>requirement</b> (<b>FinCEN</b>) and often triggers state-level money transmitter licensing obligations. This guide covers the federal <b>registration</b> process, state licensing <b>requirements</b>, and exemption analysis.</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.stratisadvisory.com%2Fwp%2Dcontent%2Fuploads%2F2024%2F06%2FStratis%2DAdvisory_Reporting%2DGuide_FinCEN%2DMSB%2DRegistration.pdf&amp;rut=876ece04717ad8a38b8ea7ad0b57fb85d92d64b6ad39dcf9b4eda247ab18bdb7"><span class="result__type">PDF</span> Bank Secrecy Act (BSA): Registration to the US Financial Crimes ...</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.stratisadvisory.com%2Fwp%2Dcontent%2Fuploads%2F2024%2F06%2FStratis%2DAdvisory_Reporting%2DGuide_FinCEN%2DMSB%2DRegistration.pdf&amp;rut=876ece04717ad8a38b8ea7ad0b57fb85d92d64b6ad39dcf9b4eda247ab18bdb7">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/www.stratisadvisory.com.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.stratisadvisory.com%2Fwp%2Dcontent%2Fuploads%2F2024%2F06%2FStratis%2DAdvisory_Reporting%2DGuide_FinCEN%2DMSB%2DRegistration.pdf&amp;rut=876ece04717ad8a38b8ea7ad0b57fb85d92d64b6ad39dcf9b4eda247ab18bdb7">
+                            www.stratisadvisory.com/wp-content/uploads/2024/06/Stratis-Advisory_Reporting-Guide_FinCEN-MSB-Registration.pdf
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.stratisadvisory.com%2Fwp%2Dcontent%2Fuploads%2F2024%2F06%2FStratis%2DAdvisory_Reporting%2DGuide_FinCEN%2DMSB%2DRegistration.pdf&amp;rut=876ece04717ad8a38b8ea7ad0b57fb85d92d64b6ad39dcf9b4eda247ab18bdb7">The Bank Secrecy Act (BSA) requires a money services business (<b>MSB</b>) performing certain services to register with <b>FinCEN</b>. The <b>MSB</b> <b>registration</b> is the responsibility of the owner or controlling person, who is either the business owner, a general partner or trustee, or a duly authorized officer.</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.steps%2Dahead.org%2Fus%2Dmsb%2Dregistration%2Dexplained%2Dwhat%2Dfincen%2Dreally%2Dexpects%2Dand%2Dwhat%2Dit%2Ddoesn%2Dt&amp;rut=16beddfe5f5a6a0326ebcb8e2a3e8973610680907a450d197097a49ef075747e">US MSB registration explained: what FinCEN really expects (and what it ...</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.steps%2Dahead.org%2Fus%2Dmsb%2Dregistration%2Dexplained%2Dwhat%2Dfincen%2Dreally%2Dexpects%2Dand%2Dwhat%2Dit%2Ddoesn%2Dt&amp;rut=16beddfe5f5a6a0326ebcb8e2a3e8973610680907a450d197097a49ef075747e">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/www.steps-ahead.org.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.steps%2Dahead.org%2Fus%2Dmsb%2Dregistration%2Dexplained%2Dwhat%2Dfincen%2Dreally%2Dexpects%2Dand%2Dwhat%2Dit%2Ddoesn%2Dt&amp;rut=16beddfe5f5a6a0326ebcb8e2a3e8973610680907a450d197097a49ef075747e">
+                            www.steps-ahead.org/us-msb-registration-explained-what-fincen-really-expects-and-what-it-doesn-t
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.steps%2Dahead.org%2Fus%2Dmsb%2Dregistration%2Dexplained%2Dwhat%2Dfincen%2Dreally%2Dexpects%2Dand%2Dwhat%2Dit%2Ddoesn%2Dt&amp;rut=16beddfe5f5a6a0326ebcb8e2a3e8973610680907a450d197097a49ef075747e">If your product moves or exchanges value in the US, <b>FinCEN</b> may treat you as a Money Services Business (<b>MSB</b>). This guide explains who must register, how <b>MSB</b> <b>registration</b> differs from state money transmitter licensing, and what regulators and banks actually care about: a real, risk-based AML program with <b>controls</b>, an appointed compliance officer, and ongoing reporting.</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.federalregister.gov%2Fdocuments%2F2026%2F04%2F30%2F2026%2D08363%2Fagency%2Dinformation%2Dcollection%2Dactivities%2Dproposed%2Drenewal%2Dcomment%2Drequest%2Drenewal%2Dwithout%2Dchange%2Dof&amp;rut=308abdb3a8df29b4cd5b92a60e06b5dd34fb62a052639fea231699b45f86d434">Agency Information Collection Activities; Proposed ... - Federal Register</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.federalregister.gov%2Fdocuments%2F2026%2F04%2F30%2F2026%2D08363%2Fagency%2Dinformation%2Dcollection%2Dactivities%2Dproposed%2Drenewal%2Dcomment%2Drequest%2Drenewal%2Dwithout%2Dchange%2Dof&amp;rut=308abdb3a8df29b4cd5b92a60e06b5dd34fb62a052639fea231699b45f86d434">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/www.federalregister.gov.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.federalregister.gov%2Fdocuments%2F2026%2F04%2F30%2F2026%2D08363%2Fagency%2Dinformation%2Dcollection%2Dactivities%2Dproposed%2Drenewal%2Dcomment%2Drequest%2Drenewal%2Dwithout%2Dchange%2Dof&amp;rut=308abdb3a8df29b4cd5b92a60e06b5dd34fb62a052639fea231699b45f86d434">
+                            www.federalregister.gov/documents/2026/04/30/2026-08363/agency-information-collection-activities-proposed-renewal-comment-request-renewal-without-change-of
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.federalregister.gov%2Fdocuments%2F2026%2F04%2F30%2F2026%2D08363%2Fagency%2Dinformation%2Dcollection%2Dactivities%2Dproposed%2Drenewal%2Dcomment%2Drequest%2Drenewal%2Dwithout%2Dchange%2Dof&amp;rut=308abdb3a8df29b4cd5b92a60e06b5dd34fb62a052639fea231699b45f86d434">Abstract: <b>FinCEN</b> is issuing this notice to renew the OMB <b>control</b> number for the <b>registration</b> <b>of</b> <b>MSB</b> regulations at 31 CFR 1022.380 and <b>FinCEN</b> Form 107—RMSB. Type of Review: Renewal without <b>change</b> <b>of</b> a currently approved information collection.</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+
+            
+              
+              
+                <div class="nav-link">
+                  <form action="/html/" method="post">
+                    <input type="submit" class='btn btn--alt' value="Next" />
+                    <input type="hidden" name="q" value="FinCEN MSB registration acquisition change of control notification requirements" />
+                    <input type="hidden" name="s" value="10" />
+                    <input type="hidden" name="nextParams" value="" />
+                    <input type="hidden" name="v" value="l" />
+                    <input type="hidden" name="o" value="json" />
+                    <input type="hidden" name="dc" value="11" />
+                    <input type="hidden" name="api" value="d.js" />
+                    <input type="hidden" name="vqd" value="4-89769003781268320599723874821633043660" />
+
+                    
+                    
+                    
+                      <input name="kl" value="wt-wt" type="hidden" />
+                    
+                    
+                    
+                    
+                  </form>
+                </div>
+              
+            
+
+            <div class="feedback-btn">
+              <a rel="nofollow" href="//duckduckgo.com/feedback.html" target="_new">Feedback</a>
+            </div>
+            <div class="clear"></div>
+          </div>
+        </div>
+      </div> <!-- links wrapper //-->
+    
+  </div>
+
+  <div id="bottom_spacing2"></div>
+
+  
+    <img src="//duckduckgo.com/t/sl_h"/>
+  
+</body>
+</html>

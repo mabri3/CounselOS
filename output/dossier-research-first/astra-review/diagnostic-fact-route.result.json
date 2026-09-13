@@ -1,0 +1,19 @@
+{
+  "name": "diagnostic-fact-route",
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-s",
+    "../output/dossier-research-first/astra-review/test_review_diagnostics.py",
+    "-k",
+    "AR05",
+    "--junitxml=../output/dossier-research-first/astra-review/diagnostic-fact-route.xml"
+  ],
+  "cwd": "/Users/bharris/Programs/counsel-os-mvp/backend",
+  "started_at": "2026-09-12T06:53:32.315376+00:00",
+  "exit_code": 1,
+  "duration_seconds": 2.24,
+  "baseline": "baseline.json"
+}

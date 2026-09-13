@@ -1,0 +1,303 @@
+/* [project]/components/workspace/MatterScenario.module.css [app-client] (css) */
+.MatterScenario-module__9tOw8W__scenarioPanel {
+  gap: 24px;
+  min-width: 0;
+  padding: 8px 4px 32px;
+  display: grid;
+}
+
+.MatterScenario-module__9tOw8W__header {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  display: flex;
+}
+
+.MatterScenario-module__9tOw8W__headerActions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  display: flex;
+}
+
+.MatterScenario-module__9tOw8W__title {
+  color: var(--ink);
+  font: 600 clamp(30px, 4vw, 46px)/1.1 var(--serif);
+  letter-spacing: -.025em;
+  margin: 4px 0 0;
+}
+
+.MatterScenario-module__9tOw8W__intro {
+  max-width: 58ch;
+  color: var(--ink-2);
+  font: 400 17px/1.52 var(--sans);
+  margin: 12px 0 0;
+}
+
+.MatterScenario-module__9tOw8W__tag {
+  border: 1px solid var(--agent-edge);
+  background: var(--agent-tint);
+  min-height: 36px;
+  color: var(--agent);
+  font: 500 14px/1.35 var(--sans);
+  border-radius: 6px;
+  align-items: center;
+  padding: 7px 12px;
+  display: inline-flex;
+}
+
+.MatterScenario-module__9tOw8W__launch {
+  min-height: 44px;
+}
+
+.MatterScenario-module__9tOw8W__form {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  gap: 16px;
+  padding: 0;
+  display: grid;
+  overflow: hidden;
+}
+
+.MatterScenario-module__9tOw8W__label {
+  color: var(--ink-2);
+  font: 500 16px/1.45 var(--sans);
+}
+
+.MatterScenario-module__9tOw8W__formRow {
+  border-top: 1px solid var(--line-soft);
+  grid-template-columns: 280px minmax(0, 1fr);
+  align-items: start;
+  gap: 16px;
+  padding: 20px 28px;
+  display: grid;
+}
+
+.MatterScenario-module__9tOw8W__formRow:first-child {
+  border-top: 0;
+}
+
+.MatterScenario-module__9tOw8W__formRow .MatterScenario-module__9tOw8W__label {
+  color: var(--ink-2);
+  font: 500 16px/1.45 var(--sans);
+  padding-top: 10px;
+}
+
+:is(.MatterScenario-module__9tOw8W__formRow .text-input, .MatterScenario-module__9tOw8W__formRow .select-input) {
+  width: 100%;
+}
+
+.MatterScenario-module__9tOw8W__formActions {
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 0 28px 20px;
+  display: flex;
+}
+
+.MatterScenario-module__9tOw8W__formActions .btn {
+  min-width: 146px;
+  min-height: 50px;
+}
+
+.MatterScenario-module__9tOw8W__primary {
+  background: var(--ink) !important;
+  border-color: var(--ink) !important;
+  color: var(--paper) !important;
+}
+
+.MatterScenario-module__9tOw8W__savedTitle {
+  color: var(--ink-2);
+  font: 600 17px/1.4 var(--sans);
+  margin: 0 0 -10px;
+}
+
+.MatterScenario-module__9tOw8W__savedEmpty {
+  border: 1px dashed var(--control);
+  border-radius: var(--radius);
+  min-height: 178px;
+  color: var(--ink-3);
+  text-align: center;
+  place-items: center;
+  padding: 28px;
+  display: grid;
+}
+
+.MatterScenario-module__9tOw8W__savedEmpty strong {
+  color: var(--ink);
+  font: 600 26px/1.25 var(--serif);
+  margin-bottom: 5px;
+  display: block;
+}
+
+.MatterScenario-module__9tOw8W__scenarioList {
+  gap: 8px;
+  display: grid;
+}
+
+.MatterScenario-module__9tOw8W__scenarioItem {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--line-soft);
+  background: var(--raised);
+  width: 100%;
+  color: var(--ink-2);
+  text-align: left;
+  border-radius: 8px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  display: flex;
+}
+
+.MatterScenario-module__9tOw8W__scenarioItem[aria-pressed="true"] {
+  border-left-color: var(--agent);
+  background: var(--agent-wash);
+}
+
+.MatterScenario-module__9tOw8W__detail {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  padding: 22px 26px;
+}
+
+:is(.MatterScenario-module__9tOw8W__detail .exploration-list, .MatterScenario-module__9tOw8W__detail .scenario-facts) {
+  gap: 8px;
+  margin: 10px 0 18px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+}
+
+:is(.MatterScenario-module__9tOw8W__detail .exploration-list li, .MatterScenario-module__9tOw8W__detail .checkbox-row) {
+  border: 1px solid var(--line-faint);
+  background: var(--rail);
+  color: var(--ink-2);
+  font: 400 14px/1.45 var(--sans);
+  border-radius: 7px;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 11px;
+  display: flex;
+}
+
+.MatterScenario-module__9tOw8W__detail .exploration-state {
+  background: var(--agent-wash);
+  color: var(--ink-2);
+  font: 400 14px/1.45 var(--sans);
+  border-radius: 7px;
+  padding: 9px 11px;
+}
+
+.MatterScenario-module__9tOw8W__detail .scenario-analysis {
+  border: 1px dashed var(--agent-edge);
+  background: var(--agent-wash);
+  border-radius: 8px;
+  margin-top: 20px;
+  padding: 18px;
+}
+
+.MatterScenario-module__9tOw8W__detail .quiet-link {
+  color: var(--agent);
+  cursor: pointer;
+  font: inherit;
+  text-underline-offset: 3px;
+  background: none;
+  border: 0;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.MatterScenario-module__9tOw8W__correction {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  padding: 0;
+  overflow: hidden;
+}
+
+.MatterScenario-module__9tOw8W__correction > summary {
+  cursor: pointer;
+  color: var(--ink);
+  font: 600 28px/1.2 var(--serif);
+  padding: 22px 28px;
+}
+
+.MatterScenario-module__9tOw8W__correction > :not(summary) {
+  margin-inline: 28px;
+}
+
+.MatterScenario-module__9tOw8W__correction > :last-child {
+  margin-bottom: 24px;
+}
+
+.MatterScenario-module__9tOw8W__state {
+  font: 400 14px/1.5 var(--sans);
+  border-radius: 7px;
+  margin: 0;
+  padding: 12px 14px;
+}
+
+@media (max-width: 760px) {
+  .MatterScenario-module__9tOw8W__scenarioPanel {
+    gap: 16px;
+  }
+
+  .MatterScenario-module__9tOw8W__title {
+    font-size: 32px;
+  }
+
+  .MatterScenario-module__9tOw8W__formRow {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 16px;
+  }
+
+  .MatterScenario-module__9tOw8W__formRow .MatterScenario-module__9tOw8W__label {
+    padding-top: 0;
+  }
+
+  .MatterScenario-module__9tOw8W__formActions {
+    justify-content: stretch;
+    padding: 0 16px 16px;
+  }
+
+  .MatterScenario-module__9tOw8W__formActions .btn {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .MatterScenario-module__9tOw8W__detail {
+    padding: 18px;
+  }
+
+  .MatterScenario-module__9tOw8W__correction > summary {
+    padding: 18px;
+    font-size: 24px;
+  }
+
+  .MatterScenario-module__9tOw8W__correction > :not(summary) {
+    margin-inline: 18px;
+  }
+}
+
+.MatterScenario-module__9tOw8W__title {
+  font-weight: 400;
+}
+
+.MatterScenario-module__9tOw8W__formRow:nth-child(3) {
+  grid-template-columns: 1fr;
+}
+
+:is(.MatterScenario-module__9tOw8W__formRow .text-input, .MatterScenario-module__9tOw8W__formRow .select-input, .MatterScenario-module__9tOw8W__correction .text-input) {
+  font: 400 17px/1.5 var(--sans);
+}
+
+.MatterScenario-module__9tOw8W__formActions .btn {
+  font: 400 17px/1.4 var(--sans);
+}
+
+/*# sourceMappingURL=components_workspace_MatterScenario_module_css_1igg3k2._.single.css.map*/

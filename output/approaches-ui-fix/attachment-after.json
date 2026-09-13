@@ -1,0 +1,55 @@
+{
+  "state": {
+    "schema_version": 1,
+    "matter_id": "MAT-20260909-d89ad8",
+    "mainline_path_id": "SCN-490c71c86d9c658974321c1e",
+    "last_transition_id": "PATHOP-822dc5381bd4f8bbf5d3dd19",
+    "conditions": [],
+    "transition_history_refs": [
+      "paths/transitions/"
+    ],
+    "revision": "dd012f5a3e3d743e336cfca4bbdb1bb45558f022dda21950244d04d1d9e649d5"
+  },
+  "projection_state": "applied",
+  "paths": [
+    {
+      "scenario_id": "SCN-0f23edfc89ec6ecaf60a13e4",
+      "title": "Bank-held funds timing test",
+      "revision": "84551681167dfccea03121c751b6a1eca24cf68660002b1b585992538715697d",
+      "parent_path_id": "SCN-490c71c86d9c658974321c1e",
+      "path_kind": "alternative",
+      "archived_at": null,
+      "unresolved_conditions": [
+        "Whether the bank contract and operating setup can be completed before November 15, 2026.",
+        "Whether missing identity records, pending alerts, or monitoring transition requirements delay either option."
+      ],
+      "role": "alternative"
+    },
+    {
+      "scenario_id": "SCN-406906c91ab0aba4313b54a6",
+      "title": "Bank-held funds structure",
+      "revision": "3631573665ddc520dbc539f8a2dec7815e16ffbfc80a192197cf2e9befc8d659",
+      "parent_path_id": "SCN-490c71c86d9c658974321c1e",
+      "path_kind": "alternative",
+      "archived_at": null,
+      "unresolved_conditions": [
+        "Who contracts directly with users.",
+        "Who controls transfer instructions and settlement.",
+        "Who records balances and owes repayment to users.",
+        "How KYC, transaction monitoring, alerts, SARs, privacy, and marketing duties are allocated."
+      ],
+      "role": "alternative"
+    },
+    {
+      "scenario_id": "SCN-490c71c86d9c658974321c1e",
+      "title": "Mosaic-operated migration",
+      "revision": "260261b27660504e7c07a91b7f2b667ea2d029745daf1430fde71e716cd666ec",
+      "parent_path_id": null,
+      "path_kind": "baseline",
+      "archived_at": null,
+      "unresolved_conditions": [],
+      "role": "mainline"
+    }
+  ],
+  "next_offset": null
+}

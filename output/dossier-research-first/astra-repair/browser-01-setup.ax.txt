@@ -1,0 +1,181 @@
+Browser tab: 3, Title: "Themis.ai", URL: "http://localhost:3207/experimental/chat?matter=MAT-DEMO-BEACON".
+0 AXWebArea Themis.ai, URL: localhost:3207/experimental/chat?matter=MAT-DEMO-BEACON
+	1 container
+		2 button (expanded) Description: Toggle matter navigation, Secondary Actions: Collapse
+		3 button (collapsed) themis.ai, Secondary Actions: Expand
+			4 text themis.ai
+		5 text Experimental chat
+		6 link Description: Back to workspace , Value: localhost:3207/matters
+	7 container
+		8 text Your matters 10
+		9 search text field (settable) Find a matter
+		10 container Matters
+			11 checkbox Orbit: Bank-Transaction Data Expansion, Value: 0
+			12 checkbox Pulse: Earned Wage Access Expansion, Value: 0
+			13 checkbox Northstar: AI Credit-Line Increase Model, Value: 0
+			14 checkbox Relay: Open-Banking Reauthentication and Data Use, Value: 0
+			15 checkbox Beacon: Instant Business Onboarding, Value: 1
+			16 checkbox Cedar: Cash Sweep and Deposit Insurance Disclosures, Value: 0
+			17 checkbox Harbor: Account Hold Support Response, Value: 0
+			18 checkbox Project Apex: AI Voice Telemetry, Value: 0
+			19 checkbox Delta: Same-Day Payout Pricing, Value: 0
+			20 checkbox Mason: Analytics SDK Review, Value: 0
+		21 link Description: Archive & trash, Value: localhost:3207/matters/storage
+		22 button  New matter
+	23 container
+		24 text MATTER CONVERSATION
+		25 heading Beacon: Instant Business Onboarding, Value: 1
+			26 text Beacon: Instant Business Onboarding
+		123 button Continue intake
+		27 button New conversation
+		28 button Refresh matter
+		29 link Description: Matter record, Value: localhost:3207/matters/MAT-DEMO-BEACON
+		30 container Experimental conversation
+			31 container
+				32 button (collapsed) History 1⌄, Secondary Actions: Expand
+					33 text History 
+					34 text 1
+					124 text ⌄
+				36 button (collapsed) Files 11⌄, Secondary Actions: Expand
+					37 text Files 
+					38 text 11
+					125 text ⌄
+				40 button (collapsed) Skills⌄, Secondary Actions: Expand
+					41 text Skills
+					122 text ⌄
+				43 button (collapsed) Approaches⌄, Secondary Actions: Expand
+					44 text Approaches
+					45 text ⌄
+				126 container Problem breakdown
+					127 button (collapsed) Problem breakdown · Not yet analyzed⌄, Secondary Actions: Expand
+						128 text Problem breakdown
+						129 text  · 
+						130 text Not yet analyzed
+						131 text ⌄
+			48 container
+				132 text You
+				133 text Generate a dossier for this matter.
+				134 text Themis.ai
+				135 heading Suggested priorities, Value: 2
+					136 text Suggested priorities
+				137 text Review the five saved issues across employment, privacy, supplier, intellectual-property, and marketing workstreams. The first three suggested priorities focus on launch blockers, vendor dependencies, and supported claims.
+				138 text Dossier research is ready for your choices. No research has started.
+				139 container
+					140 text DOSSIER RESEARCH · NEEDS YOUR CHOICES
+					141 heading Prepare your dossier, Value: 3
+						142 text Prepare your dossier
+					143 container Priority 1
+						144 container
+							145 text Priority  1
+						146 container
+							147 text Priority
+							148 text field (settable) Priority, Value: Confirm all launch conditions before approval
+						149 container
+							150 text Why it matters
+							151 text entry area (settable) Why it matters, Value: These terms can stop the launch.
+					152 container Priority 2
+						153 container
+							154 text Priority  2
+						155 container
+							156 text Priority
+							157 text field (settable) Priority, Value: Resolve vendor dependencies
+						158 container
+							159 text Why it matters
+							160 text entry area (settable) Why it matters, Value: Supplier and IP terms control access and ownership.
+					161 container Priority 3
+						162 container
+							163 text Priority  3
+						164 container
+							165 text Priority
+							166 text field (settable) Priority, Value: Support customer claims
+						167 container
+							168 text Why it matters
+							169 text entry area (settable) Why it matters, Value: Marketing statements need saved evidence.
+					170 container First issues to research
+						171 text First issues to research
+						172 container
+							173 text Issue  1
+							174 pop up button (collapsed, settable) Issue 1, Value: Employment terms: Confirm worker terms and launch staffing conditions., Secondary Actions: Expand
+								175 menu
+									176 (disabled) Employment terms: Confirm worker terms and launch staffing conditions.
+									177 (disabled) Customer privacy: Confirm notice, purpose, and access controls.
+									178 (disabled) Supplier contract: Confirm service levels, termination, and transfer terms.
+									179 (disabled) Intellectual property: Confirm ownership and trademark permission.
+									180 (disabled) Marketing claims: Confirm evidence for public launch claims.
+						181 container
+							182 text Issue  2
+							183 pop up button (collapsed, settable) Issue 2, Value: Customer privacy: Confirm notice, purpose, and access controls., Secondary Actions: Expand
+								184 menu
+									185 (disabled) Employment terms: Confirm worker terms and launch staffing conditions.
+									186 (disabled) Customer privacy: Confirm notice, purpose, and access controls.
+									187 (disabled) Supplier contract: Confirm service levels, termination, and transfer terms.
+									188 (disabled) Intellectual property: Confirm ownership and trademark permission.
+									189 (disabled) Marketing claims: Confirm evidence for public launch claims.
+						190 container
+							191 text Issue  3
+							192 pop up button (collapsed, settable) Issue 3, Value: Supplier contract: Confirm service levels, termination, and transfer terms., Secondary Actions: Expand
+								193 menu
+									194 (disabled) Employment terms: Confirm worker terms and launch staffing conditions.
+									195 (disabled) Customer privacy: Confirm notice, purpose, and access controls.
+									196 (disabled) Supplier contract: Confirm service levels, termination, and transfer terms.
+									197 (disabled) Intellectual property: Confirm ownership and trademark permission.
+									198 (disabled) Marketing claims: Confirm evidence for public launch claims.
+					199 container Research scope
+						200 text Research scope
+						201 radio button (settable, integer) Description: Research the top three, Value: 0
+						202 radio button (settable, integer) Description: Research all 5 identified issues, Value: 1
+						220 text We will deliver the first dossier after the first three issues. The remaining issues will be researched in the background. This takes longer.
+					203 button (expanded) Initial answers for all mapped issues⌃, Secondary Actions: Collapse
+						204 text Initial answers for all mapped issues
+						221 text ⌃
+					222 container
+						223 text Employment terms: Confirm worker terms and launch staffing conditions. The saved facts show that employment terms remains open; the controlling conditions require research. Next step:  Confirm the operative employment terms conditions before launch.
+					224 container
+						225 text Customer privacy: Confirm notice, purpose, and access controls. The saved facts show that customer privacy remains open; the controlling conditions require research. Next step:  Confirm the operative customer privacy conditions before launch.
+					226 container
+						227 text Supplier contract: Confirm service levels, termination, and transfer terms. The saved facts show that supplier contract remains open; the controlling conditions require research. Next step:  Confirm the operative supplier contract conditions before launch.
+					228 container
+						229 text Intellectual property: Confirm ownership and trademark permission. The saved facts show that intellectual property remains open; the controlling conditions require research. Next step:  Confirm the operative intellectual property conditions before launch.
+					230 container
+						231 text Marketing claims: Confirm evidence for public launch claims. The saved facts show that marketing claims remains open; the controlling conditions require research. Next step:  Confirm the operative marketing claims conditions before launch.
+					206 container Where should I look?
+						207 text Where should I look?
+						208 text This matter is always included. Choose extra sources for this request only.
+						209 checkbox (settable, integer) Description: External sources, Value: 1
+						210 checkbox (settable, integer) Description: Search other active matters, Value: 0
+						232 text Themis will turn your question into focused searches, compare relevant sources, and follow important gaps.
+						233 container
+							234 button (expanded) Research options⌃, Secondary Actions: Collapse
+								235 text Research options
+								236 text ⌃
+							237 text Public research topic
+							238 text entry area (settable) Value: United States product launch legal conditions, Public research topic Themis will use this topic to plan distinct searches, compare relevant sources, and follow important gaps. This is not a limit of one search. Private matter details stay with the analysis model.
+							239 text Themis will use this topic to plan distinct searches, compare relevant sources, and follow important gaps. This is not a limit of one search.  Private matter details stay with the analysis model. Main analysis:  codex  ·  fixture-dossier . Saved for this run. Collection model:  codex  ·  fixture-dossier  ·  medium  effort. This selection is saved for this run. External search may incur provider charges, including fallback searches and retries. No price estimate is available. This does not authorize future databases. Search method
+							240 pop up button (collapsed, settable) Search method, Value: Native search first, Secondary Actions: Expand
+								241 menu
+									242 (selected) Native search first
+									243 Configured search services
+							244 text Use the selected provider's web search. Read pages directly, then use Playwright when needed.
+							245 checkbox (disabled, settable, integer) Description: Allow Firecrawl fallback — may incur charges, Value: 0
+							246 text Firecrawl is not configured.
+							247 checkbox (settable, integer) Description: Include focused follow-up searches for this question, Value: 1
+							248 text Up to 3 batches, 4 requests per batch, 16 source fetches, and 10 active minutes. Fetched PDFs are read up to 30 pages, and OCR to 6 pages per attempt. Sources already saved to this matter are extracted to their full length and searched separately. Coverage gaps remain visible. Other matters may contain sensitive information. Relevant saved records from active matters will be included in this matter's analysis. This is not an access-control system.
+						214 text Neither selected means this matter only. Normal model usage can still have costs.
+					215 button Start dossier research
+					216 button Use saved material now
+					217 button Skip priority changes
+					218 button Cancel
+			52 container
+				53 text Context This matter
+				54 button (collapsed) Include a document⌄, Secondary Actions: Expand
+					55 text Include a document
+					219 text ⌄
+				57 text Message Themis
+				58 text entry area (settable) Message Themis, ID: experimental-message
+				59 text Attach files
+				60 button Attach files
+				61 button (collapsed) Description: Choose chat model, Help: Workspace default, Secondary Actions: Expand
+					62 text Workspace default
+				63 button (disabled) Send 
+
+The focused UI element is 234 button (expanded) Research options⌃, Secondary Actions: Collapse

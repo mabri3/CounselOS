@@ -1,0 +1,15 @@
+{
+  "name": "frontend-build",
+  "command": [
+    "env",
+    "PHASE2_DIST_DIR=.next-astra-build",
+    "npm",
+    "run",
+    "build"
+  ],
+  "cwd": "/Users/bharris/Programs/counsel-os-mvp/output/dossier-research-first/astra-review/frontend-copy",
+  "started_at": "2026-09-12T06:46:18.648422+00:00",
+  "exit_code": 1,
+  "duration_seconds": 1.626,
+  "baseline": "baseline.json"
+}

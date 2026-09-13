@@ -1,0 +1,19 @@
+{
+  "name": "diagnostic-valid-source-counts",
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-s",
+    "../output/dossier-research-first/astra-review/test_review_diagnostics.py",
+    "-k",
+    "AR20",
+    "--junitxml=../output/dossier-research-first/astra-review/diagnostic-valid-source-counts.xml"
+  ],
+  "cwd": "/Users/bharris/Programs/counsel-os-mvp/backend",
+  "started_at": "2026-09-12T07:13:59.328789+00:00",
+  "exit_code": 1,
+  "duration_seconds": 2.176,
+  "baseline": "baseline.json"
+}

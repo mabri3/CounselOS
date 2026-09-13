@@ -1,0 +1,53 @@
+[
+  {
+    "run": "RUN-72ac3d54d92d026d",
+    "managed_state": "failed",
+    "failure": "ValueError: Saved source snapshot hash changed.",
+    "useful_content_length": 874,
+    "mismatches": [
+      {
+        "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-837ff00057d358f357aa-0a163a6e057b.md",
+        "expected": "0a163a6e057b5c0ac567e98547eab826e45e88950750f9d13f2fa28d9e87048a",
+        "actual": "290197a9f39ab4e4961749ff60973cc8ac9b7d4405e13128af239a2aa26758a3",
+        "length": 4466,
+        "crlf_bytes": 23,
+        "group": "external"
+      }
+    ]
+  },
+  {
+    "run": "RUN-959dbc35258d60cb",
+    "managed_state": "ready_for_composition",
+    "failure": null,
+    "useful_content_length": 8681,
+    "mismatches": []
+  },
+  {
+    "run": "RUN-7cc4ffbe990727e9",
+    "managed_state": "failed",
+    "failure": "ValueError: Saved source snapshot hash changed.",
+    "useful_content_length": 258,
+    "mismatches": [
+      {
+        "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-bcdeedc7de18e5f35a92-cdeaedd68efa.md",
+        "expected": "cdeaedd68efa203fa7f9309f255a949bc96a55dab98c5d47ede875d6066f5649",
+        "actual": "8592ece599bb4410a6f4cc7e65a03f7feb136a64c31a170878cc9d361f26e7ae",
+        "length": 12580,
+        "crlf_bytes": 2,
+        "group": "external"
+      }
+    ]
+  },
+  {
+    "event_path": "../output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/events/2026-09-12-EVT-20260912-946607.md",
+    "metadata": {
+      "event_id": "EVT-20260912-946607",
+      "matter_id": "MAT-20260912-f7ed8b",
+      "event_type": "dossier_generation_failed",
+      "actor_type": "system",
+      "timestamp": "2026-09-12T06:34:35+00:00",
+      "title": "Dossier generation needs retry"
+    },
+    "body": "# Dossier generation needs retry\n\n```json\n{\n  \"title\": \"Dossier generation needs retry\",\n  \"warning\": \"Dossier generation did not complete (ValueError: Selected dossier inputs exceed the model dispatch size limit). The available saved text is retained.\"\n}\n```\n"
+  }
+]

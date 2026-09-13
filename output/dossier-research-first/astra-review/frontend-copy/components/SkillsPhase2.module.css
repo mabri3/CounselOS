@@ -1,0 +1,46 @@
+.shell.shell { display: grid; grid-template-columns: 32% minmax(0, 1fr); height: auto; min-height: 680px; border: 0; background: var(--raised); overflow: visible; }
+.shell :global(.admin-rail) { width: auto; min-width: 0; padding: 0 22px 22px 0; border-right: 1px solid var(--line-soft); background: transparent; overflow: visible; }
+.shell :global(.skill-rail-head) { padding: 12px 14px 20px; }
+.shell :global(.admin-rail-link) { margin-bottom: 10px; }
+.shell :global(.agent-rail-item) { width: 100%; border: 0; border-bottom: 1px solid var(--line-soft); border-radius: 0; background: transparent; padding: 20px 16px; text-align: left; }
+.shell :global(.agent-rail-item.active) { border: 1px solid var(--line); border-radius: 6px; box-shadow: inset 3px 0 var(--ink); background: var(--paper); }
+.shell :global(.agent-rail-name) { font: 400 18px/1.3 var(--sans); }
+.shell :global(.agent-rail-role) { margin-top: 6px; font-size: 14px; color: var(--ink-3); }
+.shell :global(.skill-command) { font-size: 13px; text-transform: none; letter-spacing: 0; color: var(--ink-3); }
+.shell :global(.admin-main) { min-width: 0; overflow: visible; }
+.shell :global(.admin-scroll) { overflow: visible; }
+.shell :global(.admin-body.wide) { max-width: none; padding: 0 0 24px 30px; }
+.shell h1 { margin: 0 0 18px; font: 400 48px/1.12 var(--serif); }
+.shell h2 { font: 400 25px/1.2 var(--serif); }
+.shell :global(.skill-draft-head) { display: grid; justify-content: start; gap: 0; margin-bottom: 20px; }
+.shell :global(.skill-draft-head .skill-card-command) { font: 400 18px var(--sans); color: var(--ink-2); background: transparent; padding: 0; }
+.shell :global(.skill-form-grid) { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; margin-top: 28px; }
+.shell :global(.field-block) { margin-top: 24px; }
+.shell :global(.field-label) { font: 500 15px/1.4 var(--sans); margin-bottom: 8px; }
+.shell :global(.text-input) { min-height: 44px; border: 1px solid var(--line); border-radius: 6px; background: var(--raised); }
+.shell :global(.text-input:disabled) { opacity: 1; color: var(--ink-3); background: var(--paper); }
+.shell textarea[aria-label="Requested guidance"] { min-height: 470px; font: 400 14px/1.8 var(--mono); }
+.shell :global(.skill-field-help), .shell :global(.skill-step-help), .shell :global(.skill-intro) { color: var(--ink-3); font: 400 15px/1.6 var(--sans); }
+.shell :global(.admin-foot) { position: static; display: grid; padding: 0 0 0 30px; border: 0; background: transparent; gap: 16px; }
+.shell :global(.admin-foot .btn-row) { justify-content: space-between; }
+.shell :global(.btn) { min-height: 42px; }
+.shell :global(.skill-start-grid) { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+.shell :global(.skill-start-card), .shell :global(.skill-start-card.lead), .shell :global(.skill-card) { border: 1px solid var(--line-soft); background: var(--raised); border-radius: 6px; box-shadow: none; padding: 20px; }
+.shell :global(.skill-grid) { grid-template-columns: minmax(0, 1fr); }
+.shell :global(.question-choice.active) { border-color: var(--ink); background: var(--paper); color: var(--ink); }
+.shell :global(.skill-progress-fill) { background: var(--ink); }
+.new { margin: 24px 12px 0; }
+.guided.guided { display: block; min-height: 600px; }
+.guided :global(.admin-rail) { display: none; }
+.guided :global(.admin-body.wide), .guided :global(.admin-foot) { padding-left: 0; }
+.flowHeader { margin-bottom: 26px; }
+.flowHeader > p { font: 400 12px var(--mono); text-transform: uppercase; letter-spacing: .08em; margin: 24px 0 12px; }
+.steps { display: flex; padding: 0; list-style: none; gap: 28px; margin: 26px 0; }
+.steps li { flex: 1; display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.steps span { display: grid; place-items: center; border: 1px solid var(--ink-3); border-radius: 50%; width: 29px; height: 29px; flex-shrink: 0; }
+.steps li[aria-current=step] span { background: var(--ink); color: var(--raised); }
+.guided :global(.admin-body.wide) { border: 1px solid var(--line-soft); border-radius: 6px; padding: 28px; }
+.guided :global(.admin-body h1) { font: 400 26px/1.25 var(--serif); }
+.generated :global(.admin-body.wide) { border: 1px dashed var(--agent-edge); background: var(--agent-wash); }
+.guided :global(.admin-foot) { padding-top: 20px; }
+@media(max-width: 760px) { .shell.shell { grid-template-columns: minmax(0, 1fr); } .shell :global(.admin-rail) { border-right: 0; border-bottom: 1px solid var(--line-soft); padding-right: 0; margin-bottom: 24px; } .shell :global(.skill-rail-list) { max-height: 240px; overflow-y: auto; } .shell :global(.admin-body.wide), .shell :global(.admin-foot) { padding-left: 0; } .shell h1 { font-size: 36px; } .guided :global(.admin-body.wide) { padding: 18px; } .steps { gap: 12px; } .steps li { flex-direction: column; align-items: flex-start; } .shell textarea[aria-label="Requested guidance"] { min-height: 330px; } }

@@ -1,0 +1,40 @@
+import asyncio
+from playwright.async_api import async_playwright,expect
+async def main():
+ expect.set_options(timeout=60000)
+ async with async_playwright() as p:
+  browser=await p.chromium.launch(headless=True)
+  page=await browser.new_page(viewport={'width':1050,'height':1006})
+  await page.goto('http://localhost:3000/experimental/chat?matter=MAT-20260909-d89ad8')
+  history=page.locator('details').filter(has=page.locator(':scope > summary',has_text='History'))
+  await expect(history.get_by_role('button',include_hidden=True)).to_have_count(2)
+  await history.locator(':scope > summary').click()
+  await history.get_by_role('button').first.click()
+  suggestions=page.locator('details').filter(has=page.locator(':scope > summary',has_text='Suggested Next Steps'))
+  await expect(suggestions).to_have_count(1)
+  assert await suggestions.get_attribute('open') is None
+  await expect(suggestions.get_by_role('button').first).not_to_be_visible()
+  await suggestions.locator(':scope > summary').click()
+  await expect(suggestions.get_by_role('button').first).to_be_visible()
+  await suggestions.locator(':scope > summary').click()
+  await expect(suggestions.get_by_role('button').first).not_to_be_visible()
+  fields=page.get_by_role('group',name='What sources should I use?').last
+  await expect(fields).to_be_visible()
+  card=fields.locator('..')
+  await expect(card).not_to_contain_text('Workspace action')
+  await expect(card).not_to_contain_text('Research options')
+  await expect(card.locator('textarea')).to_have_count(0)
+  external=fields.get_by_role('checkbox',name='External sources',exact=True)
+  other=fields.get_by_role('checkbox',name='Other matters',exact=True)
+  button=card.get_by_role('button',name='Continue',exact=True)
+  for web,matters in [(False,False),(True,False),(False,True),(True,True)]:
+   await external.set_checked(web)
+   await other.set_checked(matters)
+   await expect(button).to_be_enabled()
+  await external.set_checked(True)
+  await other.set_checked(False)
+  await fields.scroll_into_view_if_needed()
+  await page.screenshot(path='output/approaches-ui-fix/compact-source-card.png')
+  print('Compact card verified. All four source combinations enabled. No research submitted.')
+  await browser.close()
+asyncio.run(main())

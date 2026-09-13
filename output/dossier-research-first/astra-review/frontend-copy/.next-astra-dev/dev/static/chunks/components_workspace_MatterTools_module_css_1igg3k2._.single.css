@@ -1,0 +1,706 @@
+/* [project]/components/workspace/MatterTools.module.css [app-client] (css) */
+.MatterTools-module__laPtKa__filesBackdrop {
+  z-index: 79;
+  background: var(--ink);
+  opacity: .24;
+  border: 0;
+  position: fixed;
+  inset: 0;
+}
+
+.MatterTools-module__laPtKa__filesPanel {
+  z-index: 80;
+  border-left: 1px solid var(--line);
+  background: var(--raised);
+  width: min(520px, 100vw);
+  box-shadow: var(--shadow-modal);
+  font: 400 15px/1.5 var(--sans);
+  padding: 18px;
+  position: fixed;
+  inset: 0 0 0 auto;
+  overflow-y: auto;
+}
+
+.MatterTools-module__laPtKa__filesHeader, .MatterTools-module__laPtKa__filesTabs, .MatterTools-module__laPtKa__filesActions, .MatterTools-module__laPtKa__fileHeading, .MatterTools-module__laPtKa__uploadHeading, .MatterTools-module__laPtKa__fileActions {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+  display: flex;
+}
+
+.MatterTools-module__laPtKa__filesTitle {
+  font: 600 21px/1.3 var(--serif);
+  margin: 3px 0 0;
+}
+
+.MatterTools-module__laPtKa__filesTabs, .MatterTools-module__laPtKa__filesActions {
+  margin-top: 14px;
+}
+
+.MatterTools-module__laPtKa__filesCopy, .MatterTools-module__laPtKa__contextCopy {
+  color: var(--ink-3);
+  font: 400 15px/1.5 var(--sans);
+  overflow-wrap: anywhere;
+  margin: 6px 0 0;
+}
+
+:is(.MatterTools-module__laPtKa__filesPanel .record-meta, .MatterTools-module__laPtKa__library .record-meta, .MatterTools-module__laPtKa__editor .record-meta) {
+  font-size: 12px;
+}
+
+:is(.MatterTools-module__laPtKa__filesPanel .btn, .MatterTools-module__laPtKa__library .btn, .MatterTools-module__laPtKa__editor .btn) {
+  min-height: 36px;
+}
+
+.MatterTools-module__laPtKa__uploadList, .MatterTools-module__laPtKa__filesList, .MatterTools-module__laPtKa__contextList, .MatterTools-module__laPtKa__manifestList {
+  gap: 10px;
+  min-width: 0;
+  margin-top: 16px;
+  display: grid;
+}
+
+.MatterTools-module__laPtKa__uploadCard, .MatterTools-module__laPtKa__fileCard, .MatterTools-module__laPtKa__contextItem, .MatterTools-module__laPtKa__manifestItem {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+  min-width: 0;
+  padding: 14px;
+}
+
+.MatterTools-module__laPtKa__uploadRows {
+  gap: 8px;
+  margin-top: 10px;
+  display: grid;
+}
+
+.MatterTools-module__laPtKa__uploadRow {
+  border-top: 1px solid var(--line-faint);
+  min-width: 0;
+  padding-top: 8px;
+}
+
+.MatterTools-module__laPtKa__uploadHeading > span, .MatterTools-module__laPtKa__fileHeading > div, .MatterTools-module__laPtKa__contextItem > span, .MatterTools-module__laPtKa__manifestItem > div {
+  min-width: 0;
+}
+
+.MatterTools-module__laPtKa__fileName {
+  overflow-wrap: anywhere;
+  display: block;
+}
+
+.MatterTools-module__laPtKa__filesContent, .MatterTools-module__laPtKa__contextContent {
+  gap: 12px;
+  min-width: 0;
+  margin-top: 16px;
+  display: grid;
+}
+
+.MatterTools-module__laPtKa__folderView {
+  margin: 0;
+}
+
+.MatterTools-module__laPtKa__folderView > summary {
+  cursor: pointer;
+}
+
+.MatterTools-module__laPtKa__folderBody {
+  margin-top: 8px;
+}
+
+.MatterTools-module__laPtKa__fileActions {
+  margin-top: 12px;
+}
+
+.MatterTools-module__laPtKa__context {
+  gap: 16px;
+  min-width: 0;
+  display: grid;
+}
+
+.MatterTools-module__laPtKa__contextTitle {
+  font: 600 20px/1.3 var(--serif);
+  margin: 0;
+}
+
+.MatterTools-module__laPtKa__contextItem {
+  cursor: pointer;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  display: grid;
+}
+
+.MatterTools-module__laPtKa__contextItem input {
+  margin-top: 4px;
+}
+
+.MatterTools-module__laPtKa__contextItemMandatory {
+  cursor: default;
+}
+
+.MatterTools-module__laPtKa__contextMetadata {
+  margin-left: 7px;
+  display: inline-block;
+}
+
+.MatterTools-module__laPtKa__technicalRecord {
+  margin-top: 8px;
+}
+
+.MatterTools-module__laPtKa__technicalRecord > summary {
+  cursor: pointer;
+}
+
+.MatterTools-module__laPtKa__library, .MatterTools-module__laPtKa__editor {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--raised);
+  min-width: 0;
+  padding: 18px;
+}
+
+:is(.MatterTools-module__laPtKa__library .template-library__head, .MatterTools-module__laPtKa__library .template-detail__head, .MatterTools-module__laPtKa__editor .template-editor__head) {
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  display: flex;
+}
+
+:is(.MatterTools-module__laPtKa__library .template-library__head p, .MatterTools-module__laPtKa__library .template-detail__head p, .MatterTools-module__laPtKa__editor .template-editor__head p) {
+  color: var(--ink-3);
+  font: 400 15px/1.5 var(--sans);
+  margin: 7px 0 0;
+}
+
+:is(.MatterTools-module__laPtKa__library .template-warning, .MatterTools-module__laPtKa__library .template-notice, .MatterTools-module__laPtKa__library .template-action-failure, .MatterTools-module__laPtKa__editor .stale-warning, .MatterTools-module__laPtKa__editor .editor-notice, .MatterTools-module__laPtKa__editor .editor-action-failure) {
+  border: 1px solid var(--failure-edge);
+  background: var(--failure-wash);
+  border-radius: 8px;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  display: flex;
+}
+
+:is(.MatterTools-module__laPtKa__library .template-notice, .MatterTools-module__laPtKa__editor .editor-notice) {
+  border-color: var(--agent-edge);
+  background: var(--agent-wash);
+}
+
+:is(.MatterTools-module__laPtKa__library .template-action-failure, .MatterTools-module__laPtKa__editor .editor-action-failure) {
+  color: var(--failure);
+}
+
+.MatterTools-module__laPtKa__editor .stale-warning {
+  border-color: var(--attention-edge);
+  background: var(--attention-wash);
+}
+
+.MatterTools-module__laPtKa__library .template-layout {
+  grid-template-columns: minmax(240px, .8fr) minmax(0, 1.5fr);
+  gap: 18px;
+  min-width: 0;
+  margin-top: 18px;
+  display: grid;
+}
+
+.MatterTools-module__laPtKa__library .template-list {
+  border-right: 1px solid var(--line-soft);
+  min-width: 0;
+  padding-right: 18px;
+}
+
+.MatterTools-module__laPtKa__library .template-group + .template-group {
+  margin-top: 18px;
+}
+
+.MatterTools-module__laPtKa__library .template-group__title {
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+  display: flex;
+}
+
+.MatterTools-module__laPtKa__library .template-group__title h3 {
+  font: 600 15px/1.4 var(--sans);
+}
+
+.MatterTools-module__laPtKa__library .template-group__title span {
+  color: var(--ink-4);
+  font: 400 15px/1.5 var(--sans);
+  text-align: right;
+}
+
+.MatterTools-module__laPtKa__library .template-row {
+  width: 100%;
+  min-height: 56px;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  background: none;
+  border: 1px solid #0000;
+  border-radius: 8px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 9px;
+  display: flex;
+}
+
+.MatterTools-module__laPtKa__library .template-row:hover:not(:disabled) {
+  background: var(--hover);
+}
+
+.MatterTools-module__laPtKa__library .template-row:disabled {
+  cursor: wait;
+}
+
+.MatterTools-module__laPtKa__library .template-row > span:first-child {
+  gap: 4px;
+  min-width: 0;
+  display: grid;
+}
+
+.MatterTools-module__laPtKa__library .template-row small {
+  color: var(--ink-4);
+  font: 400 12px/1.45 var(--sans);
+  overflow-wrap: anywhere;
+}
+
+.MatterTools-module__laPtKa__library .template-detail {
+  min-width: 0;
+}
+
+.MatterTools-module__laPtKa__library .template-summary {
+  color: var(--ink-2);
+  font: 400 16px/1.65 var(--serif);
+  white-space: pre-wrap;
+  margin: 16px 0;
+}
+
+.MatterTools-module__laPtKa__library .template-failure {
+  border: 1px solid var(--failure-edge);
+  background: var(--failure-wash);
+  color: var(--failure);
+  border-radius: 8px;
+  margin: 12px 0 0;
+  padding: 9px 11px;
+}
+
+:is(.MatterTools-module__laPtKa__library .template-detail details, .MatterTools-module__laPtKa__editor .revision-detail) {
+  border-top: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
+  padding: 10px 0;
+}
+
+:is(.MatterTools-module__laPtKa__library .template-detail details summary, .MatterTools-module__laPtKa__editor .revision-detail summary) {
+  cursor: pointer;
+  color: var(--ink-2);
+  font: 600 15px/1.5 var(--sans);
+}
+
+:is(.MatterTools-module__laPtKa__library .template-detail details p, .MatterTools-module__laPtKa__editor .revision-detail p) {
+  color: var(--ink-3);
+  font: 400 12px/1.5 var(--sans);
+  overflow-wrap: anywhere;
+  margin: 8px 0 0;
+}
+
+.MatterTools-module__laPtKa__library .template-actions {
+  margin-top: 14px;
+}
+
+:is(.MatterTools-module__laPtKa__library .preview-overrides, .MatterTools-module__laPtKa__editor .preview-box) {
+  border: 1px solid var(--agent-edge);
+  background: var(--agent-wash);
+  border-radius: 8px;
+  gap: 12px;
+  margin: 18px 0 0;
+  padding: 14px;
+  display: grid;
+}
+
+:is(.MatterTools-module__laPtKa__library .preview-overrides legend, .MatterTools-module__laPtKa__editor .preview-box legend) {
+  font: 600 17px/1.3 var(--serif);
+  padding: 0 5px;
+}
+
+:is(.MatterTools-module__laPtKa__library .preview-overrides p, .MatterTools-module__laPtKa__editor .preview-box > p, .MatterTools-module__laPtKa__editor .editor-field p) {
+  color: var(--ink-3);
+  font: 400 15px/1.5 var(--sans);
+  margin: 0;
+}
+
+:is(.MatterTools-module__laPtKa__library .preview-overrides label, .MatterTools-module__laPtKa__editor .template-fields label, .MatterTools-module__laPtKa__editor .template-long-fields label, .MatterTools-module__laPtKa__editor .preview-box label) {
+  color: var(--ink-3);
+  font: 500 15px/1.5 var(--sans);
+  gap: 6px;
+  display: grid;
+}
+
+:is(.MatterTools-module__laPtKa__library .preview-grid, .MatterTools-module__laPtKa__editor .preview-fields) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  display: grid;
+}
+
+:is(.MatterTools-module__laPtKa__library .preview-result, .MatterTools-module__laPtKa__editor .preview-result) {
+  border-left: 3px solid var(--agent);
+  background: var(--agent-wash);
+  margin-top: 14px;
+  padding: 12px;
+}
+
+:is(.MatterTools-module__laPtKa__library .preview-result > div, .MatterTools-module__laPtKa__editor .preview-result) {
+  align-items: flex-start;
+  gap: 10px;
+  display: flex;
+}
+
+:is(.MatterTools-module__laPtKa__library .preview-result p, .MatterTools-module__laPtKa__editor .preview-result p) {
+  overflow-wrap: anywhere;
+  margin: 7px 0 0;
+}
+
+:is(.MatterTools-module__laPtKa__library .preview-result .btn, .MatterTools-module__laPtKa__editor .preview-result .btn) {
+  margin-top: 10px;
+}
+
+.MatterTools-module__laPtKa__editor .template-fields {
+  grid-template-columns: minmax(0, 1.5fr) minmax(180px, .7fr);
+  gap: 12px;
+  margin-top: 18px;
+  display: grid;
+}
+
+.MatterTools-module__laPtKa__editor .template-fields--details {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 12px;
+}
+
+.MatterTools-module__laPtKa__editor .editor-field {
+  gap: 10px;
+  margin-top: 20px;
+  display: grid;
+}
+
+.MatterTools-module__laPtKa__editor .template-long-fields {
+  gap: 12px;
+  margin-top: 18px;
+  display: grid;
+}
+
+.MatterTools-module__laPtKa__editor .template-long-fields small {
+  color: var(--ink-4);
+  font: 400 15px/1.5 var(--sans);
+}
+
+.MatterTools-module__laPtKa__editor .template-enabled {
+  margin-top: 14px;
+}
+
+.MatterTools-module__laPtKa__editor .save-actions {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  display: flex;
+}
+
+.MatterTools-module__laPtKa__editor .save-actions span {
+  color: var(--ink-3);
+  font: 400 15px/1.5 var(--sans);
+}
+
+.MatterTools-module__laPtKa__editor .preview-save-note {
+  border: 1px solid var(--attention-edge);
+  background: var(--attention-wash);
+  color: var(--attention-deep);
+  border-radius: 7px;
+  padding: 8px 10px;
+}
+
+.MatterTools-module__laPtKa__editor .revision-detail {
+  border-bottom: 0;
+  margin-top: 18px;
+}
+
+@media (max-width: 760px) {
+  .MatterTools-module__laPtKa__filesPanel {
+    width: 100vw;
+    padding: 14px 12px;
+  }
+
+  :is(.MatterTools-module__laPtKa__filesHeader .btn, .MatterTools-module__laPtKa__filesTabs .btn, .MatterTools-module__laPtKa__filesActions .btn, .MatterTools-module__laPtKa__fileActions .btn, .MatterTools-module__laPtKa__library .btn, .MatterTools-module__laPtKa__editor .btn) {
+    min-height: 44px;
+  }
+
+  .MatterTools-module__laPtKa__library, .MatterTools-module__laPtKa__editor {
+    padding: 14px 12px;
+  }
+
+  .MatterTools-module__laPtKa__library .template-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .MatterTools-module__laPtKa__library .template-list {
+    border-right: 0;
+    border-bottom: 1px solid var(--line-soft);
+    padding: 0 0 16px;
+  }
+
+  :is(.MatterTools-module__laPtKa__editor .template-fields, .MatterTools-module__laPtKa__editor .template-fields--details, .MatterTools-module__laPtKa__library .preview-grid, .MatterTools-module__laPtKa__editor .preview-fields) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 430px) {
+  :is(.MatterTools-module__laPtKa__library .template-library__head, .MatterTools-module__laPtKa__editor .template-editor__head) {
+    flex-direction: column;
+  }
+
+  :is(.MatterTools-module__laPtKa__library .template-library__head .btn, .MatterTools-module__laPtKa__library .template-actions .btn, .MatterTools-module__laPtKa__editor .save-actions .btn) {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .MatterTools-module__laPtKa__filesPanel *, .MatterTools-module__laPtKa__library *, .MatterTools-module__laPtKa__editor * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+.MatterTools-module__laPtKa__filesPanel {
+  border-left-color: var(--line-soft);
+  background: var(--raised);
+  width: min(620px, 100vw);
+  padding: 24px;
+  box-shadow: -18px 0 46px #1a1c371f;
+}
+
+.MatterTools-module__laPtKa__filesPanelEmbedded {
+  border: 1px solid var(--line-soft);
+  width: auto;
+  min-height: 0;
+  box-shadow: none;
+  border-radius: 12px;
+  padding: 26px;
+  position: static;
+  overflow: visible;
+}
+
+.MatterTools-module__laPtKa__filesHeader {
+  border-bottom: 1px solid var(--line-soft);
+  align-items: center;
+  padding-bottom: 16px;
+}
+
+.MatterTools-module__laPtKa__filesTitle {
+  font: 400 24px/1.15 var(--serif);
+}
+
+.MatterTools-module__laPtKa__filesTabs {
+  border-bottom: 1px solid var(--line-soft);
+  justify-content: flex-start;
+  gap: 0;
+  margin-top: 18px;
+}
+
+.MatterTools-module__laPtKa__filesTabs .btn {
+  min-height: 42px;
+  color: var(--ink-3);
+  background: none;
+  border: 0;
+  border-radius: 0;
+}
+
+.MatterTools-module__laPtKa__filesTabs .btn:not(.quiet) {
+  border-bottom: 2px solid var(--ink);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.MatterTools-module__laPtKa__filesActions {
+  margin-top: 20px;
+}
+
+.MatterTools-module__laPtKa__filesActions .btn {
+  min-height: 42px;
+  padding-inline: 15px;
+}
+
+.MatterTools-module__laPtKa__filesActions .btn.agent {
+  background: var(--ink);
+  color: var(--paper);
+  border-style: solid;
+}
+
+.MatterTools-module__laPtKa__filesCopy, .MatterTools-module__laPtKa__contextCopy {
+  color: var(--ink-3);
+  font-size: 14px;
+}
+
+.MatterTools-module__laPtKa__filesContent, .MatterTools-module__laPtKa__contextContent {
+  margin-top: 20px;
+}
+
+.MatterTools-module__laPtKa__filesList {
+  gap: 8px;
+}
+
+.MatterTools-module__laPtKa__fileCard, .MatterTools-module__laPtKa__uploadCard, .MatterTools-module__laPtKa__contextItem, .MatterTools-module__laPtKa__manifestItem {
+  border-color: var(--line-soft);
+  background: var(--raised);
+  border-radius: 9px;
+  padding: 14px;
+  box-shadow: 0 5px 16px #1d1f3a08;
+}
+
+.MatterTools-module__laPtKa__fileCard:hover {
+  border-color: var(--agent-edge);
+}
+
+.MatterTools-module__laPtKa__fileHeading {
+  align-items: center;
+}
+
+.MatterTools-module__laPtKa__fileName {
+  color: var(--ink);
+  font-size: 16px;
+}
+
+.MatterTools-module__laPtKa__fileActions {
+  gap: 7px;
+  margin-top: 11px;
+}
+
+.MatterTools-module__laPtKa__fileActions .btn {
+  min-height: 34px;
+}
+
+.MatterTools-module__laPtKa__folderView {
+  border: 1px solid var(--line-soft);
+  background: color-mix(in srgb, var(--raised) 94%, var(--agent-wash));
+  border-radius: 8px;
+  padding: 11px 13px;
+}
+
+.MatterTools-module__laPtKa__folderView > summary {
+  color: var(--agent);
+  font-weight: 600;
+}
+
+.MatterTools-module__laPtKa__context {
+  gap: 18px;
+}
+
+.MatterTools-module__laPtKa__contextTitle {
+  font: 600 24px/1.15 var(--serif);
+}
+
+.MatterTools-module__laPtKa__contextItem {
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 11px;
+}
+
+.MatterTools-module__laPtKa__contextItem:has(input:checked) {
+  border-color: var(--agent-edge);
+  background: var(--agent-wash);
+}
+
+.MatterTools-module__laPtKa__library, .MatterTools-module__laPtKa__editor {
+  border-color: var(--line-soft);
+  background: var(--raised);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 8px 24px #1d1f3a0a;
+}
+
+:is(.MatterTools-module__laPtKa__library .template-library__head h2, .MatterTools-module__laPtKa__editor .template-editor__head h2) {
+  font: 600 30px/1.12 var(--serif);
+  margin: 3px 0 0;
+}
+
+.MatterTools-module__laPtKa__library .template-layout {
+  gap: 24px;
+}
+
+.MatterTools-module__laPtKa__library .template-list {
+  padding-right: 22px;
+}
+
+.MatterTools-module__laPtKa__library .template-row {
+  border-radius: 8px;
+  min-height: 60px;
+  padding: 10px;
+}
+
+.MatterTools-module__laPtKa__library .template-row.selected {
+  border-color: var(--agent-edge);
+  box-shadow: inset 3px 0 0 var(--agent);
+  background: var(--agent-wash);
+}
+
+.MatterTools-module__laPtKa__library .template-actions .btn.agent {
+  background: var(--ink);
+  color: var(--paper);
+  border-style: solid;
+}
+
+.MatterTools-module__laPtKa__editor .preview-box .btn.agent {
+  background: var(--ink);
+  color: var(--paper);
+  border-style: solid;
+}
+
+:is(.MatterTools-module__laPtKa__library .preview-overrides, .MatterTools-module__laPtKa__editor .preview-box) {
+  border-color: var(--agent-edge);
+  background: color-mix(in srgb, var(--raised) 88%, var(--agent-wash));
+}
+
+:is(.MatterTools-module__laPtKa__editor .template-fields, .MatterTools-module__laPtKa__editor .template-long-fields) {
+  gap: 14px;
+}
+
+.MatterTools-module__laPtKa__editor .editor-field {
+  padding-top: 2px;
+}
+
+.MatterTools-module__laPtKa__editor .save-actions {
+  border-top: 1px solid var(--line-soft);
+  padding-top: 16px;
+}
+
+.MatterTools-module__laPtKa__editor .save-actions .btn.primary {
+  background: var(--ink);
+}
+
+@media (max-width: 760px) {
+  .MatterTools-module__laPtKa__filesPanelEmbedded {
+    border-radius: 10px;
+    padding: 16px 14px;
+  }
+
+  .MatterTools-module__laPtKa__filesTitle {
+    font-size: 25px;
+  }
+
+  .MatterTools-module__laPtKa__library .template-library__head h2 {
+    font-size: 25px;
+  }
+
+  .MatterTools-module__laPtKa__editor .template-editor__head h2 {
+    font-size: 25px;
+  }
+
+  .MatterTools-module__laPtKa__filesActions .btn {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+/*# sourceMappingURL=components_workspace_MatterTools_module_css_1igg3k2._.single.css.map*/

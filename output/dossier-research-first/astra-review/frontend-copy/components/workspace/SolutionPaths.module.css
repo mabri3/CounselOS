@@ -1,0 +1,25 @@
+.panel { min-width:0; }
+.overview { display:grid; gap:12px; }
+.panel .hint { margin:0; font-size:13px; color:var(--ink-3); }
+.choices { display:grid; gap:8px; }
+.choice { display:flex; align-items:center; gap:8px; padding:10px; border:1px solid var(--line); border-radius:8px; background:var(--raised); }
+.choice:has(input:checked) { background:var(--sunken); border-color:var(--ink-4); }
+.selection { display:flex; align-items:center; gap:10px; flex:1; min-width:0; cursor:pointer; font-size:14px; }
+.selection input { width:18px; height:18px; flex-shrink:0; accent-color:var(--ink); }
+.selection span { overflow-wrap:anywhere; }
+.selection small { display:block; font-size:12px; color:var(--ink-3); margin-top:2px; }
+.panel .detailButton { font-size:12px; padding:6px 8px; flex-shrink:0; }
+.panel .compare { width:100%; background:var(--ink); color:var(--raised); font-size:14px; text-align:center; }
+.panel .compare:hover:not(:disabled) { background:var(--ink-2); color:var(--raised); }
+.detail { font-size:14px; }
+.detail h3 { margin:16px 0 8px; font-size:17px; }
+.detail h4 { margin:14px 0 6px; font-size:14px; }
+.detail li { margin:6px 0; }
+.more { margin-top:18px; border-top:1px solid var(--line); padding-top:12px; }
+
+.pathActions { display:grid; gap:8px; margin:12px 0; }
+.pathActions p { margin:0; font-size:13px; color:var(--ink-3); }
+
+.rename { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+.rename label { width:100%; display:grid; gap:6px; }
+.rename input { width:100%; min-width:0; }

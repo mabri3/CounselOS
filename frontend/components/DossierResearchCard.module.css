@@ -11,8 +11,16 @@
 .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .issueRows { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .issueRows li { display: grid; gap: 5px; padding: 12px; border-left: 3px solid var(--line); background: var(--raised); }
-.issueRows li > div { display: flex; justify-content: space-between; gap: 12px; }
-.issueRows p { color: var(--ink-3); font-size: 13px; }
+.issueRows li > div, .issueHeading { display: flex; justify-content: space-between; gap: 12px; }
+.issueRows p, .issueMeta { color: var(--ink-3); font-size: 13px; }
+.issueRows li.actionableIssue { padding: 0; }
+.issueStart { display: grid; gap: 5px; width: 100%; padding: 12px; border: 0; background: transparent; color: var(--ink); text-align: left; font: inherit; cursor: pointer; }
+.issueStart:not(:disabled):hover { background: var(--agent-wash); }
+.issueStart:focus-visible { outline: 2px solid var(--agent); outline-offset: 2px; }
+.issueStart:disabled { cursor: wait; opacity: .65; }
+.issueStartLabel { justify-self: start; color: var(--agent); font-size: 13px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.webResearch { display: grid; gap: 5px; justify-items: start; min-width: 0; }
+.actionableIssue .webResearch { padding: 0 12px 12px; }
 .state { flex: none; font-weight: 700; }
 .state_running, .state_queued { border-left-color: var(--agent) !important; }
 .state_saved { border-left-color: var(--healthy) !important; }
@@ -24,4 +32,4 @@
 .newIssues ul { margin: 0; padding-left: 20px; }
 .error { color: var(--failure) !important; }
 .card details code { overflow-wrap: anywhere; color: var(--ink-3); font-size: 11px; }
-@media (max-width: 760px) { .priorities { grid-template-columns: 1fr; } .issueRows li > div { display: grid; } }
+@media (max-width: 760px) { .priorities { grid-template-columns: 1fr; } .issueRows li > div, .issueHeading { display: grid; } }

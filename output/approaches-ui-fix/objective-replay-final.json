@@ -1,0 +1,8 @@
+{
+  "model": "gpt-5.6-sol",
+  "effort": "medium",
+  "candidate_calls": 1,
+  "old_words": 73,
+  "new_words": 1041,
+  "tool_calls": 0
+}

@@ -28,13 +28,13 @@ class ChatHistoryService:
         if not directory.exists():
             return []
         conversations = [
-            self._summary(self.vault.read_markdown(self.vault.relative(path)))
+            self._summary(self.vault.read_markdown(self.vault.relative(path), include_execution=False))
             for path in directory.glob("CONV-*.md")
         ]
         return sorted(conversations, key=lambda item: item["updated_at"], reverse=True)
 
-    def get(self, matter_id: str, conversation_id: str) -> dict[str, Any]:
-        document = self.vault.read_markdown(self._matter_path(matter_id, conversation_id))
+    def get(self, matter_id: str, conversation_id: str, *, include_execution: bool = True) -> dict[str, Any]:
+        document = self.vault.read_markdown(self._matter_path(matter_id, conversation_id), include_execution=include_execution)
         metadata = document["metadata"]
         if (
             metadata.get("conversation_id") != conversation_id

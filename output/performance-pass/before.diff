@@ -1,0 +1,1122 @@
+diff --git a/backend/app/models/dossier_request.py b/backend/app/models/dossier_request.py
+index 6fc16339..787b3261 100644
+--- a/backend/app/models/dossier_request.py
++++ b/backend/app/models/dossier_request.py
+@@ -251,7 +251,9 @@ def compact_status(metadata: dict[str, Any], body: str = "") -> dict[str, Any]:
+                 "packet_path": entry.get("packet_path"),
+                 "answer_path": entry.get("packet_path"),
+                 "last_error": entry.get("last_error"),
++                "recovery_status": entry.get("recovery_status"),
+                 "run_id": entry.get("child_run_id"),
++                "web_run_id": entry.get("web_run_id"),
+             }
+         )
+     issue_rows.sort(
+diff --git a/backend/app/routers/dossier_requests.py b/backend/app/routers/dossier_requests.py
+index 0c30c218..164919e7 100644
+--- a/backend/app/routers/dossier_requests.py
++++ b/backend/app/routers/dossier_requests.py
+@@ -39,6 +39,14 @@ class DossierRequestStop(BaseModel):
+     expected_sequence: int = Field(ge=0)
+ 
+ 
++class DossierIssueStart(BaseModel):
++    plan_revision: str = Field(min_length=1, max_length=256)
++
++
++class DossierIssueWebResearch(DossierIssueStart):
++    source_choice: ResearchScope
++
++
+ class DossierRequestResume(BaseModel):
+     expected_sequence: int = Field(ge=0)
+     retry_unknown: bool = False
+@@ -96,6 +104,45 @@ async def start_request(
+         raise HTTPException(status_code=404, detail=str(exc)) from exc
+ 
+ 
++@router.post("/{request_id}/issues/{issue_id}/start", status_code=202)
++async def start_issue(
++    matter_id: str,
++    request_id: str,
++    issue_id: str,
++    payload: DossierIssueStart,
++    context: AppContext = Depends(get_context),
++):
++    try:
++        return await context.dossier_requests.start_issue(
++            matter_id, request_id, issue_id, plan_revision=payload.plan_revision
++        )
++    except DossierRequestError as exc:
++        _raise_service_error(exc)
++    except KeyError as exc:
++        raise HTTPException(status_code=404, detail=str(exc)) from exc
++
++
++@router.post("/{request_id}/issues/{issue_id}/web-research", status_code=202)
++async def add_web_research(
++    matter_id: str,
++    request_id: str,
++    issue_id: str,
++    payload: DossierIssueWebResearch,
++    context: AppContext = Depends(get_context),
++):
++    try:
++        return context.dossier_requests.add_web_research(
++            matter_id, request_id, issue_id, plan_revision=payload.plan_revision,
++            source_choice=payload.source_choice,
++        )
++    except DossierRequestError as exc:
++        _raise_service_error(exc)
++    except KeyError as exc:
++        raise HTTPException(status_code=404, detail=str(exc)) from exc
++    except ValueError as exc:
++        raise HTTPException(status_code=400, detail=str(exc)) from exc
++
++
+ @router.post("/{request_id}/stop")
+ async def stop_request(
+     matter_id: str,
+diff --git a/backend/app/services/dossier_request_execution.py b/backend/app/services/dossier_request_execution.py
+index 74898f6f..1a191fa6 100644
+--- a/backend/app/services/dossier_request_execution.py
++++ b/backend/app/services/dossier_request_execution.py
+@@ -44,17 +44,16 @@ def _next_batch(metadata: dict[str, Any]) -> list[str]:
+ 
+ 
+ def _next_unpublished_batch(metadata: dict[str, Any]) -> list[str]:
+-    """Return a fully collected batch whose publication receipt is missing."""
++    """Return collected issues whose publication receipt is missing."""
+     published = {
+-        tuple(str(iid) for iid in (entry.get("issue_ids") or []))
++        str(iid)
+         for entry in (metadata.get("publications") or []) if isinstance(entry, dict) and entry.get("state") in {"applied", "review_required"}
++        for iid in (entry.get("issue_ids") or [])
+     }
+-    order = _batch_order(metadata)
+     issues = metadata.get("issues") or {}
++    order = [iid for iid in _batch_order(metadata) if iid not in published or (issues.get(iid) or {}).get("publication_pending")]
+     for offset in range(0, len(order), BATCH_SIZE):
+         batch = order[offset:offset + BATCH_SIZE]
+-        if tuple(batch) in published:
+-            continue
+         states = [(issues.get(iid) or {}).get("state") for iid in batch]
+         if batch and all(state in {"saved", "partial", "failed"} for state in states):
+             return batch
+@@ -92,9 +91,12 @@ def _record_publication(service, matter_id, request_id, entry, *, first_pass):
+             publications = [p for p in publications if p.get("key") != entry.get("key")]
+         publications.append(entry)
+         metadata["publications"] = publications
++        if entry.get("state") in {"applied", "review_required"}:
++            for iid in entry.get("issue_ids") or []:
++                (metadata.get("issues", {}).get(iid) or {}).pop("publication_pending", None)
+         if first_pass and entry.get("revision_path") and entry.get("state") in {"applied", "review_required"} and metadata.get("first_pass_ready_at") is None:
+             metadata["first_pass_ready_at"] = iso_now()
+-            metadata["phase"] = "remaining_batch" if metadata.get("scope") == "all" else "finished"
++            metadata["phase"] = "remaining_batch" if _next_batch(metadata) else "finished"
+         elif not first_pass:
+             metadata["phase"] = "update_compose"
+         # Advance expected hashes only after an uncontested own publication.
+@@ -156,6 +158,11 @@ async def publish_batch(service: Any, matter_id: str, request_id: str, issue_ids
+         # Replay: this exact batch was already published; do not duplicate anything.
+         for pub in metadata.get("publications") or []:
+             if pub.get("key") == batch_key and pub.get("state") in {"applied", "review_required"}:
++                def already_published(md, body):
++                    for iid in issue_ids:
++                        (md.get("issues", {}).get(iid) or {}).pop("publication_pending", None)
++                    return md, body
++                service._mutate(matter_id, request_id, already_published, expected_sequence=None)
+                 return service.get(matter_id, request_id)
+ 
+         rec = RecommendationService(app.vault, app.matters)
+@@ -420,10 +427,8 @@ class DossierRequestExecutor:
+                 await self._compose_batch(batch)
+                 if (self.service.get(self.matter_id, self.request_id).get("latest_publication") or {}).get("state") == "failed":
+                     break
+-                # After the first batch we deliver; the remainder continues only
+-                # when the lawyer chose all identified issues.
+-                if metadata.get("scope") != "all":
+-                    break
++                # Re-read the saved plan: the lawyer may have added one issue
++                # during this batch. Only explicitly planned issues can run.
+             self._finalize()
+         except asyncio.CancelledError:
+             self._mark_interrupted()
+@@ -495,6 +500,7 @@ class DossierRequestExecutor:
+                 managed_state = str(child.get("managed_state") or "")
+                 entry["state"] = _CHILD_TO_ISSUE.get(managed_state, "failed")
+                 entry["last_error"] = child.get("failure_detail")
++                entry["recovery_status"] = None
+                 results = child.get("results") or []
+                 packet_path = results[0]["path"] if results and isinstance(results[0], dict) and results[0].get("path") else None
+                 entry["packet_path"] = packet_path
+@@ -556,7 +562,7 @@ class DossierRequestExecutor:
+             states = [(issues.get(iid) or {}).get("state") for iid in selected]
+             if metadata.get("stop_requested"):
+                 metadata["state"] = "stopped"
+-            elif not metadata.get("first_pass_ready_at") or any(p.get("state") in {"failed", "not_written"} for p in metadata.get("publications", [])) or any(s in {"failed", "interrupted"} for s in states):
++            elif not metadata.get("first_pass_ready_at") or any(p.get("state") in {"failed", "not_written"} for p in metadata.get("publications", [])) or any(s in {"failed", "interrupted", "partial"} for s in states):
+                 metadata["state"] = "partial"
+             else:
+                 metadata["state"] = "completed"
+diff --git a/backend/app/services/dossier_requests.py b/backend/app/services/dossier_requests.py
+index 2fc3bea1..63863263 100644
+--- a/backend/app/services/dossier_requests.py
++++ b/backend/app/services/dossier_requests.py
+@@ -121,7 +121,18 @@ class DossierRequestService:
+ 
+     def get(self, matter_id: str, request_id: str) -> dict[str, Any]:
+         record = self._load_record(matter_id, request_id)
+-        return compact_status(record["metadata"], record["content"])
++        status = compact_status(record["metadata"], record["content"])
++        # Older partial rows did not record their cause. Project the saved child
++        # error read-only; do not restart research or rewrite the user's matter.
++        from app.services.research_recovery import research_failure
++        for issue in status["issues"]:
++            if issue["state"] in {"partial", "failed"} and not issue["last_error"] and issue.get("run_id"):
++                try:
++                    child = self.app.research_runs.get(matter_id, issue["run_id"])
++                    issue["last_error"] = research_failure(child)[0]
++                except (KeyError, ValueError, OSError):
++                    pass
++        return status
+ 
+     def get_record(self, matter_id: str, request_id: str) -> dict[str, Any]:
+         return self._load_record(matter_id, request_id)
+@@ -906,6 +917,87 @@ class DossierRequestService:
+         self._launch_coordinator(matter_id, request_id)
+         return self.get(matter_id, request_id)
+ 
++    async def start_issue(self, matter_id: str, request_id: str, issue_id: str, *, plan_revision: str) -> dict[str, Any]:
++        """Add one unselected issue using this request's saved research choices."""
++        from app.services.dossier_request_execution import DossierRequestExecutor
++
++        with WORKSPACE_LOCK:
++            record = self._load_record(matter_id, request_id)
++            metadata = record["metadata"]
++            if plan_revision != metadata.get("plan_revision"):
++                raise DossierRequestConflict("This dossier plan changed. Reload and try again.")
++            if metadata.get("execution_mode") != "research":
++                raise DossierRequestConflict("Choose sources and start dossier research before adding an issue.")
++            entry = (metadata.get("issues") or {}).get(issue_id)
++            if entry is None:
++                raise DossierRequestValidation("This issue does not belong to the saved dossier plan.")
++            # Progress updates need no sequence match: this only adds one issue.
++            # Repeated clicks return the existing work, even after it finishes.
++            if issue_id in (metadata.get("planned_issue_ids") or []):
++                return compact_status(metadata, record["content"])
++            if entry.get("state") != "not_selected":
++                raise DossierRequestConflict("This issue is not available to start.")
++            if metadata.get("state") == "running" and metadata.get("stop_requested"):
++                raise DossierRequestConflict("Research is stopping. Try again after it stops.")
++
++            active = self._active.get(request_id)
++            is_active = active is not None and not active.done()
++            ownership = self.app.research_runs.acquire_matter_ownership(matter_id, request_id)
++            if not ownership.get("acquired"):
++                raise DossierRequestConflict("Another dossier request is already researching this matter.",
++                                            current_request_id=ownership.get("owner"))
++
++            def queue_issue(md, content):
++                # Freeze the new child's inputs before another batch publishes.
++                child = DossierRequestExecutor(self, matter_id, request_id)._ensure_child(md, issue_id)
++                planned = list(md.get("planned_issue_ids") or [])
++                md["issues"][issue_id].update(state="queued", planned_order=len(planned), child_run_id=child["run_id"])
++                md["planned_issue_ids"] = [*planned, issue_id]
++                md.update(state="running", stop_requested=False, finished_at=None, last_error=None,
++                          phase="remaining_batch" if md.get("first_pass_ready_at") else "first_batch")
++                return md, content
++
++            try:
++                result = self._mutate(matter_id, request_id, queue_issue, expected_sequence=None)
++            except Exception as exc:
++                if not is_active:
++                    self.app.research_runs.release_matter_ownership(matter_id, request_id)
++                if isinstance(exc, (KeyError, ValueError)):
++                    raise DossierRequestValidation(f"This issue could not start: {exc}") from exc
++                raise
++            if not is_active:
++                self._launch_coordinator(matter_id, request_id)
++            return result
++
++    def add_web_research(self, matter_id: str, request_id: str, issue_id: str, *,
++                         plan_revision: str, source_choice: ResearchScope) -> dict[str, Any]:
++        """Link an explicitly requested web pass through the normal research queue."""
++        with WORKSPACE_LOCK:
++            metadata = self._load_record(matter_id, request_id)["metadata"]
++            if plan_revision != metadata.get("plan_revision"):
++                raise DossierRequestConflict("This dossier plan changed. Reload and try again.")
++            entry = (metadata.get("issues") or {}).get(issue_id)
++            if entry is None:
++                raise DossierRequestValidation("This issue does not belong to the saved dossier plan.")
++            if not source_choice.external:
++                raise DossierRequestValidation("Select external sources to add web research.")
++            if entry.get("web_run_id"):
++                return self.app.research_runs.get(matter_id, entry["web_run_id"])
++            origin = metadata.get("origin") or {}
++            run = self.app.research_runs.start(
++                matter_id, [self._issue_question(entry, issue_id, metadata.get("priorities"), metadata.get("date_candidates"))],
++                source_action_key=f"dossier-web:{request_id}:{issue_id}", issue_id=issue_id,
++                search_scope=source_choice, origin_conversation_id=origin.get("conversation_id"),
++                origin_message_id=origin.get("message_id"),
++            )
++
++            def link(md, content):
++                md["issues"][issue_id]["web_run_id"] = run["run_id"]
++                return md, content
++
++            self._mutate(matter_id, request_id, link, expected_sequence=None)
++            return run
++
+     async def stop(self, matter_id: str, request_id: str, *, expected_sequence: int | None) -> dict[str, Any]:
+         current = self._load_record(matter_id, request_id)
+         if current["metadata"].get("state") not in {"running", "partial", "interrupted"}:
+@@ -916,6 +1008,17 @@ class DossierRequestService:
+             return md, content
+ 
+         self._mutate(matter_id, request_id, request_stop, expected_sequence=expected_sequence)
++        # Persist the child stop before cancellation, including an automatic
++        # continuation waiting in backoff. A restart must not revive that work.
++        from app.services.research_checkpoints import ResearchCheckpoints
++        checks = ResearchCheckpoints(self.app.research_runs)
++        for entry in (current["metadata"].get("issues") or {}).values():
++            run_id = entry.get("child_run_id")
++            if run_id and entry.get("state") in {"queued", "running"}:
++                try:
++                    checks.update(matter_id, run_id, allow_unavailable_sources=True, stop_requested=True)
++                except (KeyError, ValueError, OSError):
++                    pass  # A damaged child must not prevent stopping its task.
+ 
+         # Cancel this parent's coordinator and its active children.
+         task = self._active.get(request_id)
+@@ -950,34 +1053,44 @@ class DossierRequestService:
+     async def resume(self, matter_id, request_id, *, expected_sequence, retry_unknown=False, retry_issue_ids=None) -> dict[str, Any]:
+         record = self._load_record(matter_id, request_id)
+         metadata = record["metadata"]
+-        if metadata.get("state") in {"completed"}:
++        issue_states = metadata.get("issues") or {}
++        unfinished = {iid for iid, entry in issue_states.items() if entry.get("state") in {"partial", "failed", "interrupted"}}
++        active_task = self._active.get(request_id)
++        is_active = active_task is not None and not active_task.done()
++        active_retry = metadata.get("state") == "running" and is_active and bool(retry_issue_ids) and not metadata.get("stop_requested")
++        if metadata.get("state") == "completed" and not unfinished:
+             return compact_status(metadata, record["content"])
+-        if metadata.get("state") not in {"interrupted", "stopped", "failed", "partial"}:
++        if metadata.get("state") not in {"interrupted", "stopped", "failed", "partial", "completed"} and not active_retry:
+             raise DossierRequestConflict("This dossier request is not ready to resume.")
+         if expected_sequence is not None and expected_sequence != int(metadata.get("sequence") or 0):
+             raise DossierRequestConflict("This dossier request changed. Reload and try again.",
+                                          current_sequence=int(metadata.get("sequence") or 0))
+ 
+-        issue_states = metadata.get("issues") or {}
+         requested_retries = set(retry_issue_ids or [])
+         if any(iid not in issue_states for iid in requested_retries):
+             raise DossierRequestValidation("A retry issue does not belong to this dossier request.")
+         if any((issue_states[iid] or {}).get("state") == "saved" for iid in requested_retries):
+             raise DossierRequestValidation("Completed dossier issues cannot be retried.")
++        if requested_retries - unfinished:
++            raise DossierRequestValidation("Only unfinished dossier issues can be resumed.")
+ 
+         def reopen(md, content):
+             md["stop_requested"] = False
+             md["state"] = "running"
+             md["last_error"] = None
+-            for call in (md.get("writer_calls") or {}).values():
++            md["finished_at"] = None
++            for call in ([] if active_retry or requested_retries else (md.get("writer_calls") or {}).values()):
+                 if call.get("state") in {"in_flight", "outcome_unknown"}:
+                     call["state"] = "retry_ready" if retry_unknown else "outcome_unknown"
+             issues = md.get("issues") or {}
+             allowed = set(retry_issue_ids or [])
+             for iid, entry in issues.items():
+                 state = (entry or {}).get("state")
+-                if state in {"interrupted", "queued"} or (state in {"failed", "partial"} and (not allowed or iid in allowed)):
++                if state in {"interrupted", "queued", "failed", "partial"} and (not allowed or iid in allowed):
+                     entry["state"] = "queued"
++                    entry["last_error"] = None
++                    entry["recovery_status"] = "Resuming from saved work."
++                    entry["publication_pending"] = True
+             md["issues"] = issues
+             return md, content
+ 
+@@ -989,6 +1102,7 @@ class DossierRequestService:
+             )
+         try:
+             from app.services.research_checkpoints import ResearchCheckpoints
++            from app.services.research_recovery import prepare_recovery
+             checkpoint_service = ResearchCheckpoints(self.app.research_runs)
+             retry_targets = requested_retries or {
+                 iid
+@@ -1000,9 +1114,18 @@ class DossierRequestService:
+                 if run_id and self.app.vault.exists(
+                     self.app.research_runs._path(matter_id, run_id)
+                 ):
+-                    checkpoint_service.recover(
+-                        matter_id, run_id, explicit_retry=retry_unknown, allow_unavailable_sources=True
+-                    )
++                    child = self.app.research_runs.get(matter_id, run_id)
++                    cp = child.get("checkpoint") or {}
++                    needs_allowance = (child.get("managed_state") in {"partial", "failed"}
++                                       or cp.get("final_attempt_started") or cp.get("analysis_failure")
++                                       or cp.get("budget_used", {}).get("active_seconds", 0) + cp.get("active_time_reservation", 0)
++                                       >= child.get("investigation_limits", {}).get("active_seconds", 600) - 90)
++                    renewed = needs_allowance and prepare_recovery(
++                        self.app.research_runs, matter_id, run_id, explicit_retry=retry_unknown)
++                    if not renewed:
++                        checkpoint_service.recover(
++                            matter_id, run_id, explicit_retry=retry_unknown, allow_unavailable_sources=True
++                        )
+                     child = self.app.research_runs.get(matter_id, run_id)
+                     cp = child.get("checkpoint") or {}
+                     # Resume clears Stop but never clears unknown calls or
+@@ -1014,9 +1137,11 @@ class DossierRequestService:
+                         "failure_detail": "; ".join(cp["source_warnings"]) if source_blocked else None})
+             self._mutate(matter_id, request_id, reopen, expected_sequence=None)
+         except Exception:
+-            self.app.research_runs.release_matter_ownership(matter_id, request_id)
++            if not is_active:
++                self.app.research_runs.release_matter_ownership(matter_id, request_id)
+             raise
+-        self._launch_coordinator(matter_id, request_id)
++        if not is_active:
++            self._launch_coordinator(matter_id, request_id)
+         return self.get(matter_id, request_id)
+ 
+     def _launch_coordinator(self, matter_id: str, request_id: str) -> Any:
+diff --git a/backend/app/services/research_checkpoints.py b/backend/app/services/research_checkpoints.py
+index 49cefd2c..1c9d6d3b 100644
+--- a/backend/app/services/research_checkpoints.py
++++ b/backend/app/services/research_checkpoints.py
+@@ -140,6 +140,8 @@ class ResearchCheckpoints:
+         # duration of the unfinished operation instead of resetting its time.
+         reservation = cp.pop("active_time_reservation", 0)
+         cp["budget_used"]["active_seconds"] += reservation
++        if reservation:
++            cp["recovered_time_seconds"] = cp.get("recovered_time_seconds", 0) + reservation
+         for call in cp["pending_calls"]:
+             if call["state"] == "in_flight":
+                 call["state"] = "outcome_unknown"
+diff --git a/backend/app/services/research_collection.py b/backend/app/services/research_collection.py
+index 9a723566..acb7e6e4 100644
+--- a/backend/app/services/research_collection.py
++++ b/backend/app/services/research_collection.py
+@@ -35,7 +35,8 @@ class ResearchCollection:
+ 
+     def remaining(self):
+         used = self.checkpoints.load(self.matter_id, self.run_id)["budget_used"]
+-        return {k: max(0, LIMITS[k] - used[k]) for k in LIMITS}
++        limits = self.app.research_runs.get(self.matter_id, self.run_id)["investigation_limits"]
++        return {k: max(0, limits[k] - used[k]) for k in LIMITS}
+ 
+     async def collect(self, arguments):
+         batch = ResearchEvidenceBatch.model_validate(arguments)
+@@ -45,6 +46,9 @@ class ResearchCollection:
+         if not self.scope.external:
+             return {"status": "blocked", "error": "External sources were not authorized.", "remaining_budget": self.remaining()}
+         key = "batch:" + digest(batch.model_dump_json())
++        retries = cp.get("request_retries") or {}
++        if any("request:" + digest(r.model_dump_json()) in retries for r in batch.requests):
++            key += f":recovery:{len(cp.get('recovery_attempts') or [])}"
+         existing = next((c for c in cp["pending_calls"] if c["key"] == key and c["state"] == "completed"), None)
+         if existing:
+             return {**existing["result_ref"], "remaining_budget": self.remaining()}
+@@ -52,6 +56,8 @@ class ResearchCollection:
+             raise ValueError("Collection stopped to reserve synthesis time.")
+         prior = cp["requests"]
+         for request in batch.requests:
++            if "request:" + digest(request.model_dump_json()) in retries:
++                continue  # Retry the exact previously approved request, not a new query.
+             if prior and not self.scope.allow_followup_queries:
+                 raise ValueError("Focused follow-up searches were not authorized.")
+             if prior and (not request.followup_of or request.followup_of not in prior):
+@@ -92,9 +98,16 @@ class ResearchCollection:
+     async def recover_before_synthesis(self):
+         """If planning failed before retrieval, search the already approved topic."""
+         cp = self.validate(self.matter_id)
+-        if not self.scope.external or cp["requests"] or not self.scope.public_query:
++        if not self.scope.external or self.remaining()["active_seconds"] <= 90 or not self.scope.public_query:
+             return None
+         from app.models.research_investigation import ResearchEvidenceRequest
++        if cp["requests"]:
++            retries = cp.get("request_retries") or {}
++            for key, result in cp["requests"].items():
++                if key in retries and retries[key] not in cp["requests"]:
++                    fields = {k: v for k, v in result.items() if k in ResearchEvidenceRequest.model_fields}
++                    return await self._request(ResearchEvidenceRequest.model_validate(fields))
++            return None
+         return await self._request(ResearchEvidenceRequest(
+             proposition_id="planning-recovery", proposition=self.scope.public_query,
+             public_query=self.scope.public_query, source_goal="operative_rule"))
+@@ -147,6 +160,7 @@ class ResearchCollection:
+     async def _request(self, request):
+         request_key = "request:" + digest(request.model_dump_json())
+         cp = self.validate(self.matter_id)
++        request_key = (cp.get("request_retries") or {}).get(request_key, request_key)
+         if request_key in cp["requests"]:
+             return cp["requests"][request_key]
+         result = {"request_key": request_key, **request.model_dump(), "status": "no_results", "sources": [], "warnings": []}
+@@ -216,8 +230,14 @@ class ResearchCollection:
+         except asyncio.CancelledError:
+             raise
+         except Exception as exc:
++            from app.services.research_recovery import temporary_failure
+             result["status"] = "partial" if result["sources"] else "failed"
+             result["warnings"].append(f"Collection failed: {type(exc).__name__}.")
++            cp = self.checkpoints.load(self.matter_id, self.run_id)
++            call = next(c for c in cp["pending_calls"] if c["key"] == request_key)
++            if call["state"] != "completed":
++                call.update(state="outcome_unknown", error_class=type(exc).__name__, temporary_failure=temporary_failure(exc))
++                self.checkpoints.save(self.matter_id, self.run_id, cp, expected_sequence=cp["sequence"])
+         finally:
+             cp = self.checkpoints.load(self.matter_id, self.run_id)
+             cp.pop("active_time_reservation", None)
+diff --git a/backend/app/services/research_execution.py b/backend/app/services/research_execution.py
+index 3b31d7ba..6867ff49 100644
+--- a/backend/app/services/research_execution.py
++++ b/backend/app/services/research_execution.py
+@@ -98,7 +98,7 @@ class CheckpointedResearchProvider:
+             return ProviderReply(content=result["content"], tool_calls=[ProviderToolCall(**c) for c in result["tool_calls"]])
+         final = tools is None
+         reserve = getattr(a, "synthesis_reserve", 90)
+-        if not final and (a.remaining()["active_seconds"] <= reserve or cp["budget_used"]["main_calls"] >= 12):
++        if not final and (a.remaining()["active_seconds"] <= reserve or a.remaining()["main_calls"] <= 1):
+             raise RuntimeError("Collection/iteration budget reached; finish with no tools.")
+         if final:
+             if cp["final_attempt_started"] and cp.get("final_call_key") != key:
+@@ -138,10 +138,11 @@ class CheckpointedResearchProvider:
+             a.checkpoints.save(a.matter_id, a.run_id, cp, expected_sequence=cp["sequence"])
+             return reply
+         except Exception as exc:
++            from app.services.research_recovery import temporary_failure
+             cp = a.checkpoints.load(a.matter_id, a.run_id)
+             call = next(c for c in cp["pending_calls"] if c["key"] == key)
+             if call["state"] != "completed":
+-                call.update(state="outcome_unknown", error_class=type(exc).__name__)
++                call.update(state="outcome_unknown", error_class=type(exc).__name__, temporary_failure=temporary_failure(exc))
+                 a.checkpoints.save(a.matter_id, a.run_id, cp, expected_sequence=cp["sequence"])
+             raise
+         finally:
+@@ -172,6 +173,8 @@ def restore_messages(access, initial):
+         messages = messages[:assistant_index]
+     elif messages and messages[-1].get("role") == "assistant" and not messages[-1].get("tool_calls"):
+         messages = messages[:-1]
++    if not pending and cp.get("recovery_note"):
++        messages.append({"role": "system", "content": cp["recovery_note"]})
+     return messages
+ 
+ INVESTIGATION_CONTRACT += """
+diff --git a/backend/app/services/research_runs.py b/backend/app/services/research_runs.py
+index a43198e2..79c63694 100644
+--- a/backend/app/services/research_runs.py
++++ b/backend/app/services/research_runs.py
+@@ -64,7 +64,9 @@ class ResearchRunService:
+         if any(run_id in matter_run_ids and not task.done() for run_id, task in self._tasks.items()):
+             return True
+         return any(
+-            not item.get("managed") and item.get("state") in {"queued", "running"}
++            # Pending work waits behind the owning dossier request. Counting it
++            # as active would make the parent and its queued web pass deadlock.
++            not item.get("managed") and item.get("state") == "running"
+             for item in self.list(matter_id)
+         )
+ 
+@@ -368,6 +370,47 @@ class ResearchRunService:
+         return task
+ 
+     async def _execute_managed(self, matter_id: str, run_id: str) -> None:
++        from app.services.research_recovery import (
++            AUTO_RECOVERY_DELAY_SECONDS, AUTO_RECOVERY_LIMIT, prepare_recovery, research_failure,
++        )
++        try:
++            while True:
++                await self._execute_managed_attempt(matter_id, run_id)
++                child = self.get(matter_id, run_id)
++                if child.get("managed_state") not in {"partial", "failed"}:
++                    break
++                reason, _ = research_failure(child)
++                attempts = (child.get("checkpoint") or {}).get("recovery_attempts") or []
++                if sum(a.get("mode") == "automatic" for a in attempts) >= AUTO_RECOVERY_LIMIT:
++                    reason += " Automatic recovery stopped after two attempts. Use Resume to try again."
++                self._write(matter_id, run_id, failure_detail=reason, status=reason)
++                parent_id = child.get("parent_request_id")
++                parent_service = self.research.app.dossier_requests
++                if parent_service.get(matter_id, parent_id).get("stop_requested"):
++                    break
++                if not prepare_recovery(self, matter_id, run_id, automatic=True):
++                    break
++                cp = self.get(matter_id, run_id)["checkpoint"]
++                attempt = sum(a["mode"] == "automatic" for a in cp["recovery_attempts"])
++                note = f"{reason} Auto-resuming ({attempt} of {AUTO_RECOVERY_LIMIT})."
++                self._write(matter_id, run_id, status=note)
++
++                def retry_status(md, body):
++                    entry = (md.get("issues") or {}).get(child.get("issue_id"))
++                    if entry is not None:
++                        entry.update(recovery_status=note, last_error=None)
++                    return md, body
++
++                parent_service._mutate(matter_id, parent_id, retry_status, expected_sequence=None)
++                await asyncio.sleep(AUTO_RECOVERY_DELAY_SECONDS * attempt)
++        except asyncio.CancelledError:
++            self._write(matter_id, run_id, state="interrupted", managed_state="interrupted",
++                        status="Dossier research was interrupted.", finished_at=iso_now())
++            raise
++        finally:
++            self._tasks.pop(run_id, None)
++
++    async def _execute_managed_attempt(self, matter_id: str, run_id: str) -> None:
+         """Run one managed child: save packet/sources only. No shared publication."""
+         current = self.get(matter_id, run_id)
+         question = str(current.get("question") or "").strip()
+@@ -407,6 +450,7 @@ class ResearchRunService:
+                 state="completed",
+                 managed_state="ready_for_composition" if has_analysis else "partial",
+                 completed=len(results), status="Dossier research result ready for composition.",
++                failure_detail=None, failure_class=None, temporary_failure=False,
+                 results=results, finished_at=iso_now(),
+                 useful_support=sum(int(item.get("internal_sources", 0)) + int(item.get("external_sources", 0)) for item in results if isinstance(item, dict)),
+             )
+@@ -415,12 +459,12 @@ class ResearchRunService:
+                         status="Dossier research was interrupted.", results=results, finished_at=iso_now())
+             raise
+         except Exception as exc:
++            from app.services.research_recovery import temporary_failure
+             self._write(matter_id, run_id, state="failed", managed_state="failed",
++                        failure_class=type(exc).__name__, temporary_failure=temporary_failure(exc),
+                         failure_detail=f"{type(exc).__name__}: {exc}",
+                         status="Dossier research stopped; saved evidence retained.",
+                         results=results, finished_at=iso_now())
+-        finally:
+-            self._tasks.pop(run_id, None)
+ 
+     def schedule_next_pending(self, matter_id: str) -> None:
+         """After a parent releases the matter, resume the ordinary research queue."""
+diff --git a/backend/tests/manual/serve_dossier_research.py b/backend/tests/manual/serve_dossier_research.py
+index 3e38c877..be423ab4 100644
+--- a/backend/tests/manual/serve_dossier_research.py
++++ b/backend/tests/manual/serve_dossier_research.py
+@@ -110,6 +110,8 @@ class BoundaryState:
+         self.started: dict[str, int] = {}
+         self.discoveries: list[dict[str, Any]] = []
+         self.fetches: list[str] = []
++        self.failures_remaining = 0
++        self.failure_session: str | None = None
+         self._lock = RLock()
+         saved: dict[str, Any] = {}
+         if context.vault.exists(STATS):
+@@ -137,6 +139,7 @@ class BoundaryState:
+             "fetch_calls_this_process": len(self.fetches),
+             "first_released": self.first_release.is_set(),
+             "remaining_released": self.remaining_release.is_set(),
++            "scripted_failures_left": self.failures_remaining,
+         }
+ 
+ 
+@@ -213,7 +216,7 @@ class DossierBrowserProvider:
+             return ProviderReply(content="\n\n".join(content))
+ 
+         names = {tool.get("function", {}).get("name") for tool in tools or []}
+-        if "collect_research_evidence" in names and "Research this issue for the dossier" in raw:
++        if "Research this issue for the dossier" in raw:
+             session = provider_session_id.get() or re.search(r"Research this issue for the dossier: ([^.]+)", raw).group(1)
+             if session not in self.boundary.started:
+                 position = len(self.boundary.started)
+@@ -225,6 +228,10 @@ class DossierBrowserProvider:
+                 finally:
+                     self.boundary.active.discard(session)
+             self.boundary.record("research_model_calls")
++            if self.boundary.failures_remaining and self.boundary.failure_session in {None, session}:
++                self.boundary.failure_session = session
++                self.boundary.failures_remaining -= 1
++                raise TimeoutError("Synthetic research timeout for recovery acceptance.")
+         return await self.base.complete(messages, tools)
+ 
+     @staticmethod
+@@ -232,8 +239,8 @@ class DossierBrowserProvider:
+         return f"03_Matters/beacon-instant-onboarding"
+ 
+ 
+-def install_fixture_boundaries(context: Any, issue_ids: list[str]) -> BoundaryState:
+-    base, discoveries, fetches = install_boundaries(context)
++def install_fixture_boundaries(context: Any, issue_ids: list[str], monkeypatch=None) -> BoundaryState:
++    base, discoveries, fetches = install_boundaries(context, monkeypatch)
+     boundary = BoundaryState(context)
+     boundary.discoveries = discoveries
+     boundary.fetches = fetches
+@@ -285,6 +292,12 @@ def control_router(boundary: BoundaryState) -> APIRouter:
+         boundary.fetches.clear()
+         return boundary.view()
+ 
++    @router.post("/fail-research")
++    def fail_research(calls: int = 9):
++        boundary.failures_remaining = max(0, min(calls, 100))
++        boundary.failure_session = None
++        return boundary.view()
++
+     return router
+ 
+ 
+diff --git a/backend/tests/test_dossier_request_api.py b/backend/tests/test_dossier_request_api.py
+index 8eea44ae..49b1a664 100644
+--- a/backend/tests/test_dossier_request_api.py
++++ b/backend/tests/test_dossier_request_api.py
+@@ -201,6 +201,139 @@ async def test_start_returns_202_before_research_finishes_and_reload_restores_pr
+         await app_context.research_runs.wait_for_active_work()
+ 
+ 
++@pytest.mark.asyncio
++async def test_start_one_unselected_issue_during_research_and_after_completion(app_context):
++    from tests.manual.serve_dossier_research import seed_matter
++
++    ids = seed_matter(app_context)
++    provider = ScriptedDossierProvider(ids)
++    _install_provider(app_context, provider)
++    service = app_context.dossier_requests
++    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=_api(app_context)), base_url="http://test") as client:
++        _, status = await _prepare(client, app_context)
++        path = f"/api/matters/{MATTER}/dossier-requests/{status['request_id']}"
++        assert (await client.post(path + "/start", json=_start_payload(status))).status_code == 202
++        await asyncio.wait_for(provider.research_started.wait(), timeout=2)
++        original_task = service._active[status["request_id"]]
++        original_children = app_context.research_runs.managed_children(MATTER, status["request_id"])
++        choice = {"plan_revision": status["plan_revision"]}
++        try:
++            assert (await client.post(path + f"/issues/{ids[3]}/start", json={"plan_revision": "old"})).status_code == 409
++            assert (await client.post(path + "/issues/not-in-plan/start", json=choice)).status_code == 400
++            added = await client.post(path + f"/issues/{ids[3]}/start", json=choice)
++            assert added.status_code == 202, added.text
++            progress = added.json()
++            assert progress["planned_issue_ids"] == ids[:4]
++            assert next(row for row in progress["issues"] if row["issue_id"] == ids[3])["state"] == "queued"
++            assert next(row for row in progress["issues"] if row["issue_id"] == ids[4])["state"] == "not_selected"
++            assert service._active[status["request_id"]] is original_task, "adding an issue keeps the existing coordinator"
++            replay = await client.post(path + f"/issues/{ids[3]}/start", json=choice)
++            assert replay.status_code == 202
++            assert replay.json()["sequence"] == progress["sequence"], "repeat clicks do not queue duplicate work"
++            assert DossierRequestService(app_context).get(MATTER, status["request_id"])["planned_issue_ids"] == ids[:4]
++            children = app_context.research_runs.managed_children(MATTER, status["request_id"])
++            assert len(children) == 4
++            new_child = next(child for child in children if child["issue_id"] == ids[3])
++            for field in ("main_selection", "collector_selection", "search_scope"):
++                assert new_child[field] == original_children[0][field], "the saved model and source choices carry over"
++        finally:
++            provider.release_research.set()
++            await service.wait_for_active_work()
++            await app_context.research_runs.wait_for_active_work()
++
++        first = service.get(MATTER, status["request_id"])
++        assert first["state"] == "completed", first["last_error"]
++        assert [pub["issue_ids"] for pub in first["publications"]] == [ids[:3], [ids[3]]]
++        assert first["counts"]["not_selected"] == 1
++        original_packets = {row["issue_id"]: row["packet_path"] for row in first["issues"] if row["packet_path"]}
++
++        # A later click extends the same saved request, without republishing
++        # earlier one-issue batches or rerunning their completed children.
++        later = await client.post(path + f"/issues/{ids[4]}/start", json=choice)
++        assert later.status_code == 202, later.text
++        await service.wait_for_active_work()
++        final = service.get(MATTER, status["request_id"])
++        assert final["state"] == "completed", final["last_error"]
++        assert [pub["issue_ids"] for pub in final["publications"]] == [ids[:3], [ids[3]], [ids[4]]]
++        assert all(row["packet_path"] == original_packets[row["issue_id"]] for row in final["issues"] if row["issue_id"] in original_packets)
++        assert len(app_context.research_runs.managed_children(MATTER, status["request_id"])) == 5
++        calls = len(provider.calls)
++        assert (await client.post(path + f"/issues/{ids[4]}/start", json=choice)).status_code == 202
++        assert len(provider.calls) == calls and not service.has_active_work
++
++
++@pytest.mark.asyncio
++async def test_start_issue_requires_saved_research_choices_and_respects_other_owner(app_context):
++    from tests.manual.serve_dossier_research import seed_matter
++
++    ids = seed_matter(app_context)
++    provider = ScriptedDossierProvider(ids)
++    _install_provider(app_context, provider)
++    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=_api(app_context)), base_url="http://test") as client:
++        _, status = await _prepare(client, app_context)
++        path = f"/api/matters/{MATTER}/dossier-requests/{status['request_id']}"
++        choice = {"plan_revision": status["plan_revision"]}
++        assert (await client.post(path + f"/issues/{ids[3]}/start", json=choice)).status_code == 409
++        provider.release_research.set()
++        assert (await client.post(path + "/start", json=_start_payload(status))).status_code == 202
++        await app_context.dossier_requests.wait_for_active_work()
++        before = app_context.dossier_requests.get(MATTER, status["request_id"])
++        app_context.research_runs.acquire_matter_ownership(MATTER, "DOR-other")
++        try:
++            assert (await client.post(path + f"/issues/{ids[3]}/start", json=choice)).status_code == 409
++            assert app_context.dossier_requests.get(MATTER, status["request_id"]) == before
++            assert len(app_context.research_runs.managed_children(MATTER, status["request_id"])) == 3
++        finally:
++            app_context.research_runs.release_matter_ownership(MATTER, "DOR-other")
++
++
++@pytest.mark.asyncio
++async def test_add_web_research_preserves_internal_work_and_survives_reload(app_context, monkeypatch):
++    from tests.manual.serve_dossier_research import install_fixture_boundaries, seed_matter
++
++    ids = seed_matter(app_context)
++    boundary = install_fixture_boundaries(app_context, ids, monkeypatch)
++    service = app_context.dossier_requests
++    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=_api(app_context)), base_url="http://test") as client:
++        _, status = await _prepare(client, app_context)
++        path = f"/api/matters/{MATTER}/dossier-requests/{status['request_id']}"
++        assert (await client.post(path + "/start", json=_start_payload(status))).status_code == 202
++        original_children = app_context.research_runs.managed_children(MATTER, status["request_id"])
++        web_path = path + f"/issues/{ids[0]}/web-research"
++        payload = {"plan_revision": status["plan_revision"], "source_choice": {"external": True, "native": True, "public_query": "public employment launch rules"}}
++        try:
++            assert not boundary.discoveries
++            invalid = {**payload, "source_choice": {"external": False}}
++            assert (await client.post(web_path, json=invalid)).status_code == 400
++            blank = {**payload, "source_choice": {"external": True, "native": True}}
++            assert (await client.post(web_path, json=blank)).status_code == 400
++            response = await client.post(web_path, json=payload)
++            assert response.status_code == 202, response.text
++            web = response.json()
++            assert web["state"] == "queued", "web research waits for the existing parent work"
++            assert web["issue_id"] == ids[0] and web["search_scope"]["external"] is True
++            assert web["search_scope"]["public_query"] == "public employment launch rules"
++            assert web["search_scope"]["other_matters"] is False
++            assert web["run_id"] not in {child["run_id"] for child in original_children}
++            replay = await client.post(web_path, json=payload)
++            assert replay.status_code == 202 and replay.json()["run_id"] == web["run_id"]
++            reloaded = DossierRequestService(app_context).get(MATTER, status["request_id"])
++            assert next(row for row in reloaded["issues"] if row["issue_id"] == ids[0])["web_run_id"] == web["run_id"]
++            assert reloaded["source_scope"]["external"] is False
++            assert reloaded["planned_issue_ids"] == ids[:3]
++            assert len(app_context.research_runs.managed_children(MATTER, status["request_id"])) == 3
++        finally:
++            boundary.first_release.set()
++            boundary.remaining_release.set()
++            await asyncio.wait_for(service.wait_for_active_work(), timeout=15)
++            await asyncio.wait_for(app_context.research_runs.wait_for_active_work(), timeout=15)
++        result = app_context.research_runs.get(MATTER, web["run_id"])
++        assert result["state"] == "completed", result.get("failure_detail")
++        assert result["results"] and result["results"][0]["path"]
++        assert boundary.discoveries and boundary.fetches, "the added run uses the public-search and fetch boundaries"
++        assert all(app_context.research_runs.get(MATTER, child["run_id"])["results"] for child in original_children)
++
++
+ @pytest.mark.asyncio
+ async def test_start_validates_stale_invalid_conflicting_and_wrong_matter_requests(app_context):
+     issue_ids = [item["issue_id"] for item in app_context.workspace.issues(MATTER)]
+diff --git a/frontend/components/DossierResearchCard.module.css b/frontend/components/DossierResearchCard.module.css
+index 39d6b5ba..783bbb9a 100644
+--- a/frontend/components/DossierResearchCard.module.css
++++ b/frontend/components/DossierResearchCard.module.css
+@@ -11,8 +11,16 @@
+ .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+ .issueRows { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+ .issueRows li { display: grid; gap: 5px; padding: 12px; border-left: 3px solid var(--line); background: var(--raised); }
+-.issueRows li > div { display: flex; justify-content: space-between; gap: 12px; }
+-.issueRows p { color: var(--ink-3); font-size: 13px; }
++.issueRows li > div, .issueHeading { display: flex; justify-content: space-between; gap: 12px; }
++.issueRows p, .issueMeta { color: var(--ink-3); font-size: 13px; }
++.issueRows li.actionableIssue { padding: 0; }
++.issueStart { display: grid; gap: 5px; width: 100%; padding: 12px; border: 0; background: transparent; color: var(--ink); text-align: left; font: inherit; cursor: pointer; }
++.issueStart:not(:disabled):hover { background: var(--agent-wash); }
++.issueStart:focus-visible { outline: 2px solid var(--agent); outline-offset: 2px; }
++.issueStart:disabled { cursor: wait; opacity: .65; }
++.issueStartLabel { justify-self: start; color: var(--agent); font-size: 13px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
++.webResearch { display: grid; gap: 5px; justify-items: start; min-width: 0; }
++.actionableIssue .webResearch { padding: 0 12px 12px; }
+ .state { flex: none; font-weight: 700; }
+ .state_running, .state_queued { border-left-color: var(--agent) !important; }
+ .state_saved { border-left-color: var(--healthy) !important; }
+@@ -24,4 +32,4 @@
+ .newIssues ul { margin: 0; padding-left: 20px; }
+ .error { color: var(--failure) !important; }
+ .card details code { overflow-wrap: anywhere; color: var(--ink-3); font-size: 11px; }
+-@media (max-width: 760px) { .priorities { grid-template-columns: 1fr; } .issueRows li > div { display: grid; } }
++@media (max-width: 760px) { .priorities { grid-template-columns: 1fr; } .issueRows li > div, .issueHeading { display: grid; } }
+diff --git a/frontend/components/DossierResearchCard.tsx b/frontend/components/DossierResearchCard.tsx
+index 241f3a87..b30e60d0 100644
+--- a/frontend/components/DossierResearchCard.tsx
++++ b/frontend/components/DossierResearchCard.tsx
+@@ -1,11 +1,12 @@
+ "use client";
+ 
+ import { useEffect, useMemo, useRef, useState } from "react";
+-import { getDossierRequest, getResearchOptions, resumeDossierRequest, startDossierRequest, stopDossierRequest } from "@/lib/api";
+-import { dossierControls, dossierStateWord, followUpText, issueProgressLabel, normalizeDossierStatus, pollingScopeMatches, publicationToken, setIssueAt, shouldPollDossier, startPayload, uniqueIssueOrder } from "@/lib/dossierRequests";
++import { getDossierRequest, getResearchOptions, resumeDossierRequest, startDossierIssue, startDossierRequest, stopDossierRequest } from "@/lib/api";
++import { canResumeDossierIssue, dossierControls, dossierStateWord, followUpText, issueProgressLabel, normalizeDossierStatus, pollingScopeMatches, publicationToken, setIssueAt, shouldPollDossier, startPayload, uniqueIssueOrder } from "@/lib/dossierRequests";
+ import type { ChatCard, DossierPriority, DossierRequestStatus } from "@/lib/types";
+ import type { ResearchOptions, ResearchScope } from "@/lib/researchScope";
+ import { ResearchScopeFields } from "@/components/ResearchScopeChoice";
++import DossierIssueWebResearch from "./DossierIssueWebResearch";
+ import styles from "./DossierResearchCard.module.css";
+ 
+ type Card = Extract<ChatCard, { type: "dossier_research" }>;
+@@ -26,6 +27,7 @@ export default function DossierResearchCard({ card, activeConversationId, disabl
+   const [source, setSource] = useState<ResearchScope>({ external: false, other_matters: false, public_query: String(initial.source_scope?.public_query || initial.source_scope?.overall_topic || ""), provider_ids: [] });
+   const [options, setOptions] = useState<ResearchOptions>({ provider_ids: [], cost_notice: "External search may incur provider charges.", sensitivity_notice: "Other matters may contain sensitive information." });
+   const [busy, setBusy] = useState(false);
++  const [startingIssueId, setStartingIssueId] = useState<string | null>(null);
+   const [error, setError] = useState("");
+   const [notice, setNotice] = useState("");
+   const actionKeys = useRef<Record<string, string>>({});
+@@ -33,6 +35,17 @@ export default function DossierResearchCard({ card, activeConversationId, disabl
+   const liveScope = useRef({ matterId: card.matter_id, conversationId: activeConversationId });
+   liveScope.current = { matterId: card.matter_id, conversationId: activeConversationId };
+ 
++  useEffect(() => {
++    const receive = (event: Event) => {
++      const next = (event as CustomEvent<DossierRequestStatus>).detail;
++      if (next?.matter_id === card.matter_id && next?.request_id === card.request_id) {
++        setStatus(current => next.sequence >= current.sequence ? next : current);
++      }
++    };
++    window.addEventListener("themis-dossier-status", receive);
++    return () => window.removeEventListener("themis-dossier-status", receive);
++  }, [card.matter_id, card.request_id]);
++
+   useEffect(() => {
+     setStatus(current => {
+       if (initial.sequence < current.sequence) return current;
+@@ -76,7 +89,7 @@ export default function DossierResearchCard({ card, activeConversationId, disabl
+         const next = normalizeDossierStatus(await getDossierRequest(card.matter_id, card.request_id, controller.signal), { requestId: card.request_id, matterId: card.matter_id });
+         if (stopped || !pollingScopeMatches(expected.matterId, expected.conversationId, liveScope.current.matterId, liveScope.current.conversationId)) return;
+         const nextToken = publicationToken(next);
+-        setStatus(next);
++        setStatus(current => next.sequence >= current.sequence ? next : current);
+         if (nextToken !== publication.current) {
+           publication.current = nextToken;
+           const origin = next.origin?.conversation_id;
+@@ -95,18 +108,34 @@ export default function DossierResearchCard({ card, activeConversationId, disabl
+   }, [activeConversationId, card.matter_id, card.request_id, onConversationRefresh, status.state]);
+ 
+   function key(action: string) { return actionKeys.current[action] ||= `dossier-ui:${action}:${crypto.randomUUID()}`; }
++  function updateStatus(next: DossierRequestStatus) {
++    setStatus(current => next.sequence >= current.sequence ? next : current);
++    // The conversation can contain several saved cards for this same request.
++    // Wake every copy's existing poller after an action; no extra work is started.
++    window.dispatchEvent(new CustomEvent("themis-dossier-status", { detail: next }));
++  }
+   async function start(mode: "research" | "saved_only") {
+     if (mode === "research" && firstIssueIds.length !== Math.min(3, selectableIssues.length)) { setError("Choose three different issues before research starts."); return; }
+     setBusy(true); setError(""); setNotice("");
+     try {
+       const next = await startDossierRequest(card.matter_id, card.request_id, startPayload(status, mode, priorities, firstIssueIds, scope, source, key(mode)));
+-      setStatus(normalizeDossierStatus(next, { requestId: card.request_id, matterId: card.matter_id }));
++      updateStatus(normalizeDossierStatus(next, { requestId: card.request_id, matterId: card.matter_id }));
+       setNotice(mode === "research" ? "Research started. You can continue this conversation." : "The saved material is being composed.");
+     } catch (caught) { setError(caught instanceof Error ? caught.message : "The dossier request could not start."); }
+     finally { setBusy(false); }
+   }
+-  async function stop() { setBusy(true); setError(""); try { setStatus(normalizeDossierStatus(await stopDossierRequest(card.matter_id, card.request_id, status.sequence), { requestId: card.request_id, matterId: card.matter_id })); } catch (caught) { setError(caught instanceof Error ? caught.message : "Research could not stop."); } finally { setBusy(false); } }
+-  async function resume(retryIssueIds?: string[], retryUnknown = false) { setBusy(true); setError(""); try { setStatus(normalizeDossierStatus(await resumeDossierRequest(card.matter_id, card.request_id, status.sequence, retryIssueIds, retryUnknown), { requestId: card.request_id, matterId: card.matter_id })); } catch (caught) { setError(caught instanceof Error ? caught.message : "Research could not resume."); } finally { setBusy(false); } }
++  async function stop() { setBusy(true); setError(""); try { updateStatus(normalizeDossierStatus(await stopDossierRequest(card.matter_id, card.request_id, status.sequence), { requestId: card.request_id, matterId: card.matter_id })); } catch (caught) { setError(caught instanceof Error ? caught.message : "Research could not stop."); } finally { setBusy(false); } }
++  async function resume(retryIssueIds?: string[], retryUnknown = false) { setBusy(true); setError(""); try { updateStatus(normalizeDossierStatus(await resumeDossierRequest(card.matter_id, card.request_id, status.sequence, retryIssueIds, retryUnknown), { requestId: card.request_id, matterId: card.matter_id })); } catch (caught) { setError(caught instanceof Error ? caught.message : "Research could not resume."); } finally { setBusy(false); } }
++  async function startIssue(issueId: string) {
++    if (disabled || busy) return;
++    setBusy(true); setStartingIssueId(issueId); setError(""); setNotice("");
++    try {
++      const next = normalizeDossierStatus(await startDossierIssue(card.matter_id, card.request_id, issueId, status.plan_revision), { requestId: card.request_id, matterId: card.matter_id });
++      updateStatus(next);
++      setNotice("Issue added to research. You can continue this conversation.");
++    } catch (caught) { setError(caught instanceof Error ? caught.message : "This issue could not start. Try again."); }
++    finally { setBusy(false); setStartingIssueId(null); }
++  }
+ 
+   if (status.phase === "setup" || status.state === "awaiting_choices") return <section className={`${styles.card} ${styles.setup}`}>
+     <div className={styles.kicker}>Dossier research · Needs your choices</div><h3>Prepare your dossier</h3>
+@@ -127,7 +156,26 @@ export default function DossierResearchCard({ card, activeConversationId, disabl
+     {status.waiting_for_existing_research && <p role="status">Waiting for the current research to finish. No additional workers have started.</p>}
+     {status.last_error && <p className={styles.error} role="alert">{status.last_error}</p>}
+     {status.unknown_writer_outcome && <p className={styles.attention}>The writer stopped before its reply was saved. Retrying can incur another charge. <button disabled={disabled || busy} onClick={() => void resume(undefined, true)} type="button">Retry unknown call</button></p>}
+-    <ul className={styles.issueRows}>{status.issues.map(issue => <li className={styles[`state_${issue.state}`] || ""} key={issue.issue_id}><div><strong>{issue.title}</strong><span className={styles.state}>{dossierStateWord(issue.state)}</span></div><p>{issue.sources_read} sources read · {issue.sources_retrieved} sources retrieved{issue.support ? ` · ${issue.support}` : ""}</p>{issue.answer_path && <button className="text-button" onClick={() => onOpenDocument?.(issue.answer_path!)} type="button">Open saved answer</button>}{issue.last_error && <p className={styles.error}>{issue.last_error}</p>}</li>)}</ul>
++    {status.issues.some(issue => canResumeDossierIssue(status, issue)) && <p>Resume keeps saved work and adds a new time allowance. Repeating an unfinished call can incur another charge.</p>}
++    <ul className={styles.issueRows}>{status.issues.map(issue => {
++      const canStart = status.execution_mode === "research" && issue.state === "not_selected";
++      const heading = <><strong>{issue.title}</strong><span className={styles.state}>{issue.recovery_status && issue.state === "running" ? "Resuming" : issue.state === "partial" ? "Unfinished" : dossierStateWord(issue.state)}</span></>;
++      const progress = <>{issue.sources_read} sources read · {issue.sources_retrieved} sources retrieved{issue.support ? ` · ${issue.support}` : ""}</>;
++      return <li className={`${styles[`state_${issue.state}`] || ""} ${canStart ? styles.actionableIssue : ""}`} key={issue.issue_id}>
++        {canStart ? <button className={styles.issueStart} type="button" disabled={disabled || busy} aria-label={`Start research: ${issue.title}`} onClick={() => void startIssue(issue.issue_id)}>
++          <span className={styles.issueHeading}>{heading}</span><span className={styles.issueMeta}>{progress}</span><span className={styles.issueStartLabel}>{startingIssueId === issue.issue_id ? "Starting…" : "Start research"}</span>
++        </button> : <><div>{heading}</div><p>{progress}</p></>}
++        {issue.answer_path && <button className="text-button" onClick={() => onOpenDocument?.(issue.answer_path!)} type="button">Open saved answer</button>}{issue.last_error && <p className={styles.error}>{issue.last_error}</p>}
++        {issue.state === "partial" && !issue.last_error && <p>Research stopped before a finished answer was saved.</p>}
++        {issue.recovery_status && ["queued", "running"].includes(issue.state) && <p role="status">{issue.recovery_status}</p>}
++        {canResumeDossierIssue(status, issue) && <button className="btn compact" disabled={disabled || busy} aria-label={`Resume research: ${issue.title}`} onClick={() => void resume([issue.issue_id], true)} type="button">Resume research</button>}
++        <DossierIssueWebResearch matterId={card.matter_id} requestId={card.request_id} planRevision={status.plan_revision} issue={issue} included={status.execution_mode === "research" && status.source_scope?.external === true} publicQuery={String(status.source_scope?.public_query || "")} disabled={disabled || busy} onOpenDocument={onOpenDocument} onRefresh={async () => {
++          const next = normalizeDossierStatus(await getDossierRequest(card.matter_id, card.request_id), { requestId: card.request_id, matterId: card.matter_id });
++          setStatus(current => next.sequence >= current.sequence ? next : current);
++          if (activeConversationId) await onConversationRefresh?.(activeConversationId);
++        }} />
++      </li>;
++    })}</ul>
+     {status.new_issue_candidates.length > 0 && <div className={styles.newIssues}><strong>New issues found</strong><ul>{status.new_issue_candidates.map((item, index) => <li key={String(item.candidate_key || index)}>{String(item.title || "New issue")}</li>)}</ul><button className="btn tiny quiet" onClick={() => onPrepareFollowUp?.(followUpText(status))} type="button">Prepare follow-up question</button></div>}
+     {error && <p className={styles.error} role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}
+     <div className={styles.actions}>{controls.stop && <button className="btn tiny quiet" disabled={disabled || busy} onClick={() => void stop()} type="button">Stop</button>}{!status.unknown_writer_outcome && (latest?.state === "failed" || status.state === "failed" && failedIds.length === 0) && <button className="btn primary compact" disabled={disabled || busy} onClick={() => void resume()} type="button">Retry saving dossier</button>}{controls.resume && <button className="btn primary compact" disabled={disabled || busy} onClick={() => void resume()} type="button">Resume</button>}{controls.retry && failedIds.length > 0 && <button className="btn tiny quiet" disabled={disabled || busy} onClick={() => void resume(failedIds)} type="button">Retry failed {failedIds.length === 1 ? "issue" : "issues"}</button>}</div>
+diff --git a/frontend/components/ResearchScopeChoice.tsx b/frontend/components/ResearchScopeChoice.tsx
+index a81320f4..76fd2538 100644
+--- a/frontend/components/ResearchScopeChoice.tsx
++++ b/frontend/components/ResearchScopeChoice.tsx
+@@ -6,8 +6,8 @@ import type { ResearchRun } from "@/lib/types";
+ import type { ResearchScope, ResearchOptions } from "@/lib/researchScope";
+ import styles from "./ResearchScopeChoice.module.css";
+ 
+-export function ResearchScopeFields({ value, onChange, options, disabled, compact = false }: {
+-  value: ResearchScope; onChange: (value: ResearchScope) => void; options: ResearchOptions; disabled?: boolean; compact?: boolean;
++export function ResearchScopeFields({ value, onChange, options, disabled, compact = false, showPublicQuery = false }: {
++  value: ResearchScope; onChange: (value: ResearchScope) => void; options: ResearchOptions; disabled?: boolean; compact?: boolean; showPublicQuery?: boolean;
+ }) {
+   if (compact) return <fieldset disabled={disabled} className={styles.compact}>
+     <legend>What sources should I use?</legend>
+@@ -16,17 +16,19 @@ export function ResearchScopeFields({ value, onChange, options, disabled, compac
+     <p>Leave both unchecked to review only this matter.</p>
+   </fieldset>;
+ 
++  const publicTopic = value.external && <label className={styles.query}>Public research topic
++    <textarea value={value.public_query} maxLength={2000} onChange={event => onChange({ ...value, public_query: event.target.value })} placeholder="Legal topic and jurisdiction. Do not include private names or facts." />
++    <span>{value.allow_followup_queries ? "Themis will use this topic to plan distinct searches, compare relevant sources, and follow important gaps. This is not a limit of one search." : "This topic guides the initial research. Follow-up searches are off; you can enable them in Research options."} Private matter details stay with the analysis model.</span>
++  </label>;
+   return <fieldset disabled={disabled} className={styles.fields}>
+     <legend>Where should I look?</legend>
+     <p>This matter is always included. Choose extra sources for this request only.</p>
+     <label className={styles.check}><input type="checkbox" checked={value.external} disabled={!options.provider_ids.length && !options.native_available && !options.firecrawl_available} onChange={event => onChange({ ...value, external: event.target.checked })} /> External sources</label>
+     <label className={styles.check}><input type="checkbox" checked={value.other_matters} onChange={event => onChange({ ...value, other_matters: event.target.checked })} /> Search other active matters</label>
+     {value.external && <p>{value.allow_followup_queries ? "Themis will turn your question into focused searches, compare relevant sources, and follow important gaps." : "Themis will plan focused searches from your question. Follow-up searches are off in Research options."}</p>}
++    {showPublicQuery && publicTopic}
+     <details><summary>Research options</summary>
+-    {value.external && <label className={styles.query}>Public research topic
+-      <textarea value={value.public_query} maxLength={2000} onChange={event => onChange({ ...value, public_query: event.target.value })} placeholder="Legal topic and jurisdiction. Do not include private names or facts." />
+-      <span>{value.allow_followup_queries ? "Themis will use this topic to plan distinct searches, compare relevant sources, and follow important gaps. This is not a limit of one search." : "This topic guides the initial research. Follow-up searches are off; you can enable them in Research options."} Private matter details stay with the analysis model.</span>
+-    </label>}
++    {!showPublicQuery && publicTopic}
+ 
+     {options.main_model_selection && <p>Main analysis: {options.main_model_selection.provider} · {options.main_model_selection.model}. Saved for this run.</p>}
+     {options.model_selection && <p>Collection model: {options.model_selection.provider} · {options.model_selection.model} · {options.model_selection.reasoning_effort || "default"} effort. This selection is saved for this run.</p>}
+@@ -48,8 +50,10 @@ export function ResearchScopeFields({ value, onChange, options, disabled, compac
+   </fieldset>;
+ }
+ 
++type ResearchPreset = { external?: boolean; publicQuery?: string; onStart?: (scope: ResearchScope) => Promise<ResearchRun> };
++
+ export function useResearchScope(ownerMatterId: string) {
+-  const [pending, setPending] = useState<{ matterId: string; question: string; key?: string; issueId?: string; options: ResearchOptions } | null>(null);
++  const [pending, setPending] = useState<{ matterId: string; question: string; key?: string; issueId?: string; options: ResearchOptions; preset?: ResearchPreset } | null>(null);
+   const [value, setValue] = useState<ResearchScope>({ external: false, other_matters: false, public_query: "", provider_ids: [] });
+   const [busy, setBusy] = useState(false);
+   const [error, setError] = useState("");
+@@ -65,15 +69,15 @@ export function useResearchScope(ownerMatterId: string) {
+     return () => { resolve.current?.(null); resolve.current = null; };
+   }, [ownerMatterId]);
+ 
+-  async function startScopedResearch(matterId: string, question = "", key?: string, issueId?: string): Promise<ResearchRun | null> {
++  async function startScopedResearch(matterId: string, question = "", key?: string, issueId?: string, preset?: ResearchPreset): Promise<ResearchRun | null> {
+     const options = await getResearchOptions(matterId);
+     if (owner.current !== matterId) return null;
+-    setValue({ external: false, other_matters: false, public_query: "", provider_ids: options.provider_ids, native:options.native_available === true, allow_firecrawl:false, model_selection:options.model_selection, main_model_selection:options.main_model_selection, collector_model_selection:options.collector_model_selection, allow_followup_queries:options.allow_followup_queries === true });
++    setValue({ external: preset?.external === true, other_matters: false, public_query: preset?.publicQuery || "", provider_ids: options.provider_ids, native:options.native_available === true, allow_firecrawl:false, model_selection:options.model_selection, main_model_selection:options.main_model_selection, collector_model_selection:options.collector_model_selection, allow_followup_queries:options.allow_followup_queries === true });
+     setError("");
+     return new Promise(done => {
+       resolve.current?.(null);
+       resolve.current = done;
+-      setPending({ matterId, question, key: key ?? `research-ui:${crypto.randomUUID()}`, issueId, options });
++      setPending({ matterId, question, key: key ?? `research-ui:${crypto.randomUUID()}`, issueId, options, preset });
+     });
+   }
+   function finish(run: ResearchRun | null) {
+@@ -82,15 +86,15 @@ export function useResearchScope(ownerMatterId: string) {
+   const researchScopeDialog = pending ? <dialog aria-labelledby="research-source-heading" className={styles.dialog} ref={dialog} onCancel={event => { event.preventDefault(); if (!busy) finish(null); }}>
+     <form onSubmit={async event => {
+       event.preventDefault(); setBusy(true); setError("");
+-      try { finish(await startResearchRun(pending.matterId, pending.question, pending.key, pending.issueId, value)); }
++      try { finish(await (pending.preset?.onStart ? pending.preset.onStart(value) : startResearchRun(pending.matterId, pending.question, pending.key, pending.issueId, value))); }
+       catch (caught) { setError(caught instanceof Error ? caught.message : "Research could not start."); }
+       finally { setBusy(false); }
+     }}>
+-      <h2 id="research-source-heading">Choose research sources</h2><p>{pending.question}</p>
+-      <ResearchScopeFields value={value} onChange={setValue} options={pending.options} disabled={busy} />
++      <h2 id="research-source-heading">{pending.preset?.external ? "Add web search" : "Choose research sources"}</h2><p>{pending.question}</p>
++      <ResearchScopeFields value={value} onChange={setValue} options={pending.options} disabled={busy} showPublicQuery={pending.preset?.external} />
+       {error && <p role="alert">{error}</p>}
+       <div className={styles.actions}><button type="button" className="btn" disabled={busy} onClick={() => finish(null)}>Cancel</button>
+-      <button type="submit" className="btn primary" disabled={busy || (value.external && !value.public_query.trim())}>{busy ? "Starting…" : "Start research"}</button></div>
++      <button type="submit" className="btn primary" disabled={busy || (value.external && !value.public_query.trim()) || (pending.preset?.external && !value.external)}>{busy ? "Starting…" : pending.preset?.external ? "Start web research" : "Start research"}</button></div>
+     </form>
+   </dialog> : null;
+   return { startScopedResearch, researchScopeDialog };
+diff --git a/frontend/lib/api.ts b/frontend/lib/api.ts
+index 6ed779a9..d255402c 100644
+--- a/frontend/lib/api.ts
++++ b/frontend/lib/api.ts
+@@ -588,6 +588,14 @@ export async function stopDossierRequest(matterId: string, requestId: string, ex
+   return request(`/matters/${encodeURIComponent(matterId)}/dossier-requests/${encodeURIComponent(requestId)}/stop`, { method: "POST", body: JSON.stringify({ expected_sequence: expectedSequence }) });
+ }
+ 
++export async function startDossierIssue(matterId: string, requestId: string, issueId: string, planRevision: string): Promise<DossierRequestStatus> {
++  return request(`/matters/${encodeURIComponent(matterId)}/dossier-requests/${encodeURIComponent(requestId)}/issues/${encodeURIComponent(issueId)}/start`, { method: "POST", body: JSON.stringify({ plan_revision: planRevision }) });
++}
++
++export async function addDossierIssueWebResearch(matterId: string, requestId: string, issueId: string, planRevision: string, sourceChoice: import("./researchScope").ResearchScope): Promise<ResearchRun> {
++  return request(`/matters/${encodeURIComponent(matterId)}/dossier-requests/${encodeURIComponent(requestId)}/issues/${encodeURIComponent(issueId)}/web-research`, { method: "POST", body: JSON.stringify({ plan_revision: planRevision, source_choice: sourceChoice }) });
++}
++
+ export async function resumeDossierRequest(matterId: string, requestId: string, expectedSequence: number, retryIssueIds?: string[], retryUnknown = false): Promise<DossierRequestStatus> {
+   return request(`/matters/${encodeURIComponent(matterId)}/dossier-requests/${encodeURIComponent(requestId)}/resume`, { method: "POST", body: JSON.stringify({ expected_sequence: expectedSequence, retry_unknown: retryUnknown, retry_issue_ids: retryIssueIds }) });
+ }
+diff --git a/frontend/lib/dossierRequests.ts b/frontend/lib/dossierRequests.ts
+index 1eeb4105..094ba211 100644
+--- a/frontend/lib/dossierRequests.ts
++++ b/frontend/lib/dossierRequests.ts
+@@ -12,7 +12,7 @@ export function normalizeDossierStatus(value: unknown, fallback: { requestId: st
+   const raw = record(value);
+   const issues = Array.isArray(raw.issues) ? raw.issues.map((item, index): DossierIssueStatus => {
+     const issue = record(item);
+-    return { issue_id: String(issue.issue_id || `issue-${index + 1}`), title: String(issue.title || issue.issue_id || `Issue ${index + 1}`), state: String(issue.state || "not_selected"), initial_answer: String(issue.initial_answer || ""), next_action: String(issue.next_action || ""), sources_discovered: number(issue.sources_discovered), planned_order: typeof issue.planned_order === "number" ? issue.planned_order : null, selected_first: issue.selected_first === true, sources_read: number(issue.sources_read), sources_retrieved: number(issue.sources_retrieved), support: typeof issue.support === "string" ? issue.support : null, packet_path: typeof issue.packet_path === "string" ? issue.packet_path : null, answer_path: typeof issue.answer_path === "string" ? issue.answer_path : null, last_error: typeof issue.last_error === "string" ? issue.last_error : null, run_id: typeof issue.run_id === "string" ? issue.run_id : null };
++    return { issue_id: String(issue.issue_id || `issue-${index + 1}`), title: String(issue.title || issue.issue_id || `Issue ${index + 1}`), state: String(issue.state || "not_selected"), initial_answer: String(issue.initial_answer || ""), next_action: String(issue.next_action || ""), sources_discovered: number(issue.sources_discovered), planned_order: typeof issue.planned_order === "number" ? issue.planned_order : null, selected_first: issue.selected_first === true, sources_read: number(issue.sources_read), sources_retrieved: number(issue.sources_retrieved), support: typeof issue.support === "string" ? issue.support : null, packet_path: typeof issue.packet_path === "string" ? issue.packet_path : null, answer_path: typeof issue.answer_path === "string" ? issue.answer_path : null, last_error: typeof issue.last_error === "string" ? issue.last_error : null, recovery_status: typeof issue.recovery_status === "string" ? issue.recovery_status : null, run_id: typeof issue.run_id === "string" ? issue.run_id : null, web_run_id: typeof issue.web_run_id === "string" ? issue.web_run_id : null };
+   }) : [];
+   const priorities = Array.isArray(raw.priorities) ? raw.priorities.slice(0, 3).map((item, index): DossierPriority => { const priority = record(item); return { key: String(priority.key || `p${index + 1}`), text: String(priority.text || `Priority ${index + 1}`), why: String(priority.why || ""), issue_ids: strings(priority.issue_ids), changed: priority.changed === true }; }) : [];
+   const publications = Array.isArray(raw.publications) ? raw.publications.filter(item => item && typeof item === "object") as DossierRequestStatus["publications"] : [];
+@@ -40,6 +40,10 @@ export function startPayload(status: DossierRequestStatus, mode: "research" | "s
+ }
+ 
+ export function shouldPollDossier(status: DossierRequestStatus): boolean { return ACTIVE.has(status.state); }
++export function canResumeDossierIssue(status: DossierRequestStatus, issue: DossierIssueStatus): boolean {
++  return status.execution_mode === "research" && ["partial", "failed", "interrupted"].includes(issue.state)
++    && !(status.state === "running" && status.stop_requested);
++}
+ export function dossierControls(status: DossierRequestStatus) { return { stop: ACTIVE.has(status.state), resume: RESUMABLE.has(status.state), retry: status.state === "failed" || status.issues.some(issue => issue.state === "failed") }; }
+ export function publicationToken(status: DossierRequestStatus): string { return JSON.stringify(status.publications.map(item => [item.key, item.state, item.revision_path, record(item.receipts).conversation])); }
+ export function pollingScopeMatches(expectedMatter: string, expectedConversation: string | null | undefined, actualMatter: string, actualConversation: string | null | undefined): boolean { return expectedMatter === actualMatter && (expectedConversation || null) === (actualConversation || null); }
+diff --git a/frontend/lib/types.ts b/frontend/lib/types.ts
+index 5ea720dd..82965cd8 100644
+--- a/frontend/lib/types.ts
++++ b/frontend/lib/types.ts
+@@ -432,7 +432,7 @@ export type AppliedSkillSummary = { skill_id: string; name: string };
+ 
+ export type ChatChoice = { value: string; label: string; suggested?: boolean };
+ export type DossierPriority = { key: string; text: string; why: string; issue_ids: string[]; changed?: boolean };
+-export type DossierIssueStatus = { issue_id: string; title: string; state: string; planned_order?: number | null; selected_first?: boolean; sources_read: number; sources_retrieved: number; sources_discovered?: number; initial_answer?: string; next_action?: string; support?: string | null; packet_path?: string | null; answer_path?: string | null; last_error?: string | null; run_id?: string | null };
++export type DossierIssueStatus = { issue_id: string; title: string; state: string; planned_order?: number | null; selected_first?: boolean; sources_read: number; sources_retrieved: number; sources_discovered?: number; initial_answer?: string; next_action?: string; support?: string | null; packet_path?: string | null; answer_path?: string | null; last_error?: string | null; recovery_status?: string | null; run_id?: string | null; web_run_id?: string | null };
+ export type DossierPublication = { key?: string; issue_ids?: string[]; state?: string; revision_path?: string | null; composed_at?: string | null; warning?: string | null; receipts?: Record<string, unknown> };
+ export type DossierRequestStatus = {
+   request_id: string; matter_id: string; state: string; phase: string; sequence: number; plan_revision: string;
+diff --git a/frontend/scripts/check-dossier-research.ts b/frontend/scripts/check-dossier-research.ts
+index ad3843e6..f978db2c 100644
+--- a/frontend/scripts/check-dossier-research.ts
++++ b/frontend/scripts/check-dossier-research.ts
+@@ -1,6 +1,6 @@
+ import assert from "node:assert/strict";
+ import { readFileSync } from "node:fs";
+-import { dossierCompletionStage, dossierControls, dossierStateWord, mergeBackgroundDraft, normalizeDossierStatus, pollingScopeMatches, publicationToken, setIssueAt, startPayload } from "../lib/dossierRequests.ts";
++import { canResumeDossierIssue, dossierCompletionStage, dossierControls, dossierStateWord, mergeBackgroundDraft, normalizeDossierStatus, pollingScopeMatches, publicationToken, setIssueAt, startPayload } from "../lib/dossierRequests.ts";
+ 
+ const fallback = { requestId: "DOR-1", matterId: "MAT-1" };
+ const legacy = normalizeDossierStatus(undefined, fallback);
+@@ -36,6 +36,12 @@ assert.equal(dossierStateWord("partial"), "Partial");
+ assert.deepEqual(dossierControls(base), { stop: true, resume: false, retry: false });
+ assert.deepEqual(dossierControls({ ...base, state: "stopped" }), { stop: false, resume: true, retry: false });
+ assert.deepEqual(dossierControls({ ...base, state: "failed" }), { stop: false, resume: false, retry: true });
++const researching = { ...base, execution_mode: "research" as const };
++assert.equal(canResumeDossierIssue(researching, base.issues[1]), true, "An unfinished issue can resume while siblings run.");
++assert.equal(canResumeDossierIssue({ ...researching, state: "completed" }, base.issues[1]), true, "Legacy complete parents do not hide unfinished work.");
++assert.equal(canResumeDossierIssue(researching, base.issues[0]), false, "A complete issue is not repeated.");
++assert.equal(canResumeDossierIssue(researching, base.issues[2]), false, "A running issue cannot get a duplicate worker.");
++assert.equal(canResumeDossierIssue({ ...researching, stop_requested: true }, base.issues[1]), false);
+ assert.equal(dossierCompletionStage(base), "working");
+ const firstPass = { ...base, first_pass_ready_at: "2026-09-11T00:00:00Z", publications: [{ key: "first", state: "applied", revision_path: "dossier-revisions/one.md" }] };
+ assert.equal(dossierCompletionStage(firstPass), "first_pass");

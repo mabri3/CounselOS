@@ -1,0 +1,129 @@
+Browser tab: 4, Title: "Themis.ai", URL: "http://localhost:3207/matters/MAT-DEMO-BEACON".
+1 AXWebArea Themis.ai, URL: localhost:3207/matters/MAT-DEMO-BEACON
+	2 container
+		3 button (collapsed) themis.ai, Secondary Actions: Expand
+			4 text themis.ai
+		5 container matter-MAT-DEMO-BEACON
+			6 container
+				7 text Waiting on Brian Harris
+				8 link Description: Matters, Value: localhost:3207/matters
+				9 heading Beacon: Instant Business Onboarding, Value: 1
+					10 text Beacon: Instant Business Onboarding
+				11 button (collapsed) Matter details, Secondary Actions: Expand
+					12 text Matter details
+				13 button (collapsed) Tools and history, Secondary Actions: Expand
+			133 text Research queue updated.
+			14 text MATTER
+			15 heading Beacon: Instant Business Onboarding, Value: 1
+				16 text Beacon: Instant Business Onboarding
+			17 container Matter workspace
+				18 container
+					19 container Matter workspace view
+						20 text Matter workspace view
+						21 radio button (settable, integer) Description: Understand, Value: 0, ID: workspace-view-MAT-DEMO-BEACON-understand
+						22 container Read the current matter
+							23 text Understand
+						24 radio button (settable, integer) Description: Discuss, Value: 1, ID: workspace-view-MAT-DEMO-BEACON-discuss
+						25 container Continue one matter conversation
+							26 text Discuss
+						27 radio button (settable, integer) Description: Draft, Value: 0, ID: workspace-view-MAT-DEMO-BEACON-draft
+						28 container Review and prepare work product
+							29 text Draft
+					30 button Decision map
+				31 container Matter conversation
+					32 container
+						33 text INQUIRY SCOPE Matter context Business question
+						86 button Clear scope
+					34 button (collapsed) Approaches, Secondary Actions: Expand
+						35 text Approaches
+					36 text Inquiry target:
+					37 text Business question
+					87 button Clear target
+					88 button Jump to latest answer
+					89 container
+						90 text THEMIS.AI ·  COMPLETED Chat is complete.  Review the saved result below.
+					91 container
+						92 text LATEST ANSWER
+						134 text ✧
+						135 text Themis.ai
+						136 container answer-reading-MSG-20260912-90fcbb
+							137 text First dossier ready. Researched: Employment terms: Confirm worker terms and launch staffing c; Customer privacy: Confirm notice, purpose, and access contro; Supplier contract: Confirm service levels, termination, and .
+							138 link Description: Open dossier revision, Value: localhost:3207/matters/03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-bffbfb8aea32ac006653.md
+						139 container
+							140 text DOSSIER RESEARCH ·  COMPLETE
+						141 heading Researching 3 of 3 issues, Value: 3
+							142 text Researching 3 of 3 issues
+						143 button First dossier ready · Open exact revision
+						144 text Update ready for review
+						145 content list
+							146 container
+								147 text Employment terms: Confirm worker terms and launch staffing conditions. Complete 0  sources read ·  0  sources retrieved  · No external sources retrieved
+								148 button Open saved answer
+							149 container
+								150 text Customer privacy: Confirm notice, purpose, and access controls. Complete 0  sources read ·  0  sources retrieved  · No external sources retrieved
+								151 button Open saved answer
+							152 container
+								153 text Supplier contract: Confirm service levels, termination, and transfer terms. Complete 0  sources read ·  0  sources retrieved  · No external sources retrieved
+								154 button Open saved answer
+							155 container
+								156 text Intellectual property: Confirm ownership and trademark permission. Unselected 0  sources read ·  0  sources retrieved
+							157 container
+								158 text Marketing claims: Confirm evidence for public launch claims. Unselected 0  sources read ·  0  sources retrieved
+						159 button (collapsed) Diagnostic details, Secondary Actions: Expand
+							160 text Diagnostic details
+					127 container
+						128 text YOUR QUESTION Generate a dossier.
+					129 button (collapsed) Earlier conversation (5 messages), Secondary Actions: Expand
+						130 text Earlier conversation (
+						131 text 5
+						132 text  messages)
+					38 container Run an inquiry
+						39 container Ask about This matter
+							40 text RUN AN INQUIRY
+							41 heading Ask about This matter, Value: 2
+								42 text Ask about  This matter
+							43 container Inquiry type
+								44 text Inquiry type
+								45 container
+									46 radio button (settable, integer) Description: Explain, Value: 1
+									47 text Explain
+								48 container
+									49 radio button (settable, integer) Description: Stress-test, Value: 0
+									50 text Stress-test
+								51 container
+									52 radio button (settable, integer) Description: Ask the business, Value: 0
+									53 text Ask the business
+								54 container
+									55 radio button (settable, integer) Description: Explore question, Value: 0
+									56 text Explore question
+							57 text Question or instruction
+							58 text entry area (settable) Question or instruction
+							59 container Inquiry actions
+								60 button Start inquiry, Help: Explain the selected issue or source in the current matter.
+								61 button Copy question
+							62 container
+								63 text Selected action:  Explain .  Explain the selected issue or source in the current matter.
+						64 container
+							65 text TOOLS & HISTORY
+							66 button Business replies
+							67 button Hand off work
+							68 button Compare supplied versions
+					69 container Shared matter actions
+						70 button (collapsed) Questions and actions · Same saved matter, Secondary Actions: Expand
+							71 text Questions and actions · Same saved matter
+					72 button Run inquiry: Which other matters does this touch?
+						73 text Run inquiry: 
+						74 text Which other matters does this touch?
+					75 button Run inquiry: What would change your view?
+						76 text Run inquiry: 
+						77 text What would change your view?
+					78 button Add files
+					79 text entry area (settable)
+					80 button (disabled) Send
+					81 container
+						82 text Themis.ai can research, draft and move this matter. It records a decision only when you explicitly ask it to. 
+						83 link Description: Build a skill, Value: localhost:3207/skills
+				84 button (collapsed) Discussion help, Secondary Actions: Expand
+					85 text Discussion help
+
+The focused UI element is 1 AXWebArea Themis.ai, URL: localhost:3207/matters/MAT-DEMO-BEACON

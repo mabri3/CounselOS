@@ -5,9 +5,9 @@
     "pages": 1000,
     "chars": 4060224,
     "state": "complete",
-    "seconds": 24.161912790994393,
-    "source_id": "SRC-10AEA12E131E8169",
-    "version": "c787bce2e2cde8329662d4c89d64ca4c"
+    "seconds": 26.48729075002484,
+    "source_id": "SRC-736FDFA5FD20FD30",
+    "version": "50eb88db0b1841fb6705014882084bd3"
   },
   {
     "identity": "COLLECTION0",
@@ -15,9 +15,9 @@
     "pages": 200,
     "chars": 856238,
     "state": "complete",
-    "seconds": 10.777227874990785,
-    "source_id": "SRC-0F54104856334940",
-    "version": "a5ecbe2a8ffe6384607efa9abff009f8"
+    "seconds": 11.762170000001788,
+    "source_id": "SRC-CBB4A7E0707BFECB",
+    "version": "10bb2d9745c1fd78f607546bf9db26e9"
   },
   {
     "identity": "COLLECTION1",
@@ -25,9 +25,9 @@
     "pages": 200,
     "chars": 856238,
     "state": "complete",
-    "seconds": 10.00222137500532,
-    "source_id": "SRC-629209367A6907C7",
-    "version": "2e59ef573b5246dba35bf0693914cacc"
+    "seconds": 13.22556945803808,
+    "source_id": "SRC-234D74CD42D32D13",
+    "version": "2141913f5b68c389aa3652f5ae445ab2"
   },
   {
     "identity": "COLLECTION2",
@@ -35,9 +35,9 @@
     "pages": 200,
     "chars": 856238,
     "state": "complete",
-    "seconds": 10.621422290976625,
-    "source_id": "SRC-54CF16B67038E8AA",
-    "version": "d9598da043d6e3cef395cca69e226b69"
+    "seconds": 14.738506916968618,
+    "source_id": "SRC-1A568A7B2DCCC0F4",
+    "version": "ffe1477c3ee7cae02e211648bc89dcf1"
   },
   {
     "identity": "COLLECTION3",
@@ -45,9 +45,9 @@
     "pages": 200,
     "chars": 856238,
     "state": "complete",
-    "seconds": 12.29906041600043,
-    "source_id": "SRC-11A091AD60C17C3B",
-    "version": "5e0b293a722a548dde08b842a0d40b90"
+    "seconds": 14.865615665970836,
+    "source_id": "SRC-2B9A1C96CB292E5F",
+    "version": "90373d58e138c524b45c158a2786c62a"
   },
   {
     "identity": "COLLECTION4",
@@ -55,9 +55,9 @@
     "pages": 200,
     "chars": 856238,
     "state": "complete",
-    "seconds": 16.61600524999085,
-    "source_id": "SRC-4758D0C2DE43099A",
-    "version": "36779551a35e4083e9b6a7b4727f398b"
+    "seconds": 15.543626500002574,
+    "source_id": "SRC-87BE0B6F59C3D9AA",
+    "version": "69189835aa912e992fd5c200108fc229"
   },
   {
     "identity": "COLLECTION5",
@@ -65,9 +65,9 @@
     "pages": 200,
     "chars": 856238,
     "state": "complete",
-    "seconds": 13.302466708002612,
-    "source_id": "SRC-CC3566ED29F22516",
-    "version": "64bce8cfc974ba616ec1de51ff4686c6"
+    "seconds": 14.84100741596194,
+    "source_id": "SRC-A4A784FAB0BCFA06",
+    "version": "1038aa368f0caa65ffb3e2af296554a9"
   },
   {
     "identity": "COLLECTION6",
@@ -75,9 +75,9 @@
     "pages": 200,
     "chars": 856238,
     "state": "complete",
-    "seconds": 17.209374500002014,
-    "source_id": "SRC-AC859B99A89FD155",
-    "version": "2293d366a5907b2befef39f5afedc5d2"
+    "seconds": 15.289275957969949,
+    "source_id": "SRC-92BC0CFC83191ABF",
+    "version": "22ec96d6bf486b9689f46455f6363c33"
   },
   {
     "identity": "COLLECTION7",
@@ -85,9 +85,9 @@
     "pages": 200,
     "chars": 856238,
     "state": "complete",
-    "seconds": 14.982274959009374,
-    "source_id": "SRC-5FBB7A059A89EFEE",
-    "version": "499558be2abfe28c1aa4da72a4f3dc95"
+    "seconds": 17.403326499974355,
+    "source_id": "SRC-C4D7B44B0E883C34",
+    "version": "62a07b965840947722c66c2d94e61421"
   },
   {
     "identity": "COLLECTION8",
@@ -95,9 +95,9 @@
     "pages": 200,
     "chars": 856238,
     "state": "complete",
-    "seconds": 15.917812750005396,
-    "source_id": "SRC-D821930E3EF011EB",
-    "version": "2ed8d9d72a847091eac2d64e7f48b6e6"
+    "seconds": 24.54523395904107,
+    "source_id": "SRC-54A81E2F759BF0EA",
+    "version": "8a7488f916d2b16ed1d36845c0ebd7a4"
   },
   {
     "identity": "COLLECTION9",
@@ -105,8 +105,8 @@
     "pages": 200,
     "chars": 856238,
     "state": "complete",
-    "seconds": 16.47380212499411,
-    "source_id": "SRC-1A795771B36AE3AB",
-    "version": "baebcd8776abfab6bebf270864033976"
+    "seconds": 30.706601082987618,
+    "source_id": "SRC-C93154F0934F510D",
+    "version": "bf5b9c68a7ebc06d2f5a75b2a2069822"
   }
 ]

@@ -1,0 +1,19 @@
+{
+  "name": "diagnostic-review-input",
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-s",
+    "../output/dossier-research-first/astra-review/test_review_diagnostics.py",
+    "-k",
+    "AR22",
+    "--junitxml=../output/dossier-research-first/astra-review/diagnostic-review-input.xml"
+  ],
+  "cwd": "/Users/bharris/Programs/counsel-os-mvp/backend",
+  "started_at": "2026-09-12T07:03:19.235695+00:00",
+  "exit_code": 1,
+  "duration_seconds": 1.82,
+  "baseline": "baseline.json"
+}

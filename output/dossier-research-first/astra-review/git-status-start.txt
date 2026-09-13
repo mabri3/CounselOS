@@ -1,0 +1,1237 @@
+ M CODEX_HANDOFF.md
+ M "Mosaic Relay UX Experiment 2026-09-03 R3/.counsel_os_cache.db"
+ M "Mosaic Relay UX Experiment 2026-09-03 R3/00_System/settings.md"
+ M "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/CONV-20260909-5299cf.md"
+ M "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/dossier.md"
+ M "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/matter.md"
+ M "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/recommendations.md"
+ M "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/workspace.md"
+ M backend/app/active_context.py
+ M backend/app/agents/dispatch_budget.py
+ M backend/app/agents/output.py
+ M backend/app/agents/runner.py
+ M backend/app/blank_vault_template/00_System/skills/matter-paths.md
+ M backend/app/blank_vault_template/00_System/tools/select_conversation_scope.md
+ M backend/app/blank_vault_template/00_System/tools/workspace_action.md
+ M backend/app/config.py
+ M backend/app/experimental_skills/answer.md
+ M backend/app/experimental_skills/dialogue.md
+ M backend/app/experimental_skills/draft.md
+ M backend/app/main.py
+ M backend/app/models/api.py
+ M backend/app/models/research_investigation.py
+ M backend/app/models/research_scope.py
+ M backend/app/providers/base.py
+ M backend/app/providers/codex_cli.py
+ M backend/app/providers/mock.py
+ M backend/app/providers/opencode_go.py
+ M backend/app/routers/chat.py
+ M backend/app/routers/dependencies.py
+ M backend/app/routers/experimental_chat.py
+ M backend/app/routers/files.py
+ M backend/app/routers/matters.py
+ M backend/app/routers/settings.py
+ M backend/app/routers/workspace.py
+ M backend/app/runtime.py
+ M backend/app/services/chat_history.py
+ M backend/app/services/chat_runs.py
+ M backend/app/services/dossier.py
+ M backend/app/services/experimental_chat.py
+ M backend/app/services/main_agent_research.py
+ M backend/app/services/matter_paths_state.py
+ M backend/app/services/provider_settings_policy.py
+ M backend/app/services/research.py
+ M backend/app/services/research_collection.py
+ M backend/app/services/research_execution.py
+ M backend/app/services/research_publication.py
+ M backend/app/services/research_runs.py
+ M backend/app/services/vault.py
+ M backend/app/services/workspace.py
+ M backend/app/services/workspace_scenarios.py
+ M backend/app/skills/registry.py
+ M backend/app/tools/handlers.py
+ M backend/app/tools/matter_paths.py
+ M backend/app/tools/registry.py
+ M backend/tests/manual/serve_research_investigation.py
+ M backend/tests/test_chat_runs.py
+ M backend/tests/test_codex_cli_provider.py
+ M backend/tests/test_continuity_recovery.py
+ M backend/tests/test_experimental_chat.py
+ M backend/tests/test_main_agent_research.py
+ M backend/tests/test_matter_action_api.py
+ M backend/tests/test_matter_memory.py
+ M backend/tests/test_matter_paths_lifecycle.py
+ M backend/tests/test_matter_paths_state.py
+ M backend/tests/test_opencode_go_provider.py
+ M backend/tests/test_research.py
+ M backend/tests/test_research_publication.py
+ M backend/tests/test_research_scope.py
+ M backend/tests/test_source_library_lifecycle.py
+ M backend/tests/test_vault.py
+ M backend/tests/test_workspace_interactions.py
+ M docs/ACCEPTANCE_TESTS.md
+ M docs/living-dossier.md
+ M docs/matter-memory-paths.user-guide.md
+ M frontend/app/settings/page.tsx
+ M frontend/components/ChatCards.tsx
+ M frontend/components/ChatPanel.tsx
+ M frontend/components/ResearchScopeChoice.module.css
+ M frontend/components/ResearchScopeChoice.tsx
+ M frontend/components/experimental/ExperimentalChat.module.css
+ M frontend/components/experimental/ExperimentalChat.tsx
+ M frontend/components/experimental/ExperimentalNextSteps.tsx
+ M frontend/components/experimental/ExperimentalSkills.tsx
+ M frontend/components/workspace/ClaimMarkdown.tsx
+ M frontend/components/workspace/MatterDocuments.module.css
+ M frontend/components/workspace/SavedSourcePassage.tsx
+ M frontend/components/workspace/SolutionPaths.tsx
+ M frontend/lib/api.ts
+ M frontend/lib/stubs.ts
+ M frontend/lib/types.ts
+ M frontend/next-env.d.ts
+ M frontend/package.json
+ M frontend/scripts/check-citation-reading.ts
+ M frontend/scripts/check-matter-memory-paths.ts
+ M frontend/tsconfig.json
+ M output/matter-memory-paths/baseline-request-sizes.json
+ M output/matter-memory-paths/capacity.json
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/..counsel_os_cache.db.ctrn13dm.tmp"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/..counsel_os_cache.db.ctrn13dm.tmp-journal"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/00_System/skills/dossier-generation.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/CONV-20260911-20d4ea.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260910-0e8ee2.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260910-87d760.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260910-ab563a.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260910-b4bb9a.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-1a8d0b.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-212d01.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-258d5b.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-2b3c43.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-30a30c.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-3306dc.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-39525a.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-3a7415.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-3d8986.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-4fc268.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-559aa3.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-57d754.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-5deaf9.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-5f13da.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-68adf4.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-7a3eb3.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-82db42.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-874994.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-878db9.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-88942f.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-8c72e8.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-a1b2be.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-b720a6.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-c6a792.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-d414b0.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-d66c7b.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260911-dbde8e.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/context/RUN-20260912-13f42a.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/inquiries/RUN-20260910-0e8ee2.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260910-0e8ee2.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260910-87d760.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260910-ab563a.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260910-b4bb9a.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-1a8d0b.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-212d01.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-258d5b.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-2b3c43.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-30a30c.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-3306dc.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-39525a.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-3a7415.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-3d8986.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-4fc268.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-559aa3.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-57d754.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-5deaf9.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-5f13da.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-68adf4.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-7a3eb3.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-82db42.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-874994.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-878db9.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-88942f.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-8c72e8.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-a1b2be.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-b720a6.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-c6a792.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-d414b0.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-d66c7b.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260911-dbde8e.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/conversations/runs/RUN-20260912-13f42a.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/documents/batches/BATCH-C31E177A568FE325.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/documents/harbor-bank-option-test.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/documents/harbor-bank-option-test.md.extracted.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/dossier-revisions/DOS-00c2bb5ace2aa359873b.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/dossier-revisions/DOS-30d4520319524d41ea5b.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/dossier-revisions/DOS-4cc39b05492c9b214333.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/dossier-revisions/DOS-5571e34d40d414ae03f8.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/dossier-revisions/DOS-770eaa20fbdec474d387.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/dossier-revisions/DOS-98399988e9eace00f511.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/dossier-revisions/DOS-c993ab2326efd727cc3d.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-00ad8f.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-15d3d2.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-6b7958.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-70ad17.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-749092.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-762aad.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-8278f2.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-8fd706.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-b0415f.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-b845da.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-c2a822.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-cd15cb.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-cf4456.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/events/2026-09-11-EVT-20260911-f1640c.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/memory/SCN-0f23edfc89ec6ecaf60a13e4/pending.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/memory/SCN-0f23edfc89ec6ecaf60a13e4/working.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/memory/SCN-406906c91ab0aba4313b54a6/diagnostics/00000001-5de109b08a1e4c549dd15d5c4ad82ea8f952dca668a4647da65421bbca1e63d3.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/memory/SCN-406906c91ab0aba4313b54a6/diagnostics/misplaced-attachment-test-pending.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/memory/SCN-406906c91ab0aba4313b54a6/diagnostics/misplaced-attachment-test-working.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/paths/state.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/paths/transitions/PATHOP-2f8a7f56a655e5b82f9d1b6b.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/paths/transitions/PATHOP-637fa8836f017ccf0889e3db.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/paths/transitions/PATHOP-822dc5381bd4f8bbf5d3dd19.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/paths/transitions/PATHOP-d60b66df2e961dc5be6544c4.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/RES-20260911-0a5f07.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/RES-20260911-bf2e7d.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/runs/RUN-20260911-d08e84.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/runs/RUN-20260911-f6cb09.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/manifest.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000001.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000002.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000003.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000004.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000005.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000006.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000007.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000008.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000009.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000010.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000011.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000012.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000013.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000014.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000015.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000016.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000017.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000018.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000019.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000020.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000021.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000022.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000023.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000024.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000025.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000026.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000027.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000028.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000029.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000030.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000031.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000032.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000033.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000034.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000035.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000036.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000037.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000038.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000039.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000040.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000041.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000042.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000043.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000044.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000045.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000046.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000047.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000048.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000049.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000050.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000051.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-37ee676da5b354ba8538/dd8e38dc121ab8ed7fe079b02c7e158a/pages/p000052.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-71b20ecf65825d6522c4/d021ece0cde82565eb83511c8122c85b/manifest.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-71b20ecf65825d6522c4/d021ece0cde82565eb83511c8122c85b/sections/s000001.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-71b20ecf65825d6522c4/d021ece0cde82565eb83511c8122c85b/sections/s000002.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-E0E73A92A0B73932/94bdc1c03f82126a8645d1e98cf787e7/manifest.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-E0E73A92A0B73932/94bdc1c03f82126a8645d1e98cf787e7/sections/s000001.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-b48d8d40f5a0cfe9a200/6ebc7b743e605b8e05363eb0628942c1/manifest.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-b48d8d40f5a0cfe9a200/6ebc7b743e605b8e05363eb0628942c1/sections/s000001.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-b48d8d40f5a0cfe9a200/6ebc7b743e605b8e05363eb0628942c1/sections/s000002.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-b48d8d40f5a0cfe9a200/6ebc7b743e605b8e05363eb0628942c1/sections/s000003.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-e6c1e4e85e004ccbe413/e06621859d4ec9431f2712a7c357b112/manifest.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/SRC-e6c1e4e85e004ccbe413/e06621859d4ec9431f2712a7c357b112/sections/s000001.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/index.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-1f14eccce5de8a57-e0e73a92a0b7-e0e73a92a0b7-v2.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-1f14eccce5de8a57-e0e73a92a0b7-e0e73a92a0b7-v2/supplied.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000001.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000002.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000003.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000004.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000005.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000006.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000007.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000008.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000009.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000010.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000011.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000012.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000013.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000014.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000015.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000016.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000017.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000018.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000019.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000020.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000021.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000022.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000023.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000024.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000025.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000026.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000027.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000028.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000029.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000030.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000031.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000032.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000033.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000034.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000035.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000036.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000037.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000038.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000039.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000040.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000041.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000042.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000043.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000044.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000045.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000046.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000047.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000048.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000049.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000050.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000051.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/p000052.txt"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-2b4829f617941508-8c13e0a468bd-bytes-v2/progress.json"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-7059c7d745939746-aeed8ce9af53-5c93e69bbae0-v2.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-7059c7d745939746-aeed8ce9af53-5c93e69bbae0-v2/supplied.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-bafcff80370c43d4-ad8d015e8b3d-fd4bdbd20491-v2.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-bafcff80370c43d4-ad8d015e8b3d-fd4bdbd20491-v2/supplied.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-f6b28224f527a938-1439b7a10a06-6e765b331df6-v2.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/source-library/jobs/JOB-f6b28224f527a938-1439b7a10a06-6e765b331df6-v2/supplied.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/8c13e0a468bd4a9bb31fc9b85afd9ba1e233a90d7aa515f1615d37865e9e007d/extraction-progress.json"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/8c13e0a468bd4a9bb31fc9b85afd9ba1e233a90d7aa515f1615d37865e9e007d/source.bin"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/RUN-20260911-d08e84-37ee676da5b354ba8538-fetch.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/RUN-20260911-d08e84-37ee676da5b354ba8538-fetch.md.bin"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/RUN-20260911-d08e84-71b20ecf65825d6522c4-fetch.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/RUN-20260911-d08e84-71b20ecf65825d6522c4-fetch.md.bin"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/RUN-20260911-d08e84-b48d8d40f5a0cfe9a200-fetch.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/RUN-20260911-d08e84-b48d8d40f5a0cfe9a200-fetch.md.bin"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/RUN-20260911-d08e84-e6c1e4e85e004ccbe413-fetch.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/RUN-20260911-d08e84-e6c1e4e85e004ccbe413-fetch.md.bin"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/SRC-37ee676da5b354ba8538-157583424427.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/SRC-71b20ecf65825d6522c4-fa80c95c5393.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/SRC-b48d8d40f5a0cfe9a200-fcb5e16956fb.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/research/sources/SRC-e6c1e4e85e004ccbe413-e75b998a6dec.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/SCN-0f23edfc89ec6ecaf60a13e4.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/SCN-406906c91ab0aba4313b54a6.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/SCN-490c71c86d9c658974321c1e.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-0f23edfc89ec6ecaf60a13e4/c71b533aaf917efd7ec1d6812bd9c2447e5e1d638ae694442692a1f5740d771e.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/0236a300f3560b1c2af0f888c06db3ba0fb91d3f04e1bab91811ae0c60495f92.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/040634f62385e2b692a068920ca2f6d07d98565205372bd01cd057aaba03a139.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/07c0db50421a1e1b2b47a957e73745baecc9e96b3f1c1ca535cc305b9e4d8d32.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/0f00d800a67810249b50e9da322197bd3663aab96a7acef52db4433ea3d639c3.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/113bd926dcac5a25c2692fa2008c83b7303de87856e1e037fc1799b6f194c54f.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/1fcc4a828544579de40528858f837399f2df47caa3353cedd276c35305aa7ea0.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/3631573665ddc520dbc539f8a2dec7815e16ffbfc80a192197cf2e9befc8d659.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/3e96f30c3ca1b8e97be605275c899245593fbd9dcf8c22f3d90d5a8e8085efc4.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/7590c1665cd95557b2888032bf4979d18a5d840621058ef58702f5c55d011f37.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/7e3d9e8d15044532cf214b6d0f1a50271058f90dfc013b5e16cef4e9b345e1c2.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/8be363ac067103d48eefc53a83e933bbdc7a5e9ea4b1ae1c8df372f165f96793.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/9e44ba99663a05186afe50190014e676ad86c75b27d7557f814bceb28a0974ff.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/a8770e0fefd31d8c393e48ad5cf64e403d56f1b62c2acd84fa3182a3d014f1a2.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/afc331bb9a98d5d4028d73d31e8e5dceacdcbb5db76730582ff9eb3e63f2e01b.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/b4260aef437f9dc39c10aea3517ee7b43a969a7423687cdb412ffebb34b18da9.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/b44c023f27c6604b553cc0cae5912aaa1db50f275718f657154dec9cd1240eb9-1f3bce4710abc05b35977b2e0e0a4fd7af496743e0717901e7f80345a76d6d94.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/b44c023f27c6604b553cc0cae5912aaa1db50f275718f657154dec9cd1240eb9-25b7302d3cc4447e4cf0702fce3a91cfa278acd78de6a97a39e2c688a671cd9c.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/b44c023f27c6604b553cc0cae5912aaa1db50f275718f657154dec9cd1240eb9-c03358b7a6ef7636f16bd54a4e7d36e624ad4f164ea576b6cce0786256500c47.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/b44c023f27c6604b553cc0cae5912aaa1db50f275718f657154dec9cd1240eb9-e96d86c7a6a77cbc19043eb6fd2b6be9cd8050e788d9e1b340104db5a9db93af.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/b44c023f27c6604b553cc0cae5912aaa1db50f275718f657154dec9cd1240eb9.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/c23ae44694da03d0dd62e04d61be5fe6bd80f7155d6b8ed104deeabe8b65ac6d.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/d178b1e8d73b4ac4d97182eabb02256ed880a4bd711847c7f531186fe2b5ea9d.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/dc2f5db18605e71d41e286719465fdbae57a02b27d7c9a4a97aea8d09d351451.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/df831774d4154cb3b3bea7ecfe0b1e275adbc1cf9dffcee913a6c1eebb76e7a4.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-406906c91ab0aba4313b54a6/f9a6975b17fcc5c89c407c05b072884781fddb11f60404b3cd8151cf205d89cd.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-490c71c86d9c658974321c1e/0cd9a0eba10da4a616ae13dee86974e18898cd196004311d854be91720c2f454.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-490c71c86d9c658974321c1e/260261b27660504e7c07a91b7f2b667ea2d029745daf1430fde71e716cd666ec-1f3bce4710abc05b35977b2e0e0a4fd7af496743e0717901e7f80345a76d6d94.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-490c71c86d9c658974321c1e/260261b27660504e7c07a91b7f2b667ea2d029745daf1430fde71e716cd666ec.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-490c71c86d9c658974321c1e/a8ed365925140d9a39580bdac0845adb5bc8d47b106748c24a2608a6bd2f0993-25b7302d3cc4447e4cf0702fce3a91cfa278acd78de6a97a39e2c688a671cd9c.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-490c71c86d9c658974321c1e/a8ed365925140d9a39580bdac0845adb5bc8d47b106748c24a2608a6bd2f0993-c03358b7a6ef7636f16bd54a4e7d36e624ad4f164ea576b6cce0786256500c47.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-490c71c86d9c658974321c1e/a8ed365925140d9a39580bdac0845adb5bc8d47b106748c24a2608a6bd2f0993-e96d86c7a6a77cbc19043eb6fd2b6be9cd8050e788d9e1b340104db5a9db93af.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/history/SCN-490c71c86d9c658974321c1e/a8ed365925140d9a39580bdac0845adb5bc8d47b106748c24a2608a6bd2f0993.md"
+?? "Mosaic Relay UX Experiment 2026-09-03 R3/03_Matters/harbor-2-d89ad8/scenarios/revisions/SCN-406906c91ab0aba4313b54a6-bea3d8396fd84053194f.md"
+?? backend/app/blank_vault_template/00_System/skills/dossier-generation.md
+?? backend/app/models/dossier_request.py
+?? backend/app/routers/dossier_requests.py
+?? backend/app/services/dossier_generation.py
+?? backend/app/services/dossier_generation_chat.py
+?? backend/app/services/dossier_generation_context.py
+?? backend/app/services/dossier_references.py
+?? backend/app/services/dossier_request_execution.py
+?? backend/app/services/dossier_requests.py
+?? backend/app/services/dossier_research.py
+?? backend/app/skills/dossier.py
+?? backend/scripts/refresh_dossier_research.py
+?? backend/tests/manual/serve_dossier_continuity.py
+?? backend/tests/manual/serve_dossier_generation.py
+?? backend/tests/manual/serve_dossier_research.py
+?? backend/tests/test_comparison_submission.py
+?? backend/tests/test_dossier_batch_publication.py
+?? backend/tests/test_dossier_content_depth.py
+?? backend/tests/test_dossier_generation.py
+?? backend/tests/test_dossier_generation_chat.py
+?? backend/tests/test_dossier_generation_integrity.py
+?? backend/tests/test_dossier_managed_research.py
+?? backend/tests/test_dossier_planning.py
+?? backend/tests/test_dossier_references.py
+?? backend/tests/test_dossier_request_api.py
+?? backend/tests/test_dossier_request_lifecycle.py
+?? backend/tests/test_dossier_requests.py
+?? backend/tests/test_dossier_research_continuity.py
+?? frontend/components/DossierResearchCard.module.css
+?? frontend/components/DossierResearchCard.tsx
+?? frontend/components/workspace/SolutionPaths.module.css
+?? frontend/lib/chatMarkdown.ts
+?? frontend/lib/dossierRequests.ts
+?? frontend/lib/markdownDisclosures.ts
+?? frontend/lib/modelSettingsRows.ts
+?? frontend/scripts/check-chat-sections.ts
+?? frontend/scripts/check-dossier-research.ts
+?? frontend/scripts/check-markdown-disclosures.ts
+?? handoffs/counsel-os-dossier-generation-2026-09-11.md
+?? handoffs/dossier-generation-2026-09-11-2359-01a091d3.md
+?? handoffs/dossier-research-complete-2026-09-12-0114-01a092e5.md
+?? handoffs/dossier-research-first.astra-review-prompt.md
+?? handoffs/dossier-research-first.handoff-plan.md
+?? handoffs/dossier-research-first.handoff-progress.md
+?? handoffs/dossier-research-first.handoff-prompt.md
+?? output/approaches-ui-fix/answer-preview.md
+?? output/approaches-ui-fix/answer-quality-baseline-request-sizes.json
+?? output/approaches-ui-fix/answer-quality-capacity.json
+?? output/approaches-ui-fix/answer-quality-verification.md
+?? output/approaches-ui-fix/answer-render-bank.png
+?? output/approaches-ui-fix/answer-render.png
+?? output/approaches-ui-fix/answer-replay.json
+?? output/approaches-ui-fix/answer-replay.md
+?? output/approaches-ui-fix/approach-names.png
+?? output/approaches-ui-fix/attachment-after.json
+?? output/approaches-ui-fix/attachment-before.json
+?? output/approaches-ui-fix/attachment-evidence-ui.png
+?? output/approaches-ui-fix/attachment-fix-verification.md
+?? output/approaches-ui-fix/attachment-note-ui.png
+?? output/approaches-ui-fix/attachment-replay-result.json
+?? output/approaches-ui-fix/attachment-saved-note.json
+?? output/approaches-ui-fix/browser-result.json
+?? output/approaches-ui-fix/browser_test.py
+?? output/approaches-ui-fix/check_approach_name.py
+?? output/approaches-ui-fix/check_attachment_saved_ui.py
+?? output/approaches-ui-fix/check_collection_picker.py
+?? output/approaches-ui-fix/check_compact_sources.py
+?? output/approaches-ui-fix/check_compare_loading.py
+?? output/approaches-ui-fix/check_fallback_settings.py
+?? output/approaches-ui-fix/check_general_comparison.py
+?? output/approaches-ui-fix/check_live_compare_recovery.py
+?? output/approaches-ui-fix/check_live_sections.py
+?? output/approaches-ui-fix/check_live_source_start.py
+?? output/approaches-ui-fix/check_research_access_ui.py
+?? output/approaches-ui-fix/check_research_started.py
+?? output/approaches-ui-fix/check_topic_suggestions.py
+?? output/approaches-ui-fix/collection-agent-verification.md
+?? output/approaches-ui-fix/collection-picker.png
+?? output/approaches-ui-fix/compact-source-card.png
+?? output/approaches-ui-fix/direction-action.png
+?? output/approaches-ui-fix/fallback-settings.png
+?? output/approaches-ui-fix/files.png
+?? output/approaches-ui-fix/fixed-live-sections.png
+?? output/approaches-ui-fix/general-comparison.md
+?? output/approaches-ui-fix/live-compare-recovery-answer.md
+?? output/approaches-ui-fix/live-compare-recovery-submission.json
+?? output/approaches-ui-fix/live-compare-recovery.png
+?? output/approaches-ui-fix/objective-replay-final.json
+?? output/approaches-ui-fix/objective-replay-final.md
+?? output/approaches-ui-fix/objective-replay-v2.json
+?? output/approaches-ui-fix/objective-replay-v2.md
+?? output/approaches-ui-fix/objective-replay-v3.json
+?? output/approaches-ui-fix/objective-replay-v3.md
+?? output/approaches-ui-fix/objective-replay.json
+?? output/approaches-ui-fix/objective-replay.md
+?? output/approaches-ui-fix/objective-verification.md
+?? output/approaches-ui-fix/overview.png
+?? output/approaches-ui-fix/provider-recovery-baseline-request-sizes.json
+?? output/approaches-ui-fix/provider-recovery-capacity.json
+?? output/approaches-ui-fix/provider-recovery-runs.json
+?? output/approaches-ui-fix/provider-recovery-verification.md
+?? output/approaches-ui-fix/replay_answer.py
+?? output/approaches-ui-fix/replay_attachment.py
+?? output/approaches-ui-fix/replay_attachment_fresh.py
+?? output/approaches-ui-fix/replay_objective.py
+?? output/approaches-ui-fix/replay_objective_final.py
+?? output/approaches-ui-fix/replay_objective_v2.py
+?? output/approaches-ui-fix/replay_objective_v3.py
+?? output/approaches-ui-fix/replay_research_access.py
+?? output/approaches-ui-fix/research-access-result.json
+?? output/approaches-ui-fix/research-access-ui.png
+?? output/approaches-ui-fix/research-fallback-verification.md
+?? output/approaches-ui-fix/research-started.png
+?? output/approaches-ui-fix/serve.py
+?? output/approaches-ui-fix/topic-suggestions-ui.png
+?? output/approaches-ui-fix/vault-path.txt
+?? output/approaches-ui-fix/verification.md
+?? output/approaches-ui-fix/watch_live_compare.py
+?? output/attachment-test/harbor-bank-option-test.md
+?? output/chat-load-fix/verification.md
+?? output/dossier-research-first/astra-review/baseline.json
+?? output/dossier-research-first/baseline-git-status.txt
+?? output/dossier-research-first/baseline-source-hashes.txt
+?? output/dossier-research-first/browser-boundary-counts.json
+?? output/dossier-research-first/browser-results.md
+?? output/dossier-research-first/browser-standard-all-five-complete.png
+?? output/dossier-research-first/browser-standard-saved-preview.png
+?? output/dossier-research-first/browser-vault/..counsel_os_cache.db.rebuild.lock
+?? output/dossier-research-first/browser-vault/.counsel_os_cache.db
+?? output/dossier-research-first/browser-vault/.dossier-research-browser-fixture.json
+?? output/dossier-research-first/browser-vault/00_System/Agents.md
+?? output/dossier-research-first/browser-vault/00_System/Answer.md
+?? output/dossier-research-first/browser-vault/00_System/Soul.md
+?? output/dossier-research-first/browser-vault/00_System/agents/counsel-copilot.md
+?? output/dossier-research-first/browser-vault/00_System/agents/decision-monitor.md
+?? output/dossier-research-first/browser-vault/00_System/agents/intake-agent.md
+?? output/dossier-research-first/browser-vault/00_System/agents/research-agent.md
+?? output/dossier-research-first/browser-vault/00_System/audiences.md
+?? output/dossier-research-first/browser-vault/00_System/company.md
+?? output/dossier-research-first/browser-vault/00_System/dossier-research-browser-stats.md
+?? output/dossier-research-first/browser-vault/00_System/legal-awareness/views/for-you.md
+?? output/dossier-research-first/browser-vault/00_System/legal-awareness/watches/alternative-data.md
+?? output/dossier-research-first/browser-vault/00_System/memory.md
+?? output/dossier-research-first/browser-vault/00_System/schedules/decision-audit.md
+?? output/dossier-research-first/browser-vault/00_System/schedules/inbox-watcher.md
+?? output/dossier-research-first/browser-vault/00_System/skills/dossier-generation.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output-business-decision-brief.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output-change-impact-note.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output-contract-clause-revision.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output-decision-record.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output-fact-confirmation-request.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output-implementation-requirements.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output-meeting-preparation-brief.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output-outside-counsel-brief.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output-regulatory-memorandum.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output-short-business-email.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output-transaction-checklist.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output_templates/history/output-business-decision-brief/1-aef14aa0f2c4cd34.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output_templates/history/output-change-impact-note/1-fa45066717dd9ef7.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output_templates/history/output-contract-clause-revision/1-ce083059d6e63b9f.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output_templates/history/output-decision-record/1-91fb2db87ecab3b7.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output_templates/history/output-fact-confirmation-request/1-a4a853d4744fa5cd.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output_templates/history/output-implementation-requirements/1-635b7c47ea021a88.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output_templates/history/output-meeting-preparation-brief/1-2081f1d249df8798.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output_templates/history/output-outside-counsel-brief/1-2359ac8ce9f69f76.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output_templates/history/output-regulatory-memorandum/1-29d154f5f4a22253.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output_templates/history/output-short-business-email/1-8841c21be3e06957.md
+?? output/dossier-research-first/browser-vault/00_System/skills/output_templates/history/output-transaction-checklist/1-7548a7fad25b8661.md
+?? output/dossier-research-first/browser-vault/00_System/skills/product-launch-review.md
+?? output/dossier-research-first/browser-vault/00_System/skills/watch-builder.md
+?? output/dossier-research-first/browser-vault/00_System/tools/activate_watch.md
+?? output/dossier-research-first/browser-vault/00_System/tools/append_memory.md
+?? output/dossier-research-first/browser-vault/00_System/tools/approve_response.md
+?? output/dossier-research-first/browser-vault/00_System/tools/audit_decisions.md
+?? output/dossier-research-first/browser-vault/00_System/tools/close_matter.md
+?? output/dossier-research-first/browser-vault/00_System/tools/complete_work_item.md
+?? output/dossier-research-first/browser-vault/00_System/tools/create_agent.md
+?? output/dossier-research-first/browser-vault/00_System/tools/create_schedule.md
+?? output/dossier-research-first/browser-vault/00_System/tools/create_watch_draft.md
+?? output/dossier-research-first/browser-vault/00_System/tools/create_work_item.md
+?? output/dossier-research-first/browser-vault/00_System/tools/list_files.md
+?? output/dossier-research-first/browser-vault/00_System/tools/mark_response_sent.md
+?? output/dossier-research-first/browser-vault/00_System/tools/move_matter_stage.md
+?? output/dossier-research-first/browser-vault/00_System/tools/read_file.md
+?? output/dossier-research-first/browser-vault/00_System/tools/record_decision.md
+?? output/dossier-research-first/browser-vault/00_System/tools/run_research.md
+?? output/dossier-research-first/browser-vault/00_System/tools/save_work_product.md
+?? output/dossier-research-first/browser-vault/00_System/tools/scan_watch.md
+?? output/dossier-research-first/browser-vault/00_System/tools/search_vault.md
+?? output/dossier-research-first/browser-vault/00_System/tools/update_matter_intake.md
+?? output/dossier-research-first/browser-vault/00_System/tools/write_markdown.md
+?? output/dossier-research-first/browser-vault/00_System/user.md
+?? output/dossier-research-first/browser-vault/00_System/workflows/product-counsel.md
+?? output/dossier-research-first/browser-vault/01_Playbooks/decision-review.md
+?? output/dossier-research-first/browser-vault/01_Playbooks/product-review.md
+?? output/dossier-research-first/browser-vault/02_Company_Knowledge/product-and-funds-flow.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/.history/dossier/62b7304a62873f1dd08300edaa248266807f96db86d66f1eef422f6ea3f24a7d.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/CONV-20260912-10a7c7.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/CONV-20260912-395143.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/CONV-20260912-4275e1.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/CONV-20260912-a138bf.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/context/RUN-20260912-1812fa.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/context/RUN-20260912-400356.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/context/RUN-20260912-622585.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/context/RUN-20260912-9cf55a.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/context/RUN-20260912-a8f1e3.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/context/RUN-20260912-b53c38.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/context/RUN-20260912-e1abfc.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/context/RUN-20260912-feb2ce.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/runs/RUN-20260912-1812fa.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/runs/RUN-20260912-400356.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/runs/RUN-20260912-622585.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/runs/RUN-20260912-9cf55a.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/runs/RUN-20260912-a8f1e3.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/runs/RUN-20260912-b53c38.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/runs/RUN-20260912-e1abfc.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/conversations/runs/RUN-20260912-feb2ce.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-002a1828cc0df895f1da.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-6e7c79412d2e17e46b93.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-8a17fbab91f9a50b5c78.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-abed280c0ed66d245da6.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-fb3b68547fa3301df76e.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/dossier.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/events/2026-08-25-seeded.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/events/2026-09-12-EVT-20260912-b584d2.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/facts.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/issues.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/matter.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/participants.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/paths/state.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/recommendations.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/request.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/RES-20260912-1ec38c.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/RES-20260912-2357e3.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/RES-20260912-2e3421.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/RES-20260912-33ebef.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/RES-20260912-4306a8.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/RES-20260912-749385.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/RES-20260912-a5cfc3.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/RES-20260912-c9d3ae.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/RES-20260912-d163d1.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/RES-20260912-d273af.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/RES-20260912-e42e88.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/dossier-requests/DOR-20260912-339794.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/dossier-requests/DOR-20260912-5c2ed1.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/dossier-requests/DOR-20260912-5d7502.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/dossier-requests/DOR-20260912-63d769.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/dossier-requests/DOR-20260912-a2725b.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/runs/RUN-1429f2e61d7f088e.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/runs/RUN-1c24a6dcfceb9258.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/runs/RUN-20320e73b9dd1773.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/runs/RUN-32a1937651467e43.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/runs/RUN-5fc01c60c5510592.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/runs/RUN-8d42957977751458.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/runs/RUN-90f9ae9366e2dc63.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/runs/RUN-a1eca43206a43f9e.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/runs/RUN-a7bde254d8cb2c75.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/runs/RUN-c03c62f08e12a4b1.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/runs/RUN-db8e470df2119c0f.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/runs/RUN-de46e0ac0761757b.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/runs/RUN-dffa9c55057cebac.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/runs/RUN-e9c9f70159510692.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/runs/RUN-f1e85f268e030160.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/runs/RUN-f5fda2dce344ca1b.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/runs/RUN-fd60a92a9449360b.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/SRC-d003001afc91758c7676/123a203822ae52cf458eb9fbeaf85ac2/manifest.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/SRC-d003001afc91758c7676/123a203822ae52cf458eb9fbeaf85ac2/pages/p000001.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/SRC-d003001afc91758c7676/14da51f31b958763280f7d75087e02ef/manifest.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/SRC-d003001afc91758c7676/14da51f31b958763280f7d75087e02ef/pages/p000001.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/SRC-d003001afc91758c7676/7db6fdbeddf99bc538bf4d8888794726/manifest.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/SRC-d003001afc91758c7676/7db6fdbeddf99bc538bf4d8888794726/pages/p000001.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/SRC-d003001afc91758c7676/d328f778b535a07448515a82f118298b/manifest.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/SRC-d003001afc91758c7676/d328f778b535a07448515a82f118298b/pages/p000001.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/SRC-d003001afc91758c7676/ed3332901349790f030271360e74046f/manifest.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/SRC-d003001afc91758c7676/ed3332901349790f030271360e74046f/pages/p000001.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/index.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/jobs/JOB-1b2501b03f0a0897-321c32f707ab-bytes-v2.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/jobs/JOB-1b2501b03f0a0897-321c32f707ab-bytes-v2/p000001.txt
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/jobs/JOB-1b2501b03f0a0897-321c32f707ab-bytes-v2/progress.json
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/jobs/JOB-1b2501b03f0a0897-73f5f20b7dde-bytes-v2.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/jobs/JOB-1b2501b03f0a0897-73f5f20b7dde-bytes-v2/p000001.txt
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/jobs/JOB-1b2501b03f0a0897-73f5f20b7dde-bytes-v2/progress.json
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/jobs/JOB-1b2501b03f0a0897-bdb86a841d0d-bytes-v2.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/jobs/JOB-1b2501b03f0a0897-bdb86a841d0d-bytes-v2/p000001.txt
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/jobs/JOB-1b2501b03f0a0897-bdb86a841d0d-bytes-v2/progress.json
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/jobs/JOB-1b2501b03f0a0897-c30b8cbfcc03-bytes-v2.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/jobs/JOB-1b2501b03f0a0897-c30b8cbfcc03-bytes-v2/p000001.txt
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/jobs/JOB-1b2501b03f0a0897-c30b8cbfcc03-bytes-v2/progress.json
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/jobs/JOB-1b2501b03f0a0897-c7284a3f073a-bytes-v2.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/jobs/JOB-1b2501b03f0a0897-c7284a3f073a-bytes-v2/p000001.txt
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/source-library/jobs/JOB-1b2501b03f0a0897-c7284a3f073a-bytes-v2/progress.json
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/321c32f707ab5f86ca5e0a5fbf05b38516dd138b36ab5359b6db66702a29faf0/extraction-progress.json
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/321c32f707ab5f86ca5e0a5fbf05b38516dd138b36ab5359b6db66702a29faf0/source.bin
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/73f5f20b7dde362a4fb051d34882ebcc5020faa8540ab1accb982aef433ce9d3/extraction-progress.json
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/73f5f20b7dde362a4fb051d34882ebcc5020faa8540ab1accb982aef433ce9d3/source.bin
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/RUN-32a1937651467e43-d003001afc91758c7676-fetch.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/RUN-32a1937651467e43-d003001afc91758c7676-fetch.md.bin
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/RUN-5fc01c60c5510592-d003001afc91758c7676-fetch.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/RUN-5fc01c60c5510592-d003001afc91758c7676-fetch.md.bin
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/RUN-a7bde254d8cb2c75-d003001afc91758c7676-fetch.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/RUN-a7bde254d8cb2c75-d003001afc91758c7676-fetch.md.bin
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/RUN-db8e470df2119c0f-d003001afc91758c7676-fetch.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/RUN-db8e470df2119c0f-d003001afc91758c7676-fetch.md.bin
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/RUN-f1e85f268e030160-d003001afc91758c7676-fetch.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/RUN-f1e85f268e030160-d003001afc91758c7676-fetch.md.bin
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/SRC-d003001afc91758c7676-e91d58531100.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/bdb86a841d0d210db74f375c0636cc90926e452c38861b6b9a78cb0e45526352/extraction-progress.json
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/bdb86a841d0d210db74f375c0636cc90926e452c38861b6b9a78cb0e45526352/source.bin
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/c30b8cbfcc03fc98f8c9e16b63c3bc17144f1178812d068ba51dbd5779567c25/extraction-progress.json
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/c30b8cbfcc03fc98f8c9e16b63c3bc17144f1178812d068ba51dbd5779567c25/source.bin
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/c7284a3f073a1fe4077d44c9fe2caa9602276fada66146bb55f1c6b2a09c43fd/extraction-progress.json
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/research/sources/c7284a3f073a1fe4077d44c9fe2caa9602276fada66146bb55f1c6b2a09c43fd/source.bin
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/scenarios/SCN-eac02f4c748f62658e8e41bf.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/scenarios/history/SCN-eac02f4c748f62658e8e41bf/61f59f3195d8b46442e93c6bc8fa8279db526bd32308867e980b9e726a985963.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/source-documents/launch-brief.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/work-items/WI-MAT-DEMO-BEACON-1.md
+?? output/dossier-research-first/browser-vault/03_Matters/beacon-instant-onboarding/work-items/WI-MAT-DEMO-BEACON-2.md
+?? output/dossier-research-first/browser-vault/03_Matters/cedar-cash-sweep/decisions/DEC-DEMO-CEDAR-LAUNCH.md
+?? output/dossier-research-first/browser-vault/03_Matters/cedar-cash-sweep/events/2026-08-25-seeded.md
+?? output/dossier-research-first/browser-vault/03_Matters/cedar-cash-sweep/facts.md
+?? output/dossier-research-first/browser-vault/03_Matters/cedar-cash-sweep/final/launch-guidance.md
+?? output/dossier-research-first/browser-vault/03_Matters/cedar-cash-sweep/issues.md
+?? output/dossier-research-first/browser-vault/03_Matters/cedar-cash-sweep/matter.md
+?? output/dossier-research-first/browser-vault/03_Matters/cedar-cash-sweep/participants.md
+?? output/dossier-research-first/browser-vault/03_Matters/cedar-cash-sweep/recommendations.md
+?? output/dossier-research-first/browser-vault/03_Matters/cedar-cash-sweep/request.md
+?? output/dossier-research-first/browser-vault/03_Matters/cedar-cash-sweep/work-items/WI-MAT-DEMO-CEDAR-1.md
+?? output/dossier-research-first/browser-vault/03_Matters/cedar-cash-sweep/work-items/WI-MAT-DEMO-CEDAR-2.md
+?? output/dossier-research-first/browser-vault/03_Matters/cedar-cash-sweep/work-items/WI-MAT-DEMO-CEDAR-3.md
+?? output/dossier-research-first/browser-vault/03_Matters/delta-pricing-copy/events/2026-08-25-seeded.md
+?? output/dossier-research-first/browser-vault/03_Matters/delta-pricing-copy/facts.md
+?? output/dossier-research-first/browser-vault/03_Matters/delta-pricing-copy/issues.md
+?? output/dossier-research-first/browser-vault/03_Matters/delta-pricing-copy/matter.md
+?? output/dossier-research-first/browser-vault/03_Matters/delta-pricing-copy/participants.md
+?? output/dossier-research-first/browser-vault/03_Matters/delta-pricing-copy/recommendations.md
+?? output/dossier-research-first/browser-vault/03_Matters/delta-pricing-copy/request.md
+?? output/dossier-research-first/browser-vault/03_Matters/delta-pricing-copy/work-items/WI-MAT-DEMO-DELTA-1.md
+?? output/dossier-research-first/browser-vault/03_Matters/delta-pricing-copy/work-items/WI-MAT-DEMO-DELTA-2.md
+?? output/dossier-research-first/browser-vault/03_Matters/harbor-support-response/events/2026-08-25-seeded.md
+?? output/dossier-research-first/browser-vault/03_Matters/harbor-support-response/facts.md
+?? output/dossier-research-first/browser-vault/03_Matters/harbor-support-response/issues.md
+?? output/dossier-research-first/browser-vault/03_Matters/harbor-support-response/matter.md
+?? output/dossier-research-first/browser-vault/03_Matters/harbor-support-response/participants.md
+?? output/dossier-research-first/browser-vault/03_Matters/harbor-support-response/recommendations.md
+?? output/dossier-research-first/browser-vault/03_Matters/harbor-support-response/request.md
+?? output/dossier-research-first/browser-vault/03_Matters/harbor-support-response/work-items/WI-MAT-DEMO-HARBOR-1.md
+?? output/dossier-research-first/browser-vault/03_Matters/harbor-support-response/work-items/WI-MAT-DEMO-HARBOR-2.md
+?? output/dossier-research-first/browser-vault/03_Matters/mason-sdk-closed/decisions/DEC-DEMO-MASON.md
+?? output/dossier-research-first/browser-vault/03_Matters/mason-sdk-closed/events/2026-07-12-seeded.md
+?? output/dossier-research-first/browser-vault/03_Matters/mason-sdk-closed/facts.md
+?? output/dossier-research-first/browser-vault/03_Matters/mason-sdk-closed/issues.md
+?? output/dossier-research-first/browser-vault/03_Matters/mason-sdk-closed/matter.md
+?? output/dossier-research-first/browser-vault/03_Matters/mason-sdk-closed/participants.md
+?? output/dossier-research-first/browser-vault/03_Matters/mason-sdk-closed/recommendations.md
+?? output/dossier-research-first/browser-vault/03_Matters/mason-sdk-closed/request.md
+?? output/dossier-research-first/browser-vault/03_Matters/mason-sdk-closed/work-items/WI-MAT-DEMO-MASON-1.md
+?? output/dossier-research-first/browser-vault/03_Matters/northstar-ai-underwriting/events/2026-08-27-seeded.md
+?? output/dossier-research-first/browser-vault/03_Matters/northstar-ai-underwriting/facts.md
+?? output/dossier-research-first/browser-vault/03_Matters/northstar-ai-underwriting/issues.md
+?? output/dossier-research-first/browser-vault/03_Matters/northstar-ai-underwriting/matter.md
+?? output/dossier-research-first/browser-vault/03_Matters/northstar-ai-underwriting/participants.md
+?? output/dossier-research-first/browser-vault/03_Matters/northstar-ai-underwriting/recommendations.md
+?? output/dossier-research-first/browser-vault/03_Matters/northstar-ai-underwriting/request.md
+?? output/dossier-research-first/browser-vault/03_Matters/northstar-ai-underwriting/research/research-plan.md
+?? output/dossier-research-first/browser-vault/03_Matters/northstar-ai-underwriting/source-documents/model-change-summary.md
+?? output/dossier-research-first/browser-vault/03_Matters/northstar-ai-underwriting/work-items/WI-MAT-DEMO-NORTHSTAR-1.md
+?? output/dossier-research-first/browser-vault/03_Matters/northstar-ai-underwriting/work-items/WI-MAT-DEMO-NORTHSTAR-2.md
+?? output/dossier-research-first/browser-vault/03_Matters/orbit-bank-data/events/2026-08-25-seeded.md
+?? output/dossier-research-first/browser-vault/03_Matters/orbit-bank-data/facts.md
+?? output/dossier-research-first/browser-vault/03_Matters/orbit-bank-data/issues.md
+?? output/dossier-research-first/browser-vault/03_Matters/orbit-bank-data/matter.md
+?? output/dossier-research-first/browser-vault/03_Matters/orbit-bank-data/participants.md
+?? output/dossier-research-first/browser-vault/03_Matters/orbit-bank-data/recommendations.md
+?? output/dossier-research-first/browser-vault/03_Matters/orbit-bank-data/request.md
+?? output/dossier-research-first/browser-vault/03_Matters/orbit-bank-data/work-items/WI-MAT-DEMO-ORBIT-1.md
+?? output/dossier-research-first/browser-vault/03_Matters/project-apex-ai/decisions/DEC-DEMO-APEX-RETENTION.md
+?? output/dossier-research-first/browser-vault/03_Matters/project-apex-ai/events/2026-08-25-seeded.md
+?? output/dossier-research-first/browser-vault/03_Matters/project-apex-ai/facts.md
+?? output/dossier-research-first/browser-vault/03_Matters/project-apex-ai/issues.md
+?? output/dossier-research-first/browser-vault/03_Matters/project-apex-ai/matter.md
+?? output/dossier-research-first/browser-vault/03_Matters/project-apex-ai/participants.md
+?? output/dossier-research-first/browser-vault/03_Matters/project-apex-ai/recommendations.md
+?? output/dossier-research-first/browser-vault/03_Matters/project-apex-ai/request.md
+?? output/dossier-research-first/browser-vault/03_Matters/project-apex-ai/research/RES-MAT-DEMO-APEX.md
+?? output/dossier-research-first/browser-vault/03_Matters/project-apex-ai/work-items/WI-MAT-DEMO-APEX-1.md
+?? output/dossier-research-first/browser-vault/03_Matters/project-apex-ai/work-items/WI-MAT-DEMO-APEX-2.md
+?? output/dossier-research-first/browser-vault/03_Matters/pulse-earned-wage-access/events/2026-08-28-seeded.md
+?? output/dossier-research-first/browser-vault/03_Matters/pulse-earned-wage-access/facts.md
+?? output/dossier-research-first/browser-vault/03_Matters/pulse-earned-wage-access/issues.md
+?? output/dossier-research-first/browser-vault/03_Matters/pulse-earned-wage-access/matter.md
+?? output/dossier-research-first/browser-vault/03_Matters/pulse-earned-wage-access/participants.md
+?? output/dossier-research-first/browser-vault/03_Matters/pulse-earned-wage-access/recommendations.md
+?? output/dossier-research-first/browser-vault/03_Matters/pulse-earned-wage-access/request.md
+?? output/dossier-research-first/browser-vault/03_Matters/pulse-earned-wage-access/source-documents/product-brief.md
+?? output/dossier-research-first/browser-vault/03_Matters/pulse-earned-wage-access/work-items/WI-MAT-DEMO-PULSE-1.md
+?? output/dossier-research-first/browser-vault/03_Matters/pulse-earned-wage-access/work-items/WI-MAT-DEMO-PULSE-2.md
+?? output/dossier-research-first/browser-vault/03_Matters/relay-open-banking/dossier.md
+?? output/dossier-research-first/browser-vault/03_Matters/relay-open-banking/drafts/decision-note.md
+?? output/dossier-research-first/browser-vault/03_Matters/relay-open-banking/events/2026-08-28-seeded.md
+?? output/dossier-research-first/browser-vault/03_Matters/relay-open-banking/facts.md
+?? output/dossier-research-first/browser-vault/03_Matters/relay-open-banking/issues.md
+?? output/dossier-research-first/browser-vault/03_Matters/relay-open-banking/matter.md
+?? output/dossier-research-first/browser-vault/03_Matters/relay-open-banking/participants.md
+?? output/dossier-research-first/browser-vault/03_Matters/relay-open-banking/recommendations.md
+?? output/dossier-research-first/browser-vault/03_Matters/relay-open-banking/request.md
+?? output/dossier-research-first/browser-vault/03_Matters/relay-open-banking/research/section-1033-and-consent-memo.md
+?? output/dossier-research-first/browser-vault/03_Matters/relay-open-banking/work-items/WI-MAT-DEMO-RELAY-1.md
+?? output/dossier-research-first/browser-vault/03_Matters/relay-open-banking/work-items/WI-MAT-DEMO-RELAY-2.md
+?? output/dossier-research-first/browser-vault/04_Inbox/README.md
+?? output/dossier-research-first/browser-vault/05_Briefing/developments/DEV-DEMO-ALTERNATIVE-DATA.md
+?? output/dossier-research-first/browser-vault/05_Briefing/items/ITEM-DEMO-ALTERNATIVE-DATA-BRIEFING.md
+?? output/dossier-research-first/browser-vault/05_Briefing/items/ITEM-DEMO-ALTERNATIVE-DATA-DECISION.md
+?? output/dossier-research-first/browser-vault/05_Briefing/review-packets/PKT-DEMO-ALTERNATIVE-DATA.md
+?? output/dossier-research-first/browser-vault/05_Briefing/scans/SCAN-DEMO-ALTERNATIVE-DATA-BOTH.md
+?? output/dossier-research-first/live-quality-assessment.md
+?? output/dossier-research-first/live-quality-attempt.json
+?? output/dossier-research-first/live-quality-result.json
+?? output/dossier-research-first/live-quality-vault/..counsel_os_cache.db.rebuild.lock
+?? output/dossier-research-first/live-quality-vault/.counsel_os_cache.db
+?? output/dossier-research-first/live-quality-vault/.dossier-live-quality-fixture.json
+?? output/dossier-research-first/live-quality-vault/00_System/Agents.md
+?? output/dossier-research-first/live-quality-vault/00_System/Answer.md
+?? output/dossier-research-first/live-quality-vault/00_System/Soul.md
+?? output/dossier-research-first/live-quality-vault/00_System/agents/counsel-copilot.md
+?? output/dossier-research-first/live-quality-vault/00_System/agents/decision-monitor.md
+?? output/dossier-research-first/live-quality-vault/00_System/agents/intake-agent.md
+?? output/dossier-research-first/live-quality-vault/00_System/agents/research-agent.md
+?? output/dossier-research-first/live-quality-vault/00_System/audiences.md
+?? output/dossier-research-first/live-quality-vault/00_System/company.md
+?? output/dossier-research-first/live-quality-vault/00_System/legal-awareness/views/for-you.md
+?? output/dossier-research-first/live-quality-vault/00_System/legal-awareness/watches/alternative-data.md
+?? output/dossier-research-first/live-quality-vault/00_System/memory.md
+?? output/dossier-research-first/live-quality-vault/00_System/schedules/decision-audit.md
+?? output/dossier-research-first/live-quality-vault/00_System/schedules/inbox-watcher.md
+?? output/dossier-research-first/live-quality-vault/00_System/settings.md
+?? output/dossier-research-first/live-quality-vault/00_System/skills/dossier-generation.md
+?? output/dossier-research-first/live-quality-vault/00_System/skills/output-business-decision-brief.md
+?? output/dossier-research-first/live-quality-vault/00_System/skills/output-change-impact-note.md
+?? output/dossier-research-first/live-quality-vault/00_System/skills/output-contract-clause-revision.md
+?? output/dossier-research-first/live-quality-vault/00_System/skills/output-decision-record.md
+?? output/dossier-research-first/live-quality-vault/00_System/skills/output-fact-confirmation-request.md
+?? output/dossier-research-first/live-quality-vault/00_System/skills/output-implementation-requirements.md
+?? output/dossier-research-first/live-quality-vault/00_System/skills/output-meeting-preparation-brief.md
+?? output/dossier-research-first/live-quality-vault/00_System/skills/output-outside-counsel-brief.md
+?? output/dossier-research-first/live-quality-vault/00_System/skills/output-regulatory-memorandum.md
+?? output/dossier-research-first/live-quality-vault/00_System/skills/output-short-business-email.md
+?? output/dossier-research-first/live-quality-vault/00_System/skills/output-transaction-checklist.md
+?? output/dossier-research-first/live-quality-vault/00_System/skills/product-launch-review.md
+?? output/dossier-research-first/live-quality-vault/00_System/skills/watch-builder.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/activate_watch.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/append_memory.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/approve_response.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/audit_decisions.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/close_matter.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/complete_work_item.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/create_agent.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/create_schedule.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/create_watch_draft.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/create_work_item.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/list_files.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/mark_response_sent.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/move_matter_stage.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/read_file.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/record_decision.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/run_research.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/save_work_product.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/scan_watch.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/search_vault.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/update_matter_intake.md
+?? output/dossier-research-first/live-quality-vault/00_System/tools/write_markdown.md
+?? output/dossier-research-first/live-quality-vault/00_System/user.md
+?? output/dossier-research-first/live-quality-vault/00_System/workflows/product-counsel.md
+?? output/dossier-research-first/live-quality-vault/01_Playbooks/decision-review.md
+?? output/dossier-research-first/live-quality-vault/01_Playbooks/product-review.md
+?? output/dossier-research-first/live-quality-vault/02_Company_Knowledge/product-and-funds-flow.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/beacon-instant-onboarding/events/2026-08-25-seeded.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/beacon-instant-onboarding/facts.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/beacon-instant-onboarding/issues.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/beacon-instant-onboarding/matter.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/beacon-instant-onboarding/participants.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/beacon-instant-onboarding/recommendations.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/beacon-instant-onboarding/request.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/beacon-instant-onboarding/work-items/WI-MAT-DEMO-BEACON-1.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/beacon-instant-onboarding/work-items/WI-MAT-DEMO-BEACON-2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/cedar-cash-sweep/decisions/DEC-DEMO-CEDAR-LAUNCH.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/cedar-cash-sweep/events/2026-08-25-seeded.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/cedar-cash-sweep/facts.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/cedar-cash-sweep/final/launch-guidance.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/cedar-cash-sweep/issues.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/cedar-cash-sweep/matter.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/cedar-cash-sweep/participants.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/cedar-cash-sweep/recommendations.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/cedar-cash-sweep/request.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/cedar-cash-sweep/work-items/WI-MAT-DEMO-CEDAR-1.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/cedar-cash-sweep/work-items/WI-MAT-DEMO-CEDAR-2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/cedar-cash-sweep/work-items/WI-MAT-DEMO-CEDAR-3.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/delta-pricing-copy/events/2026-08-25-seeded.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/delta-pricing-copy/facts.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/delta-pricing-copy/issues.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/delta-pricing-copy/matter.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/delta-pricing-copy/participants.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/delta-pricing-copy/recommendations.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/delta-pricing-copy/request.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/delta-pricing-copy/work-items/WI-MAT-DEMO-DELTA-1.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/delta-pricing-copy/work-items/WI-MAT-DEMO-DELTA-2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/harbor-support-response/events/2026-08-25-seeded.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/harbor-support-response/facts.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/harbor-support-response/issues.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/harbor-support-response/matter.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/harbor-support-response/participants.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/harbor-support-response/recommendations.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/harbor-support-response/request.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/harbor-support-response/work-items/WI-MAT-DEMO-HARBOR-1.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/harbor-support-response/work-items/WI-MAT-DEMO-HARBOR-2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/mason-sdk-closed/decisions/DEC-DEMO-MASON.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/mason-sdk-closed/events/2026-07-12-seeded.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/mason-sdk-closed/facts.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/mason-sdk-closed/issues.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/mason-sdk-closed/matter.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/mason-sdk-closed/participants.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/mason-sdk-closed/recommendations.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/mason-sdk-closed/request.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/mason-sdk-closed/work-items/WI-MAT-DEMO-MASON-1.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-ai-underwriting/events/2026-08-27-seeded.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-ai-underwriting/facts.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-ai-underwriting/issues.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-ai-underwriting/matter.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-ai-underwriting/participants.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-ai-underwriting/recommendations.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-ai-underwriting/request.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-ai-underwriting/research/research-plan.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-ai-underwriting/source-documents/model-change-summary.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-ai-underwriting/work-items/WI-MAT-DEMO-NORTHSTAR-1.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-ai-underwriting/work-items/WI-MAT-DEMO-NORTHSTAR-2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/documents/synthetic-product-brief.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/documents/synthetic-vendor-contract.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/dossier-revisions/DOS-20260912-9a458e.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/dossier.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/events/2026-09-12-EVT-20260912-4a1d8c.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/events/2026-09-12-EVT-20260912-4d5d2b.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/events/2026-09-12-EVT-20260912-5705e7.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/events/2026-09-12-EVT-20260912-634950.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/events/2026-09-12-EVT-20260912-946607.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/events/2026-09-12-EVT-20260912-a0834f.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/facts.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/issues.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/matter.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/participants.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/recommendations.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/request.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/RES-20260912-996d5f.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/dossier-requests/DOR-20260912-f382af.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/runs/RUN-72ac3d54d92d026d.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/runs/RUN-7cc4ffbe990727e9.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/runs/RUN-959dbc35258d60cb.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-02f47bbfc9e804f9851a/9ab653d19c04ebbf670713be23b1df16/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-02f47bbfc9e804f9851a/9ab653d19c04ebbf670713be23b1df16/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-02f47bbfc9e804f9851a/9ab653d19c04ebbf670713be23b1df16/sections/s000002.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-02f47bbfc9e804f9851a/9ab653d19c04ebbf670713be23b1df16/sections/s000003.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-077d06a37a985f6e8b8f/1b29b6fd0cd34bc49668435b1fb1df1d/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-077d06a37a985f6e8b8f/1b29b6fd0cd34bc49668435b1fb1df1d/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-097a132ddca6a7b86303/d3d23edc57c2789a6b7dbb6e5236f94e/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-097a132ddca6a7b86303/d3d23edc57c2789a6b7dbb6e5236f94e/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-0c58f8e2be57f4508701/d8b650dabbd9adf75f8fd902ad21882c/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-0c58f8e2be57f4508701/d8b650dabbd9adf75f8fd902ad21882c/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-0c58f8e2be57f4508701/d8b650dabbd9adf75f8fd902ad21882c/sections/s000002.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-0c58f8e2be57f4508701/d8b650dabbd9adf75f8fd902ad21882c/sections/s000003.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-0c58f8e2be57f4508701/d8b650dabbd9adf75f8fd902ad21882c/sections/s000004.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-156fa86586ce955c24fe/237894ecaba33fad26f1af094e2fb10c/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-156fa86586ce955c24fe/237894ecaba33fad26f1af094e2fb10c/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-156fa86586ce955c24fe/237894ecaba33fad26f1af094e2fb10c/sections/s000002.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-156fa86586ce955c24fe/237894ecaba33fad26f1af094e2fb10c/sections/s000003.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-156fa86586ce955c24fe/237894ecaba33fad26f1af094e2fb10c/sections/s000004.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-180b28ed6b78841fed02/263a0fbed6b9857526a8c7a0be211522/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-180b28ed6b78841fed02/263a0fbed6b9857526a8c7a0be211522/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-24ddea836a6a66d3c852/161536affd4b36a9a9b91d4742701ce4/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-24ddea836a6a66d3c852/161536affd4b36a9a9b91d4742701ce4/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-24ddea836a6a66d3c852/161536affd4b36a9a9b91d4742701ce4/sections/s000002.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-2c3484e7cebea7e2acb5/c297e486a0b88a924652418b6bffa15b/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-2c3484e7cebea7e2acb5/c297e486a0b88a924652418b6bffa15b/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-34f059babb66bf5d8471/e776222d035d04d89ea4abddf6d037ec/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-34f059babb66bf5d8471/e776222d035d04d89ea4abddf6d037ec/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-382d8980458516a89076/404a7b333d092f38dbe80333cd2ded9e/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-382d8980458516a89076/404a7b333d092f38dbe80333cd2ded9e/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-382d8980458516a89076/404a7b333d092f38dbe80333cd2ded9e/sections/s000002.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-382d8980458516a89076/404a7b333d092f38dbe80333cd2ded9e/sections/s000003.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-382d8980458516a89076/404a7b333d092f38dbe80333cd2ded9e/sections/s000004.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-3cfecccc9ea4f45488b4/dd7d15c67c5743d0a9c2eea37344687e/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-3cfecccc9ea4f45488b4/dd7d15c67c5743d0a9c2eea37344687e/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-50cd4d04f0397471295e/b413ea957ae6d4a53a9f8913d1adc47d/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-50cd4d04f0397471295e/b413ea957ae6d4a53a9f8913d1adc47d/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-54a033061a61b40aac36/03b8b38c9e75aa8c862d220dc3f896a1/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-54a033061a61b40aac36/03b8b38c9e75aa8c862d220dc3f896a1/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-71e9ad07f4ec773f8d8f/2591c4a8e91911ffc7f674c424622c81/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-71e9ad07f4ec773f8d8f/2591c4a8e91911ffc7f674c424622c81/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-71e9ad07f4ec773f8d8f/2591c4a8e91911ffc7f674c424622c81/sections/s000002.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-76d7e9a49d9cf9ad0b75/234ba394a630da2ff0c40d6db6b2f316/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-76d7e9a49d9cf9ad0b75/234ba394a630da2ff0c40d6db6b2f316/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-76d7e9a49d9cf9ad0b75/234ba394a630da2ff0c40d6db6b2f316/sections/s000002.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-76d7e9a49d9cf9ad0b75/234ba394a630da2ff0c40d6db6b2f316/sections/s000003.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-76d7e9a49d9cf9ad0b75/234ba394a630da2ff0c40d6db6b2f316/sections/s000004.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-76d7e9a49d9cf9ad0b75/234ba394a630da2ff0c40d6db6b2f316/sections/s000005.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-76d7e9a49d9cf9ad0b75/234ba394a630da2ff0c40d6db6b2f316/sections/s000006.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-78d5dae71cf1edde93ba/039688c6245b2ce5ee67fc1a7b748846/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-78d5dae71cf1edde93ba/039688c6245b2ce5ee67fc1a7b748846/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-837ff00057d358f357aa/1fbb8c8db8af13f6e0c30381729c9420/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-837ff00057d358f357aa/1fbb8c8db8af13f6e0c30381729c9420/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-9a38685251959dcd9c68/1c046a8b5dc5938f88de83f75db33180/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-9a38685251959dcd9c68/1c046a8b5dc5938f88de83f75db33180/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-9a38685251959dcd9c68/1c046a8b5dc5938f88de83f75db33180/sections/s000002.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-b9b5e311fb9b703b30bc/0805a4759e6c15d8aa0da45a5fc2b204/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-b9b5e311fb9b703b30bc/0805a4759e6c15d8aa0da45a5fc2b204/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-b9b5e311fb9b703b30bc/0805a4759e6c15d8aa0da45a5fc2b204/sections/s000002.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-bcdeedc7de18e5f35a92/03fe002d8c92385b5a18ad81cdab3d68/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-bcdeedc7de18e5f35a92/03fe002d8c92385b5a18ad81cdab3d68/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-bcdeedc7de18e5f35a92/03fe002d8c92385b5a18ad81cdab3d68/sections/s000002.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-c3012b085b5cda1528af/6e919b5f0c195a92b80dcf06816a62b6/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-c3012b085b5cda1528af/6e919b5f0c195a92b80dcf06816a62b6/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-c3012b085b5cda1528af/6e919b5f0c195a92b80dcf06816a62b6/sections/s000002.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-d6da76e665ab390a546c/9bd3197c18b948ae42ab4c7c21995695/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-d6da76e665ab390a546c/9bd3197c18b948ae42ab4c7c21995695/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-d6da76e665ab390a546c/9bd3197c18b948ae42ab4c7c21995695/sections/s000002.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-e189b69dcff995d864fb/67dacbfe6cf5881e27b254b4a39901ec/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-e189b69dcff995d864fb/67dacbfe6cf5881e27b254b4a39901ec/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-e189b69dcff995d864fb/67dacbfe6cf5881e27b254b4a39901ec/sections/s000002.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-e9c2fe42e8c24f6f9bc8/ab3473e7b2992bc85d7467fa6ddc4a7c/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-e9c2fe42e8c24f6f9bc8/ab3473e7b2992bc85d7467fa6ddc4a7c/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-e9c2fe42e8c24f6f9bc8/ab3473e7b2992bc85d7467fa6ddc4a7c/sections/s000002.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-e9e3ccfe1072d6768dd4/6ced56e23df548d1ac54ecb9c5547d06/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-e9e3ccfe1072d6768dd4/6ced56e23df548d1ac54ecb9c5547d06/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-f07257f3b458a24a346a/37be102361a3ae2519dab11474fca56b/manifest.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-f07257f3b458a24a346a/37be102361a3ae2519dab11474fca56b/sections/s000001.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-f07257f3b458a24a346a/37be102361a3ae2519dab11474fca56b/sections/s000002.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-f07257f3b458a24a346a/37be102361a3ae2519dab11474fca56b/sections/s000003.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-f07257f3b458a24a346a/37be102361a3ae2519dab11474fca56b/sections/s000004.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-f07257f3b458a24a346a/37be102361a3ae2519dab11474fca56b/sections/s000005.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-f07257f3b458a24a346a/37be102361a3ae2519dab11474fca56b/sections/s000006.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-f07257f3b458a24a346a/37be102361a3ae2519dab11474fca56b/sections/s000007.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-f07257f3b458a24a346a/37be102361a3ae2519dab11474fca56b/sections/s000008.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-f07257f3b458a24a346a/37be102361a3ae2519dab11474fca56b/sections/s000009.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-f07257f3b458a24a346a/37be102361a3ae2519dab11474fca56b/sections/s000010.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-f07257f3b458a24a346a/37be102361a3ae2519dab11474fca56b/sections/s000011.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-f07257f3b458a24a346a/37be102361a3ae2519dab11474fca56b/sections/s000012.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-f07257f3b458a24a346a/37be102361a3ae2519dab11474fca56b/sections/s000013.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-f07257f3b458a24a346a/37be102361a3ae2519dab11474fca56b/sections/s000014.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/SRC-f07257f3b458a24a346a/37be102361a3ae2519dab11474fca56b/sections/s000015.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/index.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-1426bb0c6f287803-3dba664b88c7-6a1bd0110f89-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-1426bb0c6f287803-3dba664b88c7-6a1bd0110f89-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-15ceec6d40d89e09-8388de989ab3-bca02d5c664a-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-15ceec6d40d89e09-8388de989ab3-bca02d5c664a-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-27438c5dd2e0326c-bd4c911b44a3-0e7c1ca0a11c-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-27438c5dd2e0326c-bd4c911b44a3-0e7c1ca0a11c-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-2af73e23e8fd7a54-f70dd2e76f4d-96c49daf581d-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-2af73e23e8fd7a54-f70dd2e76f4d-96c49daf581d-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-3572886f14beddb1-059296da2ab1-a7754cc3c487-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-3572886f14beddb1-059296da2ab1-a7754cc3c487-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-41e01497cc20244b-6ebbd212dc62-aadb4d8af7bf-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-41e01497cc20244b-6ebbd212dc62-aadb4d8af7bf-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-43e75477c8ce3d36-a12d05a97eab-678f2c21869c-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-43e75477c8ce3d36-a12d05a97eab-678f2c21869c-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-50a3302a41fbc999-755f44e2831c-eefeae5c3e95-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-50a3302a41fbc999-755f44e2831c-eefeae5c3e95-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-5d1497257e2f69ef-73062ed98cd7-1cd47d43386b-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-5d1497257e2f69ef-73062ed98cd7-1cd47d43386b-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-5ff3a01eb8e27057-809abc513c30-d4729335c40b-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-5ff3a01eb8e27057-809abc513c30-d4729335c40b-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-6186c375a01b2e4b-88c80a7468a1-3769a8e6fb26-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-6186c375a01b2e4b-88c80a7468a1-3769a8e6fb26-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-676af2b9416a9daa-1f3a81ef6d48-9e85a84a85fa-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-676af2b9416a9daa-1f3a81ef6d48-9e85a84a85fa-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-77e7deb57fce285e-3f70e267465c-0614ddce383e-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-77e7deb57fce285e-3f70e267465c-0614ddce383e-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-7c1bbde12d4fc8c2-27cdd7149541-947572715d8d-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-7c1bbde12d4fc8c2-27cdd7149541-947572715d8d-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-a211a40c70bf349d-a7db5c53c082-4192b1155fc7-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-a211a40c70bf349d-a7db5c53c082-4192b1155fc7-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-aedac661bd248fe4-79ecab32cfeb-bd476a3ff9b8-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-aedac661bd248fe4-79ecab32cfeb-bd476a3ff9b8-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-ba0d627e51cadeaa-9187c02d31a0-b19be52946af-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-ba0d627e51cadeaa-9187c02d31a0-b19be52946af-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-bdb698ae60ec913f-cce4aa9c295f-2212dc615543-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-bdb698ae60ec913f-cce4aa9c295f-2212dc615543-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-c9daf52cc91b526c-a683a152aa10-bf459fb594c4-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-c9daf52cc91b526c-a683a152aa10-bf459fb594c4-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-cbf40763db48b25d-47db6761d9b2-a622fd46243f-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-cbf40763db48b25d-47db6761d9b2-a622fd46243f-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-cdd9b0a002b1f2f1-2696fdc26c76-2ea21eaeb1ab-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-cdd9b0a002b1f2f1-2696fdc26c76-2ea21eaeb1ab-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-e763db6c44481b2b-2150b58e6e34-ba33edcf0e02-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-e763db6c44481b2b-2150b58e6e34-ba33edcf0e02-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-ec229e88c933d6e9-a00f7635be41-0f4862147661-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-ec229e88c933d6e9-a00f7635be41-0f4862147661-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-f1021bf2f57698fc-6fff1bcabe7a-1d7d54eaec97-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-f1021bf2f57698fc-6fff1bcabe7a-1d7d54eaec97-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-f176af750cc02f41-cc5a76b6a58a-a4e41c3ad032-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-f176af750cc02f41-cc5a76b6a58a-a4e41c3ad032-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-fbfc87babb20d5fe-1fb121c5ea94-03fa1b3cddfd-v2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/source-library/jobs/JOB-fbfc87babb20d5fe-1fb121c5ea94-03fa1b3cddfd-v2/supplied.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-097a132ddca6a7b86303-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-097a132ddca6a7b86303-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-0c58f8e2be57f4508701-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-0c58f8e2be57f4508701-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-180b28ed6b78841fed02-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-180b28ed6b78841fed02-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-54a033061a61b40aac36-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-54a033061a61b40aac36-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-76d7e9a49d9cf9ad0b75-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-76d7e9a49d9cf9ad0b75-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-837ff00057d358f357aa-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-837ff00057d358f357aa-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-afd6dfd28c78852620a4-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-afd6dfd28c78852620a4-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-b9b5e311fb9b703b30bc-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-b9b5e311fb9b703b30bc-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-e9e3ccfe1072d6768dd4-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-e9e3ccfe1072d6768dd4-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-f07257f3b458a24a346a-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-f07257f3b458a24a346a-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-7cc4ffbe990727e9-2c3484e7cebea7e2acb5-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-7cc4ffbe990727e9-2c3484e7cebea7e2acb5-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-7cc4ffbe990727e9-3cfecccc9ea4f45488b4-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-7cc4ffbe990727e9-3cfecccc9ea4f45488b4-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-7cc4ffbe990727e9-78d5dae71cf1edde93ba-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-7cc4ffbe990727e9-78d5dae71cf1edde93ba-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-7cc4ffbe990727e9-bcdeedc7de18e5f35a92-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-7cc4ffbe990727e9-bcdeedc7de18e5f35a92-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-02f47bbfc9e804f9851a-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-02f47bbfc9e804f9851a-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-077d06a37a985f6e8b8f-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-077d06a37a985f6e8b8f-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-24ddea836a6a66d3c852-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-24ddea836a6a66d3c852-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-34f059babb66bf5d8471-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-34f059babb66bf5d8471-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-382d8980458516a89076-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-382d8980458516a89076-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-50cd4d04f0397471295e-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-50cd4d04f0397471295e-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-71e9ad07f4ec773f8d8f-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-71e9ad07f4ec773f8d8f-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-9a38685251959dcd9c68-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-9a38685251959dcd9c68-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-c3012b085b5cda1528af-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-c3012b085b5cda1528af-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-d6da76e665ab390a546c-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-d6da76e665ab390a546c-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-e189b69dcff995d864fb-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-e189b69dcff995d864fb-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-e9c2fe42e8c24f6f9bc8-fetch.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-959dbc35258d60cb-e9c2fe42e8c24f6f9bc8-fetch.md.bin
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-02f47bbfc9e804f9851a-b3748fb6daac.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-077d06a37a985f6e8b8f-6b5f5b0145c7.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-097a132ddca6a7b86303-0e758d0e402d.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-0c58f8e2be57f4508701-5861bebccf07.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-156fa86586ce955c24fe-b19be52946af.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-180b28ed6b78841fed02-001a1c55db5c.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-24ddea836a6a66d3c852-16e65e9f2284.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-2c3484e7cebea7e2acb5-2b0ae7e690ef.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-34f059babb66bf5d8471-76ce3a8fa4e7.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-382d8980458516a89076-978a06cc42e5.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-3cfecccc9ea4f45488b4-6ed13680d822.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-50cd4d04f0397471295e-89edab711c12.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-54a033061a61b40aac36-4e0c37ec9dd3.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-71e9ad07f4ec773f8d8f-45cef2234a91.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-76d7e9a49d9cf9ad0b75-d29b39ca615f.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-78d5dae71cf1edde93ba-d3f1dd1a56b6.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-837ff00057d358f357aa-0a163a6e057b.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-9a38685251959dcd9c68-bbceefb3c317.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-LOCAL-16b741dcf11135c93da0.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-LOCAL-27bdc6073b8cd9bb6c4c.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-LOCAL-2de37c5db6585a9df9c8.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-LOCAL-61e3b79d09d3f79dff33.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-LOCAL-834fc0bfeb815897c030.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-b9b5e311fb9b703b30bc-6d8916a4851d.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-bcdeedc7de18e5f35a92-cdeaedd68efa.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-c3012b085b5cda1528af-7a52a47b7420.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-d6da76e665ab390a546c-26f4c46831c2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-e189b69dcff995d864fb-d187bdc06618.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-e9c2fe42e8c24f6f9bc8-0158a8f77d86.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-e9e3ccfe1072d6768dd4-8e4651bf5129.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-f07257f3b458a24a346a-8e95f5d62222.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/work-items/WI-20260912-585661.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/orbit-bank-data/events/2026-08-25-seeded.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/orbit-bank-data/facts.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/orbit-bank-data/issues.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/orbit-bank-data/matter.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/orbit-bank-data/participants.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/orbit-bank-data/recommendations.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/orbit-bank-data/request.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/orbit-bank-data/work-items/WI-MAT-DEMO-ORBIT-1.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/project-apex-ai/decisions/DEC-DEMO-APEX-RETENTION.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/project-apex-ai/events/2026-08-25-seeded.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/project-apex-ai/facts.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/project-apex-ai/issues.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/project-apex-ai/matter.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/project-apex-ai/participants.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/project-apex-ai/recommendations.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/project-apex-ai/request.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/project-apex-ai/research/RES-MAT-DEMO-APEX.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/project-apex-ai/work-items/WI-MAT-DEMO-APEX-1.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/project-apex-ai/work-items/WI-MAT-DEMO-APEX-2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/pulse-earned-wage-access/events/2026-08-28-seeded.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/pulse-earned-wage-access/facts.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/pulse-earned-wage-access/issues.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/pulse-earned-wage-access/matter.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/pulse-earned-wage-access/participants.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/pulse-earned-wage-access/recommendations.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/pulse-earned-wage-access/request.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/pulse-earned-wage-access/source-documents/product-brief.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/pulse-earned-wage-access/work-items/WI-MAT-DEMO-PULSE-1.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/pulse-earned-wage-access/work-items/WI-MAT-DEMO-PULSE-2.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/relay-open-banking/dossier.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/relay-open-banking/drafts/decision-note.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/relay-open-banking/events/2026-08-28-seeded.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/relay-open-banking/facts.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/relay-open-banking/issues.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/relay-open-banking/matter.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/relay-open-banking/participants.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/relay-open-banking/recommendations.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/relay-open-banking/request.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/relay-open-banking/research/section-1033-and-consent-memo.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/relay-open-banking/work-items/WI-MAT-DEMO-RELAY-1.md
+?? output/dossier-research-first/live-quality-vault/03_Matters/relay-open-banking/work-items/WI-MAT-DEMO-RELAY-2.md
+?? output/dossier-research-first/live-quality-vault/04_Inbox/README.md
+?? output/dossier-research-first/live-quality-vault/05_Briefing/developments/DEV-DEMO-ALTERNATIVE-DATA.md
+?? output/dossier-research-first/live-quality-vault/05_Briefing/items/ITEM-DEMO-ALTERNATIVE-DATA-BRIEFING.md
+?? output/dossier-research-first/live-quality-vault/05_Briefing/items/ITEM-DEMO-ALTERNATIVE-DATA-DECISION.md
+?? output/dossier-research-first/live-quality-vault/05_Briefing/review-packets/PKT-DEMO-ALTERNATIVE-DATA.md
+?? output/dossier-research-first/live-quality-vault/05_Briefing/scans/SCAN-DEMO-ALTERNATIVE-DATA-BOTH.md
+?? output/dossier-research-first/pytest.xml
+?? output/dossier-research-first/run-live-quality.py
+?? output/dossier-research-first/step-01.md
+?? output/dossier-research-first/step-02.md
+?? output/dossier-research-first/step-03.md
+?? output/dossier-research-first/step-04.md
+?? output/dossier-research-first/step-05.md
+?? output/dossier-research-first/step-06.md
+?? output/dossier-research-first/step-07.md
+?? output/dossier-research-first/step-08.md
+?? output/dossier-research-first/step-09.md
+?? output/dossier-research-first/step-10.md
+?? output/dossier-research-first/step-11.md
+?? output/dossier-research-first/step-12.md
+?? output/dossier-research-first/step-13.md
+?? output/dossier-research-first/verification.md
+?? output/dossier-research-fix/pytest.xml
+?? output/dossier-research-fix/verification.md
+?? output/hypothetical-path-fix/baseline-request-sizes.json
+?? output/hypothetical-path-fix/before.json
+?? output/hypothetical-path-fix/capacity.json
+?? output/hypothetical-path-fix/live-comparison.json
+?? output/hypothetical-path-fix/live-run-comparison.json
+?? output/hypothetical-path-fix/record-integrity.json
+?? output/hypothetical-path-fix/verification.md

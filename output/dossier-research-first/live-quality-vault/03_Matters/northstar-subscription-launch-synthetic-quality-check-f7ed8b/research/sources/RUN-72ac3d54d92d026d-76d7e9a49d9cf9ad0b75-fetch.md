@@ -1,0 +1,2488 @@
+---
+record_type: research_fetch
+url: https://www.jacksonlewis.com/insights/navigating-california-consumer-privacy-act-30-essential-faqs-covered-businesses-including-clarifying-regulations-effective-1126
+final_url: https://www.jacksonlewis.com/insights/navigating-california-consumer-privacy-act-30-essential-faqs-covered-businesses-including-clarifying-regulations-effective-1126
+content_type: text/html
+charset: utf-8
+binary_path: 03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/RUN-72ac3d54d92d026d-76d7e9a49d9cf9ad0b75-fetch.md.bin
+binary_hash: 2696fdc26c76b5135ee077176beaa885c119f07ce98438b4415e13101de17dc2
+extracted_result:
+  content: 'Navigating the California Consumer Privacy Act: 30+ Essential FAQs for
+    Covered Businesses, Including Clarifying Regulations Effective 1.1.26 - Jackson
+    Lewis Skip to main content Secondary Menu Firm About Us Our Values Pro Bono &
+    Community Involvement News & Press Leadership Careers Innovation Locations Subscribe
+    Contact Client Extranet CheckIt VIA JL LeaveSuite VIA JL Jackson Lewis Collaborate
+    NetDocuments workthruIT (R) Close Search Jackson Lewis Search Main navigation
+    Our People Our Work Our Insights Latest Insights All Insights Upcoming Events
+    button - dots Special Report Navigating the California Consumer Privacy Act: 30+
+    Essential FAQs for Covered Businesses, Including Clarifying Regulations Effective
+    1.1.26 01.21.26 Joseph J. Lazzarotti & Damon W. Silver PDF Takeaways Updated California
+    Consumer Privacy Act rules clarify obligations related to ADMT, risk assessments,
+    and cybersecurity audits, requiring covered businesses to adopt new procedures
+    and safeguards. Entities may need to update policies, notices, internal processes,
+    or vendor agreements to meet the new standards. Related links California Consumer
+    Privacy Act Updated California Consumer Privacy Act regulations We Get Privacy
+    for Work — Episode 2: Defining Reasonable Safeguards CPPA Issues First “Enforcement
+    Advisory” for CCPA – Data Minimization Latest News & Announcements - California
+    Privacy Protection Agency (CPPA) Article On Jan. 1, 2026, new regulations under
+    the California Consumer Privacy Act (CCPA) and the California Privacy Rights Act
+    (CPRA) took effect, significantly expanding compliance requirements for businesses.
+    Considered one of the most expansive U.S. privacy laws to date, the CCPA took
+    effect on Jan. 1, 2020, imposing strict restrictions on how businesses collect,
+    use, disclose, and retain consumers’ personal information, while granting consumers
+    extensive new rights over their personal information. Within a year of the CCPA’s
+    enactment, California voters approved Proposition 24, which introduced the CPRA
+    . The CPRA built upon the CCPA’s extensive framework of privacy rights and obligations,
+    both expanding and modifying key aspects of the CCPA, and generally took effect
+    Jan. 1, 2023. In 2025, the California Privacy Protection Agency (CPPA) adopted
+    regulations clarifying aspects of the law and fleshing out requirements, such
+    as those relating to automated decision-making technology (ADMT), risk assessments,
+    and cybersecurity audits. These regulations generally become effective Jan. 1,
+    2026. This special report outlines key CCPA and CPRA compliance requirements to
+    help businesses assess the law’s application, determine what is required, and
+    establish effective strategies for compliance. (References to the CCPA generally
+    include the CPRA except where otherwise indicated.) 1. Which businesses are subject
+    to the CCPA? In general, the CCPA applies to a “business” that: A. Is for profit
+    and does business in the State of California; B. Collects California residents’
+    personal information (or on behalf of which such information is collected); C.
+    Alone or jointly with others determines the purposes or means of processing of
+    that data; and D. Satisfies at least one of the following: Annual gross revenue
+    in excess of $25 million ($26.625 million effective Jan. 1, 2025). The California
+    attorney general clarified in comments to questions concerning CCPA regulations
+    that this revenue threshold is not limited to revenue generated in California
+    or from California residents. The CPRA further clarified that a business determines
+    whether it satisfies the threshold on Jan. 1 of a year by looking at annual gross
+    revenues in the preceding calendar year. Alone or in combination, annually buys,
+    receives for the business’s commercial purposes, sells, or shares for commercial
+    purposes, alone or in combination, the personal information of at least 50,000
+    consumers, households, or devices. The CPRA modified this prong to read “alone
+    or in combination, annually buys, sells, or shares the personal information of
+    100,000 or more consumers or households.” Derives at least 50 percent of its annual
+    revenue from selling consumers’ personal information. Under the CPRA, the “sharing”
+    of personal information also counts toward the qualifying threshold. The law requires
+    the revenue threshold and other amounts in the CCPA to be adjusted every odd-numbered
+    year to reflect increases in the Consumer Price Index. See Civil Code § 1798.199.95(d).
+    2. Is the CCPA applicable to businesses located outside California? Although not
+    expressly addressed in the CCPA, a business need not be located in California
+    to be subject to the CCPA. A business may be “doing business” in California if
+    it: Conducts online transactions with persons who reside in California (or tracks
+    their activities through cookies and other technologies when they visit the business’s
+    websites); Has employees working in California (including remotely); or Has certain
+    other connections to the state, even if the business has no physical location
+    in the state. This is a common feature of most state-specific comprehensive consumer
+    privacy statutes. 3. Is the CCPA applicable to not-for-profit entities? Under
+    the CCPA, a “business” can be a “sole proprietorship, partnership, limited liability
+    company, corporation, association, or other legal entity that is organized or
+    operated for the profit or financial benefit of its shareholders or other owners.”
+    Although this definition generally would not include a not-for-profit or governmental
+    entity, an entity that controls or is controlled by a “business,” as defined by
+    the CCPA, may itself qualify — even if it would not independently — if it shares
+    common branding with that business. The CPRA adds that such an entity will be
+    treated as a business only if the related business shares consumer personal information
+    with it. Accordingly, entities that do not independently qualify as a “business”
+    under the CCPA may still fall under its requirements if they are controlled by,
+    or control, another business that shares both common branding and consumer personal
+    information with them. “Control” or “controlled” for this purpose means: Ownership
+    of, or the power to vote, more than 50 percent of the outstanding shares of any
+    class of voting security of a business; Control in any manner over the election
+    of a majority of the directors or of individuals exercising similar functions;
+    or The power to exercise a controlling influence over the management of a company.
+    “Common branding” means a shared name, service mark, or trademark. Under the CPRA,
+    such common branding must cause the average consumer to understand the entities
+    are commonly owned. The CPRA adds a third category that could be a “business”:
+    a joint venture or partnership composed of businesses in which each business has
+    at least a 40 percent interest. 4. How does the CCPA affect entities that provide
+    services to businesses? The CCPA regulates the “service providers” of a business,
+    i.e., persons that process personal information on behalf of the business and
+    to which the business discloses personal information for a business purpose pursuant
+    to a contract that includes certain terms. The CPRA made substantial changes to
+    the rules applicable to entities that work with covered businesses to collect
+    and process personal information or that receive personal information from a business
+    in connection with providing services to it. The CPRA identifies three types of
+    entities: Contractor. A person to whom the business makes available a consumer’s
+    personal information for a business purpose pursuant to a written contract that
+    includes certain provisions. For example, the contract must prohibit the contractor
+    from (i) selling or sharing the personal information and (ii) retaining, using,
+    or disclosing the personal information for any purpose other than for the business
+    purposes specified in the contract or outside the direct business relationship
+    between the contractor and the business. Service provider. A person who processes
+    personal information on behalf of a business and receives from or on behalf of
+    the business a consumer’s personal information for a business purpose pursuant
+    to a written contract that includes provisions similar to a contractor. Such written
+    contracts are required for any downstream party should a service provider engage
+    any other person to assist in processing personal information for a business purpose
+    on behalf of the business. Third party. Any person other than: (i) the business
+    with whom the consumer intentionally interacts and that collects personal information
+    from the consumer as part of the consumer’s current interaction with the business;
+    (ii) a service provider to the business; and (iii) a contractor. As with contractors
+    and service providers, businesses must enter into agreements with the third parties
+    to whom they sell or share personal information. Although further discussion of
+    these relationships is beyond the scope of these FAQs, businesses should better
+    understand them and the corresponding contract requirements. This includes a contractual
+    obligation, added by the CPRA, for contractors and service providers to implement
+    and maintain reasonable security procedures and practices to protect personal
+    information. 5. How does the CCPA define personal information? In general, the
+    CCPA defines “personal information” broadly to include information that can identify,
+    relate to, describe, be associated with, or be reasonably capable of being associated
+    with, or could reasonably be linked, directly or indirectly, with a particular
+    consumer or household. The CCPA’s “private right of action” provision relating
+    to data breaches, however, incorporates a narrower definition of personal information
+    (more below). The statute provides a non-exhaustive list of categories of personal
+    information, including: Identifiers including real name, alias, postal address,
+    unique personal identifier, online identifier, internet protocol or IP address,
+    email address, account name, social security number, driver’s license number,
+    passport number, or other similar identifiers; Characteristics of protected classifications
+    under California or federal law; Commercial information, including records of
+    personal property, products, or services purchased, obtained, or considered, or
+    other purchasing or consuming histories or tendencies; Biometric information;
+    Internet or other electronic network activity information, including, but not
+    limited to, browsing history, search history, and information regarding a consumer’s
+    interaction with an internet website, application, or advertisement; Geolocation
+    data; Audio, electronic, visual, thermal, olfactory, or similar information; Professional
+    or employment-related information; and Education information, defined as information
+    that is not publicly available, and personally identifiable information as defined
+    in the Family Educational Rights and Privacy Act. The definition also encompasses
+    inferences drawn from personal information used to build a consumer profile that
+    would reveal the person’s preferences, characteristics, psychological patterns,
+    predispositions, behavior, attitudes, intelligence, abilities, and aptitudes.
+    Thus, for example, businesses using artificial intelligence to assess consumer
+    preferences or identify preferred job candidates must closely examine the personal
+    information they may hold about individuals (including employees) to ensure compliance
+    with the CCPA. The CPRA amends the definition of personal information to include
+    a category of “ sensitive personal information ,” which is subject to heightened
+    protections. This category includes personal information that reveals: A consumer’s
+    social security number, driver’s license, state identification card, or passport
+    number; A consumer’s account login, financial account, debit card, or credit card
+    number in combination with any required security or access code, password, or
+    credentials allowing access to an account; A consumer’s precise geolocation; A
+    consumer’s racial or ethnic origin, citizenship or immigration status, religious
+    or philosophical beliefs, or union membership; The contents of a consumer’s mail,
+    email, and text messages, unless the business is the intended recipient of the
+    communication; A consumer’s genetic data; and A consumer’s neural data. “Sensitive
+    personal information” also means: The processing of biometric information to uniquely
+    identify a consumer; Personal information collected and analyzed concerning a
+    consumer’s health; and Personal information collected and analyzed concerning
+    a consumer’s sex life or sexual orientation. Personal information does not include
+    de-identified or aggregate consumer information. Personal information also does
+    not include publicly available information or, per the CPRA, “lawfully obtained,
+    truthful information that is a matter of public concern.” Under the CCPA, “publicly
+    available” meant information lawfully made available from federal, state, or local
+    government records. The CPRA added to the exclusion information that a business
+    has a reasonable basis to believe is lawfully made available (i) to the general
+    public by the consumer or (ii) from widely distributed media. “Publicly available”
+    also means information made available by a person to whom the consumer has disclosed
+    the information if the consumer has not restricted the information to a specific
+    audience. 6. What rights do consumers have over their personal information under
+    the CCPA? Covered businesses have an obligation to develop programs to manage
+    the sweeping suite of rights the CCPA and the CPRA grants to consumers . Those
+    rights are: Right to Know The CCPA grants consumers the right to request information
+    regarding: The categories of personal information businesses collect about them
+    ( see, e.g., the categories of personal information above); The categories of
+    sources from which that personal information was collected ( e.g., the consumer
+    directly, advertising networks, internet service providers, data analytics providers,
+    government entities, data brokers, and so on); The business or commercial purposes
+    for which personal information was collected, sold, or shared ( e.g., fraud prevention,
+    marketing, or improving customer experience); The categories of third parties
+    to whom personal information was disclosed ( e.g., advertising networks, internet
+    service providers, government entities, social networks, and so on); and The “specific
+    pieces” of personal information collected. Consumers have the right to request
+    additional information from businesses that sell or share their personal information
+    or disclose it for a business purpose. Specifically: The categories of personal
+    information that the business sold or shared about the consumer and the categories
+    of third parties to whom the personal information was sold or shared, by category
+    or categories of personal information for each category of third parties. The
+    categories of personal information that the business disclosed about the consumer
+    for a business purpose and, per the CPRA, the categories of persons to whom it
+    was disclosed for a business purpose. The CPRA defines “sharing” personal information
+    as sharing, renting, releasing, disclosing, disseminating, making available, transferring,
+    or otherwise communicating, regardless of the means, a consumer’s personal information
+    by the business to a third party for cross-context behavioral advertising, whether
+    for monetary or other valuable consideration. The 2025 regulations expand the
+    right to know to include information about ADMT. Depending on how a business uses
+    an ADMT, it may have to disclose certain information concerning the ADMT, such
+    as: The specific purpose for which the ADMT is used. Generic purposes, such as
+    “to improve our services,” are not permitted. Information about the logic of the
+    ADMT, such as the parameters that generated the output. The outcome of the decision-making
+    process for the consumer, including how the business used the ADMT output to make
+    a significant decision with respect to the consumer. The CCPA imposed a 12-month
+    lookback from the time of the request and mandates that, if consumers request
+    access to their personal information, the covered business must provide responsive
+    materials “in a readily usable format that allows consumers to transmit [the]
+    information from one entity to another without hindrance.” The CPRA opened the
+    door to a longer lookback period, requiring that a business disclose all such
+    information collected on or after Jan. 1, 2022, unless doing so would be “impossible
+    or involve a disproportionate effort.” Right to Delete With some exceptions, the
+    CCPA permits consumers to request that covered businesses, and their service providers,
+    contractors, and third parties, as applicable, delete personal information collected
+    about them. Contractors and service providers must cooperate with the business
+    in responding to the requests and, at the business’s request, must delete or enable
+    the business to delete the information required under the law. Exceptions from
+    the deletion requirement include when it is reasonably necessary to maintain the
+    personal information to (i) complete the transaction for which it was collected
+    or (ii) comply with a legal obligation, such as a record retention requirement.
+    The CPRA modified some exceptions. It also clarified that service providers and
+    contractors need not comply with deletion requests submitted by the consumer to
+    them directly when the service provider or contractor collected, used, processed,
+    or retained the personal information in its role as a service provider or contractor
+    to the business. As a result, service providers and contractors should work with
+    businesses to establish a process for responding to such requests. Right to Correct
+    Inaccurate Information The CPRA expanded consumers’ rights to include the right
+    to request that a business correct their personal information if it is inaccurate.
+    Covered businesses must disclose this new right to consumers and use “commercially
+    reasonable efforts” to correct personal information upon receiving a verifiable
+    consumer request. Right to Opt Out of the Sale or Sharing of Personal Information
+    Under the CCPA, consumers can opt out of the “sale” or “sharing” of their personal
+    information. To facilitate consumers’ exercise of this right, covered businesses
+    that sell personal information must provide a “Do Not Sell/Share My Personal Information”
+    link on the business’s internet homepage that goes to a web page where consumers
+    can opt out of having their personal information sold or shared. Right to Limit
+    Use or Disclosure of Sensitive Personal Information For businesses that use “sensitive
+    personal information” (see definition above) to infer characteristics about consumers,
+    the CPRA granted the right to direct those businesses to limit the use and disclosure
+    of that information to uses necessary to provide the products and services reasonably
+    expected by the consumer requesting them, and for certain other listed purposes.
+    To facilitate consumers’ exercise of this right, covered businesses must provide
+    a “Limit the Use of My Sensitive Personal Information” link on their internet
+    homepage that enables consumers to exercise this right. Right to Nondiscrimination
+    The CCPA prohibits covered businesses from discriminating against consumers for
+    exercising their CCPA rights. For example, a business may not charge a different
+    price, deny goods or services, or impose penalties on a consumer who exercises
+    their rights under the CCPA. However, a business may charge consumers a different
+    price or rate or provide a different level or quality of goods or services to
+    the consumer when that difference is reasonably related to the value provided
+    to the business by the consumer’s data. The CPRA expanded nondiscrimination protections
+    in the employment context by prohibiting businesses from retaliating against an
+    employee, applicant for employment, or independent contractor for exercising their
+    rights under the CCPA. The 2025 regulations establish new rights for consumers
+    and obligations for businesses on the use of ADMT. (See below.) 7. Can consumers
+    waive their rights under the CCPA? No. The CCPA expressly prohibits any contractual
+    provision or agreement that attempts to waive or limit rights provided by the
+    CCPA, including the right to remedy or enforce. Any attempt to limit a consumer’s
+    rights, whether by contract, agreement, or policy, would be unenforceable. 8. Does
+    disclosure of personal information in mergers and acquisitions qualify as a “sale”
+    under the CCPA? Consumer personal information may be a business asset transferred
+    to a third party in the course of a merger, acquisition, or bankruptcy when the
+    third party assumes control of all or part of the business. In general, this type
+    of transfer will not constitute a sale of personal information for the purposes
+    of the CCPA. But, the third party must provide the consumer with prior notice
+    of the changed practices if the third party materially alters how it uses or discloses
+    the consumer’s personal information and that use or disclosure is materially inconsistent
+    with the notice provided to the consumer at the time of collection. Parties to
+    the transaction should consider whether to address this issue in the purchase
+    agreement. The CPRA extended similar treatment to the sharing of personal information
+    in this context. 9. Is employee and applicant data covered by the CCPA? Yes. Originally,
+    the CCPA had limited application to employee and applicant personal information.
+    Employees of and applicants for employment with covered businesses were (1) entitled
+    to a notice at collection, and (2) empowered to file lawsuits, including class
+    actions, if certain elements of their personal information were involved in a
+    data breach caused by an alleged failure of the business to maintain reasonable
+    safeguards. The partial exemption for employee and applicant personal information
+    expired on Jan. 1, 2023. Since then, the CCPA has required businesses to treat
+    such personal information the same way they treat personal information related
+    to commercial consumers. Accordingly, a business’s policies and procedures for
+    processing personal information, in the business’s website privacy policy, for
+    example, also must encompass the personal information of employees and applicants.
+    10. Is the CCPA applicable to businesses that exclusively conduct business with
+    other businesses (B2B)? Unlike most other state comprehensive privacy laws, there
+    is no general “B2B” exception under the CCPA. More specifically, there is no exclusion
+    for personal information relating to a California resident acting in their commercial
+    capacity. As a result, for example, businesses that collect personal information
+    from business contacts in California ( e.g., email addresses, phone numbers, and
+    job titles) must treat that information as protected by the CCPA. 11. Is health
+    information subject to the CCPA’s requirements? The CCPA does not apply to medical
+    information governed by the California Confidentiality of Medical Information
+    Act (CMIA) or protected health information collected by a covered entity or business
+    associate governed by the privacy, security, and breach notification rules of
+    the Health Insurance Portability and Accountability Act (HIPAA) and Health Information
+    Technology for Economic and Clinical Health (HITECH) Act of 2009. While this is
+    welcome news for healthcare providers, health plans, and their business associates,
+    unlike some state privacy laws, the CCPA does not include an entity-level exemption
+    for healthcare entities. Instead, the exception is at the data level. Accordingly,
+    although these entities likely will not need to comply with the CCPA with respect
+    to their patient data, they may with respect to their employee, applicant, and
+    business contact data. Additionally, these exclusions must be reviewed carefully
+    as they may not cover all medical information a business might collect. For example,
+    medical information collected from employees and others under certain circumstances
+    may not fall under the CMIA’s definition of “medical information” or HIPAA’s “protected
+    health information.” 12. Is the CCPA applicable to website cookies, pixels, and
+    other tracking technologies? To store information about the user’s activity, cookies,
+    pixels, and other tracking technologies are routinely placed on website users’
+    computers (including smartphones, tablets, and other connected devices) by website
+    owners or their vendors. The technologies have a variety of uses ranging from
+    recognizing a user when the user returns to the website, to providing site analytics,
+    to enabling shopping cart functionality, to providing advertising targeted to
+    the user’s interests. The CCPA defines personal information to include a “unique
+    identifier,” defined as: a persistent identifier that can be used to recognize
+    a consumer, a family, or a device that is linked to a consumer or family, over
+    time and across different services, including, but not limited to, a device identifier;
+    an Internet Protocol address; cookies, beacons, pixel tags, mobile ad identifiers,
+    or similar technology ... or other forms of persistent or probabilistic identifiers
+    that can be used to identify a particular consumer or device that is linked to
+    a consumer or family. This definition was largely unchanged by the CPRA. Personal
+    information collected through website tracking technologies that identifies or
+    could reasonably be linked to a particular consumer or family may be subject to
+    the same disclosure notices and consumer rights, including the right to delete
+    or opt out of the sale of information to a third party, as other personal information
+    collected through the website. The CCPA does not require that covered businesses
+    maintain a separate “cookie policy” to address collection and use of personal
+    information through website tracking technologies or to permit consumers to exercise
+    their rights. This information can be included in the website’s privacy policy.
+    Covered businesses may not have a full understanding of what trackers are on their
+    websites or the trackers’ functionality. Third parties may place trackers on a
+    website that collect personal information as part of services necessary for the
+    site’s business purposes. In other cases, it may be unclear whether a third-party
+    collection of personal information through trackers is strictly for the website’s
+    business purpose or, instead, the sale or sharing of personal information subject
+    to the right to opt out. Trackers placed by embedded content ( e.g., video), a
+    social media widget, or a vendor that provides targeted or behavioral advertising
+    are examples of the latter. For this reason, businesses should consider assessing
+    what, if any, tracking technologies they maintain on their websites. 13. What
+    notice and policy obligations does the CCPA place on businesses? The CCPA establishes
+    several notice and policy requirements for businesses. Although most of the attention
+    has been on the content requirements, businesses also should keep in mind that
+    the CCPA and its implementing regulations establish specific formatting and structural
+    rules relating to consumer disclosures and communications. For instance, the CCPA
+    mandates that disclosures be readable and reasonably accessible. For accessibility,
+    notices provided online must follow generally recognized industry standards, such
+    as the Web Content Accessibility Guidelines, version 2.1 of June 5, 2018, from
+    the World Wide Web Consortium. (See 11 Cal. Code Regs. § 7003(b)(3) .) The regulations
+    also require “symmetry in choice” for submitting CCPA requests and obtaining consumer
+    consents: The path for a consumer to exercise a more privacy-protective option
+    shall not be longer or more difficult, or time-consuming than the path to exercise
+    a less privacy-protective option, because that would impair or interfere with
+    the consumer’s ability to make a choice. ( 11 Cal. Code Regs. § 7004 .) Accordingly,
+    businesses must think about more than the text of the policy when developing a
+    website privacy policy to comply with the CCPA. Format, accessibility, and symmetry
+    are also important. Key notice and policy content requirements: Notice at Collection
+    A business that collects a consumer’s personal information must disclose to consumers,
+    at or before the point of collection, certain information, including: (i) The
+    categories of personal information to be collected, including sensitive personal
+    information; (ii) The purposes for which the categories are collected or used;
+    and (iii) Information about how long each category of personal information, including
+    sensitive personal information, will be retained. The business also must explain
+    in the notice whether that information is sold or shared. If the business sells
+    or shares personal information, the notice must include a link to the Notice of
+    Right to Opt-Out of Selling or Sharing. A link to the business’s online privacy
+    policy also must be included. In either case, after the notice has been provided,
+    the business may not collect additional categories of personal information or
+    use personal information collected (or sensitive personal information) for additional
+    purposes that are incompatible with the purposes disclosed in the notice without
+    providing the consumer renewed notice. Privacy Policy Covered businesses must
+    disclose certain information in an online privacy policy . This information includes,
+    without limitation, an explanation of consumers’ CCPA rights and how consumers
+    may exercise those rights. These disclosures must be updated, as applicable, every
+    12 months. Covered businesses must fully understand the data they collect, process,
+    disclose, share, and sell to prepare notices and privacy policies. To outline
+    the categories of sources of personal information they collect and the third parties
+    or service providers to whom they disclose this information, for instance, they
+    must understand what personal information they have, how they obtained it, and
+    under what circumstances they disclose, share, or sell it. Similar information
+    will be needed to respond to consumers as they carry out their rights under the
+    CCPA, such as the right to know and the right to limit the use of their sensitive
+    personal information. Additionally, businesses will have to know where they maintain
+    personal information so they will be able to carry out a request for deletion,
+    assuming no exception applies. For example, businesses will have to know which
+    contractors, service providers, and third parties may process or possess their
+    personal information. Covered businesses also must make available mechanisms for
+    consumers to submit requests and have a process for verifying the requests are
+    valid — a “verifiable consumer request.” In general, covered businesses must make
+    available at least two mechanisms for submitting requests, including, at a minimum,
+    a toll-free telephone number and website-based mechanism ( e.g., a webform). A
+    business that operates exclusively online and has a direct relationship with a
+    consumer from whom it collects personal information, however, need provide only
+    an email address for submitting requests. Responding to CCPA Requests The CCPA
+    includes specific timeframes for responding to consumer requests. Businesses must
+    confirm receipt of a request within 10 business days of receipt; they generally
+    must respond to verifiable consumer requests within 45 days, and that period may
+    be extended if the consumer is notified within the first 45-day period. Businesses
+    are not required to respond to more than two requests regarding the right to know
+    for the same consumer during a 12-month period. The CCPA does not expressly require
+    that businesses maintain an internal written policy setting out a process for
+    responding to consumer requests. Doing so, however, can help to increase efficiency
+    and timeliness, and ensure compliance with procedural requirements when responding
+    to requests. The CCPA requires employees designated to handle the responses to
+    these requests to be trained and businesses to maintain documentation of the processing
+    of the request for a period of 24 months. Some of these responses come with certain
+    content requirements. Therefore, it may be helpful for businesses to establish
+    policies and workflows for addressing CCPA requirements. Further, the 2025 regulations
+    establish notice obligations for businesses on the use of ADMT. (See below.) 14. Does
+    the CCPA cover automated decision-making technologies? Yes. In 2025, the CPPA
+    finalized regulations that address businesses’ use of ADMT. Under the regulations,
+    businesses that use ADMT to make “significant decisions” about consumers generally
+    must provide clear pre-use notices, allow consumers to opt out, and respond to
+    access requests with meaningful information about the logic and likely outcomes
+    of such processes. Although the general effective date of the new regulations
+    is Jan. 1, 2026, certain aspects of the regulations provide more time for businesses
+    to comply. 15. How do the CCPA regulations define ADMT? Under the regulations,
+    ADMT is any technology that processes personal information and uses computation
+    to replace human decision-making or substantially replace human decision-making.
+    “Replace” means to make decisions without human involvement. Human involvement
+    requires a human to: (A) Know how to interpret and use the technology’s output
+    to make the decision; (B) Review and analyze the output of the technology, and
+    any other information that is relevant to make or change the decision; and (C)
+    Have the authority to make or change the decision based on their analysis in (B).
+    16. How do the CCPA regulations define a “significant decision”? A “significant
+    decision” is defined as a decision that has important consequences for a consumer’s
+    life, opportunities, or access to essential services. The regulations finalized
+    by the CPPA define these decisions as those that result in the provision or denial
+    of: Financial or lending services ( e.g., credit approval and loan eligibility)
+    Housing ( e.g., rental applications and mortgage decisions) Education enrollment
+    or opportunities ( e.g., admissions decisions) Employment or independent contracting
+    opportunities or compensation ( e.g., hiring, promotions and work assignments)
+    Healthcare services ( e.g., treatment eligibility and insurance coverage) These
+    decisions are considered significant because they directly affect a consumer’s
+    economic, health, or personal well-being. 17. What obligations do businesses using
+    ADMT to make “significant decisions” have under the regulations? If a business
+    uses ADMT to make significant decisions, it generally must do the following: Provide
+    a pre-use notice in plain language that clearly explains the business’s use of
+    ADMT (see below). Provide an opt-out right for consumers. Provide consumers with
+    the ability to request information about the business’s use of ADMT. Businesses
+    using ADMT for significant decisions before Jan. 1, 2027, must comply by Jan.
+    1, 2027. Businesses that begin using ADMT after Jan. 1, 2027, must comply immediately
+    when the use begins. Businesses must also conduct risk assessments for certain
+    high-risk data processing activities. (See questions 21-22.) 18. What must be
+    included in a Pre-Use Notice for ADMT? If a covered business uses ADMT for a significant
+    decision as described above, it must provide consumers with a Pre-Use notice that
+    satisfies certain requirements: It must inform consumers about the business’s
+    use of ADMT and rights to opt-out of the use of ADMT and to access information
+    regarding that use; It may provide the pre-use notice in its notice at collection,
+    if otherwise compliant with the pre-use notice rules; It must comply with the
+    general rules for CCPA notifications under 11 Cal. Code Regs. § 7003 (a)–(b) ;
+    It must be presented prominently and conspicuously to the consumer at or before
+    the point when the business collects the personal information to be processed
+    with ADMT; and It must be presented in the manner in which the business primarily
+    interacts with the consumer. Content requirements for the pre-use notice include:
+    A plain language explanation of the specific purpose for which the business proposes
+    to use ADMT. To simply state the ADMT is used “to make a significant decision”
+    without further information is not sufficient. A description of the right to opt-out
+    of the use of ADMT and how to submit a request to opt out. A description of the
+    right to access information regarding use of ADMT and how to submit that request.
+    A statement that the business is prohibited from retaliating against consumers
+    for exercising their CCPA rights. Information about (i) how the ADMT works to
+    make a significant decision about consumers, and (ii) how the significant decision
+    would be made if a consumer opts out. The information must include: How ADMT processes
+    personal information to make a significant decision, including the categories
+    of personal information that affect the output generated by ADMT (“output” may
+    include predictions, decisions, and recommendations such as numerical compatibility
+    scores). The type of intended output by ADMT, and how that output is used to make
+    a significant decision. A business may use a consolidated pre-use notice in some
+    cases, such as when a business uses multiple ADMT for a single purpose. The notice
+    may be included in the Notice at Collection (see above) and must be presented
+    prominently and conspicuously to the consumer at or before the point when the
+    business collects the personal information the business plans to process with
+    ADMT. 19. What does the right to access ADMT entail for consumers and businesses?
+    Like the right to know (see above), consumers have a right to access certain information
+    about a business’s use of ADMT. The process for exercising the right to access
+    is similar to the right to know. For instance, businesses must perform the same
+    verification process as with requests to delete, know, or collect. Following are
+    examples of content the business must include in its response to a consumer exercising
+    their right to access: The specific purpose for which ADMT is used with respect
+    to the consumer. Information about the logic of the ADMT, sufficient to enable
+    a consumer to understand how the ADMT processed their personal information to
+    generate an output. The outcome of the decision-making process for the consumer,
+    including how the business used the ADMT output to make a significant decision.
+    For example, what other factors played a role in making the decision if the ADMT
+    was not the sole factor in the decision. The above list is not exhaustive. Other
+    aspects of responding to requests to access ADMT are like other consumer rights.
+    For example, the methods to submit requests must be easy to use and must not use
+    dark patterns. If the business denies a request, in whole or in part, it must
+    inform the requestor and explain the basis for the denial. The business must use
+    reasonable security measures when transmitting the requested information. In addition,
+    service providers and contractors must provide assistance in responding to a verifiable
+    consumer request for access to ADMT. A business that used ADMT with respect to
+    a consumer more than four times within a 12-month period may provide an aggregate-level
+    response. 20. Do consumers have the right to opt out of ADMT? Consumers have the
+    right to opt out of a business’s use of ADMT to make significant decisions in
+    such areas as employment, credit, housing, healthcare, and education. Like the
+    right to opt out of the sale or sharing of personal information, businesses cannot
+    require consumers to verify their identity to make a request to opt out of ADMT.
+    Consumers must have at least two designated methods for submitting requests. When
+    selecting the methods to make available, businesses must take into account (i)
+    the methods by which the business interacts with consumers, (ii) how the business
+    uses ADMT, and (iii) the consumer’s ease of use. At least one method offered must
+    reflect how the business primarily interacts with the consumer. Businesses must
+    allow consumers to opt out of the use of ADMT to make a significant decision,
+    unless the business provides consumers with a method to appeal an ADMT decision
+    to a qualified human reviewer who has the authority to overturn the decision.
+    The CCPA rules’ requirements for this human appeal exception include how to communicate
+    and process the appeal. In addition, the human reviewer must know how to interpret
+    and use the ADMT output that made the significant decision being appealed and
+    must have the authority to change the decision based on their analysis. Businesses
+    that satisfy the following requirements may decide not to extend the right to
+    opt out of ADMT in connection with certain admission, acceptance, or hiring decisions:
+    The business uses ADMT solely for the business’s assessment of the consumer’s
+    ability to perform at work or in an educational program to determine whether to
+    admit, accept, or hire them; and The ADMT works as intended for the business’s
+    proposed use and does not unlawfully discriminate based upon protected characteristics.
+    Likewise, the right to opt out of ADMT is not required for certain allocation/assignment
+    of work and compensation decisions if the business: Uses the ADMT solely for the
+    business’s allocation/assignment of work or compensation; and The ADMT works for
+    the business’s purpose and does not unlawfully discriminate based upon protected
+    characteristics. If a consumer submits an opt-out request before the business
+    initiates ADMT processing, the business must not initiate processing. However,
+    if the consumer did not opt-out in response to the pre-use notice and submitted
+    a request to opt-out of ADMT after the business initiated the processing, the
+    business must cease ADMT processing of the personal information as soon as feasibly
+    possible, but no later than 15 business days from the date the business receives
+    the request. In this case, the business also must notify any service providers,
+    contractors, or other persons involved in that processing and instruct them to
+    comply with the opt-out request within the same timeframe. 21. Are businesses
+    required to conduct risk assessments under the CCPA? The 2025 regulations require
+    businesses to conduct risk assessments when their processing of personal information
+    presents “significant risks” to consumer privacy. The CPPA has identified specific
+    processing activities that trigger this requirement: Selling or sharing personal
+    information. Processing “sensitive personal information.” The CPPA noted a narrow
+    exception for limited human resources-related uses such as payroll, benefits administration,
+    and legally mandated reporting. Employers will have to examine carefully which
+    activities are excluded. Sensitive personal information under the CCPA includes
+    precise geolocation, racial or ethnic origin, religious beliefs, genetic data,
+    biometric information, health information, sexual orientation, and citizenship
+    status, among other categories. Using ADMT to make significant decisions about
+    consumers. Significant decisions include those resulting in the provision or denial
+    of financial services, lending, housing, education enrollment, employment opportunities,
+    compensation, or healthcare services. Profiling a consumer through “systematic
+    observation” when they are acting in their capacity as an educational program
+    applicant, job applicant, student, employee, or independent contractor for the
+    business. Systematic observation means methodical and regular or continuous observation,
+    such as through Wi-Fi or Bluetooth tracking, radio frequency identification, drones,
+    video or audio recording or live-streaming, technologies that enable physical
+    or biological identification or profiling; and geofencing, location trackers,
+    or license-plate recognition. Businesses engaged in workplace monitoring and performance
+    management applications use may need to consider those activities under this provision.
+    Profiling a consumer based upon their presence in a “sensitive location.” A sensitive
+    location means the following physical places: healthcare facilities including
+    hospitals, doctors’ offices, urgent care facilities, and community health clinics;
+    pharmacies; domestic violence shelters; food pantries; housing/emergency shelters;
+    educational institutions; political party offices; legal services offices; union
+    offices; and places of worship. Processing personal information to train ADMT
+    to make significant decisions or to train facial recognition, biometric, or other
+    technology to verify identity. This obligation is intended to address heightened
+    privacy risks associated with developing systems that may later be deployed at
+    scale. 22. What are the steps for conducting a risk assessment? For businesses
+    engaged in activities that trigger the risk assessment requirement (see above),
+    the 2025 regulations require, among other things: Determining which stakeholders
+    should be involved in the risk assessment process and the nature of that involvement.
+    Establishing appropriate purposes and objectives for conducting the risk assessment.
+    Satisfying timing and recordkeeping obligations. Preparing risk assessment reports
+    that meet certain content requirements. Timely submitting certifications of required
+    risk assessments to the CPPA. 23. Are businesses required to implement specific
+    security safeguards to protect consumer personal information under the CCPA? The
+    CCPA’s focus is on the privacy of personal information and extending greater control
+    to individuals over their data. Security is an element of privacy, however, and
+    although the CCPA did not expressly require implementation of specific security
+    measures, the CPRA expressly added that requirement in subsection (e) to section
+    1798.100: A business that collects a consumer’s personal information shall implement
+    reasonable security procedures and practices appropriate to the nature of the
+    personal information to protect the personal information from unauthorized or
+    illegal access, destruction, use, modification, or disclosure in accordance with
+    Section 1798.81.5. California Civil Code section 1798.81.5 requires a business
+    that: owns, licenses, or maintains personal information about a California resident
+    shall implement and maintain reasonable security procedures and practices appropriate
+    to the nature of the information, to protect the personal information from unauthorized
+    access, destruction, use, modification, or disclosure. Covered businesses with
+    questions about specific safeguards for maintaining security could refer to the
+    California attorney general’s February 2016 Data Breach Report , which discusses
+    best practices for safeguarding data. Similar frameworks are mandated in other
+    states, such as Colorado, Florida, Massachusetts, New York, and Oregon. The definition
+    of personal information subject to the safeguarding and private right of action
+    provision for data breaches (see below) is narrower than the general definition
+    of personal information under the CCPA. The CCPA incorporates the definition of
+    personal information applied under Cal. Civ. Code Section 1798.81.5(d)(1)(A):
+    (1) “Personal information” means either of the following: (A) An individual’s
+    first name or first initial and the individual’s last name in combination with
+    any one or more of the following data elements, when either the name or the data
+    elements are not encrypted or redacted: (i) Social security number. (ii) Driver’s
+    license number, California identification card number, tax identification number,
+    passport number, military identification number, or other unique identification
+    number issued on a government document commonly used to verify the identity of
+    a specific individual. (iii) Account number or credit or debit card number, in
+    combination with any required security code, access code, or password that would
+    permit access to an individual’s financial account. (iv) Medical information.
+    (v) Health insurance information. (vi) Unique biometric data generated from measurements
+    or technical analysis of human body characteristics, such as a fingerprint, retina,
+    or iris image, used to authenticate a specific individual. Unique biometric data
+    does not include a physical or digital photograph, unless used or stored for facial
+    recognition purposes. (vii) Genetic data. The CPRA added clause (B) to this list:
+    a username or email address in combination with a password or security question
+    and answer that would permit access to an online account. Although narrower than
+    the general personal information definition, these obligations apply to a broad
+    set of data. For example, “medical information” means any individually identifiable
+    information, in electronic or physical form, regarding the individual’s medical
+    history or medical treatment or diagnosis by a healthcare professional. 24. Is
+    a business required to conduct a cybersecurity audit? A business must perform
+    a cybersecurity audit if it processes personal information in a manner that presents
+    a “significant risk” (see above) and: The business meets the threshold in section
+    1798.140 (d)(1)(C) (business derives more than 50% of revenue from selling or
+    sharing personal information), in the preceding calendar year; or The business
+    meets the gross revenue threshold in section 1798.140 (d)(1)(A); and a. Processed
+    the personal information of at least 250,000 consumers or households in the preceding
+    calendar year; or b. Processed the sensitive personal information of at least
+    50,000 consumers in the preceding calendar year. 25. When is a business required
+    to perform a cybersecurity audit? For the period until April 1, 2030, a business
+    must complete its first cybersecurity audit report no later than: April 1, 2028,
+    if annual gross revenue for 2026 was more than $100 million as of Jan. 1, 2027.
+    The audit would cover the period from Jan. 1, 2027, through Jan. 1, 2028. April
+    1, 2029, if annual gross revenue for 2027 was $50 million to $100 million as of
+    Jan. 1, 2028. The audit would cover the period from Jan. 1, 2028, through Jan.
+    1, 2029. April 1, 2030, if annual gross revenue for 2028 was less than $50 million.
+    The audit would cover the period from Jan. 1, 2029, through Jan. 1, 2030. After
+    April 1, 2030, if on Jan. 1 of a year the business meets the criteria of section
+    7120 for the preceding year, the business must complete a cybersecurity audit
+    that covers the next 12 months, and the cybersecurity audit report for that period
+    must be completed by April 1 of the following year. For example, if Business A
+    meets the criteria in section 7120 for conducting an audit as of Jan. 1, 2035,
+    Business A’s audit would cover the period from Jan. 1, 2035, through Jan. 1, 2036,
+    and Business A would have to complete its cybersecurity audit report by April
+    1, 2036. 26. What are some of the basic requirements for conducting a cybersecurity
+    audit? The CPPA established robust requirements for conducting cybersecurity audits.
+    In general, these requirements include: The audit must be conducted by a qualified,
+    objective, independent professional (“auditor”) using procedures and standards
+    accepted in the profession of auditing, such as procedures and standards provided
+    or adopted by the American Institute of Certified Public Accountants, the Public
+    Company Accountability Oversight Board, the Information Systems Audit and Control
+    Association, or the International Organization for Standardization. A qualified
+    auditor must have knowledge of cybersecurity but need not be external. However,
+    the auditor must (i) exercise objective and impartial judgment on all issues in
+    the audit, (ii) be free to make decisions and assessments without business influence,
+    (iii) not engage in activities that could compromise independence ( e.g., auditors
+    may not participate in business activities being audited, including making recommendations
+    about the cyber program). The business must make available all information in
+    its possession, custody, or control requested by the auditor. This includes making
+    good-faith efforts to disclose all relevant facts and not misrepresenting relevant
+    facts. No audit findings may rely solely on assertions of management. Instead,
+    they must rely primarily on the specific evidence (including documents, testing,
+    and interviews) deemed appropriate by the auditor. An audit report must be provided
+    to members of the business’ executive management team who have direct responsibility
+    for the cybersecurity program. The business and the auditor must retain all relevant
+    records for at least five years. 27. Can a business covered by the CCPA face legal
+    action for noncompliance? The CCPA authorizes a private right of action against
+    a covered business if its failure to maintain reasonable security safeguards results
+    in a data breach affecting personal information. Significantly, if successful,
+    a plaintiff can recover statutory damages in an amount not less than $100 and
+    not greater than $750 per consumer per incident ($107 and $799, respectively,
+    as adjusted, effective Jan. 1, 2025) or actual damages, whichever is greater,
+    as well as injunctive or declaratory relief and any other relief the court deems
+    proper. This means that plaintiffs in these lawsuits may not have to show actual
+    harm or injury to recover. Thus, in addition to notification obligations a covered
+    business may have under the state’s breach notification law, class action lawsuits
+    brought pursuant to this provision of the CCPA/CPRA could be very costly. Before
+    a consumer can bring a lawsuit following a covered business’s data breach, they
+    must provide the covered business 30 days’ written notice identifying the specific
+    provisions of the CCPA/CPRA that were violated. If cure is possible and the covered
+    business actually cures the violation within the 30-day period, and provides an
+    express written statement that the violations have been cured and that no further
+    violations will occur, the consumer cannot pursue an action for individual statutory
+    damages or class-wide statutory damages. The consumer need not provide a 30-day
+    notice if the consumer is solely seeking actual pecuniary damage suffered as a
+    result of the alleged violations. Importantly, the CPRA clarifies: The implementation
+    and maintenance of reasonable security procedures and practices pursuant to Section
+    1798.81.5 following a breach does not constitute a cure with respect to that breach.
+    (Emphasis added.) Accordingly, efforts to mitigate CCPA litigation risk must be
+    proactive, i.e., businesses must leverage their pre-breach maintenance of reasonable
+    safeguards as a defense to the alleged lawsuit, rather than attempt to rely on
+    post-breach remedial action as a cure. 28. Can contractors and service providers
+    be liable under the CCPA? Service providers and contractors that receive personal
+    information by way of their contractual agreement and use it in violation of the
+    restrictions under the CCPA can be liable for those violations. However, service
+    providers and contractors are not liable for failure by a business that shares
+    personal information with them to comply with the business’s CCPA obligations.
+    For example, a service provider holding personal information provided by a business
+    is not liable for that business’s failure to comply with its obligations to delete
+    that personal information upon a consumer’s request. (See question 3.) Penalties
+    for a service provider’s or contractor’s violations of the CCPA are similar to
+    those for a business that violates the CCPA. A service provider or contractor
+    that violates the CCPA can face injunctions and penalties of not more than $2,500
+    for each negligent violation, and not more than $7,500 for each intentional violation
+    ($2,663 and $7,988, respectively, as adjusted, effective Jan. 1, 2025), in an
+    action brought by the California attorney general or CPPA. Service providers and
+    contractors may have an opportunity to cure the violation before facing liability.
+    29. Does the CCPA contain a record retention requirement? The CCPA does not establish
+    specific record retention periods for personal information. However, as made clear
+    under the CPRA , businesses must apply data minimization principles concerning
+    personal information. This means that a business, for example, cannot retain a
+    consumer’s personal information for longer than is reasonably necessary for the
+    stated purpose for which it was collected. A failure to implement and comply with
+    appropriate data retention and disposal schedule may result in a violation of
+    the CPRA’s storage limitation principle. Further, as noted above, businesses must
+    include in their notices at collection the “length of time the business intends
+    to retain each category of personal information, including sensitive personal
+    information” that it collects. If a business cannot provide consumers a specific
+    retention period, the business must provide consumers the “the criteria used to
+    determine such period ….” In addition, courts and enforcement bodies may view
+    storage limitation practices as a basic reasonable safeguard. Therefore, the failure
+    to implement or follow such practices could expose businesses to regulatory and
+    litigation risk. 30. Is the CCPA still applicable if a consumer moves out of California?
+    Depending on the facts, if a consumer moves or is transferred to a location outside
+    of California, the consumer may no longer be a resident of California, and their
+    personal information will no longer be protected by the CCPA. Businesses must
+    remember, however, that what they say about the handling of personal information
+    may continue to apply even if the law no longer applies. In addition, the consumer’s
+    personal information may be protected by applicable data privacy and security
+    laws of the new state of residence or another jurisdiction. Covered businesses
+    should consider this and when drafting notices for consumers concerning their
+    rights under the CCPA. For example, if a notice extends rights to a “consumer”
+    and not a “consumer who is a California resident,” a move or transfer that would
+    change the person’s residency may not change the rights extended in that notice.
+    (See our blog post for more information concerning data minimization under the
+    CCPA.) 31. How does the CCPA interact with federal, state, or local laws? The
+    CCPA provides that its obligations are a matter of statewide concern in California
+    and supersede and preempt all rules, regulations, codes, ordinances, and other
+    laws adopted by a city, county, municipality, or local agency regarding the collection
+    and sale of a consumer’s personal information by a business. However, the CCPA
+    also states that its obligations will not restrict a business’s ability to comply
+    with federal, state, local laws, or regulations. In addition, although the CCPA
+    is drafted to supplement federal and state law, it will not apply if it is preempted
+    by or in conflict with federal law, the U.S. Constitution, or the California Constitution.
+    To determine which laws or regulations will govern, an organization must identify
+    all the purposes for which consumer information is collected, processed, and retained.
+    For example, although the CCPA includes a carve out for protected health information
+    collected by HIPAA-covered entities and business associates, this exception is
+    not as broad as it may appear. Covered entities and business associates that are
+    otherwise subject to the CCPA must still evaluate how to handle personal information
+    that is not protected health information. 32. What are the top 10 steps businesses
+    should consider taking to achieve compliance? Covered businesses may want to consider
+    taking the following series of steps as they work toward compliance: 1.  Monitor
+    CCPA legislative and regulatory activity to ensure the business is aware of additional
+    amendments. Businesses also should review enforcement actions by the CCPA . Those
+    decisions may be instructive on issues facing the business. 2.  Identify and map
+    the consumer personal information in the business’s possession or under its control,
+    including for others acting on the business’s behalf. Successful compliance activity
+    depends in significant part on knowledge of what information is collected, who
+    it is collected from, how it is collected, why it is collected, all purposes for
+    which it is used, all locations where it is stored, how long it is maintained,
+    and any third party with whom it is shared. 3.  Review and identify existing or
+    needed organizational and technical procedures to facilitate responding to consumer
+    requests concerning their CCPA rights. Procedures should include: Confirming at
+    least two mechanisms for consumers to exercise their rights to request information.
+    Reviewing and evaluating internal mechanisms for verifying identity, responding
+    within the mandated timeframes, and documenting the request and response. Assessing
+    contractors, service providers, and third-party preparedness for responding to
+    consumer rights requests, such as the right to delete, and pushing those requests
+    downstream. If applicable, developing or identifying internal mechanisms to track
+    third parties to whom consumer personal information is sold or shared in order
+    to comply with the consumer’s request to opt out. Identifying state and federal
+    laws that address record retention and destruction and how they interact with
+    the CCPA and a business’s operational needs. Evaluating the application of similar
+    laws in 19 additional states (and counting), such as the Colorado Privacy Act
+    (CPA) and the Virginia Consumer Data Protection Act (VCDPA). 4.  Update the business’s
+    notices, policies, and related forms. This may include updated notices for employees,
+    applicants, and others. 5.  Identify contractors, service providers, and third
+    parties and evaluate whether compliant contract provisions are in place. Covered
+    businesses should be negotiating, reviewing, or renegotiating existing agreements
+    as soon as possible to ensure agreements are timely in place. 6.  Update the training
+    required for staff responsible for handling consumer rights requests (and document
+    the training) to reflect regulatory updates. It is important to maintain consistency
+    when carrying out these obligations. 7.  Review how the business uses ADMT. If
+    applicable, ensure appropriate notices are in place and be prepared to respond
+    to CCPA requests. 8.  Assess obligations to perform and report risk assessments
+    and develop and implement plans to comply with those obligations. 9.  Review or
+    create a data retention schedule that reflects the types of data the business
+    maintains. The obligation to safeguard data under the CCPA and other applicable
+    data protection laws is a significant reason to reduce the amount of personal
+    information retained after it is no longer necessary for the purpose for which
+    it was collected. 10.  Review the adequacy of the business’s safeguards to protect
+    personal information and conduct cybersecurity audits, as required. This step
+    is imperative not only to help prevent cyberattacks, such as ransomware and email
+    compromise, but also to lower the risk of claims alleging that a failure led to
+    unauthorized access, exfiltration, theft, or disclosure of personal information.
+    * * * Many of the above steps may be adapted to satisfy other data privacy and
+    protection frameworks, assist in developing a robust internal data protection
+    program, and/or position the business to comply with future regulatory obligations.
+    All 50 U.S. states have enacted data breach notification laws. Many have enacted
+    laws addressing data safeguarding, disposal, or vendor management, and many have
+    advanced legislation similar to the CCPA. (See the CPA and the VCDPA above.) Several
+    federal data protection laws are also under consideration, and countries around
+    the world continue enacting national data privacy laws to protect individuals.
+    This legislative activity, combined with the growing public awareness of data
+    privacy rights and concerns, makes development of a data protection program even
+    more critical and impactful for businesses. © 2026 Jackson Lewis P.C. This material
+    is provided for informational purposes only. It is not intended to constitute
+    legal advice nor does it create a client-lawyer relationship between Jackson Lewis
+    and any recipient. Recipients should consult with counsel before taking any actions
+    based on the information contained within this material. This material may be
+    considered attorney advertising in some jurisdictions. Prior results do not guarantee
+    a similar outcome. Focused on employment and labor law since 1958, Jackson Lewis
+    P.C.’s 1,100+ attorneys located in major cities nationwide consistently identify
+    and respond to new ways workplace law intersects business. We help employers develop
+    proactive strategies, strong policies and business-oriented solutions to cultivate
+    high-functioning workforces that are engaged and stable, and share our clients’
+    goals to emphasize belonging and respect for the contributions of every employee.
+    For more information, visit https://www.jacksonlewis.com . Related services Practice
+    California Advice and Counsel Issue Privacy, AI and Cybersecurity > California
+    Consumer Privacy Act Practice National Compliance and Multi-State Solutions Practice
+    Privacy, AI and Cybersecurity Back to top Footer Contact Us Disclaimer, Privacy
+    and Copyright Accessibility Statement Jackson Lewis P.C. © 2026. Social Menu jlewis
+    LinkedIn jlewis X jlewis Facebook'
+  retrieved_content: 'Navigating the California Consumer Privacy Act: 30+ Essential
+    FAQs for Covered Businesses, Including Clarifying Regulations Effective 1.1.26
+    - Jackson Lewis Skip to main content Secondary Menu Firm About Us Our Values Pro
+    Bono & Community Involvement News & Press Leadership Careers Innovation Locations
+    Subscribe Contact Client Extranet CheckIt VIA JL LeaveSuite VIA JL Jackson Lewis
+    Collaborate NetDocuments workthruIT (R) Close Search Jackson Lewis Search Main
+    navigation Our People Our Work Our Insights Latest Insights All Insights Upcoming
+    Events button - dots Special Report Navigating the California Consumer Privacy
+    Act: 30+ Essential FAQs for Covered Businesses, Including Clarifying Regulations
+    Effective 1.1.26 01.21.26 Joseph J. Lazzarotti & Damon W. Silver PDF Takeaways
+    Updated California Consumer Privacy Act rules clarify obligations related to ADMT,
+    risk assessments, and cybersecurity audits, requiring covered businesses to adopt
+    new procedures and safeguards. Entities may need to update policies, notices,
+    internal processes, or vendor agreements to meet the new standards. Related links
+    California Consumer Privacy Act Updated California Consumer Privacy Act regulations
+    We Get Privacy for Work — Episode 2: Defining Reasonable Safeguards CPPA Issues
+    First “Enforcement Advisory” for CCPA – Data Minimization Latest News & Announcements
+    - California Privacy Protection Agency (CPPA) Article On Jan. 1, 2026, new regulations
+    under the California Consumer Privacy Act (CCPA) and the California Privacy Rights
+    Act (CPRA) took effect, significantly expanding compliance requirements for businesses.
+    Considered one of the most expansive U.S. privacy laws to date, the CCPA took
+    effect on Jan. 1, 2020, imposing strict restrictions on how businesses collect,
+    use, disclose, and retain consumers’ personal information, while granting consumers
+    extensive new rights over their personal information. Within a year of the CCPA’s
+    enactment, California voters approved Proposition 24, which introduced the CPRA
+    . The CPRA built upon the CCPA’s extensive framework of privacy rights and obligations,
+    both expanding and modifying key aspects of the CCPA, and generally took effect
+    Jan. 1, 2023. In 2025, the California Privacy Protection Agency (CPPA) adopted
+    regulations clarifying aspects of the law and fleshing out requirements, such
+    as those relating to automated decision-making technology (ADMT), risk assessments,
+    and cybersecurity audits. These regulations generally become effective Jan. 1,
+    2026. This special report outlines key CCPA and CPRA compliance requirements to
+    help businesses assess the law’s application, determine what is required, and
+    establish effective strategies for compliance. (References to the CCPA generally
+    include the CPRA except where otherwise indicated.) 1. Which businesses are subject
+    to the CCPA? In general, the CCPA applies to a “business” that: A. Is for profit
+    and does business in the State of California; B. Collects California residents’
+    personal information (or on behalf of which such information is collected); C.
+    Alone or jointly with others determines the purposes or means of processing of
+    that data; and D. Satisfies at least one of the following: Annual gross revenue
+    in excess of $25 million ($26.625 million effective Jan. 1, 2025). The California
+    attorney general clarified in comments to questions concerning CCPA regulations
+    that this revenue threshold is not limited to revenue generated in California
+    or from California residents. The CPRA further clarified that a business determines
+    whether it satisfies the threshold on Jan. 1 of a year by looking at annual gross
+    revenues in the preceding calendar year. Alone or in combination, annually buys,
+    receives for the business’s commercial purposes, sells, or shares for commercial
+    purposes, alone or in combination, the personal information of at least 50,000
+    consumers, households, or devices. The CPRA modified this prong to read “alone
+    or in combination, annually buys, sells, or shares the personal information of
+    100,000 or more consumers or households.” Derives at least 50 percent of its annual
+    revenue from selling consumers’ personal information. Under the CPRA, the “sharing”
+    of personal information also counts toward the qualifying threshold. The law requires
+    the revenue threshold and other amounts in the CCPA to be adjusted every odd-numbered
+    year to reflect increases in the Consumer Price Index. See Civil Code § 1798.199.95(d).
+    2. Is the CCPA applicable to businesses located outside California? Although not
+    expressly addressed in the CCPA, a business need not be located in California
+    to be subject to the CCPA. A business may be “doing business” in California if
+    it: Conducts online transactions with persons who reside in California (or tracks
+    their activities through cookies and other technologies when they visit the business’s
+    websites); Has employees working in California (including remotely); or Has certain
+    other connections to the state, even if the business has no physical location
+    in the state. This is a common feature of most state-specific comprehensive consumer
+    privacy statutes. 3. Is the CCPA applicable to not-for-profit entities? Under
+    the CCPA, a “business” can be a “sole proprietorship, partnership, limited liability
+    company, corporation, association, or other legal entity that is organized or
+    operated for the profit or financial benefit of its shareholders or other owners.”
+    Although this definition generally would not include a not-for-profit or governmental
+    entity, an entity that controls or is controlled by a “business,” as defined by
+    the CCPA, may itself qualify — even if it would not independently — if it shares
+    common branding with that business. The CPRA adds that such an entity will be
+    treated as a business only if the related business shares consumer personal information
+    with it. Accordingly, entities that do not independently qualify as a “business”
+    under the CCPA may still fall under its requirements if they are controlled by,
+    or control, another business that shares both common branding and consumer personal
+    information with them. “Control” or “controlled” for this purpose means: Ownership
+    of, or the power to vote, more than 50 percent of the outstanding shares of any
+    class of voting security of a business; Control in any manner over the election
+    of a majority of the directors or of individuals exercising similar functions;
+    or The power to exercise a controlling influence over the management of a company.
+    “Common branding” means a shared name, service mark, or trademark. Under the CPRA,
+    such common branding must cause the average consumer to understand the entities
+    are commonly owned. The CPRA adds a third category that could be a “business”:
+    a joint venture or partnership composed of businesses in which each business has
+    at least a 40 percent interest. 4. How does the CCPA affect entities that provide
+    services to businesses? The CCPA regulates the “service providers” of a business,
+    i.e., persons that process personal information on behalf of the business and
+    to which the business discloses personal information for a business purpose pursuant
+    to a contract that includes certain terms. The CPRA made substantial changes to
+    the rules applicable to entities that work with covered businesses to collect
+    and process personal information or that receive personal information from a business
+    in connection with providing services to it. The CPRA identifies three types of
+    entities: Contractor. A person to whom the business makes available a consumer’s
+    personal information for a business purpose pursuant to a written contract that
+    includes certain provisions. For example, the contract must prohibit the contractor
+    from (i) selling or sharing the personal information and (ii) retaining, using,
+    or disclosing the personal information for any purpose other than for the business
+    purposes specified in the contract or outside the direct business relationship
+    between the contractor and the business. Service provider. A person who processes
+    personal information on behalf of a business and receives from or on behalf of
+    the business a consumer’s personal information for a business purpose pursuant
+    to a written contract that includes provisions similar to a contractor. Such written
+    contracts are required for any downstream party should a service provider engage
+    any other person to assist in processing personal information for a business purpose
+    on behalf of the business. Third party. Any person other than: (i) the business
+    with whom the consumer intentionally interacts and that collects personal information
+    from the consumer as part of the consumer’s current interaction with the business;
+    (ii) a service provider to the business; and (iii) a contractor. As with contractors
+    and service providers, businesses must enter into agreements with the third parties
+    to whom they sell or share personal information. Although further discussion of
+    these relationships is beyond the scope of these FAQs, businesses should better
+    understand them and the corresponding contract requirements. This includes a contractual
+    obligation, added by the CPRA, for contractors and service providers to implement
+    and maintain reasonable security procedures and practices to protect personal
+    information. 5. How does the CCPA define personal information? In general, the
+    CCPA defines “personal information” broadly to include information that can identify,
+    relate to, describe, be associated with, or be reasonably capable of being associated
+    with, or could reasonably be linked, directly or indirectly, with a particular
+    consumer or household. The CCPA’s “private right of action” provision relating
+    to data breaches, however, incorporates a narrower definition of personal information
+    (more below). The statute provides a non-exhaustive list of categories of personal
+    information, including: Identifiers including real name, alias, postal address,
+    unique personal identifier, online identifier, internet protocol or IP address,
+    email address, account name, social security number, driver’s license number,
+    passport number, or other similar identifiers; Characteristics of protected classifications
+    under California or federal law; Commercial information, including records of
+    personal property, products, or services purchased, obtained, or considered, or
+    other purchasing or consuming histories or tendencies; Biometric information;
+    Internet or other electronic network activity information, including, but not
+    limited to, browsing history, search history, and information regarding a consumer’s
+    interaction with an internet website, application, or advertisement; Geolocation
+    data; Audio, electronic, visual, thermal, olfactory, or similar information; Professional
+    or employment-related information; and Education information, defined as information
+    that is not publicly available, and personally identifiable information as defined
+    in the Family Educational Rights and Privacy Act. The definition also encompasses
+    inferences drawn from personal information used to build a consumer profile that
+    would reveal the person’s preferences, characteristics, psychological patterns,
+    predispositions, behavior, attitudes, intelligence, abilities, and aptitudes.
+    Thus, for example, businesses using artificial intelligence to assess consumer
+    preferences or identify preferred job candidates must closely examine the personal
+    information they may hold about individuals (including employees) to ensure compliance
+    with the CCPA. The CPRA amends the definition of personal information to include
+    a category of “ sensitive personal information ,” which is subject to heightened
+    protections. This category includes personal information that reveals: A consumer’s
+    social security number, driver’s license, state identification card, or passport
+    number; A consumer’s account login, financial account, debit card, or credit card
+    number in combination with any required security or access code, password, or
+    credentials allowing access to an account; A consumer’s precise geolocation; A
+    consumer’s racial or ethnic origin, citizenship or immigration status, religious
+    or philosophical beliefs, or union membership; The contents of a consumer’s mail,
+    email, and text messages, unless the business is the intended recipient of the
+    communication; A consumer’s genetic data; and A consumer’s neural data. “Sensitive
+    personal information” also means: The processing of biometric information to uniquely
+    identify a consumer; Personal information collected and analyzed concerning a
+    consumer’s health; and Personal information collected and analyzed concerning
+    a consumer’s sex life or sexual orientation. Personal information does not include
+    de-identified or aggregate consumer information. Personal information also does
+    not include publicly available information or, per the CPRA, “lawfully obtained,
+    truthful information that is a matter of public concern.” Under the CCPA, “publicly
+    available” meant information lawfully made available from federal, state, or local
+    government records. The CPRA added to the exclusion information that a business
+    has a reasonable basis to believe is lawfully made available (i) to the general
+    public by the consumer or (ii) from widely distributed media. “Publicly available”
+    also means information made available by a person to whom the consumer has disclosed
+    the information if the consumer has not restricted the information to a specific
+    audience. 6. What rights do consumers have over their personal information under
+    the CCPA? Covered businesses have an obligation to develop programs to manage
+    the sweeping suite of rights the CCPA and the CPRA grants to consumers . Those
+    rights are: Right to Know The CCPA grants consumers the right to request information
+    regarding: The categories of personal information businesses collect about them
+    ( see, e.g., the categories of personal information above); The categories of
+    sources from which that personal information was collected ( e.g., the consumer
+    directly, advertising networks, internet service providers, data analytics providers,
+    government entities, data brokers, and so on); The business or commercial purposes
+    for which personal information was collected, sold, or shared ( e.g., fraud prevention,
+    marketing, or improving customer experience); The categories of third parties
+    to whom personal information was disclosed ( e.g., advertising networks, internet
+    service providers, government entities, social networks, and so on); and The “specific
+    pieces” of personal information collected. Consumers have the right to request
+    additional information from businesses that sell or share their personal information
+    or disclose it for a business purpose. Specifically: The categories of personal
+    information that the business sold or shared about the consumer and the categories
+    of third parties to whom the personal information was sold or shared, by category
+    or categories of personal information for each category of third parties. The
+    categories of personal information that the business disclosed about the consumer
+    for a business purpose and, per the CPRA, the categories of persons to whom it
+    was disclosed for a business purpose. The CPRA defines “sharing” personal information
+    as sharing, renting, releasing, disclosing, disseminating, making available, transferring,
+    or otherwise communicating, regardless of the means, a consumer’s personal information
+    by the business to a third party for cross-context behavioral advertising, whether
+    for monetary or other valuable consideration. The 2025 regulations expand the
+    right to know to include information about ADMT. Depending on how a business uses
+    an ADMT, it may have to disclose certain information concerning the ADMT, such
+    as: The specific purpose for which the ADMT is used. Generic purposes, such as
+    “to improve our services,” are not permitted. Information about the logic of the
+    ADMT, such as the parameters that generated the output. The outcome of the decision-making
+    process for the consumer, including how the business used the ADMT output to make
+    a significant decision with respect to the consumer. The CCPA imposed a 12-month
+    lookback from the time of the request and mandates that, if consumers request
+    access to their personal information, the covered business must provide responsive
+    materials “in a readily usable format that allows consumers to transmit [the]
+    information from one entity to another without hindrance.” The CPRA opened the
+    door to a longer lookback period, requiring that a business disclose all such
+    information collected on or after Jan. 1, 2022, unless doing so would be “impossible
+    or involve a disproportionate effort.” Right to Delete With some exceptions, the
+    CCPA permits consumers to request that covered businesses, and their service providers,
+    contractors, and third parties, as applicable, delete personal information collected
+    about them. Contractors and service providers must cooperate with the business
+    in responding to the requests and, at the business’s request, must delete or enable
+    the business to delete the information required under the law. Exceptions from
+    the deletion requirement include when it is reasonably necessary to maintain the
+    personal information to (i) complete the transaction for which it was collected
+    or (ii) comply with a legal obligation, such as a record retention requirement.
+    The CPRA modified some exceptions. It also clarified that service providers and
+    contractors need not comply with deletion requests submitted by the consumer to
+    them directly when the service provider or contractor collected, used, processed,
+    or retained the personal information in its role as a service provider or contractor
+    to the business. As a result, service providers and contractors should work with
+    businesses to establish a process for responding to such requests. Right to Correct
+    Inaccurate Information The CPRA expanded consumers’ rights to include the right
+    to request that a business correct their personal information if it is inaccurate.
+    Covered businesses must disclose this new right to consumers and use “commercially
+    reasonable efforts” to correct personal information upon receiving a verifiable
+    consumer request. Right to Opt Out of the Sale or Sharing of Personal Information
+    Under the CCPA, consumers can opt out of the “sale” or “sharing” of their personal
+    information. To facilitate consumers’ exercise of this right, covered businesses
+    that sell personal information must provide a “Do Not Sell/Share My Personal Information”
+    link on the business’s internet homepage that goes to a web page where consumers
+    can opt out of having their personal information sold or shared. Right to Limit
+    Use or Disclosure of Sensitive Personal Information For businesses that use “sensitive
+    personal information” (see definition above) to infer characteristics about consumers,
+    the CPRA granted the right to direct those businesses to limit the use and disclosure
+    of that information to uses necessary to provide the products and services reasonably
+    expected by the consumer requesting them, and for certain other listed purposes.
+    To facilitate consumers’ exercise of this right, covered businesses must provide
+    a “Limit the Use of My Sensitive Personal Information” link on their internet
+    homepage that enables consumers to exercise this right. Right to Nondiscrimination
+    The CCPA prohibits covered businesses from discriminating against consumers for
+    exercising their CCPA rights. For example, a business may not charge a different
+    price, deny goods or services, or impose penalties on a consumer who exercises
+    their rights under the CCPA. However, a business may charge consumers a different
+    price or rate or provide a different level or quality of goods or services to
+    the consumer when that difference is reasonably related to the value provided
+    to the business by the consumer’s data. The CPRA expanded nondiscrimination protections
+    in the employment context by prohibiting businesses from retaliating against an
+    employee, applicant for employment, or independent contractor for exercising their
+    rights under the CCPA. The 2025 regulations establish new rights for consumers
+    and obligations for businesses on the use of ADMT. (See below.) 7. Can consumers
+    waive their rights under the CCPA? No. The CCPA expressly prohibits any contractual
+    provision or agreement that attempts to waive or limit rights provided by the
+    CCPA, including the right to remedy or enforce. Any attempt to limit a consumer’s
+    rights, whether by contract, agreement, or policy, would be unenforceable. 8. Does
+    disclosure of personal information in mergers and acquisitions qualify as a “sale”
+    under the CCPA? Consumer personal information may be a business asset transferred
+    to a third party in the course of a merger, acquisition, or bankruptcy when the
+    third party assumes control of all or part of the business. In general, this type
+    of transfer will not constitute a sale of personal information for the purposes
+    of the CCPA. But, the third party must provide the consumer with prior notice
+    of the changed practices if the third party materially alters how it uses or discloses
+    the consumer’s personal information and that use or disclosure is materially inconsistent
+    with the notice provided to the consumer at the time of collection. Parties to
+    the transaction should consider whether to address this issue in the purchase
+    agreement. The CPRA extended similar treatment to the sharing of personal information
+    in this context. 9. Is employee and applicant data covered by the CCPA? Yes. Originally,
+    the CCPA had limited application to employee and applicant personal information.
+    Employees of and applicants for employment with covered businesses were (1) entitled
+    to a notice at collection, and (2) empowered to file lawsuits, including class
+    actions, if certain elements of their personal information were involved in a
+    data breach caused by an alleged failure of the business to maintain reasonable
+    safeguards. The partial exemption for employee and applicant personal information
+    expired on Jan. 1, 2023. Since then, the CCPA has required businesses to treat
+    such personal information the same way they treat personal information related
+    to commercial consumers. Accordingly, a business’s policies and procedures for
+    processing personal information, in the business’s website privacy policy, for
+    example, also must encompass the personal information of employees and applicants.
+    10. Is the CCPA applicable to businesses that exclusively conduct business with
+    other businesses (B2B)? Unlike most other state comprehensive privacy laws, there
+    is no general “B2B” exception under the CCPA. More specifically, there is no exclusion
+    for personal information relating to a California resident acting in their commercial
+    capacity. As a result, for example, businesses that collect personal information
+    from business contacts in California ( e.g., email addresses, phone numbers, and
+    job titles) must treat that information as protected by the CCPA. 11. Is health
+    information subject to the CCPA’s requirements? The CCPA does not apply to medical
+    information governed by the California Confidentiality of Medical Information
+    Act (CMIA) or protected health information collected by a covered entity or business
+    associate governed by the privacy, security, and breach notification rules of
+    the Health Insurance Portability and Accountability Act (HIPAA) and Health Information
+    Technology for Economic and Clinical Health (HITECH) Act of 2009. While this is
+    welcome news for healthcare providers, health plans, and their business associates,
+    unlike some state privacy laws, the CCPA does not include an entity-level exemption
+    for healthcare entities. Instead, the exception is at the data level. Accordingly,
+    although these entities likely will not need to comply with the CCPA with respect
+    to their patient data, they may with respect to their employee, applicant, and
+    business contact data. Additionally, these exclusions must be reviewed carefully
+    as they may not cover all medical information a business might collect. For example,
+    medical information collected from employees and others under certain circumstances
+    may not fall under the CMIA’s definition of “medical information” or HIPAA’s “protected
+    health information.” 12. Is the CCPA applicable to website cookies, pixels, and
+    other tracking technologies? To store information about the user’s activity, cookies,
+    pixels, and other tracking technologies are routinely placed on website users’
+    computers (including smartphones, tablets, and other connected devices) by website
+    owners or their vendors. The technologies have a variety of uses ranging from
+    recognizing a user when the user returns to the website, to providing site analytics,
+    to enabling shopping cart functionality, to providing advertising targeted to
+    the user’s interests. The CCPA defines personal information to include a “unique
+    identifier,” defined as: a persistent identifier that can be used to recognize
+    a consumer, a family, or a device that is linked to a consumer or family, over
+    time and across different services, including, but not limited to, a device identifier;
+    an Internet Protocol address; cookies, beacons, pixel tags, mobile ad identifiers,
+    or similar technology ... or other forms of persistent or probabilistic identifiers
+    that can be used to identify a particular consumer or device that is linked to
+    a consumer or family. This definition was largely unchanged by the CPRA. Personal
+    information collected through website tracking technologies that identifies or
+    could reasonably be linked to a particular consumer or family may be subject to
+    the same disclosure notices and consumer rights, including the right to delete
+    or opt out of the sale of information to a third party, as other personal information
+    collected through the website. The CCPA does not require that covered businesses
+    maintain a separate “cookie policy” to address collection and use of personal
+    information through website tracking technologies or to permit consumers to exercise
+    their rights. This information can be included in the website’s privacy policy.
+    Covered businesses may not have a full understanding of what trackers are on their
+    websites or the trackers’ functionality. Third parties may place trackers on a
+    website that collect personal information as part of services necessary for the
+    site’s business purposes. In other cases, it may be unclear whether a third-party
+    collection of personal information through trackers is strictly for the website’s
+    business purpose or, instead, the sale or sharing of personal information subject
+    to the right to opt out. Trackers placed by embedded content ( e.g., video), a
+    social media widget, or a vendor that provides targeted or behavioral advertising
+    are examples of the latter. For this reason, businesses should consider assessing
+    what, if any, tracking technologies they maintain on their websites. 13. What
+    notice and policy obligations does the CCPA place on businesses? The CCPA establishes
+    several notice and policy requirements for businesses. Although most of the attention
+    has been on the content requirements, businesses also should keep in mind that
+    the CCPA and its implementing regulations establish specific formatting and structural
+    rules relating to consumer disclosures and communications. For instance, the CCPA
+    mandates that disclosures be readable and reasonably accessible. For accessibility,
+    notices provided online must follow generally recognized industry standards, such
+    as the Web Content Accessibility Guidelines, version 2.1 of June 5, 2018, from
+    the World Wide Web Consortium. (See 11 Cal. Code Regs. § 7003(b)(3) .) The regulations
+    also require “symmetry in choice” for submitting CCPA requests and obtaining consumer
+    consents: The path for a consumer to exercise a more privacy-protective option
+    shall not be longer or more difficult, or time-consuming than the path to exercise
+    a less privacy-protective option, because that would impair or interfere with
+    the consumer’s ability to make a choice. ( 11 Cal. Code Regs. § 7004 .) Accordingly,
+    businesses must think about more than the text of the policy when developing a
+    website privacy policy to comply with the CCPA. Format, accessibility, and symmetry
+    are also important. Key notice and policy content requirements: Notice at Collection
+    A business that collects a consumer’s personal information must disclose to consumers,
+    at or before the point of collection, certain information, including: (i) The
+    categories of personal information to be collected, including sensitive personal
+    information; (ii) The purposes for which the categories are collected or used;
+    and (iii) Information about how long each category of personal information, including
+    sensitive personal information, will be retained. The business also must explain
+    in the notice whether that information is sold or shared. If the business sells
+    or shares personal information, the notice must include a link to the Notice of
+    Right to Opt-Out of Selling or Sharing. A link to the business’s online privacy
+    policy also must be included. In either case, after the notice has been provided,
+    the business may not collect additional categories of personal information or
+    use personal information collected (or sensitive personal information) for additional
+    purposes that are incompatible with the purposes disclosed in the notice without
+    providing the consumer renewed notice. Privacy Policy Covered businesses must
+    disclose certain information in an online privacy policy . This information includes,
+    without limitation, an explanation of consumers’ CCPA rights and how consumers
+    may exercise those rights. These disclosures must be updated, as applicable, every
+    12 months. Covered businesses must fully understand the data they collect, process,
+    disclose, share, and sell to prepare notices and privacy policies. To outline
+    the categories of sources of personal information they collect and the third parties
+    or service providers to whom they disclose this information, for instance, they
+    must understand what personal information they have, how they obtained it, and
+    under what circumstances they disclose, share, or sell it. Similar information
+    will be needed to respond to consumers as they carry out their rights under the
+    CCPA, such as the right to know and the right to limit the use of their sensitive
+    personal information. Additionally, businesses will have to know where they maintain
+    personal information so they will be able to carry out a request for deletion,
+    assuming no exception applies. For example, businesses will have to know which
+    contractors, service providers, and third parties may process or possess their
+    personal information. Covered businesses also must make available mechanisms for
+    consumers to submit requests and have a process for verifying the requests are
+    valid — a “verifiable consumer request.” In general, covered businesses must make
+    available at least two mechanisms for submitting requests, including, at a minimum,
+    a toll-free telephone number and website-based mechanism ( e.g., a webform). A
+    business that operates exclusively online and has a direct relationship with a
+    consumer from whom it collects personal information, however, need provide only
+    an email address for submitting requests. Responding to CCPA Requests The CCPA
+    includes specific timeframes for responding to consumer requests. Businesses must
+    confirm receipt of a request within 10 business days of receipt; they generally
+    must respond to verifiable consumer requests within 45 days, and that period may
+    be extended if the consumer is notified within the first 45-day period. Businesses
+    are not required to respond to more than two requests regarding the right to know
+    for the same consumer during a 12-month period. The CCPA does not expressly require
+    that businesses maintain an internal written policy setting out a process for
+    responding to consumer requests. Doing so, however, can help to increase efficiency
+    and timeliness, and ensure compliance with procedural requirements when responding
+    to requests. The CCPA requires employees designated to handle the responses to
+    these requests to be trained and businesses to maintain documentation of the processing
+    of the request for a period of 24 months. Some of these responses come with certain
+    content requirements. Therefore, it may be helpful for businesses to establish
+    policies and workflows for addressing CCPA requirements. Further, the 2025 regulations
+    establish notice obligations for businesses on the use of ADMT. (See below.) 14. Does
+    the CCPA cover automated decision-making technologies? Yes. In 2025, the CPPA
+    finalized regulations that address businesses’ use of ADMT. Under the regulations,
+    businesses that use ADMT to make “significant decisions” about consumers generally
+    must provide clear pre-use notices, allow consumers to opt out, and respond to
+    access requests with meaningful information about the logic and likely outcomes
+    of such processes. Although the general effective date of the new regulations
+    is Jan. 1, 2026, certain aspects of the regulations provide more time for businesses
+    to comply. 15. How do the CCPA regulations define ADMT? Under the regulations,
+    ADMT is any technology that processes personal information and uses computation
+    to replace human decision-making or substantially replace human decision-making.
+    “Replace” means to make decisions without human involvement. Human involvement
+    requires a human to: (A) Know how to interpret and use the technology’s output
+    to make the decision; (B) Review and analyze the output of the technology, and
+    any other information that is relevant to make or change the decision; and (C)
+    Have the authority to make or change the decision based on their analysis in (B).
+    16. How do the CCPA regulations define a “significant decision”? A “significant
+    decision” is defined as a decision that has important consequences for a consumer’s
+    life, opportunities, or access to essential services. The regulations finalized
+    by the CPPA define these decisions as those that result in the provision or denial
+    of: Financial or lending services ( e.g., credit approval and loan eligibility)
+    Housing ( e.g., rental applications and mortgage decisions) Education enrollment
+    or opportunities ( e.g., admissions decisions) Employment or independent contracting
+    opportunities or compensation ( e.g., hiring, promotions and work assignments)
+    Healthcare services ( e.g., treatment eligibility and insurance coverage) These
+    decisions are considered significant because they directly affect a consumer’s
+    economic, health, or personal well-being. 17. What obligations do businesses using
+    ADMT to make “significant decisions” have under the regulations? If a business
+    uses ADMT to make significant decisions, it generally must do the following: Provide
+    a pre-use notice in plain language that clearly explains the business’s use of
+    ADMT (see below). Provide an opt-out right for consumers. Provide consumers with
+    the ability to request information about the business’s use of ADMT. Businesses
+    using ADMT for significant decisions before Jan. 1, 2027, must comply by Jan.
+    1, 2027. Businesses that begin using ADMT after Jan. 1, 2027, must comply immediately
+    when the use begins. Businesses must also conduct risk assessments for certain
+    high-risk data processing activities. (See questions 21-22.) 18. What must be
+    included in a Pre-Use Notice for ADMT? If a covered business uses ADMT for a significant
+    decision as described above, it must provide consumers with a Pre-Use notice that
+    satisfies certain requirements: It must inform consumers about the business’s
+    use of ADMT and rights to opt-out of the use of ADMT and to access information
+    regarding that use; It may provide the pre-use notice in its notice at collection,
+    if otherwise compliant with the pre-use notice rules; It must comply with the
+    general rules for CCPA notifications under 11 Cal. Code Regs. § 7003 (a)–(b) ;
+    It must be presented prominently and conspicuously to the consumer at or before
+    the point when the business collects the personal information to be processed
+    with ADMT; and It must be presented in the manner in which the business primarily
+    interacts with the consumer. Content requirements for the pre-use notice include:
+    A plain language explanation of the specific purpose for which the business proposes
+    to use ADMT. To simply state the ADMT is used “to make a significant decision”
+    without further information is not sufficient. A description of the right to opt-out
+    of the use of ADMT and how to submit a request to opt out. A description of the
+    right to access information regarding use of ADMT and how to submit that request.
+    A statement that the business is prohibited from retaliating against consumers
+    for exercising their CCPA rights. Information about (i) how the ADMT works to
+    make a significant decision about consumers, and (ii) how the significant decision
+    would be made if a consumer opts out. The information must include: How ADMT processes
+    personal information to make a significant decision, including the categories
+    of personal information that affect the output generated by ADMT (“output” may
+    include predictions, decisions, and recommendations such as numerical compatibility
+    scores). The type of intended output by ADMT, and how that output is used to make
+    a significant decision. A business may use a consolidated pre-use notice in some
+    cases, such as when a business uses multiple ADMT for a single purpose. The notice
+    may be included in the Notice at Collection (see above) and must be presented
+    prominently and conspicuously to the consumer at or before the point when the
+    business collects the personal information the business plans to process with
+    ADMT. 19. What does the right to access ADMT entail for consumers and businesses?
+    Like the right to know (see above), consumers have a right to access certain information
+    about a business’s use of ADMT. The process for exercising the right to access
+    is similar to the right to know. For instance, businesses must perform the same
+    verification process as with requests to delete, know, or collect. Following are
+    examples of content the business must include in its response to a consumer exercising
+    their right to access: The specific purpose for which ADMT is used with respect
+    to the consumer. Information about the logic of the ADMT, sufficient to enable
+    a consumer to understand how the ADMT processed their personal information to
+    generate an output. The outcome of the decision-making process for the consumer,
+    including how the business used the ADMT output to make a significant decision.
+    For example, what other factors played a role in making the decision if the ADMT
+    was not the sole factor in the decision. The above list is not exhaustive. Other
+    aspects of responding to requests to access ADMT are like other consumer rights.
+    For example, the methods to submit requests must be easy to use and must not use
+    dark patterns. If the business denies a request, in whole or in part, it must
+    inform the requestor and explain the basis for the denial. The business must use
+    reasonable security measures when transmitting the requested information. In addition,
+    service providers and contractors must provide assistance in responding to a verifiable
+    consumer request for access to ADMT. A business that used ADMT with respect to
+    a consumer more than four times within a 12-month period may provide an aggregate-level
+    response. 20. Do consumers have the right to opt out of ADMT? Consumers have the
+    right to opt out of a business’s use of ADMT to make significant decisions in
+    such areas as employment, credit, housing, healthcare, and education. Like the
+    right to opt out of the sale or sharing of personal information, businesses cannot
+    require consumers to verify their identity to make a request to opt out of ADMT.
+    Consumers must have at least two designated methods for submitting requests. When
+    selecting the methods to make available, businesses must take into account (i)
+    the methods by which the business interacts with consumers, (ii) how the business
+    uses ADMT, and (iii) the consumer’s ease of use. At least one method offered must
+    reflect how the business primarily interacts with the consumer. Businesses must
+    allow consumers to opt out of the use of ADMT to make a significant decision,
+    unless the business provides consumers with a method to appeal an ADMT decision
+    to a qualified human reviewer who has the authority to overturn the decision.
+    The CCPA rules’ requirements for this human appeal exception include how to communicate
+    and process the appeal. In addition, the human reviewer must know how to interpret
+    and use the ADMT output that made the significant decision being appealed and
+    must have the authority to change the decision based on their analysis. Businesses
+    that satisfy the following requirements may decide not to extend the right to
+    opt out of ADMT in connection with certain admission, acceptance, or hiring decisions:
+    The business uses ADMT solely for the business’s assessment of the consumer’s
+    ability to perform at work or in an educational program to determine whether to
+    admit, accept, or hire them; and The ADMT works as intended for the business’s
+    proposed use and does not unlawfully discriminate based upon protected characteristics.
+    Likewise, the right to opt out of ADMT is not required for certain allocation/assignment
+    of work and compensation decisions if the business: Uses the ADMT solely for the
+    business’s allocation/assignment of work or compensation; and The ADMT works for
+    the business’s purpose and does not unlawfully discriminate based upon protected
+    characteristics. If a consumer submits an opt-out request before the business
+    initiates ADMT processing, the business must not initiate processing. However,
+    if the consumer did not opt-out in response to the pre-use notice and submitted
+    a request to opt-out of ADMT after the business initiated the processing, the
+    business must cease ADMT processing of the personal information as soon as feasibly
+    possible, but no later than 15 business days from the date the business receives
+    the request. In this case, the business also must notify any service providers,
+    contractors, or other persons involved in that processing and instruct them to
+    comply with the opt-out request within the same timeframe. 21. Are businesses
+    required to conduct risk assessments under the CCPA? The 2025 regulations require
+    businesses to conduct risk assessments when their processing of personal information
+    presents “significant risks” to consumer privacy. The CPPA has identified specific
+    processing activities that trigger this requirement: Selling or sharing personal
+    information. Processing “sensitive personal information.” The CPPA noted a narrow
+    exception for limited human resources-related uses such as payroll, benefits administration,
+    and legally mandated reporting. Employers will have to examine carefully which
+    activities are excluded. Sensitive personal information under the CCPA includes
+    precise geolocation, racial or ethnic origin, religious beliefs, genetic data,
+    biometric information, health information, sexual orientation, and citizenship
+    status, among other categories. Using ADMT to make significant decisions about
+    consumers. Significant decisions include those resulting in the provision or denial
+    of financial services, lending, housing, education enrollment, employment opportunities,
+    compensation, or healthcare services. Profiling a consumer through “systematic
+    observation” when they are acting in their capacity as an educational program
+    applicant, job applicant, student, employee, or independent contractor for the
+    business. Systematic observation means methodical and regular or continuous observation,
+    such as through Wi-Fi or Bluetooth tracking, radio frequency identification, drones,
+    video or audio recording or live-streaming, technologies that enable physical
+    or biological identification or profiling; and geofencing, location trackers,
+    or license-plate recognition. Businesses engaged in workplace monitoring and performance
+    management applications use may need to consider those activities under this provision.
+    Profiling a consumer based upon their presence in a “sensitive location.” A sensitive
+    location means the following physical places: healthcare facilities including
+    hospitals, doctors’ offices, urgent care facilities, and community health clinics;
+    pharmacies; domestic violence shelters; food pantries; housing/emergency shelters;
+    educational institutions; political party offices; legal services offices; union
+    offices; and places of worship. Processing personal information to train ADMT
+    to make significant decisions or to train facial recognition, biometric, or other
+    technology to verify identity. This obligation is intended to address heightened
+    privacy risks associated with developing systems that may later be deployed at
+    scale. 22. What are the steps for conducting a risk assessment? For businesses
+    engaged in activities that trigger the risk assessment requirement (see above),
+    the 2025 regulations require, among other things: Determining which stakeholders
+    should be involved in the risk assessment process and the nature of that involvement.
+    Establishing appropriate purposes and objectives for conducting the risk assessment.
+    Satisfying timing and recordkeeping obligations. Preparing risk assessment reports
+    that meet certain content requirements. Timely submitting certifications of required
+    risk assessments to the CPPA. 23. Are businesses required to implement specific
+    security safeguards to protect consumer personal information under the CCPA? The
+    CCPA’s focus is on the privacy of personal information and extending greater control
+    to individuals over their data. Security is an element of privacy, however, and
+    although the CCPA did not expressly require implementation of specific security
+    measures, the CPRA expressly added that requirement in subsection (e) to section
+    1798.100: A business that collects a consumer’s personal information shall implement
+    reasonable security procedures and practices appropriate to the nature of the
+    personal information to protect the personal information from unauthorized or
+    illegal access, destruction, use, modification, or disclosure in accordance with
+    Section 1798.81.5. California Civil Code section 1798.81.5 requires a business
+    that: owns, licenses, or maintains personal information about a California resident
+    shall implement and maintain reasonable security procedures and practices appropriate
+    to the nature of the information, to protect the personal information from unauthorized
+    access, destruction, use, modification, or disclosure. Covered businesses with
+    questions about specific safeguards for maintaining security could refer to the
+    California attorney general’s February 2016 Data Breach Report , which discusses
+    best practices for safeguarding data. Similar frameworks are mandated in other
+    states, such as Colorado, Florida, Massachusetts, New York, and Oregon. The definition
+    of personal information subject to the safeguarding and private right of action
+    provision for data breaches (see below) is narrower than the general definition
+    of personal information under the CCPA. The CCPA incorporates the definition of
+    personal information applied under Cal. Civ. Code Section 1798.81.5(d)(1)(A):
+    (1) “Personal information” means either of the following: (A) An individual’s
+    first name or first initial and the individual’s last name in combination with
+    any one or more of the following data elements, when either the name or the data
+    elements are not encrypted or redacted: (i) Social security number. (ii) Driver’s
+    license number, California identification card number, tax identification number,
+    passport number, military identification number, or other unique identification
+    number issued on a government document commonly used to verify the identity of
+    a specific individual. (iii) Account number or credit or debit card number, in
+    combination with any required security code, access code, or password that would
+    permit access to an individual’s financial account. (iv) Medical information.
+    (v) Health insurance information. (vi) Unique biometric data generated from measurements
+    or technical analysis of human body characteristics, such as a fingerprint, retina,
+    or iris image, used to authenticate a specific individual. Unique biometric data
+    does not include a physical or digital photograph, unless used or stored for facial
+    recognition purposes. (vii) Genetic data. The CPRA added clause (B) to this list:
+    a username or email address in combination with a password or security question
+    and answer that would permit access to an online account. Although narrower than
+    the general personal information definition, these obligations apply to a broad
+    set of data. For example, “medical information” means any individually identifiable
+    information, in electronic or physical form, regarding the individual’s medical
+    history or medical treatment or diagnosis by a healthcare professional. 24. Is
+    a business required to conduct a cybersecurity audit? A business must perform
+    a cybersecurity audit if it processes personal information in a manner that presents
+    a “significant risk” (see above) and: The business meets the threshold in section
+    1798.140 (d)(1)(C) (business derives more than 50% of revenue from selling or
+    sharing personal information), in the preceding calendar year; or The business
+    meets the gross revenue threshold in section 1798.140 (d)(1)(A); and a. Processed
+    the personal information of at least 250,000 consumers or households in the preceding
+    calendar year; or b. Processed the sensitive personal information of at least
+    50,000 consumers in the preceding calendar year. 25. When is a business required
+    to perform a cybersecurity audit? For the period until April 1, 2030, a business
+    must complete its first cybersecurity audit report no later than: April 1, 2028,
+    if annual gross revenue for 2026 was more than $100 million as of Jan. 1, 2027.
+    The audit would cover the period from Jan. 1, 2027, through Jan. 1, 2028. April
+    1, 2029, if annual gross revenue for 2027 was $50 million to $100 million as of
+    Jan. 1, 2028. The audit would cover the period from Jan. 1, 2028, through Jan.
+    1, 2029. April 1, 2030, if annual gross revenue for 2028 was less than $50 million.
+    The audit would cover the period from Jan. 1, 2029, through Jan. 1, 2030. After
+    April 1, 2030, if on Jan. 1 of a year the business meets the criteria of section
+    7120 for the preceding year, the business must complete a cybersecurity audit
+    that covers the next 12 months, and the cybersecurity audit report for that period
+    must be completed by April 1 of the following year. For example, if Business A
+    meets the criteria in section 7120 for conducting an audit as of Jan. 1, 2035,
+    Business A’s audit would cover the period from Jan. 1, 2035, through Jan. 1, 2036,
+    and Business A would have to complete its cybersecurity audit report by April
+    1, 2036. 26. What are some of the basic requirements for conducting a cybersecurity
+    audit? The CPPA established robust requirements for conducting cybersecurity audits.
+    In general, these requirements include: The audit must be conducted by a qualified,
+    objective, independent professional (“auditor”) using procedures and standards
+    accepted in the profession of auditing, such as procedures and standards provided
+    or adopted by the American Institute of Certified Public Accountants, the Public
+    Company Accountability Oversight Board, the Information Systems Audit and Control
+    Association, or the International Organization for Standardization. A qualified
+    auditor must have knowledge of cybersecurity but need not be external. However,
+    the auditor must (i) exercise objective and impartial judgment on all issues in
+    the audit, (ii) be free to make decisions and assessments without business influence,
+    (iii) not engage in activities that could compromise independence ( e.g., auditors
+    may not participate in business activities being audited, including making recommendations
+    about the cyber program). The business must make available all information in
+    its possession, custody, or control requested by the auditor. This includes making
+    good-faith efforts to disclose all relevant facts and not misrepresenting relevant
+    facts. No audit findings may rely solely on assertions of management. Instead,
+    they must rely primarily on the specific evidence (including documents, testing,
+    and interviews) deemed appropriate by the auditor. An audit report must be provided
+    to members of the business’ executive management team who have direct responsibility
+    for the cybersecurity program. The business and the auditor must retain all relevant
+    records for at least five years. 27. Can a business covered by the CCPA face legal
+    action for noncompliance? The CCPA authorizes a private right of action against
+    a covered business if its failure to maintain reasonable security safeguards results
+    in a data breach affecting personal information. Significantly, if successful,
+    a plaintiff can recover statutory damages in an amount not less than $100 and
+    not greater than $750 per consumer per incident ($107 and $799, respectively,
+    as adjusted, effective Jan. 1, 2025) or actual damages, whichever is greater,
+    as well as injunctive or declaratory relief and any other relief the court deems
+    proper. This means that plaintiffs in these lawsuits may not have to show actual
+    harm or injury to recover. Thus, in addition to notification obligations a covered
+    business may have under the state’s breach notification law, class action lawsuits
+    brought pursuant to this provision of the CCPA/CPRA could be very costly. Before
+    a consumer can bring a lawsuit following a covered business’s data breach, they
+    must provide the covered business 30 days’ written notice identifying the specific
+    provisions of the CCPA/CPRA that were violated. If cure is possible and the covered
+    business actually cures the violation within the 30-day period, and provides an
+    express written statement that the violations have been cured and that no further
+    violations will occur, the consumer cannot pursue an action for individual statutory
+    damages or class-wide statutory damages. The consumer need not provide a 30-day
+    notice if the consumer is solely seeking actual pecuniary damage suffered as a
+    result of the alleged violations. Importantly, the CPRA clarifies: The implementation
+    and maintenance of reasonable security procedures and practices pursuant to Section
+    1798.81.5 following a breach does not constitute a cure with respect to that breach.
+    (Emphasis added.) Accordingly, efforts to mitigate CCPA litigation risk must be
+    proactive, i.e., businesses must leverage their pre-breach maintenance of reasonable
+    safeguards as a defense to the alleged lawsuit, rather than attempt to rely on
+    post-breach remedial action as a cure. 28. Can contractors and service providers
+    be liable under the CCPA? Service providers and contractors that receive personal
+    information by way of their contractual agreement and use it in violation of the
+    restrictions under the CCPA can be liable for those violations. However, service
+    providers and contractors are not liable for failure by a business that shares
+    personal information with them to comply with the business’s CCPA obligations.
+    For example, a service provider holding personal information provided by a business
+    is not liable for that business’s failure to comply with its obligations to delete
+    that personal information upon a consumer’s request. (See question 3.) Penalties
+    for a service provider’s or contractor’s violations of the CCPA are similar to
+    those for a business that violates the CCPA. A service provider or contractor
+    that violates the CCPA can face injunctions and penalties of not more than $2,500
+    for each negligent violation, and not more than $7,500 for each intentional violation
+    ($2,663 and $7,988, respectively, as adjusted, effective Jan. 1, 2025), in an
+    action brought by the California attorney general or CPPA. Service providers and
+    contractors may have an opportunity to cure the violation before facing liability.
+    29. Does the CCPA contain a record retention requirement? The CCPA does not establish
+    specific record retention periods for personal information. However, as made clear
+    under the CPRA , businesses must apply data minimization principles concerning
+    personal information. This means that a business, for example, cannot retain a
+    consumer’s personal information for longer than is reasonably necessary for the
+    stated purpose for which it was collected. A failure to implement and comply with
+    appropriate data retention and disposal schedule may result in a violation of
+    the CPRA’s storage limitation principle. Further, as noted above, businesses must
+    include in their notices at collection the “length of time the business intends
+    to retain each category of personal information, including sensitive personal
+    information” that it collects. If a business cannot provide consumers a specific
+    retention period, the business must provide consumers the “the criteria used to
+    determine such period ….” In addition, courts and enforcement bodies may view
+    storage limitation practices as a basic reasonable safeguard. Therefore, the failure
+    to implement or follow such practices could expose businesses to regulatory and
+    litigation risk. 30. Is the CCPA still applicable if a consumer moves out of California?
+    Depending on the facts, if a consumer moves or is transferred to a location outside
+    of California, the consumer may no longer be a resident of California, and their
+    personal information will no longer be protected by the CCPA. Businesses must
+    remember, however, that what they say about the handling of personal information
+    may continue to apply even if the law no longer applies. In addition, the consumer’s
+    personal information may be protected by applicable data privacy and security
+    laws of the new state of residence or another jurisdiction. Covered businesses
+    should consider this and when drafting notices for consumers concerning their
+    rights under the CCPA. For example, if a notice extends rights to a “consumer”
+    and not a “consumer who is a California resident,” a move or transfer that would
+    change the person’s residency may not change the rights extended in that notice.
+    (See our blog post for more information concerning data minimization under the
+    CCPA.) 31. How does the CCPA interact with federal, state, or local laws? The
+    CCPA provides that its obligations are a matter of statewide concern in California
+    and supersede and preempt all rules, regulations, codes, ordinances, and other
+    laws adopted by a city, county, municipality, or local agency regarding the collection
+    and sale of a consumer’s personal information by a business. However, the CCPA
+    also states that its obligations will not restrict a business’s ability to comply
+    with federal, state, local laws, or regulations. In addition, although the CCPA
+    is drafted to supplement federal and state law, it will not apply if it is preempted
+    by or in conflict with federal law, the U.S. Constitution, or the California Constitution.
+    To determine which laws or regulations will govern, an organization must identify
+    all the purposes for which consumer information is collected, processed, and retained.
+    For example, although the CCPA includes a carve out for protected health information
+    collected by HIPAA-covered entities and business associates, this exception is
+    not as broad as it may appear. Covered entities and business associates that are
+    otherwise subject to the CCPA must still evaluate how to handle personal information
+    that is not protected health information. 32. What are the top 10 steps businesses
+    should consider taking to achieve compliance? Covered businesses may want to consider
+    taking the following series of steps as they work toward compliance: 1.  Monitor
+    CCPA legislative and regulatory activity to ensure the business is aware of additional
+    amendments. Businesses also should review enforcement actions by the CCPA . Those
+    decisions may be instructive on issues facing the business. 2.  Identify and map
+    the consumer personal information in the business’s possession or under its control,
+    including for others acting on the business’s behalf. Successful compliance activity
+    depends in significant part on knowledge of what information is collected, who
+    it is collected from, how it is collected, why it is collected, all purposes for
+    which it is used, all locations where it is stored, how long it is maintained,
+    and any third party with whom it is shared. 3.  Review and identify existing or
+    needed organizational and technical procedures to facilitate responding to consumer
+    requests concerning their CCPA rights. Procedures should include: Confirming at
+    least two mechanisms for consumers to exercise their rights to request information.
+    Reviewing and evaluating internal mechanisms for verifying identity, responding
+    within the mandated timeframes, and documenting the request and response. Assessing
+    contractors, service providers, and third-party preparedness for responding to
+    consumer rights requests, such as the right to delete, and pushing those requests
+    downstream. If applicable, developing or identifying internal mechanisms to track
+    third parties to whom consumer personal information is sold or shared in order
+    to comply with the consumer’s request to opt out. Identifying state and federal
+    laws that address record retention and destruction and how they interact with
+    the CCPA and a business’s operational needs. Evaluating the application of similar
+    laws in 19 additional states (and counting), such as the Colorado Privacy Act
+    (CPA) and the Virginia Consumer Data Protection Act (VCDPA). 4.  Update the business’s
+    notices, policies, and related forms. This may include updated notices for employees,
+    applicants, and others. 5.  Identify contractors, service providers, and third
+    parties and evaluate whether compliant contract provisions are in place. Covered
+    businesses should be negotiating, reviewing, or renegotiating existing agreements
+    as soon as possible to ensure agreements are timely in place. 6.  Update the training
+    required for staff responsible for handling consumer rights requests (and document
+    the training) to reflect regulatory updates. It is important to maintain consistency
+    when carrying out these obligations. 7.  Review how the business uses ADMT. If
+    applicable, ensure appropriate notices are in place and be prepared to respond
+    to CCPA requests. 8.  Assess obligations to perform and report risk assessments
+    and develop and implement plans to comply with those obligations. 9.  Review or
+    create a data retention schedule that reflects the types of data the business
+    maintains. The obligation to safeguard data under the CCPA and other applicable
+    data protection laws is a significant reason to reduce the amount of personal
+    information retained after it is no longer necessary for the purpose for which
+    it was collected. 10.  Review the adequacy of the business’s safeguards to protect
+    personal information and conduct cybersecurity audits, as required. This step
+    is imperative not only to help prevent cyberattacks, such as ransomware and email
+    compromise, but also to lower the risk of claims alleging that a failure led to
+    unauthorized access, exfiltration, theft, or disclosure of personal information.
+    * * * Many of the above steps may be adapted to satisfy other data privacy and
+    protection frameworks, assist in developing a robust internal data protection
+    program, and/or position the business to comply with future regulatory obligations.
+    All 50 U.S. states have enacted data breach notification laws. Many have enacted
+    laws addressing data safeguarding, disposal, or vendor management, and many have
+    advanced legislation similar to the CCPA. (See the CPA and the VCDPA above.) Several
+    federal data protection laws are also under consideration, and countries around
+    the world continue enacting national data privacy laws to protect individuals.
+    This legislative activity, combined with the growing public awareness of data
+    privacy rights and concerns, makes development of a data protection program even
+    more critical and impactful for businesses. © 2026 Jackson Lewis P.C. This material
+    is provided for informational purposes only. It is not intended to constitute
+    legal advice nor does it create a client-lawyer relationship between Jackson Lewis
+    and any recipient. Recipients should consult with counsel before taking any actions
+    based on the information contained within this material. This material may be
+    considered attorney advertising in some jurisdictions. Prior results do not guarantee
+    a similar outcome. Focused on employment and labor law since 1958, Jackson Lewis
+    P.C.’s 1,100+ attorneys located in major cities nationwide consistently identify
+    and respond to new ways workplace law intersects business. We help employers develop
+    proactive strategies, strong policies and business-oriented solutions to cultivate
+    high-functioning workforces that are engaged and stable, and share our clients’
+    goals to emphasize belonging and respect for the contributions of every employee.
+    For more information, visit https://www.jacksonlewis.com . Related services Practice
+    California Advice and Counsel Issue Privacy, AI and Cybersecurity > California
+    Consumer Privacy Act Practice National Compliance and Multi-State Solutions Practice
+    Privacy, AI and Cybersecurity Back to top Footer Contact Us Disclaimer, Privacy
+    and Copyright Accessibility Statement Jackson Lewis P.C. © 2026. Social Menu jlewis
+    LinkedIn jlewis X jlewis Facebook'
+  available_excerpt: 'Navigating the California Consumer Privacy Act: 30+ Essential
+    FAQs for Covered Businesses, Including Clarifying Regulations Effective 1.1.26
+    - Jackson Lewis Skip to main content Secondary Menu Firm About Us Our Values Pro
+    Bono & Community Involvement News & Press Leadership Careers Innovation Locations
+    Subscribe Contact Client Extranet CheckIt VIA JL LeaveSuite VIA JL Jackson Lewis
+    Collaborate NetDocuments workthruIT (R) Close Search Jackson Lewis Search Main
+    navigation Our People Our Work Our Insights Latest Insights All Insights Upcoming
+    Events button - dots Special Report Navigating the California Consumer Privacy
+    Act: 30+ Essential FAQs for Covered Businesses, Including Clarifying Regulations
+    Effective 1.1.26 01.21.26 Joseph J. Lazzarotti & Damon W. Silver PDF Takeaways
+    Updated California Consumer Privacy Act rules clarify obligations related to ADMT,
+    risk assessments, and cybersecurity audits, requiring covered businesses to adopt
+    new procedures and safeguards. Entities may need to update policies, notices,
+    internal processes, or vendor agreements to meet the new standards. Related links
+    California Consumer Privacy Act Updated California Consumer Privacy Act regulations
+    We Get Privacy for Work — Episode 2: Defining Reasonable Safeguards CPPA Issues
+    First “Enforcement Advisory” for CCPA – Data Minimization Latest News & Announcements
+    - California Privacy Protection Agency (CPPA) Article On Jan. 1, 2026, new regulations
+    under the California Consumer Privacy Act (CCPA) and the California Privacy Rights
+    Act (CPRA) took effect, significantly expanding compliance requirements for businesses.
+    Considered one of the most expansive U.S. privacy laws to date, the CCPA took
+    effect on Jan. 1, 2020, imposing strict restrictions on how businesses collect,
+    use, disclose, and retain consumers’ personal information, while granting consumers
+    extensive new rights over their personal information. Within a year of the CCPA’s
+    enactment, California voters approved Proposition 24, which introduced the CPRA
+    . The CPRA built upon the CCPA’s extensive framework of privacy rights and obligations,
+    both expanding and modifying key aspects of the CCPA, and generally took effect
+    Jan. 1, 2023. In 2025, the California Privacy Protection Agency (CPPA) adopted
+    regulations clarifying aspects of the law and fleshing out requirements, such
+    as those relating to automated decision-making technology (ADMT), risk assessments,
+    and cybersecurity audits. These regulations generally become effective Jan. 1,
+    2026. This special report outlines key CCPA and CPRA compliance requirements to
+    help businesses assess the law’s application, determine what is required, and
+    establish effective strategies for compliance. (References to the CCPA generally
+    include the CPRA except where otherwise indicated.) 1. Which businesses are subject
+    to the CCPA? In general, the CCPA applies to a “business” that: A. Is for profit
+    and does business in the State of California; B. Collects California residents’
+    personal information (or on behalf of which such information is collected); C.
+    Alone or jointly with others determines the purposes or means of processing of
+    that data; and D. Satisfies at least one of the following: Annual gross revenue
+    in excess of $25 million ($26.625 million effective Jan. 1, 2025). The California
+    attorney general clarified in comments to questions concerning CCPA regulations
+    that this revenue threshold is not limited to revenue generated in California
+    or from California residents. The CPRA further clarified that a business determines
+    whether it satisfies the threshold on Jan. 1 of a year by looking at annual gross
+    revenues in the preceding calendar year. Alone or in combination, annually buys,
+    receives for the business’s commercial purposes, sells, or shares for commercial
+    purposes, alone or in combination, the personal information of at least 50,000
+    consumers, households, or devices. The CPRA modified this prong to read “alone
+    or in combination, annually buys, sells, or shares the personal information of
+    100,000 or more consumers or households.” Derives at least 50 percent of its annual
+    revenue from selling consumers’ personal information. Under the CPRA, the “sharing”
+    of personal information also counts toward the qualifying threshold. The law requires
+    the revenue threshold and other amounts in the CCPA to be adjusted every odd-numbered
+    year to reflect increases in the Consumer Price Index. See Civil Code § 1798.199.95(d).
+    2. Is the CCPA applicable to businesses located outside California? Although not
+    expressly addressed in the CCPA, a business need not be located in California
+    to be subject to the CCPA. A business may be “doing business” in California if
+    it: Conducts online transactions with persons who reside in California (or tracks
+    their activities through cookies and other technologies when they visit the business’s
+    websites); Has employees working in California (including remotely); or Has certain
+    other connections to the state, even if the business has no physical location
+    in the state. This is a common feature of most state-specific comprehensive consumer
+    privacy statutes. 3. Is the CCPA applicable to not-for-profit entities? Under
+    the CCPA, a “business” can be a “sole proprietorship, partnership, limited liability
+    company, corporation, association, or other legal entity that is organized or
+    operated for the profit or financial benefit of its shareholders or other owners.”
+    Although this definition generally would not include a not-for-profit or governmental
+    entity, an entity that controls or is controlled by a “business,” as defined by
+    the CCPA, may itself qualify — even if it would not independently — if it shares
+    common branding with that business. The CPRA adds that such an entity will be
+    treated as a business only if the related business shares consumer personal information
+    with it. Accordingly, entities that do not independently qualify as a “business”
+    under the CCPA may still fall under its requirements if they are controlled by,
+    or control, another business that shares both common branding and consumer personal
+    information with them. “Control” or “controlled” for this purpose means: Ownership
+    of, or the power to vote, more than 50 percent of the outstanding shares of any
+    class of voting security of a business; Control in any manner over the election
+    of a majority of the directors or of individuals exercising similar functions;
+    or The power to exercise a controlling influence over the management of a company.
+    “Common branding” means a shared name, service mark, or trademark. Under the CPRA,
+    such common branding must cause the average consumer to understand the entities
+    are commonly owned. The CPRA adds a third category that could be a “business”:
+    a joint venture or partnership composed of businesses in which each business has
+    at least a 40 percent interest. 4. How does the CCPA affect entities that provide
+    services to businesses? The CCPA regulates the “service providers” of a business,
+    i.e., persons that process personal information on behalf of the business and
+    to which the business discloses personal information for a business purpose pursuant
+    to a contract that includes certain terms. The CPRA made substantial changes to
+    the rules applicable to entities that work with covered businesses to collect
+    and process personal information or that receive personal information from a business
+    in connection with providing services to it. The CPRA identifies three types of
+    entities: Contractor. A person to whom the business makes available a consumer’s
+    personal information for a business purpose pursuant to a written contract that
+    includes certain provisions. For example, the contract must prohibit the contractor
+    from (i) selling or sharing the personal information and (ii) retaining, using,
+    or disclosing the personal information for any purpose other than for the business
+    purposes specified in the contract or outside the direct business relationship
+    between the contractor and the business. Service provider. A person who processes
+    personal information on behalf of a business and receives from or on behalf of
+    the business a consumer’s personal information for a business purpose pursuant
+    to a written contract that includes provisions similar to a contractor. Such written
+    contracts are required for any downstream party should a service provider engage
+    any other person to assist in processing personal information for a business purpose
+    on behalf of the business. Third party. Any person other than: (i) the business
+    with whom the consumer intentionally interacts and that collects personal information
+    from the consumer as part of the consumer’s current interaction with the business;
+    (ii) a service provider to the business; and (iii) a contractor. As with contractors
+    and service providers, businesses must enter into agreements with the third parties
+    to whom they sell or share personal information. Although further discussion of
+    these relationships is beyond the scope of these FAQs, businesses should better
+    understand them and the corresponding contract requirements. This includes a contractual
+    obligation, added by the CPRA, for contractors and service providers to implement
+    and maintain reasonable security procedures and practices to protect personal
+    information. 5. How does the CCPA define personal information? In general, the
+    CCPA defines “personal information” broadly to include information that can identify,
+    relate to, describe, be associated with, or be reasonably capable of being associated
+    with, or could reasonably be linked, directly or indirectly, with a particular
+    consumer or household. The CCPA’s “private right of action” provision relating
+    to data breaches, however, incorporates a narrower definition of personal information
+    (more below). The statute provides a non-exhaustive list of categories of personal
+    information, including: Identifiers including real name, alias, postal address,
+    unique personal identifier, online identifier, internet protocol or IP address,
+    email address, account name, social security number, driver’s license number,
+    passport number, or other similar identifiers; Characteristics of protected classifications
+    under California or federal law; Commercial information, including records of
+    personal property, products, or services purchased, obtained, or considered, or
+    other purchasing or consuming histories or tendencies; Biometric information;
+    Internet or other electronic network activity information, including, but not
+    limited to, browsing history, search history, and information regarding a consumer’s
+    interaction with an internet website, application, or advertisement; Geolocation
+    data; Audio, electronic, visual, thermal, olfactory, or similar information; Professional
+    or employment-related information; and Education information, defined as information
+    that is not publicly available, and personally identifiable information as defined
+    in the Family Educational Rights and Privacy Act. The definition also encompasses
+    inferences drawn from personal information used to build a consumer profile that
+    would reveal the person’s preferences, characteristics, psychological patterns,
+    predispositions, behavior, attitudes, intelligence, abilities, and aptitudes.
+    Thus, for example, businesses using artificial intelligence to assess consumer
+    preferences or identify preferred job candidates must closely examine the personal
+    information they may hold about individuals (including employees) to ensure compliance
+    with the CCPA. The CPRA amends the definition of personal information to include
+    a category of “ sensitive personal information ,” which is subject to heightened
+    protections. This category includes personal information that reveals: A consumer’s
+    social security number, driver’s license, state identification card, or passport
+    number; A consumer’s account login, financial account, debit card, or credit card
+    number in combination with any required security or access code, password, or
+    credentials allowing access to an account; A consumer’s precise geolocation; A
+    consumer’s racial or ethnic origin, citizenship or immigration status, religious
+    or philosophical beliefs, or union membership; The contents of a consumer’s mail,
+    email, and text messages, unless the business is the intended recipient of the
+    communication; A consumer’s genetic data; and A consumer’s neural data. “Sensitive
+    personal information” also means: The processing of biometric information to uniquely
+    identify a consumer; Personal information collected and analyzed concerning a
+    consumer’s health; and Personal information collected and analyzed concerning
+    a consumer’s sex life or sexual orientation. Personal information does not include
+    de-identified or aggregate consumer information. Personal information also does
+    not include publicly available information or, per the CPRA, “lawfully obtained,
+    truthful information that is a matter of public concern.” Under the CCPA, “publicly
+    available” meant information lawfully made available from federal, state, or local
+    government records. The CPRA added to the exclusion information that a business
+    has a reasonable basis to believe is lawfully made available (i) to the general
+    public by the consumer or (ii) from widely distributed media. “Publicly available”
+    also means information made available by a person to whom the consumer has disclosed
+    the information if the consumer has not restricted the information to a specific
+    audience. 6. What rights do consumers have over their personal information under
+    the CCPA? Covered businesses have an obligation to develop programs to manage
+    the sweeping suite of rights the CCPA and the CPRA grants to consumers . Those
+    rights are: Right to Know The CCPA grants consumers the right to request information
+    regarding: The categories of personal information businesses collect about them
+    ( see, e.g., the categories of personal information above); The categories of
+    sources from which that personal information was collected ( e.g., the consumer
+    directly, advertising networks, internet service providers, data analytics providers,
+    government entities, data brokers, and so on); The business or commercial purposes
+    for which personal information was collected, sold, or shared ( e.g., fraud prevention,
+    marketing, or improving customer experience); The categories of third parties
+    to whom personal information was disclosed ( e.g., advertising networks, internet
+    service providers, government entities, social networks, and so on); and The “specific
+    pieces” of personal information collected. Consumers have the right to request
+    additional information from businesses that sell or share their personal information
+    or disclose it for a business purpose. Specifically: The categories of personal
+    information that the business sold or shared about the consumer and the categories
+    of third parties to whom the personal information was sold or shared, by category
+    or categories of personal information for each category of third parties. The
+    categories of personal information that the business disclosed about the consumer
+    for a business purpose and, per the CPRA, the categories of persons to whom it
+    was disclosed for a business purpose. The CPRA defines “sharing” personal information
+    as sharing, renting, releasing, disclosing, disseminating, making available, transferring,
+    or otherwise communicating, regardless of the means, a consumer’s personal information
+    by the business to a third party for cross-context behavioral advertising, whether
+    for monetary or other valuable consideration. The 2025 regulations expand the
+    right to know to include information about ADMT. Depending on how a business uses
+    an ADMT, it may have to disclose certain information concerning the ADMT, such
+    as: The specific purpose for which the ADMT is used. Generic purposes, such as
+    “to improve our services,” are not permitted. Information about the logic of the
+    ADMT, such as the parameters that generated the output. The outcome of the decision-making
+    process for the consumer, including how the business used the ADMT output to make
+    a significant decision with respect to the consumer. The CCPA imposed a 12-month
+    lookback from the time of the request and mandates that, if consumers request
+    access to their personal information, the covered business must provide responsive
+    materials “in a readily usable format that allows consumers to transmit [the]
+    information from one entity to another without hindrance.” The CPRA opened the
+    door to a longer lookback period, requiring that a business disclose all such
+    information collected on or after Jan. 1, 2022, unless doing so would be “impossible
+    or involve a disproportionate effort.” Right to Delete With some exceptions, the
+    CCPA permits consumers to request that covered businesses, and their service providers,
+    contractors, and third parties, as applicable, delete personal information collected
+    about them. Contractors and service providers must cooperate with the business
+    in responding to the requests and, at the business’s request, must delete or enable
+    the business to delete the information required under the law. Exceptions from
+    the deletion requirement include when it is reasonably necessary to maintain the
+    personal information to (i) complete the transaction for which it was collected
+    or (ii) comply with a legal obligation, such as a record retention requirement.
+    The CPRA modified some exceptions. It also clarified that service providers and
+    contractors need not comply with deletion requests submitted by the consumer to
+    them directly when the service provider or contractor collected, used, processed,
+    or retained the personal information in its role as a service provider or contractor
+    to the business. As a result, service providers and contractors should work with
+    businesses to establish a process for responding to such requests. Right to Correct
+    Inaccurate Information The CPRA expanded consumers’ rights to include the right
+    to request that a business correct their personal information if it is inaccurate.
+    Covered businesses must disclose this new right to consumers and use “commercially
+    reasonable efforts” to correct personal information upon receiving a verifiable
+    consumer request. Right to Opt Out of the Sale or Sharing of Personal Information
+    Under the CCPA, consumers can opt out of the “sale” or “sharing” of their personal
+    information. To facilitate consumers’ exercise of this right, covered businesses
+    that sell personal information must provide a “Do Not Sell/Share My Personal Information”
+    link on the business’s internet homepage that goes to a web page where consumers
+    can opt out of having their personal information sold or shared. Right to Limit
+    Use or Disclosure of Sensitive Personal Information For businesses that use “sensitive
+    personal information” (see definition above) to infer characteristics about consumers,
+    the CPRA granted the right to direct those businesses to limit the use and disclosure
+    of that information to uses necessary to provide the products and services reasonably
+    expected by the consumer requesting them, and for certain other listed purposes.
+    To facilitate consumers’ exercise of this right, covered businesses must provide
+    a “Limit the Use of My Sensitive Personal Information” link on their internet
+    homepage that enables consumers to exercise this right. Right to Nondiscrimination
+    The CCPA prohibits covered businesses from discriminating against consumers for
+    exercising their CCPA rights. For example, a business may not charge a different
+    price, deny goods or services, or impose penalties on a consumer who exercises
+    their rights under the CCPA. However, a business may charge consumers a different
+    price or rate or provide a different level or quality of goods or services to
+    the consumer when that difference is reasonably related to the value provided
+    to the business by the consumer’s data. The CPRA expanded nondiscrimination protections
+    in the employment context by prohibiting businesses from retaliating against an
+    employee, applicant for employment, or independent contractor for exercising their
+    rights under the CCPA. The 2025 regulations establish new rights for consumers
+    and obligations for businesses on the use of ADMT. (See below.) 7. Can consumers
+    waive their rights under the CCPA? No. The CCPA expressly prohibits any contractual
+    provision or agreement that attempts to waive or limit rights provided by the
+    CCPA, including the right to remedy or enforce. Any attempt to limit a consumer’s
+    rights, whether by contract, agreement, or policy, would be unenforceable. 8. Does
+    disclosure of personal information in mergers and acquisitions qualify as a “sale”
+    under the CCPA? Consumer personal information may be a business asset transferred
+    to a third party in the course of a merger, acquisition, or bankruptcy when the
+    third party assumes control of all or part of the business. In general, this type
+    of transfer will not constitute a sale of personal information for the purposes
+    of the CCPA. But, the third party must provide the consumer with prior notice
+    of the changed practices if the third party materially alters how it uses or discloses
+    the consumer’s personal information and that use or disclosure is materially inconsistent
+    with the notice provided to the consumer at the time of collection. Parties to
+    the transaction should consider whether to address this issue in the purchase
+    agreement. The CPRA extended similar treatment to the sharing of personal information
+    in this context. 9. Is employee and applicant data covered by the CCPA? Yes. Originally,
+    the CCPA had limited application to employee and applicant personal information.
+    Employees of and applicants for employment with covered businesses were (1) entitled
+    to a notice at collection, and (2) empowered to file lawsuits, including class
+    actions, if certain elements of their personal information were involved in a
+    data breach caused by an alleged failure of the business to maintain reasonable
+    safeguards. The partial exemption for employee and applicant personal information
+    expired on Jan. 1, 2023. Since then, the CCPA has required businesses to treat
+    such personal information the same way they treat personal information related
+    to commercial consumers. Accordingly, a business’s policies and procedures for
+    processing personal information, in the business’s website privacy policy, for
+    example, also must encompass the personal information of employees and applicants.
+    10. Is the CCPA applicable to businesses that exclusively conduct business with
+    other businesses (B2B)? Unlike most other state comprehensive privacy laws, there
+    is no general “B2B” exception under the CCPA. More specifically, there is no exclusion
+    for personal information relating to a California resident acting in their commercial
+    capacity. As a result, for example, businesses that collect personal information
+    from business contacts in California ( e.g., email addresses, phone numbers, and
+    job titles) must treat that information as protected by the CCPA. 11. Is health
+    information subject to the CCPA’s requirements? The CCPA does not apply to medical
+    information governed by the California Confidentiality of Medical Information
+    Act (CMIA) or protected health information collected by a covered entity or business
+    associate governed by the privacy, security, and breach notification rules of
+    the Health Insurance Portability and Accountability Act (HIPAA) and Health Information
+    Technology for Economic and Clinical Health (HITECH) Act of 2009. While this is
+    welcome news for healthcare providers, health plans, and their business associates,
+    unlike some state privacy laws, the CCPA does not include an entity-level exemption
+    for healthcare entities. Instead, the exception is at the data level. Accordingly,
+    although these entities likely will not need to comply with the CCPA with respect
+    to their patient data, they may with respect to their employee, applicant, and
+    business contact data. Additionally, these exclusions must be reviewed carefully
+    as they may not cover all medical information a business might collect. For example,
+    medical information collected from employees and others under certain circumstances
+    may not fall under the CMIA’s definition of “medical information” or HIPAA’s “protected
+    health information.” 12. Is the CCPA applicable to website cookies, pixels, and
+    other tracking technologies? To store information about the user’s activity, cookies,
+    pixels, and other tracking technologies are routinely placed on website users’
+    computers (including smartphones, tablets, and other connected devices) by website
+    owners or their vendors. The technologies have a variety of uses ranging from
+    recognizing a user when the user returns to the website, to providing site analytics,
+    to enabling shopping cart functionality, to providing advertising targeted to
+    the user’s interests. The CCPA defines personal information to include a “unique
+    identifier,” defined as: a persistent identifier that can be used to recognize
+    a consumer, a family, or a device that is linked to a consumer or family, over
+    time and across different services, including, but not limited to, a device identifier;
+    an Internet Protocol address; cookies, beacons, pixel tags, mobile ad identifiers,
+    or similar technology ... or other forms of persistent or probabilistic identifiers
+    that can be used to identify a particular consumer or device that is linked to
+    a consumer or family. This definition was largely unchanged by the CPRA. Personal
+    information collected through website tracking technologies that identifies or
+    could reasonably be linked to a particular consumer or family may be subject to
+    the same disclosure notices and consumer rights, including the right to delete
+    or opt out of the sale of information to a third party, as other personal information
+    collected through the website. The CCPA does not require that covered businesses
+    maintain a separate “cookie policy” to address collection and use of personal
+    information through website tracking technologies or to permit consumers to exercise
+    their rights. This information can be included in the website’s privacy policy.
+    Covered businesses may not have a full understanding of what trackers are on their
+    websites or the trackers’ functionality. Third parties may place trackers on a
+    website that collect personal information as part of services necessary for the
+    site’s business purposes. In other cases, it may be unclear whether a third-party
+    collection of personal information through trackers is strictly for the website’s
+    business purpose or, instead, the sale or sharing of personal information subject
+    to the right to opt out. Trackers placed by embedded content ( e.g., video), a
+    social media widget, or a vendor that provides targeted or behavioral advertising
+    are examples of the latter. For this reason, businesses should consider assessing
+    what, if any, tracking technologies they maintain on their websites. 13. What
+    notice and policy obligations does the CCPA place on businesses? The CCPA establishes
+    several notice and policy requirements for businesses. Although most of the attention
+    has been on the content requirements, businesses also should keep in mind that
+    the CCPA and its implementing regulations establish specific formatting and structural
+    rules relating to consumer disclosures and communications. For instance, the CCPA
+    mandates that disclosures be readable and reasonably accessible. For accessibility,
+    notices provided online must follow generally recognized industry standards, such
+    as the Web Content Accessibility Guidelines, version 2.1 of June 5, 2018, from
+    the World Wide Web Consortium. (See 11 Cal. Code Regs. § 7003(b)(3) .) The regulations
+    also require “symmetry in choice” for submitting CCPA requests and obtaining consumer
+    consents: The path for a consumer to exercise a more privacy-protective option
+    shall not be longer or more difficult, or time-consuming than the path to exercise
+    a less privacy-protective option, because that would impair or interfere with
+    the consumer’s ability to make a choice. ( 11 Cal. Code Regs. § 7004 .) Accordingly,
+    businesses must think about more than the text of the policy when developing a
+    website privacy policy to comply with the CCPA. Format, accessibility, and symmetry
+    are also important. Key notice and policy content requirements: Notice at Collection
+    A business that collects a consumer’s personal information must disclose to consumers,
+    at or before the point of collection, certain information, including: (i) The
+    categories of personal information to be collected, including sensitive personal
+    information; (ii) The purposes for which the categories are collected or used;
+    and (iii) Information about how long each category of personal information, including
+    sensitive personal information, will be retained. The business also must explain
+    in the notice whether that information is sold or shared. If the business sells
+    or shares personal information, the notice must include a link to the Notice of
+    Right to Opt-Out of Selling or Sharing. A link to the business’s online privacy
+    policy also must be included. In either case, after the notice has been provided,
+    the business may not collect additional categories of personal information or
+    use personal information collected (or sensitive personal information) for additional
+    purposes that are incompatible with the purposes disclosed in the notice without
+    providing the consumer renewed notice. Privacy Policy Covered businesses must
+    disclose certain information in an online privacy policy . This information includes,
+    without limitation, an explanation of consumers’ CCPA rights and how consumers
+    may exercise those rights. These disclosures must be updated, as applicable, every
+    12 months. Covered businesses must fully understand the data they collect, process,
+    disclose, share, and sell to prepare notices and privacy policies. To outline
+    the categories of sources of personal information they collect and the third parties
+    or service providers to whom they disclose this information, for instance, they
+    must understand what personal information they have, how they obtained it, and
+    under what circumstances they disclose, share, or sell it. Similar information
+    will be needed to respond to consumers as they carry out their rights under the
+    CCPA, such as the right to know and the right to limit the use of their sensitive
+    personal information. Additionally, businesses will have to know where they maintain
+    personal information so they will be able to carry out a request for deletion,
+    assuming no exception applies. For example, businesses will have to know which
+    contractors, service providers, and third parties may process or possess their
+    personal information. Covered businesses also must make available mechanisms for
+    consumers to submit requests and have a process for verifying the requests are
+    valid — a “verifiable consumer request.” In general, covered businesses must make
+    available at least two mechanisms for submitting requests, including, at a minimum,
+    a toll-free telephone number and website-based mechanism ( e.g., a webform). A
+    business that operates exclusively online and has a direct relationship with a
+    consumer from whom it collects personal information, however, need provide only
+    an email address for submitting requests. Responding to CCPA Requests The CCPA
+    includes specific timeframes for responding to consumer requests. Businesses must
+    confirm receipt of a request within 10 business days of receipt; they generally
+    must respond to verifiable consumer requests within 45 days, and that period may
+    be extended if the consumer is notified within the first 45-day period. Businesses
+    are not required to respond to more than two requests regarding the right to know
+    for the same consumer during a 12-month period. The CCPA does not expressly require
+    that businesses maintain an internal written policy setting out a process for
+    responding to consumer requests. Doing so, however, can help to increase efficiency
+    and timeliness, and ensure compliance with procedural requirements when responding
+    to requests. The CCPA requires employees designated to handle the responses to
+    these requests to be trained and businesses to maintain documentation of the processing
+    of the request for a period of 24 months. Some of these responses come with certain
+    content requirements. Therefore, it may be helpful for businesses to establish
+    policies and workflows for addressing CCPA requirements. Further, the 2025 regulations
+    establish notice obligations for businesses on the use of ADMT. (See below.) 14. Does
+    the CCPA cover automated decision-making technologies? Yes. In 2025, the CPPA
+    finalized regulations that address businesses’ use of ADMT. Under the regulations,
+    businesses that use ADMT to make “significant decisions” about consumers generally
+    must provide clear pre-use notices, allow consumers to opt out, and respond to
+    access requests with meaningful information about the logic and likely outcomes
+    of such processes. Although the general effective date of the new regulations
+    is Jan. 1, 2026, certain aspects of the regulations provide more time for businesses
+    to comply. 15. How do the CCPA regulations define ADMT? Under the regulations,
+    ADMT is any technology that processes personal information and uses computation
+    to replace human decision-making or substantially replace human decision-making.
+    “Replace” means to make decisions without human involvement. Human involvement
+    requires a human to: (A) Know how to interpret and use the technology’s output
+    to make the decision; (B) Review and analyze the output of the technology, and
+    any other information that is relevant to make or change the decision; and (C)
+    Have the authority to make or change the decision based on their analysis in (B).
+    16. How do the CCPA regulations define a “significant decision”? A “significant
+    decision” is defined as a decision that has important consequences for a consumer’s
+    life, opportunities, or access to essential services. The regulations finalized
+    by the CPPA define these decisions as those that result in the provision or denial
+    of: Financial or lending services ( e.g., credit approval and loan eligibility)
+    Housing ( e.g., rental applications and mortgage decisions) Education enrollment
+    or opportunities ( e.g., admissions decisions) Employment or independent contracting
+    opportunities or compensation ( e.g., hiring, promotions and work assignments)
+    Healthcare services ( e.g., treatment eligibility and insurance coverage) These
+    decisions are considered significant because they directly affect a consumer’s
+    economic, health, or personal well-being. 17. What obligations do businesses using
+    ADMT to make “significant decisions” have under the regulations? If a business
+    uses ADMT to make significant decisions, it generally must do the following: Provide
+    a pre-use notice in plain language that clearly explains the business’s use of
+    ADMT (see below). Provide an opt-out right for consumers. Provide consumers with
+    the ability to request information about the business’s use of ADMT. Businesses
+    using ADMT for significant decisions before Jan. 1, 2027, must comply by Jan.
+    1, 2027. Businesses that begin using ADMT after Jan. 1, 2027, must comply immediately
+    when the use begins. Businesses must also conduct risk assessments for certain
+    high-risk data processing activities. (See questions 21-22.) 18. What must be
+    included in a Pre-Use Notice for ADMT? If a covered business uses ADMT for a significant
+    decision as described above, it must provide consumers with a Pre-Use notice that
+    satisfies certain requirements: It must inform consumers about the business’s
+    use of ADMT and rights to opt-out of the use of ADMT and to access information
+    regarding that use; It may provide the pre-use notice in its notice at collection,
+    if otherwise compliant with the pre-use notice rules; It must comply with the
+    general rules for CCPA notifications under 11 Cal. Code Regs. § 7003 (a)–(b) ;
+    It must be presented prominently and conspicuously to the consumer at or before
+    the point when the business collects the personal information to be processed
+    with ADMT; and It must be presented in the manner in which the business primarily
+    interacts with the consumer. Content requirements for the pre-use notice include:
+    A plain language explanation of the specific purpose for which the business proposes
+    to use ADMT. To simply state the ADMT is used “to make a significant decision”
+    without further information is not sufficient. A description of the right to opt-out
+    of the use of ADMT and how to submit a request to opt out. A description of the
+    right to access information regarding use of ADMT and how to submit that request.
+    A statement that the business is prohibited from retaliating against consumers
+    for exercising their CCPA rights. Information about (i) how the ADMT works to
+    make a significant decision about consumers, and (ii) how the significant decision
+    would be made if a consumer opts out. The information must include: How ADMT processes
+    personal information to make a significant decision, including the categories
+    of personal information that affect the output generated by ADMT (“output” may
+    include predictions, decisions, and recommendations such as numerical compatibility
+    scores). The type of intended output by ADMT, and how that output is used to make
+    a significant decision. A business may use a consolidated pre-use notice in some
+    cases, such as when a business uses multiple ADMT for a single purpose. The notice
+    may be included in the Notice at Collection (see above) and must be presented
+    prominently and conspicuously to the consumer at or before the point when the
+    business collects the personal information the business plans to process with
+    ADMT. 19. What does the right to access ADMT entail for consumers and businesses?
+    Like the right to know (see above), consumers have a right to access certain information
+    about a business’s use of ADMT. The process for exercising the right to access
+    is similar to the right to know. For instance, businesses must perform the same
+    verification process as with requests to delete, know, or collect. Following are
+    examples of content the business must include in its response to a consumer exercising
+    their right to access: The specific purpose for which ADMT is used with respect
+    to the consumer. Information about the logic of the ADMT, sufficient to enable
+    a consumer to understand how the ADMT processed their personal information to
+    generate an output. The outcome of the decision-making process for the consumer,
+    including how the business used the ADMT output to make a significant decision.
+    For example, what other factors played a role in making the decision if the ADMT
+    was not the sole factor in the decision. The above list is not exhaustive. Other
+    aspects of responding to requests to access ADMT are like other consumer rights.
+    For example, the methods to submit requests must be easy to use and must not use
+    dark patterns. If the business denies a request, in whole or in part, it must
+    inform the requestor and explain the basis for the denial. The business must use
+    reasonable security measures when transmitting the requested information. In addition,
+    service providers and contractors must provide assistance in responding to a verifiable
+    consumer request for access to ADMT. A business that used ADMT with respect to
+    a consumer more than four times within a 12-month period may provide an aggregate-level
+    response. 20. Do consumers have the right to opt out of ADMT? Consumers have the
+    right to opt out of a business’s use of ADMT to make significant decisions in
+    such areas as employment, credit, housing, healthcare, and education. Like the
+    right to opt out of the sale or sharing of personal information, businesses cannot
+    require consumers to verify their identity to make a request to opt out of ADMT.
+    Consumers must have at least two designated methods for submitting requests. When
+    selecting the methods to make available, businesses must take into account (i)
+    the methods by which the business interacts with consumers, (ii) how the business
+    uses ADMT, and (iii) the consumer’s ease of use. At least one method offered must
+    reflect how the business primarily interacts with the consumer. Businesses must
+    allow consumers to opt out of the use of ADMT to make a significant decision,
+    unless the business provides consumers with a method to appeal an ADMT decision
+    to a qualified human reviewer who has the authority to overturn the decision.
+    The CCPA rules’ requirements for this human appeal exception include how to communicate
+    and process the appeal. In addition, the human reviewer must know how to interpret
+    and use the ADMT output that made the significant decision being appealed and
+    must have the authority to change the decision based on their analysis. Businesses
+    that satisfy the following requirements may decide not to extend the right to
+    opt out of ADMT in connection with certain admission, acceptance, or hiring decisions:
+    The business uses ADMT solely for the business’s assessment of the consumer’s
+    ability to perform at work or in an educational program to determine whether to
+    admit, accept, or hire them; and The ADMT works as intended for the business’s
+    proposed use and does not unlawfully discriminate based upon protected characteristics.
+    Likewise, the right to opt out of ADMT is not required for certain allocation/assignment
+    of work and compensation decisions if the business: Uses the ADMT solely for the
+    business’s allocation/assignment of work or compensation; and The ADMT works for
+    the business’s purpose and does not unlawfully discriminate based upon protected
+    characteristics. If a consumer submits an opt-out request before the business
+    initiates ADMT processing, the business must not initiate processing. However,
+    if the consumer did not opt-out in response to the pre-use notice and submitted
+    a request to opt-out of ADMT after the business initiated the processing, the
+    business must cease ADMT processing of the personal information as soon as feasibly
+    possible, but no later than 15 business days from the date the business receives
+    the request. In this case, the business also must notify any service providers,
+    contractors, or other persons involved in that processing and instruct them to
+    comply with the opt-out request within the same timeframe. 21. Are businesses
+    required to conduct risk assessments under the CCPA? The 2025 regulations require
+    businesses to conduct risk assessments when their processing of personal information
+    presents “significant risks” to consumer privacy. The CPPA has identified specific
+    processing activities that trigger this requirement: Selling or sharing personal
+    information. Processing “sensitive personal information.” The CPPA noted a narrow
+    exception for limited human resources-related uses such as payroll, benefits administration,
+    and legally mandated reporting. Employers will have to examine carefully which
+    activities are excluded. Sensitive personal information under the CCPA includes
+    precise geolocation, racial or ethnic origin, religious beliefs, genetic data,
+    biometric information, health information, sexual orientation, and citizenship
+    status, among other categories. Using ADMT to make significant decisions about
+    consumers. Significant decisions include those resulting in the provision or denial
+    of financial services, lending, housing, education enrollment, employment opportunities,
+    compensation, or healthcare services. Profiling a consumer through “systematic
+    observation” when they are acting in their capacity as an educational program
+    applicant, job applicant, student, employee, or independent contractor for the
+    business. Systematic observation means methodical and regular or continuous observation,
+    such as through Wi-Fi or Bluetooth tracking, radio frequency identification, drones,
+    video or audio recording or live-streaming, technologies that enable physical
+    or biological identification or profiling; and geofencing, location trackers,
+    or license-plate recognition. Businesses engaged in workplace monitoring and performance
+    management applications use may need to consider those activities under this provision.
+    Profiling a consumer based upon their presence in a “sensitive location.” A sensitive
+    location means the following physical places: healthcare facilities including
+    hospitals, doctors’ offices, urgent care facilities, and community health clinics;
+    pharmacies; domestic violence shelters; food pantries; housing/emergency shelters;
+    educational institutions; political party offices; legal services offices; union
+    offices; and places of worship. Processing personal information to train ADMT
+    to make significant decisions or to train facial recognition, biometric, or other
+    technology to verify identity. This obligation is intended to address heightened
+    privacy risks associated with developing systems that may later be deployed at
+    scale. 22. What are the steps for conducting a risk assessment? For businesses
+    engaged in activities that trigger the risk assessment requirement (see above),
+    the 2025 regulations require, among other things: Determining which stakeholders
+    should be involved in the risk assessment process and the nature of that involvement.
+    Establishing appropriate purposes and objectives for conducting the risk assessment.
+    Satisfying timing and recordkeeping obligations. Preparing risk assessment reports
+    that meet certain content requirements. Timely submitting certifications of required
+    risk assessments to the CPPA. 23. Are businesses required to implement specific
+    security safeguards to protect consumer personal information under the CCPA? The
+    CCPA’s focus is on the privacy of personal information and extending greater control
+    to individuals over their data. Security is an element of privacy, however, and
+    although the CCPA did not expressly require implementation of specific security
+    measures, the CPRA expressly added that requirement in subsection (e) to section
+    1798.100: A business that collects a consumer’s personal information shall implement
+    reasonable security procedures and practices appropriate to the nature of the
+    personal information to protect the personal information from unauthorized or
+    illegal access, destruction, use, modification, or disclosure in accordance with
+    Section 1798.81.5. California Civil Code section 1798.81.5 requires a business
+    that: owns, licenses, or maintains personal information about a California resident
+    shall implement and maintain reasonable security procedures and practices appropriate
+    to the nature of the information, to protect the personal information from unauthorized
+    access, destruction, use, modification, or disclosure. Covered businesses with
+    questions about specific safeguards for maintaining security could refer to the
+    California attorney general’s February 2016 Data Breach Report , which discusses
+    best practices for safeguarding data. Similar frameworks are mandated in other
+    states, such as Colorado, Florida, Massachusetts, New York, and Oregon. The definition
+    of personal information subject to the safeguarding and private right of action
+    provision for data breaches (see below) is narrower than the general definition
+    of personal information under the CCPA. The CCPA incorporates the definition of
+    personal information applied under Cal. Civ. Code Section 1798.81.5(d)(1)(A):
+    (1) “Personal information” means either of the following: (A) An individual’s
+    first name or first initial and the individual’s last name in combination with
+    any one or more of the following data elements, when either the name or the data
+    elements are not encrypted or redacted: (i) Social security number. (ii) Driver’s
+    license number, California identification card number, tax identification number,
+    passport number, military identification number, or other unique identification
+    number issued on a government document commonly used to verify the identity of
+    a specific individual. (iii) Account number or credit or debit card number, in
+    combination with any required security code, access code, or password that would
+    permit access to an individual’s financial account. (iv) Medical information.
+    (v) Health insurance information. (vi) Unique biometric data generated from measurements
+    or technical analysis of human body characteristics, such as a fingerprint, retina,
+    or iris image, used to authenticate a specific individual. Unique biometric data
+    does not include a physical or digital photograph, unless used or stored for facial
+    recognition purposes. (vii) Genetic data. The CPRA added clause (B) to this list:
+    a username or email address in combination with a password or security question
+    and answer that would permit access to an online account. Although narrower than
+    the general personal information definition, these obligations apply to a broad
+    set of data. For example, “medical information” means any individually identifiable
+    information, in electronic or physical form, regarding the individual’s medical
+    history or medical treatment or diagnosis by a healthcare professional. 24. Is
+    a business required to conduct a cybersecurity audit? A business must perform
+    a cybersecurity audit if it processes personal information in a manner that presents
+    a “significant risk” (see above) and: The business meets the threshold in section
+    1798.140 (d)(1)(C) (business derives more than 50% of revenue from selling or
+    sharing personal information), in the preceding calendar year; or The business
+    meets the gross revenue threshold in section 1798.140 (d)(1)(A); and a. Processed
+    the personal information of at least 250,000 consumers or households in the preceding
+    calendar year; or b. Processed the sensitive personal information of at least
+    50,000 consumers in the preceding calendar year. 25. When is a business required
+    to perform a cybersecurity audit? For the period until April 1, 2030, a business
+    must complete its first cybersecurity audit report no later than: April 1, 2028,
+    if annual gross revenue for 2026 was more than $100 million as of Jan. 1, 2027.
+    The audit would cover the period from Jan. 1, 2027, through Jan. 1, 2028. April
+    1, 2029, if annual gross revenue for 2027 was $50 million to $100 million as of
+    Jan. 1, 2028. The audit would cover the period from Jan. 1, 2028, through Jan.
+    1, 2029. April 1, 2030, if annual gross revenue for 2028 was less than $50 million.
+    The audit would cover the period from Jan. 1, 2029, through Jan. 1, 2030. After
+    April 1, 2030, if on Jan. 1 of a year the business meets the criteria of section
+    7120 for the preceding year, the business must complete a cybersecurity audit
+    that covers the next 12 months, and the cybersecurity audit report for that period
+    must be completed by April 1 of the following year. For example, if Business A
+    meets the criteria in section 7120 for conducting an audit as of Jan. 1, 2035,
+    Business A’s audit would cover the period from Jan. 1, 2035, through Jan. 1, 2036,
+    and Business A would have to complete its cybersecurity audit report by April
+    1, 2036. 26. What are some of the basic requirements for conducting a cybersecurity
+    audit? The CPPA established robust requirements for conducting cybersecurity audits.
+    In general, these requirements include: The audit must be conducted by a qualified,
+    objective, independent professional (“auditor”) using procedures and standards
+    accepted in the profession of auditing, such as procedures and standards provided
+    or adopted by the American Institute of Certified Public Accountants, the Public
+    Company Accountability Oversight Board, the Information Systems Audit and Control
+    Association, or the International Organization for Standardization. A qualified
+    auditor must have knowledge of cybersecurity but need not be external. However,
+    the auditor must (i) exercise objective and impartial judgment on all issues in
+    the audit, (ii) be free to make decisions and assessments without business influence,
+    (iii) not engage in activities that could compromise independence ( e.g., auditors
+    may not participate in business activities being audited, including making recommendations
+    about the cyber program). The business must make available all information in
+    its possession, custody, or control requested by the auditor. This includes making
+    good-faith efforts to disclose all relevant facts and not misrepresenting relevant
+    facts. No audit findings may rely solely on assertions of management. Instead,
+    they must rely primarily on the specific evidence (including documents, testing,
+    and interviews) deemed appropriate by the auditor. An audit report must be provided
+    to members of the business’ executive management team who have direct responsibility
+    for the cybersecurity program. The business and the auditor must retain all relevant
+    records for at least five years. 27. Can a business covered by the CCPA face legal
+    action for noncompliance? The CCPA authorizes a private right of action against
+    a covered business if its failure to maintain reasonable security safeguards results
+    in a data breach affecting personal information. Significantly, if successful,
+    a plaintiff can recover statutory damages in an amount not less than $100 and
+    not greater than $750 per consumer per incident ($107 and $799, respectively,
+    as adjusted, effective Jan. 1, 2025) or actual damages, whichever is greater,
+    as well as injunctive or declaratory relief and any other relief the court deems
+    proper. This means that plaintiffs in these lawsuits may not have to show actual
+    harm or injury to recover. Thus, in addition to notification obligations a covered
+    business may have under the state’s breach notification law, class action lawsuits
+    brought pursuant to this provision of the CCPA/CPRA could be very costly. Before
+    a consumer can bring a lawsuit following a covered business’s data breach, they
+    must provide the covered business 30 days’ written notice identifying the specific
+    provisions of the CCPA/CPRA that were violated. If cure is possible and the covered
+    business actually cures the violation within the 30-day period, and provides an
+    express written statement that the violations have been cured and that no further
+    violations will occur, the consumer cannot pursue an action for individual statutory
+    damages or class-wide statutory damages. The consumer need not provide a 30-day
+    notice if the consumer is solely seeking actual pecuniary damage suffered as a
+    result of the alleged violations. Importantly, the CPRA clarifies: The implementation
+    and maintenance of reasonable security procedures and practices pursuant to Section
+    1798.81.5 following a breach does not constitute a cure with respect to that breach.
+    (Emphasis added.) Accordingly, efforts to mitigate CCPA litigation risk must be
+    proactive, i.e., businesses must leverage their pre-breach maintenance of reasonable
+    safeguards as a defense to the alleged lawsuit, rather than attempt to rely on
+    post-breach remedial action as a cure. 28. Can contractors and service providers
+    be liable under the CCPA? Service providers and contractors that receive personal
+    information by way of their contractual agreement and use it in violation of the
+    restrictions under the CCPA can be liable for those violations. However, service
+    providers and contractors are not liable for failure by a business that shares
+    personal information with them to comply with the business’s CCPA obligations.
+    For example, a service provider holding personal information provided by a business
+    is not liable for that business’s failure to comply with its obligations to delete
+    that personal information upon a consumer’s request. (See question 3.) Penalties
+    for a service provider’s or contractor’s violations of the CCPA are similar to
+    those for a business that violates the CCPA. A service provider or contractor
+    that violates the CCPA can face injunctions and penalties of not more than $2,500
+    for each negligent violation, and not more than $7,500 for each intentional violation
+    ($2,663 and $7,988, respectively, as adjusted, effective Jan. 1, 2025), in an
+    action brought by the California attorney general or CPPA. Service providers and
+    contractors may have an opportunity to cure the violation before facing liability.
+    29. Does the CCPA contain a record retention requirement? The CCPA does not establish
+    specific record retention periods for personal information. However, as made clear
+    under the CPRA , businesses must apply data minimization principles concerning
+    personal information. This means that a business, for example, cannot retain a
+    consumer’s personal information for longer than is reasonably necessary for the
+    stated purpose for which it was collected. A failure to implement and comply with
+    appropriate data retention and disposal schedule may result in a violation of
+    the CPRA’s storage limitation principle. Further, as noted above, businesses must
+    include in their notices at collection the “length of time the business intends
+    to retain each category of personal information, including sensitive personal
+    information” that it collects. If a business cannot provide consumers a specific
+    retention period, the business must provide consumers the “the criteria used to
+    determine such period ….” In addition, courts and enforcement bodies may view
+    storage limitation practices as a basic reasonable safeguard. Therefore, the failure
+    to implement or follow such practices could expose businesses to regulatory and
+    litigation risk. 30. Is the CCPA still applicable if a consumer moves out of California?
+    Depending on the facts, if a consumer moves or is transferred to a location outside
+    of California, the consumer may no longer be a resident of California, and their
+    personal information will no longer be protected by the CCPA. Businesses must
+    remember, however, that what they say about the handling of personal information
+    may continue to apply even if the law no longer applies. In addition, the consumer’s
+    personal information may be protected by applicable data privacy and security
+    laws of the new state of residence or another jurisdiction. Covered businesses
+    should consider this and when drafting notices for consumers concerning their
+    rights under the CCPA. For example, if a notice extends rights to a “consumer”
+    and not a “consumer who is a California resident,” a move or transfer that would
+    change the person’s residency may not change the rights extended in that notice.
+    (See our blog post for more information concerning data minimization under the
+    CCPA.) 31. How does the CCPA interact with federal, state, or local laws? The
+    CCPA provides that its obligations are a matter of statewide concern in California
+    and supersede and preempt all rules, regulations, codes, ordinances, and other
+    laws adopted by a city, county, municipality, or local agency regarding the collection
+    and sale of a consumer’s personal information by a business. However, the CCPA
+    also states that its obligations will not restrict a business’s ability to comply
+    with federal, state, local laws, or regulations. In addition, although the CCPA
+    is drafted to supplement federal and state law, it will not apply if it is preempted
+    by or in conflict with federal law, the U.S. Constitution, or the California Constitution.
+    To determine which laws or regulations will govern, an organization must identify
+    all the purposes for which consumer information is collected, processed, and retained.
+    For example, although the CCPA includes a carve out for protected health information
+    collected by HIPAA-covered entities and business associates, this exception is
+    not as broad as it may appear. Covered entities and business associates that are
+    otherwise subject to the CCPA must still evaluate how to handle personal information
+    that is not protected health information. 32. What are the top 10 steps businesses
+    should consider taking to achieve compliance? Covered businesses may want to consider
+    taking the following series of steps as they work toward compliance: 1.  Monitor
+    CCPA legislative and regulatory activity to ensure the business is aware of additional
+    amendments. Businesses also should review enforcement actions by the CCPA . Those
+    decisions may be instructive on issues facing the business. 2.  Identify and map
+    the consumer personal information in the business’s possession or under its control,
+    including for others acting on the business’s behalf. Successful compliance activity
+    depends in significant part on knowledge of what information is collected, who
+    it is collected from, how it is collected, why it is collected, all purposes for
+    which it is used, all locations where it is stored, how long it is maintained,
+    and any third party with whom it is shared. 3.  Review and identify existing or
+    needed organizational and technical procedures to facilitate responding to consumer
+    requests concerning their CCPA rights. Procedures should include: Confirming at
+    least two mechanisms for consumers to exercise their rights to request information.
+    Reviewing and evaluating internal mechanisms for verifying identity, responding
+    within the mandated timeframes, and documenting the request and response. Assessing
+    contractors, service providers, and third-party preparedness for responding to
+    consumer rights requests, such as the right to delete, and pushing those requests
+    downstream. If applicable, developing or identifying internal mechanisms to track
+    third parties to whom consumer personal information is sold or shared in order
+    to comply with the consumer’s request to opt out. Identifying state and federal
+    laws that address record retention and destruction and how they interact with
+    the CCPA and a business’s operational needs. Evaluating the application of similar
+    laws in 19 additional states (and counting), such as the Colorado Privacy Act
+    (CPA) and the Virginia Consumer Data Protection Act (VCDPA). 4.  Update the business’s
+    notices, policies, and related forms. This may include updated notices for employees,
+    applicants, and others. 5.  Identify contractors, service providers, and third
+    parties and evaluate whether compliant contract provisions are in place. Covered
+    businesses should be negotiating, reviewing, or renegotiating existing agreements
+    as soon as possible to ensure agreements are timely in place. 6.  Update the training
+    required for staff responsible for handling consumer rights requests (and document
+    the training) to reflect regulatory updates. It is important to maintain consistency
+    when carrying out these obligations. 7.  Review how the business uses ADMT. If
+    applicable, ensure appropriate notices are in place and be prepared to respond
+    to CCPA requests. 8.  Assess obligations to perform and report risk assessments
+    and develop and implement plans to comply with those obligations. 9.  Review or
+    create a data retention schedule that reflects the types of data the business
+    maintains. The obligation to safeguard data under the CCPA and other applicable
+    data protection laws is a significant reason to reduce the amount of personal
+    information retained after it is no longer necessary for the purpose for which
+    it was collected. 10.  Review the adequacy of the business’s safeguards to protect
+    personal information and conduct cybersecurity audits, as required. This step
+    is imperative not only to help prevent cyberattacks, such as ransomware and email
+    compromise, but also to lower the risk of claims alleging that a failure led to
+    unauthorized access, exfiltration, theft, or disclosure of personal information.
+    * * * Many of the above steps may be adapted to satisfy other data privacy and
+    protection frameworks, assist in developing a robust internal data protection
+    program, and/or position the business to comply with future regulatory obligations.
+    All 50 U.S. states have enacted data breach notification laws. Many have enacted
+    laws addressing data safeguarding, disposal, or vendor management, and many have
+    advanced legislation similar to the CCPA. (See the CPA and the VCDPA above.) Several
+    federal data protection laws are also under consideration, and countries around
+    the world continue enacting national data privacy laws to protect individuals.
+    This legislative activity, combined with the growing public awareness of data
+    privacy rights and concerns, makes development of a data protection program even
+    more critical and impactful for businesses. © 2026 Jackson Lewis P.C. This material
+    is provided for informational purposes only. It is not intended to constitute
+    legal advice nor does it create a client-lawyer relationship between Jackson Lewis
+    and any recipient. Recipients should consult with counsel before taking any actions
+    based on the information contained within this material. This material may be
+    considered attorney advertising in some jurisdictions. Prior results do not guarantee
+    a similar outcome. Focused on employment and labor law since 1958, Jackson Lewis
+    P.C.’s 1,100+ attorneys located in major cities nationwide consistently identify
+    and respond to new ways workplace law intersects business. We help employers develop
+    proactive strategies, strong policies and business-oriented solutions to cultivate
+    high-functioning workforces that are engaged and stable, and share our clients’
+    goals to emphasize belonging and respect for the contributions of every employee.
+    For more information, visit https://www.jacksonlewis.com . Related services Practice
+    California Advice and Counsel Issue Privacy, AI and Cybersecurity > California
+    Consumer Privacy Act Practice National Compliance and Multi-State Solutions Practice
+    Privacy, AI and Cybersecurity Back to top Footer Contact Us Disclaimer, Privacy
+    and Copyright Accessibility Statement Jackson Lewis P.C. © 2026. Social Menu jlewis
+    LinkedIn jlewis X jlewis Facebook'
+  support_state: retrieved
+  retrieved_at: '2026-09-12T06:30:09.053956+00:00'
+  source_hash: 7f20e04d45f328035ffe61e7dbadae5c0f696f2338820ca800771bbc8525d0eb
+  retrieval_method: direct_fetch
+  content_truncated: true
+  links:
+  - https://www.jacksonlewis.com/insights/navigating-california-consumer-privacy-act-30-essential-faqs-covered-businesses-including-clarifying-regulations-effective-1126#main-content
+  - https://www.jacksonlewis.com/
+  - https://www.jacksonlewis.com/firm/about-us
+  - https://www.jacksonlewis.com/firm/our-values
+  - https://www.jacksonlewis.com/pro-bono
+  - https://www.jacksonlewis.com/firm/news-press
+  - https://www.jacksonlewis.com/firm/firm-leadership
+  - https://www.jacksonlewis.com/careers
+  - https://www.jacksonlewis.com/innovation-jackson-lewis
+  - https://www.jacksonlewis.com/locations
+  - https://www.jacksonlewis.com/subscribe
+  - https://www.jacksonlewis.com/contact
+  - https://checkit.jacksonlewis.com/
+  - https://las.jacksonlewis.com/?__hstc=46213176.fb814d056de2f0746f5303443e133178.1687356034092.1687452273611.1687458081371.4&__hssc=46213176.1.1687458081371&__hsfp=2115127905#welcome
+  - https://collaborate.jacksonlewis.com/jacksonlewis/LoginRequiredPage.action?__hstc=46213176.fb814d056de2f0746f5303443e133178.1687356034092.1687452273611.1687458081371.4&__hssc=46213176.1.1687458081371&__hsfp=2115127905
+  - https://vault.netvoyage.com/neWeb2/home
+  - https://wti.jacksonlewis.com/?__hstc=46213176.fb814d056de2f0746f5303443e133178.1687356034092.1687452273611.1687458081371.4&__hssc=46213176.1.1687458081371&__hsfp=2115127905#login
+  - https://www.jacksonlewis.com/people
+  - https://www.jacksonlewis.com/services/index
+  - https://www.jacksonlewis.com/insights
+  - https://www.jacksonlewis.com/insights/index
+  - https://www.jacksonlewis.com/insights/upcoming-events
+  - https://www.jacksonlewis.com/people/joseph-j-lazzarotti
+  - https://www.jacksonlewis.com/people/damon-w-silver
+  - https://www.jacksonlewis.com/pdf/insight/32222
+  - https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?division=3.&part=4.&lawCode=CIV&title=1.81.5
+  - https://govt.westlaw.com/calregs/Browse/Home/California/CaliforniaCodeofRegulations?guid=I5E53FC80FEDE11ECA3A49C17D1AA5D7C&originationContext=documenttoc&transitionType=Default&contextData=(sc.Default)
+  - https://www.jacksonlewis.com/insights/we-get-privacy-work-episode-2-defining-reasonable-safeguards
+  - https://www.workplaceprivacyreport.com/2024/04/articles/california-consumer-privacy-act/cppa-issues-first-enforcement-advisory-for-ccpa-data-minimization/
+  - https://cppa.ca.gov/announcements/
+  - https://www.workplaceprivacyreport.com/2020/11/articles/california-consumer-privacy-act/california-passes-prop-24-here-comes-ccpa-2-0/
+  - https://www.workplaceprivacyreport.com/2021/02/articles/california-consumer-privacy-act/does-the-california-privacy-rights-act-cpra-apply-to-your-business/
+  - https://www.workplaceprivacyreport.com/2020/12/articles/california-consumer-privacy-act/cpra-series-sensitive-personal-information/
+  - https://www.workplaceprivacyreport.com/2020/11/articles/california-consumer-privacy-act/cpra-series-new-expanded-and-modified-consumer-rights/
+  - https://www.workplaceprivacyreport.com/2020/11/articles/california-consumer-privacy-act/prop-24-california-privacy-rights-act-extends-ccpas-anti-discrimination-retaliation-provision-to-employees-applicants-and-independent-contractors/
+  - https://www.jacksonlewis.com/services/website-and-digital-tracking-compliance-assessment
+  - https://www.law.cornell.edu/regulations/california/11-CCR-7003
+  - https://www.law.cornell.edu/regulations/california/11-CCR-7004
+  - https://www.workplaceprivacyreport.com/2020/11/articles/california-consumer-privacy-act/cpra-series-impacts-on-notice-at-collection-and-privacy-policy/
+  - https://govt.westlaw.com/calregs/Document/I7E4AE1609E0F11F09C93C7F29D938D9B?viewType=FullText&originationContext=documenttoc&transitionType=CategoryPageItem&contextData=(sc.Default)
+  - https://www.workplaceprivacyreport.com/2025/10/articles/california-consumer-privacy-act/understanding-the-ccpas-new-risk-assessment-requirements-part-2/
+  - https://www.oag.ca.gov/sites/all/files/agweb/pdfs/dbr/2016-data-breach-report.pdf
+  - https://www.workplaceprivacyreport.com/2020/12/articles/california-consumer-privacy-act/cpra-series-the-importance-of-data-retention-schedules-and-records-management-policies/
+  - https://www.jacksonlewis.com
+  - https://www.jacksonlewis.com/services/california-advice-and-counsel
+  - https://www.jacksonlewis.com/services/california-consumer-privacy-act
+  - https://www.jacksonlewis.com/services/national-compliance-and-multi-state-solutions
+  - https://www.jacksonlewis.com/services/privacy-ai-and-cybersecurity
+  - https://www.jacksonlewis.com/disclaimer-privacy-and-copyright
+  - https://www.jacksonlewis.com/accessibility-statement
+  - https://www.linkedin.com/company/jackson-lewis-p-c
+  - https://x.com/jacksonlewispc
+  - https://www.facebook.com/JacksonLewisPC
+---
+Fetched source bytes; extraction is separate.

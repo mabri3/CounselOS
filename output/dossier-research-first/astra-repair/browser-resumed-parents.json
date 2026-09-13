@@ -1,0 +1,162 @@
+[
+  {
+    "request_id": "DOR-20260912-f1da57",
+    "state": "running",
+    "issues": {
+      "ISS-096297ff82-93f86037a1dc276c": {
+        "title": "Employment terms: Confirm worker terms and launch staffing conditions.",
+        "brief": "Confirm worker terms and launch staffing conditions.",
+        "initial_answer": "The saved facts show that employment terms remains open; the controlling conditions require research.",
+        "next_action": "Confirm the operative employment terms conditions before launch.",
+        "focused_topic": "United States employment terms launch requirements",
+        "planned_order": 0,
+        "state": "running",
+        "sources_retrieved": 0,
+        "sources_read": 0,
+        "urgent": true,
+        "child_run_id": "RUN-cc23082cfd72e887"
+      },
+      "ISS-096297ff82-94f4f4428b1d74dd": {
+        "title": "Customer privacy: Confirm notice, purpose, and access controls.",
+        "brief": "Confirm notice, purpose, and access controls.",
+        "initial_answer": "The saved facts show that customer privacy remains open; the controlling conditions require research.",
+        "next_action": "Confirm the operative customer privacy conditions before launch.",
+        "focused_topic": "United States customer privacy launch requirements",
+        "planned_order": 1,
+        "state": "running",
+        "sources_retrieved": 0,
+        "sources_read": 0,
+        "urgent": true,
+        "child_run_id": "RUN-ff2b074486bc208d"
+      },
+      "ISS-096297ff82-2809ad77797154fd": {
+        "title": "Supplier contract: Confirm service levels, termination, and transfer terms.",
+        "brief": "Confirm service levels, termination, and transfer terms.",
+        "initial_answer": "The saved facts show that supplier contract remains open; the controlling conditions require research.",
+        "next_action": "Confirm the operative supplier contract conditions before launch.",
+        "focused_topic": "United States supplier contract launch requirements",
+        "planned_order": 2,
+        "state": "running",
+        "sources_retrieved": 0,
+        "sources_read": 0,
+        "urgent": true,
+        "child_run_id": "RUN-118fca2acf89525c"
+      },
+      "ISS-096297ff82-658fe450083ec3ab": {
+        "title": "Intellectual property: Confirm ownership and trademark permission.",
+        "brief": "Confirm ownership and trademark permission.",
+        "initial_answer": "The saved facts show that intellectual property remains open; the controlling conditions require research.",
+        "next_action": "Confirm the operative intellectual property conditions before launch.",
+        "focused_topic": "United States intellectual property launch requirements",
+        "planned_order": 3,
+        "state": "not_selected",
+        "sources_retrieved": 0,
+        "sources_read": 0,
+        "urgent": false
+      },
+      "ISS-096297ff82-824b92d87b0cf804": {
+        "title": "Marketing claims: Confirm evidence for public launch claims.",
+        "brief": "Confirm evidence for public launch claims.",
+        "initial_answer": "The saved facts show that marketing claims remains open; the controlling conditions require research.",
+        "next_action": "Confirm the operative marketing claims conditions before launch.",
+        "focused_topic": "United States marketing claims launch requirements",
+        "planned_order": 4,
+        "state": "not_selected",
+        "sources_retrieved": 0,
+        "sources_read": 0,
+        "urgent": false
+      }
+    }
+  },
+  {
+    "request_id": "DOR-20260912-af9ee6",
+    "state": "completed",
+    "issues": {
+      "ISS-096297ff82-93f86037a1dc276c": {
+        "title": "Employment terms: Confirm worker terms and launch staffing conditions.",
+        "brief": "Confirm worker terms and launch staffing conditions.",
+        "initial_answer": "The saved facts show that employment terms remains open; the controlling conditions require research.",
+        "next_action": "Confirm the operative employment terms conditions before launch.",
+        "focused_topic": "United States employment terms launch requirements",
+        "planned_order": 0,
+        "state": "saved",
+        "sources_retrieved": 2,
+        "sources_read": 1,
+        "urgent": true,
+        "child_run_id": "RUN-3ccd55867fffb663",
+        "last_error": null,
+        "packet_path": "03_Matters/beacon-instant-onboarding/research/RES-20260912-3d6831.md",
+        "sources_discovered": 2,
+        "support": "2 sources retrieved; 1 with passages read"
+      },
+      "ISS-096297ff82-94f4f4428b1d74dd": {
+        "title": "Customer privacy: Confirm notice, purpose, and access controls.",
+        "brief": "Confirm notice, purpose, and access controls.",
+        "initial_answer": "The saved facts show that customer privacy remains open; the controlling conditions require research.",
+        "next_action": "Confirm the operative customer privacy conditions before launch.",
+        "focused_topic": "United States customer privacy launch requirements",
+        "planned_order": 1,
+        "state": "saved",
+        "sources_retrieved": 2,
+        "sources_read": 1,
+        "urgent": true,
+        "child_run_id": "RUN-df873d491c12d45e",
+        "last_error": null,
+        "packet_path": "03_Matters/beacon-instant-onboarding/research/RES-20260912-71dd33.md",
+        "sources_discovered": 2,
+        "support": "2 sources retrieved; 1 with passages read"
+      },
+      "ISS-096297ff82-2809ad77797154fd": {
+        "title": "Supplier contract: Confirm service levels, termination, and transfer terms.",
+        "brief": "Confirm service levels, termination, and transfer terms.",
+        "initial_answer": "The saved facts show that supplier contract remains open; the controlling conditions require research.",
+        "next_action": "Confirm the operative supplier contract conditions before launch.",
+        "focused_topic": "United States supplier contract launch requirements",
+        "planned_order": 2,
+        "state": "saved",
+        "sources_retrieved": 2,
+        "sources_read": 1,
+        "urgent": true,
+        "child_run_id": "RUN-81104c124a98a293",
+        "last_error": null,
+        "packet_path": "03_Matters/beacon-instant-onboarding/research/RES-20260912-6bb4f7.md",
+        "sources_discovered": 2,
+        "support": "2 sources retrieved; 1 with passages read"
+      },
+      "ISS-096297ff82-658fe450083ec3ab": {
+        "title": "Intellectual property: Confirm ownership and trademark permission.",
+        "brief": "Confirm ownership and trademark permission.",
+        "initial_answer": "The saved facts show that intellectual property remains open; the controlling conditions require research.",
+        "next_action": "Confirm the operative intellectual property conditions before launch.",
+        "focused_topic": "United States intellectual property launch requirements",
+        "planned_order": 3,
+        "state": "saved",
+        "sources_retrieved": 2,
+        "sources_read": 1,
+        "urgent": false,
+        "child_run_id": "RUN-11278b5203b433e0",
+        "last_error": null,
+        "packet_path": "03_Matters/beacon-instant-onboarding/research/RES-20260912-841d29.md",
+        "sources_discovered": 2,
+        "support": "2 sources retrieved; 1 with passages read"
+      },
+      "ISS-096297ff82-824b92d87b0cf804": {
+        "title": "Marketing claims: Confirm evidence for public launch claims.",
+        "brief": "Confirm evidence for public launch claims.",
+        "initial_answer": "The saved facts show that marketing claims remains open; the controlling conditions require research.",
+        "next_action": "Confirm the operative marketing claims conditions before launch.",
+        "focused_topic": "United States marketing claims launch requirements",
+        "planned_order": 4,
+        "state": "saved",
+        "sources_retrieved": 2,
+        "sources_read": 1,
+        "urgent": false,
+        "child_run_id": "RUN-26b6c05ac9f86f87",
+        "last_error": null,
+        "packet_path": "03_Matters/beacon-instant-onboarding/research/RES-20260912-9bce78.md",
+        "sources_discovered": 2,
+        "support": "2 sources retrieved; 1 with passages read"
+      }
+    }
+  }
+]

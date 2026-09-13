@@ -1,0 +1,398 @@
+--- frontend/components/experimental/ExperimentalChat.tsx (before task)
++++ frontend/components/experimental/ExperimentalChat.tsx
+@@ -237,6 +237,8 @@
+         const next = await getChatRun(matterId, runId);
+         if (cancelled)
+             return;
++        // The durable run state must not wait for a slower matter refresh.
++        setRun(next);
+         if (next.conversation_id) {
+             const history = await getConversation(matterId, next.conversation_id);
+             if (cancelled)
+@@ -251,10 +253,8 @@
+             if (path && latest)
+                 openRef.current(path, latest.documents, pendingOrigin.current ?? undefined);
+             pendingOrigin.current = null;
+-            setRun(next);
+             return;
+         }
+-        setRun(next);
+         timer = setTimeout(poll, 1200);
+     }
+     catch (e) {
+@@ -332,7 +332,7 @@
+         if (activeConversation.current !== originConversationId) return;
+         preserveResearchScroll.current = true;
+         setMessages(current => mergeChatMessages(current, saved.messages) as ChatHistoryMessage[]);
+-        await loadRef.current();
++        void loadRef.current().catch(() => { if (mounted.current && activeConversation.current === originConversationId) setError("The dossier result is saved. Matter details could not refresh yet."); });
+     }, [matterId]);
+     // Rendered replies must use the current request context without depending on each keystroke.
+     const sendRef = useRef(send);
+@@ -353,20 +353,23 @@
+         snapshots.current[snapshot.document_id] = snapshot; }, []);
+     const askDocument = useCallback((text: string, target: ConversationTarget, commentId?: string) => { const doc = documents.find(item => item.path === target.artifact_path); if (!doc)
+         return; setContext({ ...documentContext(matterId, doc, snapshots.current[doc.document_id]), target, commentId, locked: true }); setInput(current => current ? `${current}\n\n${text}` : text); pendingOrigin.current = { path: doc.path, commentId, scroll: window.scrollY }; inputRef.current?.focus(); }, [documents, matterId]);
++    // Busy controls change on submit; saved Markdown does not.
++    const messageProse = useMemo(() => messages.map(message => <ClaimMarkdown key={message.message_id} separateParagraphLines={message.role === "assistant"} className={styles.reply} text={message.role === "assistant" ? proseWithoutRepeatedQuestion(message.content, message.cards?.filter(card => card.type === "question") ?? []) : message.content} claims={workspace?.claims ?? []} documents={documents} surface="conversation" recordId={message.message_id} sources={sourceRecordsForDisplay(message.source_records)} onOpenDocument={ref => openRef.current(ref.path)} onOpenEvidence={evidence => { if (evidence.path)
++        openRef.current(evidence.path);
++    else if (evidence.url)
++        window.open(evidence.url, "_blank", "noopener,noreferrer");
++    else
++        setError("No exact source passage is available for this claim."); }}/>), [messages, workspace, documents]);
+     // Draft typing changes the composer, not the saved conversation or open document contents.
+     const conversationThread = useMemo(() => {
+         const confirmedResearchActions = new Set(messages.flatMap(message => (message.operation_results ?? [])
+             .filter(result => result.operation === "run_research" && result.status === "changed")
+             .map(result => result.source_action_key ?? result.action)));
+-        return <div className={styles.thread}>{messages.length === 0 && <div className={styles.welcome}><div className={styles.welcomeMark} aria-hidden="true">T.</div><span className={styles.eyebrow}>Your matter. A fresh perspective.</span><h2>Where shall we begin?</h2><p>Ask a question, test an argument, or work through the main issues. Themis can draw on this matter’s saved records.</p><button disabled={busy} onClick={beginIntake}>Start intake <span aria-hidden="true">→</span></button></div>}{messages.map((message, index) => <article className={message.role === "user" ? styles.user : styles.assistant} key={message.message_id}><small className={message.role === "assistant" ? styles.who : undefined}>{message.role === "assistant" ? "Themis.ai" : "You"}</small>{message.workspace_submission?.context_selections?.length ? <details><summary>Document context at submission</summary>{message.workspace_submission.context_selections.filter(item => item.path).map(item => <div key={item.path}><button onClick={() => openRef.current(item.path!)}>{item.path?.split("/").at(-1)}</button><small> · Submitted version {item.revision?.slice(0, 8) || "recorded in run"}</small></div>)}</details> : null}<ClaimMarkdown separateParagraphLines={message.role === "assistant"} className={styles.reply} text={message.role === "assistant" ? proseWithoutRepeatedQuestion(message.content, message.cards?.filter(card => card.type === "question") ?? []) : message.content} claims={workspace?.claims ?? []} documents={documents} surface="conversation" recordId={message.message_id} sources={sourceRecordsForDisplay(message.source_records)} onOpenDocument={ref => openRef.current(ref.path)} onOpenEvidence={evidence => { if (evidence.path)
+-        openRef.current(evidence.path);
+-    else if (evidence.url)
+-        window.open(evidence.url, "_blank", "noopener,noreferrer");
+-    else
+-        setError("No exact source passage is available for this claim."); }}/>{message.role === "assistant" && <><div className={styles.row}>{message.cards?.filter(card=>card.type==="work_product").map(card=><button key={card.vault_path} onClick={()=>openRef.current(card.vault_path)}>{card.title} · Open document</button>)}</div><ExperimentalIntake key={message.message_id} cards={message.cards?.filter(card=>card.type==="question") ?? []} disabled={busy||loading||uploading||index!==messages.length-1} storageKey={`${storageKey}:intake:${conversationId}:${message.message_id}`} explore={intakeState !== "complete"} onSubmit={(text, action) => sendRef.current(text, action, false, intakeState !== "complete")}/><ChatCards showResearchDocuments cards={message.cards?.filter(card=>card.type!=="work_product"&&card.type!=="question")} matterId={matterId} disabled={busy} questionsDisabled={index !== messages.length - 1} onAction={async (action, text) => sendRef.current(text || "Use this answer.", action)} onOpenDocument={path => openRef.current(path)} operationResults={message.operation_results?.filter(result=>["confirmation_required","proposed"].includes(result.status) && !(result.operation === "run_research" && confirmedResearchActions.has(result.source_action_key ?? result.action)))} onRefresh={async () => { const selected = activeConversation.current; const currentOperation = operation.current; const [, saved] = await Promise.all([loadRef.current(), selected ? getConversation(matterId, selected) : Promise.resolve(null)]); if (mounted.current && saved && activeConversation.current === selected && currentOperation === operation.current && !busyRef.current) { preserveResearchScroll.current = true; showConversation(saved); } }}/></>}</article>)}{intakeState === "complete" && messages.length > 0 && <ExperimentalNextSteps matter={detail} workspace={workspace} disabled={busy || loading || uploading} onChoose={text => sendRef.current(text, undefined, false, false, true)}/>}</div>;
+-    }, [messages, workspace, documents, busy, loading, uploading, storageKey, conversationId, intakeState, detail, matterId, beginIntake, showConversation]);
++        return <div className={styles.thread}>{messages.length === 0 && <div className={styles.welcome}><div className={styles.welcomeMark} aria-hidden="true">T.</div><span className={styles.eyebrow}>Your matter. A fresh perspective.</span><h2>Where shall we begin?</h2><p>Ask a question, test an argument, or work through the main issues. Themis can draw on this matter’s saved records.</p><button disabled={busy} onClick={beginIntake}>Start intake <span aria-hidden="true">→</span></button></div>}{messages.map((message, index) => <article className={message.role === "user" ? styles.user : styles.assistant} key={message.message_id}><small className={message.role === "assistant" ? styles.who : undefined}>{message.role === "assistant" ? "Themis.ai" : "You"}</small>{message.workspace_submission?.context_selections?.length ? <details><summary>Document context at submission</summary>{message.workspace_submission.context_selections.filter(item => item.path).map(item => <div key={item.path}><button onClick={() => openRef.current(item.path!)}>{item.path?.split("/").at(-1)}</button><small> · Submitted version {item.revision?.slice(0, 8) || "recorded in run"}</small></div>)}</details> : null}{messageProse[index]}{message.role === "assistant" && <><div className={styles.row}>{message.cards?.filter(card=>card.type==="work_product").map(card=><button key={card.vault_path} onClick={()=>openRef.current(card.vault_path)}>{card.title} · Open document</button>)}</div><ExperimentalIntake key={message.message_id} cards={message.cards?.filter(card=>card.type==="question") ?? []} disabled={busy||loading||uploading||index!==messages.length-1} storageKey={`${storageKey}:intake:${conversationId}:${message.message_id}`} explore={intakeState !== "complete"} onSubmit={(text, action) => sendRef.current(text, action, false, intakeState !== "complete")}/><ChatCards showResearchDocuments activeConversationId={conversationId} onConversationRefresh={refreshBackgroundDossier} cards={message.cards?.filter(card=>card.type!=="work_product"&&card.type!=="question")} matterId={matterId} disabled={busy} questionsDisabled={index !== messages.length - 1} onAction={async (action, text) => sendRef.current(text || "Use this answer.", action)} onOpenDocument={path => openRef.current(path)} operationResults={message.operation_results?.filter(result=>["confirmation_required","proposed"].includes(result.status) && !(result.operation === "run_research" && confirmedResearchActions.has(result.source_action_key ?? result.action)))} onRefresh={async () => { const selected = activeConversation.current; const currentOperation = operation.current; const [, saved] = await Promise.all([loadRef.current(), selected ? getConversation(matterId, selected) : Promise.resolve(null)]); if (mounted.current && saved && activeConversation.current === selected && currentOperation === operation.current && !busyRef.current) { preserveResearchScroll.current = true; showConversation(saved); } }}/></>}</article>)}{intakeState === "complete" && messages.length > 0 && <ExperimentalNextSteps matter={detail} workspace={workspace} disabled={busy || loading || uploading} onChoose={text => sendRef.current(text, undefined, false, false, true)}/>}</div>;
++    }, [messages, messageProse, workspace, documents, busy, loading, uploading, storageKey, conversationId, intakeState, detail, matterId, beginIntake, showConversation, refreshBackgroundDossier]);
+     const documentPanels = useMemo(() => openDocs.map(doc => <div key={doc.path} hidden={activePath !== doc.path}><ExperimentalDocument document={documents.find(item => item.path === doc.path) ?? doc} documents={documents} matterId={matterId} actor={actor} contextKey={storageKey} refresh={refresh} onSnapshot={onSnapshot} onAsk={askDocument} onOpen={(path,commentId) => openRef.current(path, documents, { path: doc.path, commentId, scroll: window.scrollY })} onSaved={() => void loadRef.current().catch(e => setError(e.message))}/></div>), [openDocs, activePath, documents, matterId, actor, storageKey, refresh, onSnapshot, askDocument]);
+     return <><header className={styles.header}><div className={styles.matterTitle}><span className={styles.eyebrow}>Matter conversation</span><h1>{detail?.title ?? "Loading matter…"}</h1></div><div className={styles.row}>{messages.length > 0 && intakeState !== "complete" && <button disabled={busy || loading} onClick={beginIntake}>Continue intake</button>}<button disabled={busy} onClick={() => void changeConversation(null)}><span aria-hidden="true">＋ </span>New conversation</button><button className={styles.refreshButton} title="Refresh matter" aria-label="Refresh matter" onClick={() => void loadWorkspace().catch(e => setError(e.message))}>↻</button><Link href={`/matters/${encodeURIComponent(matterId)}`}>Matter record</Link></div></header><div className={`${styles.work} ${active ? styles.withDocument : ""}`}><section className={styles.chat} aria-label="Experimental conversation"><div className={styles.chatTools} onKeyDown={event => { if(event.key === "Escape") { const menu = (event.target as HTMLElement).closest("details[open]"); menu?.removeAttribute("open"); menu?.querySelector("summary")?.focus(); } }}><details name="experimental-tools" className={styles.toolMenu}><summary>History <span>{conversations.length}</span></summary>{conversations.map(item => <button key={item.conversation_id} disabled={busy} onClick={event => { event.currentTarget.closest("details")?.removeAttribute("open"); void changeConversation(item.conversation_id); }}>{item.title}</button>)}{!conversations.length && <p>No saved conversations yet.</p>}</details><details name="experimental-tools" className={styles.toolMenu}><summary>Files <span>{documents.length}</span></summary>{documents.map(doc => <button key={doc.path} onClick={event => { event.currentTarget.closest("details")?.removeAttribute("open"); openDocument(doc.path); }}>{doc.title}</button>)}</details><ExperimentalSkills /><SolutionPaths disabled={busy || loading || uploading || draftReady !== draftKey} refresh={refresh} matterId={matterId} conversationId={conversationId} workingPathId={context.target?.scenario_id} onSelect={(id,isMainline) => setContext(current => ({...current,target:{matter_id:matterId,...(!isMainline ? {scenario_id:id} : {})},locked:true}))} onCompare={(ids,titles)=>void send(`Compare these approaches against our objective: ${titles.map(title=>`“${title}”`).join(" and ")}. Explain the benefits, trade-offs and added risks, and issues that remain. Distinguish problems each approach creates or worsens from existing problems it leaves unresolved.`,undefined,false,false,true,ids)} />{workspace && !loading && draftReady === draftKey && <ProblemBreakdown disclosureName="experimental-tools" status={workspace?.problem_analysis} onOpenIssue={issueId => { window.open(`/matters/${encodeURIComponent(matterId)}/decision-map?issue=${encodeURIComponent(issueId)}`, "_blank", "noopener,noreferrer"); }} onOpenSource={path => { if (documents.some(doc => doc.path === path)) openDocument(path); else if (isSafeVaultPath(path)) window.open(`/matters/${encodeURIComponent(matterId)}?view=draft&file=${encodeURIComponent(path)}`, "_blank", "noopener,noreferrer"); }} onDiscuss={text => { setInput(current => current.trim() ? `${current}\n\n${text}` : text); inputRef.current?.focus(); }} />}</div><div ref={conversationScroll} className={styles.conversationScroll}>{error && <p role="alert" className={styles.error}>{error}</p>}{loading ? <p>Loading saved conversation…</p> : conversationThread}
++      {submitting && <p className={styles.notice} role="status">Sending your message…</p>}
+       <BackgroundDossierRuns matterId={matterId} conversationId={conversationId} startedRun={run?.background ? run : null} onConversationRefresh={refreshBackgroundDossier} />
+       {run && !run.background && run.state !== "completed" && <div className={running(run) ? styles.notice : styles.runStatus} role="status"><p>{run.state} · {run.status}</p>{run.failure_detail && <p>{run.failure_detail}</p>}{running(run) ? <button onClick={() => void cancelChatRun(matterId, run.run_id).then(setRun).catch(e => setError(e.message))}>Stop work</button> : ["failed", "interrupted"].includes(run.state) ? <button onClick={() => void retryChatRun(matterId, run.run_id).then(next => { setRun(next); setPollAttempt(x => x + 1); }).catch(e => setError(e.message))}>Retry</button> : null}</div>}
+       </div><div className={styles.composer}><div className={styles.contextBar}><small>Context</small><div className={styles.row}>{context.documents.length ? context.documents.map(doc => <button key={doc.path} aria-label={`Remove ${doc.title} from message`} onClick={() => setContext(current => ({ documents: current.documents.filter(item => item.path !== doc.path), target: current.target?.artifact_path === doc.path ? undefined : current.target, commentId: current.target?.artifact_path === doc.path ? undefined : current.commentId, locked: true }))}>{doc.title} <span aria-hidden="true">×</span></button>) : <span className={styles.contextDefault}>This matter</span>}</div></div>{context.target?.selected_range && <p className={styles.quote}>{context.target.selected_range.text}</p>}{context.documents.length > 0 && <small className={styles.contextHelp}>{context.locked ? "Context fixed. Switching tabs will not change this message." : "This document is included. Context stays fixed once you type."}</small>}<details className={styles.includeMenu}><summary>Include a document</summary>{documents.map(doc => <button key={doc.path} disabled={context.documents.some(item => item.path === doc.path)} onClick={event => { event.currentTarget.closest("details")?.removeAttribute("open"); setContext(current => freezeMessageContext({ ...current, documents: [...current.documents, { document_id: doc.document_id, path: doc.path, title: doc.title, revision: doc.revision }] })); }}>{doc.title}</button>)}</details><label className={styles.srOnly} htmlFor="experimental-message">Message Themis</label><textarea id="experimental-message" ref={inputRef} rows={3} disabled={submitting || loading || draftReady !== draftKey} value={input} onChange={e => { setInput(e.target.value); setContext(current => current.locked ? current : freezeMessageContext(active ? documentContext(matterId, active, snapshots.current[active.document_id]) : current)); }} placeholder="Ask Themis about this matter…" onKeyDown={event => { if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) { event.preventDefault(); void send(); } }}/>{attachments.map(ref => <small key={ref.path}>{ref.name} · Attached </small>)}<div className={styles.composerActions}><label className={styles.attach}><span aria-hidden="true">＋</span> Attach files<input type="file" multiple disabled={uploading || busy} onChange={async (e) => { const files = Array.from(e.target.files ?? []); if (!files.length)
+@@ -383,7 +386,7 @@
+     }
+     finally {
+         setUploading(false);
+-    } }}/></label><ExperimentalModelPicker value={modelSelection} onChange={chooseModel} disabled={busy}/><button className={styles.primary} disabled={busy || loading || draftReady !== draftKey || uploading || !input.trim() && !attachments.length} onClick={() => void send()}>Send <span aria-hidden="true">↑</span></button></div></div>
++    } }}/></label><ExperimentalModelPicker value={modelSelection} onChange={chooseModel} disabled={busy}/><button className={styles.primary} disabled={busy || loading || draftReady !== draftKey || uploading || !input.trim() && !attachments.length} onClick={() => void send()}>{submitting ? "Sending…" : <>Send <span aria-hidden="true">↑</span></>}</button></div></div>
+       
+     </section>{openDocs.length > 0 && <section hidden={!active} className={styles.documents} aria-label="Open documents"><nav className={styles.tabs} aria-label="Document tabs">{openDocs.map(doc => <button aria-pressed={activePath === doc.path} key={doc.path} onClick={() => openDocument(doc.path)}>{doc.title}</button>)}<button onClick={() => { setActivePath(null); setContext(current => current.locked ? current : emptyContext()); }}>Hide documents</button></nav>{active && origins[active.path] && <button onClick={() => { const origin = origins[active.path]; openDocument(origin.path); requestAnimationFrame(() => { window.scrollTo({ top: origin.scroll }); if (origin.commentId)
+         window.document.getElementById(`experimental-comment-${origin.commentId}`)?.scrollIntoView({ block: "center" }); }); }}>← Back to {origins[active.path].commentId ? "comment in " : ""}{documents.find(doc => doc.path === origins[active.path].path)?.title ?? "original document"}</button>}{documentPanels}</section>}</div></>;
+
+--- frontend/components/BackgroundDossierRuns.tsx (before task)
++++ frontend/components/BackgroundDossierRuns.tsx
+@@ -14,9 +14,25 @@
+ }) {
+   const [runs, setRuns] = useState<ChatRun[]>([]);
+   const [error, setError] = useState("");
++  const [refreshAttempt, setRefreshAttempt] = useState(0);
+   const callbacks = useRef(onConversationRefresh);
+   callbacks.current = onConversationRefresh;
+   const completed = useRef(new Set<string>());
++  const scope = useRef({ matterId, conversationId });
++  scope.current = { matterId, conversationId };
++
++  async function refreshResult(run: ChatRun) {
++    if (running(run) || !run.conversation_id) return;
++    const token = `${run.run_id}:${run.finished_at}`;
++    if (completed.current.has(token)) return;
++    completed.current.add(token);
++    try { await callbacks.current(run.conversation_id); }
++    catch {
++      completed.current.delete(token);
++      if (scope.current.matterId === matterId && scope.current.conversationId === run.conversation_id)
++        setError("The dossier status is saved. Its result could not refresh yet.");
++    }
++  }
+ 
+   useEffect(() => {
+     if (!conversationId) { setRuns([]); return; }
+@@ -28,14 +44,9 @@
+         if (cancelled) return;
+         const background = saved.filter(run => run.background);
+         const latest = background[0];
+-        const token = latest && `${latest.run_id}:${latest.finished_at}`;
+-        if (latest && !running(latest) && token && !completed.current.has(token)) {
+-          await callbacks.current(conversationId!);
+-          if (cancelled) return;
+-          completed.current.add(token);
+-        }
+         setRuns(background.filter((run, index) => running(run) || index === 0));
+         setError("");
++        if (latest) void refreshResult(latest);
+       } catch {
+         if (!cancelled) setError("Dossier progress could not load. Saved work remains available.");
+       }
+@@ -45,7 +56,7 @@
+     }
+     void load();
+     return () => { cancelled = true; };
+-  }, [matterId, conversationId, startedRun?.run_id, startedRun?.state]);
++  }, [matterId, conversationId, startedRun?.run_id, startedRun?.state, refreshAttempt]);
+ 
+   const activeIds = runs.filter(running).map(run => run.run_id).sort().join(",");
+   useEffect(() => {
+@@ -56,16 +67,9 @@
+       try {
+         const updates = await Promise.all(activeIds.split(",").map(id => getChatRun(matterId, id)));
+         if (cancelled) return;
+-        for (const run of updates) {
+-          const token = `${run.run_id}:${run.finished_at}`;
+-          if (!running(run) && run.conversation_id && !completed.current.has(token)) {
+-            await callbacks.current(run.conversation_id);
+-            if (cancelled) return;
+-            completed.current.add(token);
+-          }
+-        }
+         setRuns(current => current.map(run => updates.find(next => next.run_id === run.run_id) ?? run));
+         setError("");
++        for (const run of updates) void refreshResult(run);
+       } catch {
+         if (!cancelled) setError("Dossier progress could not refresh. The work may still be running.");
+       }
+@@ -78,21 +82,24 @@
+   async function act(run: ChatRun, retry: boolean) {
+     try {
+       const next = await (retry ? retryChatRun(matterId, run.run_id) : cancelChatRun(matterId, run.run_id));
+-      if (next.conversation_id) await callbacks.current(next.conversation_id);
+       setRuns(current => current.map(item => item.run_id === next.run_id ? next : item));
+       setError("");
++      void refreshResult(next);
+     } catch { setError("The dossier action could not finish. Refresh to check its saved state."); }
+   }
+ 
+   return <div aria-label="Background dossier work">
+-    {runs.map(run => <section className={`chat-card ${running(run) ? "wash-agent" : run.state === "completed" ? "wash-healthy" : "wash-failure"}`} key={run.run_id} role="status">
+-      <div className="chat-card-kicker">Dossier · {running(run) ? "Working" : run.state === "completed" ? "Ready" : run.state === "interrupted" ? "Stopped" : "Failed"}</div>
+-      <div className="chat-card-summary">{running(run) ? "Preparing the dossier. You can keep asking questions." : run.response?.operation_results.find(item => item.operation === "generate_dossier" || item.operation === "prepare_dossier_research")?.summary || run.status}</div>
++    {runs.map(run => {
++      const result = run.response?.operation_results.find(item => item.operation === "generate_dossier" || item.operation === "prepare_dossier_research");
++      const needsChoices = run.state === "completed" && result?.operation === "prepare_dossier_research" && !!result.required_user_action;
++      return <section className={`chat-card ${running(run) ? "wash-agent" : needsChoices ? "wash-attention" : run.state === "completed" ? "wash-healthy" : "wash-failure"}`} key={run.run_id} role="status">
++      <div className="chat-card-kicker">Dossier · {running(run) ? "Working" : needsChoices ? "Plan prepared" : run.state === "completed" ? "Ready" : run.state === "interrupted" ? "Stopped" : "Failed"}</div>
++      <div className="chat-card-summary">{running(run) ? `${run.status} You can keep asking questions.` : needsChoices ? "The plan is saved. Its research options and progress are shown above." : result?.summary || run.status}</div>
+       <div className="chat-card-actions">
+         {running(run) ? <button className="btn tiny quiet" type="button" onClick={() => void act(run, false)}>Stop dossier</button>
+           : ["failed", "interrupted"].includes(run.state) ? <button className="btn tiny quiet" type="button" onClick={() => void act(run, true)}>Retry dossier</button> : null}
+       </div>
+-    </section>)}
+-    {error && <p role="alert">{error}</p>}
++    </section>; })}
++    {error && <p role="alert">{error} <button type="button" className="btn tiny quiet" onClick={() => setRefreshAttempt(value => value + 1)}>Refresh dossier result</button></p>}
+   </div>;
+ }
+
+--- backend/app/services/dossier_requests.py (before task)
++++ backend/app/services/dossier_requests.py
+@@ -329,15 +329,17 @@
+             from app.services.dossier_model import complete_dossier
+             reply = await complete_dossier(self.app, resolved, state, messages, snapshot=captured)
+             raw = (reply.content or "").strip()
+-            warnings.extend(data.get("context_warnings", []))
+-            warnings.extend(state.frozen_context.get("dossier_read_warnings", []))
+         except asyncio.CancelledError:
+             raise
+         except Exception as exc:  # degrade to a usable card, never a refusal
++            raw = str(state.frozen_context.get("dossier_partial_output") or "").strip()
+             warnings.append(
+                 f"Preparation analysis did not complete ({type(exc).__name__}). "
+-                "The suggested priorities fall back to the existing issue order."
+-            )
++                "Any available analysis is retained. Review the suggested priorities."
++            )
++
++        warnings.extend(data.get("context_warnings", []))
++        warnings.extend(state.frozen_context.get("dossier_read_warnings", []))
+ 
+         plan, prose, parse_warnings = parse_dossier_plan(raw)
+         warnings.extend(parse_warnings)
+
+
+--- backend/app/services/chat_runs.py (before task)
++++ backend/app/services/chat_runs.py
+@@ -325,12 +325,14 @@
+ 
+     async def _execute(self, matter_id: str, run_id: str) -> None:
+         from app.routers.chat import execute_chat
+-        from app.services.dossier_generation import generation_owner, generate_pending, preview_only, requested
++        from app.services.dossier_generation import generation_owner, generate_pending, preview_only, requested, saved_material_only
+         dossier_since = self.context.dossiers.generation_sequence
+ 
+         current = self.get(matter_id, run_id)
++        submitted = ChatRequest.model_validate(current["request"])
++        preparing_plan = requested(submitted) and not preview_only(submitted) and not saved_material_only(submitted)
+         self._write(
+-            matter_id, run_id, state="running", status="Model is working.",
++            matter_id, run_id, state="running", status="Preparing the dossier research plan. No research has started." if preparing_plan else "Model is working.",
+             milestone="Model is working.", started_at=iso_now(), failure_class=None,
+         )
+         execution = RunnerExecutionState(
+
+--- backend/app/routers/chat.py (before task)
++++ backend/app/routers/chat.py
+@@ -158,7 +158,7 @@
+ 
+ 
+ @router.get("/matters/{matter_id}/chat-runs", response_model=list[ChatRun])
+-async def list_chat_runs(matter_id: str, conversation_id: str | None = None, context: AppContext = Depends(get_context)):
++def list_chat_runs(matter_id: str, conversation_id: str | None = None, context: AppContext = Depends(get_context)):
+     try:
+         return context.chat_runs.list(matter_id, conversation_id)
+     except (KeyError, FileNotFoundError) as exc:
+@@ -166,7 +166,7 @@
+ 
+ 
+ @router.get("/matters/{matter_id}/chat-runs/{run_id}", response_model=ChatRun)
+-async def get_chat_run(matter_id: str, run_id: str, context: AppContext = Depends(get_context)):
++def get_chat_run(matter_id: str, run_id: str, context: AppContext = Depends(get_context)):
+     try:
+         return context.chat_runs.get(matter_id, run_id)
+     except WorkspaceConflict as exc:
+@@ -641,9 +641,9 @@
+         if path_historical:
+             run_state.scope_state["scope"] = "scenario"
+         if payload.matter_id and run_state.scope_state.get("scope") == "scenario":
+-            # Research progress is useful inside a hypothetical too. Other
+-            # cards can imply changes to the actual matter and stay suppressed.
+-            response.cards = [card for card in response.cards if card.type == "research_status"]
++            # An explicit dossier request still needs its setup/progress card
++            # when this conversation previously explored another approach.
++            response.cards = [card for card in response.cards if card.type in {"research_status", "dossier_research"}]
+         if payload.matter_id:
+             if not dossier_request and run_state.scope_state.get("scope") != "scenario":
+                 _apply_matter_actions(
+
+--- backend/app/routers/matters.py (before task)
++++ backend/app/routers/matters.py
+@@ -187,6 +187,8 @@
+         conversation = clean_conversation_for_display(
+             context.chat_history.get(matter_id, conversation_id)
+         )
++        from app.services.dossier_generation_chat import restore_dossier_cards
++        restore_dossier_cards(context, matter_id, conversation)
+         return _hide_resolved_intake_questions(context, matter_id, conversation)
+     except (KeyError, FileNotFoundError) as exc:
+         raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+--- backend/app/services/vault.py (before task)
++++ backend/app/services/vault.py
+@@ -25,7 +25,9 @@
+     """Safe, atomic access to the Markdown-first vault."""
+ 
+     # Bound retained source bytes and entry count; parsed metadata adds overhead.
+-    MARKDOWN_CACHE_MAX_BYTES = 32 * 1024 * 1024
++    # Long conversations include their frozen audit inputs. Keep room for a
++    # transcript above 32 MiB so each submit does not repeatedly parse it.
++    MARKDOWN_CACHE_MAX_BYTES = 64 * 1024 * 1024
+     MARKDOWN_CACHE_MAX_FILES = 256
+ 
+     def __init__(self, root: Path):
+
+--- backend/app/services/dossier_generation_chat.py (before task)
++++ backend/app/services/dossier_generation_chat.py
+@@ -1,6 +1,37 @@
+ """Chat presentation for the shared dossier generation action."""
+ from app.models.api import AppliedSkillSummary, ChatResponse, DossierResearchCard, ToolTrace
+ from app.services.dossier_generation import generate_dossier, preview_only, saved_material_only
++
++
++def restore_dossier_cards(app, matter_id, conversation):
++    """Restore controls omitted by older scenario filtering, from saved receipts.
++
++    This is a display projection. It neither reruns preparation nor changes the
++    transcript, and only uses a request saved for this exact conversation.
++    """
++    for message in conversation.get("messages", []):
++        if message.get("role") != "assistant":
++            continue
++        cards = message.setdefault("cards", [])
++        known = {card.get("request_id") for card in cards if card.get("type") == "dossier_research"}
++        for result in message.get("operation_results", []):
++            if result.get("operation") != "prepare_dossier_research" or result.get("status") not in {"changed", "no_change"}:
++                continue
++            for ref in result.get("entity_refs", []):
++                request_id = ref.get("id")
++                if ref.get("type") != "dossier_request" or not request_id or request_id in known:
++                    continue
++                try:
++                    status = app.dossier_requests.get(matter_id, request_id)
++                except (KeyError, OSError, ValueError):
++                    continue
++                if (status.get("origin") or {}).get("conversation_id") != conversation["conversation_id"]:
++                    continue
++                cards.append(DossierResearchCard(request_id=request_id, matter_id=matter_id,
++                    state=status["state"], phase=status["phase"], status=status,
++                    presentation="setup" if status["phase"] == "setup" else "progress").model_dump(mode="json"))
++                known.add(request_id)
++    return conversation
+ 
+ 
+ async def respond(app, payload, state, *, resolved_provider=None, checkpoint=None, run_id=None, message_id=None):
+
+--- /dev/null
++++ backend/tests/test_dossier_chat_recovery.py
+@@ -0,0 +1,73 @@
++"""Dossier controls and useful planning output survive partial and historical runs."""
++from copy import deepcopy
++
++import pytest
++
++from app.models.api import ChatRequest
++from app.providers.base import ProviderReply, ProviderToolCall
++from app.routers import chat, matters
++
++MATTER = "MAT-DEMO-BEACON"
++
++
++@pytest.mark.asyncio
++async def test_dossier_setup_survives_a_conversation_on_another_path(app_context):
++    app = app_context
++    payload = chat.freeze_workspace_request(ChatRequest(matter_id=MATTER,
++        message="Generate dossier", experimental_chat=True), app)
++    payload = chat.freeze_run_context(payload, app, "RUN-scenario-dossier")
++    payload.frozen_context["active_path"]["path_id"] = "SCN-prior-exploration"
++    response = await chat.execute_chat(payload, app)
++    card = next(card for card in response.cards if card.type == "dossier_research")
++    assert card.state == "awaiting_choices"
++    saved = app.chat_history.get(MATTER, response.conversation_id)
++    assert saved["messages"][-1]["cards"][0]["request_id"] == card.request_id
++    assert app.research_runs.managed_children(MATTER, card.request_id) == []
++
++    # Simulate the old scenario filter: the receipt survives but the card did not.
++    document = app.vault.read_markdown(saved["path"])
++    document["metadata"]["messages"][-1]["cards"] = []
++    app.vault.write_markdown(saved["path"], document["content"], document["metadata"])
++    before = app.vault.read_text(saved["path"])
++    restored = matters.get_conversation(MATTER, response.conversation_id, app)
++    restored_card = restored["messages"][-1]["cards"][0]
++    assert restored_card["request_id"] == card.request_id
++    assert restored_card["status"]["origin"]["conversation_id"] == response.conversation_id
++    assert app.vault.read_text(saved["path"]) == before, "Reading must not rewrite historical evidence"
++
++    from app.services.dossier_generation_chat import restore_dossier_cards
++    assert restore_dossier_cards(app, MATTER, restored)["messages"][-1]["cards"] == [restored_card]
++    wrong_origin = deepcopy(restored)
++    wrong_origin["conversation_id"] = "CONV-another"
++    wrong_origin["messages"][-1]["cards"] = []
++    assert restore_dossier_cards(app, MATTER, wrong_origin)["messages"][-1]["cards"] == []
++
++
++@pytest.mark.asyncio
++async def test_preparation_timeout_keeps_prior_text_and_record_read_warnings(app_context):
++    app = app_context
++    useful = "## Useful preparation\n\nThe launch depends on the terms already saved."
++
++    class PartialPlanner:
++        calls = 0
++
++        async def complete(self, messages, tools=None):
++            self.calls += 1
++            if self.calls == 1:
++                return ProviderReply(content=useful, tool_calls=[ProviderToolCall(
++                    id="read-1", name="read_dossier_record", arguments={"record_id": "missing-record"})])
++            raise TimeoutError("No final answer arrived")
++
++    provider = PartialPlanner()
++    app.runner.provider = provider
++    before = app.dossiers.get(MATTER)
++    result = await app.dossier_requests.prepare(ChatRequest(matter_id=MATTER,
++        message="Generate dossier", source_action_key="partial-preparation"))
++    assert result["state"] == "awaiting_choices"
++    assert useful in result["preparation"]
++    record = app.dossier_requests.get_record(MATTER, result["request_id"])["metadata"]
++    assert record["raw_preparation_output"] == useful
++    assert any("TimeoutError" in warning for warning in record["preparation_warnings"])
++    assert any("saved-record read" in warning.lower() for warning in record["preparation_warnings"])
++    assert app.dossiers.get(MATTER) == before
++    assert provider.calls == 3, "After a read failure, still try one answer without tools"

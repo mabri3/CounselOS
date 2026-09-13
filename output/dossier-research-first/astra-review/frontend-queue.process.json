@@ -1,0 +1,10 @@
+{
+  "pid": 89058,
+  "command": [
+    "npm",
+    "run",
+    "check:research-queue"
+  ],
+  "cwd": "/Users/bharris/Programs/counsel-os-mvp/frontend",
+  "started_at": "2026-09-12T06:46:17.899331+00:00"
+}

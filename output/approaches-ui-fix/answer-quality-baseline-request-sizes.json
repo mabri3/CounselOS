@@ -1,0 +1,8 @@
+{
+  "bytes": [
+    76387
+  ],
+  "engineering_ceiling": 256000,
+  "provider_usage": null,
+  "method": "scripted provider actual dispatch capture"
+}

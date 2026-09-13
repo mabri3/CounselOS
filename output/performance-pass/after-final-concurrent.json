@@ -1,0 +1,44 @@
+[
+  {
+    "name": "health",
+    "status": 200,
+    "seconds": 0.139,
+    "bytes": 149
+  },
+  {
+    "name": "matter",
+    "status": 200,
+    "seconds": 6.178,
+    "bytes": 605647
+  },
+  {
+    "name": "workspace",
+    "status": 200,
+    "seconds": 8.075,
+    "bytes": 213482
+  },
+  {
+    "name": "conversations",
+    "status": 200,
+    "seconds": 1.34,
+    "bytes": 1434
+  },
+  {
+    "name": "saved_conversation",
+    "status": 200,
+    "seconds": 1.087,
+    "bytes": 7051435
+  },
+  {
+    "name": "research_options",
+    "status": 200,
+    "seconds": 1.391,
+    "bytes": 831
+  },
+  {
+    "name": "paths",
+    "status": 200,
+    "seconds": 6.816,
+    "bytes": 1705
+  }
+]

@@ -1,0 +1,196 @@
+Browser tab: 3, Title: "Themis.ai", URL: "http://localhost:3207/experimental/chat?matter=MAT-DEMO-BEACON".
+1 AXWebArea Themis.ai, URL: localhost:3207/experimental/chat?matter=MAT-DEMO-BEACON
+	2 container
+		3 button (expanded) Description: Toggle matter navigation, Secondary Actions: Collapse
+		4 button (collapsed) themis.ai, Secondary Actions: Expand
+			5 text themis.ai
+		6 text Experimental chat
+		7 link Description: Back to workspace , Value: localhost:3207/matters
+	8 container
+		9 text Your matters 10
+		10 search text field (settable) Find a matter
+		11 container Matters
+			15 checkbox Orbit: Bank-Transaction Data Expansion, Value: 0
+			16 checkbox Pulse: Earned Wage Access Expansion, Value: 0
+			17 checkbox Northstar: AI Credit-Line Increase Model, Value: 0
+			18 checkbox Relay: Open-Banking Reauthentication and Data Use, Value: 0
+			19 checkbox Beacon: Instant Business Onboarding, Value: 1
+			20 checkbox Cedar: Cash Sweep and Deposit Insurance Disclosures, Value: 0
+			21 checkbox Harbor: Account Hold Support Response, Value: 0
+			22 checkbox Project Apex: AI Voice Telemetry, Value: 0
+			23 checkbox Delta: Same-Day Payout Pricing, Value: 0
+			24 checkbox Mason: Analytics SDK Review, Value: 0
+		12 link Description: Archive & trash, Value: localhost:3207/matters/storage
+		13 button  New matter
+	14 container
+		25 text MATTER CONVERSATION
+		26 heading Beacon: Instant Business Onboarding, Value: 1
+			27 text Beacon: Instant Business Onboarding
+		28 button Continue intake
+		29 button New conversation
+		30 button Refresh matter
+		31 link Description: Matter record, Value: localhost:3207/matters/MAT-DEMO-BEACON
+		32 container Experimental conversation
+			33 container
+				34 button (collapsed) History 1⌄, Secondary Actions: Expand
+					35 text History 
+					36 text 1
+					37 text ⌄
+				38 button (collapsed) Files 59⌄, Secondary Actions: Expand
+					39 text Files 
+					40 text 59
+					171 text ⌄
+				42 button (collapsed) Skills⌄, Secondary Actions: Expand
+					43 text Skills
+					44 text ⌄
+				45 button (collapsed) Approaches⌄, Secondary Actions: Expand
+					46 text Approaches
+					47 text ⌄
+				48 container Problem breakdown
+					49 button (collapsed) Problem breakdown · Not yet analyzed⌄, Secondary Actions: Expand
+						50 text Problem breakdown
+						51 text  · 
+						52 text Not yet analyzed
+						53 text ⌄
+			54 container
+				55 text You
+				172 text Generate a dossier for this matter.
+				57 text Themis.ai
+				58 heading Suggested priorities, Value: 2
+					59 text Suggested priorities
+				173 text Review the five saved issues across employment, privacy, supplier, intellectual-property, and marketing workstreams. The first three suggested priorities focus on launch blockers, vendor dependencies, and supported claims.
+				174 text Dossier research is ready for your choices. No research has started.
+				62 container
+					63 text DOSSIER RESEARCH ·  COMPLETE
+					64 heading Researching 5 of 5 issues, Value: 3
+						65 text Researching 5 of 5 issues
+					66 button First dossier ready · Open exact revision
+					67 button Latest dossier update · Open exact revision
+					68 text Update ready for review
+					69 content list
+						70 container
+							71 text Employment terms: Confirm worker terms and launch staffing conditions. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							72 button Open saved answer
+						73 container
+							74 text Customer privacy: Confirm notice, purpose, and access controls. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							75 button Open saved answer
+						76 container
+							77 text Supplier contract: Confirm service levels, termination, and transfer terms. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							78 button Open saved answer
+						79 container
+							80 text Intellectual property: Confirm ownership and trademark permission. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							81 button Open saved answer
+						82 container
+							83 text Marketing claims: Confirm evidence for public launch claims. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							84 button Open saved answer
+					85 button (collapsed) Diagnostic details⌄, Secondary Actions: Expand
+						86 text Diagnostic details
+						87 text ⌄
+				88 text Themis.ai
+				175 text First dossier ready. Researched: Employment terms: Confirm worker terms and launch staffing c; Customer privacy: Confirm notice, purpose, and access contro; Supplier contract: Confirm service levels, termination, and .
+				176 link Description: Open dossier revision, Value: localhost:3207/experimental/03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-5c1119c85c0efd71a338.md
+				91 container
+					92 text DOSSIER RESEARCH ·  COMPLETE
+					93 heading Researching 5 of 5 issues, Value: 3
+						94 text Researching 5 of 5 issues
+					95 button First dossier ready · Open exact revision
+					96 button Latest dossier update · Open exact revision
+					97 text Update ready for review
+					98 content list
+						99 container
+							100 text Employment terms: Confirm worker terms and launch staffing conditions. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							101 button Open saved answer
+						102 container
+							103 text Customer privacy: Confirm notice, purpose, and access controls. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							104 button Open saved answer
+						105 container
+							106 text Supplier contract: Confirm service levels, termination, and transfer terms. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							107 button Open saved answer
+						108 container
+							109 text Intellectual property: Confirm ownership and trademark permission. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							110 button Open saved answer
+						111 container
+							112 text Marketing claims: Confirm evidence for public launch claims. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							113 button Open saved answer
+					114 button (collapsed) Diagnostic details⌄, Secondary Actions: Expand
+						115 text Diagnostic details
+						116 text ⌄
+				117 text Themis.ai
+				177 text Dossier updated. Researched: Intellectual property: Confirm ownership and trademark permi; Marketing claims: Confirm evidence for public launch claims.. This dossier uses earlier facts or an earlier question; current advice was not replaced.
+				178 link Description: Open dossier revision, Value: localhost:3207/experimental/03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-bd9c1c888e233315b966.md
+				120 container
+					121 text DOSSIER RESEARCH ·  COMPLETE
+					122 heading Researching 5 of 5 issues, Value: 3
+						123 text Researching 5 of 5 issues
+					124 button First dossier ready · Open exact revision
+					125 button Latest dossier update · Open exact revision
+					126 text Update ready for review
+					127 content list
+						128 container
+							129 text Employment terms: Confirm worker terms and launch staffing conditions. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							130 button Open saved answer
+						131 container
+							132 text Customer privacy: Confirm notice, purpose, and access controls. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							133 button Open saved answer
+						134 container
+							135 text Supplier contract: Confirm service levels, termination, and transfer terms. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							136 button Open saved answer
+						137 container
+							138 text Intellectual property: Confirm ownership and trademark permission. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							139 button Open saved answer
+						140 container
+							141 text Marketing claims: Confirm evidence for public launch claims. Complete 1  sources read ·  2  sources retrieved  · 2 sources retrieved; 1 with passages read
+							142 button Open saved answer
+					143 button (collapsed) Diagnostic details⌄, Secondary Actions: Expand
+						144 text Diagnostic details
+						145 text ⌄
+			146 container
+				147 text Context This matter
+				148 button (collapsed) Include a document⌄, Secondary Actions: Expand
+					149 text Include a document
+					150 text ⌄
+				151 text Message Themis
+				152 text entry area (settable) Message Themis, Value: Unsent lawyer note: retain this draft., ID: experimental-message
+				153 text Attach files
+				154 button Attach files
+				155 button (collapsed) Description: Choose chat model, Help: Workspace default, Secondary Actions: Expand
+					156 text Workspace default
+				157 button Send 
+		158 container Open documents
+			159 container Document tabs
+				160 checkbox Beacon: Instant Business Onboarding, Value: 0
+				161 checkbox Generated dossier revision, Value: 0
+				170 checkbox Generated dossier revision, Value: 0
+				179 checkbox Captured reference check, Value: 1
+				162 button Hide documents
+			180 container Saved version b58f0d59483446bd82c7649d844b7fb2718c557675bbc1cfe1267cde1e48c430
+				181 text Source  · Saved  · Read only
+			182 heading Captured reference check, Value: 2
+				183 text Captured reference check
+			184 text Synthetic browser fixture.
+			185 button Original transfer clause, Help: Open captured record
+			186 button Amended transfer clause, Help: Open captured record
+			187 container
+				188 text Ambiguous source: 
+				189 button (disabled) SRC-version-browser · unavailable, Help: Open captured record
+					190 text SRC-version-browser  · unavailable
+			191 container
+				192 text Unavailable records: 
+				193 button (disabled) Q-missing-one · unavailable, Help: Open captured record
+					194 text Q-missing-one  · unavailable
+				195 text  and 
+				196 button (disabled) Q-missing-two · unavailable, Help: Open captured record
+					197 text Q-missing-two  · unavailable
+				198 text .
+			199 container Captured source details
+				200 text Original transfer clause
+				201 container
+					202 text supplied_source  ·  SRC-version-browser
+				203 container
+					204 text Saved version  2ef56eefa2cc
+				205 text Written consent is required before transfer.
+				206 button Open current saved file
+				207 button Open source record
+				208 button Close source details
+
+The focused UI element is 1 AXWebArea Themis.ai, URL: localhost:3207/experimental/chat?matter=MAT-DEMO-BEACON

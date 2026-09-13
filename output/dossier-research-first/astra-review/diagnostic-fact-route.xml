@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.980" timestamp="2026-09-11T23:53:32.430905-07:00" hostname="Mac"><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR05_actual_saved_only_chat_binds_distinct_facts" time="0.544"><failure message="AssertionError: Production chat never supplies the reference catalog&#10;assert False&#10; +  where False = all(&lt;generator object test_AR05_actual_saved_only_chat_binds_distinct_facts.&lt;locals&gt;.&lt;genexpr&gt; at 0x10be4cac0&gt;)">app_context = &lt;app.runtime.AppContext object at 0x10926c380&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR05_actual_saved_only_chat_binds_distinct_facts(app_context):
+        app=app_context
+        from tests.test_dossier_references import _two_facts
+        _two_facts(app)
+        facts=app.matter_records.get(MATTER)['facts']
+        assert len(facts)&gt;=2
+        ids=[f['fact_id'] for f in facts[:2]]
+        class FactWriter:
+            async def complete(self,messages,tools=None):
+                return ProviderReply(content='# Dossier\n\nThe answer relies on '+ids[0]+' and separately '+ids[1]+'.')
+        install(app,FactWriter())
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=_api(app)),base_url='http://test') as c:
+            response=await c.post('/api/chat',json={'matter_id':MATTER,'message':'Generate a dossier from saved material only.',
+                'experimental_chat':True,'source_action_key':'review-fact-binding'})
+        assert response.status_code==200,response.text
+        result=response.json(); print('reply',result['reply'][:500],'sources',result.get('source_records'))
+&gt;       assert all('[source:'+i+']' in result['reply'] for i in ids), 'Production chat never supplies the reference catalog'
+E       AssertionError: Production chat never supplies the reference catalog
+E       assert False
+E        +  where False = all(&lt;generator object test_AR05_actual_saved_only_chat_binds_distinct_facts.&lt;locals&gt;.&lt;genexpr&gt; at 0x10be4cac0&gt;)
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:186: AssertionError</failure></testcase></testsuite></testsuites>

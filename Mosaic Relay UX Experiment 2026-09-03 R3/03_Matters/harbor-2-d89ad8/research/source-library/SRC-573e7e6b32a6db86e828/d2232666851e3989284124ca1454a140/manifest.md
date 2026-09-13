@@ -1,0 +1,50 @@
+---
+record_type: source_manifest
+immutable: true
+editable: false
+schema_version: 1
+matter_id: MAT-20260909-d89ad8
+source_id: SRC-573e7e6b32a6db86e828
+source_version: d2232666851e3989284124ca1454a140
+title: https://html.duckduckgo.com/html/?q=payment+business+asset+acquisition+compliance+legal+due+diligence+customer+migration
+source_kind: retrieved
+original_path: 03_Matters/harbor-2-d89ad8/research/sources/RUN-99fe9b88f6a8b09d-573e7e6b32a6db86e828-fetch.md.bin
+original_sha256: a8121bbaae10052a99c3fb1c4a061e65532519833926d9eee235b6f82b107cb1
+requested_url: https://html.duckduckgo.com/html/?q=payment+business+asset+acquisition+compliance+legal+due+diligence+customer+migration
+final_url: null
+retrieved_at: '2026-09-13T04:05:38.032275+00:00'
+published_at: null
+effective_at: null
+jurisdiction: null
+extraction_format_version: 2
+extraction_state: complete
+page_count: null
+extracted_unit_count: 1
+total_chars: 4732
+unread_page_count: 0
+next_page: null
+units:
+- unit_id: s000001
+  path: 03_Matters/harbor-2-d89ad8/research/source-library/SRC-573e7e6b32a6db86e828/d2232666851e3989284124ca1454a140/sections/s000001.md
+  body_sha256: 1dd7383337201fa5e107841118f2103e09c06d4eec5b15038a62a1a5d8347ed4
+  char_count: 4732
+  page_number: null
+  section_label: Section 1
+  extraction_method: text
+  warning: ''
+  image_path: null
+  continues_previous: false
+  continues_next: false
+warnings: []
+predecessor_version: null
+created_at: '2026-09-13T04:05:38+00:00'
+---
+# https://html.duckduckgo.com/html/?q=payment+business+asset+acquisition+compliance+legal+due+diligence+customer+migration
+
+Source `SRC-573e7e6b32a6db86e828` version `d2232666851e3989284124ca1454a140` (retrieved, extraction complete).
+
+- Original: `03_Matters/harbor-2-d89ad8/research/sources/RUN-99fe9b88f6a8b09d-573e7e6b32a6db86e828-fetch.md.bin` (sha256 `a8121bbaae10052a99c3fb1c4a061e65532519833926d9eee235b6f82b107cb1`)
+- Extracted units: 1; characters: 4732
+- Requested URL: https://html.duckduckgo.com/html/?q=payment+business+asset+acquisition+compliance+legal+due+diligence+customer+migration
+
+The full unit list is in this record's metadata and on disk; it is never loaded into a model request automatically.

@@ -1,0 +1,464 @@
+{
+  "child_summaries": [
+    {
+      "active_seconds": 85.0,
+      "evidence_reads": 3,
+      "finished_at": "2026-09-12T06:29:31+00:00",
+      "issue_id": "ISS-51e775d196-fdf737a8425d6892",
+      "main_call_count": 2,
+      "managed_state": "failed",
+      "packet_paths": [],
+      "request_traces": [
+        {
+          "provider_legs": [
+            {
+              "attempt_count": 1,
+              "authority_retrieved": true,
+              "correlation_id": null,
+              "elapsed_ms": 10648,
+              "provider": "firecrawl",
+              "status": "retrieved",
+              "timeout_seconds": 90
+            }
+          ],
+          "public_query": "California Automatic Renewal Law Business and Professions Code 17602 affirmative consent cancellation online subscription AB 2863 effective January 1 2026",
+          "source_goal": "operative_rule",
+          "sources": [
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-78d5dae71cf1edde93ba-d3f1dd1a56b6.md",
+              "source_id": "SRC-78d5dae71cf1edde93ba",
+              "support_state": "retrieved",
+              "url": "https://calmatters.digitaldemocracy.org/bills/ca_202320240ab2863"
+            },
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-2c3484e7cebea7e2acb5-2b0ae7e690ef.md",
+              "source_id": "SRC-2c3484e7cebea7e2acb5",
+              "support_state": "retrieved",
+              "url": "https://dtolaw.com/news/californias-automatic-renewal-law-new-requirements-businesses-should-know-about/"
+            },
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-3cfecccc9ea4f45488b4-6ed13680d822.md",
+              "source_id": "SRC-3cfecccc9ea4f45488b4",
+              "support_state": "retrieved",
+              "url": "https://www.businessattorneysandiego.com/automatic-renewal-law-california"
+            }
+          ],
+          "status": "retrieved"
+        }
+      ],
+      "retrieved_sources": 4,
+      "run_id": "RUN-7cc4ffbe990727e9",
+      "started_at": "2026-09-12T06:28:06+00:00",
+      "state": "failed",
+      "tool_counts": {
+        "collect_research_evidence": 1,
+        "search_research_sources": 3
+      }
+    },
+    {
+      "active_seconds": 162.0,
+      "evidence_reads": 0,
+      "finished_at": "2026-09-12T06:30:48+00:00",
+      "issue_id": "ISS-51e775d196-71cec1796ad7aeaa",
+      "main_call_count": 1,
+      "managed_state": "failed",
+      "packet_paths": [],
+      "request_traces": [
+        {
+          "provider_legs": [
+            {
+              "attempt_count": 1,
+              "authority_retrieved": true,
+              "correlation_id": null,
+              "elapsed_ms": 10525,
+              "provider": "firecrawl",
+              "status": "retrieved",
+              "timeout_seconds": 90
+            }
+          ],
+          "public_query": "California CCPA notice at collection required content 11 CCR 7012 categories purposes retention",
+          "source_goal": "operative_rule",
+          "sources": [
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-e9e3ccfe1072d6768dd4-8e4651bf5129.md",
+              "source_id": "SRC-e9e3ccfe1072d6768dd4",
+              "support_state": "retrieved",
+              "url": "https://www.law.cornell.edu/regulations/california/11-CCR-7012"
+            },
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-f07257f3b458a24a346a-8e95f5d62222.md",
+              "source_id": "SRC-f07257f3b458a24a346a",
+              "support_state": "retrieved",
+              "url": "https://privacy.gtlaw.com/ccpa-regulations/"
+            },
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-76d7e9a49d9cf9ad0b75-d29b39ca615f.md",
+              "source_id": "SRC-76d7e9a49d9cf9ad0b75",
+              "support_state": "retrieved",
+              "url": "https://www.jacksonlewis.com/insights/navigating-california-consumer-privacy-act-30-essential-faqs-covered-businesses-including-clarifying-regulations-effective-1126"
+            }
+          ],
+          "status": "retrieved"
+        },
+        {
+          "provider_legs": [
+            {
+              "attempt_count": 1,
+              "authority_retrieved": true,
+              "correlation_id": null,
+              "elapsed_ms": 14567,
+              "provider": "firecrawl",
+              "status": "retrieved",
+              "timeout_seconds": 90
+            }
+          ],
+          "public_query": "CCPA service provider written contract requirements limited purpose 1798.100(d) 1798.140(ag) 11 CCR 7053",
+          "source_goal": "operative_rule",
+          "sources": [
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-180b28ed6b78841fed02-001a1c55db5c.md",
+              "source_id": "SRC-180b28ed6b78841fed02",
+              "support_state": "retrieved",
+              "url": "https://www.law.cornell.edu/regulations/california/11-CCR-7051"
+            },
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-097a132ddca6a7b86303-0e758d0e402d.md",
+              "source_id": "SRC-097a132ddca6a7b86303",
+              "support_state": "retrieved",
+              "url": "https://govt.westlaw.com/calregs/Document/I3C9296709E9911F094FA8F2800CF429F?viewType=FullText&originationContext=documenttoc&transitionType=StatuteNavigator&contextData=%28sc.Default%29"
+            },
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-156fa86586ce955c24fe-b19be52946af.md",
+              "source_id": "SRC-156fa86586ce955c24fe",
+              "support_state": "retrieved",
+              "url": "https://codes.findlaw.com/ca/civil-code/civ-sect-1798-140/"
+            },
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-f07257f3b458a24a346a-8e95f5d62222.md",
+              "source_id": "SRC-f07257f3b458a24a346a",
+              "support_state": "retrieved",
+              "url": "https://privacy.gtlaw.com/ccpa-regulations/"
+            }
+          ],
+          "status": "retrieved"
+        },
+        {
+          "provider_legs": [
+            {
+              "attempt_count": 1,
+              "authority_retrieved": true,
+              "correlation_id": null,
+              "elapsed_ms": 4205,
+              "provider": "firecrawl",
+              "status": "retrieved",
+              "timeout_seconds": 90
+            }
+          ],
+          "public_query": "CCPA business applicability thresholds $25 million revenue 100,000 consumers 1798.140(d)",
+          "source_goal": "operative_rule",
+          "sources": [
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-76d7e9a49d9cf9ad0b75-d29b39ca615f.md",
+              "source_id": "SRC-76d7e9a49d9cf9ad0b75",
+              "support_state": "retrieved",
+              "url": "https://www.jacksonlewis.com/insights/navigating-california-consumer-privacy-act-30-essential-faqs-covered-businesses-including-clarifying-regulations-effective-1126"
+            },
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-0c58f8e2be57f4508701-5861bebccf07.md",
+              "source_id": "SRC-0c58f8e2be57f4508701",
+              "support_state": "retrieved",
+              "url": "https://oag.ca.gov/privacy/ccpa"
+            },
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-b9b5e311fb9b703b30bc-6d8916a4851d.md",
+              "source_id": "SRC-b9b5e311fb9b703b30bc",
+              "support_state": "retrieved",
+              "url": "https://www.clym.io/blog/ccpa-applicability-guide"
+            },
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-54a033061a61b40aac36-4e0c37ec9dd3.md",
+              "source_id": "SRC-54a033061a61b40aac36",
+              "support_state": "retrieved",
+              "url": "https://www.fisherphillips.com/en/insights/insights/does-ccpa-apply-to-your-business"
+            }
+          ],
+          "status": "retrieved"
+        }
+      ],
+      "retrieved_sources": 10,
+      "run_id": "RUN-72ac3d54d92d026d",
+      "started_at": "2026-09-12T06:28:06+00:00",
+      "state": "failed",
+      "tool_counts": {
+        "collect_research_evidence": 1,
+        "read_file": 1
+      }
+    },
+    {
+      "active_seconds": 389.0,
+      "evidence_reads": 9,
+      "finished_at": "2026-09-12T06:34:35+00:00",
+      "issue_id": "ISS-51e775d196-f6e701a9fb1cc4c7",
+      "main_call_count": 8,
+      "managed_state": "ready_for_composition",
+      "packet_paths": [
+        "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/RES-20260912-996d5f.md"
+      ],
+      "request_traces": [
+        {
+          "provider_legs": [
+            {
+              "attempt_count": 1,
+              "authority_retrieved": true,
+              "correlation_id": null,
+              "elapsed_ms": 4773,
+              "provider": "firecrawl",
+              "status": "retrieved",
+              "timeout_seconds": 90
+            }
+          ],
+          "public_query": "enterprise SaaS contract termination assistance data export post-termination transition period best practice",
+          "source_goal": "guidance",
+          "sources": [
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-c3012b085b5cda1528af-7a52a47b7420.md",
+              "source_id": "SRC-c3012b085b5cda1528af",
+              "support_state": "retrieved",
+              "url": "https://www.linkedin.com/posts/jack-amaral-9152b685_exit-and-termination-clauses-for-saas-agreements-activity-7284614928697618434-fBOA"
+            },
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-d6da76e665ab390a546c-26f4c46831c2.md",
+              "source_id": "SRC-d6da76e665ab390a546c",
+              "support_state": "retrieved",
+              "url": "https://turleylaw.com/blog/saas-data-ownership-exit-strategy"
+            },
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-382d8980458516a89076-978a06cc42e5.md",
+              "source_id": "SRC-382d8980458516a89076",
+              "support_state": "retrieved",
+              "url": "https://globallawexperts.com/eu-data-act-termination-for-convenience/"
+            },
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-e9c2fe42e8c24f6f9bc8-0158a8f77d86.md",
+              "source_id": "SRC-e9c2fe42e8c24f6f9bc8",
+              "support_state": "retrieved",
+              "url": "https://toslawyer.com/saas-vendor-lock-in-exit-clauses-data-portability/"
+            }
+          ],
+          "status": "retrieved"
+        },
+        {
+          "provider_legs": [
+            {
+              "attempt_count": 1,
+              "authority_retrieved": true,
+              "correlation_id": null,
+              "elapsed_ms": 6972,
+              "provider": "firecrawl",
+              "status": "retrieved",
+              "timeout_seconds": 90
+            }
+          ],
+          "public_query": "SaaS vendor lock-in exit plan data escrow sudden service termination customer continuity practices",
+          "source_goal": "guidance",
+          "sources": [
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-50cd4d04f0397471295e-89edab711c12.md",
+              "source_id": "SRC-50cd4d04f0397471295e",
+              "support_state": "retrieved",
+              "url": "https://www.isc2.org/Insights/2024/04/Cloud-Exit-Strategies-Avoiding-Vendor-Lock-in"
+            },
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-34f059babb66bf5d8471-76ce3a8fa4e7.md",
+              "source_id": "SRC-34f059babb66bf5d8471",
+              "support_state": "retrieved",
+              "url": "https://www.escode.com/resources/how-to-avoid-vendor-lock-in/"
+            },
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-9a38685251959dcd9c68-bbceefb3c317.md",
+              "source_id": "SRC-9a38685251959dcd9c68",
+              "support_state": "retrieved",
+              "url": "https://praxisescrow.com/cloud-exit-strategy-software-escrow"
+            },
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-02f47bbfc9e804f9851a-b3748fb6daac.md",
+              "source_id": "SRC-02f47bbfc9e804f9851a",
+              "support_state": "retrieved",
+              "url": "https://openmetal.io/resources/blog/a-practical-guide-to-a-successful-public-cloud-exit-strategy/"
+            }
+          ],
+          "status": "retrieved"
+        },
+        {
+          "provider_legs": [
+            {
+              "attempt_count": 1,
+              "authority_retrieved": true,
+              "correlation_id": null,
+              "elapsed_ms": 6756,
+              "provider": "firecrawl",
+              "status": "retrieved",
+              "timeout_seconds": 90
+            }
+          ],
+          "public_query": "SaaS contract termination for convenience notice period cure period wind-down survival clauses customer protection",
+          "source_goal": "guidance",
+          "sources": [
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-24ddea836a6a66d3c852-16e65e9f2284.md",
+              "source_id": "SRC-24ddea836a6a66d3c852",
+              "support_state": "retrieved",
+              "url": "https://www.contractken.com/glossary/termination-for-convenience"
+            },
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-e189b69dcff995d864fb-d187bdc06618.md",
+              "source_id": "SRC-e189b69dcff995d864fb",
+              "support_state": "retrieved",
+              "url": "https://gouchevlaw.com/7-exit-risks-companies-miss-in-termination-for-convenience-clauses/"
+            },
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-077d06a37a985f6e8b8f-6b5f5b0145c7.md",
+              "source_id": "SRC-077d06a37a985f6e8b8f",
+              "support_state": "retrieved",
+              "url": "https://kevinacohn.medium.com/the-no-termination-for-convenience-playbook-f701ca585d0a"
+            },
+            {
+              "path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/research/sources/SRC-71e9ad07f4ec773f8d8f-45cef2234a91.md",
+              "source_id": "SRC-71e9ad07f4ec773f8d8f",
+              "support_state": "retrieved",
+              "url": "https://gc.ai/clauses/termination"
+            }
+          ],
+          "status": "retrieved"
+        }
+      ],
+      "retrieved_sources": 12,
+      "run_id": "RUN-959dbc35258d60cb",
+      "started_at": "2026-09-12T06:28:06+00:00",
+      "state": "completed",
+      "tool_counts": {
+        "collect_research_evidence": 1,
+        "list_files": 1,
+        "read_file": 5,
+        "read_research_source": 10,
+        "search_research_sources": 2
+      }
+    }
+  ],
+  "children_recorded_at": "2026-09-12T06:28:06.835325+00:00",
+  "completed_at": "2026-09-12T06:34:35.721354+00:00",
+  "cost": null,
+  "cost_note": "The configured provider did not expose cost for this exercise; no dollar value was estimated.",
+  "dossier_path": "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/dossier.md",
+  "dossier_revision_paths": [],
+  "external_attempt_count": 1,
+  "external_started_at": "2026-09-12T06:26:43.527425+00:00",
+  "final_parent_phase": "finished",
+  "final_parent_state": "partial",
+  "first_pass_ready_at": "2026-09-12T06:34:35+00:00",
+  "first_useful_dossier_seconds": 471.472575,
+  "fixture_id": "dossier-live-quality-20260912-01",
+  "fixture_vault": "/Users/bharris/Programs/counsel-os-mvp/output/dossier-research-first/live-quality-vault",
+  "full_request_seconds": 472.20766720798565,
+  "matter_id": "MAT-20260912-f7ed8b",
+  "matter_source_action_key": "step13:live-quality:matter:20260912-01",
+  "parent_request_id": "DOR-20260912-f382af",
+  "phase": "configured_model_attempt_completed",
+  "planned_issue_workers": [
+    {
+      "issue_id": "ISS-51e775d196-fdf737a8425d6892",
+      "planned_identity": "dossier-live-quality-20260912-01:ISS-51e775d196-fdf737a8425d6892",
+      "run_id": "RUN-7cc4ffbe990727e9"
+    },
+    {
+      "issue_id": "ISS-51e775d196-71cec1796ad7aeaa",
+      "planned_identity": "dossier-live-quality-20260912-01:ISS-51e775d196-71cec1796ad7aeaa",
+      "run_id": "RUN-72ac3d54d92d026d"
+    },
+    {
+      "issue_id": "ISS-51e775d196-f6e701a9fb1cc4c7",
+      "planned_identity": "dossier-live-quality-20260912-01:ISS-51e775d196-f6e701a9fb1cc4c7",
+      "run_id": "RUN-959dbc35258d60cb"
+    }
+  ],
+  "preparation_completed_at": "2026-09-12T06:28:06.682375+00:00",
+  "preparation_run_id": "DORPREP-STEP13-20260912-01",
+  "preparation_seconds": 83.15455625002505,
+  "preparation_source_action_key": "step13:live-quality:prepare:20260912-01",
+  "prepared_at": "2026-09-12T06:26:33.337298+00:00",
+  "publication_count": 1,
+  "publications": [
+    {
+      "batch_index": 0,
+      "composed_at": "2026-09-12T06:34:35+00:00",
+      "dossier_hash": null,
+      "issue_ids": [
+        "ISS-51e775d196-fdf737a8425d6892",
+        "ISS-51e775d196-71cec1796ad7aeaa",
+        "ISS-51e775d196-f6e701a9fb1cc4c7"
+      ],
+      "key": "dossier-batch:72ecd37a42cfd486f2753a4558367b73830f9f2a1d5f391c8f7cf039894f1502",
+      "receipts": {
+        "dossier": {
+          "revision_path": null,
+          "state": "failed"
+        },
+        "recommendation": {
+          "state": "proposed",
+          "version_id": "REC-20260912-974038"
+        }
+      },
+      "recommendations_hash": "af9292cc7acc2a3afe36bdf1574c6976f42c7839bbddfaa8a033309f93e24215",
+      "revision_path": null,
+      "state": "failed",
+      "warning": ""
+    }
+  ],
+  "retained_other_issue_ids": [
+    "ISS-51e775d196-d3b1acb2ef2a3a22",
+    "ISS-51e775d196-6e20febaeb754a1c"
+  ],
+  "saved_model_selections": {
+    "collector": {
+      "agent_id": "research-agent",
+      "model": "deepseek-v4.1-flash",
+      "provider": "opencode_go",
+      "reasoning_effort": "default"
+    },
+    "main": {
+      "agent_id": "counsel-copilot",
+      "model": "deepseek-v4.1-flash",
+      "provider": "opencode_go",
+      "reasoning_effort": "max"
+    }
+  },
+  "selected_collector": {
+    "model": "deepseek-v4.1-flash",
+    "provider": "opencode_go",
+    "reasoning_effort": "default"
+  },
+  "selected_main": {
+    "agent_id": "counsel-copilot",
+    "model": "deepseek-v4.1-flash",
+    "provider": "opencode_go",
+    "reasoning_effort": "max"
+  },
+  "source_choice": {
+    "allow_firecrawl": true,
+    "allow_followup_queries": true,
+    "collection_enabled": true,
+    "external": true,
+    "native": false,
+    "other_matters": false,
+    "provider_ids": [
+      "firecrawl",
+      "polaris"
+    ],
+    "public_query": "United States federal and California primary sources for consumer subscription cancellation, privacy notice and service-provider contract requirements"
+  },
+  "start_source_action_key": "step13:live-quality:start:20260912-01",
+  "synthetic_sources": [
+    "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/documents/synthetic-product-brief.md",
+    "03_Matters/northstar-subscription-launch-synthetic-quality-check-f7ed8b/documents/synthetic-vendor-contract.md"
+  ]
+}

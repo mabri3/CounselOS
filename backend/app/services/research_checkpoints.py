@@ -140,6 +140,8 @@ class ResearchCheckpoints:
         # duration of the unfinished operation instead of resetting its time.
         reservation = cp.pop("active_time_reservation", 0)
         cp["budget_used"]["active_seconds"] += reservation
+        if reservation:
+            cp["recovered_time_seconds"] = cp.get("recovered_time_seconds", 0) + reservation
         for call in cp["pending_calls"]:
             if call["state"] == "in_flight":
                 call["state"] = "outcome_unknown"

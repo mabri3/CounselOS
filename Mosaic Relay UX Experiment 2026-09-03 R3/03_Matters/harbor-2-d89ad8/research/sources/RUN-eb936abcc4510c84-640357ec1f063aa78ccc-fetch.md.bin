@@ -1,0 +1,626 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!--[if IE 6]><html class="ie6" xmlns="http://www.w3.org/1999/xhtml"><![endif]-->
+<!--[if IE 7]><html class="lt-ie8 lt-ie9" xmlns="http://www.w3.org/1999/xhtml"><![endif]-->
+<!--[if IE 8]><html class="lt-ie9" xmlns="http://www.w3.org/1999/xhtml"><![endif]-->
+<!--[if gt IE 8]><!--><html xmlns="http://www.w3.org/1999/xhtml"><!--<![endif]-->
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=1" />
+  <meta name="referrer" content="origin" />
+  <meta name="HandheldFriendly" content="true" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>payment institution acquisition change of control PSD2 EMI notification FCA at DuckDuckGo</title>
+  <link title="DuckDuckGo (HTML)" type="application/opensearchdescription+xml" rel="search" href="//duckduckgo.com/opensearch_html_v2.xml" />
+  <link href="//duckduckgo.com/favicon.ico" rel="shortcut icon" />
+  <link rel="icon" href="//duckduckgo.com/favicon.ico" type="image/x-icon" />
+  <link id="icon60" rel="apple-touch-icon" href="//duckduckgo.com/assets/icons/meta/DDG-iOS-icon_60x60.png?v=2"/>
+  <link id="icon76" rel="apple-touch-icon" sizes="76x76" href="//duckduckgo.com/assets/icons/meta/DDG-iOS-icon_76x76.png?v=2"/>
+  <link id="icon120" rel="apple-touch-icon" sizes="120x120" href="//duckduckgo.com/assets/icons/meta/DDG-iOS-icon_120x120.png?v=2"/>
+  <link id="icon152" rel="apple-touch-icon" sizes="152x152" href="//duckduckgo.com/assets/icons/meta/DDG-iOS-icon_152x152.png?v=2"/>
+  <link rel="image_src" href="//duckduckgo.com/assets/icons/meta/DDG-icon_256x256.png">
+  <link rel="stylesheet" media="handheld, all" href="//duckduckgo.com/dist/h.7bcf94631b5964fa5ad7.css" type="text/css"/>
+</head>
+
+<body class="body--html">
+  <a name="top" id="top"></a>
+
+  <form action="/html/" method="post">
+    <input type="text" name="state_hidden" id="state_hidden" />
+  </form>
+
+  <div>
+    <div class="site-wrapper-border"></div>
+
+    <div id="header" class="header cw header--html">
+      <a title="DuckDuckGo" href="/html/" class="header__logo-wrap"></a>
+
+      <form name="x" class="header__form" action="/html/" method="post">
+        <div class="search search--header">
+          <input name="q" autocomplete="off" class="search__input" id="search_form_input_homepage" type="text" value="payment institution acquisition change of control PSD2 EMI notification FCA" />
+          <input name="b" id="search_button_homepage" class="search__button search__button--html" value="" title="Search" alt="Search" type="submit" />
+        </div>
+
+        
+        
+        
+        
+
+        <div class="frm__select">
+          <select name="kl">
+            
+              <option value="" >All Regions</option>
+            
+              <option value="ar-es" >Argentina</option>
+            
+              <option value="au-en" >Australia</option>
+            
+              <option value="at-de" >Austria</option>
+            
+              <option value="be-fr" >Belgium (fr)</option>
+            
+              <option value="be-nl" >Belgium (nl)</option>
+            
+              <option value="br-pt" >Brazil</option>
+            
+              <option value="bg-bg" >Bulgaria</option>
+            
+              <option value="ca-en" >Canada (en)</option>
+            
+              <option value="ca-fr" >Canada (fr)</option>
+            
+              <option value="ct-ca" >Catalonia</option>
+            
+              <option value="cl-es" >Chile</option>
+            
+              <option value="cn-zh" >China</option>
+            
+              <option value="co-es" >Colombia</option>
+            
+              <option value="hr-hr" >Croatia</option>
+            
+              <option value="cz-cs" >Czech Republic</option>
+            
+              <option value="dk-da" >Denmark</option>
+            
+              <option value="ee-et" >Estonia</option>
+            
+              <option value="fi-fi" >Finland</option>
+            
+              <option value="fr-fr" >France</option>
+            
+              <option value="de-de" >Germany</option>
+            
+              <option value="gr-el" >Greece</option>
+            
+              <option value="hk-tzh" >Hong Kong</option>
+            
+              <option value="hu-hu" >Hungary</option>
+            
+              <option value="is-is" >Iceland</option>
+            
+              <option value="in-en" >India (en)</option>
+            
+              <option value="id-en" >Indonesia (en)</option>
+            
+              <option value="ie-en" >Ireland</option>
+            
+              <option value="il-en" >Israel (en)</option>
+            
+              <option value="it-it" >Italy</option>
+            
+              <option value="jp-jp" >Japan</option>
+            
+              <option value="kr-kr" >Korea</option>
+            
+              <option value="lv-lv" >Latvia</option>
+            
+              <option value="lt-lt" >Lithuania</option>
+            
+              <option value="my-en" >Malaysia (en)</option>
+            
+              <option value="mx-es" >Mexico</option>
+            
+              <option value="nl-nl" >Netherlands</option>
+            
+              <option value="nz-en" >New Zealand</option>
+            
+              <option value="no-no" >Norway</option>
+            
+              <option value="pk-en" >Pakistan (en)</option>
+            
+              <option value="pe-es" >Peru</option>
+            
+              <option value="ph-en" >Philippines (en)</option>
+            
+              <option value="pl-pl" >Poland</option>
+            
+              <option value="pt-pt" >Portugal</option>
+            
+              <option value="ro-ro" >Romania</option>
+            
+              <option value="ru-ru" >Russia</option>
+            
+              <option value="xa-ar" >Saudi Arabia</option>
+            
+              <option value="sg-en" >Singapore</option>
+            
+              <option value="sk-sk" >Slovakia</option>
+            
+              <option value="sl-sl" >Slovenia</option>
+            
+              <option value="za-en" >South Africa</option>
+            
+              <option value="es-ca" >Spain (ca)</option>
+            
+              <option value="es-es" >Spain (es)</option>
+            
+              <option value="se-sv" >Sweden</option>
+            
+              <option value="ch-de" >Switzerland (de)</option>
+            
+              <option value="ch-fr" >Switzerland (fr)</option>
+            
+              <option value="tw-tzh" >Taiwan</option>
+            
+              <option value="th-en" >Thailand (en)</option>
+            
+              <option value="tr-tr" >Turkey</option>
+            
+              <option value="us-en" >US (English)</option>
+            
+              <option value="us-es" >US (Spanish)</option>
+            
+              <option value="ua-uk" >Ukraine</option>
+            
+              <option value="uk-en" >United Kingdom</option>
+            
+              <option value="vn-en" >Vietnam (en)</option>
+            
+          </select>
+        </div>
+
+        <div class="frm__select frm__select--last">
+          <select class="" name="df">
+            
+              <option value="" selected>Any Time</option>
+            
+              <option value="d" >Past Day</option>
+            
+              <option value="w" >Past Week</option>
+            
+              <option value="m" >Past Month</option>
+            
+              <option value="y" >Past Year</option>
+            
+          </select>
+        </div>
+      </form>
+    </div>
+
+    
+
+    
+      <!-- Web results are present -->
+      <div>
+        <div class="serp__results">
+          <div id="links" class="results">
+            
+
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.fca.org.uk%2Ffirms%2Fchange%2Dcontrol&amp;rut=ed0313e8976426910e7eb017345d19034a39041f1fba5ebbfbfbc2c989053566">Change in Control | FCA</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.fca.org.uk%2Ffirms%2Fchange%2Dcontrol&amp;rut=ed0313e8976426910e7eb017345d19034a39041f1fba5ebbfbfbc2c989053566">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/www.fca.org.uk.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.fca.org.uk%2Ffirms%2Fchange%2Dcontrol&amp;rut=ed0313e8976426910e7eb017345d19034a39041f1fba5ebbfbfbc2c989053566">
+                            www.fca.org.uk/firms/change-control
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.fca.org.uk%2Ffirms%2Fchange%2Dcontrol&amp;rut=ed0313e8976426910e7eb017345d19034a39041f1fba5ebbfbfbc2c989053566">Find out when you need to notify us to acquire or <b>change</b> <b>control</b> in a firm that we regulate, and the factors you need to consider.</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.fca.org.uk%2Ffirms%2Fchange%2Dcontrol%2Fnotification%2Dforms&amp;rut=623729326637be721263c7a2a29eccfd9790effd73955a17a00d72677800ab24">Change in control notification forms | FCA</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.fca.org.uk%2Ffirms%2Fchange%2Dcontrol%2Fnotification%2Dforms&amp;rut=623729326637be721263c7a2a29eccfd9790effd73955a17a00d72677800ab24">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/www.fca.org.uk.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.fca.org.uk%2Ffirms%2Fchange%2Dcontrol%2Fnotification%2Dforms&amp;rut=623729326637be721263c7a2a29eccfd9790effd73955a17a00d72677800ab24">
+                            www.fca.org.uk/firms/change-control/notification-forms
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.fca.org.uk%2Ffirms%2Fchange%2Dcontrol%2Fnotification%2Dforms&amp;rut=623729326637be721263c7a2a29eccfd9790effd73955a17a00d72677800ab24">CVs for individual controllers and directors/members of corporate controllers proof and source of funding accounts for corporate controllers comprehensive business plan disclosure supporting information/documents Read more about submitting a <b>change</b> in <b>control</b> <b>notification</b>. Find out how to disclose an individual&#x27;s criminal convictions.</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fregulatorycounsel.co.uk%2Finsights%2Ffca%2Dchange%2Din%2Dcontrol%2Dpayment%2Dinstitutions%2Dguide&amp;rut=eb2059c20f4b29175a4f01073cca92789013d9df26878c2387e9755cf027a935">FCA Change in Control PIs EMIs Guide | Regulatory Counsel</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fregulatorycounsel.co.uk%2Finsights%2Ffca%2Dchange%2Din%2Dcontrol%2Dpayment%2Dinstitutions%2Dguide&amp;rut=eb2059c20f4b29175a4f01073cca92789013d9df26878c2387e9755cf027a935">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/regulatorycounsel.co.uk.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fregulatorycounsel.co.uk%2Finsights%2Ffca%2Dchange%2Din%2Dcontrol%2Dpayment%2Dinstitutions%2Dguide&amp;rut=eb2059c20f4b29175a4f01073cca92789013d9df26878c2387e9755cf027a935">
+                            regulatorycounsel.co.uk/insights/fca-change-in-control-payment-institutions-guide
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fregulatorycounsel.co.uk%2Finsights%2Ffca%2Dchange%2Din%2Dcontrol%2Dpayment%2Dinstitutions%2Dguide&amp;rut=eb2059c20f4b29175a4f01073cca92789013d9df26878c2387e9755cf027a935"><b>FCA</b> <b>change</b> in <b>control</b> guide for <b>payment</b> <b>institutions</b> and <b>EMIs</b>. Qualifying holdings thresholds, <b>notification</b> process, assessment criteria and practical.</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fcgregulatorysolutions.com%2Fchange%2Din%2Dcontrol%2Da%2Dcautionary%2Dtale%2F&amp;rut=2091d2509944a5fa1b53c3053eefd3e97a79485a182940186a6f1f654336d764">Change in control: a cautionary tale - C &amp; G Regulatory Solutions</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fcgregulatorysolutions.com%2Fchange%2Din%2Dcontrol%2Da%2Dcautionary%2Dtale%2F&amp;rut=2091d2509944a5fa1b53c3053eefd3e97a79485a182940186a6f1f654336d764">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/cgregulatorysolutions.com.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fcgregulatorysolutions.com%2Fchange%2Din%2Dcontrol%2Da%2Dcautionary%2Dtale%2F&amp;rut=2091d2509944a5fa1b53c3053eefd3e97a79485a182940186a6f1f654336d764">
+                            cgregulatorysolutions.com/change-in-control-a-cautionary-tale/
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fcgregulatorysolutions.com%2Fchange%2Din%2Dcontrol%2Da%2Dcautionary%2Dtale%2F&amp;rut=2091d2509944a5fa1b53c3053eefd3e97a79485a182940186a6f1f654336d764">A recent supervisory notice highlighted the importance of getting the <b>&#x27;change</b> in <b>control&#x27;</b> process correct when acquiring a UK financial services firm. It is also a timely reminder for investment firms, authorised <b>payment</b> <b>institutions</b> and E-money firms of the requirements for a <b>change</b> in <b>control</b>.</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fverticefintech.com%2Finsights%2Ffca%2Dchange%2Dof%2Dcontrol%2Dthe%2Dgate%2Dthat%2Ddecides%2Dpayment%2Dinstitution%2Ddeals%2Dnot%2Dthe%2Dprice%2F&amp;rut=ab262f5c4452a4bcf278fedfa2e5191c6e3bdfd318f17a85fe92db85ffd353d2">FCA change of control: the gate that decides payment-institution deals ...</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fverticefintech.com%2Finsights%2Ffca%2Dchange%2Dof%2Dcontrol%2Dthe%2Dgate%2Dthat%2Ddecides%2Dpayment%2Dinstitution%2Ddeals%2Dnot%2Dthe%2Dprice%2F&amp;rut=ab262f5c4452a4bcf278fedfa2e5191c6e3bdfd318f17a85fe92db85ffd353d2">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/verticefintech.com.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fverticefintech.com%2Finsights%2Ffca%2Dchange%2Dof%2Dcontrol%2Dthe%2Dgate%2Dthat%2Ddecides%2Dpayment%2Dinstitution%2Ddeals%2Dnot%2Dthe%2Dprice%2F&amp;rut=ab262f5c4452a4bcf278fedfa2e5191c6e3bdfd318f17a85fe92db85ffd353d2">
+                            verticefintech.com/insights/fca-change-of-control-the-gate-that-decides-payment-institution-deals-not-the-price/
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fverticefintech.com%2Finsights%2Ffca%2Dchange%2Dof%2Dcontrol%2Dthe%2Dgate%2Dthat%2Ddecides%2Dpayment%2Dinstitution%2Ddeals%2Dnot%2Dthe%2Dprice%2F&amp;rut=ab262f5c4452a4bcf278fedfa2e5191c6e3bdfd318f17a85fe92db85ffd353d2">In a UK <b>payment</b> <b>institution</b> deal, the price is rarely the thing that stops it. <b>FCA</b> <b>change</b> <b>of</b> <b>control</b> is. A buyer and a seller can agree everything. Price, terms, timeline. The deal still cannot complete until the <b>FCA</b> approves the new owner. When someone acquires <b>control</b> <b>of</b> an SPI, API or <b>EMI</b>, the regulator assesses them first. That assessment is the gate. It runs on its own clock, and that ...</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fmemaconsultants.com%2Fresources%2Fexplainers%2Fpayment%2Demi%2Dauthorisation&amp;rut=f5d22e8f0cff6752123d1548c06bc1d368a71cba3c47c8d915a0770ba6e7e9cd">Payment Institution and EMI Authorisation: FCA Requirements</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fmemaconsultants.com%2Fresources%2Fexplainers%2Fpayment%2Demi%2Dauthorisation&amp;rut=f5d22e8f0cff6752123d1548c06bc1d368a71cba3c47c8d915a0770ba6e7e9cd">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/memaconsultants.com.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fmemaconsultants.com%2Fresources%2Fexplainers%2Fpayment%2Demi%2Dauthorisation&amp;rut=f5d22e8f0cff6752123d1548c06bc1d368a71cba3c47c8d915a0770ba6e7e9cd">
+                            memaconsultants.com/resources/explainers/payment-emi-authorisation
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fmemaconsultants.com%2Fresources%2Fexplainers%2Fpayment%2Demi%2Dauthorisation&amp;rut=f5d22e8f0cff6752123d1548c06bc1d368a71cba3c47c8d915a0770ba6e7e9cd"><b>Payment</b> <b>Institution</b> and <b>EMI</b> Authorisation: <b>FCA</b> Requirements How <b>FCA</b> authorisation works for <b>payment</b> and e-money firms: the API, SPI, RAISP, AEMI and SEMI categories, initial capital and own funds, safeguarding, <b>PSD2</b> obligations, and what the application must evidence.</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.buckinghamcapitalconsulting.com%2Fpost%2Ffca%2Dchange%2Dof%2Dcontrol%2Dapplication%2D2026%2Dcomplete%2Dguide%2Dto%2Dbuying%2Dor%2Dselling%2Dan%2Dfca%2Dregulated%2Dfirm&amp;rut=234d5695afb9fd3b3a1916e34d8e99adce8151ff68d7d1c4e0eb27116c010258">FCA Change of Control Application 2026: Complete Guide to Buying or ...</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.buckinghamcapitalconsulting.com%2Fpost%2Ffca%2Dchange%2Dof%2Dcontrol%2Dapplication%2D2026%2Dcomplete%2Dguide%2Dto%2Dbuying%2Dor%2Dselling%2Dan%2Dfca%2Dregulated%2Dfirm&amp;rut=234d5695afb9fd3b3a1916e34d8e99adce8151ff68d7d1c4e0eb27116c010258">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/www.buckinghamcapitalconsulting.com.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.buckinghamcapitalconsulting.com%2Fpost%2Ffca%2Dchange%2Dof%2Dcontrol%2Dapplication%2D2026%2Dcomplete%2Dguide%2Dto%2Dbuying%2Dor%2Dselling%2Dan%2Dfca%2Dregulated%2Dfirm&amp;rut=234d5695afb9fd3b3a1916e34d8e99adce8151ff68d7d1c4e0eb27116c010258">
+                            www.buckinghamcapitalconsulting.com/post/fca-change-of-control-application-2026-complete-guide-to-buying-or-selling-an-fca-regulated-firm
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.buckinghamcapitalconsulting.com%2Fpost%2Ffca%2Dchange%2Dof%2Dcontrol%2Dapplication%2D2026%2Dcomplete%2Dguide%2Dto%2Dbuying%2Dor%2Dselling%2Dan%2Dfca%2Dregulated%2Dfirm&amp;rut=234d5695afb9fd3b3a1916e34d8e99adce8151ff68d7d1c4e0eb27116c010258">The <b>FCA</b> assesses the proposed buyer, the wider ownership structure, the source of funds, financial soundness, reputation, business plan and the effect the <b>acquisition</b> will have on the regulated firm. For <b>Payment</b> <b>Institutions</b> and Electronic Money <b>Institutions</b>, the same core <b>change</b> <b>of</b> <b>control</b> principles apply through the <b>Payment</b> Services Regulations 2017 and Electronic Money Regulations 2011.</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.buckinghamcapitalconsulting.com%2Fpost%2Ffca%2Dchange%2Dof%2Dcontrol%2Dapplication&amp;rut=9f3125b883b89387e47978ee48cd6ff62fae9400eb651cd5aa7aa825bd17e77a">FCA Change of Control Application: Navigating FCA Approval for ...</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.buckinghamcapitalconsulting.com%2Fpost%2Ffca%2Dchange%2Dof%2Dcontrol%2Dapplication&amp;rut=9f3125b883b89387e47978ee48cd6ff62fae9400eb651cd5aa7aa825bd17e77a">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/www.buckinghamcapitalconsulting.com.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.buckinghamcapitalconsulting.com%2Fpost%2Ffca%2Dchange%2Dof%2Dcontrol%2Dapplication&amp;rut=9f3125b883b89387e47978ee48cd6ff62fae9400eb651cd5aa7aa825bd17e77a">
+                            www.buckinghamcapitalconsulting.com/post/fca-change-of-control-application
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.buckinghamcapitalconsulting.com%2Fpost%2Ffca%2Dchange%2Dof%2Dcontrol%2Dapplication&amp;rut=9f3125b883b89387e47978ee48cd6ff62fae9400eb651cd5aa7aa825bd17e77a">When ownership or <b>control</b> <b>of</b> a regulated firm <b>changes</b>, <b>FCA</b> approval is mandatory. Whether you&#x27;re acquiring a <b>payment</b> <b>institution</b>, <b>EMI</b>, bank, or other regulated firm, or you&#x27;re the firm experiencing ownership <b>change</b>, understanding <b>change</b> <b>of</b> <b>control</b> requirements is critical. The <b>FCA&#x27;s</b> Section 178 approval process is rigorous, invasive, and often takes three to six months or longer.</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fregulatorycounsel.co.uk%2Finsights%2Fchange%2Dof%2Dcontrol%2Dfca%2Dregulated%2Dfirms%2Dguide&amp;rut=1e5c6d3889ea3c7a9a04d72b8d2045e973a626b913938989b0ec3d3b3a16a0dd">Change of Control for FCA-Regulated Firms | Process</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fregulatorycounsel.co.uk%2Finsights%2Fchange%2Dof%2Dcontrol%2Dfca%2Dregulated%2Dfirms%2Dguide&amp;rut=1e5c6d3889ea3c7a9a04d72b8d2045e973a626b913938989b0ec3d3b3a16a0dd">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/regulatorycounsel.co.uk.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fregulatorycounsel.co.uk%2Finsights%2Fchange%2Dof%2Dcontrol%2Dfca%2Dregulated%2Dfirms%2Dguide&amp;rut=1e5c6d3889ea3c7a9a04d72b8d2045e973a626b913938989b0ec3d3b3a16a0dd">
+                            regulatorycounsel.co.uk/insights/change-of-control-fca-regulated-firms-guide
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fregulatorycounsel.co.uk%2Finsights%2Fchange%2Dof%2Dcontrol%2Dfca%2Dregulated%2Dfirms%2Dguide&amp;rut=1e5c6d3889ea3c7a9a04d72b8d2045e973a626b913938989b0ec3d3b3a16a0dd">Expert guide to <b>FCA</b> <b>change</b> <b>of</b> <b>control</b> <b>notifications</b>. Covers the s178 FSMA process, assessment criteria, timelines, documentation and common pitfalls for.</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+              
+                <div class="result results_links results_links_deep web-result ">
+                  <div class="links_main links_deep result__body"> <!-- This is the visible part -->
+                    
+                      <h2 class="result__title">
+                        <a rel="nofollow" class="result__a" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.davispolk.com%2Finsights%2Fclient%2Dupdate%2Fuk%2Dfinancial%2Dregulation%2Dnew%2Dguidance%2Dpublished%2Duk%2Dchange%2Dcontrol%2Dregime&amp;rut=3661377b19c3f459ac0589d9d8767b1295ffe5b3e493bbe78008662f49084dac">UK financial regulation: New guidance published on the UK change in ...</a>
+                      </h2>
+
+                    
+
+                    
+                      <div class="result__extras">
+                        <div class="result__extras__url">
+                          <span class="result__icon">
+                            <a rel="nofollow" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.davispolk.com%2Finsights%2Fclient%2Dupdate%2Fuk%2Dfinancial%2Dregulation%2Dnew%2Dguidance%2Dpublished%2Duk%2Dchange%2Dcontrol%2Dregime&amp;rut=3661377b19c3f459ac0589d9d8767b1295ffe5b3e493bbe78008662f49084dac">
+                              <img class="result__icon__img" width="16" height="16" alt="" src="//external-content.duckduckgo.com/ip3/www.davispolk.com.ico" name="i15" />
+                            </a>
+                          </span>
+                          <a class="result__url" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.davispolk.com%2Finsights%2Fclient%2Dupdate%2Fuk%2Dfinancial%2Dregulation%2Dnew%2Dguidance%2Dpublished%2Duk%2Dchange%2Dcontrol%2Dregime&amp;rut=3661377b19c3f459ac0589d9d8767b1295ffe5b3e493bbe78008662f49084dac">
+                            www.davispolk.com/insights/client-update/uk-financial-regulation-new-guidance-published-uk-change-control-regime
+                          </a>
+                          
+                        </div>
+                      </div>
+                    
+
+                    
+                      
+                        <a class="result__snippet" href="//duckduckgo.com/l/?uddg=https%3A%2F%2Fwww.davispolk.com%2Finsights%2Fclient%2Dupdate%2Fuk%2Dfinancial%2Dregulation%2Dnew%2Dguidance%2Dpublished%2Duk%2Dchange%2Dcontrol%2Dregime&amp;rut=3661377b19c3f459ac0589d9d8767b1295ffe5b3e493bbe78008662f49084dac">On 1, November 2024, the <b>FCA</b> issued finalised guidance on the UK <b>change</b> in <b>control</b> regime. The guidance outlines the expectations for identifying controllers, submitting <b>change</b> in <b>control</b> <b>notifications</b>, and the assessment criteria applied by the <b>FCA</b> and PRA. The PRA and <b>FCA</b> also jointly issued a new policy statement on the <b>change</b> in <b>control</b> regime that follows a consultation paper published ...</a>
+                      
+                    
+
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              
+            
+
+            
+              
+              
+                <div class="nav-link">
+                  <form action="/html/" method="post">
+                    <input type="submit" class='btn btn--alt' value="Next" />
+                    <input type="hidden" name="q" value="payment institution acquisition change of control PSD2 EMI notification FCA" />
+                    <input type="hidden" name="s" value="10" />
+                    <input type="hidden" name="nextParams" value="" />
+                    <input type="hidden" name="v" value="l" />
+                    <input type="hidden" name="o" value="json" />
+                    <input type="hidden" name="dc" value="11" />
+                    <input type="hidden" name="api" value="d.js" />
+                    <input type="hidden" name="vqd" value="4-303640509857640558972876567153239911968" />
+
+                    
+                    
+                    
+                      <input name="kl" value="wt-wt" type="hidden" />
+                    
+                    
+                    
+                    
+                  </form>
+                </div>
+              
+            
+
+            <div class="feedback-btn">
+              <a rel="nofollow" href="//duckduckgo.com/feedback.html" target="_new">Feedback</a>
+            </div>
+            <div class="clear"></div>
+          </div>
+        </div>
+      </div> <!-- links wrapper //-->
+    
+  </div>
+
+  <div id="bottom_spacing2"></div>
+
+  
+    <img src="//duckduckgo.com/t/sl_h"/>
+  
+</body>
+</html>

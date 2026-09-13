@@ -6,8 +6,8 @@ import type { ResearchRun } from "@/lib/types";
 import type { ResearchScope, ResearchOptions } from "@/lib/researchScope";
 import styles from "./ResearchScopeChoice.module.css";
 
-export function ResearchScopeFields({ value, onChange, options, disabled, compact = false }: {
-  value: ResearchScope; onChange: (value: ResearchScope) => void; options: ResearchOptions; disabled?: boolean; compact?: boolean;
+export function ResearchScopeFields({ value, onChange, options, disabled, compact = false, showPublicQuery = false }: {
+  value: ResearchScope; onChange: (value: ResearchScope) => void; options: ResearchOptions; disabled?: boolean; compact?: boolean; showPublicQuery?: boolean;
 }) {
   if (compact) return <fieldset disabled={disabled} className={styles.compact}>
     <legend>What sources should I use?</legend>
@@ -16,17 +16,19 @@ export function ResearchScopeFields({ value, onChange, options, disabled, compac
     <p>Leave both unchecked to review only this matter.</p>
   </fieldset>;
 
+  const publicTopic = value.external && <label className={styles.query}>Public research topic
+    <textarea value={value.public_query} maxLength={2000} onChange={event => onChange({ ...value, public_query: event.target.value })} placeholder="Legal topic and jurisdiction. Do not include private names or facts." />
+    <span>{value.allow_followup_queries ? "Themis will use this topic to plan distinct searches, compare relevant sources, and follow important gaps. This is not a limit of one search." : "This topic guides the initial research. Follow-up searches are off; you can enable them in Research options."} Private matter details stay with the analysis model.</span>
+  </label>;
   return <fieldset disabled={disabled} className={styles.fields}>
     <legend>Where should I look?</legend>
     <p>This matter is always included. Choose extra sources for this request only.</p>
     <label className={styles.check}><input type="checkbox" checked={value.external} disabled={!options.provider_ids.length && !options.native_available && !options.firecrawl_available} onChange={event => onChange({ ...value, external: event.target.checked })} /> External sources</label>
     <label className={styles.check}><input type="checkbox" checked={value.other_matters} onChange={event => onChange({ ...value, other_matters: event.target.checked })} /> Search other active matters</label>
     {value.external && <p>{value.allow_followup_queries ? "Themis will turn your question into focused searches, compare relevant sources, and follow important gaps." : "Themis will plan focused searches from your question. Follow-up searches are off in Research options."}</p>}
+    {showPublicQuery && publicTopic}
     <details><summary>Research options</summary>
-    {value.external && <label className={styles.query}>Public research topic
-      <textarea value={value.public_query} maxLength={2000} onChange={event => onChange({ ...value, public_query: event.target.value })} placeholder="Legal topic and jurisdiction. Do not include private names or facts." />
-      <span>{value.allow_followup_queries ? "Themis will use this topic to plan distinct searches, compare relevant sources, and follow important gaps. This is not a limit of one search." : "This topic guides the initial research. Follow-up searches are off; you can enable them in Research options."} Private matter details stay with the analysis model.</span>
-    </label>}
+    {!showPublicQuery && publicTopic}
 
     {options.main_model_selection && <p>Main analysis: {options.main_model_selection.provider} · {options.main_model_selection.model}. Saved for this run.</p>}
     {options.model_selection && <p>Collection model: {options.model_selection.provider} · {options.model_selection.model} · {options.model_selection.reasoning_effort || "default"} effort. This selection is saved for this run.</p>}
@@ -48,8 +50,10 @@ export function ResearchScopeFields({ value, onChange, options, disabled, compac
   </fieldset>;
 }
 
+type ResearchPreset = { external?: boolean; publicQuery?: string; onStart?: (scope: ResearchScope) => Promise<ResearchRun> };
+
 export function useResearchScope(ownerMatterId: string) {
-  const [pending, setPending] = useState<{ matterId: string; question: string; key?: string; issueId?: string; options: ResearchOptions } | null>(null);
+  const [pending, setPending] = useState<{ matterId: string; question: string; key?: string; issueId?: string; options: ResearchOptions; preset?: ResearchPreset } | null>(null);
   const [value, setValue] = useState<ResearchScope>({ external: false, other_matters: false, public_query: "", provider_ids: [] });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -65,15 +69,15 @@ export function useResearchScope(ownerMatterId: string) {
     return () => { resolve.current?.(null); resolve.current = null; };
   }, [ownerMatterId]);
 
-  async function startScopedResearch(matterId: string, question = "", key?: string, issueId?: string): Promise<ResearchRun | null> {
+  async function startScopedResearch(matterId: string, question = "", key?: string, issueId?: string, preset?: ResearchPreset): Promise<ResearchRun | null> {
     const options = await getResearchOptions(matterId);
     if (owner.current !== matterId) return null;
-    setValue({ external: false, other_matters: false, public_query: "", provider_ids: options.provider_ids, native:options.native_available === true, allow_firecrawl:false, model_selection:options.model_selection, main_model_selection:options.main_model_selection, collector_model_selection:options.collector_model_selection, allow_followup_queries:options.allow_followup_queries === true });
+    setValue({ external: preset?.external === true, other_matters: false, public_query: preset?.publicQuery || "", provider_ids: options.provider_ids, native:options.native_available === true, allow_firecrawl:false, model_selection:options.model_selection, main_model_selection:options.main_model_selection, collector_model_selection:options.collector_model_selection, allow_followup_queries:options.allow_followup_queries === true });
     setError("");
     return new Promise(done => {
       resolve.current?.(null);
       resolve.current = done;
-      setPending({ matterId, question, key: key ?? `research-ui:${crypto.randomUUID()}`, issueId, options });
+      setPending({ matterId, question, key: key ?? `research-ui:${crypto.randomUUID()}`, issueId, options, preset });
     });
   }
   function finish(run: ResearchRun | null) {
@@ -82,15 +86,15 @@ export function useResearchScope(ownerMatterId: string) {
   const researchScopeDialog = pending ? <dialog aria-labelledby="research-source-heading" className={styles.dialog} ref={dialog} onCancel={event => { event.preventDefault(); if (!busy) finish(null); }}>
     <form onSubmit={async event => {
       event.preventDefault(); setBusy(true); setError("");
-      try { finish(await startResearchRun(pending.matterId, pending.question, pending.key, pending.issueId, value)); }
+      try { finish(await (pending.preset?.onStart ? pending.preset.onStart(value) : startResearchRun(pending.matterId, pending.question, pending.key, pending.issueId, value))); }
       catch (caught) { setError(caught instanceof Error ? caught.message : "Research could not start."); }
       finally { setBusy(false); }
     }}>
-      <h2 id="research-source-heading">Choose research sources</h2><p>{pending.question}</p>
-      <ResearchScopeFields value={value} onChange={setValue} options={pending.options} disabled={busy} />
+      <h2 id="research-source-heading">{pending.preset?.external ? "Add web search" : "Choose research sources"}</h2><p>{pending.question}</p>
+      <ResearchScopeFields value={value} onChange={setValue} options={pending.options} disabled={busy} showPublicQuery={pending.preset?.external} />
       {error && <p role="alert">{error}</p>}
       <div className={styles.actions}><button type="button" className="btn" disabled={busy} onClick={() => finish(null)}>Cancel</button>
-      <button type="submit" className="btn primary" disabled={busy || (value.external && !value.public_query.trim())}>{busy ? "Starting…" : "Start research"}</button></div>
+      <button type="submit" className="btn primary" disabled={busy || (value.external && !value.public_query.trim()) || (pending.preset?.external && !value.external)}>{busy ? "Starting…" : pending.preset?.external ? "Start web research" : "Start research"}</button></div>
     </form>
   </dialog> : null;
   return { startScopedResearch, researchScopeDialog };

@@ -1517,9 +1517,9 @@ def test_run_status_reads_only_the_selected_run(app_context, monkeypatch):
     reads = []
     read = app_context.vault.read_markdown
 
-    def record_read(path):
+    def record_read(path, **kwargs):
         reads.append(path)
-        return read(path)
+        return read(path, **kwargs)
 
     def no_full_detail(*args, **kwargs):
         pytest.fail("Polling a run must not build the full matter tree or parse unrelated history.")

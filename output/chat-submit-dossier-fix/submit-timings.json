@@ -1,0 +1,12 @@
+[
+  {
+    "cache_megabytes": 32,
+    "trusted_actor_seconds": 3.0335802920162678,
+    "submit_seconds": 30.111105958989356
+  },
+  {
+    "cache_megabytes": 64,
+    "trusted_actor_seconds": 0.2136195829953067,
+    "submit_seconds": 5.77711329102749
+  }
+]

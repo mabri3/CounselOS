@@ -508,7 +508,7 @@ class WorkspaceService:
         for path in self.vault.iter_files(f"{base}/conversations", {".md"}):
             if not path.name.startswith("CONV-"):
                 continue
-            document = self.vault.read_markdown(self.vault.relative(path))
+            document = self.vault.read_markdown(self.vault.relative(path), include_execution=False)
             messages = document["metadata"].get("messages", [])
             submissions = {m.get("run_id"): m.get("workspace_submission", {}) for m in messages if m.get("role") == "user" and m.get("run_id")}
             for message in messages:
@@ -522,7 +522,7 @@ class WorkspaceService:
                 if re.fullmatch(r"(?:RUN|HTTP)-[A-Za-z0-9-]+", run_id):
                     run_path = f"{base}/conversations/runs/{run_id}.md"
                     if self.vault.exists(run_path):
-                        saved = self.vault.read_markdown(run_path)["metadata"]
+                        saved = self.vault.read_markdown(run_path, include_execution=False)["metadata"]
                         saved_run = saved.get("request", {})
                         if saved.get("matter_id") == matter_id:
                             basis = basis or saved_run.get("expected_question_revision") or (saved_run.get("target") or {}).get("business_question_revision")
@@ -882,7 +882,7 @@ class WorkspaceService:
                 continue
             relative = self.vault.relative(path)
             try:
-                doc = self.vault.read_markdown(relative)
+                doc = self.vault.read_markdown(relative, include_execution=False)
                 metadata = doc["metadata"]
                 if metadata.get("matter_id") not in {None, matter_id}:
                     continue

@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta http-equiv="content-language" content="en-GB">
+    
+
+
+<title>How To Avoid Vendor Lock In&#x200B; - Escode</title>
+<meta name="robots" content="index, follow" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+
+<link rel="canonical" href="https://www.escode.com/resources/how-to-avoid-vendor-lock-in/" />
+
+
+            <link rel="alternate" hreflang="en-gb" href="https://www.escode.com/resources/how-to-avoid-vendor-lock-in/" />
+
+    <meta property="og:title" content="How To Avoid Vendor Lock In&#x200B; - Escode" />
+    <meta property="og:description" content="Understand what vendor lock in means and how to avoid vendor lock with our 4 step guide covering risk assessments, portability, exit and continuity plans." />
+    <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.escode.com/resources/how-to-avoid-vendor-lock-in" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="How To Avoid Vendor Lock In&#x200B; - Escode" />
+    <meta name="twitter:description" content="Understand what vendor lock in means and how to avoid vendor lock with our 4 step guide covering risk assessments, portability, exit and continuity plans." />
+
+<meta class="swiftype" name="description" data-type="string" content="Understand what vendor lock in means and how to avoid vendor lock with our 4 step guide covering risk assessments, portability, exit and continuity plans." />
+<meta class="swiftype" name="type" data-type="enum" content="article" />
+<meta class="swiftype" name="keywords" data-type="string" content="How To Avoid Vendor Lock In&#x200B; , What Does Vendor Lock In Mean">
+<meta class="swiftype" name="lang" data-type="string" content="en-gb">
+<meta class="swiftype" name="hide_from_search" data-type="integer" content="0">
+<meta class="swiftype" name="assurance" data-type="integer" content="1">
+<meta class="swiftype" name="adelard" data-type="integer" content="0">
+<meta class="swiftype" name="node_id" data-type="integer" content="12491">
+<meta class="swiftype" name="content_type" data-type="string" content="article">
+
+                        <meta class="swiftype" name="categories" data-type="string" content="Software Resilience" />
+                        <meta class="swiftype" name="services" data-type="string" content="Cloud Software Escrow" />
+                        <meta class="swiftype" name="services" data-type="string" content="On-premise Software Escrow" />
+                    <meta class="swiftype" name="resource_type" data-type="string" content="Blog Posts" />
+
+
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link rel="preconnect" crossorigin href="https://ajax.googleapis.com/">
+    <link rel="preconnect" crossorigin href="https://cc.cdn.civiccomputing.com">
+    <link rel="preconnect" crossorigin href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://ajax.googleapis.com">
+    <link rel="dns-prefetch" href="https://cc.cdn.civiccomputing.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="preload" fetchpriority="high" as="image" type="image/webp" href="/Static-a/img/banners/banner-gradient-bg.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static-a/img/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/static-a/img/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/static-a/img/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="/static-a/img/favicon/site.webmanifest" />
+    
+    <noscript>
+        <link rel="stylesheet" href="/Static-a/css/style.css?v=YtC4KMgbp7zVpxsjae7xbiiT12HMS681gsUsX9gNj1c" />
+    </noscript>
+    <!-- Google Tag Manager -->
+<script>
+    (function (w, d, s, l, i) {
+        w[l] = w[l] || []; w[l].push({
+            'gtm.start':
+                new Date().getTime(), event: 'gtm.js'
+        }); var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                'https://www.googletagmanager.com/gtm.js?id=' + i + dl; j.id = 'gtmScript'; j.nonce = '2815b940659c20'; f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-KCQQ5T7V');
+</script>
+<!-- End Google Tag Manager -->
+    <script nonce="2815b940659c15">
+        var root = document.getElementsByTagName('html')[0];
+        root.className += ' js';
+        window.dataLayer = window.dataLayer || [];
+
+        document.documentElement.className += ' advanced';
+        if (window.IntersectionObserver) document.documentElement.className += ' js-obs-active';
+    </script>
+
+    
+<style>
+@import url(https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap);html{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}*,:after,:before{-webkit-box-sizing:inherit;-moz-box-sizing:inherit;box-sizing:inherit}html{color:#0c0822;font-family:Roboto,sans-serif;font-size:1rem;font-weight:400;line-height:1.4;min-height:100vh;scroll-behavior:smooth;text-rendering:optimizeSpeed;-webkit-text-size-adjust:100%;-moz-text-size-adjust:100%;-ms-text-size-adjust:100%;text-size-adjust:100%}body{background-color:#fff}.nav-open body{overflow:hidden}@media only screen and (min-width:920px){.nav-open body{overflow:auto}}blockquote,body,dd,div,dl,dt,fieldset,form,h1,h2,h3,h4,h5,h6,input,li,ol,p,pre,td,textarea,th,ul{margin:0;padding:0}fieldset,img{border:0}address,caption,cite,code,dfn,th,var{font-style:normal;font-weight:400}caption,th{text-align:left}a:not([class]){-webkit-text-decoration-skip:ink;text-decoration-skip-ink:auto}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:400}abbr,acronym{border:0}embed,img,object{height:auto;max-width:100%}img{display:block}button,input,select,textarea{font:inherit}button{background:0 0;border:none;padding:0}a,button{cursor:pointer}a:hover,button:hover{cursor:pointer}img{vertical-align:bottom}figcaption,figure{margin:0}.e-btn,[type=submit]{background:#01fe55;-webkit-border-radius:100px;-moz-border-radius:100px;border-radius:100px;color:#0c0822;cursor:pointer;display:inline-block;font-family:Roboto,sans-serif;font-weight:400;line-height:1.4;margin-bottom:.625rem;padding:1rem 3rem;-webkit-transition:.2s background-color ease-in-out,.35s border-color ease-in-out,.2s color ease-in-out,.35s background-image ease-in-out;-o-transition:.2s background-color ease-in-out,.35s border-color ease-in-out,.2s color ease-in-out,.35s background-image ease-in-out;-moz-transition:.2s background-color ease-in-out,.35s border-color ease-in-out,.2s color ease-in-out,.35s background-image ease-in-out;transition:.2s background-color ease-in-out,.35s border-color ease-in-out,.2s color ease-in-out,.35s background-image ease-in-out;width:auto;text-align:center;position:relative;top:0}.c-banner__text .e-btn:focus-visible,.c-banner__text [type=submit]:focus-visible,.rte .e-btn:focus-visible,.rte [type=submit]:focus-visible{outline:3px solid #ed5ec2;outline-offset:2px}.e-btn:hover,[type=submit]:hover{color:#0c0822;text-decoration:none;background-color:#e3e3e3}.e-btn:focus-visible,[type=submit]:focus-visible{outline:3px solid #ed5ec2;outline-offset:2px;color:#0c0822}.e-btn:is(a):focus,.e-btn:is(a):hover,[type=submit]:is(a):focus,[type=submit]:is(a):hover{text-decoration:none}@media only screen and (min-width:73.125em){.e-btn,[type=submit]{font-size:1rem;padding:1rem 4rem}}.e-btn--outline,.e-btn--secondary{border-width:1px;border-style:solid;border-color:#fff;color:#fff;background-color:transparent;-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none}.e-btn--outline:hover,.e-btn--secondary:hover{background-color:#fff}.e-btn--outline-black,.e-btn--secondary-black{border-color:#0c0822;color:#0c0822}.e-btn--outline-black:hover,.e-btn--secondary-black:hover{background-color:#0c0822;color:#fff}.u-bg-tourmaline-black .e-btn--outline-black,.u-bg-tourmaline-black .e-btn--secondary-black{border-color:#fff;color:#fff}.u-bg-tourmaline-black .e-btn--outline-black:hover,.u-bg-tourmaline-black .e-btn--secondary-black:hover{background-color:#fff;color:#0c0822}.e-btn--bare{background:0 0;border:none;-webkit-border-radius:0;-moz-border-radius:0;border-radius:0;color:#fff;padding:0}.e-btn--bare:focus,.e-btn--bare:hover{background-color:transparent;color:#fff;text-decoration:underline}@media only screen and (min-width:73.125em){.e-btn--smaller{font-size:1rem}}@media only screen and (min-width:73.125em){.e-btn--larger{font-size:1.333rem}}.btn-link,.btn-link-bg-dark,.btn-link-bg-light{background-color:transparent;text-decoration:none;font-weight:600;display:inline-block;cursor:pointer;-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none;-webkit-border-radius:0;-moz-border-radius:0;border-radius:0;margin-bottom:0;padding-left:0;padding-right:0;padding-bottom:4px;width:-webkit-max-content;width:-moz-max-content;width:max-content}.rte .btn-link,.rte .btn-link-bg-dark,.rte .btn-link-bg-light{color:#000;border-bottom:solid 2px #000fff}.rte .btn-link-bg-dark::after,.rte .btn-link-bg-light::after,.rte .btn-link::after{background:url(/Static-a/img/icons/arrow-next-black.svg) center/contain no-repeat}.rte .btn-link-bg-dark:focus,.rte .btn-link-bg-dark:hover,.rte .btn-link-bg-light:focus,.rte .btn-link-bg-light:hover,.rte .btn-link:focus,.rte .btn-link:hover{border-bottom:solid 2px #000fff}.u-bg-slate-grey .rte .btn-link,.u-bg-slate-grey .rte .btn-link-bg-dark,.u-bg-slate-grey .rte .btn-link-bg-light,.u-bg-tourmaline-black .rte .btn-link,.u-bg-tourmaline-black .rte .btn-link-bg-dark,.u-bg-tourmaline-black .rte .btn-link-bg-light{color:#fff;border-bottom:solid 2px #01fe55}.u-bg-slate-grey .rte .btn-link-bg-dark::after,.u-bg-slate-grey .rte .btn-link-bg-light::after,.u-bg-slate-grey .rte .btn-link::after,.u-bg-tourmaline-black .rte .btn-link-bg-dark::after,.u-bg-tourmaline-black .rte .btn-link-bg-light::after,.u-bg-tourmaline-black .rte .btn-link::after{background:url(/Static-a/img/icons/arrow-next-white.svg) center/contain no-repeat}.u-bg-slate-grey .rte .btn-link-bg-dark:focus,.u-bg-slate-grey .rte .btn-link-bg-dark:hover,.u-bg-slate-grey .rte .btn-link-bg-light:focus,.u-bg-slate-grey .rte .btn-link-bg-light:hover,.u-bg-slate-grey .rte .btn-link:focus,.u-bg-slate-grey .rte .btn-link:hover,.u-bg-tourmaline-black .rte .btn-link-bg-dark:focus,.u-bg-tourmaline-black .rte .btn-link-bg-dark:hover,.u-bg-tourmaline-black .rte .btn-link-bg-light:focus,.u-bg-tourmaline-black .rte .btn-link-bg-light:hover,.u-bg-tourmaline-black .rte .btn-link:focus,.u-bg-tourmaline-black .rte .btn-link:hover{color:#fff!important;border-bottom:solid 2px #01fe55}.btn-link-bg-dark::after,.btn-link-bg-light::after,.btn-link::after{content:"";display:inline-block;width:1rem;height:1rem;margin-left:.25rem;vertical-align:middle;-webkit-transition:.3s ease;-o-transition:.3s ease;-moz-transition:.3s ease;transition:.3s ease}.btn-link-bg-dark:hover,.btn-link-bg-light:hover,.btn-link:hover{text-decoration:none!important;background-color:transparent;outline:0}.btn-link-bg-dark:hover::after,.btn-link-bg-light:hover::after,.btn-link:hover::after{margin-left:16px}.btn-link-bg-dark:focus-visible,.btn-link-bg-light:focus-visible,.btn-link:focus-visible{text-decoration:none!important;background-color:transparent;outline:3px solid #ed5ec2;outline-offset:4px;-webkit-border-radius:2px;-moz-border-radius:2px;border-radius:2px}.btn-link-bg-light{background-color:transparent;text-decoration:none;font-weight:600;display:inline-block;cursor:pointer;-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none;-webkit-border-radius:0;-moz-border-radius:0;border-radius:0;margin-bottom:0;padding-left:0;padding-right:0;padding-bottom:4px;width:-webkit-max-content;width:-moz-max-content;width:max-content;color:#000;border-bottom:solid 2px #000fff}.rte .btn-link-bg-light{color:#000;border-bottom:solid 2px #000fff}.rte .btn-link-bg-light::after{background:url(/Static-a/img/icons/arrow-next-black.svg) center/contain no-repeat}.rte .btn-link-bg-light:focus,.rte .btn-link-bg-light:hover{border-bottom:solid 2px #000fff}.u-bg-slate-grey .rte .btn-link-bg-light,.u-bg-tourmaline-black .rte .btn-link-bg-light{color:#fff;border-bottom:solid 2px #01fe55}.u-bg-slate-grey .rte .btn-link-bg-light::after,.u-bg-tourmaline-black .rte .btn-link-bg-light::after{background:url(/Static-a/img/icons/arrow-next-white.svg) center/contain no-repeat}.u-bg-slate-grey .rte .btn-link-bg-light:focus,.u-bg-slate-grey .rte .btn-link-bg-light:hover,.u-bg-tourmaline-black .rte .btn-link-bg-light:focus,.u-bg-tourmaline-black .rte .btn-link-bg-light:hover{color:#fff!important;border-bottom:solid 2px #01fe55}.btn-link-bg-light::after{content:"";display:inline-block;width:1rem;height:1rem;margin-left:.25rem;vertical-align:middle;-webkit-transition:.3s ease;-o-transition:.3s ease;-moz-transition:.3s ease;transition:.3s ease}.btn-link-bg-light:hover{text-decoration:none!important;background-color:transparent;outline:0}.btn-link-bg-light:hover::after{margin-left:16px}.btn-link-bg-light:focus-visible{text-decoration:none!important;background-color:transparent;outline:3px solid #ed5ec2;outline-offset:4px;-webkit-border-radius:2px;-moz-border-radius:2px;border-radius:2px}.btn-link-bg-light::after{background:url(/Static-a/img/icons/arrow-next-black.svg) center/contain no-repeat}.btn-link-bg-light:focus,.btn-link-bg-light:hover{border-bottom:solid 2px #000fff}.btn-link-bg-dark{background-color:transparent;text-decoration:none;font-weight:600;display:inline-block;cursor:pointer;-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none;-webkit-border-radius:0;-moz-border-radius:0;border-radius:0;margin-bottom:0;padding-left:0;padding-right:0;padding-bottom:4px;width:-webkit-max-content;width:-moz-max-content;width:max-content;color:#fff;border-bottom:solid 2px #01fe55}.rte .btn-link-bg-dark{color:#000;border-bottom:solid 2px #000fff}.rte .btn-link-bg-dark::after{background:url(/Static-a/img/icons/arrow-next-black.svg) center/contain no-repeat}.rte .btn-link-bg-dark:focus,.rte .btn-link-bg-dark:hover{border-bottom:solid 2px #000fff}.u-bg-slate-grey .rte .btn-link-bg-dark,.u-bg-tourmaline-black .rte .btn-link-bg-dark{color:#fff;border-bottom:solid 2px #01fe55}.u-bg-slate-grey .rte .btn-link-bg-dark::after,.u-bg-tourmaline-black .rte .btn-link-bg-dark::after{background:url(/Static-a/img/icons/arrow-next-white.svg) center/contain no-repeat}.u-bg-slate-grey .rte .btn-link-bg-dark:focus,.u-bg-slate-grey .rte .btn-link-bg-dark:hover,.u-bg-tourmaline-black .rte .btn-link-bg-dark:focus,.u-bg-tourmaline-black .rte .btn-link-bg-dark:hover{color:#fff!important;border-bottom:solid 2px #01fe55}.btn-link-bg-dark::after{content:"";display:inline-block;width:1rem;height:1rem;margin-left:.25rem;vertical-align:middle;-webkit-transition:.3s ease;-o-transition:.3s ease;-moz-transition:.3s ease;transition:.3s ease}.btn-link-bg-dark:hover{text-decoration:none!important;background-color:transparent;outline:0}.btn-link-bg-dark:hover::after{margin-left:16px}.btn-link-bg-dark:focus-visible{text-decoration:none!important;background-color:transparent;outline:3px solid #ed5ec2;outline-offset:4px;-webkit-border-radius:2px;-moz-border-radius:2px;border-radius:2px}.btn-link-bg-dark::after{background:url(/Static-a/img/icons/arrow-next-white.svg) center/contain no-repeat}.btn-link-bg-dark:focus,.btn-link-bg-dark:hover{color:#fff;border-bottom:solid 2px #01fe55}@media only screen and (min-width:50em){.o-flex .shortanswer input{width:100%;display:block}}input,select,textarea{border:1px solid #0c0822;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;display:inline-block;font-size:1rem;margin:0;margin-bottom:1rem;padding:.7rem;width:100%;resize:vertical}@media only screen and (min-width:50em){input,select,textarea{margin-bottom:2rem}}input.error,select.error,textarea.error{border-color:red;color:red}input:last-child,select:last-child,textarea:last-child{margin-bottom:0}[type=checkbox],[type=radio]{margin:0 .5rem 0 0;width:auto}[type=submit]{-webkit-appearance:none;-moz-appearance:none;appearance:none;margin-top:2rem}fieldset{margin-bottom:1rem}label,legend{display:inline-block;font-weight:400;font-size:1.25rem;margin-bottom:.5rem}select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-image:url(/static-a/img/icons/icon-select-arrow.svg);-webkit-background-size:18px 18px;-moz-background-size:18px;background-size:18px;background-repeat:no-repeat;background-position:-webkit-calc(100% - 10px) center;background-position:-moz-calc(100% - 10px) center;background-position:calc(100% - 10px) center;padding-right:20px;position:relative}.c-form-short input,.c-form-short select,.c-form-short textarea{border:1px solid #b4c9e2}.t-purple .c-form-short input,.t-purple .c-form-short select,.t-purple .c-form-short textarea{border:1px solid #331878}.t-green .c-form-short input,.t-green .c-form-short select,.t-green .c-form-short textarea{border:1px solid #1e5d44}.t-sky-blue .c-form-short input,.t-sky-blue .c-form-short select,.t-sky-blue .c-form-short textarea{border:1px solid #46dbff}.t-pink .c-form-short input,.t-pink .c-form-short select,.t-pink .c-form-short textarea{border:1px solid #ed5ec2}.t-violet .c-form-short input,.t-violet .c-form-short select,.t-violet .c-form-short textarea{border:1px solid #b683ec}.t-limed-spruce .c-form-short input,.t-limed-spruce .c-form-short select,.t-limed-spruce .c-form-short textarea{border:1px solid #3f585c}.t-purple-blue .c-form-short input,.t-purple-blue .c-form-short select,.t-purple-blue .c-form-short textarea{border:1px solid #3d1ebd}.t-serbert-lemon .c-form-short input,.t-serbert-lemon .c-form-short select,.t-serbert-lemon .c-form-short textarea{border:1px solid #e5fc36}.c-form-short .c-checkbox{margin-top:2rem;margin-left:1.45rem;-webkit-appearance:none;-moz-appearance:none;appearance:none;border:2px solid #b4c9e2;height:.8rem;width:.8rem;cursor:pointer}.t-purple .c-form-short .c-checkbox{border:2px solid #331878}.t-green .c-form-short .c-checkbox{border:2px solid #1e5d44}.t-sky-blue .c-form-short .c-checkbox{border:2px solid #46dbff}.t-pink .c-form-short .c-checkbox{border:2px solid #ed5ec2}.t-violet .c-form-short .c-checkbox{border:2px solid #b683ec}.t-limed-spruce .c-form-short .c-checkbox{border:2px solid #3f585c}.t-purple-blue .c-form-short .c-checkbox{border:2px solid #3d1ebd}.t-serbert-lemon .c-form-short .c-checkbox{border:2px solid #e5fc36}.c-form-short .c-checkbox~label{margin-top:1.25rem}.c-form-short .c-checkbox:checked{position:relative}.c-form-short .c-checkbox:checked::before{content:"";position:absolute;height:.15rem;width:.5rem;left:3px;bottom:5px;background-color:#000;-webkit-transform:rotate(35deg);-moz-transform:rotate(35deg);-ms-transform:rotate(35deg);-o-transform:rotate(35deg);transform:rotate(35deg)}.c-form-short .c-checkbox:checked::after{content:"";position:absolute;height:1.2rem;width:.15rem;right:8px;bottom:2px;background-color:#000;-webkit-transform:rotate(35deg);-moz-transform:rotate(35deg);-ms-transform:rotate(35deg);-o-transform:rotate(35deg);transform:rotate(35deg)}.c-form-short .c-contact__group{margin-bottom:.2rem!important}.c-form-short .c-select-label{-webkit-transform:translate(5%,140%);-moz-transform:translate(5%,140%);-ms-transform:translate(5%,140%);-o-transform:translate(5%,140%);transform:translate(5%,140%);padding-left:.5rem}.c-form-short .c-select-label+select{margin-top:-1rem;background-image:url(../img/icons/icon-menu-chevron-yellow.svg)}.c-form-short label{background-color:#fff;padding:0 2px;-webkit-transform:translate(5px,18px);-moz-transform:translate(5px,18px);-ms-transform:translate(5px,18px);-o-transform:translate(5px,18px);transform:translate(5px,18px);display:inline-block!important}.c-form-short textarea::-webkit-resizer{border-left:16px solid transparent;border-top:16px solid transparent;border-right:16px solid #3f585c}.t-purple .c-form-short textarea::-webkit-resizer{border-right:16px solid #331878}.t-green .c-form-short textarea::-webkit-resizer{border-right:16px solid #1e5d44}.t-sky-blue .c-form-short textarea::-webkit-resizer{border-right:16px solid #46dbff}.t-pink .c-form-short textarea::-webkit-resizer{border-right:16px solid #ed5ec2}.t-violet .c-form-short textarea::-webkit-resizer{border-right:16px solid #b683ec}.t-limed-spruce .c-form-short textarea::-webkit-resizer{border-right:16px solid #3f585c}.t-purple-blue .c-form-short textarea::-webkit-resizer{border-right:16px solid #3d1ebd}.t-serbert-lemon .c-form-short textarea::-webkit-resizer{border-right:16px solid #e5fc36}.c-form-block{-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;overflow:hidden;background-color:#fff;color:#0c0822}@media only screen and (min-width:50em){.c-form-block{margin:8rem 0}}.c-form-block__form,.c-form-block__panel{padding:1rem 1.5rem!important}@media only screen and (min-width:73.125em){.c-form-block__form,.c-form-block__panel{padding:3.75rem 5.25rem!important}}.c-form-block__panel{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-webkit-flex-direction:column;-moz-box-orient:vertical;-moz-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;-moz-box-pack:center;-ms-flex-pack:center;justify-content:center;background-color:#f2f2f2}.c-form-block__panel h2:not(.c-figure__heading),.c-form-block__panel h3:not(.c-figure__heading){font-size:2.5rem;color:#0c0822}@media only screen and (min-width:50em){.c-form-block__panel h2:not(.c-figure__heading),.c-form-block__panel h3:not(.c-figure__heading){font-size:3.25rem}}.c-form-block__panel p:not([class]){font-weight:400;color:#0c0822;font-size:1.2rem;font-family:Montserrat,sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"}@media only screen and (min-width:50em){.c-form-block__panel p:not([class]){font-size:1.25rem}}.c-form-block__panel a{color:#0c0822}.c-form-block__panel a:hover{color:#0c0822}.c-form-block__panel .o-flex--center{-webkit-box-pack:start;-webkit-justify-content:flex-start;-moz-box-pack:start;-ms-flex-pack:start;justify-content:flex-start}.c-form-block__panel .o-flex__col{padding:0}.c-form-block__form .e-btn{width:100%}.c-form-block__form .c-contact{display:block;-webkit-border-radius:0;-moz-border-radius:0;border-radius:0;padding:0;padding:0;-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none}@media only screen and (min-width:50em){.c-form-block__form .c-contact .dropdown{width:100%}}.c-form-block__subtext{font-size:1.2rem;color:#99a7a8;font-weight:400;margin-top:2.3rem;font-family:Roboto,sans-serif}h1,h2,h3,h4{font-family:Montserrat,sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";font-weight:700;line-height:1.25;margin:0 0 1rem}h1 strong,h2 strong{font-weight:800}.e-h1,.e-h2,.e-h3,.e-h4,.e-h5,.e-h6{font-family:Montserrat,sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";font-weight:400;line-height:1.1;margin:0 0 1rem}.e-hsb{font-weight:600}.e-h1,h1{font-size:3.25rem}@media only screen and (min-width:50rem){.e-h1,h1{font-size:3.5rem}}.e-h2,h2{font-size:2.25rem}@media only screen and (min-width:50rem){.e-h2,h2{font-size:2.5rem}}.e-h3,h3{font-size:1.8rem}@media only screen and (min-width:50rem){.e-h3,h3{font-size:2rem}}.e-h4,h4{font-size:1.625rem;font-weight:400}@media only screen and (min-width:50rem){.e-h4,h4{font-size:2.25rem}}.e-h5,h5{font-size:1.125rem}.e-h6,h6{font-size:1.2rem}.hr{border:none;position:relative}.hr:before{content:"";display:block;height:1px;background-color:#000fff;left:0;top:0;width:100%;position:absolute}.hr:after{display:block;position:absolute;overflow:hidden;right:0;width:60px;height:44px;content:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MSIgaGVpZ2h0PSI0NSIgdmlld0JveD0iMCAwIDYxIDQ1IiBmaWxsPSJub25lIj4KICA8cGF0aCBkPSJNMjEuODk5MSAyNC42MTI0QzIxLjk0MDkgMjQuNjEyNSAyMS45ODI3IDI0LjYyNzYgMjIuMDI0NiAyNC42Mjc2QzI5LjEzNjIgMjUuMjg1OCAzNi41NTQ0IDI2LjA2NDMgNDIuMDIwMSAyNi44MDg2QzQyLjAzNDEgMjYuODA4NiA0Mi4wNDggMjYuODA4NiA0Mi4wNDggMjYuODA4NkM0My41ODE3IDI3LjAyMTIgNDQuOTQ4MSAyNy4yMzM0IDQ2LjExOTIgMjcuNDMwM0M0Ni4xNDcxIDI3LjQzMDQgNDYuMzI4NCAyNy40NjA3IDQ2LjUwOTYgMjcuNDkxQzQ2LjUyMzYgMjcuNDkxIDQ2LjUzNzUgMjcuNDkxIDQ2LjU1MTQgMjcuNTA2QzQ2LjYwNzIgMjcuNTIxIDQ2LjYzNTEgMjcuNTIxMSA0Ni42MzUxIDI3LjUyMTFDNDYuNjQ5IDI3LjUyMTEgNDYuNjc2OSAyNy41MjEyIDQ2LjY5MDkgMjcuNTM2MkM0Ny41OTcxIDI3LjY4NzYgNDguNDc1MyAyNy45MTM3IDQ5LjMyNTMgMjguMjI5NEM1MS42MTA5IDI5LjA1NjUgNTMuNjcyMiAzMC4zOTExIDU1LjM5NzggMzIuMTQzNkw1NS4zOTc4IDMyLjE1ODVMNTUuMzk3OCAzMi4xNzM1QzU1LjU5MjYgMzIuMzY4MiA1NS43ODc0IDMyLjU3NzggNTUuOTgyMSAzMi44MDI1QzU4Ljc3ODcgMzUuOTQ3MiA2MC40ODQ4IDQwLjI0MDQgNjAuNDc0NiA0NC45MTg1TDYwLjUyMjkgMjIuNzk4Nkw2MC41NzEyIDAuNjc4NzlDNjAuNTYxIDUuMzU2ODQgNTguODIyMiA5LjY0MjUyIDU2LjAyNTkgMTIuNzc1MUM1NS44NDQxIDEyLjk4MzkgNTUuNjQ4NCAxMy4yMDc3IDU1LjQzODcgMTMuNDAxNUw1NS40Mzg3IDEzLjQxNjRMNTUuNDM4NyAxMy40MzE0QzUzLjcwNTQgMTUuMTc2MyA1MS42MzgzIDE2LjUwMiA0OS4zNDkyIDE3LjMxOUM0OC40OTc3IDE3LjYzMSA0Ny42MTg2IDE3Ljg1MzMgNDYuNzExNyAxOC4wMDA3QzQ2LjY5NzcgMTguMDAwNyA0Ni42Njk4IDE4LjAwMDcgNDYuNjU1OSAxOC4wMTU2QzQ2LjY1NTkgMTguMDE1NiA0Ni42MjggMTguMDE1NSA0Ni41NzIxIDE4LjAzMDNDNDYuNTU4MiAxOC4wMzAzIDQ2LjU0NDIgMTguMDMwMyA0Ni41MzAzIDE4LjA0NTJDNDYuMzYyOCAxOC4wNzQ3IDQ2LjE2NzUgMTguMTA0MiA0Ni4xMzk2IDE4LjEwNDFDNDQuOTY3NiAxOC4yOTU5IDQzLjU4NjQgMTguNTAyMSA0Mi4wNjU3IDE4LjcwOEM0Mi4wNTE3IDE4LjcwOCA0Mi4wMzc4IDE4LjcwOCA0Mi4wMzc4IDE4LjcwOEMzNi41Njg5IDE5LjQyODQgMjkuMTYxMyAyMC4xNzQ0IDIyLjAzMjkgMjAuODAxNUMyMS45OTExIDIwLjgwMTQgMjEuOTQ5MiAyMC44MTYyIDIxLjkwNzQgMjAuODE2MkMxNS4wMDE5IDIxLjUxODUgNy41NTI4NyAyMi4wODUxIDAuMDQ3OTg2OCAyMi42NjY2QzcuNTY0MiAyMy4yODA4IDE0Ljk5NjggMjMuODc5OSAyMS44OTkxIDI0LjYxMjRaIiBmaWxsPSIjMDAwZmZmIi8+Cjwvc3ZnPg==)}.hr--top:before{top:0}.hr--top:after{top:-22px}.hr--bottom:before{bottom:0}.hr--bottom:after{bottom:-22px}a{color:#000fff;cursor:pointer;text-decoration:none}a:hover{color:#000fff;text-decoration:underline}a:active{color:#999fff}.u-bg-harlequin a:not(.e-btn,.c-lb__link,.btn-link,.btn-link-bg-light,.btn-link-bg-dark,.c-sbs__a),.u-bg-light-grey a:not(.e-btn,.c-lb__link,.btn-link,.btn-link-bg-light,.btn-link-bg-dark,.c-sbs__a),.u-bg-neon-blue-20 a:not(.e-btn,.c-lb__link,.btn-link,.btn-link-bg-light,.btn-link-bg-dark,.c-sbs__a),.u-bg-tourmaline-black .u-bg-harlequin a:not(.e-btn,.c-lb__link,.btn-link,.btn-link-bg-light,.btn-link-bg-dark,.c-sbs__a),.u-bg-tourmaline-black .u-bg-light-grey a:not(.e-btn,.c-lb__link,.btn-link,.btn-link-bg-light,.btn-link-bg-dark,.c-sbs__a),.u-bg-tourmaline-black .u-bg-neon-blue-20 a:not(.e-btn,.c-lb__link,.btn-link,.btn-link-bg-light,.btn-link-bg-dark,.c-sbs__a),.u-bg-tourmaline-black .u-bg-white a:not(.e-btn,.c-lb__link,.btn-link,.btn-link-bg-light,.btn-link-bg-dark,.c-sbs__a),.u-bg-white a:not(.e-btn,.c-lb__link,.btn-link,.btn-link-bg-light,.btn-link-bg-dark,.c-sbs__a){color:#000fff}.u-bg-harlequin a:not(.e-btn,.c-lb__link,.btn-link,.btn-link-bg-light,.btn-link-bg-dark,.c-sbs__a).u-col-harlequin,.u-bg-light-grey a:not(.e-btn,.c-lb__link,.btn-link,.btn-link-bg-light,.btn-link-bg-dark,.c-sbs__a).u-col-harlequin,.u-bg-neon-blue-20 a:not(.e-btn,.c-lb__link,.btn-link,.btn-link-bg-light,.btn-link-bg-dark,.c-sbs__a).u-col-harlequin,.u-bg-tourmaline-black .u-bg-harlequin a:not(.e-btn,.c-lb__link,.btn-link,.btn-link-bg-light,.btn-link-bg-dark,.c-sbs__a).u-col-harlequin,.u-bg-tourmaline-black .u-bg-light-grey a:not(.e-btn,.c-lb__link,.btn-link,.btn-link-bg-light,.btn-link-bg-dark,.c-sbs__a).u-col-harlequin,.u-bg-tourmaline-black .u-bg-neon-blue-20 a:not(.e-btn,.c-lb__link,.btn-link,.btn-link-bg-light,.btn-link-bg-dark,.c-sbs__a).u-col-harlequin,.u-bg-tourmaline-black .u-bg-white a:not(.e-btn,.c-lb__link,.btn-link,.btn-link-bg-light,.btn-link-bg-dark,.c-sbs__a).u-col-harlequin,.u-bg-white a:not(.e-btn,.c-lb__link,.btn-link,.btn-link-bg-light,.btn-link-bg-dark,.c-sbs__a).u-col-harlequin{color:#01fe55}.u-bg-tourmaline-black a:not(.e-btn,.c-lb__link){color:#01fe55}.e-chvron-link{background-image:url(/Static-a/img/icons/icon-chevron-yellow.svg);background-repeat:no-repeat;background-position:0 5px;padding:5px 0 5px 30px}.is-link{cursor:pointer}ol[class],ul[class]{list-style:none}ol:not([class]),ul:not([class]){margin:0 0 2rem 1rem}li{margin-bottom:0}.e-bullet-list__li{margin:0 0 1rem 1rem}.e-bullet-list__li:before{background:#01fe55;-webkit-border-radius:9px;-moz-border-radius:9px;border-radius:9px;content:"";display:inline-block;height:9px;left:-1rem;position:relative;width:9px}.e-list__item{background-image:url(/Static-a/img/icons/icon-chevron-yellow.svg);background-repeat:no-repeat;background-position:0 5px;padding-left:30px}.e-list__item--event,.e-list__item--news{-webkit-background-size:29px 29px;-moz-background-size:29px;background-size:29px;padding-left:50px}.e-list__item--news{background-image:url(/Static-a/img/icons/icon-read.svg)!important}.e-list__item--event{background-image:url(/Static-a/img/icons/icon-event.svg)!important}.e-list--white-chevron .e-list__item{background-image:url(/Static-a/img/icons/icon-chevron-white.svg)}.c-related__overlap .e-list__item{background-image:url(/Static-a/img/icons/icon-chevron-white.svg)}.e-list__item time{font-size:.8rem}.c-related__overlap .e-list__item time{color:#0c0822}.e-figure,figure{position:relative;width:100%}.e-figcaption,figcaption{font-family:Montserrat,sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";font-size:.9rem;font-weight:600;text-align:center;width:auto;z-index:1}.c-res-iframe{height:0;padding-bottom:56.25%;padding-top:25px;position:relative}.c-res-iframe iframe,.c-res-iframe video{height:100%;left:0;position:absolute;top:0;width:100%}table{border-collapse:collapse;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px;overflow:hidden}table a:not(.e-btn){color:#000fff;text-decoration:underline}table a:not(.e-btn):hover{text-decoration:none}td,th{padding:.5rem 1rem;vertical-align:top}th{background-color:#e3e3e3;color:#000;border:2px solid #fff;border-bottom:2px solid #e3e3e3}th:first-child{border-left:2px solid #e3e3e3;-webkit-border-radius:4px 0 0 0;-moz-border-radius:4px 0 0 0;border-radius:4px 0 0 0;overflow:hidden}th:last-child{border-right:2px solid #e3e3e3;-webkit-border-radius:0 4px 0 0;-moz-border-radius:0 4px 0 0;border-radius:0 4px 0 0;overflow:hidden}tr:last-child td:first-child{-webkit-border-radius:0 0 0 4px;-moz-border-radius:0 0 0 4px;border-radius:0 0 0 4px;overflow:hidden}tr:last-child td:last-child{-webkit-border-radius:0 0 4px 0;-moz-border-radius:0 0 4px 0;border-radius:0 0 4px 0;overflow:hidden}td{background-color:#fff;color:#000;border:2px solid #e3e3e3}p{margin-bottom:1rem}.e-p{font-size:1rem}@media only screen and (min-width:50em){.e-p{font-size:1.125rem}}small{font-size:.85rem}b,strong{font-weight:600}em,i{font-style:italic}.rte{margin-bottom:2rem}.rte [id]{scroll-margin-top:150px}@media only screen and (min-width:920px){.rte [id]{scroll-margin-top:180px}}.o-flex{display:-webkit-box;display:-webkit-flex;display:-moz-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-webkit-flex-direction:column;-moz-box-orient:vertical;-moz-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:justify;-webkit-justify-content:space-between;-moz-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between}@media only screen and (min-width:50em){.o-flex{-webkit-box-orient:horizontal;-webkit-box-direction:normal;-webkit-flex-direction:row;-moz-box-orient:horizontal;-moz-box-direction:normal;-ms-flex-direction:row;flex-direction:row;margin:0 -.5rem}.o-flex+.o-flex:not(.o-flex--no-gap),.o-flex+.o-row{margin-top:2rem}}@media only screen and (min-width:50em) and (min-width:73.125em){.o-flex+.o-flex:not(.o-flex--no-gap),.o-flex+.o-row{margin-top:4rem}}.o-flex--row{-webkit-box-orient:horizontal;-webkit-box-direction:normal;-webkit-flex-direction:row;-moz-box-orient:horizontal;-moz-box-direction:normal;-ms-flex-direction:row;flex-direction:row}.o-flex--wrap{-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-pack:start;-webkit-justify-content:flex-start;-moz-box-pack:start;-ms-flex-pack:start;justify-content:flex-start}.o-flex--center{-webkit-box-pack:center;-webkit-justify-content:center;-moz-box-pack:center;-ms-flex-pack:center;justify-content:center}.o-flex--no-spacing{-webkit-box-pack:start;-webkit-justify-content:flex-start;-moz-box-pack:start;-ms-flex-pack:start;justify-content:flex-start}@media only screen and (min-width:50em){.o-flex--reverse{-webkit-box-orient:horizontal;-webkit-box-direction:reverse;-webkit-flex-direction:row-reverse;-moz-box-orient:horizontal;-moz-box-direction:reverse;-ms-flex-direction:row-reverse;flex-direction:row-reverse}}.o-flex--no-negative-margin{margin-left:0;margin-right:0}.o-flex--v-align{-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center}.o-flex__col{-webkit-box-flex:1;-webkit-flex:1;-moz-box-flex:1;-ms-flex:1;flex:1;max-width:100%;padding:1rem 0}@media only screen and (min-width:50em){.o-flex__col{padding:0 1.5rem}.o-flex--wrap .o-flex__col{margin-bottom:2rem}.o-flex__col--1{-webkit-flex-basis:8.33333333%;-ms-flex-preferred-size:8.33333333%;flex-basis:8.33333333%;max-width:8.33333333%;min-width:8.33333333%}.o-flex__col--2{-webkit-flex-basis:16.66666667%;-ms-flex-preferred-size:16.66666667%;flex-basis:16.66666667%;max-width:16.66666667%;min-width:16.66666667%}}@media only screen and (min-width:50em) and (min-width:50em){.o-flex__col--2--break{-webkit-flex-basis:20%;-ms-flex-preferred-size:20%;flex-basis:20%;max-width:20%}}@media only screen and (min-width:50em) and (min-width:73.125em){.o-flex__col--2--break{-webkit-flex-basis:26.5%;-ms-flex-preferred-size:26.5%;flex-basis:26.5%;max-width:26.5%}}@media only screen and (min-width:50em){.o-flex__col--3{-webkit-flex-basis:25%;-ms-flex-preferred-size:25%;flex-basis:25%;max-width:25%;min-width:25%}.o-flex__col--4{-webkit-flex-basis:33.33333%;-ms-flex-preferred-size:33.33333%;flex-basis:33.33333%;max-width:33.33333%;min-width:33.33333%}.o-flex__col--5{-webkit-flex-basis:41.66666667%;-ms-flex-preferred-size:41.66666667%;flex-basis:41.66666667%;max-width:41.66666667%;min-width:41.66666667%}.o-flex__col--6{-webkit-flex-basis:50%;-ms-flex-preferred-size:50%;flex-basis:50%;max-width:50%;min-width:50%}.o-flex__col--7{-webkit-flex-basis:58.33333333%;-ms-flex-preferred-size:58.33333333%;flex-basis:58.33333333%;max-width:58.33333333%;min-width:58.33333333%}.o-flex__col--8{-webkit-flex-basis:66.66666%;-ms-flex-preferred-size:66.66666%;flex-basis:66.66666%;max-width:66.66666%;min-width:66.66666%}.o-flex__col--9{-webkit-flex-basis:75%;-ms-flex-preferred-size:75%;flex-basis:75%;max-width:75%;min-width:75%}.o-flex__col--10{-webkit-flex-basis:83.33333333%;-ms-flex-preferred-size:83.33333333%;flex-basis:83.33333333%;max-width:83.33333333%;min-width:83.33333333%}.o-flex__col--11{-webkit-flex-basis:91.66666667%;-ms-flex-preferred-size:91.66666667%;flex-basis:91.66666667%;max-width:91.66666667%;min-width:91.66666667%}.o-flex__col--12{-webkit-flex-basis:100%;-ms-flex-preferred-size:100%;flex-basis:100%;max-width:100%;min-width:100%}}.o-container{margin:0 auto;width:90%}@media only screen and (min-width:73.125em){.o-container{max-width:97.5rem;margin:0 auto;width:95%}}.o-container--narrow{max-width:67.625rem}.o-container--slim{max-width:81rem}.o-container--full{max-width:100%;width:100%}@media only screen and (min-width:50em){.o-container--full{max-width:100%;width:100%}}.o-row{overflow:hidden}.o-w-1{width:.25rem}.o-w-2{width:.5rem}.o-w-3{width:.75rem}.o-w-4{width:1rem}.o-w-5{width:1.25rem}.o-w-6{width:1.5rem}.o-w-8{width:2rem}.o-w-10{width:2.5rem}.o-w-12{width:3rem}.o-w-16{width:4rem}.o-w-24{width:6rem}.o-w-32{width:8rem}.o-w-48{width:12rem}.o-w-64{width:16rem}.o-w-auto{width:auto}.o-w-px{width:1px}.o-w-1\/2{width:50%}.o-w-1\/3{width:33.33333%}.o-w-2\/3{width:66.66667%}.o-w-1\/4{width:25%}.o-w-3\/4{width:75%}.o-w-1\/5{width:20%}.o-w-2\/5{width:40%}.o-w-3\/5{width:60%}.o-w-4\/5{width:80%}.o-w-1\/6{width:16.66667%}.o-w-5\/6{width:83.33333%}.o-w-full{width:100%}.o-w-screen{width:100vw}</style>
+
+    <link rel="stylesheet" href="/Static-a/css/style.css?v=YtC4KMgbp7zVpxsjae7xbiiT12HMS681gsUsX9gNj1c" />
+    
+
+    <script async src="/Static-a/scripts/critical.js?v=xKPeuc0bgjUBJwcEjoQswMaHl7bxB5hoVj78P6lJjYE"></script>
+</head>
+<body>
+    <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KCQQ5T7V" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    
+
+    <div class="c-skip">
+    <a href="#siteNav" class="c-skip__item">Skip to navigation</a>
+    <a href="#main" class="c-skip__item">Skip to main content</a>
+    <a href="#footer" class="c-skip__item">Skip to footer</a>
+</div>
+    <header class="c-hd js-hd c-hd-mega" role="banner">
+    <div class="o-container c-hd__container">
+        <a class="c-hd__logo" href="/">
+            <span class="u-a11y">NCC Escode</span>
+            <img width="150px" height="45px" src="/static-a/img/logos/logo-escode-dark.svg" alt="Escode" />
+        </a>
+        <button class="e-btn e-btn--bare c-hd__nav-btn js-nav-btn" aria-controls="c-nav" aria-expanded="false" aria-label="Toggle navigation menu" aria-haspopup="true">
+            <div class="c-hd__nav-lines">
+                <span class="c-hd__nav-line c-hd__nav-line--1"></span>
+                <span class="c-hd__nav-line c-hd__nav-line--2"></span>
+                <span class="c-hd__nav-line c-hd__nav-line--3"></span>
+            </div>
+            <div class="u-a11y">Menu</div>
+        </button>
+        <nav class="c-hd-nav-mega" id="nav">
+            <ul class="c-hd-nav-mega__ul">
+                <div class="umb-block-list">
+<li class="c-hd-nav-mega__li c-hd-nav-mega__li--has-sub">
+    <div class="c-hd-nav-mega__li-block">
+            <span class="c-hd-nav-mega__a">Products</span>
+            <button class="c-hd-nav-mega__plus js-sub-nav-btn" aria-controls="sub-f626db3f-964f-4449-9e92-6740d091cb0c" aria-expanded="false" aria-haspopup="true">
+                <span class="u-a11y">Open sub menu for {title}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="11" viewBox="0 0 17 11" fill="none">
+                    <path d="M16 1.75L8.5 9.25L1 1.75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+            </button>
+    </div>
+        <ul class="c-hd-nav-mega__ul c-hd-nav-mega__ul--sub c-hd-nav-mega__ul--cols" id="sub-f626db3f-964f-4449-9e92-6740d091cb0c" style="">
+<li class="c-hd-nav-mega__li c-hd-nav-mega__li--tertiary">
+        <span class="c-hd-nav-mega__heading">Products</span>
+        <ul class="c-hd-nav-mega__ul c-hd-nav-mega__ul--tertiary">
+
+                <li>
+                    <a href="/software-escrow/view/">
+                        View Platform
+                    </a>
+                </li>
+                <li>
+                    <a href="/software-escrow/">
+                        Software Escrow
+                    </a>
+                </li>
+                <li>
+                    <a href="/software-escrow/testing-and-verification/">
+                        Verification
+                    </a>
+                </li>
+                <li>
+                    <a href="/software-escrow/source-code-vulnerability-scanning/">
+                        Vulnerability scanning
+                    </a>
+                </li>
+                <li>
+                    <a href="/products/">
+                        All products
+                    </a>
+                </li>
+        </ul>
+</li><li class="c-hd-nav-mega__li c-hd-nav-mega__li--tertiary">
+        <ul class="c-hd-nav-mega__ul--tertiary c-hd-nav-mega__aside">
+                <li class="c-hd-nav-mega__li">
+                        <img width="331" height="204" src="/media/nl2kclm1/escode-view-portal-dashboard.png?width=331&amp;height=204&amp;v=1dd361e689ab0f0;">
+                        <h3>View Platform</h3>
+                        <p>
+                            Discover the Escode View Platform. A secure platform that gives you 24/7 access, visibility, and control over your entire software portfolio.
+                        </p>
+                        <a href="/book-a-demo/">
+                            Book a demo
+                            <svg width="17" height="12" viewBox="0 0 17 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15 6L1 6" stroke="#0C0822" stroke-linecap="round"></path>
+                                <path d="M11 1L16 6L11 11" stroke="#0C0822" stroke-linecap="round"></path>
+                            </svg>
+                        </a>
+                </li>
+        </ul>
+</li>        </ul>
+</li><li class="c-hd-nav-mega__li c-hd-nav-mega__li--has-sub">
+    <div class="c-hd-nav-mega__li-block">
+            <span class="c-hd-nav-mega__a">Solutions</span>
+            <button class="c-hd-nav-mega__plus js-sub-nav-btn" aria-controls="sub-81cb9eec-332a-4152-bd81-5157ac8526e5" aria-expanded="false" aria-haspopup="true">
+                <span class="u-a11y">Open sub menu for {title}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="11" viewBox="0 0 17 11" fill="none">
+                    <path d="M16 1.75L8.5 9.25L1 1.75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+            </button>
+    </div>
+        <ul class="c-hd-nav-mega__ul c-hd-nav-mega__ul--sub c-hd-nav-mega__ul--cols" id="sub-81cb9eec-332a-4152-bd81-5157ac8526e5" style="">
+<li class="c-hd-nav-mega__li c-hd-nav-mega__li--tertiary">
+        <span class="c-hd-nav-mega__heading">By industry</span>
+        <ul class="c-hd-nav-mega__ul c-hd-nav-mega__ul--tertiary">
+
+                <li>
+                    <a href="/industry/aerospace/">
+                        Aerospace
+                    </a>
+                </li>
+                <li>
+                    <a href="/industry/automotive/">
+                        Automotive
+                    </a>
+                </li>
+                <li>
+                    <a href="/industry/energy-and-utilities/">
+                        Energy &amp; Utilities
+                    </a>
+                </li>
+                <li>
+                    <a href="/industry/financial-services/">
+                        Financial Services
+                    </a>
+                </li>
+                <li>
+                    <a href="/industry/healthcare/">
+                        Healthcare
+                    </a>
+                </li>
+                <li>
+                    <a href="/industry/icann/">
+                        ICANN
+                    </a>
+                </li>
+                <li>
+                    <a href="/industry/insurance/">
+                        Insurance
+                    </a>
+                </li>
+                <li>
+                    <a href="/industry/legal/">
+                        Legal Services
+                    </a>
+                </li>
+                <li>
+                    <a href="/industry/public-sector/">
+                        Public Sector
+                    </a>
+                </li>
+                <li>
+                    <a href="/industry/retail/">
+                        Retail
+                    </a>
+                </li>
+                <li>
+                    <a href="/industry/software-services/">
+                        Software Services
+                    </a>
+                </li>
+                <li>
+                    <a href="/industry/software-vendors/">
+                        Software Vendors
+                    </a>
+                </li>
+                <li>
+                    <a href="/industry/technology/">
+                        Technology
+                    </a>
+                </li>
+                <li>
+                    <a href="/industry/telecommunications/">
+                        Telecommunications
+                    </a>
+                </li>
+        </ul>
+</li><li class="c-hd-nav-mega__li c-hd-nav-mega__li--tertiary">
+        <span class="c-hd-nav-mega__heading">By challenge</span>
+        <ul class="c-hd-nav-mega__ul c-hd-nav-mega__ul--tertiary">
+
+                <li>
+                    <a href="/business-continuity-planning/">
+                        Business Continuity
+                    </a>
+                </li>
+                <li>
+                    <a href="/business-impact-analysis/">
+                        Business Impact Analysis
+                    </a>
+                </li>
+                <li>
+                    <a href="/operational-resilience/">
+                        Operational Resilience
+                    </a>
+                </li>
+                <li>
+                    <a href="/protect-intellectual-property/">
+                        Protect Intellectual Property
+                    </a>
+                </li>
+                <li>
+                    <a href="/regulation-and-compliance/">
+                        Regulation and Compliance
+                    </a>
+                </li>
+                <li>
+                    <a href="/software-licensing-agreement-management/">
+                        Software Licensing Agreements
+                    </a>
+                </li>
+                <li>
+                    <a href="/software-supply-chain-management/">
+                        Software Supply Chain
+                    </a>
+                </li>
+                <li>
+                    <a href="/source-code-management/">
+                        Source Code Management
+                    </a>
+                </li>
+                <li>
+                    <a href="/third-party-risk-management/">
+                        Third-Party Risk Management
+                    </a>
+                </li>
+                <li>
+                    <a href="/vendor-lock-in/">
+                        Vendor Lock-In
+                    </a>
+                </li>
+                <li>
+                    <a href="/vendor-risk-assessment/">
+                        Vendor Risk Assessment
+                    </a>
+                </li>
+        </ul>
+</li><li class="c-hd-nav-mega__li c-hd-nav-mega__li--tertiary">
+        <ul class="c-hd-nav-mega__ul--tertiary c-hd-nav-mega__aside">
+                <li class="c-hd-nav-mega__li">
+                        <img width="331" height="204" src="/media/jiddktbs/escode-12.jpg?width=331&amp;height=204&amp;v=1dd185283373080;">
+                        <h3>Compliance Management</h3>
+                        <p>
+                            Learn how Software Escrow helps meet regulatory requirements and manage compliance.
+                        </p>
+                        <a href="/regulation-and-compliance/">
+                            Learn more
+                            <svg width="17" height="12" viewBox="0 0 17 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15 6L1 6" stroke="#0C0822" stroke-linecap="round"></path>
+                                <path d="M11 1L16 6L11 11" stroke="#0C0822" stroke-linecap="round"></path>
+                            </svg>
+                        </a>
+                </li>
+                <li class="c-hd-nav-mega__li">
+                        <img width="331" height="204" src="/media/a3pgtmes/escode-financial-services.jpg?width=331&amp;height=204&amp;v=1dd185296583150;">
+                        <h3>Sample Agreements</h3>
+                        <p>
+                            Review standard Escrow agreement terms including source code deposit frequency, release clauses and verification requirements.
+                        </p>
+                        <a href="/software-escrow/software-escrow-agreement-sample/">
+                            Free Sample Agreements
+                            <svg width="17" height="12" viewBox="0 0 17 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15 6L1 6" stroke="#0C0822" stroke-linecap="round"></path>
+                                <path d="M11 1L16 6L11 11" stroke="#0C0822" stroke-linecap="round"></path>
+                            </svg>
+                        </a>
+                </li>
+        </ul>
+</li>        </ul>
+</li><li class="c-hd-nav-mega__li c-hd-nav-mega__li--has-sub">
+    <div class="c-hd-nav-mega__li-block">
+            <span class="c-hd-nav-mega__a">Resources</span>
+            <button class="c-hd-nav-mega__plus js-sub-nav-btn" aria-controls="sub-4dccf53d-9640-4e3c-b3ac-a6b69081ab7b" aria-expanded="false" aria-haspopup="true">
+                <span class="u-a11y">Open sub menu for {title}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="11" viewBox="0 0 17 11" fill="none">
+                    <path d="M16 1.75L8.5 9.25L1 1.75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+            </button>
+    </div>
+        <ul class="c-hd-nav-mega__ul c-hd-nav-mega__ul--sub c-hd-nav-mega__ul--cols" id="sub-4dccf53d-9640-4e3c-b3ac-a6b69081ab7b" style="">
+<li class="c-hd-nav-mega__li c-hd-nav-mega__li--tertiary">
+        <span class="c-hd-nav-mega__heading">Learn</span>
+        <ul class="c-hd-nav-mega__ul c-hd-nav-mega__ul--tertiary">
+
+                <li>
+                    <a href="/resources/">
+                        Blog
+                    </a>
+                </li>
+                <li>
+                    <a href="/our-customers/">
+                        Case studies
+                    </a>
+                </li>
+                <li>
+                    <a href="/book-a-demo/">
+                        Book a demo
+                    </a>
+                </li>
+        </ul>
+</li><li class="c-hd-nav-mega__li c-hd-nav-mega__li--tertiary">
+        <span class="c-hd-nav-mega__heading">Support</span>
+        <ul class="c-hd-nav-mega__ul c-hd-nav-mega__ul--tertiary">
+
+                <li>
+                    <a href="/frequently-asked-questions/">
+                        FAQs
+                    </a>
+                </li>
+                <li>
+                    <a href="/contact-support/">
+                        Contact support
+                    </a>
+                </li>
+                <li>
+                    <a href="/contact-sales/">
+                        Contact sales
+                    </a>
+                </li>
+        </ul>
+</li><li class="c-hd-nav-mega__li c-hd-nav-mega__li--tertiary">
+        <span class="c-hd-nav-mega__heading">Company</span>
+        <ul class="c-hd-nav-mega__ul c-hd-nav-mega__ul--tertiary">
+
+                <li>
+                    <a href="/about-escode/">
+                        About us
+                    </a>
+                </li>
+                <li>
+                    <a href="/why-escode/">
+                        Why Escode?
+                    </a>
+                </li>
+                <li>
+                    <a href="/contact-us/">
+                        Contact us
+                    </a>
+                </li>
+                <li>
+                    <a href="/careers-at-escode/">
+                        Careers
+                    </a>
+                </li>
+        </ul>
+</li><li class="c-hd-nav-mega__li c-hd-nav-mega__li--tertiary">
+        <ul class="c-hd-nav-mega__ul--tertiary c-hd-nav-mega__aside">
+                <li class="c-hd-nav-mega__li">
+                        <img width="331" height="204" src="/media/y0vb2bqv/gettyimages-565783431_0.png?width=331&amp;height=204&amp;v=1dd18369d11c130;">
+                        <h3>Customer stories</h3>
+                        <p>
+                            Learn how thousands of  businesses like yours are using Escode solutions to strengthen operational resilience and drive innovation.
+                        </p>
+                        <a href="/our-customers/">
+                            Explore success stories
+                            <svg width="17" height="12" viewBox="0 0 17 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15 6L1 6" stroke="#0C0822" stroke-linecap="round"></path>
+                                <path d="M11 1L16 6L11 11" stroke="#0C0822" stroke-linecap="round"></path>
+                            </svg>
+                        </a>
+                </li>
+        </ul>
+</li>        </ul>
+</li></div>
+
+            </ul>
+<div class="c-hd-nav-mega__opts">
+    <ul class="c-hd-nav-mega__ul c-hd-nav-mega__ul--opts ">
+        <li class="c-hd-nav-mega__li c-hd-nav-mega__li--has-sub c-hd-nav-mega-login">
+            <div class="c-hd-nav-mega__li-block">
+                <span class="c-hd-nav-mega__a" >
+                    Login
+                </span>
+                <button class="c-hd-nav-mega__plus js-sub-nav-btn" aria-controls="sub-login" aria-expanded="false" aria-haspopup="true">
+                    <span class="u-a11y">Open sub menu for Login</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="11" viewBox="0 0 17 11" fill="none">
+                        <path d="M16 1.75L8.5 9.25L1 1.75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </button>
+            </div>
+            <ul class="c-hd-nav-mega__ul c-hd-nav-mega__ul--sub c-hd-nav-mega__ul--cols" id="sub-login">
+                <li class="c-hd-nav-mega__li c-hd-nav-mega__li--tertiary">
+                    <ul class="c-hd-nav-mega__ul c-hd-nav-mega__ul--tertiary">
+                            <li>
+                                <a href="https://view.escode.com/login" target="_blank"  rel="noreferrer noopener" rel="noreferrer noopener">
+                                    View Platform
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://escrowconnect.nccgroup.com/"  rel="noreferrer noopener">
+                                    Escrow Connect
+                                </a>
+                            </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li class="c-hd-nav-mega__li">
+            <div class="c-hd-nav-mega__li-block">
+                <a href="/book-a-demo/"
+                 class="c-hd-nav-mega__a c-hd-nav-mega__btn"><img src="/static-a/img/icons/phone-icon.png" alt="Phone Icon" />  Book a demo</a>
+            </div>
+        </li>
+        <li class="c-hd-nav-mega__li">
+            <div class="c-hd-nav-mega__li-block">
+<a class="c-hd-nav-mega__a c-hd-nav-mega__phone" href="tel:&#x2B;44 (0) 161 209 5324">&#x2B;44 (0) 161 209 5324</a>               </div>
+        </li>
+    </ul>
+</div>        </nav>
+<div class="c-hd-nav-mega__li--search">
+    <button class="js-search-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none">
+            <path d="M20.7495 19.9107L15.0855 14.2467C16.4466 12.6126 17.1253 10.5168 16.9805 8.39508C16.8356 6.27338 15.8784 4.2892 14.3079 2.85529C12.7374 1.42139 10.6745 0.648162 8.54844 0.696471C6.42236 0.744779 4.39674 1.6109 2.89298 3.11466C1.38922 4.61842 0.5231 6.64404 0.474791 8.77012C0.426482 10.8962 1.19971 12.9591 2.63361 14.5296C4.06752 16.1001 6.0517 17.0573 8.1734 17.2022C10.2951 17.347 12.391 16.6683 14.025 15.3072L19.689 20.9712L20.7495 19.9107ZM1.99948 8.97116C1.99948 7.63613 2.39536 6.33109 3.13706 5.22106C3.87876 4.11103 4.93296 3.24586 6.16636 2.73497C7.39976 2.22408 8.75696 2.09041 10.0663 2.35086C11.3757 2.61131 12.5784 3.25418 13.5224 4.19819C14.4665 5.14219 15.1093 6.34492 15.3698 7.6543C15.6302 8.96367 15.4966 10.3209 14.9857 11.5543C14.4748 12.7877 13.6096 13.8419 12.4996 14.5836C11.3895 15.3253 10.0845 15.7212 8.74948 15.7212C6.95987 15.7192 5.24414 15.0074 3.9787 13.7419C2.71326 12.4765 2.00146 10.7608 1.99948 8.97116Z" fill="#0c0822"></path>
+        </svg>
+        <span class="u-hide">Search</span>
+    </button>
+</div>
+
+<form action="/resources/how-to-avoid-vendor-lock-in/" class="c-search o-container js-search-box" enctype="multipart/form-data" id="form32a5851d2b9e48858a902928cdab3fdb" method="post">    <label for="search-term" class="u-desktop-only-block">Search</label>
+    <div class="c-search__inputs">
+        <input type="text" id="search-term" class="c-search__text u-mb-0" name="q" placeholder="Enter a search term">
+        <button class="c-search__btn_icon e-btn" type="submit">
+            <span class="u-a11y">Search</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none">
+                <path d="M20.7495 19.9107L15.0855 14.2467C16.4466 12.6126 17.1253 10.5168 16.9805 8.39508C16.8356 6.27338 15.8784 4.2892 14.3079 2.85529C12.7374 1.42139 10.6745 0.648162 8.54844 0.696471C6.42236 0.744779 4.39674 1.6109 2.89298 3.11466C1.38922 4.61842 0.5231 6.64404 0.474791 8.77012C0.426482 10.8962 1.19971 12.9591 2.63361 14.5296C4.06752 16.1001 6.0517 17.0573 8.1734 17.2022C10.2951 17.347 12.391 16.6683 14.025 15.3072L19.689 20.9712L20.7495 19.9107ZM1.99948 8.97116C1.99948 7.63613 2.39536 6.33109 3.13706 5.22106C3.87876 4.11103 4.93296 3.24586 6.16636 2.73497C7.39976 2.22408 8.75696 2.09041 10.0663 2.35086C11.3757 2.61131 12.5784 3.25418 13.5224 4.19819C14.4665 5.14219 15.1093 6.34492 15.3698 7.6543C15.6302 8.96367 15.4966 10.3209 14.9857 11.5543C14.4748 12.7877 13.6096 13.8419 12.4996 14.5836C11.3895 15.3253 10.0845 15.7212 8.74948 15.7212C6.95987 15.7192 5.24414 15.0074 3.9787 13.7419C2.71326 12.4765 2.00146 10.7608 1.99948 8.97116Z"></path>
+            </svg>
+        </button>
+    </div>
+    <button class="c-search__btn-close js-close-search">
+        <span class="u-mobile-only-block">Close Search</span>
+        <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m21.89 18.907-7.653-7.653 7.652-7.652a2.104 2.104 0 0 0 0-2.982 2.104 2.104 0 0 0-2.982 0l-7.653 7.652L3.602.62A2.104 2.104 0 0 0 .62.62a2.104 2.104 0 0 0 0 2.982l7.652 7.652L.62 18.907a2.104 2.104 0 0 0 0 2.982 2.104 2.104 0 0 0 2.982 0l7.652-7.652 7.653 7.652a2.104 2.104 0 0 0 2.982 0c.82-.826.82-2.162 0-2.982" fill="#0c0822"/></svg>
+    </button>
+<input name="__RequestVerificationToken" type="hidden" value="CfDJ8HI9fwkKtrtLm1oVJ-5BKSGI8VBvheoontriDHDBZ33iLe6syIG8jNwuJOyuq057rAl9EjM3bTk78mcwssIGtgzu2hoC6KP_UZph0fJI4r3YcWgcfoYlqMcpzdMhusbKf13_L7MEPuZSmEsU7bJ6dGM" /><input name="ufprt" type="hidden" value="CfDJ8HI9fwkKtrtLm1oVJ-5BKSHX9uDqAZTJ56naNs9kyNx9w01hyToTJ2l804zB9xzYilsSL8mati1YmYGJLN71BuqGoeWURGsoziV8kNzzEvSlpfys98t2_4Gj7n8nwD_6hSRui7ZAAjir78LRmVdK6dTf-Pf3zVnTZ2C6M9a7O8zf" /></form>    </div>
+</header>
+
+    
+<script type="application/ld+json">
+    {"headline":"How To Avoid Vendor Lock In​","description":"4 Simple Steps","image":["https://www.escode.com/media/up5lhrzm/escode-software-escrow-professional-8.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://www.escode.com/resources/how-to-avoid-vendor-lock-in/"},"author":{"@type":"Person","name":"Escode Editorial"},"publisher":{"@type":"Organization","name":"Escode","url":"https://www.escode.com/","logo":"https://www.escode.com/media/m0bdez0h/escode_logo_primary_black.png"},"datePublished":"2025-09-22","dateModified":"2026-07-06","@context":"https://schema.org","@type":"Article"}
+</script><div class="c-banner  c-banner--img-text c-banner-background-base-gray">
+    <div class="o-container c-banner__container">
+        <div class="c-banner__content u-white-content">
+<nav class="c-banner__breadcrumbs" aria-label="Breadcrumbs">
+        <a class="c-banner__breadcrumbs-item" href="/">Home</a>
+        <a class="c-banner__breadcrumbs-item" href="/resources/">Resources</a>
+</nav>                    <p class="c-banner__date">22 September 2025</p>
+                <h1 class="c-banner__header" data-swiftype-name="title" data-swiftype-type="string">How To Avoid Vendor Lock In&#x200B;</h1>
+
+                <h2 class="c-banner__sub-header">4 Simple Steps</h2>
+
+
+
+                <div class="c-banner__social">
+                        <a href="https://www.linkedin.com/shareArticle?title=How&#x2B;To&#x2B;Avoid&#x2B;Vendor&#x2B;Lock&#x2B;In%e2%80%8b&mini=true&summary=&url=https://www.escode.com/resources/how-to-avoid-vendor-lock-in/" target="_blank" rel="noopener" aria-label="LinkedIn" class="c-banner__social-item">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" fill="000" /></svg>
+                        </a>
+                        <a href="mailto:?subject=How&#x2B;To&#x2B;Avoid&#x2B;Vendor&#x2B;Lock&#x2B;In%e2%80%8b&amp;body=https%3a%2f%2fwww.escode.com%2fresources%2fhow-to-avoid-vendor-lock-in%2f" target="_self" rel="noopener" aria-label="E-mail" class="c-banner__social-item">
+                            <svg class="c-banner__social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44">
+                                <path d="M39.286 0H4.714A4.714 4.714 0 000 4.714v34.572A4.714 4.714 0 004.714 44h34.572A4.714 4.714 0 0044 39.286V4.714A4.714 4.714 0 0039.286 0zM17.494 22.6c-8.907-6.464-8.816-6.48-11.208-8.342v-2.472a2.357 2.357 0 012.357-2.357h26.714a2.357 2.357 0 012.357 2.357v2.472c-2.394 1.863-2.3 1.878-11.208 8.342-1.031.752-3.083 2.565-4.506 2.543-1.424.021-3.474-1.79-4.506-2.543zm20.221-4.354v13.968a2.357 2.357 0 01-2.357 2.357H8.643a2.357 2.357 0 01-2.357-2.357V18.246c1.371 1.06 3.273 2.479 9.36 6.9 1.391 1.016 3.73 3.157 6.354 3.144 2.641.013 5.013-2.165 6.356-3.145 6.085-4.421 7.987-5.839 9.358-6.899z" fill="000"></path>
+                            </svg>
+                        </a>
+                </div>
+        </div>
+    </div>
+        <div class="mask ">
+            <img src="/media/up5lhrzm/escode-software-escrow-professional-8.jpg" alt="">
+        </div>
+</div>
+
+
+
+<div class="body" data-swiftype-name="body" data-swiftype-type="text">
+    
+
+
+<div class="c-blog-container">        <section  class="c-section u-bg-white" >
+
+
+            <div class="o-container">
+
+
+                        <div class="o-flex o-container ">
+
+                                <div class="o-flex__col o-flex__col--3 ">
+
+
+
+<div class="rte">
+    <p><strong>Table of Contents</strong></p>
+</div>
+
+    <ul class="c-page-nav">
+            <li>
+                <a class="c-page-nav__link" href="#whatisvendorlockin" data-id="whatisvendorlockin">What is Vendor Lock in?</a>
+            </li>
+            <li>
+                <a class="c-page-nav__link" href="#howtoavoidvendorlockin" data-id="howtoavoidvendorlockin">How To Avoid Vendor Lock In?</a>
+            </li>
+            <li>
+                <a class="c-page-nav__link" href="#step1identifyandassessvendorrisk" data-id="step1identifyandassessvendorrisk">Step 1: Identify and assess vendor risk</a>
+            </li>
+            <li>
+                <a class="c-page-nav__link" href="#step2addressportability" data-id="step2addressportability">Step 2: Address portability</a>
+            </li>
+            <li>
+                <a class="c-page-nav__link" href="#step3haveanexitstrategy" data-id="step3haveanexitstrategy">Step 3: Have an exit strategy</a>
+            </li>
+            <li>
+                <a class="c-page-nav__link" href="#step4planforcontinuity" data-id="step4planforcontinuity">Step 4: Plan for continuity</a>
+            </li>
+            <li>
+                <a class="c-page-nav__link" href="#howsoftwareescrowcansupport" data-id="howsoftwareescrowcansupport">How Software Escrow can support</a>
+            </li>
+    </ul>
+                                </div>
+                                <div class="o-flex__col o-flex__col--9 ">
+
+
+
+<div class="rte">
+    <p>Businesses now depend heavily on third-party providers for essential daily operations. While this brings clear benefits, it also introduces risks that must be understood and managed early.</p>
+<p>Vendor lock-in is the top concern for any outsourced service that is, or could become, mission-critical. Let’s explore what vendor lock-in is, why it's a challenge, and how you can avoid vendor lock-in.</p>
+</div>
+
+<div class="rte">
+    <h2>What Does Vendor Lock In Mean?<a id="whatisvendorlockin"></a> </h2>
+<p><a href="/vendor-lock-in/" title="Vendor Lock-In"><span class="u-col-neon-blue-100"><strong>Vendor lock in</strong></span></a> is a situation where a business becomes dependent on a single vendor, making it costly or difficult to switch to another provider. This usually stems from things like proprietary systems, custom code, or closed data formats that don’t transfer easily. The result? You lose flexibility, face steep costs to migrate, and risk serious continuity issues if that vendor ever falters.</p>
+<p>Vendor lock-in has become even more of a concern with the rise of SaaS and other cloud-based platforms. When critical services live in the cloud, businesses can suddenly find themselves exposed, whether that’s due to a provider going offline, shutting down entirely, or changing their terms without warning. Without the right risk mitigation strategies in place, even a minor disruption can spiral into a serious continuity issue.</p>
+<p>This is not even strictly an issue associated with overcommitting to a single vendor. You might have a number of third parties providing different solutions that are critical to your operations and still find that vendor lock-in strikes with disproportionately disruptive results if just one vendor falters.</p>
+<p>These factors make risk mitigation solutions like <a href="/software-escrow/" title="Software Escrow"><span class="u-col-neon-blue-100"><strong>software escrow</strong></span></a> a must-have for responsible businesses. Making software and data accessible, portable, and recoverable if the original provider suffers a setback is the surest way to avoid vendor lock-in. Of course, this is just the start of preventive measures. Now you understand what vendor lock in means, let’s take a look at how to avoid vendor lock in.</p>
+</div>
+
+<div class="rte">
+    <h2>How To Avoid Vendor Lock In?<a id="howtoavoidvendorlockin"></a>&nbsp;</h2>
+<p><a href="/vendor-lock-in/" title="Vendor Lock-In"><span class="u-col-neon-blue-100"><strong>Avoiding vendor lock-in</strong></span></a> starts with a few key best practices and a clear understanding of the risks that come with outsourcing. Here’s how To Avoid Vendor Lock In:</p>
+<p><strong><span class="u-col-neon-blue-100">Step 1: </span>Identify and assess risks during &nbsp;procurement<a id="step1identifyandassessvendorrisk"></a>&nbsp;</strong></p>
+<p>Where vendor lock-in is concerned, prevention is better than the cure. This means you need to be on the lookout for factors that will result in lock-in before committing to any arrangement with a third-party provider.</p>
+<p>Let’s say you’re going to migrate over to a cloud app to handle email services. You need to analyse the way in which prospective vendors will handle elements like data storage to ensure that if you eventually decide to migrate elsewhere, doing so will not only be possible but will also be straightforward rather than convoluted.</p>
+<p><strong><span class="u-col-neon-blue-100">Step 2: </span>Address portability proactively<a id="step2addressportability"></a>&nbsp;</strong></p>
+<p>Another vendor lock-in issue arises when you want to move an application from one third-party infrastructure to that of a rival. This raises the question of app portability, which depends on how achievable the migration is and what changes (if any) are required as part of it.</p>
+<p>Achieving portability is a process with its own costs and complexities, so you must also consider the degree to which it will be necessary and whether there are existing apps built with this in mind so you don’t have to start from scratch.</p>
+<p><strong><span class="u-col-neon-blue-100">Step 3: </span>Plan your exit immediately<a id="step3haveanexitstrategy"></a>&nbsp;</strong></p>
+<p>It’s safer to assume you’ll eventually part ways with a vendor, so plan for that from the start. Having a documented and tested exit strategy in place for critical applications will allow you to remain in control and avoid vendor lock-in.</p>
+<p>Formulating this plan involves seeking assurances from third parties about their ability to assist with the transition away from their services. It’s reasonable to ask them what they offer in terms of interoperability and portability, how the contract applies in the event of termination, and the time frame involved in closing an agreement.</p>
+<p><strong><span class="u-col-neon-blue-100">Step 4:</span> Have a plan for continuity<a id="step4planforcontinuity"></a>&nbsp;</strong></p>
+<p>The best way to avoid vendor lock-in is to back up critical data and secure access to third-party software so your operations can continue as normal, no matter what happens to the vendor. Securing assets such as source code and access credentials with an independent software escrow agent ensures continued access and control over critical services, even if the vendor is no longer able to support them. So, if your vendor faces disruption, you can still recover quickly, even with SaaS.</p>
+</div>
+
+<div class="rte">
+    <h2>Take advantage of software escrow to prevent vendor lock-in<a id="howsoftwareescrowcansupport"></a>&nbsp;</h2>
+<p>Earlier, we discussed how <a href="/vendor-lock-in/" title="Vendor Lock-In"><span class="u-col-neon-blue-100"><strong>software escrow can help mitigate the risk of vendor lock-in</strong></span></a>. As the global leader in Software Escrow, Escode has the experience to protect your critical software assets, data and documentation, ensuring they are accessible and can be transferred either in-house or to an alternative vendor if needed.</p>
+<p>Get in touch today to learn about our software escrow services and how we can help you build a robust business continuity plan to avoid vendor lock in, including testing and documentation, to protect your operations and avoid vendor lock-in.</p>
+<p>&nbsp;</p>
+</div>                                </div>
+                        </div>
+            </div>
+        </section>
+        <section  class="c-section u-bg-neon-blue-100" >
+
+
+            <div class="o-container">
+
+
+                        <div class="o-flex o-container ">
+
+                                <div class="o-flex__col o-flex__col--12 ">
+
+
+
+<div class="rte">
+    
+</div>
+
+<div class="rte">
+    <p style="text-align: center;" class="e-h3"><strong>Learn how Software Escrow can help you avoid vendor lock in</strong></p>
+</div>
+<div class="u-center-align">
+                <a href="/vendor-lock-in/"  class="e-btn  btn-primary-bg-dark u-mr-4 ">
+                Learn More
+            </a>
+            <a href="/contact-us/"  class="e-btn e-btn--outline btn-secondary-bg-dark ">
+                Contact us
+            </a>
+
+</div>
+
+
+<div class="rte">
+    
+</div>                                </div>
+                        </div>
+            </div>
+        </section>
+</div>
+
+</div>
+
+
+
+
+
+     
+    <div class="c-skip">
+        <a href="#nav" class="c-skip__item">Skip to navigation</a>
+        <a href="#main" class="c-skip__item">Skip to main content</a>
+        <a href="#footer" class="c-skip__item">Skip to footer</a>
+    </div>
+    <footer class="c-f u-white-content" id="footer">
+    <div class="o-container">
+        
+        <div class="umb-block-grid"
+             data-grid-columns="12;"
+             style="--umb-block-grid--grid-columns: 12;">
+            
+<div class="o-flex__col--12 c-f__wrapper">
+
+<div class=c-f__wrapper--col>
+
+        <div class="c-f__head js-accordion-btn">
+
+            <button class="c-f__head--btn" aria-controls="sub-2" aria-expanded="false" aria-haspopup="true" aria-label="expand footer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="11" viewBox="0 0 17 11" fill="none">
+                    <path d="M16 1.75L8.5 9.25L1 1.75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+            </button>
+
+                <span class="c-f__list-title">Products</span>
+
+        </div>
+
+        <ul class="c-f__list">
+
+            
+    <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/software-escrow/view/" >
+            View Platform
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/software-escrow/" >
+            Software Escrow
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/software-escrow/testing-and-verification/" >
+            Verification
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/software-escrow/source-code-vulnerability-scanning/" >
+            Vulnerability scanning
+        </a>
+    </li>
+ 
+        </ul>
+
+</div>
+<div class=c-f__wrapper--col>
+
+        <div class="c-f__head js-accordion-btn">
+
+            <button class="c-f__head--btn" aria-controls="sub-2" aria-expanded="false" aria-haspopup="true" aria-label="expand footer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="11" viewBox="0 0 17 11" fill="none">
+                    <path d="M16 1.75L8.5 9.25L1 1.75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+            </button>
+
+                <span class="c-f__list-title">Solutions</span>
+
+        </div>
+
+        <ul class="c-f__list">
+
+            
+    <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/saas-escrow/" >
+            SaaS Escrow
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/source-code-escrow/" >
+            Source Code Escrow
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/information-escrow/" >
+            Information Escrow
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/registry-data-escrow/" >
+            Registry Data Escrow
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/d3p-compliance/" >
+            D3P Compliance
+        </a>
+    </li>
+ 
+        </ul>
+
+</div>
+<div class=c-f__wrapper--col>
+
+        <div class="c-f__head js-accordion-btn">
+
+            <button class="c-f__head--btn" aria-controls="sub-2" aria-expanded="false" aria-haspopup="true" aria-label="expand footer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="11" viewBox="0 0 17 11" fill="none">
+                    <path d="M16 1.75L8.5 9.25L1 1.75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+            </button>
+
+                <span class="c-f__list-title">Sectors</span>
+
+        </div>
+
+        <ul class="c-f__list">
+
+            
+    <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/industry/aerospace/" >
+            Aerospace
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/industry/automotive/" >
+            Automotive
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/industry/energy-and-utilities/" >
+            Energy &amp; Utilities
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/industry/financial-services/" >
+            Financial Services
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/industry/healthcare/" >
+            Healthcare
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/industry/insurance/" >
+            Insurance
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/industry/legal/" >
+            Legal Services
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/industry/public-sector/" >
+            Public Sector
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/industry/software-vendors/" >
+            Software Vendors
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/industry/telecommunications/" >
+            Telecommunications
+        </a>
+    </li>
+ 
+        </ul>
+
+</div>
+<div class=c-f__wrapper--col>
+
+        <div class="c-f__head js-accordion-btn">
+
+            <button class="c-f__head--btn" aria-controls="sub-2" aria-expanded="false" aria-haspopup="true" aria-label="expand footer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="11" viewBox="0 0 17 11" fill="none">
+                    <path d="M16 1.75L8.5 9.25L1 1.75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+            </button>
+
+                <span class="c-f__list-title">Resources &amp; Support</span>
+
+        </div>
+
+        <ul class="c-f__list">
+
+            
+    <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/book-a-demo/" >
+            Book a demo
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/contact-sales/" >
+            Contact sales
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/our-customers/" >
+            Customer stories
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/resources/what-is-software-escrow/" >
+            About Software Escrow
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/software-escrow/software-escrow-agreement-sample/" >
+            Sample Agreements
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/software-escrow/release-conditions-management/" >
+            Release conditions
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/software-escrow/secure-storage/" >
+            Secure storage
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/resources/" >
+            Blog
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/frequently-asked-questions/" >
+            FAQs
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/contact-support/" >
+            Contact support
+        </a>
+    </li>
+ 
+        </ul>
+
+</div>
+<div class=c-f__wrapper--col>
+
+        <div class="c-f__head js-accordion-btn">
+
+            <button class="c-f__head--btn" aria-controls="sub-2" aria-expanded="false" aria-haspopup="true" aria-label="expand footer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="11" viewBox="0 0 17 11" fill="none">
+                    <path d="M16 1.75L8.5 9.25L1 1.75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+            </button>
+
+                <span class="c-f__list-title">Company</span>
+
+        </div>
+
+        <ul class="c-f__list">
+
+            
+    <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/about-escode/" >
+            About Escode
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/why-escode/" >
+            Why Escode
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="https://www.escode.com/contact-us/#offices" >
+            Office locations
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/careers-at-escode/" target="" >
+            Careers
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/partner-with-escode/" >
+            Become a partner
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/escode-logo-and-colour-palette/" >
+            Brand guidelines
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="/contact-us/" >
+            Contact us
+        </a>
+    </li>
+     <li class="c-f__list-li c-f__list-nav">
+        <a class="c-f__list-a" href="https://view.escode.com/login" >
+            Log in
+        </a>
+    </li>
+ 
+        </ul>
+
+</div>
+    <div class="c-f__wrapper--col c-f__wrapper--social">
+
+            <span class="c-f__list-title">Follow Us</span>
+
+            <ul class="c-f__list c-f__updates">
+                
+
+        <li class="c-f__list-li">
+            <a class="c-f__list-a" href="https://www.linkedin.com/company/escodeglobal" >
+                <img src="/media/uqdiedb4/escode-linkedin.webp?width=60&amp;height=60&amp;v=1dd07ba2b9eecd0" alt="Escode Linkedin">
+            </a>
+        </li>
+
+        <li class="c-f__list-li">
+            <a class="c-f__list-a" href="https://www.youtube.com/@escodeglobal" >
+                <img src="/media/1tpht5p4/escode-youtube.webp?width=60&amp;height=60&amp;v=1dd07ba2b8f3560" alt="Escode Youtube">
+            </a>
+        </li>
+
+            </ul>
+    </div>
+</div>
+        </div>
+
+
+        <div class="o-flex o-flex--no-gap c-f__sublinks">
+            <div class="o-flex__col">
+                <div class="c-f__copyright">
+                    <p>&copy; Escode. All rights reserved.</p>
+                    <ul class="c-f__copyright-list">
+    <li>
+        <a href="/website-terms-of-use/"
+        >
+            Terms &amp; conditions
+        </a>
+    </li>
+    <li>
+        <a href="/privacy-policy/"
+        >
+            Privacy policy
+        </a>
+    </li>
+    <li>
+        <a href="/modern-slavery-and-human-trafficking-statement/"
+        >
+            Modern slavery statement
+        </a>
+    </li>
+    <li>
+        <a href="/cookie-policy/"
+        >
+            Cookie policy
+        </a>
+    </li>
+    <li>
+        <a href="/accessibility-statement/"
+        >
+            Accessibility
+        </a>
+    </li>
+    <li>
+        <a href="https://www.escode.com/sitemap.xml"
+        >
+            Sitemap
+        </a>
+    </li>
+    <li>
+        <a href="/impressum/"
+        >
+            Impressum
+        </a>
+    </li>
+</ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+    <script defer src="/Static-a/scripts/script.js?v=8pILJtHtcKwJku_H57gJlCWOJFrblAF4fZ9lt0mNFj4"></script>
+        <script type="application/ld+json">
+            {"itemListElement":[{"@type":"Service","position":1,"name":"Home","item":"https://www.escode.com/"},{"@type":"Service","position":2,"name":"Resources","item":"https://www.escode.com/resources/"},{"@type":"Service","position":3,"name":"Resources Articles","item":"https://www.escode.com/resources/resources-articles/"},{"@type":"Service","position":4,"name":"How To Avoid Vendor Lock In​","item":"https://www.escode.com/resources/how-to-avoid-vendor-lock-in/"}],"@context":"https://schema.org","@type":"BreadcrumbList"}
+        </script>
+</body>
+</html>

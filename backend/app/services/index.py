@@ -7,6 +7,7 @@ import os
 import sqlite3
 import tempfile
 import threading
+from itertools import pairwise
 from contextlib import contextmanager
 from collections.abc import Callable, Iterable
 from pathlib import Path
@@ -23,7 +24,7 @@ from app.services.source_index import SOURCE_SCHEMA, SOURCE_TABLES, index_source
 from app.services.vault import VaultService
 
 
-SCHEMA_VERSION = 5
+SCHEMA_VERSION = 6
 SCHEMA = f"""
 PRAGMA foreign_keys=ON;
 PRAGMA user_version={SCHEMA_VERSION};
@@ -42,10 +43,11 @@ CREATE TABLE review_packets (packet_id TEXT PRIMARY KEY,path TEXT NOT NULL,statu
 CREATE TABLE mitigations (mitigation_id TEXT PRIMARY KEY,matter_id TEXT NOT NULL,path TEXT NOT NULL,title TEXT NOT NULL,status TEXT,decision_ids TEXT NOT NULL,review_at TEXT,revision INTEGER,created_at TEXT,updated_at TEXT);
 CREATE INDEX briefing_items_created ON briefing_items(created_at DESC,item_id DESC);
 CREATE INDEX briefing_items_watch ON briefing_items(watch_id);
-CREATE VIRTUAL TABLE vault_search USING fts5(path UNINDEXED,title UNINDEXED,content UNINDEXED,search_text,tokenize='trigram',detail=none,columnsize=0);
+CREATE TABLE vault_search_documents (path TEXT NOT NULL,title TEXT NOT NULL,content TEXT NOT NULL);
+CREATE VIRTUAL TABLE vault_search USING fts5(search_text,content='',tokenize='trigram',detail=none,columnsize=0);
 CREATE TABLE vault_search_bigrams (term TEXT PRIMARY KEY,document_rowids TEXT NOT NULL) WITHOUT ROWID;
 """ + SOURCE_SCHEMA
-TABLES = {"matters", "work_items", "decisions", "schedules", "documents", "watches", "scans", "developments", "briefing_items", "saved_views", "digests", "review_packets", "mitigations", "vault_search", "vault_search_bigrams", *SOURCE_TABLES}
+TABLES = {"matters", "work_items", "decisions", "schedules", "documents", "watches", "scans", "developments", "briefing_items", "saved_views", "digests", "review_packets", "mitigations", "vault_search", "vault_search_documents", "vault_search_bigrams", *SOURCE_TABLES}
 TABLE_COLUMNS = {
     "matters": ("matter_id", "path", "title", "description", "matter_type", "product_area", "business_team", "requester", "legal_owner", "business_owner", "status", "priority", "risk_level", "target_date", "privilege", "next_action", "created_at", "updated_at"),
     "work_items": ("work_item_id", "matter_id", "path", "title", "description", "item_type", "status", "priority", "owner", "due_at", "required", "issue_id", "created_at", "completed_at"),
@@ -226,14 +228,21 @@ class IndexService:
                 title = path.stem.replace("-", " ").replace("_", " ").title()
                 normalized = content.lower()
                 cursor = connection.execute(
-                    "INSERT INTO vault_search (path, title, content, search_text) VALUES (?, ?, ?, ?)",
-                    (relative, title, content, normalized),
+                    "INSERT INTO vault_search_documents (path, title, content) VALUES (?, ?, ?)",
+                    (relative, title, content),
                 )
-                bigrams = sorted({
-                    normalized[index:index + 2]
-                    for index in range(len(normalized) - 1)
-                    if not any(character.isspace() for character in normalized[index:index + 2])
-                })
+                # Keep original text once for snippets, and only tokens for the
+                # normalized search text (including Unicode lower expansions).
+                connection.execute(
+                    "INSERT INTO vault_search (rowid, search_text) VALUES (?, ?)",
+                    (cursor.lastrowid, normalized),
+                )
+                # Filter distinct pairs once, rather than running a generator
+                # and slicing twice for every character in every source file.
+                bigrams = sorted(
+                    first + second for first, second in set(pairwise(normalized))
+                    if not first.isspace() and not second.isspace()
+                )
                 for term in bigrams:
                     bigram_documents.setdefault(term, []).append(cursor.lastrowid)
                 count += 1
@@ -508,7 +517,7 @@ class IndexService:
         rows = self._query(
             "WITH candidates AS ("
             + " UNION ".join(candidate_queries)
-            + ") SELECT path, title, content FROM vault_search "
+            + ") SELECT path, title, content FROM vault_search_documents "
             "WHERE rowid IN (SELECT document_rowid FROM candidates)"
             + (" AND " + " AND ".join(conditions) if conditions else "")
             + " ORDER BY path",

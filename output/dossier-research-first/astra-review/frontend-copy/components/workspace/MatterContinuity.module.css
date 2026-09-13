@@ -1,0 +1,99 @@
+.factRequest, .handoffPanel, .impactPanel { min-width: 0; display: grid; gap: 16px; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); }
+.factRequest :global(header), .handoffPanel :global(header), .impactPanel :global(header), .impactPanel :global(.impact-reading__head), .impactPanel :global(.impact-finding__head), .impactPanel :global(.impact-passage__label), .factRequest :global(.fact-request__saved-head), .handoffPanel :global(.handoff-card__head) { display: flex; align-items: start; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.factRequest :global(h2), .factRequest :global(h3), .factRequest :global(p), .handoffPanel :global(h2), .handoffPanel :global(h3), .handoffPanel :global(p), .impactPanel :global(h2), .impactPanel :global(h3), .impactPanel :global(h4), .impactPanel :global(p) { margin: 0; }
+.factRequest :global(h2), .handoffPanel :global(h2) { font: 400 28px/1.15 var(--serif); letter-spacing: -.02em; }
+.impactPanel :global(h2) { font: 600 22px/1.25 var(--serif); }
+.factRequest :global(h3), .handoffPanel :global(h3), .impactPanel :global(h4) { font: 600 15px/1.45 var(--sans); }
+.impactPanel :global(h3) { font: 600 20px/1.3 var(--serif); }
+.factRequest :global(.fact-request__actor), .handoffPanel :global(.handoff-panel__actor), .impactPanel :global(.impact-panel__status) { display: inline-flex; align-items: center; gap: 6px; font: 500 12px var(--sans); color: var(--ink-4); }
+.factRequest :global(.fact-request__intro), .handoffPanel :global(.handoff-panel__intro), .impactPanel :global(.impact-panel__intro) { max-width: 76ch; color: var(--ink-3); font: 400 15px/1.5 var(--sans); }
+.factRequest :global(.label), .handoffPanel :global(.label) { color: var(--ink-2); font: 600 11px/1.35 var(--sans); letter-spacing: .065em; text-transform: uppercase; }
+.factRequest :global(.text-input), .factRequest :global(.select-input), .handoffPanel :global(.text-input), .handoffPanel :global(.select-input) { min-height: 46px; padding: 10px 12px; }
+.factRequest :global(textarea.text-input), .handoffPanel :global(textarea.text-input) { min-height: 128px; }
+.factRequest :global(.fact-request__question), .handoffPanel :global(.handoff-panel__scope) { display: grid; gap: 4px; padding: 12px 14px; border-left: 3px solid var(--ink); background: var(--paper); }
+.factRequest :global(.fact-request__question span), .handoffPanel :global(.handoff-panel__scope span), .handoffPanel :global(.handoff-panel__scope small) { font: 500 12px var(--sans); color: var(--ink-4); }
+.factRequest :global(.fact-request__question p) { font: 400 16px/1.65 var(--serif); }
+.factRequest :global(.fact-request__entering-lawyer) { display: grid; gap: 5px; }
+.factRequest :global(.fact-request__entering-lawyer input) { width: 100%; color: var(--ink-3); background: var(--paper); }
+.factRequest :global(.fact-request__form), .factRequest :global(.fact-request__saved), .factRequest :global(.fact-request__reply), .factRequest :global(.fact-request__answer), .handoffPanel :global(.handoff-panel__form), .handoffPanel :global(.handoff-panel__list), .handoffPanel :global(.handoff-card), .impactPanel :global(.impact-reading), .impactPanel :global(.impact-passages), .impactPanel :global(.impact-findings), .impactPanel :global(.impact-offers), .impactPanel :global(.impact-draft-updates) { display: grid; gap: 12px; }
+.factRequest :global(.fact-request__grid) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.handoffPanel :global(.handoff-panel__grid), .impactPanel :global(.impact-prepare__grid), .impactPanel :global(.impact-passage__columns) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.impactPanel :global(.impact-prepare__columns) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); margin-top: 12px; border: 1px solid var(--line-faint); border-radius: 8px; overflow: hidden; }
+.impactPanel :global(.impact-versions), .impactPanel :global(.impact-targets) { min-width: 0; margin: 0; padding: 14px; border: 0; }
+.impactPanel :global(.impact-versions) { border-right: 1px solid var(--line-faint); }
+.impactPanel :global(.impact-versions h3) { margin: 0 0 12px; color: var(--ink-2); font: 600 15px/1.45 var(--sans); }
+.impactPanel :global(.impact-prepare__action) { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; padding: 12px 0 0; border-top: 1px solid var(--line-faint); color: var(--ink-2); font: 600 15px/1.45 var(--sans); }
+.factRequest :global(.fact-request__saved) { padding-top: 14px; border-top: 1px solid var(--line-faint); }
+.factRequest :global(.fact-state), .handoffPanel :global(.handoff-card__state), .impactPanel :global(.impact-state), .impactPanel :global(.impact-effect), .impactPanel :global(.impact-support) { display: inline-block; padding: 3px 8px; border-radius: 12px; font: 600 12px var(--sans); }
+.factRequest :global(.fact-request__remaining) { padding: 10px 12px; color: var(--attention-deepest); background: var(--attention-wash); border: 1px solid var(--attention-edge); border-radius: 8px; font: 400 15px/1.5 var(--sans); }
+.factRequest :global(.fact-request__reply), .factRequest :global(.fact-request__answer), .handoffPanel :global(.handoff-card), .impactPanel :global(.impact-prepare), .impactPanel :global(.impact-limits), .impactPanel :global(.impact-passage), .impactPanel :global(.impact-findings) > article, .impactPanel :global(.impact-offers) > article, .impactPanel :global(.impact-no-passages), .impactPanel :global(.impact-empty) { padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--raised); }
+.factRequest :global(.fact-request__answer) summary, .impactPanel :global(.impact-prepare) > summary, .impactPanel :global(.impact-limits) > summary { cursor: pointer; font: 600 15px/1.4 var(--sans); }
+.factRequest :global(.fact-request__answer blockquote) { margin: 0; padding: 10px 12px; background: var(--paper); white-space: pre-wrap; color: var(--ink-2); font: 400 16px/1.65 var(--serif); }
+.factRequest :global(.fact-request__answer fieldset) { display: flex; gap: 15px; border: 0; padding: 0; }
+.factRequest :global(.fact-request__notice), .handoffPanel :global(.handoff-panel__notice), .impactPanel :global(.impact-notice) { padding: 10px 12px; border-radius: 8px; font: 400 15px/1.5 var(--sans); }
+.factRequest :global(.fact-request__notice.healthy), .handoffPanel :global(.handoff-panel__notice.healthy), .impactPanel :global(.impact-notice.healthy) { color: var(--healthy); background: var(--healthy-wash); border: 1px solid var(--healthy); }
+.factRequest :global(.fact-request__notice.agent), .impactPanel :global(.impact-notice.agent) { color: var(--agent); background: var(--agent-wash); border: 1px dashed var(--agent-edge); }
+.factRequest :global(.fact-request__notice.attention), .handoffPanel :global(.handoff-panel__notice.attention), .impactPanel :global(.impact-notice.attention) { color: var(--attention-deepest); background: var(--attention-wash); border: 1px solid var(--attention-edge); }
+.factRequest :global(.fact-request__notice.failure), .handoffPanel :global(.handoff-panel__notice.failure), .impactPanel :global(.impact-notice.failure) { color: var(--failure); background: var(--failure-wash); border: 1px solid var(--failure-edge); }
+.factRequest :global(.fact-request__reassess), .impactPanel :global(.impact-analysis) { display: grid; gap: 12px; padding: 14px; border: 1px dashed var(--agent-edge); border-radius: 8px; background: var(--agent-wash); }
+.factRequest :global(.fact-request__information) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.factRequest :global(.fact-request__information section) { display: flex; align-items: flex-start; gap: 10px; min-height: 122px; padding: 14px; border: 1px dashed var(--agent-edge); border-radius: 8px; background: var(--agent-wash); }
+.factRequest :global(.fact-request__information section + section) { border-style: solid; border-color: var(--line-faint); background: var(--raised); }
+.factRequest :global(.fact-request__information svg) { flex: none; color: var(--agent); }
+.factRequest :global(.fact-request__information section div) { display: grid; gap: 4px; }
+.factRequest :global(.fact-request__information strong) { color: var(--ink-2); font: 600 15px/1.4 var(--sans); }
+.factRequest :global(.fact-request__information p) { color: var(--ink-3); font: 400 14px/1.45 var(--sans); }
+.factRequest :global(.fact-request__form > .btn-row), .handoffPanel :global(.handoff-panel__form > .btn-row) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.factRequest :global(.fact-request__form > .btn-row .btn), .handoffPanel :global(.handoff-panel__form > .btn-row .btn) { width: 100%; min-height: 44px; }
+.factRequest :global(.fact-request__form > .btn-row .btn:nth-child(3)) { grid-column: span 2; }
+.handoffPanel :global(.handoff-card) p, .handoffPanel :global(.handoff-card) li, .impactPanel :global(.impact-findings) > article > p { font: 400 15px/1.5 var(--sans); }
+.handoffPanel :global(.handoff-card ul) { margin: 5px 0 0; padding-left: 20px; }
+.handoffPanel :global(.handoff-card__state.healthy), .impactPanel :global(.impact-state.healthy), .impactPanel :global(.impact-effect.effect-remains_supported) { color: var(--healthy); background: var(--healthy-tint); }
+.handoffPanel :global(.handoff-card__state.attention), .impactPanel :global(.impact-state.attention), .impactPanel :global(.impact-effect.effect-may_need_review), .impactPanel :global(.impact-effect.effect-changes), .impactPanel :global(.impact-support.support-inferred) { color: var(--attention-deepest); background: var(--attention-tint); }
+.handoffPanel :global(.handoff-card__state.quiet), .impactPanel :global(.impact-state.quiet), .impactPanel :global(.impact-effect.effect-unknown), .impactPanel :global(.impact-support.support-unavailable) { color: var(--ink-4); background: var(--sunken); }
+.impactPanel :global(.impact-state.failure) { color: var(--failure); background: var(--failure-tint); }
+.impactPanel :global(.impact-state.agent), .impactPanel :global(.impact-support.support-linked) { color: var(--agent); background: var(--agent-tint); }
+.impactPanel :global(.impact-support) { margin-left: 6px; }
+.impactPanel :global(.impact-prepare label), .impactPanel :global(.impact-analysis label) { display: grid; gap: 5px; }
+.impactPanel :global(.impact-targets) { display: grid; gap: 8px; }
+.impactPanel :global(.impact-targets legend) { margin-bottom: 7px; font: 600 15px var(--sans); }
+.impactPanel :global(.impact-targets label) { display: flex; align-items: start; gap: 9px; padding: 10px; border: 1px solid var(--line-faint); border-radius: 8px; }
+.impactPanel :global(.impact-targets label span) { display: grid; gap: 2px; }
+.impactPanel :global(.impact-targets small), .impactPanel :global(.impact-history small) { color: var(--ink-4); }
+.impactPanel :global(.impact-history) { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+.impactPanel :global(.impact-history button) { min-width: 190px; display: grid; gap: 3px; text-align: left; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--raised); color: var(--ink); font: 500 15px/1.4 var(--sans); }
+.impactPanel :global(.impact-history button.selected) { border-color: var(--ink); background: var(--agent-wash); box-shadow: inset 3px 0 var(--ink); }
+.impactPanel :global(.impact-reading) { padding-top: 16px; border-top: 1px solid var(--line); }
+.impactPanel :global(.impact-passage__columns section) { min-width: 0; border: 1px solid var(--line-faint); background: var(--paper); }
+.impactPanel :global(.impact-passage__columns) section > div { display: flex; align-items: center; justify-content: space-between; gap: 7px; padding: 8px 10px; border-bottom: 1px solid var(--line-faint); color: var(--ink-4); font: 600 12px var(--sans); }
+.impactPanel :global(.impact-passage pre) { max-height: 320px; overflow: auto; margin: 0; padding: 12px; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--ink-2); font: 400 16px/1.65 var(--serif); }
+.impactPanel :global(.impact-analysis__markdown) { min-width: 0; color: var(--ink-2); font: 400 16px/1.65 var(--serif); }
+.impactPanel :global(.impact-analysis__markdown) > * { margin: 0 0 10px; }
+.impactPanel :global(.impact-analysis__markdown) > *:last-child { margin-bottom: 0; }
+.impactPanel :global(.impact-analysis__markdown) table { border-collapse: collapse; }
+.impactPanel :global(.impact-analysis__markdown) th, .impactPanel :global(.impact-analysis__markdown) td { padding: 7px 9px; border: 1px solid var(--line-faint); vertical-align: top; }
+.impactPanel :global(.impact-evidence-links) { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; color: var(--ink-4); font: 500 12px var(--sans); }
+.impactPanel :global(.impact-offers) > article, .impactPanel :global(.impact-draft-updates) > article { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; }
+.impactPanel :global(.impact-offers) article p, .impactPanel :global(.impact-draft-updates) p { margin-top: 6px; color: var(--ink-3); font: 400 15px/1.5 var(--sans); }
+.impactPanel :global(.impact-offer__retained) { color: var(--ink-4); font: 600 12px var(--sans); }
+.impactPanel :global(.impact-support-cards) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.impactPanel :global(.impact-support-cards section) { display: grid; align-content: space-between; min-height: 190px; padding: 16px; border: 1px solid var(--line-faint); border-radius: 8px; background: var(--raised); }
+.impactPanel :global(.impact-support-cards svg) { color: var(--agent); }
+.impactPanel :global(.impact-support-cards h3) { margin: 16px 0 0; color: var(--ink-2); font: 600 17px/1.35 var(--serif); }
+.impactPanel :global(.impact-support-cards p) { margin: 12px 0 0; color: var(--ink-3); font: 400 15px/1.5 var(--sans); }
+.impactPanel :global(.impact-limits ul) { margin: 9px 0 0; padding-left: 20px; }
+.impactPanel :global(.impact-limits li) { margin-top: 5px; color: var(--ink-3); font: 400 15px/1.5 var(--sans); }
+.factRequest :global(.btn), .handoffPanel :global(.btn), .impactPanel :global(.btn) { min-height: 36px; white-space: normal; overflow-wrap: anywhere; }
+@media (max-width: 760px) {
+  .factRequest, .handoffPanel, .impactPanel { padding: 12px; }
+  .factRequest :global(.fact-request__grid), .factRequest :global(.fact-request__information), .handoffPanel :global(.handoff-panel__grid), .impactPanel :global(.impact-prepare__grid), .impactPanel :global(.impact-prepare__columns), .impactPanel :global(.impact-passage__columns), .impactPanel :global(.impact-support-cards), .impactPanel :global(.impact-offers) > article, .impactPanel :global(.impact-draft-updates) > article { grid-template-columns: minmax(0, 1fr); }
+  .impactPanel :global(.impact-versions) { border-right: 0; border-bottom: 1px solid var(--line-faint); }
+  .impactPanel :global(.impact-prepare__action) { align-items: stretch; flex-direction: column; }
+  .factRequest :global(h2), .handoffPanel :global(h2) { font-size: 25px; }
+  .factRequest :global(.fact-request__form > .btn-row), .handoffPanel :global(.handoff-panel__form > .btn-row) { grid-template-columns: minmax(0, 1fr); }
+  .factRequest :global(.fact-request__form > .btn-row .btn:nth-child(3)) { grid-column: auto; }
+  .factRequest :global(.btn), .handoffPanel :global(.btn), .impactPanel :global(.btn) { min-height: 44px; }
+  .factRequest :global(.btn-row) :global(.btn), .handoffPanel :global(.btn-row) :global(.btn), .impactPanel :global(.impact-prepare) > :global(.btn), .impactPanel :global(.impact-analysis) > :global(.btn) { width: 100%; }
+  .impactPanel :global(.impact-history button) { min-width: 165px; }
+  .impactPanel :global(.impact-passage pre) { max-height: 240px; }
+}

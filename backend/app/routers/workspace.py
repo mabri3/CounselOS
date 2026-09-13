@@ -674,8 +674,8 @@ def get_historical_problem_analysis(matter_id: str, reference: str, context=Depe
 def inspect_paths(matter_id: str, offset: int = 0, limit: int = 20, conversation_id: str | None = None, context=Depends(get_context, scope="function")):
     result = invoke(context.solution_paths.inspect, matter_id, offset=offset, limit=limit)
     if conversation_id:
-        conversation = invoke(context.chat_history.get,matter_id,conversation_id)
-        result["working_path_id"] = context.vault.read_markdown(conversation["path"])["metadata"].get("working_path_id")
+        conversation = invoke(context.chat_history.get, matter_id, conversation_id, include_execution=False)
+        result["working_path_id"] = context.vault.read_markdown(conversation["path"], include_execution=False)["metadata"].get("working_path_id")
     return result
 
 

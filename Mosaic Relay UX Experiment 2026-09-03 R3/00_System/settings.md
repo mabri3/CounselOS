@@ -6,11 +6,16 @@ values:
   research.primary_external_provider: firecrawl
   research.fallback_external_provider: polaris
   research.model_fallback_enabled: true
-  research.model_fallback_provider: openai_compatible
-  research.model_fallback_model: kimi-k3-fast
+  research.model_fallback_provider: opencode_go
+  research.model_fallback_model: deepseek-v4.1-flash
   research.external_timeout_seconds: '200'
   research.external_retry_count: '2'
-updated_at: '2026-09-08T16:54:49+00:00'
+  research.collection_enabled: true
+  research.collection_reasoning_effort: default
+  agents.provider: opencode_go
+  agents.reasoning_model: deepseek-v4.1-flash
+  agents.reasoning_effort: max
+updated_at: '2026-09-12T01:48:50+00:00'
 ---
 # Workspace settings
 

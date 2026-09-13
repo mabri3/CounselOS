@@ -1,0 +1,769 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="18" skipped="0" tests="18" time="13.533" timestamp="2026-09-11T23:50:02.060232-07:00" hostname="Mac"><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR01_crlf_source_is_readable_without_false_corruption" time="0.243"><failure message="ValueError: Saved source snapshot hash changed.">app_context = &lt;app.runtime.AppContext object at 0x107552000&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x109fe2de0&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR01_crlf_source_is_readable_without_false_corruption(app_context, monkeypatch):
+        app=app_context
+        iid=app.workspace.issues(MATTER)[0]['issue_id']
+        child=app.research_runs.create_managed_child(MATTER,parent_request_id='DOR-review-crlf',issue_id=iid,
+            question='Read the saved rule.',source_scope={'external':True})
+        async def fetched(*args,**kwargs):
+            return {'retrieved_content':('Clause one.\r\nClause two with exception.\r\n'*20),
+                'support_state':'retrieved','retrieval_method':'diagnostic-fetch'}
+        monkeypatch.setattr('app.services.research_reader.read_source',fetched)
+        access=ResearchCollection(app,MATTER,child['run_id'])
+&gt;       result=await access._fetch({'url':'https://example.org/review-rule','title':'Review rule'})
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:131: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/services/research_collection.py:294: in _fetch
+    self.checkpoints.complete_call(self.matter_id, self.run_id, key, record)
+app/services/dossier.py:23: in call
+    return method(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+app/services/research_checkpoints.py:115: in complete_call
+    cp = self.load(matter_id, run_id)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;app.services.research_checkpoints.ResearchCheckpoints object at 0x109fe2450&gt;
+matter_id = 'MAT-DEMO-RELAY', run_id = 'RUN-434c5a9ebb7e9c49'
+
+    def load(self, matter_id, run_id):
+        run = self.runs.get(matter_id, run_id)
+        if run.get("execution_version") != 2 or run.get("checkpoint_version") != 1:
+            raise ValueError("Unsupported investigation checkpoint version.")
+        cp = deepcopy(run.get("checkpoint"))
+        if not isinstance(cp, dict) or not isinstance(cp.get("budget_used"), dict):
+            raise ValueError("Invalid investigation checkpoint; saved work remains available.")
+        for key in LIMITS:
+            value = cp["budget_used"].get(key)
+            if not isinstance(value, (int, float)) or isinstance(value, bool) or not math.isfinite(value) or value &lt; 0:
+                raise ValueError("Invalid saved budget; do not reset this run.")
+        for key, expected in (("main_messages", list), ("pending_calls", list), ("sources", list), ("requests", dict), ("passages", dict), ("publication_receipts", dict)):
+            if not isinstance(cp.get(key), expected):
+                raise ValueError("Invalid saved checkpoint structure; preserve this run for review.")
+        if not isinstance(cp.get("stop_requested"), bool) or cp.get("phase") not in {"planning", "collecting", "synthesizing", "publishing", "partial", "complete", "stopped"}:
+            raise ValueError("Invalid saved checkpoint state.")
+        for source in [*cp.get("sources", []), *cp.get("local_sources", [])]:
+            path = source.get("path")
+            if not path or not self.vault.exists(path):
+                raise ValueError("Saved source snapshot is missing.")
+            text = self.vault.read_markdown(path)["content"]
+            if digest(text) != source.get("source_hash"):
+&gt;               raise ValueError("Saved source snapshot hash changed.")
+E               ValueError: Saved source snapshot hash changed.
+
+app/services/research_checkpoints.py:58: ValueError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR02_failed_writer_still_publishes_saved_answers" time="1.184"><failure message="AssertionError: No fallback dossier was published from saved answers&#10;assert (None)">app_context = &lt;app.runtime.AppContext object at 0x108cc56a0&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR02_failed_writer_still_publishes_saved_answers(app_context):
+        app=app_context; provider=ReviewProvider(app,writer_error=RuntimeError('controlled writer failure'))
+        status=await prepare(app,provider); assert (await start(app,status)).status_code==202
+        result=await finished(app,status)
+        print(json.dumps({'state':result['state'],'ready':result['first_pass_ready_at'],'publications':result['publications']}))
+        revision=result['publications'][0].get('revision_path')
+&gt;       assert revision and DETAIL in app.vault.read_markdown(revision)['content'], 'No fallback dossier was published from saved answers'
+E       AssertionError: No fallback dossier was published from saved answers
+E       assert (None)
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:143: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR03_writer_headings_cannot_erase_full_analysis" time="1.142"><failure message="AssertionError: Issue heading suppresses full-analysis retention&#10;assert 'Keep access conditional on written consent, an executed transfer schedule, and a successful export test. Emergency access excludes marketing use.' in '# Review dossier\n\n## Current position\n\nConditional overview.\n\n&lt;!-- issue:ISS-57a8e57e4c-002b6af9486a38f6 --&gt;\n#...deletion period after disconnection. Legal guidance is needed before the aggregator contract renews on September 15.\n'">app_context = &lt;app.runtime.AppContext object at 0x1097d3260&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR03_writer_headings_cannot_erase_full_analysis(app_context):
+        app=app_context; provider=ReviewProvider(app)
+        status=await prepare(app,provider); assert (await start(app,status)).status_code==202
+        result=await finished(app,status); revision=result['publications'][0]['revision_path']
+        assert DETAIL in provider.writer_inputs[0], 'precondition: writer received full analysis'
+&gt;       assert DETAIL in app.vault.read_markdown(revision)['content'], 'Issue heading suppresses full-analysis retention'
+E       AssertionError: Issue heading suppresses full-analysis retention
+E       assert 'Keep access conditional on written consent, an executed transfer schedule, and a successful export test. Emergency access excludes marketing use.' in '# Review dossier\n\n## Current position\n\nConditional overview.\n\n&lt;!-- issue:ISS-57a8e57e4c-002b6af9486a38f6 --&gt;\n#...deletion period after disconnection. Legal guidance is needed before the aggregator contract renews on September 15.\n'
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:152: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR04_edit_before_writer_is_preserved" time="1.153"><failure message="AssertionError: Concurrent saved lawyer edit was overwritten&#10;assert '# Review dos...ptember 15.\n' == '# Matter dos... migration.\n'&#10;  &#10;  - # Matter dossier&#10;  + # Review dossier&#10;    &#10;  - ## Summary&#10;  + ## Current position&#10;    ...&#10;  &#10;  ...Full output truncated (66 lines hidden), use '-vv' to show">app_context = &lt;app.runtime.AppContext object at 0x1099060f0&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR04_edit_before_writer_is_preserved(app_context):
+        app=app_context; gate=asyncio.Event(); provider=ReviewProvider(app,gate=gate)
+        status=await prepare(app,provider); assert (await start(app,status)).status_code==202
+        await provider.entered.wait()
+        path=app.dossiers._path(MATTER); old=app.vault.read_markdown(path)['content']
+        edited=old+'\n\nLawyer edit: require export escrow before migration.\n'
+        app.vault.update_markdown(path,content=edited)
+        before=app.vault.read_markdown(path)['content']; gate.set()
+        result=await finished(app,status)
+        print('publication_state',result['publications'][0]['state'])
+&gt;       assert app.vault.read_markdown(path)['content']==before, 'Concurrent saved lawyer edit was overwritten'
+E       AssertionError: Concurrent saved lawyer edit was overwritten
+E       assert '# Review dos...ptember 15.\n' == '# Matter dos... migration.\n'
+E         
+E         - # Matter dossier
+E         + # Review dossier
+E           
+E         - ## Summary
+E         + ## Current position
+E           ...
+E         
+E         ...Full output truncated (66 lines hidden), use '-vv' to show
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:166: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR05_actual_saved_only_chat_binds_distinct_facts" time="0.160"><failure message="assert 0 &gt;= 2&#10; +  where 0 = len([])">app_context = &lt;app.runtime.AppContext object at 0x10855d070&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR05_actual_saved_only_chat_binds_distinct_facts(app_context):
+        app=app_context
+        facts=app.matter_records.get(MATTER)['facts']
+&gt;       assert len(facts)&gt;=2
+E       assert 0 &gt;= 2
+E        +  where 0 = len([])
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:173: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR06_all_includes_accepted_candidate_outside_first_three" time="2.136"><failure message="AssertionError: All silently omits a displayed accepted candidate&#10;assert False&#10; +  where False = any(&lt;generator object test_AR06_all_includes_accepted_candidate_outside_first_three.&lt;locals&gt;.&lt;genexpr&gt; at 0x10a42a670&gt;)">app_context = &lt;app.runtime.AppContext object at 0x10a3cf620&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR06_all_includes_accepted_candidate_outside_first_three(app_context):
+        app=app_context; provider=ReviewProvider(app)
+        status=await prepare(app,provider)
+        def add(md,body):
+            md['new_issue_candidates']=[{'candidate_key':'new-late','title':'Tax withholding','why_it_matters':'Withholding can delay payment.',
+                'initial_answer':'Apply the agreed payment route only after tax status is confirmed.','fact_ids':[]}]
+            return md,body
+        status=app.dossier_requests._mutate(MATTER,status['request_id'],add,expected_sequence=None)
+        assert (await start(app,status,choices(status,scope='all',accepted_candidate_keys=['new-late']))).status_code==202
+        result=await finished(app,status)
+&gt;       assert any(i['title']=='Tax withholding' for i in result['issues']), 'All silently omits a displayed accepted candidate'
+E       AssertionError: All silently omits a displayed accepted candidate
+E       assert False
+E        +  where False = any(&lt;generator object test_AR06_all_includes_accepted_candidate_outside_first_three.&lt;locals&gt;.&lt;genexpr&gt; at 0x10a42a670&gt;)
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:199: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR07_public_source_choice_is_the_one_children_receive" time="0.655"><failure message="AssertionError: Confirmed choices were dropped or substituted&#10;assert False&#10; +  where False = all(&lt;generator object test_AR07_public_source_choice_is_the_one_children_receive.&lt;locals&gt;.&lt;genexpr&gt; at 0x10a24d460&gt;)">app_context = &lt;app.runtime.AppContext object at 0x10a4df980&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR07_public_source_choice_is_the_one_children_receive(app_context):
+        app=app_context; gate=asyncio.Event(); provider=ReviewProvider(app,gate=gate)
+        status=await prepare(app,provider)
+        requested={'external':True,'native':True,'public_query':'USER APPROVED REPLACEMENT TOPIC',
+            'allow_firecrawl':True,'allow_followup_queries':False,'collection_enabled':False,'provider_ids':[]}
+        assert (await start(app,status,choices(status,source_choice=requested))).status_code==202
+        children=app.research_runs.managed_children(MATTER,status['request_id'])
+        saved=[c['search_scope'] for c in children]
+        current=app.dossier_requests.get(MATTER,status['request_id'])
+        await app.dossier_requests.stop(MATTER,status['request_id'],expected_sequence=current['sequence'])
+        print('submitted',requested,'saved',saved)
+&gt;       assert all(s['native'] and s['allow_firecrawl'] and s['public_query']==requested['public_query'] for s in saved), 'Confirmed choices were dropped or substituted'
+E       AssertionError: Confirmed choices were dropped or substituted
+E       assert False
+E        +  where False = all(&lt;generator object test_AR07_public_source_choice_is_the_one_children_receive.&lt;locals&gt;.&lt;genexpr&gt; at 0x10a24d460&gt;)
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:214: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR08_retry_failed_child_uses_remaining_budget" time="0.225"><failure message="AssertionError: Retry queued the parent row but skipped the failed child as terminal&#10;assert []&#10; +  where [] = &lt;test_review_diagnostics.ReviewProvider object at 0x10a603e60&gt;.workers">app_context = &lt;app.runtime.AppContext object at 0x109b441a0&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR08_retry_failed_child_uses_remaining_budget(app_context):
+        app=app_context; provider=ReviewProvider(app); install(app,provider)
+        ids=[app.workspace.issues(MATTER)[0]['issue_id']]
+        status=_prepared(app,ids,action='review-retry'); child=_prime_running_parent(app,status,ids)[0]
+        app.research_runs._write(MATTER,child['run_id'],state='failed',managed_state='failed',failure_detail='Transient local failure')
+        def fail(md,body):
+            md['state']='failed'; md['issues'][ids[0]]['state']='failed'; return md,body
+        status=app.dossier_requests._mutate(MATTER,status['request_id'],fail,expected_sequence=None)
+        assert (await _post_resume(app,status)).status_code==202
+        await finished(app,status)
+&gt;       assert provider.workers, 'Retry queued the parent row but skipped the failed child as terminal'
+E       AssertionError: Retry queued the parent row but skipped the failed child as terminal
+E       assert []
+E        +  where [] = &lt;test_review_diagnostics.ReviewProvider object at 0x10a603e60&gt;.workers
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:228: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR09_malformed_optional_plan_keeps_useful_chat[issue_map-None]" time="0.447"><failure message="TypeError: 'NoneType' object is not iterable">app_context = &lt;app.runtime.AppContext object at 0x10855d070&gt;
+field = 'issue_map', value = None
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('field,value',[('issue_map',None),('first_issue_ids',7),('date_candidates',False)])
+    async def test_AR09_malformed_optional_plan_keeps_useful_chat(app_context,field,value):
+        provider=ReviewProvider(app_context,plan_override={field:value})
+&gt;       status=await prepare(app_context,provider)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:235: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:97: in prepare
+    response = await c.post('/api/chat', json={'matter_id': MATTER, 'message': 'Generate a dossier.',
+.venv/lib/python3.12/site-packages/httpx/_client.py:1859: in post
+    return await self.request(
+.venv/lib/python3.12/site-packages/httpx/_client.py:1540: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx/_client.py:1629: in send
+    response = await self._send_handling_auth(
+.venv/lib/python3.12/site-packages/httpx/_client.py:1657: in _send_handling_auth
+    response = await self._send_handling_redirects(
+.venv/lib/python3.12/site-packages/httpx/_client.py:1694: in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx/_client.py:1730: in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx/_transports/asgi.py:170: in handle_async_request
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/applications.py:1163: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:670: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2734: in app
+    await route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1780: in handle
+    await self.original_router.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2789: in handle
+    await included_router._handle_selected(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1800: in _handle_selected
+    await original_route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1279: in handle
+    await app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:158: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:144: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/routing.py:706: in app
+    raw_response = await run_endpoint_function(
+.venv/lib/python3.12/site-packages/fastapi/routing.py:352: in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/routers/chat.py:86: in chat
+    return await execute_chat(clean, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/routers/chat.py:590: in execute_chat
+    response = await respond(context, payload.model_copy(update={
+app/services/dossier_generation_chat.py:10: in respond
+    prepared = await app.dossier_requests.prepare(
+app/services/dossier_requests.py:352: in prepare
+    fields = self._build_preparation_fields(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;app.services.dossier_requests.DossierRequestService object at 0x10a4dc290&gt;
+matter_id = 'MAT-DEMO-RELAY'
+data = {'accepted_working_view': {'content': '# Recommendation\n\nRelay is moving about 280,000 customers from credential-bas...sis_markdown': '', 'issue_id': 'ISS-57a8e57e4c-73bc25a0ac111333', 'packet_path': None, 'position': '', ...}, ...}, ...}
+plan = {'issue_map': None}, warnings = []
+model_selections = {'collector': {'agent_id': 'research-agent', 'model': 'mock', 'provider': 'mock', 'reasoning_effort': 'default'}, 'main': {'agent_id': 'counsel-copilot', 'model': 'mock', 'provider': 'mock', 'reasoning_effort': 'default'}}
+frozen = {'action_actor': {'display_name': 'Unattributed lawyer', 'mode': 'single', 'person_id': 'local-lawyer'}, 'active_path'...y:\n{"state": "empty", "sequence": 0, "revision": "", "payload": null, "warning": null}', 'conversation_id': None, ...}
+
+    def _build_preparation_fields(
+        self,
+        matter_id: str,
+        data: dict[str, Any],
+        plan: dict[str, Any] | None,
+        warnings: list[str],
+        model_selections: dict[str, Any],
+        frozen: dict[str, Any],
+    ) -&gt; dict[str, Any]:
+        existing = [
+            {"issue_id": issue["issue_id"], "title": issue.get("title") or issue["issue_id"]}
+            for issue in data.get("issues", [])
+            if isinstance(issue, dict) and issue.get("issue_id")
+        ]
+        existing_ids = {issue["issue_id"] for issue in existing}
+    
+        plan_by_id: dict[str, dict[str, Any]] = {}
+        candidates: list[dict[str, Any]] = []
+        candidate_keys: set[str] = set()
+&gt;       for entry in (plan or {}).get("issue_map", []) if isinstance(plan, dict) else []:
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'NoneType' object is not iterable
+
+app/services/dossier_requests.py:418: TypeError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR09_malformed_optional_plan_keeps_useful_chat[first_issue_ids-7]" time="0.445"><failure message="TypeError: 'int' object is not iterable">app_context = &lt;app.runtime.AppContext object at 0x10a65e960&gt;
+field = 'first_issue_ids', value = 7
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('field,value',[('issue_map',None),('first_issue_ids',7),('date_candidates',False)])
+    async def test_AR09_malformed_optional_plan_keeps_useful_chat(app_context,field,value):
+        provider=ReviewProvider(app_context,plan_override={field:value})
+&gt;       status=await prepare(app_context,provider)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:235: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:97: in prepare
+    response = await c.post('/api/chat', json={'matter_id': MATTER, 'message': 'Generate a dossier.',
+.venv/lib/python3.12/site-packages/httpx/_client.py:1859: in post
+    return await self.request(
+.venv/lib/python3.12/site-packages/httpx/_client.py:1540: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx/_client.py:1629: in send
+    response = await self._send_handling_auth(
+.venv/lib/python3.12/site-packages/httpx/_client.py:1657: in _send_handling_auth
+    response = await self._send_handling_redirects(
+.venv/lib/python3.12/site-packages/httpx/_client.py:1694: in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx/_client.py:1730: in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx/_transports/asgi.py:170: in handle_async_request
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/applications.py:1163: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:670: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2734: in app
+    await route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1780: in handle
+    await self.original_router.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2789: in handle
+    await included_router._handle_selected(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1800: in _handle_selected
+    await original_route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1279: in handle
+    await app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:158: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:144: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/routing.py:706: in app
+    raw_response = await run_endpoint_function(
+.venv/lib/python3.12/site-packages/fastapi/routing.py:352: in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/routers/chat.py:86: in chat
+    return await execute_chat(clean, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/routers/chat.py:590: in execute_chat
+    response = await respond(context, payload.model_copy(update={
+app/services/dossier_generation_chat.py:10: in respond
+    prepared = await app.dossier_requests.prepare(
+app/services/dossier_requests.py:352: in prepare
+    fields = self._build_preparation_fields(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;app.services.dossier_requests.DossierRequestService object at 0x10a6020c0&gt;
+matter_id = 'MAT-DEMO-RELAY'
+data = {'accepted_working_view': {'content': '# Recommendation\n\nRelay is moving about 280,000 customers from credential-bas...sis_markdown': '', 'issue_id': 'ISS-57a8e57e4c-73bc25a0ac111333', 'packet_path': None, 'position': '', ...}, ...}, ...}
+plan = {'first_issue_ids': 7}, warnings = []
+model_selections = {'collector': {'agent_id': 'research-agent', 'model': 'mock', 'provider': 'mock', 'reasoning_effort': 'default'}, 'main': {'agent_id': 'counsel-copilot', 'model': 'mock', 'provider': 'mock', 'reasoning_effort': 'default'}}
+frozen = {'action_actor': {'display_name': 'Unattributed lawyer', 'mode': 'single', 'person_id': 'local-lawyer'}, 'active_path'...y:\n{"state": "empty", "sequence": 0, "revision": "", "payload": null, "warning": null}', 'conversation_id': None, ...}
+
+    def _build_preparation_fields(
+        self,
+        matter_id: str,
+        data: dict[str, Any],
+        plan: dict[str, Any] | None,
+        warnings: list[str],
+        model_selections: dict[str, Any],
+        frozen: dict[str, Any],
+    ) -&gt; dict[str, Any]:
+        existing = [
+            {"issue_id": issue["issue_id"], "title": issue.get("title") or issue["issue_id"]}
+            for issue in data.get("issues", [])
+            if isinstance(issue, dict) and issue.get("issue_id")
+        ]
+        existing_ids = {issue["issue_id"] for issue in existing}
+    
+        plan_by_id: dict[str, dict[str, Any]] = {}
+        candidates: list[dict[str, Any]] = []
+        candidate_keys: set[str] = set()
+        for entry in (plan or {}).get("issue_map", []) if isinstance(plan, dict) else []:
+            if not isinstance(entry, dict):
+                continue
+            issue_id = entry.get("issue_id")
+            if isinstance(issue_id, str) and issue_id in existing_ids:
+                plan_by_id[issue_id] = entry
+                continue
+            key = entry.get("candidate_key")
+            if isinstance(key, str) and key and key not in candidate_keys and entry.get("title"):
+                candidate_keys.add(key)
+                candidates.append(
+                    {
+                        "candidate_key": key,
+                        "title": str(entry.get("title")),
+                        "why_it_matters": str(entry.get("why_it_matters") or ""),
+                        "initial_answer": self._clean_answer(entry.get("initial_answer"), entry.get("title")),
+                        "next_action": str(entry.get("next_action") or ""),
+                        "focused_topic": str(entry.get("focused_topic") or ""),
+                        "fact_ids": [f for f in (entry.get("fact_ids") or []) if isinstance(f, str)],
+                        "parent_issue_id": entry.get("parent_issue_id"),
+                        "urgent": bool(entry.get("urgent")),
+                    }
+                )
+    
+        # Build the issues map for existing issues, keyed by actual issue ID.
+        issues: dict[str, Any] = {}
+        for order, issue in enumerate(existing):
+            issue_id = issue["issue_id"]
+            entry = plan_by_id.get(issue_id, {})
+            issues[issue_id] = {
+                "title": issue["title"],
+                "brief": str(entry.get("why_it_matters") or ""),
+                "initial_answer": self._clean_answer(entry.get("initial_answer"), issue["title"]),
+                "next_action": str(entry.get("next_action") or ""),
+                "focused_topic": str(entry.get("focused_topic") or ""),
+                "planned_order": order,
+                "state": "not_selected",
+                "sources_retrieved": 0,
+                "sources_read": 0,
+                "urgent": bool(entry.get("urgent")),
+            }
+    
+        # First-three selection: validated plan choice, else existing order.
+        def valid_ref(ref: Any) -&gt; bool:
+            return isinstance(ref, str) and (ref in existing_ids or ref in candidate_keys)
+    
+        first_ids: list[str] = []
+&gt;       for ref in (plan or {}).get("first_issue_ids", []) if isinstance(plan, dict) else []:
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: 'int' object is not iterable
+
+app/services/dossier_requests.py:465: TypeError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR09_malformed_optional_plan_keeps_useful_chat[date_candidates-False]" time="0.447"><failure message="TypeError: 'bool' object is not iterable">app_context = &lt;app.runtime.AppContext object at 0x10a50d220&gt;
+field = 'date_candidates', value = False
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize('field,value',[('issue_map',None),('first_issue_ids',7),('date_candidates',False)])
+    async def test_AR09_malformed_optional_plan_keeps_useful_chat(app_context,field,value):
+        provider=ReviewProvider(app_context,plan_override={field:value})
+&gt;       status=await prepare(app_context,provider)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:235: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:97: in prepare
+    response = await c.post('/api/chat', json={'matter_id': MATTER, 'message': 'Generate a dossier.',
+.venv/lib/python3.12/site-packages/httpx/_client.py:1859: in post
+    return await self.request(
+.venv/lib/python3.12/site-packages/httpx/_client.py:1540: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx/_client.py:1629: in send
+    response = await self._send_handling_auth(
+.venv/lib/python3.12/site-packages/httpx/_client.py:1657: in _send_handling_auth
+    response = await self._send_handling_redirects(
+.venv/lib/python3.12/site-packages/httpx/_client.py:1694: in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx/_client.py:1730: in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx/_transports/asgi.py:170: in handle_async_request
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/applications.py:1163: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:670: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2734: in app
+    await route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1780: in handle
+    await self.original_router.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2789: in handle
+    await included_router._handle_selected(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1800: in _handle_selected
+    await original_route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1279: in handle
+    await app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:158: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:144: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/routing.py:706: in app
+    raw_response = await run_endpoint_function(
+.venv/lib/python3.12/site-packages/fastapi/routing.py:352: in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/routers/chat.py:86: in chat
+    return await execute_chat(clean, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app/routers/chat.py:590: in execute_chat
+    response = await respond(context, payload.model_copy(update={
+app/services/dossier_generation_chat.py:10: in respond
+    prepared = await app.dossier_requests.prepare(
+app/services/dossier_requests.py:352: in prepare
+    fields = self._build_preparation_fields(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;app.services.dossier_requests.DossierRequestService object at 0x109f84e00&gt;
+matter_id = 'MAT-DEMO-RELAY'
+data = {'accepted_working_view': {'content': '# Recommendation\n\nRelay is moving about 280,000 customers from credential-bas...sis_markdown': '', 'issue_id': 'ISS-57a8e57e4c-73bc25a0ac111333', 'packet_path': None, 'position': '', ...}, ...}, ...}
+plan = {'date_candidates': False}, warnings = []
+model_selections = {'collector': {'agent_id': 'research-agent', 'model': 'mock', 'provider': 'mock', 'reasoning_effort': 'default'}, 'main': {'agent_id': 'counsel-copilot', 'model': 'mock', 'provider': 'mock', 'reasoning_effort': 'default'}}
+frozen = {'action_actor': {'display_name': 'Unattributed lawyer', 'mode': 'single', 'person_id': 'local-lawyer'}, 'active_path'...y:\n{"state": "empty", "sequence": 0, "revision": "", "payload": null, "warning": null}', 'conversation_id': None, ...}
+
+    def _build_preparation_fields(
+        self,
+        matter_id: str,
+        data: dict[str, Any],
+        plan: dict[str, Any] | None,
+        warnings: list[str],
+        model_selections: dict[str, Any],
+        frozen: dict[str, Any],
+    ) -&gt; dict[str, Any]:
+        existing = [
+            {"issue_id": issue["issue_id"], "title": issue.get("title") or issue["issue_id"]}
+            for issue in data.get("issues", [])
+            if isinstance(issue, dict) and issue.get("issue_id")
+        ]
+        existing_ids = {issue["issue_id"] for issue in existing}
+    
+        plan_by_id: dict[str, dict[str, Any]] = {}
+        candidates: list[dict[str, Any]] = []
+        candidate_keys: set[str] = set()
+        for entry in (plan or {}).get("issue_map", []) if isinstance(plan, dict) else []:
+            if not isinstance(entry, dict):
+                continue
+            issue_id = entry.get("issue_id")
+            if isinstance(issue_id, str) and issue_id in existing_ids:
+                plan_by_id[issue_id] = entry
+                continue
+            key = entry.get("candidate_key")
+            if isinstance(key, str) and key and key not in candidate_keys and entry.get("title"):
+                candidate_keys.add(key)
+                candidates.append(
+                    {
+                        "candidate_key": key,
+                        "title": str(entry.get("title")),
+                        "why_it_matters": str(entry.get("why_it_matters") or ""),
+                        "initial_answer": self._clean_answer(entry.get("initial_answer"), entry.get("title")),
+                        "next_action": str(entry.get("next_action") or ""),
+                        "focused_topic": str(entry.get("focused_topic") or ""),
+                        "fact_ids": [f for f in (entry.get("fact_ids") or []) if isinstance(f, str)],
+                        "parent_issue_id": entry.get("parent_issue_id"),
+                        "urgent": bool(entry.get("urgent")),
+                    }
+                )
+    
+        # Build the issues map for existing issues, keyed by actual issue ID.
+        issues: dict[str, Any] = {}
+        for order, issue in enumerate(existing):
+            issue_id = issue["issue_id"]
+            entry = plan_by_id.get(issue_id, {})
+            issues[issue_id] = {
+                "title": issue["title"],
+                "brief": str(entry.get("why_it_matters") or ""),
+                "initial_answer": self._clean_answer(entry.get("initial_answer"), issue["title"]),
+                "next_action": str(entry.get("next_action") or ""),
+                "focused_topic": str(entry.get("focused_topic") or ""),
+                "planned_order": order,
+                "state": "not_selected",
+                "sources_retrieved": 0,
+                "sources_read": 0,
+                "urgent": bool(entry.get("urgent")),
+            }
+    
+        # First-three selection: validated plan choice, else existing order.
+        def valid_ref(ref: Any) -&gt; bool:
+            return isinstance(ref, str) and (ref in existing_ids or ref in candidate_keys)
+    
+        first_ids: list[str] = []
+        for ref in (plan or {}).get("first_issue_ids", []) if isinstance(plan, dict) else []:
+            if valid_ref(ref) and ref not in first_ids:
+                first_ids.append(ref)
+            if len(first_ids) == 3:
+                break
+        if not first_ids:
+            first_ids = [issue["issue_id"] for issue in existing[:3]]
+    
+        # Priorities: validated plan, else derived from the first selection.
+        priorities: list[dict[str, Any]] = []
+        for order, entry in enumerate((plan or {}).get("priorities", []) if isinstance(plan, dict) else []):
+            if not isinstance(entry, dict):
+                continue
+            mapped = [ref for ref in (entry.get("issue_ids") or []) if valid_ref(ref)]
+            priorities.append(
+                {
+                    "key": str(entry.get("key") or f"p{order + 1}"),
+                    "text": str(entry.get("text") or "").strip() or f"Priority {order + 1}",
+                    "why": str(entry.get("why") or "").strip(),
+                    "issue_ids": mapped,
+                    "changed": False,
+                }
+            )
+            if len(priorities) == 3:
+                break
+        if not priorities:
+            title_by_ref = {**{i["issue_id"]: i["title"] for i in existing},
+                            **{c["candidate_key"]: c["title"] for c in candidates}}
+            for order, ref in enumerate(first_ids):
+                priorities.append(
+                    {
+                        "key": f"p{order + 1}",
+                        "text": title_by_ref.get(ref, f"Priority {order + 1}"),
+                        "why": "Suggested from the existing issue order.",
+                        "issue_ids": [ref],
+                        "changed": False,
+                    }
+                )
+    
+        input_basis = {
+            **self._execution_basis(matter_id),
+            "issues_revision": self.app.workspace.issues_revision(matter_id),
+        }
+    
+        source_scope = {
+            "external": False,
+            "other_matters": False,
+            "allow_followup_queries": False,
+            "collection_enabled": False,
+            "provider_ids": [],
+            "overall_topic": str((plan or {}).get("overall_topic") or "") if isinstance(plan, dict) else "",
+            "focused_topics": {
+                issue_id: entry.get("focused_topic", "") for issue_id, entry in issues.items()
+            },
+        }
+    
+        date_candidates = [
+&gt;           entry for entry in ((plan or {}).get("date_candidates", []) if isinstance(plan, dict) else [])
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            if isinstance(entry, dict)
+        ]
+E       TypeError: 'bool' object is not iterable
+
+app/services/dossier_requests.py:522: TypeError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR09_one_bad_optional_field_preserves_valid_issue_update" time="0.000"><failure message="AssertionError: One optional field discarded the valid issue answer&#10;assert ([])">def test_AR09_one_bad_optional_field_preserves_valid_issue_update():
+        raw='Useful prose.\n```research-synthesis\n'+json.dumps({'issue_updates':[{'issue_id':'ISS-review','position':'Valid answer.',
+            'analysis_markdown':DETAIL,'rule_and_support':{'malformed':'optional'}}]})+'\n```'
+        prose,synthesis,warnings=extract_research_synthesis(raw)
+        assert prose=='Useful prose.'
+&gt;       assert synthesis['issue_updates'] and synthesis['issue_updates'][0]['analysis_markdown']==DETAIL, 'One optional field discarded the valid issue answer'
+E       AssertionError: One optional field discarded the valid issue answer
+E       assert ([])
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:244: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR10_date_requires_real_anchor_and_correct_arithmetic" time="0.000"><failure message="AssertionError: Unresolved anchor and inconsistent supplied date were accepted&#10;assert '2026-10-01' is None">def test_AR10_date_requires_real_anchor_and_correct_arithmetic():
+        actions=sanitize_proposed_actions([{'action':'Send notice','due_date':'2026-10-01','anchor_reference_id':'FACT-missing',
+            'anchor_date':'2026-11-02','offset_calendar_days':-7,'timing_basis':'seven days before launch'}])
+&gt;       assert actions[0]['due_date'] is None, 'Unresolved anchor and inconsistent supplied date were accepted'
+E       AssertionError: Unresolved anchor and inconsistent supplied date were accepted
+E       assert '2026-10-01' is None
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:250: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR11_repeated_generate_shows_active_parent_without_new_call" time="1.167"><failure message="AssertionError: New Generate created a second setup and spent a planning call&#10;assert ('DOR-20260912-ce9ecf' == 'DOR-20260912-cecf9e'&#10;  &#10;  - DOR-20260912-cecf9e&#10;  ?                  --&#10;  + DOR-20260912-ce9ecf&#10;  ?                ++)">app_context = &lt;app.runtime.AppContext object at 0x10a50f5c0&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR11_repeated_generate_shows_active_parent_without_new_call(app_context):
+        app=app_context; gate=asyncio.Event(); provider=ReviewProvider(app,gate=gate)
+        first=await prepare(app,provider); assert (await start(app,first)).status_code==202
+        await provider.entered.wait()
+        second=await prepare(app,provider,action='different-generate')
+        current=app.dossier_requests.get(MATTER,first['request_id'])
+        await app.dossier_requests.stop(MATTER,first['request_id'],expected_sequence=current['sequence'])
+&gt;       assert second['request_id']==first['request_id'] and provider.plans==1, 'New Generate created a second setup and spent a planning call'
+E       AssertionError: New Generate created a second setup and spent a planning call
+E       assert ('DOR-20260912-ce9ecf' == 'DOR-20260912-cecf9e'
+E         
+E         - DOR-20260912-cecf9e
+E         ?                  --
+E         + DOR-20260912-ce9ecf
+E         ?                ++)
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:261: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR12_unknown_writer_outcome_does_not_retry_without_choice" time="1.635"><failure message="AssertionError: Writer outcome had no reservation and was silently repeated without retry_unknown&#10;assert 1 == 0&#10; +  where 1 = &lt;test_review_diagnostics.ReviewProvider object at 0x10a1ae4b0&gt;.writers">app_context = &lt;app.runtime.AppContext object at 0x10a15bf80&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR12_unknown_writer_outcome_does_not_retry_without_choice(app_context):
+        app=app_context; provider=ReviewProvider(app,writer_error=ProcessDeath())
+        status=await prepare(app,provider); assert (await start(app,status)).status_code==202
+        await _wait(app); assert provider.writers==1
+        reopened=AppContext(app.settings); after=ReviewProvider(reopened); install(reopened,after)
+        current=reopened.dossier_requests.get(MATTER,status['request_id'])
+        assert (await _post_resume(reopened,current,retry_unknown=False)).status_code==202
+        await _wait(reopened)
+&gt;       assert after.writers==0, 'Writer outcome had no reservation and was silently repeated without retry_unknown'
+E       AssertionError: Writer outcome had no reservation and was silently repeated without retry_unknown
+E       assert 1 == 0
+E        +  where 1 = &lt;test_review_diagnostics.ReviewProvider object at 0x10a1ae4b0&gt;.writers
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:273: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR13_parent_saved_only_start_returns_before_model_finishes" time="0.594"><failure message="AssertionError: Saved-only Start holds the HTTP request until the model completes&#10;assert False">app_context = &lt;app.runtime.AppContext object at 0x10a1465a0&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR13_parent_saved_only_start_returns_before_model_finishes(app_context):
+        app=app_context; provider=ReviewProvider(app)
+        status=await prepare(app,provider); provider.writer_gate=asyncio.Event()
+        task=asyncio.create_task(start(app,status,choices(status,execution_mode='saved_only',scope=None)))
+        await asyncio.wait_for(provider.writer_entered.wait(),2)
+        returned=task.done(); provider.writer_gate.set(); response=await task
+        assert response.status_code==202
+&gt;       assert returned, 'Saved-only Start holds the HTTP request until the model completes'
+E       AssertionError: Saved-only Start holds the HTTP request until the model completes
+E       assert False
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:284: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR14_unresearched_initial_answers_reach_writer" time="0.774"><failure message="AssertionError: Prepared initial answers never reach dossier capture&#10;assert ('INITIAL_' + 'ISS-57a8e57e4c-23dbd80486b9a826') in 'Dossier-generation action. Produce only the requested Markdown dossier from saved inputs. No tools, new research, fac... issues, and the full researched analysis for each researched issue. Preserve all workstreams and material conditions.'">app_context = &lt;app.runtime.AppContext object at 0x109b7c830&gt;
+
+    @pytest.mark.asyncio
+    async def test_AR14_unresearched_initial_answers_reach_writer(app_context):
+        app=app_context; provider=ReviewProvider(app)
+        status=await prepare(app,provider)
+        # Choose fewer than three through the API to retain other planned issues.
+        payload=choices(status,first_issue_ids=status['first_issue_ids'][:1])
+        assert (await start(app,status,payload)).status_code==202
+        await finished(app,status)
+        unselected=provider.ids[1]
+&gt;       assert 'INITIAL_'+unselected in provider.writer_inputs[0], 'Prepared initial answers never reach dossier capture'
+E       AssertionError: Prepared initial answers never reach dossier capture
+E       assert ('INITIAL_' + 'ISS-57a8e57e4c-23dbd80486b9a826') in 'Dossier-generation action. Produce only the requested Markdown dossier from saved inputs. No tools, new research, fac... issues, and the full researched analysis for each researched issue. Preserve all workstreams and material conditions.'
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:296: AssertionError</failure></testcase><testcase classname="output.dossier-research-first.astra-review.test_review_diagnostics" name="test_AR15_two_short_updates_retain_original_detail_and_fields" time="0.158"><failure message="AssertionError: Second partial update discarded prior full detail&#10;assert 'Keep access conditional on written consent, an executed transfer schedule, and a successful export test. Emergency access excludes marketing use.' in ('Short answer 2' + 'Short answer 1')&#10; +  where 'Short answer 2' = &lt;built-in method get of dict object at 0x10a2a21c0&gt;('analysis_markdown', '')&#10; +    where &lt;built-in method get of dict object at 0x10a2a21c0&gt; = {'analysis_markdown': 'Short answer 2', 'application': None, 'basis': {}, 'issue_revision': {'action_owner': '', 'assumption_ids': [], 'claim_ids': [], 'claim_output_revisions': {}, ...}, ...}.get&#10; +  and   'Short answer 1' = &lt;built-in method get of dict object at 0x10a2a21c0&gt;('prior_analysis_markdown', '')&#10; +    where &lt;built-in method get of dict object at 0x10a2a21c0&gt; = {'analysis_markdown': 'Short answer 2', 'application': None, 'basis': {}, 'issue_revision': {'action_owner': '', 'assumption_ids': [], 'claim_ids': [], 'claim_output_revisions': {}, ...}, ...}.get">app_context = &lt;app.runtime.AppContext object at 0x10a6016d0&gt;
+
+    def test_AR15_two_short_updates_retain_original_detail_and_fields(app_context):
+        app=app_context; issues=app.workspace.issues(MATTER); iid=issues[0]['issue_id']
+        current={'versions':[],'current_version_id':None,'content':'','proposal':None}
+        for index in range(3):
+            update={'issue_id':iid,'position':'Short answer '+str(index)}
+            if index==0: update.update(analysis_markdown=DETAIL,rule_and_support='Executed section 6',application='Named recipient only')
+            pub=prepare_publication(current,{'run_id':f'RUN-{index}','issue_id':iid}, {'output_revision':str(index),'created_at':str(index)},
+                {'issue_updates':[update]},'Useful prose',issues,{'packet_path':f'packet-{index}.md','basis':{},'key':str(index)})
+            current={**current,'proposal':{'research_publication':pub}}
+        item=pub['issue_positions'][iid]
+&gt;       assert DETAIL in (item.get('analysis_markdown','')+item.get('prior_analysis_markdown','')), 'Second partial update discarded prior full detail'
+E       AssertionError: Second partial update discarded prior full detail
+E       assert 'Keep access conditional on written consent, an executed transfer schedule, and a successful export test. Emergency access excludes marketing use.' in ('Short answer 2' + 'Short answer 1')
+E        +  where 'Short answer 2' = &lt;built-in method get of dict object at 0x10a2a21c0&gt;('analysis_markdown', '')
+E        +    where &lt;built-in method get of dict object at 0x10a2a21c0&gt; = {'analysis_markdown': 'Short answer 2', 'application': None, 'basis': {}, 'issue_revision': {'action_owner': '', 'assumption_ids': [], 'claim_ids': [], 'claim_output_revisions': {}, ...}, ...}.get
+E        +  and   'Short answer 1' = &lt;built-in method get of dict object at 0x10a2a21c0&gt;('prior_analysis_markdown', '')
+E        +    where &lt;built-in method get of dict object at 0x10a2a21c0&gt; = {'analysis_markdown': 'Short answer 2', 'application': None, 'basis': {}, 'issue_revision': {'action_owner': '', 'assumption_ids': [], 'claim_ids': [], 'claim_output_revisions': {}, ...}, ...}.get
+
+../output/dossier-research-first/astra-review/test_review_diagnostics.py:309: AssertionError</failure></testcase></testsuite></testsuites>

@@ -184,7 +184,7 @@ class WorkspaceReviewService:
             if path.relative_to(self.vault.resolve(self._base(matter_id))).parts[0] == "conversations":
                 continue
             try:
-                document = self.vault.read_markdown(self.vault.relative(path))
+                document = self.vault.read_markdown(self.vault.relative(path), include_execution=False)
             except (OSError, UnicodeError, ValueError, TypeError, YAMLError):
                 continue
             if document["metadata"].get("matter_id") in {None, matter_id}:
@@ -268,7 +268,7 @@ class WorkspaceReviewService:
         found: dict[tuple[str, str], dict[str, Any]] = {}
         for path in self.vault.iter_files(self._base(matter_id), {".md"}):
             try:
-                document = self.vault.read_markdown(self.vault.relative(path))
+                document = self.vault.read_markdown(self.vault.relative(path), include_execution=False)
                 metadata = document["metadata"]
                 raw_items = metadata.get("issue_analyses")
                 if metadata.get("matter_id") != matter_id or not isinstance(raw_items, list):
@@ -677,8 +677,10 @@ class WorkspaceReviewService:
             local = PurePosixPath(relative).relative_to(PurePosixPath(base))
             if any(part.startswith(".") for part in local.parts) or (local.parts and local.parts[0] in excluded):
                 continue
+            if local.parts[:2] in {("research", "runs"), ("research", "dossier-requests")}:
+                continue
             try:
-                document = self.vault.read_document(relative)
+                document = self.vault.read_document(relative, include_execution=False)
             except (OSError, UnicodeError, ValueError, TypeError, YAMLError):
                 result.append(DocumentIdentity(document_id=f"FILE-{digest(relative)[:24]}", path=relative,
                     title=path.stem, kind="matter_record", revision=hashlib.sha256(path.read_bytes()).hexdigest(),

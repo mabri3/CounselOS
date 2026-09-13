@@ -1,0 +1,221 @@
+diff --git a/backend/app/routers/workspace.py b/backend/app/routers/workspace.py
+index 0f535f0d..58a37959 100644
+--- a/backend/app/routers/workspace.py
++++ b/backend/app/routers/workspace.py
+@@ -674,8 +674,8 @@ def get_historical_problem_analysis(matter_id: str, reference: str, context=Depe
+ def inspect_paths(matter_id: str, offset: int = 0, limit: int = 20, conversation_id: str | None = None, context=Depends(get_context, scope="function")):
+     result = invoke(context.solution_paths.inspect, matter_id, offset=offset, limit=limit)
+     if conversation_id:
+-        conversation = invoke(context.chat_history.get,matter_id,conversation_id)
+-        result["working_path_id"] = context.vault.read_markdown(conversation["path"])["metadata"].get("working_path_id")
++        conversation = invoke(context.chat_history.get, matter_id, conversation_id, include_execution=False)
++        result["working_path_id"] = context.vault.read_markdown(conversation["path"], include_execution=False)["metadata"].get("working_path_id")
+     return result
+ 
+ 
+diff --git a/backend/app/services/index.py b/backend/app/services/index.py
+index e11ffa2c..9d332d06 100644
+--- a/backend/app/services/index.py
++++ b/backend/app/services/index.py
+@@ -23,7 +23,7 @@ from app.services.source_index import SOURCE_SCHEMA, SOURCE_TABLES, index_source
+ from app.services.vault import VaultService
+ 
+ 
+-SCHEMA_VERSION = 5
++SCHEMA_VERSION = 6
+ SCHEMA = f"""
+ PRAGMA foreign_keys=ON;
+ PRAGMA user_version={SCHEMA_VERSION};
+@@ -42,10 +42,11 @@ CREATE TABLE review_packets (packet_id TEXT PRIMARY KEY,path TEXT NOT NULL,statu
+ CREATE TABLE mitigations (mitigation_id TEXT PRIMARY KEY,matter_id TEXT NOT NULL,path TEXT NOT NULL,title TEXT NOT NULL,status TEXT,decision_ids TEXT NOT NULL,review_at TEXT,revision INTEGER,created_at TEXT,updated_at TEXT);
+ CREATE INDEX briefing_items_created ON briefing_items(created_at DESC,item_id DESC);
+ CREATE INDEX briefing_items_watch ON briefing_items(watch_id);
+-CREATE VIRTUAL TABLE vault_search USING fts5(path UNINDEXED,title UNINDEXED,content UNINDEXED,search_text,tokenize='trigram',detail=none,columnsize=0);
++CREATE TABLE vault_search_documents (path TEXT NOT NULL,title TEXT NOT NULL,content TEXT NOT NULL);
++CREATE VIRTUAL TABLE vault_search USING fts5(search_text,content='',tokenize='trigram',detail=none,columnsize=0);
+ CREATE TABLE vault_search_bigrams (term TEXT PRIMARY KEY,document_rowids TEXT NOT NULL) WITHOUT ROWID;
+ """ + SOURCE_SCHEMA
+-TABLES = {"matters", "work_items", "decisions", "schedules", "documents", "watches", "scans", "developments", "briefing_items", "saved_views", "digests", "review_packets", "mitigations", "vault_search", "vault_search_bigrams", *SOURCE_TABLES}
++TABLES = {"matters", "work_items", "decisions", "schedules", "documents", "watches", "scans", "developments", "briefing_items", "saved_views", "digests", "review_packets", "mitigations", "vault_search", "vault_search_documents", "vault_search_bigrams", *SOURCE_TABLES}
+ TABLE_COLUMNS = {
+     "matters": ("matter_id", "path", "title", "description", "matter_type", "product_area", "business_team", "requester", "legal_owner", "business_owner", "status", "priority", "risk_level", "target_date", "privilege", "next_action", "created_at", "updated_at"),
+     "work_items": ("work_item_id", "matter_id", "path", "title", "description", "item_type", "status", "priority", "owner", "due_at", "required", "issue_id", "created_at", "completed_at"),
+@@ -226,8 +227,14 @@ class IndexService:
+                 title = path.stem.replace("-", " ").replace("_", " ").title()
+                 normalized = content.lower()
+                 cursor = connection.execute(
+-                    "INSERT INTO vault_search (path, title, content, search_text) VALUES (?, ?, ?, ?)",
+-                    (relative, title, content, normalized),
++                    "INSERT INTO vault_search_documents (path, title, content) VALUES (?, ?, ?)",
++                    (relative, title, content),
++                )
++                # Keep original text once for snippets, and only tokens for the
++                # normalized search text (including Unicode lower expansions).
++                connection.execute(
++                    "INSERT INTO vault_search (rowid, search_text) VALUES (?, ?)",
++                    (cursor.lastrowid, normalized),
+                 )
+                 bigrams = sorted({
+                     normalized[index:index + 2]
+@@ -508,7 +515,7 @@ class IndexService:
+         rows = self._query(
+             "WITH candidates AS ("
+             + " UNION ".join(candidate_queries)
+-            + ") SELECT path, title, content FROM vault_search "
++            + ") SELECT path, title, content FROM vault_search_documents "
+             "WHERE rowid IN (SELECT document_rowid FROM candidates)"
+             + (" AND " + " AND ".join(conditions) if conditions else "")
+             + " ORDER BY path",
+diff --git a/backend/app/services/vault.py b/backend/app/services/vault.py
+index caf8cf25..2a53ebc0 100644
+--- a/backend/app/services/vault.py
++++ b/backend/app/services/vault.py
+@@ -11,6 +11,7 @@ from typing import Any, Iterable
+ 
+ import frontmatter
+ 
++from app.services.execution_inputs import ExecutionInputs
+ from app.utils.paths import ensure_within
+ 
+ 
+@@ -28,7 +29,7 @@ class VaultService:
+     # Long conversations include their frozen audit inputs. Keep room for a
+     # transcript above 32 MiB so each submit does not repeatedly parse it.
+     MARKDOWN_CACHE_MAX_BYTES = 64 * 1024 * 1024
+-    MARKDOWN_CACHE_MAX_FILES = 256
++    MARKDOWN_CACHE_MAX_FILES = 1024
+ 
+     def __init__(self, root: Path):
+         self.root = root.resolve()
+@@ -36,6 +37,7 @@ class VaultService:
+         self._markdown_cache: OrderedDict[Path, _MarkdownRead] = OrderedDict()
+         self._markdown_cache_bytes = 0
+         self._markdown_cache_lock = RLock()
++        self.execution_inputs = ExecutionInputs(self.resolve, self.write_bytes)
+ 
+     def resolve(self, relative_path: str | Path) -> Path:
+         return ensure_within(self.root, relative_path)
+@@ -50,7 +52,7 @@ class VaultService:
+         path = self.resolve(relative_path)
+         return path.read_text(encoding="utf-8")
+ 
+-    def read_markdown(self, relative_path: str | Path) -> dict[str, Any]:
++    def read_markdown(self, relative_path: str | Path, *, include_execution: bool = True) -> dict[str, Any]:
+         path = self.resolve(relative_path)
+         # Parallel page requests must not parse the same large transcript again.
+         with self._markdown_cache_lock:
+@@ -79,17 +81,19 @@ class VaultService:
+                         _, removed = self._markdown_cache.popitem(last=False)
+                         self._markdown_cache_bytes -= removed.size
+         # Callers often edit nested metadata before saving. Never share that state.
++        if include_execution:
++            document = {**document, "metadata": self.execution_inputs.restore(document["metadata"])}
+         return deepcopy(document)
+ 
+     @staticmethod
+     def _markdown_stamp(stat: os.stat_result) -> tuple[int, ...]:
+         return stat.st_dev, stat.st_ino, stat.st_mtime_ns, stat.st_ctime_ns, stat.st_size
+ 
+-    def read_document(self, relative_path: str | Path) -> dict[str, Any]:
++    def read_document(self, relative_path: str | Path, *, include_execution: bool = True) -> dict[str, Any]:
+         path = self.resolve(relative_path)
+         suffix = path.suffix.lower()
+         if suffix == ".md":
+-            result = self.read_markdown(relative_path)
++            result = self.read_markdown(relative_path, include_execution=include_execution)
+             result.update({"editable": not (bool(result["metadata"].get("immutable")) or self._in_source_library(self.relative(path))), "kind": "markdown"})
+             return result
+         if suffix in {".txt", ".csv", ".json", ".yaml", ".yml"}:
+@@ -120,7 +124,7 @@ class VaultService:
+     ) -> str:
+         path = self.resolve(relative_path)
+         path.parent.mkdir(parents=True, exist_ok=True)
+-        post = frontmatter.Post(content.strip() + "\n", **(metadata or {}))
++        post = frontmatter.Post(content.strip() + "\n", **self.execution_inputs.separate(metadata or {}))
+         self._atomic_write(path, frontmatter.dumps(post))
+         return self.relative(path)
+ 
+@@ -214,7 +218,17 @@ class VaultService:
+         root = self.resolve(relative_path)
+         if not root.exists():
+             return []
+-        files = (path for path in root.rglob("*") if path.is_file() and not path.name.startswith("."))
++        def visible_files():
++            for directory, children, names in os.walk(root):
++                # Historical document versions remain addressable by reference.
++                # Only frozen execution inputs are outside ordinary file walks.
++                children[:] = [name for name in children if name != ".execution-inputs"]
++                for name in names:
++                    if not name.startswith("."):
++                        path = Path(directory) / name
++                        if path.is_file():
++                            yield path
++        files = visible_files()
+         if not include_source_library and not self._in_source_library(str(relative_path)):
+             files = (path for path in files if not self._in_source_library(self.relative(path)))
+         if suffixes is None:
+diff --git a/backend/app/services/workspace.py b/backend/app/services/workspace.py
+index f82aa78c..fdab0660 100644
+--- a/backend/app/services/workspace.py
++++ b/backend/app/services/workspace.py
+@@ -508,7 +508,7 @@ class WorkspaceService:
+         for path in self.vault.iter_files(f"{base}/conversations", {".md"}):
+             if not path.name.startswith("CONV-"):
+                 continue
+-            document = self.vault.read_markdown(self.vault.relative(path))
++            document = self.vault.read_markdown(self.vault.relative(path), include_execution=False)
+             messages = document["metadata"].get("messages", [])
+             submissions = {m.get("run_id"): m.get("workspace_submission", {}) for m in messages if m.get("role") == "user" and m.get("run_id")}
+             for message in messages:
+@@ -522,7 +522,7 @@ class WorkspaceService:
+                 if re.fullmatch(r"(?:RUN|HTTP)-[A-Za-z0-9-]+", run_id):
+                     run_path = f"{base}/conversations/runs/{run_id}.md"
+                     if self.vault.exists(run_path):
+-                        saved = self.vault.read_markdown(run_path)["metadata"]
++                        saved = self.vault.read_markdown(run_path, include_execution=False)["metadata"]
+                         saved_run = saved.get("request", {})
+                         if saved.get("matter_id") == matter_id:
+                             basis = basis or saved_run.get("expected_question_revision") or (saved_run.get("target") or {}).get("business_question_revision")
+@@ -882,7 +882,7 @@ class WorkspaceService:
+                 continue
+             relative = self.vault.relative(path)
+             try:
+-                doc = self.vault.read_markdown(relative)
++                doc = self.vault.read_markdown(relative, include_execution=False)
+                 metadata = doc["metadata"]
+                 if metadata.get("matter_id") not in {None, matter_id}:
+                     continue
+diff --git a/backend/app/services/workspace_review.py b/backend/app/services/workspace_review.py
+index f5aa18a4..a914e652 100644
+--- a/backend/app/services/workspace_review.py
++++ b/backend/app/services/workspace_review.py
+@@ -184,7 +184,7 @@ class WorkspaceReviewService:
+             if path.relative_to(self.vault.resolve(self._base(matter_id))).parts[0] == "conversations":
+                 continue
+             try:
+-                document = self.vault.read_markdown(self.vault.relative(path))
++                document = self.vault.read_markdown(self.vault.relative(path), include_execution=False)
+             except (OSError, UnicodeError, ValueError, TypeError, YAMLError):
+                 continue
+             if document["metadata"].get("matter_id") in {None, matter_id}:
+@@ -268,7 +268,7 @@ class WorkspaceReviewService:
+         found: dict[tuple[str, str], dict[str, Any]] = {}
+         for path in self.vault.iter_files(self._base(matter_id), {".md"}):
+             try:
+-                document = self.vault.read_markdown(self.vault.relative(path))
++                document = self.vault.read_markdown(self.vault.relative(path), include_execution=False)
+                 metadata = document["metadata"]
+                 raw_items = metadata.get("issue_analyses")
+                 if metadata.get("matter_id") != matter_id or not isinstance(raw_items, list):
+@@ -677,8 +677,10 @@ class WorkspaceReviewService:
+             local = PurePosixPath(relative).relative_to(PurePosixPath(base))
+             if any(part.startswith(".") for part in local.parts) or (local.parts and local.parts[0] in excluded):
+                 continue
++            if local.parts[:2] in {("research", "runs"), ("research", "dossier-requests")}:
++                continue
+             try:
+-                document = self.vault.read_document(relative)
++                document = self.vault.read_document(relative, include_execution=False)
+             except (OSError, UnicodeError, ValueError, TypeError, YAMLError):
+                 result.append(DocumentIdentity(document_id=f"FILE-{digest(relative)[:24]}", path=relative,
+                     title=path.stem, kind="matter_record", revision=hashlib.sha256(path.read_bytes()).hexdigest(),

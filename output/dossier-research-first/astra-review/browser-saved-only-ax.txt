@@ -1,0 +1,230 @@
+Browser tab: 2, Title: "Themis.ai", URL: "http://localhost:3207/matters/MAT-DEMO-BEACON".
+1 AXWebArea Themis.ai, URL: localhost:3207/matters/MAT-DEMO-BEACON
+	2 container
+		3 button (collapsed) themis.ai, Secondary Actions: Expand
+			4 text themis.ai
+		5 container matter-MAT-DEMO-BEACON
+			6 container
+				7 text Waiting on Brian Harris
+				8 link Description: Matters, Value: localhost:3207/matters
+				9 heading Beacon: Instant Business Onboarding, Value: 1
+					10 text Beacon: Instant Business Onboarding
+				11 button (collapsed) Matter details, Secondary Actions: Expand
+					12 text Matter details
+				13 button (collapsed) Tools and history, Secondary Actions: Expand
+			135 text Research queue updated.
+			136 text MATTER
+			137 heading Beacon: Instant Business Onboarding, Value: 1
+				138 text Beacon: Instant Business Onboarding
+			17 container Matter workspace
+				18 container
+					19 container Matter workspace view
+						20 text Matter workspace view
+						21 radio button (settable, integer) Description: Understand, Value: 0, ID: workspace-view-MAT-DEMO-BEACON-understand
+						22 container Read the current matter
+							23 text Understand
+						24 radio button (settable, integer) Description: Discuss, Value: 1, ID: workspace-view-MAT-DEMO-BEACON-discuss
+						25 container Continue one matter conversation
+							26 text Discuss
+						27 radio button (settable, integer) Description: Draft, Value: 0, ID: workspace-view-MAT-DEMO-BEACON-draft
+						28 container Review and prepare work product
+							29 text Draft
+					30 button Decision map
+				139 container Matter conversation
+					140 container
+						141 text INQUIRY SCOPE Matter context Business question
+						142 button Clear scope
+					143 button (collapsed) Approaches, Secondary Actions: Expand
+						144 text Approaches
+					145 text Inquiry target:
+					146 text Business question
+					147 button Clear target
+					148 button Jump to latest answer
+					149 container
+						150 text THEMIS.AI ·  COMPLETED Chat is complete.  Review the saved result below.
+					151 container
+						152 text LATEST ANSWER Applied skill:  Dossier generation
+						232 text ✧
+						233 text Themis.ai
+						234 container answer-reading-MSG-20260912-fc852a
+							235 heading Beacon launch dossier, Value: 1
+								236 text Beacon launch dossier
+							237 heading Current position, Value: 2
+								238 text Current position
+							239 text Proceed only after the saved employment, privacy, supplier, IP, and marketing conditions are reviewed. This is deterministic fixture analysis.
+							240 heading Decision question, Value: 2
+								241 text Decision question
+							242 text Can the launch proceed with conditions?
+							243 heading Material facts, Value: 2
+								244 text Material facts
+							245 content list
+								246 container
+									247 AXListMarker • 
+									248 text Reported fact: Product proposed October 15, 2026 as the launch date. 
+									249 link Description: Read the saved launch brief, Value: localhost:3207/matters/03_Matters/beacon-instant-onboarding/source-documents/launch-brief.md
+								250 container
+									251 AXListMarker • 
+									252 text Reported fact: all five workstreams remain open. 
+									253 link Description: Read the saved issue list, Value: localhost:3207/matters/03_Matters/beacon-instant-onboarding/issues.md
+							254 heading Proposed date, Value: 2
+								255 text Proposed date
+							256 content list
+								257 container
+									258 AXListMarker • 
+									259 text October 15, 2026 — basis: Product's saved launch brief. This is a proposed operating date, not a verified legal deadline.
+							260 heading Launch conditions checklist, Value: 2
+								261 text Launch conditions checklist
+							262 content list
+								263 container
+									264 AXListMarker • 
+									265 checkbox (disabled, settable, integer) 0
+									266 text Confirm employment terms and staffing controls.
+								267 container
+									268 AXListMarker • 
+									269 checkbox (disabled, settable, integer) 0
+									270 text Confirm privacy notice, purpose, and access limits.
+								271 container
+									272 AXListMarker • 
+									273 checkbox (disabled, settable, integer) 0
+									274 text Confirm supplier transfer, exit, and service terms.
+								275 container
+									276 AXListMarker • 
+									277 checkbox (disabled, settable, integer) 0
+									278 text Confirm ownership and trademark permission.
+								279 container
+									280 AXListMarker • 
+									281 checkbox (disabled, settable, integer) 0
+									282 text Confirm evidence for public marketing claims.
+							283 heading Issues, Value: 2
+								284 text Issues
+							285 heading Employment terms: Confirm worker terms and launch staffing conditions., Value: 3
+								286 text Employment terms: Confirm worker terms and launch staffing conditions.
+							287 container
+								288 text Current answer:  Conditional. Do not treat the issue as closed.
+							289 container
+								290 text Rule and support: No external authority retrieved
+							291 text The two supplied notice clauses could not both be read. Obtain both versions before choosing a notice date.
+							292 container
+								293 text Application:  Apply the saved conditions to the planned launch; do not infer missing facts.
+							294 container
+								295 text Next step:  Complete the checklist item and record the controlling source version.
+							296 heading Customer privacy: Confirm notice, purpose, and access controls., Value: 3
+								297 text Customer privacy: Confirm notice, purpose, and access controls.
+							298 container
+								299 text Current answer:  Conditional. Do not treat the issue as closed.
+							300 container
+								301 text Rule and support: No external authority retrieved
+							302 text The two supplied notice clauses could not both be read. Obtain both versions before choosing a notice date.
+							303 container
+								304 text Application:  Apply the saved conditions to the planned launch; do not infer missing facts.
+							305 container
+								306 text Next step:  Complete the checklist item and record the controlling source version.
+							307 heading Supplier contract: Confirm service levels, termination, and transfer terms., Value: 3
+								308 text Supplier contract: Confirm service levels, termination, and transfer terms.
+							309 container
+								310 text Current answer:  Conditional. Do not treat the issue as closed.
+							311 container
+								312 text Rule and support: No external authority retrieved
+							313 text The two supplied notice clauses could not both be read. Obtain both versions before choosing a notice date.
+							314 container
+								315 text Application:  Apply the saved conditions to the planned launch; do not infer missing facts.
+							316 container
+								317 text Next step:  Complete the checklist item and record the controlling source version.
+							318 heading Intellectual property: Confirm ownership and trademark permission., Value: 3
+								319 text Intellectual property: Confirm ownership and trademark permission.
+							320 container
+								321 text Current answer:  Conditional. Do not treat the issue as closed.
+							322 container
+								323 text Rule and support:  Research is not complete. Keep this workstream open.
+							324 container
+								325 text Application:  Apply the saved conditions to the planned launch; do not infer missing facts.
+							326 container
+								327 text Next step:  Complete the checklist item and record the controlling source version.
+							328 heading Marketing claims: Confirm evidence for public launch claims., Value: 3
+								329 text Marketing claims: Confirm evidence for public launch claims.
+							330 container
+								331 text Current answer:  Conditional. Do not treat the issue as closed.
+							332 container
+								333 text Rule and support:  Research is not complete. Keep this workstream open.
+							334 container
+								335 text Application:  Apply the saved conditions to the planned launch; do not infer missing facts.
+							336 container
+								337 text Next step:  Complete the checklist item and record the controlling source version.
+							338 heading Next actions, Value: 2
+								339 text Next actions
+							340 content list
+								341 container
+									342 AXListMarker 1. 
+									343 text Legal reviews the three initial launch blockers.
+								344 container
+									345 AXListMarker 2. 
+									346 text Product keeps the proposed date conditional.
+								347 container
+									348 AXListMarker 3. 
+									349 text Procurement and Marketing complete the remaining two workstreams.
+							350 link Description: Open saved dossier revision, Value: localhost:3207/matters/03_Matters/beacon-instant-onboarding/dossier-revisions/DOS-c65e88f4c9c2809bc4ec.md
+							351 text Dossier generated as a revision for review; the current dossier was not replaced.
+						352 button (collapsed) Read full answer, Secondary Actions: Expand
+						353 container
+							354 text WORKSPACE ACTION ·  CONFIRMATION REQUIRED
+						355 text Dossier generated as a revision for review; the current dossier was not replaced.
+						356 button Confirm action
+						357 button Save current work product
+					180 container
+						181 text YOUR QUESTION Generate a dossier from saved material only.
+					182 button (collapsed) Earlier conversation (7 messages), Secondary Actions: Expand
+						183 text Earlier conversation (
+						184 text 7
+						185 text  messages)
+					186 container Run an inquiry
+						187 container Ask about This matter
+							188 text RUN AN INQUIRY
+							189 heading Ask about This matter, Value: 2
+								190 text Ask about  This matter
+							191 container Inquiry type
+								192 text Inquiry type
+								193 container
+									194 radio button (settable, integer) Description: Explain, Value: 1
+									195 text Explain
+								196 container
+									197 radio button (settable, integer) Description: Stress-test, Value: 0
+									198 text Stress-test
+								199 container
+									200 radio button (settable, integer) Description: Ask the business, Value: 0
+									201 text Ask the business
+								202 container
+									203 radio button (settable, integer) Description: Explore question, Value: 0
+									204 text Explore question
+							205 text Question or instruction
+							206 text entry area (settable) Question or instruction
+							207 container Inquiry actions
+								208 button Start inquiry, Help: Explain the selected issue or source in the current matter.
+								209 button Copy question
+							210 container
+								211 text Selected action:  Explain .  Explain the selected issue or source in the current matter.
+						212 container
+							213 text TOOLS & HISTORY
+							214 button Business replies
+							215 button Hand off work
+							216 button Compare supplied versions
+					217 container Shared matter actions
+						218 button (collapsed) Questions and actions · Same saved matter, Secondary Actions: Expand
+							219 text Questions and actions · Same saved matter
+					220 button Run inquiry: Which other matters does this touch?
+						221 text Run inquiry: 
+						358 text Which other matters does this touch?
+					223 button Run inquiry: What would change your view?
+						224 text Run inquiry: 
+						359 text What would change your view?
+					226 button Add files
+					227 text entry area (settable)
+					228 button (disabled) Send
+					229 container
+						230 text Themis.ai can research, draft and move this matter. It records a decision only when you explicitly ask it to. 
+						231 link Description: Build a skill, Value: localhost:3207/skills
+				84 button (collapsed) Discussion help, Secondary Actions: Expand
+					85 text Discussion help
+	86 pop up button (collapsed) Description: Open Next.js Dev Tools, ID: next-logo, Secondary Actions: Expand
+		87 image
+
+The focused UI element is 1 AXWebArea Themis.ai, URL: localhost:3207/matters/MAT-DEMO-BEACON

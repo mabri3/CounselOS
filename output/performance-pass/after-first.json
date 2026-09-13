@@ -1,0 +1,37 @@
+[
+  {
+    "name": "health",
+    "status": 200,
+    "seconds": 0.724,
+    "bytes": 149
+  },
+  {
+    "name": "matter",
+    "status": 200,
+    "seconds": 32.479,
+    "bytes": 605647
+  },
+  {
+    "name": "workspace",
+    "seconds": 70.021,
+    "error": "timed out"
+  },
+  {
+    "name": "conversations",
+    "status": 200,
+    "seconds": 2.198,
+    "bytes": 1434
+  },
+  {
+    "name": "selected_conversation",
+    "status": 200,
+    "seconds": 1.783,
+    "bytes": 7051435
+  },
+  {
+    "name": "largest_conversation",
+    "status": 200,
+    "seconds": 1.925,
+    "bytes": 2557509
+  }
+]

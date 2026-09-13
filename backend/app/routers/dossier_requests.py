@@ -39,6 +39,14 @@ class DossierRequestStop(BaseModel):
     expected_sequence: int = Field(ge=0)
 
 
+class DossierIssueStart(BaseModel):
+    plan_revision: str = Field(min_length=1, max_length=256)
+
+
+class DossierIssueWebResearch(DossierIssueStart):
+    source_choice: ResearchScope
+
+
 class DossierRequestResume(BaseModel):
     expected_sequence: int = Field(ge=0)
     retry_unknown: bool = False
@@ -94,6 +102,45 @@ async def start_request(
         _raise_service_error(exc)
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@router.post("/{request_id}/issues/{issue_id}/start", status_code=202)
+async def start_issue(
+    matter_id: str,
+    request_id: str,
+    issue_id: str,
+    payload: DossierIssueStart,
+    context: AppContext = Depends(get_context),
+):
+    try:
+        return await context.dossier_requests.start_issue(
+            matter_id, request_id, issue_id, plan_revision=payload.plan_revision
+        )
+    except DossierRequestError as exc:
+        _raise_service_error(exc)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@router.post("/{request_id}/issues/{issue_id}/web-research", status_code=202)
+async def add_web_research(
+    matter_id: str,
+    request_id: str,
+    issue_id: str,
+    payload: DossierIssueWebResearch,
+    context: AppContext = Depends(get_context),
+):
+    try:
+        return context.dossier_requests.add_web_research(
+            matter_id, request_id, issue_id, plan_revision=payload.plan_revision,
+            source_choice=payload.source_choice,
+        )
+    except DossierRequestError as exc:
+        _raise_service_error(exc)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
 @router.post("/{request_id}/stop")

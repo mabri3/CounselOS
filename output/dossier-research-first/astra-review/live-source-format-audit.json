@@ -1,0 +1,76 @@
+{
+  "records": 25,
+  "missing_fields": [
+    {
+      "index": 8,
+      "source_id": "SRC-LOCAL-16b741dcf11135c93da0",
+      "missing": [
+        "source_label"
+      ]
+    },
+    {
+      "index": 9,
+      "source_id": "SRC-LOCAL-61e3b79d09d3f79dff33",
+      "missing": [
+        "source_label"
+      ]
+    },
+    {
+      "index": 10,
+      "source_id": "SRC-LOCAL-834fc0bfeb815897c030",
+      "missing": [
+        "source_label"
+      ]
+    },
+    {
+      "index": 11,
+      "source_id": "SRC-LOCAL-27bdc6073b8cd9bb6c4c",
+      "missing": [
+        "source_label"
+      ]
+    },
+    {
+      "index": 12,
+      "source_id": "SRC-LOCAL-2de37c5db6585a9df9c8",
+      "missing": [
+        "source_label"
+      ]
+    }
+  ],
+  "error": "KeyError: 'source_label'",
+  "live_reads": [
+    {
+      "run_id": "RUN-72ac3d54d92d026d",
+      "saved_records": 0,
+      "nonempty_passage_reads": 0,
+      "distinct_passage_sources": 0,
+      "read_source_ids": [],
+      "source_search_not_found": 0,
+      "selected_characters": 0
+    },
+    {
+      "run_id": "RUN-7cc4ffbe990727e9",
+      "saved_records": 3,
+      "nonempty_passage_reads": 0,
+      "distinct_passage_sources": 0,
+      "read_source_ids": [],
+      "source_search_not_found": 3,
+      "selected_characters": 0
+    },
+    {
+      "run_id": "RUN-959dbc35258d60cb",
+      "saved_records": 9,
+      "nonempty_passage_reads": 7,
+      "distinct_passage_sources": 5,
+      "read_source_ids": [
+        "SRC-34f059babb66bf5d8471",
+        "SRC-50cd4d04f0397471295e",
+        "SRC-c3012b085b5cda1528af",
+        "SRC-d6da76e665ab390a546c",
+        "SRC-e9c2fe42e8c24f6f9bc8"
+      ],
+      "source_search_not_found": 2,
+      "selected_characters": 24300
+    }
+  ]
+}

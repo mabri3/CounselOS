@@ -1,0 +1,16 @@
+{
+  "pid": 90358,
+  "command": [
+    "env",
+    "NEXT_PUBLIC_API_BASE_URL=http://localhost:8207/api",
+    "PHASE2_DIST_DIR=.next-astra-dev",
+    "npm",
+    "run",
+    "dev",
+    "--",
+    "--port",
+    "3207"
+  ],
+  "cwd": "/Users/bharris/Programs/counsel-os-mvp/output/dossier-research-first/astra-review/frontend-copy",
+  "started_at": "2026-09-12T06:52:38.695550+00:00"
+}

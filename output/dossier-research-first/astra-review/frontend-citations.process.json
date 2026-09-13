@@ -1,0 +1,10 @@
+{
+  "pid": 89090,
+  "command": [
+    "node",
+    "--experimental-strip-types",
+    "scripts/check-citation-reading.ts"
+  ],
+  "cwd": "/Users/bharris/Programs/counsel-os-mvp/frontend",
+  "started_at": "2026-09-12T06:46:18.316859+00:00"
+}

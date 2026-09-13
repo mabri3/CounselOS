@@ -1,0 +1,16 @@
+{
+  "pid": 92428,
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "tests.manual.serve_dossier_research",
+    "--port",
+    "8207",
+    "--frontend-origin",
+    "http://localhost:3207",
+    "--vault",
+    "../output/dossier-research-first/astra-review/browser-vault"
+  ],
+  "cwd": "/Users/bharris/Programs/counsel-os-mvp/backend",
+  "started_at": "2026-09-12T07:04:58.943888+00:00"
+}

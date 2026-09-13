@@ -1,0 +1,37 @@
+{
+  "method": "Temporary React Profiler around MatterChat; temporary performance mark at ClaimMarkdown entry. Both removed from application code after measurement.",
+  "environment": "Existing localhost:3000 Next.js development server; Codex in-app browser; Harbor 2 saved conversation with 106 messages and eight open document tabs.",
+  "displayed_message_characters": 323716,
+  "before": {
+    "render_duration_ms": [
+      724.9000002741814,
+      538.9000000357628,
+      674.8000001907349,
+      530.9000000953674,
+      585.8000000119209,
+      513.8000000119209,
+      575.3999999761581
+    ],
+    "markdown_render_calls_per_keystroke": 340,
+    "observation": "Sequential typing timed out; baseline includes measured keystrokes that completed. Development StrictMode is enabled."
+  },
+  "after": {
+    "render_duration_ms": [
+      4.699999988079071,
+      4.799999952316284,
+      4.300000011920929,
+      5.199999928474426,
+      4.5,
+      4.699999988079071,
+      5.5,
+      4.899999976158142,
+      5,
+      4.699999988079071,
+      4.5,
+      4.399999976158142
+    ],
+    "markdown_render_calls_per_keystroke": 0,
+    "observation": "All twelve characters of the test suffix appeared; each update reused the saved-content tree."
+  },
+  "limits": "Render durations are not full input-to-paint latency. Browser automation inserts its own pacing. Chrome was not separately profiled."
+}
